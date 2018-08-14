@@ -188,15 +188,10 @@ public class JobApplicataionService {
         }
         int jobApplicationId = postApplication(jobApplication, jobPositionRecord);
         if (jobApplicationId > 0) {
-            MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
-            messageEmailStruct.setApplication_id(jobApplicationId);
-            messageEmailStruct.setPosition_id((int) jobApplication.getPosition_id());
-            messageEmailStruct.setApply_type(jobApplication.getApply_type());
-            messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
-            messageEmailStruct.setRecommender_user_id((int) jobApplication.getRecommender_user_id());
-            messageEmailStruct.setApplier_id((int) jobApplication.getApplier_id());
-            messageEmailStruct.setOrigin(jobApplication.getOrigin());
-            sendMessageAndEmailThread(messageEmailStruct);
+            sendMessageAndEmailThread(jobApplicationId, (int) jobApplication.getPosition_id(),
+                    jobApplication.getApply_type(), jobApplication.getEmail_status(),
+                    (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
+                    jobApplication.getOrigin());
             // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
@@ -240,7 +235,26 @@ public class JobApplicataionService {
         }
     }
 
-    private void sendMessageAndEmailThread (MessageEmailStruct messageEmailStruct) {
+    /**
+     * 校验申请的有效性，并发送 消息通知
+     * @param jobApplicationId 申请编号
+     * @param positionId 职位编号
+     * @param applyType 申请类型（prifile or email）
+     * @param emailStatus email投递的状态
+     * @param recommenderUserId 推荐人
+     * @param applierId 申请人
+     * @param origin 来源
+     */
+    private void sendMessageAndEmailThread (int jobApplicationId, int positionId, int applyType, int emailStatus,
+                                            int recommenderUserId, int applierId, int origin) {
+        MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
+        messageEmailStruct.setApplication_id(jobApplicationId);
+        messageEmailStruct.setPosition_id(positionId);
+        messageEmailStruct.setApply_type(applyType);
+        messageEmailStruct.setEmail_status(emailStatus);
+        messageEmailStruct.setRecommender_user_id(recommenderUserId);
+        messageEmailStruct.setApplier_id(applierId);
+        messageEmailStruct.setOrigin(origin);
         logger.info("sendMessageAndEmailThread messageEmailStruct{}", messageEmailStruct);
         tp.startTast(() -> {
             filterService.handerApplicationFilter(messageEmailStruct);
@@ -362,15 +376,10 @@ public class JobApplicataionService {
             jobApplicationRecord.setUpdateTime(updateTime);
             updateStatus = jobApplicationDao.updateRecord(jobApplicationRecord);
             if(updateStatus>0 && bool){
-                MessageEmailStruct messageEmailStruct = new MessageEmailStruct();
-                messageEmailStruct.setApplication_id((int)jobApplication.getId());
-                messageEmailStruct.setPosition_id(jobApplicationDO.getPositionId());
-                messageEmailStruct.setApply_type(jobApplicationDO.getApplyType());
-                messageEmailStruct.setEmail_status(jobApplication.getEmail_status());
-                messageEmailStruct.setRecommender_user_id(jobApplicationDO.getRecommenderUserId());
-                messageEmailStruct.setApplier_id(jobApplicationDO.getApplierId());
-                messageEmailStruct.setOrigin(jobApplicationDO.getOrigin());
-                sendMessageAndEmailThread(messageEmailStruct);
+                sendMessageAndEmailThread((int)jobApplication.getId(), jobApplicationDO.getPositionId(),
+                        jobApplicationDO.getApplyType(), jobApplication.getEmail_status(),
+                        jobApplicationDO.getRecommenderUserId(), jobApplicationDO.getApplierId(),
+                        jobApplicationDO.getOrigin());
             }
         }
         return updateStatus;
@@ -1076,9 +1085,17 @@ public class JobApplicataionService {
                     } catch (Exception e) {
                         logger.error(e.getMessage(), e);
                     }
+
+                    sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
+                            0, referenceId, resultVO.getApplierId(),
+                            ApplicationSource.EMPLOYEE_REFERRAL.getValue());
+
                     return 0;
                 });
             }
+
+
+
             return applyIdList.stream().map(ApplicationSaveResultVO::getApplicationId).collect(Collectors.toList());
         }
 

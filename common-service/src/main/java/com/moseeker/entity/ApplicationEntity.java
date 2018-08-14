@@ -1,7 +1,6 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -9,7 +8,6 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.exception.ApplicationException;
-import com.moseeker.thrift.gen.chat.service.ChatService;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.slf4j.Logger;
