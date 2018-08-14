@@ -953,7 +953,6 @@ public class ProfileService {
         if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
-
         resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
 
         logger.info("profileParser fillProfileObj profileObj:{}", JSON.toJSONString(profileObj));
@@ -980,6 +979,7 @@ public class ProfileService {
 
             logger.info("profileParser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
                     profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
+            resumeEntity.fillDefault(profilePojo);
             userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
