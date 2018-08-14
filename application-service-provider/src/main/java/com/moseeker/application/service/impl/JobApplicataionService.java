@@ -1070,12 +1070,20 @@ public class JobApplicataionService {
             }
         }
         checkApplicationCountAtCompany(employeeDO.getCompanyId(), userApplyCount);
-        addApplicationCountAtCompany(applierId, employeeDO.getCompanyId(), userApplyCount);
+
 
         List<ApplicationSaveResultVO> applyIdList = applicationEntity.storeEmployeeProxyApply(referenceId, applierId,
                 employeeDO.getCompanyId(), positionIdList);
 
         if (applyIdList != null && applyIdList.size() > 0) {
+
+            List<ApplicationSaveResultVO> createList = applyIdList.stream().filter(ApplicationSaveResultVO::isCreate)
+                    .collect(Collectors.toList());
+            if (createList == null || createList.size() == 0) {
+                throw ApplicationException.APPLICATION_CREATE_FAILED;
+            }
+            addApplicationCountAtCompany(applierId, employeeDO.getCompanyId(), userApplyCount);
+
             for (ApplicationSaveResultVO resultVO : applyIdList) {
                 tp.startTast(() -> {
                     logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}",
@@ -1086,16 +1094,14 @@ public class JobApplicataionService {
                         logger.error(e.getMessage(), e);
                     }
 
-                    sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
-                            0, referenceId, resultVO.getApplierId(),
-                            ApplicationSource.EMPLOYEE_REFERRAL.getValue());
-
+                    if (resultVO.isCreate()) {
+                        sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
+                                0, referenceId, resultVO.getApplierId(),
+                                ApplicationSource.EMPLOYEE_REFERRAL.getValue());
+                    }
                     return 0;
                 });
             }
-
-
-
             return applyIdList.stream().map(ApplicationSaveResultVO::getApplicationId).collect(Collectors.toList());
         }
 
