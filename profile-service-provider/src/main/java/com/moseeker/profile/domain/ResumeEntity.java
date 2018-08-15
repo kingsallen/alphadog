@@ -5,7 +5,6 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileWorkexpRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
@@ -113,8 +112,7 @@ public class ResumeEntity {
 
             ProfileWorkexpEntity workexpEntity = new ProfileWorkexpEntity();
             workexpEntity.setJob(ProfileDefaultValues.defaultWorkExpJob);
-            workexpEntity.setStart(new Date(ProfileDefaultValues.defaultWorkExpStartDate.atStartOfDay()
-                    .atZone(zone).toInstant().getEpochSecond()));
+            workexpEntity.setStart(new Date(ProfileDefaultValues.defaultWorkExpStartDate));
             workexpEntity.setEndUntilNow(ProfileDefaultValues.defaultWorkExpUntilNow);
             workexpEntity.setDescription(ProfileDefaultValues.defaultWorkExpDestription);
             profilePojo.setWorkexpRecords(new ArrayList<ProfileWorkexpEntity>(){{add(workexpEntity);}});
@@ -126,8 +124,7 @@ public class ResumeEntity {
             educationRecord.setCollegeName(ProfileDefaultValues.defaultEducationSchoolName);
             educationRecord.setDegree((byte) ProfileDefaultValues.defaultEducationDegree.getValue());
             educationRecord.setMajorName(ProfileDefaultValues.defaultEducationMajorName);
-            educationRecord.setStart(new Date(ProfileDefaultValues.defaultEducationStartDate.atStartOfDay()
-                    .atZone(zone).toInstant().toEpochMilli()));
+            educationRecord.setStart(new Date(ProfileDefaultValues.defaultEducationStartDate));
             educationRecord.setEndUntilNow(ProfileDefaultValues.defaultEducationUntilNow);
             educationRecord.setDescription(ProfileDefaultValues.defaultEducationDescription);
             profilePojo.setEducationRecords(new ArrayList<ProfileEducationRecord>(){{add(educationRecord);}});
@@ -137,8 +134,7 @@ public class ResumeEntity {
 
             ProfileProjectexpRecord profileProjectexpRecord = new ProfileProjectexpRecord();
             profileProjectexpRecord.setName(ProfileDefaultValues.defaultProjectName);
-            profileProjectexpRecord.setStart(new Date(ProfileDefaultValues.defaultProjectStartDate.atStartOfDay()
-                    .atZone(zone).toInstant().toEpochMilli()));
+            profileProjectexpRecord.setStart(new Date(ProfileDefaultValues.defaultProjectStartDate));
             profileProjectexpRecord.setEndUntilNow(ProfileDefaultValues.defaultProjectUntilNow);
             profilePojo.setProjectExps(new ArrayList<ProfileProjectexpRecord>(){{add(profileProjectexpRecord);}});
         }

@@ -1,8 +1,7 @@
 package com.moseeker.profile.constants;
 
 import com.moseeker.common.constants.DegreeConvertUtil;
-
-import java.time.LocalDate;
+import org.joda.time.DateTime;
 
 /**
  * 简历数据默认值
@@ -11,11 +10,18 @@ import java.time.LocalDate;
  */
 public class ProfileDefaultValues {
 
+    public static long defaultStartTime;
+
+    static {
+        DateTime dateTime1 = new DateTime("1900-01-01");
+        defaultStartTime = dateTime1.getMillis();
+    }
+
     public static String defaultName = "未填写";
 
     public static String defaultWorkExpJob = "未填写";
 
-    public static LocalDate defaultWorkExpStartDate = LocalDate.now().withYear(1900).withMonth(1).withDayOfMonth(1);
+    public static long defaultWorkExpStartDate = defaultStartTime;
 
     public static byte defaultWorkExpUntilNow = 1;
 
@@ -27,7 +33,7 @@ public class ProfileDefaultValues {
 
     public static String defaultEducationMajorName = "未填写";
 
-    public static LocalDate defaultEducationStartDate = LocalDate.now().withYear(1900).withMonth(1).withDayOfMonth(1);
+    public static long defaultEducationStartDate = defaultStartTime;
 
     public static byte defaultEducationUntilNow = 1;
 
@@ -35,7 +41,7 @@ public class ProfileDefaultValues {
 
     public static String defaultProjectName = "未填写";
 
-    public static LocalDate defaultProjectStartDate = LocalDate.now().withYear(1900).withMonth(1).withDayOfMonth(1);
+    public static long defaultProjectStartDate = defaultStartTime;
 
     public static byte defaultProjectUntilNow = 1;
 }
