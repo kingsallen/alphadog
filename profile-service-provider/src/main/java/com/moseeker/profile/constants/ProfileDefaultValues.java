@@ -10,18 +10,13 @@ import org.joda.time.DateTime;
  */
 public class ProfileDefaultValues {
 
-    public static long defaultStartTime;
-
-    static {
-        DateTime dateTime1 = new DateTime("1900-01-01 01:01:01");
-        defaultStartTime = dateTime1.getMillis();
-    }
+    public static DateTime defaultStartDateTime = new DateTime("1900-01-01 01:01:01");
 
     public static String defaultName = "未填写";
 
     public static String defaultWorkExpJob = "未填写";
 
-    public static long defaultWorkExpStartDate = defaultStartTime;
+    public static long defaultWorkExpStartDate = defaultStartDateTime.getMillis();
 
     public static byte defaultWorkExpUntilNow = 1;
 
@@ -33,7 +28,7 @@ public class ProfileDefaultValues {
 
     public static String defaultEducationMajorName = "未填写";
 
-    public static long defaultEducationStartDate = defaultStartTime;
+    public static long defaultEducationStartDate = defaultStartDateTime.getMillis();
 
     public static byte defaultEducationUntilNow = 1;
 
@@ -41,7 +36,7 @@ public class ProfileDefaultValues {
 
     public static String defaultProjectName = "未填写";
 
-    public static long defaultProjectStartDate = defaultStartTime;
+    public static long defaultProjectStartDate = defaultStartDateTime.getMillis();
 
     public static byte defaultProjectUntilNow = 1;
 }
