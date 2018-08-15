@@ -22,27 +22,17 @@ public class UserRecommendRefusalService {
     @Autowired
     UserRecommendRefusalDao userRecommendRefusalDao;
 
+    /**
+     * C端用户拒绝某个公众号推荐职位
+     * @param userRecommendRefusal 参数
+     * @throws BIZException
+     */
     public void refuseRecommend(UserRecommendRefusalDO userRecommendRefusal) throws BIZException {
         if (userRecommendRefusal.getUserId() == 0
-                || userRecommendRefusal.getWechtId() == 0) {
+                || userRecommendRefusal.getWechatId() == 0) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
-        UserRecommendRefusalDO lastestData = userRecommendRefusalDao.getLastestDataByUserId(userRecommendRefusal.getUserId());
-
-        if (lastestData != null) {
-            try {
-                Date lastestRefuseTime = DateUtils.shortTimeToDate(lastestData.getRefuseTime());
-                Date now = new Date();
-                if(now.getTime() <= lastestRefuseTime.getTime()){
-                    return;
-                }
-            } catch (ParseException e) {
-                logger.error("refuse time parse error data:"+ JSON.toJSONString(lastestData),e);
-                return;
-            }
-        }
-
-
+         userRecommendRefusalDao.insertData(userRecommendRefusal);
     }
 
 }

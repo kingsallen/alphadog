@@ -13,7 +13,7 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
 
   private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.I32, (short)1);
   private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)2);
-  private static final org.apache.thrift.protocol.TField WECHT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("wechtId", org.apache.thrift.protocol.TType.I32, (short)3);
+  private static final org.apache.thrift.protocol.TField WECHAT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("wechatId", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField REFUSE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("refuseTime", org.apache.thrift.protocol.TType.STRING, (short)4);
   private static final org.apache.thrift.protocol.TField REFUSE_TIMEOUT_FIELD_DESC = new org.apache.thrift.protocol.TField("refuseTimeout", org.apache.thrift.protocol.TType.STRING, (short)5);
 
@@ -22,7 +22,7 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
 
   public int id; // optional
   public int userId; // optional
-  public int wechtId; // optional
+  public int wechatId; // optional
   public String refuseTime; // optional
   public String refuseTimeout; // optional
 
@@ -30,7 +30,7 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     ID((short)1, "id"),
     USER_ID((short)2, "userId"),
-    WECHT_ID((short)3, "wechtId"),
+    WECHAT_ID((short)3, "wechatId"),
     REFUSE_TIME((short)4, "refuseTime"),
     REFUSE_TIMEOUT((short)5, "refuseTimeout");
 
@@ -51,8 +51,8 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
           return ID;
         case 2: // USER_ID
           return USER_ID;
-        case 3: // WECHT_ID
-          return WECHT_ID;
+        case 3: // WECHAT_ID
+          return WECHAT_ID;
         case 4: // REFUSE_TIME
           return REFUSE_TIME;
         case 5: // REFUSE_TIMEOUT
@@ -99,9 +99,9 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
   // isset id assignments
   private static final int __ID_ISSET_ID = 0;
   private static final int __USERID_ISSET_ID = 1;
-  private static final int __WECHTID_ISSET_ID = 2;
+  private static final int __WECHATID_ISSET_ID = 2;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.USER_ID,_Fields.WECHT_ID,_Fields.REFUSE_TIME,_Fields.REFUSE_TIMEOUT};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.USER_ID,_Fields.WECHAT_ID,_Fields.REFUSE_TIME,_Fields.REFUSE_TIMEOUT};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -109,7 +109,7 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.WECHT_ID, new org.apache.thrift.meta_data.FieldMetaData("wechtId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.WECHAT_ID, new org.apache.thrift.meta_data.FieldMetaData("wechatId", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.REFUSE_TIME, new org.apache.thrift.meta_data.FieldMetaData("refuseTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
@@ -129,7 +129,7 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
     __isset_bitfield = other.__isset_bitfield;
     this.id = other.id;
     this.userId = other.userId;
-    this.wechtId = other.wechtId;
+    this.wechatId = other.wechatId;
     if (other.isSetRefuseTime()) {
       this.refuseTime = other.refuseTime;
     }
@@ -148,8 +148,8 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
     this.id = 0;
     setUserIdIsSet(false);
     this.userId = 0;
-    setWechtIdIsSet(false);
-    this.wechtId = 0;
+    setWechatIdIsSet(false);
+    this.wechatId = 0;
     this.refuseTime = null;
     this.refuseTimeout = null;
   }
@@ -200,27 +200,27 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
   }
 
-  public int getWechtId() {
-    return this.wechtId;
+  public int getWechatId() {
+    return this.wechatId;
   }
 
-  public UserRecommendRefusalDO setWechtId(int wechtId) {
-    this.wechtId = wechtId;
-    setWechtIdIsSet(true);
+  public UserRecommendRefusalDO setWechatId(int wechatId) {
+    this.wechatId = wechatId;
+    setWechatIdIsSet(true);
     return this;
   }
 
-  public void unsetWechtId() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __WECHTID_ISSET_ID);
+  public void unsetWechatId() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __WECHATID_ISSET_ID);
   }
 
-  /** Returns true if field wechtId is set (has been assigned a value) and false otherwise */
-  public boolean isSetWechtId() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __WECHTID_ISSET_ID);
+  /** Returns true if field wechatId is set (has been assigned a value) and false otherwise */
+  public boolean isSetWechatId() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __WECHATID_ISSET_ID);
   }
 
-  public void setWechtIdIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __WECHTID_ISSET_ID, value);
+  public void setWechatIdIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __WECHATID_ISSET_ID, value);
   }
 
   public String getRefuseTime() {
@@ -289,11 +289,11 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
       }
       break;
 
-    case WECHT_ID:
+    case WECHAT_ID:
       if (value == null) {
-        unsetWechtId();
+        unsetWechatId();
       } else {
-        setWechtId((Integer)value);
+        setWechatId((Integer)value);
       }
       break;
 
@@ -324,8 +324,8 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
     case USER_ID:
       return getUserId();
 
-    case WECHT_ID:
-      return getWechtId();
+    case WECHAT_ID:
+      return getWechatId();
 
     case REFUSE_TIME:
       return getRefuseTime();
@@ -348,8 +348,8 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
       return isSetId();
     case USER_ID:
       return isSetUserId();
-    case WECHT_ID:
-      return isSetWechtId();
+    case WECHAT_ID:
+      return isSetWechatId();
     case REFUSE_TIME:
       return isSetRefuseTime();
     case REFUSE_TIMEOUT:
@@ -391,12 +391,12 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
         return false;
     }
 
-    boolean this_present_wechtId = true && this.isSetWechtId();
-    boolean that_present_wechtId = true && that.isSetWechtId();
-    if (this_present_wechtId || that_present_wechtId) {
-      if (!(this_present_wechtId && that_present_wechtId))
+    boolean this_present_wechatId = true && this.isSetWechatId();
+    boolean that_present_wechatId = true && that.isSetWechatId();
+    if (this_present_wechatId || that_present_wechatId) {
+      if (!(this_present_wechatId && that_present_wechatId))
         return false;
-      if (this.wechtId != that.wechtId)
+      if (this.wechatId != that.wechatId)
         return false;
     }
 
@@ -433,9 +433,9 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
     if (isSetUserId())
       hashCode = hashCode * 8191 + userId;
 
-    hashCode = hashCode * 8191 + ((isSetWechtId()) ? 131071 : 524287);
-    if (isSetWechtId())
-      hashCode = hashCode * 8191 + wechtId;
+    hashCode = hashCode * 8191 + ((isSetWechatId()) ? 131071 : 524287);
+    if (isSetWechatId())
+      hashCode = hashCode * 8191 + wechatId;
 
     hashCode = hashCode * 8191 + ((isSetRefuseTime()) ? 131071 : 524287);
     if (isSetRefuseTime())
@@ -476,12 +476,12 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetWechtId()).compareTo(other.isSetWechtId());
+    lastComparison = Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetWechtId()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wechtId, other.wechtId);
+    if (isSetWechatId()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.wechatId, other.wechatId);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -537,10 +537,10 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
       sb.append(this.userId);
       first = false;
     }
-    if (isSetWechtId()) {
+    if (isSetWechatId()) {
       if (!first) sb.append(", ");
-      sb.append("wechtId:");
-      sb.append(this.wechtId);
+      sb.append("wechatId:");
+      sb.append(this.wechatId);
       first = false;
     }
     if (isSetRefuseTime()) {
@@ -624,10 +624,10 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 3: // WECHT_ID
+          case 3: // WECHAT_ID
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.wechtId = iprot.readI32();
-              struct.setWechtIdIsSet(true);
+              struct.wechatId = iprot.readI32();
+              struct.setWechatIdIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -673,9 +673,9 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
         oprot.writeI32(struct.userId);
         oprot.writeFieldEnd();
       }
-      if (struct.isSetWechtId()) {
-        oprot.writeFieldBegin(WECHT_ID_FIELD_DESC);
-        oprot.writeI32(struct.wechtId);
+      if (struct.isSetWechatId()) {
+        oprot.writeFieldBegin(WECHAT_ID_FIELD_DESC);
+        oprot.writeI32(struct.wechatId);
         oprot.writeFieldEnd();
       }
       if (struct.refuseTime != null) {
@@ -716,7 +716,7 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
       if (struct.isSetUserId()) {
         optionals.set(1);
       }
-      if (struct.isSetWechtId()) {
+      if (struct.isSetWechatId()) {
         optionals.set(2);
       }
       if (struct.isSetRefuseTime()) {
@@ -732,8 +732,8 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
       if (struct.isSetUserId()) {
         oprot.writeI32(struct.userId);
       }
-      if (struct.isSetWechtId()) {
-        oprot.writeI32(struct.wechtId);
+      if (struct.isSetWechatId()) {
+        oprot.writeI32(struct.wechatId);
       }
       if (struct.isSetRefuseTime()) {
         oprot.writeString(struct.refuseTime);
@@ -756,8 +756,8 @@ public class UserRecommendRefusalDO implements org.apache.thrift.TBase<UserRecom
         struct.setUserIdIsSet(true);
       }
       if (incoming.get(2)) {
-        struct.wechtId = iprot.readI32();
-        struct.setWechtIdIsSet(true);
+        struct.wechatId = iprot.readI32();
+        struct.setWechatIdIsSet(true);
       }
       if (incoming.get(3)) {
         struct.refuseTime = iprot.readString();
