@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
  */
 public class ProfileDefaultValues {
 
-    public static DateTime defaultStartDateTime = new DateTime("1900-01-01").plusMinutes(1);
+    public static DateTime defaultStartDateTime = new DateTime("1900-01-01").plusHours(8);
 
     public static String defaultName = "未填写";
 
