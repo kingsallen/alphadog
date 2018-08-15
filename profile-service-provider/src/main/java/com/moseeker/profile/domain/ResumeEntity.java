@@ -106,7 +106,6 @@ public class ResumeEntity {
         if (profilePojo.getUserRecord() != null && StringUtils.isBlank(profilePojo.getUserRecord().getName())) {
             profilePojo.getUserRecord().setName(ProfileDefaultValues.defaultName);
         }
-        ZoneId zone = ZoneId.systemDefault();
 
         if (profilePojo.getWorkexpRecords() == null || profilePojo.getWorkexpRecords().size() == 0) {
 
