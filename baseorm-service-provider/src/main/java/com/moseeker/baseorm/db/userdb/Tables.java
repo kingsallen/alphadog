@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
+import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -106,6 +107,11 @@ public class Tables {
      * 用户订阅职位推荐邮件
      */
     public static final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
+
+    /**
+     * 用户拒绝推荐信息表
+     */
+    public static final UserRecommendRefusal USER_RECOMMEND_REFUSAL = com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
 
     /**
      * 用户搜索条件(qx职位搜索)
