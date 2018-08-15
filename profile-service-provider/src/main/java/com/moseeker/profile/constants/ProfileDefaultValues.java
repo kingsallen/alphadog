@@ -13,7 +13,7 @@ public class ProfileDefaultValues {
     public static long defaultStartTime;
 
     static {
-        DateTime dateTime1 = new DateTime("1900-01-01");
+        DateTime dateTime1 = new DateTime("1900-01-01 01:01:01");
         defaultStartTime = dateTime1.getMillis();
     }
 
