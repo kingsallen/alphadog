@@ -126,7 +126,7 @@ public class CrawlerUtils {
                 break;
         }
         logger.info("fetchFirstResume:" + result);
-        return cleanning(result, lang, source, completeness, appid, user_id, ua, channelType);
+        return cleanning(result, lang, source, completeness, appid, user_id, ua, channelType,form);
     }
 
     /**
@@ -145,7 +145,7 @@ public class CrawlerUtils {
         /*
         导入次数需要做限制，每人每天只能导入三次
          */
-        if(!(channelType == ChannelType.ZHILIAN && StringUtils.isNullOrEmpty(form.getCode()))) {    // 智联获取验证码不用做导入限制 todo 是否加个操作类型字段更好
+        if(!isZhilianGetVerifyCode(channelType,form)) {    // 智联获取验证码不用做导入限制 todo 是否加个操作类型字段更好
             int user_id = form.getUser_id();
             StringBuffer sb = new StringBuffer();
             sb.append(user_id).append("_").append(channelType);
@@ -190,7 +190,7 @@ public class CrawlerUtils {
 
     @SuppressWarnings("unchecked")
     private Response cleanning(String result, int lang, int source, int completeness, int appid, int user_id, int ua,
-                               ChannelType channelType) {
+                               ChannelType channelType,ImportCVForm form) {
         Object obj = JSON.parse(result);
         Map<String, Object> messagBean = null;
         if (obj instanceof Map) {
@@ -264,7 +264,9 @@ public class CrawlerUtils {
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PROFILE_EMPTY);
         } else if (messagBean.get("status") != null
                 && (Integer) messagBean.get("status") == 6) {
-            decre(user_id, channelType);
+            if(!isZhilianGetVerifyCode(channelType,form)) {
+                decre(user_id, channelType);
+            }
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_NEED_VERIFY_CODE);
         } else if (messagBean.get("status") != null
                 && (Integer) messagBean.get("status") == 7) {
@@ -305,5 +307,9 @@ public class CrawlerUtils {
         }
 
         return sourceResult;
+    }
+
+    private boolean isZhilianGetVerifyCode(ChannelType channelType,ImportCVForm form){
+        return channelType == ChannelType.ZHILIAN && StringUtils.isNullOrEmpty(form.getCode());
     }
 }
