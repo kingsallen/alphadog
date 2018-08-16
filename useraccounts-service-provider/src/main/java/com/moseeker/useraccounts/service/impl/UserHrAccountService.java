@@ -1624,13 +1624,37 @@ public class UserHrAccountService {
             query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = appCvConfDao.getDatas(query.buildQuery());
             if (hrAppCvConfDOList != null && !hrAppCvConfDOList.isEmpty()) {
-                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+//                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+                Set<String> configFieldName=new HashSet<>();
+                for(HrAppCvConfDO hrAppCvConfDO:hrAppCvConfDOList){
+                    String fieldValue=hrAppCvConfDO.getFieldValue();
+                    if(StringUtils.isNotNullOrEmpty(fieldValue)){
+                        JSONArray array=JSONArray.parseArray(fieldValue);
+                        if(array!=null&&array.size()>0){
+                            for(int i=0;i<array.size();i++){
+                                JSONObject jsonObject=array.getJSONObject(i);
+                                JSONArray jsonArray=jsonObject.getJSONArray("fields");
+                                if(jsonArray!=null&&jsonArray.size()>0){
+                                    for(int j=0;j<jsonArray.size();j++){
+                                        JSONObject object=jsonArray.getJSONObject(j);
+                                        String fieldName=object.getString("field_name");
+                                        if(StringUtils.isNotNullOrEmpty(fieldName)){
+                                            configFieldName.add(fieldName) ;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
                 hrAppExportFieldsDOList.stream().forEach(e -> {
                     if (configFieldName.contains(e.getFieldName())) {
                         e.showed = 1;
                     }
                 });
             }
+
         }
         List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
         List<HrAppExportFieldsDO> result=new ArrayList<>();
