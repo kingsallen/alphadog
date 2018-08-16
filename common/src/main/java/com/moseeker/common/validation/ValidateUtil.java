@@ -107,6 +107,55 @@ public class ValidateUtil {
 		return rv;
 	}
 
+	public ValidateRule addRequiredOneValidate(String paramName,
+											   List beanToBeValidated)
+			throws ValidateNotAppointParamException {
+		return addRequiredOneValidate(paramName, beanToBeValidated, null, null);
+	}
+
+	/**
+	 * 添加数量限制校验逻辑
+	 * @param paramName 属性名称
+	 * @param beanToBeValidated 被校验对象
+	 * @param errorMessage 错误信息
+	 * @param message 结果信息
+	 * @param upperLimit 限制条件
+	 * @return 校验规则
+	 * @throws ValidateNotAppointParamException
+	 */
+	public ValidateRule addUpperLimitValidate(String paramName,
+											  List beanToBeValidated, String errorMessage, String message, Integer upperLimit)
+			throws ValidateNotAppointParamException {
+		OverUpperValidateRule rv = null;
+		try {
+			rv = new OverUpperValidateRule(paramName, beanToBeValidated,
+					message, errorMessage, upperLimit);
+			if (!StringUtils.isNullOrEmpty(message)) {
+				rv.setMessage(message);
+			}
+			addToRules(rv);
+		} catch (ValidateNotAppointParamException e) {
+			logger.error("faild!", e);
+			throw e;
+		} finally {
+			// do nothing
+		}
+		return rv;
+	}
+
+	/**
+	 * 添加数量限制校验逻辑
+	 * @param paramName 属性名称
+	 * @param beanToBeValidated 被校验对象
+	 * @return 校验规则
+	 * @throws ValidateNotAppointParamException
+	 */
+	public ValidateRule addUpperLimitValidate(String paramName,
+											  List beanToBeValidated)
+			throws ValidateNotAppointParamException {
+		return addUpperLimitValidate(paramName, beanToBeValidated, null, null, null);
+	}
+
 	/**
 	 * 往验证器添加一个RequiredStringValidateRule
 	 * 
@@ -261,6 +310,13 @@ public class ValidateUtil {
 			// do nothing
 		}
 		return itvr;
+	}
+
+	public ValidateRule addIntTypeValidate(String paramName,
+										   Object beanToBeValidated,
+										   Integer minRange, Integer maxRange)
+			throws ValidateNotAppointParamException {
+		return addIntTypeValidate(paramName, beanToBeValidated, null, null, minRange, maxRange);
 	}
 
 	/**

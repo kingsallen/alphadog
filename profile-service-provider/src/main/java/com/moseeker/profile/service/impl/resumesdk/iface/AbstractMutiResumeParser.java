@@ -1,19 +1,13 @@
 package com.moseeker.profile.service.impl.resumesdk.iface;
 
-import com.moseeker.baseorm.dao.logdb.LogResumeDao;
-import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper.ResumeParseException;
-import static com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper.buildLogResumeRecord;
 
 /**
  * 把ResumeSDK中的一个列表字段解析成仟寻简历的一个列表字段
@@ -23,8 +17,7 @@ import static com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelp
 public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
     Logger logger = LoggerFactory.getLogger(AbstractMutiResumeParser.class);
 
-    @Autowired
-    protected LogResumeDao resumeDao;
+    protected List<ResumeParseException> exceptions = new ArrayList<>();
 
     /**
      * 解析ResumeSDK列表对象中的一个
@@ -50,7 +43,7 @@ public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
 
 
     @Override
-    public ProfileObj parseResume(ProfileObj moseekerProfile, ResumeObj resumeProfile, int uid, String fileName) {
+    public ProfileObj parseResume(ProfileObj moseekerProfile, ResumeObj resumeProfile) {
         List<T> datas = get(resumeProfile);
         List<R> r = new ArrayList<>();
 
@@ -60,13 +53,21 @@ public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
                     r.add(parseResume(t));
                 } catch (ResumeParseException e) {
                     logger.error(e.getMessage(), e);
-                    LogResumeRecordRecord logResumeRecordRecord = buildLogResumeRecord(e, resumeProfile, uid, fileName);
-                    resumeDao.addRecord(logResumeRecordRecord);
+                    exceptions.add(e);
                 }
             }
         }
         set(moseekerProfile, r);
 
         return moseekerProfile;
+    }
+
+    /**
+     * 返回异常列表
+     * @return 异常列表
+     */
+    @Override
+    public List<ResumeParseException> getExceptions() {
+        return exceptions;
     }
 }

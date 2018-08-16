@@ -155,6 +155,8 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
         .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
         JobApplicationDO applicationDO = getData(queryBuilder.buildQuery());
 		resultVO.setApplicationId(applicationDO.getId());
+		resultVO.setPositionId(applicationDO.getPositionId());
+		resultVO.setApplierId(applicationDO.getApplierId());
 
         //如果不是新增申请，那么合并申请来源
 		logger.info("addIfNotExists applicationDO:{}", applicationDO);

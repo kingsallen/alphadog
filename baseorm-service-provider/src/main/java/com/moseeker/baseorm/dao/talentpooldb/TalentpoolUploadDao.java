@@ -4,9 +4,12 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
 
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolUploadRecord;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by zztaiwll on 18/1/9.

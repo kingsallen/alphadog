@@ -13,6 +13,10 @@ service EmployeeService {
 
     // 获取公司员工认证配置信息
     employee_struct.EmployeeVerificationConfResponse getEmployeeVerificationConf(1: i32 companyId);
+    
+    // 获取公司员工认证配置信息
+    employee_struct.EmployeeVerificationConfResponse getEmployeeVerificationConfByUserId(1: i32 userId) throws (1: common_struct.BIZException e);
+
 
     // 员工绑定操作
     employee_struct.Result bind(1: employee_struct.BindingParams bindingParams);
