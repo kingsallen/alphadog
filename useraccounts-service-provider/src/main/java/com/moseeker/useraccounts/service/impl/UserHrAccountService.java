@@ -1856,4 +1856,29 @@ public class UserHrAccountService {
         return requiresNotNullAccount(accountId);
     }
 
+    public HRInfo getHR(int id) throws UserAccountException {
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(id);
+        if (hrAccountDO == null) {
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
+        }
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
+        if (hrAccountDO == null) {
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
+        }
+        HRInfo hrInfo = new HRInfo();
+        packageHRInfo(hrInfo, hrAccountDO, hrCompanyDO);
+        return hrInfo;
+    }
+
+    private void packageHRInfo(HRInfo hrInfo, UserHrAccountDO hrAccountDO, HrCompanyDO hrCompanyDO) {
+        hrInfo.setId(hrAccountDO.getId());
+        HRAccountType accountType = HRAccountType.initFromType(hrAccountDO.getAccountType());
+        hrInfo.setAccountType(accountType.toString());
+        hrInfo.setEmail(hrAccountDO.getEmail());
+        hrInfo.setHeadImg(hrAccountDO.getHeadimgurl());
+        hrInfo.setMobile(hrAccountDO.getMobile());
+        hrInfo.setName(hrAccountDO.getUsername());
+        hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
+        hrInfo.setCompany(hrCompanyDO.getName());
+    }
 }

@@ -1,9 +1,11 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -12,6 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -23,8 +29,15 @@ public class UserAccountEntity {
 
     @Autowired
     private UserUserDao userDao;
+
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private TalentpoolTalentDao talentDao;
+
+    @Autowired
+    private UserReferralRecordDao referralRecordDao;
 
     /**
      * 获取用户的称呼
@@ -138,5 +151,83 @@ public class UserAccountEntity {
         Query query=new Query.QueryBuilder().where("id",userId).and("is_disable",0).buildQuery();
         UserUserRecord userRecord=userDao.getRecord(query);
         return userRecord;
+    }
+
+    /**
+     * 根据手机号码查找按公司隔离的用户
+     * @param phone 手机号码
+     * @param companyId 公司编号
+     * @return 用户信息
+     */
+    public UserUserRecord getCompanyUser(String phone, int companyId) {
+
+        UserUserRecord userUserRecord = null;
+        String countryCode="86";
+        if(phone.contains("-")){
+            String [] phoneArray=phone.split("-");
+            countryCode=phoneArray[0];
+            phone=phoneArray[1];
+        }
+        List<UserUserRecord> list = userDao.getCompanyUserUser(phone, countryCode);
+        if (list != null && list.size() > 0) {
+
+            userUserRecord = findTalent(list, companyId);
+            if (userUserRecord == null) {
+                userUserRecord = findEmployeeReferral(list, companyId);
+            }
+        }
+        return userUserRecord;
+    }
+
+    /**
+     * 查找制定公司下的员工内推的用户信息
+     * @param list 用户编号
+     * @param companyId 公司编号
+     * @return 用户信息
+     */
+    private UserUserRecord findEmployeeReferral(List<UserUserRecord> list, int companyId) {
+        UserUserRecord userUserRecord = null;
+        List<Integer> userIdList = list.stream().map(UserUserRecord::getId).collect(Collectors.toList());
+        List<UserReferralRecordRecord> referralRecords = referralRecordDao.getRecordsByUserIdListCompanyId(userIdList, companyId);
+        if (referralRecords != null && referralRecords.size() > 0) {
+
+            for (UserUserRecord userRecord : list) {
+                Optional<UserReferralRecordRecord> optional = referralRecords
+                        .stream()
+                        .filter(recordRecord -> recordRecord.getUserId().equals(userRecord.getId()))
+                        .findAny();
+                if (optional.isPresent()) {
+                    userUserRecord = userRecord;
+                    break;
+                }
+            }
+        }
+        return userUserRecord;
+    }
+
+    /**
+     * 查找指定公司下的人才的用户信息
+     * @param list 用户编号
+     * @param companyId 公司编号
+     * @return 人才的用户信息
+     */
+    private UserUserRecord findTalent(List<UserUserRecord> list, int companyId) {
+        UserUserRecord userUserRecord = null;
+        List<Integer> userIdList = list.stream().map(UserUserRecord::getId).collect(Collectors.toList());
+        List<TalentpoolTalentRecord> talents = talentDao.getTalents(userIdList,companyId);
+
+        if (talents != null && talents.size() > 0) {
+            for (UserUserRecord userRecord : list) {
+                Optional<TalentpoolTalentRecord> optional = talents
+                        .stream()
+                        .filter(talentpoolTalentRecord -> talentpoolTalentRecord.getUserId().equals(userRecord.getId()))
+                        .findAny();
+                if (optional.isPresent()) {
+                    userUserRecord = userRecord;
+                    break;
+                }
+            }
+        }
+        return userUserRecord;
     }
 }

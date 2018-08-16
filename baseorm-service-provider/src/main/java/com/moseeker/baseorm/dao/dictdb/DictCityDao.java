@@ -288,4 +288,18 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         return create.selectFrom(DictCity.DICT_CITY).fetchInto(DictCityDO.class);
     }
 
+    /**
+     * 根据城市名称查找城市常量信息
+     * @param cityNameList 城市名称
+     * @return 城市数据
+     */
+    public List<DictCityDO> getByNameList(List<String> cityNameList) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder
+                .where(new com.moseeker.common.util.query.Condition(
+                        DictCity.DICT_CITY.NAME.getName(), cityNameList, ValueOp.IN))
+                .or(new com.moseeker.common.util.query.Condition(
+                        DictCity.DICT_CITY.ENAME.getName(), cityNameList, ValueOp.IN));
+        return getDatas(queryBuilder.buildQuery());
+    }
 }

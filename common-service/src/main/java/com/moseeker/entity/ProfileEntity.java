@@ -3,45 +3,36 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ProfileOtherCareerType;
-import com.moseeker.common.constants.ProfileOtherIdentityType;
-import com.moseeker.common.constants.ProfileOtherSchoolType;
-import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
-import com.moseeker.entity.pojo.profile.info.Internship;
-import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
-import com.moseeker.entity.pojo.profile.info.SchoolWork;
+import com.moseeker.entity.exception.ProfileException;
+import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.entity.pojo.resume.Status;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.sql.Timestamp;
 
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import java.util.stream.Collectors;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -78,7 +69,6 @@ public class ProfileEntity {
 
     @Autowired
     ProfileParseUtil profileParseUtil;
-
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -98,6 +88,34 @@ public class ProfileEntity {
      */
     public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
        return profileParser(fileName, file);
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
+     * @param profilePojo 简历数据
+     * @param userId 用户编号
+     */
+    public void mergeProfile(ProfilePojo profilePojo, int userId) {
+
+        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+        if (profileDB != null) {
+            improveProfile(profilePojo.getProfileRecord(), profileDB);
+            improveBasic(profilePojo.getBasicRecord(), profileDB.getId());
+            improveAttachment(profilePojo.getAttachmentRecords(), profileDB.getId());
+            improveAwards(profilePojo.getAwardsRecords(), profileDB.getId());
+            improveCredentials(profilePojo.getCredentialsRecords(), profileDB.getId());
+            improveEducation(profilePojo.getEducationRecords(), profileDB.getId());
+            improveIntention(profilePojo.getIntentionRecords(), profileDB.getId());
+            improveLanguage(profilePojo.getLanguageRecords(), profileDB.getId());
+            improveOther(profilePojo.getOtherRecord(), profileDB.getId());
+            improveProjectexp(profilePojo.getProjectExps(), profileDB.getId());
+            improveSkill(profilePojo.getSkillRecords(), profileDB.getId());
+            improveWorkexp(profilePojo.getWorkexpRecords(), profileDB.getId());
+            improveWorks(profilePojo.getWorksRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+        } else {
+            storeProfile(profilePojo);
+        }
     }
 
     /**
@@ -525,8 +543,6 @@ public class ProfileEntity {
         completenessImpl.reCalculateProfileCompleteness(profileId);
     }
 
-
-
     public void updateProfile(ProfilePojo profilePojo, ProfileProfileDO profileProfileDO) {
         int profileId = profileProfileDO.getId();
         ProfileProfileRecord record = BeanUtils.structToDB(profileProfileDO, ProfileProfileRecord.class);
@@ -560,6 +576,21 @@ public class ProfileEntity {
     }
 
     /**
+     * 持久化简历数据
+     * @param profilePojo 简历数据
+     * @return 简历编号
+     */
+    public int storeProfile(ProfilePojo profilePojo) {
+
+        return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+                profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
+                profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
+                profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
+                profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
+                profilePojo.getUserRecord(), null);
+    }
+
+    /**
      * 查找用户是否有简历
      * @param userIdList 用户编号集合
      * @return
@@ -588,6 +619,53 @@ public class ProfileEntity {
         return userProfileList;
     }
 
+    /**
+     * 将用户信息持久化到数据库中
+     * todo 应该要移到用户实体中
+     * @param profilePojo 简历数据
+     * @param reference 推荐人
+     * @param companyId 公司编号
+     * @param source
+     * @return 用户编号
+     */
+    @Transactional
+    public UserUserRecord storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
+
+        UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
+        if (employeeRecord == null) {
+            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+        }
+        //获取companyUser
+        //Redis 同步锁
+
+        UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference,
+                companyId, profilePojo.getUserRecord().getMobile());
+        if (profilePojo.getUserRecord() != null) {
+            if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
+                profilePojo.getUserRecord().setPassword("");
+            }
+            short shortSource = 0;
+            if (source != null) {
+                shortSource = (short) source.getValue();
+            }
+            profilePojo.getUserRecord().setSource(shortSource);
+            UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+
+            referralRecordRecord.setUserId(userUserRecord.getId());
+            userReferralRecordDao.updateRecord(referralRecordRecord);
+
+
+            logger.info("mergeProfile userId:{}", userUserRecord.getId());
+            profilePojo.setUserRecord(userUserRecord);
+            profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
+            storeProfile(profilePojo);
+
+            return userUserRecord;
+        } else {
+            throw ProfileException.PROFILE_USER_CREATE_FAILED;
+        }
+    }
+
     @Autowired
     private ProfileAttachmentDao attachmentDao;
 
@@ -613,9 +691,6 @@ public class ProfileEntity {
     private ProfileProfileDao profileDao;
 
     @Autowired
-    private ProfileImportDao profileImportDao;
-
-    @Autowired
     private ProfileProjectexpDao projectExpDao;
 
     @Autowired
@@ -635,4 +710,10 @@ public class ProfileEntity {
 
     @Autowired
     private ProfileAwardsDao awardsDao;
+
+    @Autowired
+    private UserEmployeeDao employeeDao;
+
+    @Autowired
+    private UserReferralRecordDao userReferralRecordDao;
 }
