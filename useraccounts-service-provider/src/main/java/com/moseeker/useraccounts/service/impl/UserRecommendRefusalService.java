@@ -32,7 +32,19 @@ public class UserRecommendRefusalService {
                 || userRecommendRefusal.getWechatId() == 0) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
-         userRecommendRefusalDao.insertData(userRecommendRefusal);
+        userRecommendRefusalDao.insertData(userRecommendRefusal);
     }
 
+    /**
+     * 获取最近一条拒绝推荐记录
+     * @param userId
+     * @param wechatId
+     * @return
+     */
+    public UserRecommendRefusalDO getLastestRecommendRefusal(int userId,int wechatId) throws BIZException {
+        if(userId ==0 || wechatId == 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        return userRecommendRefusalDao.getLastestRecommendRefusal(userId,wechatId);
+    }
 }

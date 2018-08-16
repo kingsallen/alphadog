@@ -28,4 +28,18 @@ public class UserRecommendRefusalServiceImpl implements Iface {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
     }
+
+    @Override
+    public UserRecommendRefusalDO getLastestRecommendRefusal(int userId, int wechatId) throws TException {
+        try {
+            UserRecommendRefusalDO result = userRecommendRefusalService.getLastestRecommendRefusal(userId,wechatId);
+            if(result == null){
+                result = new UserRecommendRefusalDO();
+            }
+            return result;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
+    }
 }
