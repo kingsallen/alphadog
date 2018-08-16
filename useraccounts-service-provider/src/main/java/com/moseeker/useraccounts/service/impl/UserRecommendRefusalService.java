@@ -43,7 +43,7 @@ public class UserRecommendRefusalService {
      */
     public UserRecommendRefusalDO getLastestRecommendRefusal(int userId,int wechatId) throws BIZException {
         if(userId ==0 || wechatId == 0){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
         return userRecommendRefusalDao.getLastestRecommendRefusal(userId,wechatId);
     }

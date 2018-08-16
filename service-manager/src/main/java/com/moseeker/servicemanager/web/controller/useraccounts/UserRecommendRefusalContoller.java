@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.useraccounts;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -64,14 +65,63 @@ public class UserRecommendRefusalContoller {
             Integer userId = params.getInt("user_id");
             Integer wechatId = params.getInt("wechat_id");
             if (userId == null || wechatId == null) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
             }
 
             UserRecommendRefusalDO result = service.getLastestRecommendRefusal(userId, wechatId);
-            return ResponseLogNotification.successJson(request, result);
+            UserRecommendRefusalVO vo = JSON.parseObject(JSON.toJSONString(result,serializeConfig),UserRecommendRefusalVO.class);
+            return ResponseLogNotification.successJson(request, vo);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    
+    private static class UserRecommendRefusalVO {
+        private int id;
+        private int user_id;
+        private int wechat_id;
+        private String refuse_time;
+        private String refuse_timeout;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(int user_id) {
+            this.user_id = user_id;
+        }
+
+        public int getWechat_id() {
+            return wechat_id;
+        }
+
+        public void setWechat_id(int wechat_id) {
+            this.wechat_id = wechat_id;
+        }
+
+        public String getRefuse_time() {
+            return refuse_time;
+        }
+
+        public void setRefuse_time(String refuse_time) {
+            this.refuse_time = refuse_time;
+        }
+
+        public String getRefuse_timeout() {
+            return refuse_timeout;
+        }
+
+        public void setRefuse_timeout(String refuse_timeout) {
+            this.refuse_timeout = refuse_timeout;
         }
     }
 }
