@@ -493,8 +493,8 @@ public class ChatService {
 
                     if (i == chatRecord.size() - 1 && chatVO.getContent().startsWith(AUTO_CONTENT_WITH_HR_EXIST_START)) {
                         HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(roomId);
-                        ResultOfSaveRoomVO room = searchResult(chatRoom,0);
-                        String content  = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", room.getHr()
+                        ResultOfSaveRoomVO room = searchResult(chatRoom, 0);
+                        String content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", room.getHr()
                                 .getHrName()).replace("{companyName}", room.getHr().getCompanyName());
                         chatVO.setContent(content);
                     }
