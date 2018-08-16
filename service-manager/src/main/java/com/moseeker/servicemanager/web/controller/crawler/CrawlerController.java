@@ -79,6 +79,8 @@ public class CrawlerController {
 				vu.addRequiredStringValidate("version", form.getVersion(), null, null);
 				vu.addRequiredStringValidate("maimai_appid", form.getMaimai_appid(), null, null);
 				vu.addRequiredStringValidate("unionid", form.getUnionid(), null, null);
+			} else if(form.getType() == ChannelType.ZHILIAN.getValue()){
+				vu.addRequiredStringValidate("username",form.getUsername());
 			} else if(form.getType() == ChannelType.LIEPIN.getValue()){
 				if(StringUtils.isNullOrEmpty(form.getToken())){
 					vu.addRequiredStringValidate("账号", form.getUsername(), null, null);
