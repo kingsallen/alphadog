@@ -12,7 +12,9 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.company.forms.Validator;
+import com.moseeker.servicemanager.web.controller.company.vo.Authentication;
 import com.moseeker.servicemanager.web.controller.useraccounts.UserHrAccountParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -22,15 +24,14 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
+import com.moseeker.thrift.gen.employee.service.EmployeeService;
+import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +52,8 @@ public class CompanyController {
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
 	private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
+
+    private EmployeeService.Iface employeeServices = ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
 
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
@@ -324,6 +327,14 @@ public class CompanyController {
             e.printStackTrace();
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/company/{id}/authentication", method = RequestMethod.GET)
+    @ResponseBody
+    public String getAuthentication(@PathVariable Integer id) throws Exception {
+
+        EmployeeVerificationConfResponse authentication = employeeServices.getEmployeeVerificationConf(id);
+        return Result.success(Authentication.clone(authentication)).toJson();
     }
 
     /**

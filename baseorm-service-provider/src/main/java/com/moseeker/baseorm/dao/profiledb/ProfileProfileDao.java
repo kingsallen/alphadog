@@ -508,6 +508,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         if (profileRecord != null) {
             Timestamp now = new Timestamp(System.currentTimeMillis());
             profileRecord.setCreateTime(now);
+            logger.info("saveProfile userId:{},   uuid:{},  source:{} ", profileRecord.getUserId(),  profileRecord.getUuid(), profileRecord.getSource());
             create.attach(profileRecord);
             profileRecord.insert();
 
@@ -762,6 +763,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             //========================发现原来没有，现在添加上＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             if (userRecord != null) {
+                if (org.apache.commons.lang.StringUtils.isBlank(userRecord.getName())) {
+                    userRecord.setName("未填写");
+                }
                 create.attach(userRecord);
                 userRecord.update();
 

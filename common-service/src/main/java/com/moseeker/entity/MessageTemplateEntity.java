@@ -106,7 +106,7 @@ public class MessageTemplateEntity {
             url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
         url = url+"&from_template_message="+params.getTemplateId()+"&send_time=" + new Date().getTime();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getType(),params.getCompanyId(),DO.getId());
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId());
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;

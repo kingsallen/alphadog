@@ -9,6 +9,7 @@ public class ContributionDetail {
     private int userId;
     private int companyId;
     private String openid;
+    private String accessToken;
     private int point;
     private int rank;
     private int forwardCount;
@@ -68,5 +69,13 @@ public class ContributionDetail {
 
     public void setDeliverCount(int deliverCount) {
         this.deliverCount = deliverCount;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }

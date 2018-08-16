@@ -1047,6 +1047,11 @@ public class EmployeeEntity {
         return employeeDao.getUserEmployeeForidList(idList);
     }
 
+    /**
+     * 根据用户编号查找用户的员工信息
+     * @param userId 用户编号
+     * @return 员工信息
+     */
     public UserEmployeeDO getActiveEmployeeDOByUserId(int userId) {
         if (userId > 0) {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID

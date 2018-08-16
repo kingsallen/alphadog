@@ -33,14 +33,14 @@ public class ExceptionTransferAop implements Ordered {
     @AfterThrowing(value = POINCUT, throwing = "e")
     public void afterThrowing(Exception e) throws BIZException {
         if (e instanceof CommonException) {
+            logger.info("ExceptionTransferAop CommonException");
             throw ExceptionConvertUtil.convertCommonException((CommonException)e);
         } else {
+            logger.info("ExceptionTransferAop is not CommonException");
             logger.error(e.getMessage(), e);
             throw new SysBIZException();
         }
     }
-
-
 
     @Override
     public int getOrder() {

@@ -44,9 +44,10 @@ public class ChatServiceTest {
     @Autowired
     private ChatThriftService chatService;
 
-//    @Test
+    @Test
     public void listChatLog() throws TException {
-        System.out.println(JSON.toJSONString(chatService.listChatLogs(33 ,1, 10)));
+        //30198 pageNo:1, pageSize:10
+        System.out.println(JSON.toJSONString(chatService.listChatLogs(30198 ,3, 10)));
     }
 
     @Test

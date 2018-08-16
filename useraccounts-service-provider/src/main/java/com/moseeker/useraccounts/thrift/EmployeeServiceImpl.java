@@ -5,6 +5,7 @@ import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -76,6 +77,15 @@ public class EmployeeServiceImpl implements Iface {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new SysBIZException();
+		}
+	}
+
+	@Override
+	public EmployeeVerificationConfResponse getEmployeeVerificationConfByUserId(int userId) throws BIZException, TException {
+		try {
+			return service.getEmployeeVerificationConfByUserId(userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
