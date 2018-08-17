@@ -23,7 +23,9 @@ import static org.jooq.impl.DSL.*;
 public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
 
     @Autowired
-    private DefaultConfiguration configuration;
+    public CustomUpVoteDao(DefaultConfiguration configuration) {
+        super(configuration);
+    }
 
     /**
      * 计算点赞数
