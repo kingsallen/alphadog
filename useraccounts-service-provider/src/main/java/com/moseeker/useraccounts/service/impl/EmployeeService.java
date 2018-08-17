@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserEmployeeReferralPolicyDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -17,7 +14,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserWxEntity;
@@ -31,18 +27,22 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeReferralPolicyDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.moseeker.useraccounts.domain.UpVoteEntity;
+import com.moseeker.useraccounts.domain.UserEmployeeEntity;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
+import com.moseeker.useraccounts.service.impl.pojos.UpVoteData;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author ltf 员工服务业务实现 2017年3月3日
@@ -97,7 +97,14 @@ public class EmployeeService {
     @Autowired
     private UserUserDao userDao;
 
+    @Autowired
+    private CustomUpVoteDao upvoteDao;
 
+    @Autowired
+    private UpVoteEntity upVoteEntity;
+
+    @Autowired
+    private UserEmployeeEntity userEmployeeEntity;
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -444,5 +451,44 @@ public class EmployeeService {
         if (count == 0) {
             retryUpdateReferralPolicyCount(employeeDO, index);
         }
+    }
+
+    /**
+     * 统计点赞数量
+     * @param employeeId 员工编号
+     * @return 点赞数
+     * @throws UserAccountException 异常信息
+     */
+    public int countUpVote(int employeeId) throws UserAccountException {
+        UserEmployeeDO userEmployeeDO = employeeEntity.getEmployeeByID(employeeId);
+        if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
+            throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
+        }
+        return upvoteDao.countUpVote(employeeId, userEmployeeDO.getCompanyId());
+    }
+
+    /**
+     * 点赞
+     * @param employeeId 点赞的员工编号
+     * @param userId 被点赞的用户编号
+     * @return 点赞记录编号
+     * @throws UserAccountException 业务异常
+     */
+    public int upVote(int employeeId, int userId) throws UserAccountException {
+
+        UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, userId);
+
+        return upVoteEntity.upVote(upVoteData.getReceiver(), upVoteData.getSender());
+    }
+
+    /**
+     * 取消点赞
+     * @param employeeId 点赞的员工编号
+     * @param userId 被点赞的用户编号
+     * @throws UserAccountException 业务异常
+     */
+    public void removeUpVote(int employeeId, int userId) throws UserAccountException {
+        UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, userId);
+        upVoteEntity.cancelUpVote(upVoteData.getReceiver(), upVoteData.getSender());
     }
 }

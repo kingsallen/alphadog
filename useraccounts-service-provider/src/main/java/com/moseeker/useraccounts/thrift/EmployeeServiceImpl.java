@@ -259,5 +259,29 @@ public class EmployeeServiceImpl implements Iface {
         }
     }
 
+	@Override
+	public int countUpVote(int employeeId) throws BIZException, TException {
+
+		try {
+			return service.countUpVote(employeeId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int upvote(int employeeId, int userId) throws BIZException, TException {
+		try {
+			return service.upVote(employeeId, userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void removeUpvote(int employeeId, int userId) throws BIZException, TException {
+		service.removeUpVote(employeeId, userId);
+	}
+
 
 }

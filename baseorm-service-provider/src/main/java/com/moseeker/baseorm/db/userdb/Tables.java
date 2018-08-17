@@ -5,10 +5,6 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -18,10 +14,12 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
+import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
 import com.moseeker.baseorm.db.userdb.tables.UserReferralRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
@@ -52,26 +50,6 @@ public class Tables {
      * VIEW
      */
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
-
-    /**
-     * 消息业务表
-     */
-    public static final ConsistencyBusiness CONSISTENCY_BUSINESS = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness.CONSISTENCY_BUSINESS;
-
-    /**
-     * 消息业务类型表
-     */
-    public static final ConsistencyBusinessType CONSISTENCY_BUSINESS_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE;
-
-    /**
-     * 消息表
-     */
-    public static final ConsistencyMessage CONSISTENCY_MESSAGE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage.CONSISTENCY_MESSAGE;
-
-    /**
-     * 消息类型表
-     */
-    public static final ConsistencyMessageType CONSISTENCY_MESSAGE_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE;
 
     /**
      * 阿里用户信息表
@@ -119,6 +97,11 @@ public class Tables {
     public static final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
 
     /**
+     * 员工点赞记录
+     */
+    public static final UserEmployeeUpvote USER_EMPLOYEE_UPVOTE = com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE;
+
+    /**
      * 用户职位收藏
      */
     public static final UserFavPosition USER_FAV_POSITION = com.moseeker.baseorm.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
@@ -137,6 +120,11 @@ public class Tables {
      * 用户订阅职位推荐邮件
      */
     public static final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
+
+    /**
+     * 用户拒绝推荐信息表
+     */
+    public static final UserRecommendRefusal USER_RECOMMEND_REFUSAL = com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
 
     /**
      * 员工主动推荐记录

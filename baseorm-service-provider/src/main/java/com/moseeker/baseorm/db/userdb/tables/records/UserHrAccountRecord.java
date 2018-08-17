@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord> implements Record22<Integer, Integer, String, String, Integer, String, String, Integer, Byte, Integer, Timestamp, String, Timestamp, String, Integer, Integer, String, Timestamp, Timestamp, String, Byte, String> {
 
-    private static final long serialVersionUID = -457284521;
+    private static final long serialVersionUID = -108594834;
 
     /**
      * Setter for <code>userdb.user_hr_account.id</code>.
@@ -327,30 +327,14 @@ public class UserHrAccountRecord extends UpdatableRecordImpl<UserHrAccountRecord
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
      * Setter for <code>userdb.user_hr_account.remark_name</code>. 备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称
-=======
-     * Setter for <code>userdb.user_hr_account.remark_name</code>. 备注名
->>>>>>> 完成自测
-=======
-     * Setter for <code>userdb.user_hr_account.remark_name</code>. 备注名
->>>>>>> b26bb8540cee037253f9daa106f0aa1e6ce9cd4e
      */
     public void setRemarkName(String value) {
         set(21, value);
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
      * Getter for <code>userdb.user_hr_account.remark_name</code>. 备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称
-=======
-     * Getter for <code>userdb.user_hr_account.remark_name</code>. 备注名
->>>>>>> 完成自测
-=======
-     * Getter for <code>userdb.user_hr_account.remark_name</code>. 备注名
->>>>>>> b26bb8540cee037253f9daa106f0aa1e6ce9cd4e
      */
     public String getRemarkName() {
         return (String) get(21);

@@ -51,4 +51,10 @@ service EmployeeService {
     common_struct.Response getCompanyReferralConf(1:i32 companyId)throws (1: common_struct.BIZException e)
     //插入更新员工点击想要了解内推政策按钮次数
     void updsertCompanyReferralPocily(1:i32 companyId, 2:i32 userId)throws (1: common_struct.BIZException e)
+    //计算员工被点赞的数量
+    i32 countUpVote(1:i32 employeeId)throws (1: common_struct.BIZException e)
+    //点赞
+    i32 upvote(1:i32 employeeId, 2: i32 userId)throws (1: common_struct.BIZException e)
+    //取消点赞
+    void removeUpvote(1:i32 employeeId, 2:i32 userId)throws (1: common_struct.BIZException e)
 }
