@@ -49,6 +49,9 @@ public class TalentpoolSearchengine {
 
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
+        logger.info("===================+++++++++++++++++++++++++++++++++++");
+        logger.info(JSON.toJSONString(params));
+        logger.info("===================+++++++++++++++++++++++++++++++++++");
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
