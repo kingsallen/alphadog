@@ -1125,7 +1125,7 @@ public class TalentpoolSearchengine {
     private void handlerPositionId(Map<String,String> params){
         String positionWord=params.get("position_key_word");
         String positionIdList=params.get("position_id");
-        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNotNullOrEmpty(positionIdList)){
+        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
             String positionIds=this.PositionIdQuery(params,positionWord);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);
