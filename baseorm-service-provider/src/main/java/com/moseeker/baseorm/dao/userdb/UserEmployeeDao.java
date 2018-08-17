@@ -1,16 +1,15 @@
 package com.moseeker.baseorm.dao.userdb;
 
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -155,5 +154,4 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         }
         return new HashMap<>();
     }
-
 }

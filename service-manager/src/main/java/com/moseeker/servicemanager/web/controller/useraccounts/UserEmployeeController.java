@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
@@ -12,6 +13,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.AppIdForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.ContributionDetail;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -381,7 +383,7 @@ public class UserEmployeeController {
 
     @RequestMapping(value="/v1.0/referral/conf", method = RequestMethod.GET)
     @ResponseBody
-    public String getReferralConf(HttpServletRequest request,  HttpServletResponse response) {
+    public String getReferralConf(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             int companyId = params.getInt("company_id", 0);
@@ -398,5 +400,32 @@ public class UserEmployeeController {
             logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
+    }
+
+    @RequestMapping(value="/v1/employee/{id}/count-upvote", method = RequestMethod.GET)
+    @ResponseBody
+    public String countUpVote(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        if(org.apache.commons.lang.StringUtils.isBlank(request.getParameter("appid"))) {
+            throw CommonException.PROGRAM_APPID_REQUIRED;
+        }
+        return com.moseeker.servicemanager.web.controller.Result.success(employeeService.countUpVote(id)).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/{id}/upvote/{colleague}", method = RequestMethod.POST)
+    @ResponseBody
+    public String upVote(@PathVariable int id, @PathVariable int colleague, HttpServletRequest request) throws Exception {
+
+        ParamUtils.parseRequestParam(request);
+        return com.moseeker.servicemanager.web.controller.Result.success(employeeService.upvote(id, colleague)).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/{id}/upvote/{colleague}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String cancelUpVote(@PathVariable int id, @PathVariable int colleague, HttpServletRequest request) throws Exception {
+
+        ParamUtils.parseRequestParam(request);
+        employeeService.removeUpvote(id, colleague);
+        return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
     }
 }

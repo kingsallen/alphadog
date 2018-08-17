@@ -72,6 +72,13 @@ public class UserEmployeeReferralPolicyDao extends DAOImpl<UserEmployeeReferralP
     }
 
     /**
+     * Fetch a unique record that has <code>employee_id = value</code>
+     */
+    public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeReferralPolicy fetchOneByEmployeeId(Integer value) {
+        return fetchOne(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.EMPLOYEE_ID, value);
+    }
+
+    /**
      * Fetch records that have <code>count IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeReferralPolicy> fetchByCount(Integer... values) {
