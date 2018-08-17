@@ -51,7 +51,7 @@ public class UpVoteEntity {
     public void cancelUpVote(UserEmployeeDO receiver, UserEmployeeDO sender) throws UserAccountException {
 
         UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getCompanyId(), receiver.getId(), sender.getId());
-        if (upVote != null) {
+        if (upVote == null) {
             throw UserAccountException.EMPLOYEE_NOT_UP_VOTE;
         }
         upVote.setCancelTime(new Timestamp(System.currentTimeMillis()));
