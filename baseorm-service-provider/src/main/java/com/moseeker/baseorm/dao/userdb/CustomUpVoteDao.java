@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.jooq.Param;
 import org.jooq.Record1;
 import org.jooq.impl.DefaultConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -21,6 +22,7 @@ import static org.jooq.impl.DSL.*;
 @Repository
 public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
 
+    @Autowired
     public CustomUpVoteDao(DefaultConfiguration configuration) {
         super(configuration);
     }
