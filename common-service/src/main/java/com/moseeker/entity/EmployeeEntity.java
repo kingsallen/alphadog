@@ -1059,4 +1059,7 @@ public class EmployeeEntity {
             return null;
         }
     }
+
+    public void recoverEmployee(int userId, int wechatId, long subscribeTime) {
+    }
 }

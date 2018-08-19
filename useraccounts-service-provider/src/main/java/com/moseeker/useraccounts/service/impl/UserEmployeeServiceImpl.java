@@ -375,7 +375,6 @@ public class UserEmployeeServiceImpl {
                 logger.error(e.getMessage(), e);
             }
 
-            String accessToken = "";
             Map<Integer, Integer> userWechatMap = new HashMap<>();
             Map<Integer, String> userWechatTokenMap = new HashMap<>();   //用户->员工->公众号
             if (wechatDOList != null && wechatDOList.size() > 0) {

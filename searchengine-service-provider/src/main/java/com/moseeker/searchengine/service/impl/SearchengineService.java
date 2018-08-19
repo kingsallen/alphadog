@@ -691,6 +691,13 @@ public class SearchengineService {
     }
 
 
+    /**
+     * todo searchengine-service依赖 common-service，并依赖 SearchengineEntity的buildSrtScript代码
+     * @param timspanc
+     * @param field
+     * @param sortOrder
+     * @return
+     */
     private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
         StringBuffer sb = new StringBuffer();
         sb.append("double score=0; awards=_source.awards;times=awards['" + timspanc + "'];if(times){award=doc['awards." + timspanc + "." + field + "'].value;if(award){score=award}}; return score");
