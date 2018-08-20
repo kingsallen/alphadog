@@ -8,12 +8,12 @@ import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeUpvot
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeUpvoteRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.exception.EmployeeException;
-import com.moseeker.entity.pojo.profile.info.Intention;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.domain.pojo.IntervalTime;
 import com.moseeker.useraccounts.domain.pojo.UpVoteData;
@@ -30,7 +30,10 @@ import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +41,7 @@ import java.util.stream.Collectors;
  * @Date: 2018/8/16
  */
 @Component
+@CounterIface
 public class UpVoteEntity {
 
     @Autowired
