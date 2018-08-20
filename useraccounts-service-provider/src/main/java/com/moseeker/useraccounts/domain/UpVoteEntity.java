@@ -113,6 +113,8 @@ public class UpVoteEntity {
      * @throws EmployeeException 异常信息
      */
     public int countRecentUpVote(int employeeId) throws EmployeeException {
+        //todo delete
+        logger.info("countRecentUpVote employeeId:{}", employeeId);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
         if (employeeDO == null) {
             throw EmployeeException.EMPLOYEE_NOT_EXISTS;
@@ -132,13 +134,17 @@ public class UpVoteEntity {
         LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
         if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            logger.info("now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000 ");
             viewTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         } else if (viewTime < lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            logger.info("viewTime < lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000 ");
             viewTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         }
         if (viewTime >= now) {
+            logger.info("viewTime >= now");
             return 0;
         }
+        logger.info("countRecentUpVote employeeId:{}, viewTime:{}, now:{}", employeeId, viewTime, now);
         return upVoteDao.countUpVote(employeeId, viewTime, now);
     }
 
