@@ -302,4 +302,6 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
                         DictCity.DICT_CITY.ENAME.getName(), cityNameList, ValueOp.IN));
         return getDatas(queryBuilder.buildQuery());
     }
+
+
 }
