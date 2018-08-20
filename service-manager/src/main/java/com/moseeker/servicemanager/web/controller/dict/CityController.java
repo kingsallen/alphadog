@@ -83,6 +83,7 @@ public class CityController {
             Response result = cityServices.getProvinceAndCity();
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
@@ -93,12 +94,13 @@ public class CityController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             String cityCodes= (String) data.get("codes");
             List<Integer> codeList=ParamUtils.convertIntList(cityCodes);
-            if(!StringUtils.isEmptyList(codeList)){
+            if(StringUtils.isEmptyList(codeList)){
                 return ResponseLogNotification.fail(request, "省份code不能为空");
             }
             Response result = cityServices.getCityByProvince(codeList);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            logger.error(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

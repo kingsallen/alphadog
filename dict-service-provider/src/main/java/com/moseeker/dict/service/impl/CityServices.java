@@ -161,13 +161,13 @@ public class CityServices {
     @CounterIface
     public Map<String,Object> getProvinceCity(){
         Map<String,Object> result=new HashMap<>();
-        Query query=new Query.QueryBuilder().where("is_using",1).buildQuery();
+        Query query=new Query.QueryBuilder().where("is_using",1).and(new Condition("level",1,ValueOp.GT)).buildQuery();
         List<Map<String,Object>> list=dao.getMaps(query);
         if(!StringUtils.isEmptyList(list)){
-            List<Map<String,Object>> hotCityList=this.getHotCity(list);
+            List<Map<String,Object>> hotCityList=this.getHotCity();
             result.put("hot_city",hotCityList);
             List<Integer> codeList=this.getOutCityCodeList();
-            List<Map<String,Object>> provinceList=this.getProvince(list,codeList);
+            List<Map<String,Object>> provinceList=this.getProvince(codeList);
             if(!StringUtils.isEmptyList(provinceList)){
                 List<Map<String,Object>> dataList=this.handlerProvinceCityData(provinceList,list,codeList);
                 result.put("city_data",dataList);
@@ -205,7 +205,7 @@ public class CityServices {
      判断查询的是否是省份
      */
     private boolean isProvice(List<Integer> code){
-        Query query=new Query.QueryBuilder().where("is_using",1).and("level",1).and(new Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
+        Query query=new Query.QueryBuilder().where("level",1).and(new Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
         int count=dao.getCount(query);
         if(count>0&&count==code.size()){
             return true;
@@ -232,7 +232,6 @@ public class CityServices {
         codeList.add(233333);
         codeList.add(310000);
         codeList.add(500000);
-        codeList.add(710000);
         codeList.add(810000);
         codeList.add(820000);
         return codeList;
@@ -241,27 +240,21 @@ public class CityServices {
     /*
      获取热门城市
      */
-    private List<Map<String,Object>> getHotCity(List<Map<String,Object>> list){
-        if(!StringUtils.isEmptyList(list)){
-            List<Map<String,Object>> result=new ArrayList<>();
-            for(Map<String,Object> data:list){
-                int isHot= (int) data.get("hot_city");
-                if(isHot==1){
-                    result.add(data);
-                }
-            }
-            return result;
-        }
-        return null;
+    private List<Map<String,Object>> getHotCity(){
+        Query query=new Query.QueryBuilder().where("is_using",1).and("hot_city",1).buildQuery();
+        List<Map<String,Object>> list=dao.getMaps(query);
+        return list;
     }
     /*
      获取省份城市数据
      */
-    private List<Map<String,Object>> getProvince(List<Map<String,Object>> list,List<Integer> codeList){
+    private List<Map<String,Object>> getProvince(List<Integer> codeList){
+        Query query=new Query.QueryBuilder().where("level",1).buildQuery();
+        List<Map<String,Object>> list=dao.getMaps(query);
         if(!StringUtils.isEmptyList(list)){
             List<Map<String,Object>> result=new ArrayList<>();
             for(Map<String,Object> data:list){
-                int level= (int) data.get("level");
+                byte level= (byte) data.get("level");
                 int code=(int) data.get("code");
                 if(level==1){
                     if(!codeList.contains(code)){

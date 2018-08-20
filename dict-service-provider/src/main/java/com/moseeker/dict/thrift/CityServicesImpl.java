@@ -35,7 +35,7 @@ public class CityServicesImpl implements Iface {
     @Override
     public Response getProvinceAndCity() throws TException {
         try{
-            Map<String,Object> result=new HashMap<>();
+            Map<String,Object> result=service.getProvinceCity();
             if(StringUtils.isEmptyMap(result)){
                 return ResponseUtils.success(new HashMap<>());
             }
