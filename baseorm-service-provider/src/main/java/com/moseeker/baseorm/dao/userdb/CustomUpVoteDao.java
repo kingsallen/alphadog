@@ -151,6 +151,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .fetchOne();
     }
 
@@ -160,6 +161,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .selectCount()
                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
                 .fetchOne().value1();
@@ -171,6 +173,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(lastFriday)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(currentFriday)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .fetchOne()
                 .value1();
     }
@@ -180,6 +183,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .limit(0,size)
                 .fetch();
     }
@@ -189,6 +193,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .fetch();
         if (result != null && result.size() > 0) {
             return result
@@ -210,6 +215,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
+                        .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .groupBy(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER)
                 .fetch();
         if (result != null && result.size() > 0) {
