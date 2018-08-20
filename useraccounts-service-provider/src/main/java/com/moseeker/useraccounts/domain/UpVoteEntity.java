@@ -13,6 +13,7 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.useraccounts.domain.pojo.UpVoteData;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,7 @@ import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -147,16 +147,16 @@ public class UpVoteEntity {
         }
         long now = System.currentTimeMillis();
         LocalDateTime nowLocalDateTime = LocalDateTime.now();
-        LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
         long endTime;
-        if (now > lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
-            endTime = lastFriday.plusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            endTime = currentFriday.plusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         } else {
-            endTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+            endTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         }
 
         //计算过期时间
-        int ttl = (int) ((now-endTime)/1000);
+        int ttl = (int) ((endTime-now)/1000);
 
         client.set(AppId.APPID_ALPHADOG.getValue(), Constant.LEADER_BOARD_UPVOTE_COUNT, String.valueOf(employeeId),
                 "", String.valueOf(viewTime), ttl);
@@ -168,11 +168,11 @@ public class UpVoteEntity {
     public void clearUpVoteWeekly() {
         LocalDateTime nowLocalDateTime = LocalDateTime.now();
         LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        long currentFridayTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        long currentFridayTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000;
         LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        long lastFridayTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        long lastFridayTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000;
 
-        if (nowLocalDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond() >= currentFridayTime) {
+        if (System.currentTimeMillis() >= currentFridayTime) {
             ThreadPool threadPool = ThreadPool.Instance;
             threadPool.startTast(() -> {
                 int count = upVoteDao.count(lastFridayTime, currentFridayTime);
@@ -211,7 +211,46 @@ public class UpVoteEntity {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(System.currentTimeMillis());
+    /**
+     * 查找点赞记录
+     * @param sender 点赞人员工编号
+     * @param receiverIdList 被点赞人员工编号
+     */
+    public List<UpVoteData> fetchUpVote(int sender, List<Integer> receiverIdList) {
+        List<UserEmployeeUpvote> upVoteList = upVoteDao.fetchBySenderAndReceiverList(sender, receiverIdList);
+
+        long now = System.currentTimeMillis();
+        LocalDateTime nowLocalDateTime = LocalDateTime.now();
+        LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        long endTime;
+        long startTime;
+        if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            startTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+            endTime = currentFriday.plusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+        } else {
+            startTime = currentFriday.minusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+            endTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+        }
+        Map<Integer, Integer> upVoteCount = upVoteDao.countUpVoteByReceiverIdList(receiverIdList, startTime, endTime);
+
+        return receiverIdList.stream().map(receiver -> {
+            UpVoteData upVoteData1 = new UpVoteData();
+            upVoteData1.setReceiver(receiver);
+            if (upVoteList != null && upVoteList.size() > 0) {
+                Optional<UserEmployeeUpvote> upvoteOptional = upVoteList
+                        .stream()
+                        .filter(userEmployeeUpvote -> userEmployeeUpvote.getReceiver() == receiver)
+                        .findAny();
+                if (upvoteOptional.isPresent()) {
+                    upVoteData1.setUpVote(true);
+                }
+            }
+            Integer count = upVoteCount.get(receiver);
+            if (count != null) {
+                upVoteData1.setReceiverUpVoteCount(count);
+            }
+
+            return upVoteData1;
+        }).collect(Collectors.toList());
     }
 }
