@@ -137,6 +137,11 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
+	public int countLeaderBoard(List<Integer> companyIds, String timespan, int employeeId) throws BIZException, TException {
+		return service.countLeaderBoard(companyIds, timespan);
+	}
+
+	@Override
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws BIZException,TException {
 		try {
 			return service.updateEmployeeAwards(employeeIds);

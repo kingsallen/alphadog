@@ -26,6 +26,8 @@ public class SearchengineServices {
 
     public com.moseeker.thrift.gen.common.struct.Response listLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan, int employeeId, int pageNum, int pageSize) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public int countLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
     public com.moseeker.thrift.gen.common.struct.Response updateEmployeeAwards(java.util.List<java.lang.Integer> employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response deleteEmployeeDO(java.util.List<java.lang.Integer> employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
@@ -75,6 +77,8 @@ public class SearchengineServices {
     public void queryAwardRankingInWx(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan, int employeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void listLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan, int employeeId, int pageNum, int pageSize, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+
+    public void countLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
     public void updateEmployeeAwards(java.util.List<java.lang.Integer> employeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -356,6 +360,33 @@ public class SearchengineServices {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "listLeaderBoard failed: unknown result");
+    }
+
+    public int countLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_countLeaderBoard(companyIds, timespan);
+      return recv_countLeaderBoard();
+    }
+
+    public void send_countLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan) throws org.apache.thrift.TException
+    {
+      countLeaderBoard_args args = new countLeaderBoard_args();
+      args.setCompanyIds(companyIds);
+      args.setTimespan(timespan);
+      sendBase("countLeaderBoard", args);
+    }
+
+    public int recv_countLeaderBoard() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      countLeaderBoard_result result = new countLeaderBoard_result();
+      receiveBase(result, "countLeaderBoard");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
+      if (result.e != null) {
+        throw result.e;
+      }
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "countLeaderBoard failed: unknown result");
     }
 
     public com.moseeker.thrift.gen.common.struct.Response updateEmployeeAwards(java.util.List<java.lang.Integer> employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
@@ -1169,6 +1200,41 @@ public class SearchengineServices {
       }
     }
 
+    public void countLeaderBoard(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      countLeaderBoard_call method_call = new countLeaderBoard_call(companyIds, timespan, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class countLeaderBoard_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.Integer> {
+      private java.util.List<java.lang.Integer> companyIds;
+      private java.lang.String timespan;
+      public countLeaderBoard_call(java.util.List<java.lang.Integer> companyIds, java.lang.String timespan, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.companyIds = companyIds;
+        this.timespan = timespan;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("countLeaderBoard", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        countLeaderBoard_args args = new countLeaderBoard_args();
+        args.setCompanyIds(companyIds);
+        args.setTimespan(timespan);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public java.lang.Integer getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return (new Client(prot)).recv_countLeaderBoard();
+      }
+    }
+
     public void updateEmployeeAwards(java.util.List<java.lang.Integer> employeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       updateEmployeeAwards_call method_call = new updateEmployeeAwards_call(employeeId, resultHandler, this, ___protocolFactory, ___transport);
@@ -1755,6 +1821,7 @@ public class SearchengineServices {
       processMap.put("queryAwardRanking", new queryAwardRanking());
       processMap.put("queryAwardRankingInWx", new queryAwardRankingInWx());
       processMap.put("listLeaderBoard", new listLeaderBoard());
+      processMap.put("countLeaderBoard", new countLeaderBoard());
       processMap.put("updateEmployeeAwards", new updateEmployeeAwards());
       processMap.put("deleteEmployeeDO", new deleteEmployeeDO());
       processMap.put("searchPositionSuggest", new searchPositionSuggest());
@@ -1935,6 +2002,31 @@ public class SearchengineServices {
         listLeaderBoard_result result = new listLeaderBoard_result();
         try {
           result.success = iface.listLeaderBoard(args.companyIds, args.timespan, args.employeeId, args.pageNum, args.pageSize);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
+    public static class countLeaderBoard<I extends Iface> extends org.apache.thrift.ProcessFunction<I, countLeaderBoard_args> {
+      public countLeaderBoard() {
+        super("countLeaderBoard");
+      }
+
+      public countLeaderBoard_args getEmptyArgsInstance() {
+        return new countLeaderBoard_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public countLeaderBoard_result getResult(I iface, countLeaderBoard_args args) throws org.apache.thrift.TException {
+        countLeaderBoard_result result = new countLeaderBoard_result();
+        try {
+          result.success = iface.countLeaderBoard(args.companyIds, args.timespan);
+          result.setSuccessIsSet(true);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -2344,6 +2436,7 @@ public class SearchengineServices {
       processMap.put("queryAwardRanking", new queryAwardRanking());
       processMap.put("queryAwardRankingInWx", new queryAwardRankingInWx());
       processMap.put("listLeaderBoard", new listLeaderBoard());
+      processMap.put("countLeaderBoard", new countLeaderBoard());
       processMap.put("updateEmployeeAwards", new updateEmployeeAwards());
       processMap.put("deleteEmployeeDO", new deleteEmployeeDO());
       processMap.put("searchPositionSuggest", new searchPositionSuggest());
@@ -2815,6 +2908,72 @@ public class SearchengineServices {
 
       public void start(I iface, listLeaderBoard_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
         iface.listLeaderBoard(args.companyIds, args.timespan, args.employeeId, args.pageNum, args.pageSize,resultHandler);
+      }
+    }
+
+    public static class countLeaderBoard<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, countLeaderBoard_args, java.lang.Integer> {
+      public countLeaderBoard() {
+        super("countLeaderBoard");
+      }
+
+      public countLeaderBoard_args getEmptyArgsInstance() {
+        return new countLeaderBoard_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer>() { 
+          public void onComplete(java.lang.Integer o) {
+            countLeaderBoard_result result = new countLeaderBoard_result();
+            result.success = o;
+            result.setSuccessIsSet(true);
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            countLeaderBoard_result result = new countLeaderBoard_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, countLeaderBoard_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
+        iface.countLeaderBoard(args.companyIds, args.timespan,resultHandler);
       }
     }
 
@@ -14502,6 +14661,987 @@ public class SearchengineServices {
     }
   }
 
+  public static class countLeaderBoard_args implements org.apache.thrift.TBase<countLeaderBoard_args, countLeaderBoard_args._Fields>, java.io.Serializable, Cloneable, Comparable<countLeaderBoard_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("countLeaderBoard_args");
+
+    private static final org.apache.thrift.protocol.TField COMPANY_IDS_FIELD_DESC = new org.apache.thrift.protocol.TField("companyIds", org.apache.thrift.protocol.TType.LIST, (short)1);
+    private static final org.apache.thrift.protocol.TField TIMESPAN_FIELD_DESC = new org.apache.thrift.protocol.TField("timespan", org.apache.thrift.protocol.TType.STRING, (short)2);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new countLeaderBoard_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new countLeaderBoard_argsTupleSchemeFactory();
+
+    public java.util.List<java.lang.Integer> companyIds; // required
+    public java.lang.String timespan; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      COMPANY_IDS((short)1, "companyIds"),
+      TIMESPAN((short)2, "timespan");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // COMPANY_IDS
+            return COMPANY_IDS;
+          case 2: // TIMESPAN
+            return TIMESPAN;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.COMPANY_IDS, new org.apache.thrift.meta_data.FieldMetaData("companyIds", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.TIMESPAN, new org.apache.thrift.meta_data.FieldMetaData("timespan", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(countLeaderBoard_args.class, metaDataMap);
+    }
+
+    public countLeaderBoard_args() {
+    }
+
+    public countLeaderBoard_args(
+      java.util.List<java.lang.Integer> companyIds,
+      java.lang.String timespan)
+    {
+      this();
+      this.companyIds = companyIds;
+      this.timespan = timespan;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public countLeaderBoard_args(countLeaderBoard_args other) {
+      if (other.isSetCompanyIds()) {
+        java.util.List<java.lang.Integer> __this__companyIds = new java.util.ArrayList<java.lang.Integer>(other.companyIds);
+        this.companyIds = __this__companyIds;
+      }
+      if (other.isSetTimespan()) {
+        this.timespan = other.timespan;
+      }
+    }
+
+    public countLeaderBoard_args deepCopy() {
+      return new countLeaderBoard_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.companyIds = null;
+      this.timespan = null;
+    }
+
+    public int getCompanyIdsSize() {
+      return (this.companyIds == null) ? 0 : this.companyIds.size();
+    }
+
+    public java.util.Iterator<java.lang.Integer> getCompanyIdsIterator() {
+      return (this.companyIds == null) ? null : this.companyIds.iterator();
+    }
+
+    public void addToCompanyIds(int elem) {
+      if (this.companyIds == null) {
+        this.companyIds = new java.util.ArrayList<java.lang.Integer>();
+      }
+      this.companyIds.add(elem);
+    }
+
+    public java.util.List<java.lang.Integer> getCompanyIds() {
+      return this.companyIds;
+    }
+
+    public countLeaderBoard_args setCompanyIds(java.util.List<java.lang.Integer> companyIds) {
+      this.companyIds = companyIds;
+      return this;
+    }
+
+    public void unsetCompanyIds() {
+      this.companyIds = null;
+    }
+
+    /** Returns true if field companyIds is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompanyIds() {
+      return this.companyIds != null;
+    }
+
+    public void setCompanyIdsIsSet(boolean value) {
+      if (!value) {
+        this.companyIds = null;
+      }
+    }
+
+    public java.lang.String getTimespan() {
+      return this.timespan;
+    }
+
+    public countLeaderBoard_args setTimespan(java.lang.String timespan) {
+      this.timespan = timespan;
+      return this;
+    }
+
+    public void unsetTimespan() {
+      this.timespan = null;
+    }
+
+    /** Returns true if field timespan is set (has been assigned a value) and false otherwise */
+    public boolean isSetTimespan() {
+      return this.timespan != null;
+    }
+
+    public void setTimespanIsSet(boolean value) {
+      if (!value) {
+        this.timespan = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case COMPANY_IDS:
+        if (value == null) {
+          unsetCompanyIds();
+        } else {
+          setCompanyIds((java.util.List<java.lang.Integer>)value);
+        }
+        break;
+
+      case TIMESPAN:
+        if (value == null) {
+          unsetTimespan();
+        } else {
+          setTimespan((java.lang.String)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case COMPANY_IDS:
+        return getCompanyIds();
+
+      case TIMESPAN:
+        return getTimespan();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case COMPANY_IDS:
+        return isSetCompanyIds();
+      case TIMESPAN:
+        return isSetTimespan();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof countLeaderBoard_args)
+        return this.equals((countLeaderBoard_args)that);
+      return false;
+    }
+
+    public boolean equals(countLeaderBoard_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_companyIds = true && this.isSetCompanyIds();
+      boolean that_present_companyIds = true && that.isSetCompanyIds();
+      if (this_present_companyIds || that_present_companyIds) {
+        if (!(this_present_companyIds && that_present_companyIds))
+          return false;
+        if (!this.companyIds.equals(that.companyIds))
+          return false;
+      }
+
+      boolean this_present_timespan = true && this.isSetTimespan();
+      boolean that_present_timespan = true && that.isSetTimespan();
+      if (this_present_timespan || that_present_timespan) {
+        if (!(this_present_timespan && that_present_timespan))
+          return false;
+        if (!this.timespan.equals(that.timespan))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetCompanyIds()) ? 131071 : 524287);
+      if (isSetCompanyIds())
+        hashCode = hashCode * 8191 + companyIds.hashCode();
+
+      hashCode = hashCode * 8191 + ((isSetTimespan()) ? 131071 : 524287);
+      if (isSetTimespan())
+        hashCode = hashCode * 8191 + timespan.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(countLeaderBoard_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetCompanyIds()).compareTo(other.isSetCompanyIds());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompanyIds()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.companyIds, other.companyIds);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetTimespan()).compareTo(other.isSetTimespan());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetTimespan()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.timespan, other.timespan);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("countLeaderBoard_args(");
+      boolean first = true;
+
+      sb.append("companyIds:");
+      if (this.companyIds == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.companyIds);
+      }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("timespan:");
+      if (this.timespan == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.timespan);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class countLeaderBoard_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public countLeaderBoard_argsStandardScheme getScheme() {
+        return new countLeaderBoard_argsStandardScheme();
+      }
+    }
+
+    private static class countLeaderBoard_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<countLeaderBoard_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, countLeaderBoard_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // COMPANY_IDS
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list24 = iprot.readListBegin();
+                  struct.companyIds = new java.util.ArrayList<java.lang.Integer>(_list24.size);
+                  int _elem25;
+                  for (int _i26 = 0; _i26 < _list24.size; ++_i26)
+                  {
+                    _elem25 = iprot.readI32();
+                    struct.companyIds.add(_elem25);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setCompanyIdsIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 2: // TIMESPAN
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.timespan = iprot.readString();
+                struct.setTimespanIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, countLeaderBoard_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.companyIds != null) {
+          oprot.writeFieldBegin(COMPANY_IDS_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.companyIds.size()));
+            for (int _iter27 : struct.companyIds)
+            {
+              oprot.writeI32(_iter27);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        if (struct.timespan != null) {
+          oprot.writeFieldBegin(TIMESPAN_FIELD_DESC);
+          oprot.writeString(struct.timespan);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class countLeaderBoard_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public countLeaderBoard_argsTupleScheme getScheme() {
+        return new countLeaderBoard_argsTupleScheme();
+      }
+    }
+
+    private static class countLeaderBoard_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<countLeaderBoard_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetCompanyIds()) {
+          optionals.set(0);
+        }
+        if (struct.isSetTimespan()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetCompanyIds()) {
+          {
+            oprot.writeI32(struct.companyIds.size());
+            for (int _iter28 : struct.companyIds)
+            {
+              oprot.writeI32(_iter28);
+            }
+          }
+        }
+        if (struct.isSetTimespan()) {
+          oprot.writeString(struct.timespan);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TList _list29 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.companyIds = new java.util.ArrayList<java.lang.Integer>(_list29.size);
+            int _elem30;
+            for (int _i31 = 0; _i31 < _list29.size; ++_i31)
+            {
+              _elem30 = iprot.readI32();
+              struct.companyIds.add(_elem30);
+            }
+          }
+          struct.setCompanyIdsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.timespan = iprot.readString();
+          struct.setTimespanIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class countLeaderBoard_result implements org.apache.thrift.TBase<countLeaderBoard_result, countLeaderBoard_result._Fields>, java.io.Serializable, Cloneable, Comparable<countLeaderBoard_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("countLeaderBoard_result");
+
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.I32, (short)0);
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new countLeaderBoard_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new countLeaderBoard_resultTupleSchemeFactory();
+
+    public int success; // required
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __SUCCESS_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(countLeaderBoard_result.class, metaDataMap);
+    }
+
+    public countLeaderBoard_result() {
+    }
+
+    public countLeaderBoard_result(
+      int success,
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.success = success;
+      setSuccessIsSet(true);
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public countLeaderBoard_result(countLeaderBoard_result other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.success = other.success;
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public countLeaderBoard_result deepCopy() {
+      return new countLeaderBoard_result(this);
+    }
+
+    @Override
+    public void clear() {
+      setSuccessIsSet(false);
+      this.success = 0;
+      this.e = null;
+    }
+
+    public int getSuccess() {
+      return this.success;
+    }
+
+    public countLeaderBoard_result setSuccess(int success) {
+      this.success = success;
+      setSuccessIsSet(true);
+      return this;
+    }
+
+    public void unsetSuccess() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __SUCCESS_ISSET_ID);
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __SUCCESS_ISSET_ID);
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public countLeaderBoard_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((java.lang.Integer)value);
+        }
+        break;
+
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof countLeaderBoard_result)
+        return this.equals((countLeaderBoard_result)that);
+      return false;
+    }
+
+    public boolean equals(countLeaderBoard_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_success = true;
+      boolean that_present_success = true;
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (this.success != that.success)
+          return false;
+      }
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + success;
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(countLeaderBoard_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("countLeaderBoard_result(");
+      boolean first = true;
+
+      sb.append("success:");
+      sb.append(this.success);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class countLeaderBoard_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public countLeaderBoard_resultStandardScheme getScheme() {
+        return new countLeaderBoard_resultStandardScheme();
+      }
+    }
+
+    private static class countLeaderBoard_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<countLeaderBoard_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, countLeaderBoard_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.success = iprot.readI32();
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, countLeaderBoard_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.isSetSuccess()) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          oprot.writeI32(struct.success);
+          oprot.writeFieldEnd();
+        }
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class countLeaderBoard_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public countLeaderBoard_resultTupleScheme getScheme() {
+        return new countLeaderBoard_resultTupleScheme();
+      }
+    }
+
+    private static class countLeaderBoard_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<countLeaderBoard_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetSuccess()) {
+          optionals.set(0);
+        }
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          oprot.writeI32(struct.success);
+        }
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, countLeaderBoard_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(2);
+        if (incoming.get(0)) {
+          struct.success = iprot.readI32();
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
   public static class updateEmployeeAwards_args implements org.apache.thrift.TBase<updateEmployeeAwards_args, updateEmployeeAwards_args._Fields>, java.io.Serializable, Cloneable, Comparable<updateEmployeeAwards_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("updateEmployeeAwards_args");
 
@@ -14813,13 +15953,13 @@ public class SearchengineServices {
             case 1: // EMPLOYEE_ID
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list24 = iprot.readListBegin();
-                  struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list24.size);
-                  int _elem25;
-                  for (int _i26 = 0; _i26 < _list24.size; ++_i26)
+                  org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
+                  struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list32.size);
+                  int _elem33;
+                  for (int _i34 = 0; _i34 < _list32.size; ++_i34)
                   {
-                    _elem25 = iprot.readI32();
-                    struct.employeeId.add(_elem25);
+                    _elem33 = iprot.readI32();
+                    struct.employeeId.add(_elem33);
                   }
                   iprot.readListEnd();
                 }
@@ -14847,9 +15987,9 @@ public class SearchengineServices {
           oprot.writeFieldBegin(EMPLOYEE_ID_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.employeeId.size()));
-            for (int _iter27 : struct.employeeId)
+            for (int _iter35 : struct.employeeId)
             {
-              oprot.writeI32(_iter27);
+              oprot.writeI32(_iter35);
             }
             oprot.writeListEnd();
           }
@@ -14880,9 +16020,9 @@ public class SearchengineServices {
         if (struct.isSetEmployeeId()) {
           {
             oprot.writeI32(struct.employeeId.size());
-            for (int _iter28 : struct.employeeId)
+            for (int _iter36 : struct.employeeId)
             {
-              oprot.writeI32(_iter28);
+              oprot.writeI32(_iter36);
             }
           }
         }
@@ -14894,13 +16034,13 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list29 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list29.size);
-            int _elem30;
-            for (int _i31 = 0; _i31 < _list29.size; ++_i31)
+            org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list37.size);
+            int _elem38;
+            for (int _i39 = 0; _i39 < _list37.size; ++_i39)
             {
-              _elem30 = iprot.readI32();
-              struct.employeeId.add(_elem30);
+              _elem38 = iprot.readI32();
+              struct.employeeId.add(_elem38);
             }
           }
           struct.setEmployeeIdIsSet(true);
@@ -15697,13 +16837,13 @@ public class SearchengineServices {
             case 1: // EMPLOYEE_ID
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list32 = iprot.readListBegin();
-                  struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list32.size);
-                  int _elem33;
-                  for (int _i34 = 0; _i34 < _list32.size; ++_i34)
+                  org.apache.thrift.protocol.TList _list40 = iprot.readListBegin();
+                  struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list40.size);
+                  int _elem41;
+                  for (int _i42 = 0; _i42 < _list40.size; ++_i42)
                   {
-                    _elem33 = iprot.readI32();
-                    struct.employeeId.add(_elem33);
+                    _elem41 = iprot.readI32();
+                    struct.employeeId.add(_elem41);
                   }
                   iprot.readListEnd();
                 }
@@ -15731,9 +16871,9 @@ public class SearchengineServices {
           oprot.writeFieldBegin(EMPLOYEE_ID_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.employeeId.size()));
-            for (int _iter35 : struct.employeeId)
+            for (int _iter43 : struct.employeeId)
             {
-              oprot.writeI32(_iter35);
+              oprot.writeI32(_iter43);
             }
             oprot.writeListEnd();
           }
@@ -15764,9 +16904,9 @@ public class SearchengineServices {
         if (struct.isSetEmployeeId()) {
           {
             oprot.writeI32(struct.employeeId.size());
-            for (int _iter36 : struct.employeeId)
+            for (int _iter44 : struct.employeeId)
             {
-              oprot.writeI32(_iter36);
+              oprot.writeI32(_iter44);
             }
           }
         }
@@ -15778,13 +16918,13 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list37 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list37.size);
-            int _elem38;
-            for (int _i39 = 0; _i39 < _list37.size; ++_i39)
+            org.apache.thrift.protocol.TList _list45 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.employeeId = new java.util.ArrayList<java.lang.Integer>(_list45.size);
+            int _elem46;
+            for (int _i47 = 0; _i47 < _list45.size; ++_i47)
             {
-              _elem38 = iprot.readI32();
-              struct.employeeId.add(_elem38);
+              _elem46 = iprot.readI32();
+              struct.employeeId.add(_elem46);
             }
           }
           struct.setEmployeeIdIsSet(true);
@@ -16578,15 +17718,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map40 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map40.size);
-                  java.lang.String _key41;
-                  java.lang.String _val42;
-                  for (int _i43 = 0; _i43 < _map40.size; ++_i43)
+                  org.apache.thrift.protocol.TMap _map48 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map48.size);
+                  java.lang.String _key49;
+                  java.lang.String _val50;
+                  for (int _i51 = 0; _i51 < _map48.size; ++_i51)
                   {
-                    _key41 = iprot.readString();
-                    _val42 = iprot.readString();
-                    struct.params.put(_key41, _val42);
+                    _key49 = iprot.readString();
+                    _val50 = iprot.readString();
+                    struct.params.put(_key49, _val50);
                   }
                   iprot.readMapEnd();
                 }
@@ -16614,10 +17754,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter44 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter52 : struct.params.entrySet())
             {
-              oprot.writeString(_iter44.getKey());
-              oprot.writeString(_iter44.getValue());
+              oprot.writeString(_iter52.getKey());
+              oprot.writeString(_iter52.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -16648,10 +17788,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter45 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter53 : struct.params.entrySet())
             {
-              oprot.writeString(_iter45.getKey());
-              oprot.writeString(_iter45.getValue());
+              oprot.writeString(_iter53.getKey());
+              oprot.writeString(_iter53.getValue());
             }
           }
         }
@@ -16663,15 +17803,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map46 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map46.size);
-            java.lang.String _key47;
-            java.lang.String _val48;
-            for (int _i49 = 0; _i49 < _map46.size; ++_i49)
+            org.apache.thrift.protocol.TMap _map54 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map54.size);
+            java.lang.String _key55;
+            java.lang.String _val56;
+            for (int _i57 = 0; _i57 < _map54.size; ++_i57)
             {
-              _key47 = iprot.readString();
-              _val48 = iprot.readString();
-              struct.params.put(_key47, _val48);
+              _key55 = iprot.readString();
+              _val56 = iprot.readString();
+              struct.params.put(_key55, _val56);
             }
           }
           struct.setParamsIsSet(true);
@@ -17465,15 +18605,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map50 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map50.size);
-                  java.lang.String _key51;
-                  java.lang.String _val52;
-                  for (int _i53 = 0; _i53 < _map50.size; ++_i53)
+                  org.apache.thrift.protocol.TMap _map58 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map58.size);
+                  java.lang.String _key59;
+                  java.lang.String _val60;
+                  for (int _i61 = 0; _i61 < _map58.size; ++_i61)
                   {
-                    _key51 = iprot.readString();
-                    _val52 = iprot.readString();
-                    struct.params.put(_key51, _val52);
+                    _key59 = iprot.readString();
+                    _val60 = iprot.readString();
+                    struct.params.put(_key59, _val60);
                   }
                   iprot.readMapEnd();
                 }
@@ -17501,10 +18641,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter54 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter62 : struct.params.entrySet())
             {
-              oprot.writeString(_iter54.getKey());
-              oprot.writeString(_iter54.getValue());
+              oprot.writeString(_iter62.getKey());
+              oprot.writeString(_iter62.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -17535,10 +18675,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter55 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter63 : struct.params.entrySet())
             {
-              oprot.writeString(_iter55.getKey());
-              oprot.writeString(_iter55.getValue());
+              oprot.writeString(_iter63.getKey());
+              oprot.writeString(_iter63.getValue());
             }
           }
         }
@@ -17550,15 +18690,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map56 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map56.size);
-            java.lang.String _key57;
-            java.lang.String _val58;
-            for (int _i59 = 0; _i59 < _map56.size; ++_i59)
+            org.apache.thrift.protocol.TMap _map64 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map64.size);
+            java.lang.String _key65;
+            java.lang.String _val66;
+            for (int _i67 = 0; _i67 < _map64.size; ++_i67)
             {
-              _key57 = iprot.readString();
-              _val58 = iprot.readString();
-              struct.params.put(_key57, _val58);
+              _key65 = iprot.readString();
+              _val66 = iprot.readString();
+              struct.params.put(_key65, _val66);
             }
           }
           struct.setParamsIsSet(true);
@@ -18352,15 +19492,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map60 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map60.size);
-                  java.lang.String _key61;
-                  java.lang.String _val62;
-                  for (int _i63 = 0; _i63 < _map60.size; ++_i63)
+                  org.apache.thrift.protocol.TMap _map68 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map68.size);
+                  java.lang.String _key69;
+                  java.lang.String _val70;
+                  for (int _i71 = 0; _i71 < _map68.size; ++_i71)
                   {
-                    _key61 = iprot.readString();
-                    _val62 = iprot.readString();
-                    struct.params.put(_key61, _val62);
+                    _key69 = iprot.readString();
+                    _val70 = iprot.readString();
+                    struct.params.put(_key69, _val70);
                   }
                   iprot.readMapEnd();
                 }
@@ -18388,10 +19528,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter64 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter72 : struct.params.entrySet())
             {
-              oprot.writeString(_iter64.getKey());
-              oprot.writeString(_iter64.getValue());
+              oprot.writeString(_iter72.getKey());
+              oprot.writeString(_iter72.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -18422,10 +19562,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter65 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter73 : struct.params.entrySet())
             {
-              oprot.writeString(_iter65.getKey());
-              oprot.writeString(_iter65.getValue());
+              oprot.writeString(_iter73.getKey());
+              oprot.writeString(_iter73.getValue());
             }
           }
         }
@@ -18437,15 +19577,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map66 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map66.size);
-            java.lang.String _key67;
-            java.lang.String _val68;
-            for (int _i69 = 0; _i69 < _map66.size; ++_i69)
+            org.apache.thrift.protocol.TMap _map74 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map74.size);
+            java.lang.String _key75;
+            java.lang.String _val76;
+            for (int _i77 = 0; _i77 < _map74.size; ++_i77)
             {
-              _key67 = iprot.readString();
-              _val68 = iprot.readString();
-              struct.params.put(_key67, _val68);
+              _key75 = iprot.readString();
+              _val76 = iprot.readString();
+              struct.params.put(_key75, _val76);
             }
           }
           struct.setParamsIsSet(true);
@@ -19239,15 +20379,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map70 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map70.size);
-                  java.lang.String _key71;
-                  java.lang.String _val72;
-                  for (int _i73 = 0; _i73 < _map70.size; ++_i73)
+                  org.apache.thrift.protocol.TMap _map78 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map78.size);
+                  java.lang.String _key79;
+                  java.lang.String _val80;
+                  for (int _i81 = 0; _i81 < _map78.size; ++_i81)
                   {
-                    _key71 = iprot.readString();
-                    _val72 = iprot.readString();
-                    struct.params.put(_key71, _val72);
+                    _key79 = iprot.readString();
+                    _val80 = iprot.readString();
+                    struct.params.put(_key79, _val80);
                   }
                   iprot.readMapEnd();
                 }
@@ -19275,10 +20415,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter74 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter82 : struct.params.entrySet())
             {
-              oprot.writeString(_iter74.getKey());
-              oprot.writeString(_iter74.getValue());
+              oprot.writeString(_iter82.getKey());
+              oprot.writeString(_iter82.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -19309,10 +20449,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter75 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter83 : struct.params.entrySet())
             {
-              oprot.writeString(_iter75.getKey());
-              oprot.writeString(_iter75.getValue());
+              oprot.writeString(_iter83.getKey());
+              oprot.writeString(_iter83.getValue());
             }
           }
         }
@@ -19324,15 +20464,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map76 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map76.size);
-            java.lang.String _key77;
-            java.lang.String _val78;
-            for (int _i79 = 0; _i79 < _map76.size; ++_i79)
+            org.apache.thrift.protocol.TMap _map84 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map84.size);
+            java.lang.String _key85;
+            java.lang.String _val86;
+            for (int _i87 = 0; _i87 < _map84.size; ++_i87)
             {
-              _key77 = iprot.readString();
-              _val78 = iprot.readString();
-              struct.params.put(_key77, _val78);
+              _key85 = iprot.readString();
+              _val86 = iprot.readString();
+              struct.params.put(_key85, _val86);
             }
           }
           struct.setParamsIsSet(true);
@@ -22605,15 +23745,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map80 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map80.size);
-                  java.lang.String _key81;
-                  java.lang.String _val82;
-                  for (int _i83 = 0; _i83 < _map80.size; ++_i83)
+                  org.apache.thrift.protocol.TMap _map88 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map88.size);
+                  java.lang.String _key89;
+                  java.lang.String _val90;
+                  for (int _i91 = 0; _i91 < _map88.size; ++_i91)
                   {
-                    _key81 = iprot.readString();
-                    _val82 = iprot.readString();
-                    struct.params.put(_key81, _val82);
+                    _key89 = iprot.readString();
+                    _val90 = iprot.readString();
+                    struct.params.put(_key89, _val90);
                   }
                   iprot.readMapEnd();
                 }
@@ -22641,10 +23781,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter84 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter92 : struct.params.entrySet())
             {
-              oprot.writeString(_iter84.getKey());
-              oprot.writeString(_iter84.getValue());
+              oprot.writeString(_iter92.getKey());
+              oprot.writeString(_iter92.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -22675,10 +23815,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter85 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter93 : struct.params.entrySet())
             {
-              oprot.writeString(_iter85.getKey());
-              oprot.writeString(_iter85.getValue());
+              oprot.writeString(_iter93.getKey());
+              oprot.writeString(_iter93.getValue());
             }
           }
         }
@@ -22690,15 +23830,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map86 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map86.size);
-            java.lang.String _key87;
-            java.lang.String _val88;
-            for (int _i89 = 0; _i89 < _map86.size; ++_i89)
+            org.apache.thrift.protocol.TMap _map94 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map94.size);
+            java.lang.String _key95;
+            java.lang.String _val96;
+            for (int _i97 = 0; _i97 < _map94.size; ++_i97)
             {
-              _key87 = iprot.readString();
-              _val88 = iprot.readString();
-              struct.params.put(_key87, _val88);
+              _key95 = iprot.readString();
+              _val96 = iprot.readString();
+              struct.params.put(_key95, _val96);
             }
           }
           struct.setParamsIsSet(true);
@@ -23492,15 +24632,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map90 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map90.size);
-                  java.lang.String _key91;
-                  java.lang.String _val92;
-                  for (int _i93 = 0; _i93 < _map90.size; ++_i93)
+                  org.apache.thrift.protocol.TMap _map98 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map98.size);
+                  java.lang.String _key99;
+                  java.lang.String _val100;
+                  for (int _i101 = 0; _i101 < _map98.size; ++_i101)
                   {
-                    _key91 = iprot.readString();
-                    _val92 = iprot.readString();
-                    struct.params.put(_key91, _val92);
+                    _key99 = iprot.readString();
+                    _val100 = iprot.readString();
+                    struct.params.put(_key99, _val100);
                   }
                   iprot.readMapEnd();
                 }
@@ -23528,10 +24668,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter94 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter102 : struct.params.entrySet())
             {
-              oprot.writeString(_iter94.getKey());
-              oprot.writeString(_iter94.getValue());
+              oprot.writeString(_iter102.getKey());
+              oprot.writeString(_iter102.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -23562,10 +24702,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter95 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter103 : struct.params.entrySet())
             {
-              oprot.writeString(_iter95.getKey());
-              oprot.writeString(_iter95.getValue());
+              oprot.writeString(_iter103.getKey());
+              oprot.writeString(_iter103.getValue());
             }
           }
         }
@@ -23577,15 +24717,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map96 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map96.size);
-            java.lang.String _key97;
-            java.lang.String _val98;
-            for (int _i99 = 0; _i99 < _map96.size; ++_i99)
+            org.apache.thrift.protocol.TMap _map104 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map104.size);
+            java.lang.String _key105;
+            java.lang.String _val106;
+            for (int _i107 = 0; _i107 < _map104.size; ++_i107)
             {
-              _key97 = iprot.readString();
-              _val98 = iprot.readString();
-              struct.params.put(_key97, _val98);
+              _key105 = iprot.readString();
+              _val106 = iprot.readString();
+              struct.params.put(_key105, _val106);
             }
           }
           struct.setParamsIsSet(true);
@@ -23990,13 +25130,13 @@ public class SearchengineServices {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list100 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<java.lang.Integer>(_list100.size);
-                  int _elem101;
-                  for (int _i102 = 0; _i102 < _list100.size; ++_i102)
+                  org.apache.thrift.protocol.TList _list108 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<java.lang.Integer>(_list108.size);
+                  int _elem109;
+                  for (int _i110 = 0; _i110 < _list108.size; ++_i110)
                   {
-                    _elem101 = iprot.readI32();
-                    struct.success.add(_elem101);
+                    _elem109 = iprot.readI32();
+                    struct.success.add(_elem109);
                   }
                   iprot.readListEnd();
                 }
@@ -24033,9 +25173,9 @@ public class SearchengineServices {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.success.size()));
-            for (int _iter103 : struct.success)
+            for (int _iter111 : struct.success)
             {
-              oprot.writeI32(_iter103);
+              oprot.writeI32(_iter111);
             }
             oprot.writeListEnd();
           }
@@ -24074,9 +25214,9 @@ public class SearchengineServices {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (int _iter104 : struct.success)
+            for (int _iter112 : struct.success)
             {
-              oprot.writeI32(_iter104);
+              oprot.writeI32(_iter112);
             }
           }
         }
@@ -24091,13 +25231,13 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list105 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.success = new java.util.ArrayList<java.lang.Integer>(_list105.size);
-            int _elem106;
-            for (int _i107 = 0; _i107 < _list105.size; ++_i107)
+            org.apache.thrift.protocol.TList _list113 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.success = new java.util.ArrayList<java.lang.Integer>(_list113.size);
+            int _elem114;
+            for (int _i115 = 0; _i115 < _list113.size; ++_i115)
             {
-              _elem106 = iprot.readI32();
-              struct.success.add(_elem106);
+              _elem114 = iprot.readI32();
+              struct.success.add(_elem114);
             }
           }
           struct.setSuccessIsSet(true);
@@ -24423,15 +25563,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map108 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map108.size);
-                  java.lang.String _key109;
-                  java.lang.String _val110;
-                  for (int _i111 = 0; _i111 < _map108.size; ++_i111)
+                  org.apache.thrift.protocol.TMap _map116 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map116.size);
+                  java.lang.String _key117;
+                  java.lang.String _val118;
+                  for (int _i119 = 0; _i119 < _map116.size; ++_i119)
                   {
-                    _key109 = iprot.readString();
-                    _val110 = iprot.readString();
-                    struct.params.put(_key109, _val110);
+                    _key117 = iprot.readString();
+                    _val118 = iprot.readString();
+                    struct.params.put(_key117, _val118);
                   }
                   iprot.readMapEnd();
                 }
@@ -24459,10 +25599,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter112 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter120 : struct.params.entrySet())
             {
-              oprot.writeString(_iter112.getKey());
-              oprot.writeString(_iter112.getValue());
+              oprot.writeString(_iter120.getKey());
+              oprot.writeString(_iter120.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -24493,10 +25633,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter113 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter121 : struct.params.entrySet())
             {
-              oprot.writeString(_iter113.getKey());
-              oprot.writeString(_iter113.getValue());
+              oprot.writeString(_iter121.getKey());
+              oprot.writeString(_iter121.getValue());
             }
           }
         }
@@ -24508,15 +25648,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map114 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map114.size);
-            java.lang.String _key115;
-            java.lang.String _val116;
-            for (int _i117 = 0; _i117 < _map114.size; ++_i117)
+            org.apache.thrift.protocol.TMap _map122 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map122.size);
+            java.lang.String _key123;
+            java.lang.String _val124;
+            for (int _i125 = 0; _i125 < _map122.size; ++_i125)
             {
-              _key115 = iprot.readString();
-              _val116 = iprot.readString();
-              struct.params.put(_key115, _val116);
+              _key123 = iprot.readString();
+              _val124 = iprot.readString();
+              struct.params.put(_key123, _val124);
             }
           }
           struct.setParamsIsSet(true);
@@ -25303,15 +26443,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map118 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map118.size);
-                  java.lang.String _key119;
-                  java.lang.String _val120;
-                  for (int _i121 = 0; _i121 < _map118.size; ++_i121)
+                  org.apache.thrift.protocol.TMap _map126 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map126.size);
+                  java.lang.String _key127;
+                  java.lang.String _val128;
+                  for (int _i129 = 0; _i129 < _map126.size; ++_i129)
                   {
-                    _key119 = iprot.readString();
-                    _val120 = iprot.readString();
-                    struct.params.put(_key119, _val120);
+                    _key127 = iprot.readString();
+                    _val128 = iprot.readString();
+                    struct.params.put(_key127, _val128);
                   }
                   iprot.readMapEnd();
                 }
@@ -25339,10 +26479,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter122 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter130 : struct.params.entrySet())
             {
-              oprot.writeString(_iter122.getKey());
-              oprot.writeString(_iter122.getValue());
+              oprot.writeString(_iter130.getKey());
+              oprot.writeString(_iter130.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -25373,10 +26513,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter123 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter131 : struct.params.entrySet())
             {
-              oprot.writeString(_iter123.getKey());
-              oprot.writeString(_iter123.getValue());
+              oprot.writeString(_iter131.getKey());
+              oprot.writeString(_iter131.getValue());
             }
           }
         }
@@ -25388,15 +26528,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map124 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map124.size);
-            java.lang.String _key125;
-            java.lang.String _val126;
-            for (int _i127 = 0; _i127 < _map124.size; ++_i127)
+            org.apache.thrift.protocol.TMap _map132 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map132.size);
+            java.lang.String _key133;
+            java.lang.String _val134;
+            for (int _i135 = 0; _i135 < _map132.size; ++_i135)
             {
-              _key125 = iprot.readString();
-              _val126 = iprot.readString();
-              struct.params.put(_key125, _val126);
+              _key133 = iprot.readString();
+              _val134 = iprot.readString();
+              struct.params.put(_key133, _val134);
             }
           }
           struct.setParamsIsSet(true);
@@ -26346,25 +27486,25 @@ public class SearchengineServices {
             case 1: // FILTER_MAP_LIST
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list128 = iprot.readListBegin();
-                  struct.filterMapList = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list128.size);
-                  java.util.Map<java.lang.String,java.lang.String> _elem129;
-                  for (int _i130 = 0; _i130 < _list128.size; ++_i130)
+                  org.apache.thrift.protocol.TList _list136 = iprot.readListBegin();
+                  struct.filterMapList = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list136.size);
+                  java.util.Map<java.lang.String,java.lang.String> _elem137;
+                  for (int _i138 = 0; _i138 < _list136.size; ++_i138)
                   {
                     {
-                      org.apache.thrift.protocol.TMap _map131 = iprot.readMapBegin();
-                      _elem129 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map131.size);
-                      java.lang.String _key132;
-                      java.lang.String _val133;
-                      for (int _i134 = 0; _i134 < _map131.size; ++_i134)
+                      org.apache.thrift.protocol.TMap _map139 = iprot.readMapBegin();
+                      _elem137 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map139.size);
+                      java.lang.String _key140;
+                      java.lang.String _val141;
+                      for (int _i142 = 0; _i142 < _map139.size; ++_i142)
                       {
-                        _key132 = iprot.readString();
-                        _val133 = iprot.readString();
-                        _elem129.put(_key132, _val133);
+                        _key140 = iprot.readString();
+                        _val141 = iprot.readString();
+                        _elem137.put(_key140, _val141);
                       }
                       iprot.readMapEnd();
                     }
-                    struct.filterMapList.add(_elem129);
+                    struct.filterMapList.add(_elem137);
                   }
                   iprot.readListEnd();
                 }
@@ -26408,14 +27548,14 @@ public class SearchengineServices {
           oprot.writeFieldBegin(FILTER_MAP_LIST_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, struct.filterMapList.size()));
-            for (java.util.Map<java.lang.String,java.lang.String> _iter135 : struct.filterMapList)
+            for (java.util.Map<java.lang.String,java.lang.String> _iter143 : struct.filterMapList)
             {
               {
-                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, _iter135.size()));
-                for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter136 : _iter135.entrySet())
+                oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, _iter143.size()));
+                for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter144 : _iter143.entrySet())
                 {
-                  oprot.writeString(_iter136.getKey());
-                  oprot.writeString(_iter136.getValue());
+                  oprot.writeString(_iter144.getKey());
+                  oprot.writeString(_iter144.getValue());
                 }
                 oprot.writeMapEnd();
               }
@@ -26461,14 +27601,14 @@ public class SearchengineServices {
         if (struct.isSetFilterMapList()) {
           {
             oprot.writeI32(struct.filterMapList.size());
-            for (java.util.Map<java.lang.String,java.lang.String> _iter137 : struct.filterMapList)
+            for (java.util.Map<java.lang.String,java.lang.String> _iter145 : struct.filterMapList)
             {
               {
-                oprot.writeI32(_iter137.size());
-                for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter138 : _iter137.entrySet())
+                oprot.writeI32(_iter145.size());
+                for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter146 : _iter145.entrySet())
                 {
-                  oprot.writeString(_iter138.getKey());
-                  oprot.writeString(_iter138.getValue());
+                  oprot.writeString(_iter146.getKey());
+                  oprot.writeString(_iter146.getValue());
                 }
               }
             }
@@ -26488,24 +27628,24 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list139 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, iprot.readI32());
-            struct.filterMapList = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list139.size);
-            java.util.Map<java.lang.String,java.lang.String> _elem140;
-            for (int _i141 = 0; _i141 < _list139.size; ++_i141)
+            org.apache.thrift.protocol.TList _list147 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.MAP, iprot.readI32());
+            struct.filterMapList = new java.util.ArrayList<java.util.Map<java.lang.String,java.lang.String>>(_list147.size);
+            java.util.Map<java.lang.String,java.lang.String> _elem148;
+            for (int _i149 = 0; _i149 < _list147.size; ++_i149)
             {
               {
-                org.apache.thrift.protocol.TMap _map142 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-                _elem140 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map142.size);
-                java.lang.String _key143;
-                java.lang.String _val144;
-                for (int _i145 = 0; _i145 < _map142.size; ++_i145)
+                org.apache.thrift.protocol.TMap _map150 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+                _elem148 = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map150.size);
+                java.lang.String _key151;
+                java.lang.String _val152;
+                for (int _i153 = 0; _i153 < _map150.size; ++_i153)
                 {
-                  _key143 = iprot.readString();
-                  _val144 = iprot.readString();
-                  _elem140.put(_key143, _val144);
+                  _key151 = iprot.readString();
+                  _val152 = iprot.readString();
+                  _elem148.put(_key151, _val152);
                 }
               }
-              struct.filterMapList.add(_elem140);
+              struct.filterMapList.add(_elem148);
             }
           }
           struct.setFilterMapListIsSet(true);
@@ -27310,13 +28450,13 @@ public class SearchengineServices {
             case 1: // USER_IDLIST
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list146 = iprot.readListBegin();
-                  struct.userIdlist = new java.util.ArrayList<java.lang.Integer>(_list146.size);
-                  int _elem147;
-                  for (int _i148 = 0; _i148 < _list146.size; ++_i148)
+                  org.apache.thrift.protocol.TList _list154 = iprot.readListBegin();
+                  struct.userIdlist = new java.util.ArrayList<java.lang.Integer>(_list154.size);
+                  int _elem155;
+                  for (int _i156 = 0; _i156 < _list154.size; ++_i156)
                   {
-                    _elem147 = iprot.readI32();
-                    struct.userIdlist.add(_elem147);
+                    _elem155 = iprot.readI32();
+                    struct.userIdlist.add(_elem155);
                   }
                   iprot.readListEnd();
                 }
@@ -27344,9 +28484,9 @@ public class SearchengineServices {
           oprot.writeFieldBegin(USER_IDLIST_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.userIdlist.size()));
-            for (int _iter149 : struct.userIdlist)
+            for (int _iter157 : struct.userIdlist)
             {
-              oprot.writeI32(_iter149);
+              oprot.writeI32(_iter157);
             }
             oprot.writeListEnd();
           }
@@ -27377,9 +28517,9 @@ public class SearchengineServices {
         if (struct.isSetUserIdlist()) {
           {
             oprot.writeI32(struct.userIdlist.size());
-            for (int _iter150 : struct.userIdlist)
+            for (int _iter158 : struct.userIdlist)
             {
-              oprot.writeI32(_iter150);
+              oprot.writeI32(_iter158);
             }
           }
         }
@@ -27391,13 +28531,13 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list151 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.userIdlist = new java.util.ArrayList<java.lang.Integer>(_list151.size);
-            int _elem152;
-            for (int _i153 = 0; _i153 < _list151.size; ++_i153)
+            org.apache.thrift.protocol.TList _list159 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.userIdlist = new java.util.ArrayList<java.lang.Integer>(_list159.size);
+            int _elem160;
+            for (int _i161 = 0; _i161 < _list159.size; ++_i161)
             {
-              _elem152 = iprot.readI32();
-              struct.userIdlist.add(_elem152);
+              _elem160 = iprot.readI32();
+              struct.userIdlist.add(_elem160);
             }
           }
           struct.setUserIdlistIsSet(true);
@@ -28191,15 +29331,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map154 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map154.size);
-                  java.lang.String _key155;
-                  java.lang.String _val156;
-                  for (int _i157 = 0; _i157 < _map154.size; ++_i157)
+                  org.apache.thrift.protocol.TMap _map162 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map162.size);
+                  java.lang.String _key163;
+                  java.lang.String _val164;
+                  for (int _i165 = 0; _i165 < _map162.size; ++_i165)
                   {
-                    _key155 = iprot.readString();
-                    _val156 = iprot.readString();
-                    struct.params.put(_key155, _val156);
+                    _key163 = iprot.readString();
+                    _val164 = iprot.readString();
+                    struct.params.put(_key163, _val164);
                   }
                   iprot.readMapEnd();
                 }
@@ -28227,10 +29367,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter158 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter166 : struct.params.entrySet())
             {
-              oprot.writeString(_iter158.getKey());
-              oprot.writeString(_iter158.getValue());
+              oprot.writeString(_iter166.getKey());
+              oprot.writeString(_iter166.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -28261,10 +29401,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter159 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter167 : struct.params.entrySet())
             {
-              oprot.writeString(_iter159.getKey());
-              oprot.writeString(_iter159.getValue());
+              oprot.writeString(_iter167.getKey());
+              oprot.writeString(_iter167.getValue());
             }
           }
         }
@@ -28276,15 +29416,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map160 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map160.size);
-            java.lang.String _key161;
-            java.lang.String _val162;
-            for (int _i163 = 0; _i163 < _map160.size; ++_i163)
+            org.apache.thrift.protocol.TMap _map168 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map168.size);
+            java.lang.String _key169;
+            java.lang.String _val170;
+            for (int _i171 = 0; _i171 < _map168.size; ++_i171)
             {
-              _key161 = iprot.readString();
-              _val162 = iprot.readString();
-              struct.params.put(_key161, _val162);
+              _key169 = iprot.readString();
+              _val170 = iprot.readString();
+              struct.params.put(_key169, _val170);
             }
           }
           struct.setParamsIsSet(true);
@@ -28608,13 +29748,13 @@ public class SearchengineServices {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
-                  org.apache.thrift.protocol.TList _list164 = iprot.readListBegin();
-                  struct.success = new java.util.ArrayList<java.lang.Integer>(_list164.size);
-                  int _elem165;
-                  for (int _i166 = 0; _i166 < _list164.size; ++_i166)
+                  org.apache.thrift.protocol.TList _list172 = iprot.readListBegin();
+                  struct.success = new java.util.ArrayList<java.lang.Integer>(_list172.size);
+                  int _elem173;
+                  for (int _i174 = 0; _i174 < _list172.size; ++_i174)
                   {
-                    _elem165 = iprot.readI32();
-                    struct.success.add(_elem165);
+                    _elem173 = iprot.readI32();
+                    struct.success.add(_elem173);
                   }
                   iprot.readListEnd();
                 }
@@ -28642,9 +29782,9 @@ public class SearchengineServices {
           oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
           {
             oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.success.size()));
-            for (int _iter167 : struct.success)
+            for (int _iter175 : struct.success)
             {
-              oprot.writeI32(_iter167);
+              oprot.writeI32(_iter175);
             }
             oprot.writeListEnd();
           }
@@ -28675,9 +29815,9 @@ public class SearchengineServices {
         if (struct.isSetSuccess()) {
           {
             oprot.writeI32(struct.success.size());
-            for (int _iter168 : struct.success)
+            for (int _iter176 : struct.success)
             {
-              oprot.writeI32(_iter168);
+              oprot.writeI32(_iter176);
             }
           }
         }
@@ -28689,13 +29829,13 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TList _list169 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.success = new java.util.ArrayList<java.lang.Integer>(_list169.size);
-            int _elem170;
-            for (int _i171 = 0; _i171 < _list169.size; ++_i171)
+            org.apache.thrift.protocol.TList _list177 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
+            struct.success = new java.util.ArrayList<java.lang.Integer>(_list177.size);
+            int _elem178;
+            for (int _i179 = 0; _i179 < _list177.size; ++_i179)
             {
-              _elem170 = iprot.readI32();
-              struct.success.add(_elem170);
+              _elem178 = iprot.readI32();
+              struct.success.add(_elem178);
             }
           }
           struct.setSuccessIsSet(true);
@@ -29016,15 +30156,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map172 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map172.size);
-                  java.lang.String _key173;
-                  java.lang.String _val174;
-                  for (int _i175 = 0; _i175 < _map172.size; ++_i175)
+                  org.apache.thrift.protocol.TMap _map180 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map180.size);
+                  java.lang.String _key181;
+                  java.lang.String _val182;
+                  for (int _i183 = 0; _i183 < _map180.size; ++_i183)
                   {
-                    _key173 = iprot.readString();
-                    _val174 = iprot.readString();
-                    struct.params.put(_key173, _val174);
+                    _key181 = iprot.readString();
+                    _val182 = iprot.readString();
+                    struct.params.put(_key181, _val182);
                   }
                   iprot.readMapEnd();
                 }
@@ -29052,10 +30192,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter176 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter184 : struct.params.entrySet())
             {
-              oprot.writeString(_iter176.getKey());
-              oprot.writeString(_iter176.getValue());
+              oprot.writeString(_iter184.getKey());
+              oprot.writeString(_iter184.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -29086,10 +30226,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter177 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter185 : struct.params.entrySet())
             {
-              oprot.writeString(_iter177.getKey());
-              oprot.writeString(_iter177.getValue());
+              oprot.writeString(_iter185.getKey());
+              oprot.writeString(_iter185.getValue());
             }
           }
         }
@@ -29101,15 +30241,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map178 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map178.size);
-            java.lang.String _key179;
-            java.lang.String _val180;
-            for (int _i181 = 0; _i181 < _map178.size; ++_i181)
+            org.apache.thrift.protocol.TMap _map186 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map186.size);
+            java.lang.String _key187;
+            java.lang.String _val188;
+            for (int _i189 = 0; _i189 < _map186.size; ++_i189)
             {
-              _key179 = iprot.readString();
-              _val180 = iprot.readString();
-              struct.params.put(_key179, _val180);
+              _key187 = iprot.readString();
+              _val188 = iprot.readString();
+              struct.params.put(_key187, _val188);
             }
           }
           struct.setParamsIsSet(true);
@@ -29903,15 +31043,15 @@ public class SearchengineServices {
             case 1: // PARAMS
               if (schemeField.type == org.apache.thrift.protocol.TType.MAP) {
                 {
-                  org.apache.thrift.protocol.TMap _map182 = iprot.readMapBegin();
-                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map182.size);
-                  java.lang.String _key183;
-                  java.lang.String _val184;
-                  for (int _i185 = 0; _i185 < _map182.size; ++_i185)
+                  org.apache.thrift.protocol.TMap _map190 = iprot.readMapBegin();
+                  struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map190.size);
+                  java.lang.String _key191;
+                  java.lang.String _val192;
+                  for (int _i193 = 0; _i193 < _map190.size; ++_i193)
                   {
-                    _key183 = iprot.readString();
-                    _val184 = iprot.readString();
-                    struct.params.put(_key183, _val184);
+                    _key191 = iprot.readString();
+                    _val192 = iprot.readString();
+                    struct.params.put(_key191, _val192);
                   }
                   iprot.readMapEnd();
                 }
@@ -29939,10 +31079,10 @@ public class SearchengineServices {
           oprot.writeFieldBegin(PARAMS_FIELD_DESC);
           {
             oprot.writeMapBegin(new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, struct.params.size()));
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter186 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter194 : struct.params.entrySet())
             {
-              oprot.writeString(_iter186.getKey());
-              oprot.writeString(_iter186.getValue());
+              oprot.writeString(_iter194.getKey());
+              oprot.writeString(_iter194.getValue());
             }
             oprot.writeMapEnd();
           }
@@ -29973,10 +31113,10 @@ public class SearchengineServices {
         if (struct.isSetParams()) {
           {
             oprot.writeI32(struct.params.size());
-            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter187 : struct.params.entrySet())
+            for (java.util.Map.Entry<java.lang.String, java.lang.String> _iter195 : struct.params.entrySet())
             {
-              oprot.writeString(_iter187.getKey());
-              oprot.writeString(_iter187.getValue());
+              oprot.writeString(_iter195.getKey());
+              oprot.writeString(_iter195.getValue());
             }
           }
         }
@@ -29988,15 +31128,15 @@ public class SearchengineServices {
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
-            org.apache.thrift.protocol.TMap _map188 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
-            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map188.size);
-            java.lang.String _key189;
-            java.lang.String _val190;
-            for (int _i191 = 0; _i191 < _map188.size; ++_i191)
+            org.apache.thrift.protocol.TMap _map196 = new org.apache.thrift.protocol.TMap(org.apache.thrift.protocol.TType.STRING, org.apache.thrift.protocol.TType.STRING, iprot.readI32());
+            struct.params = new java.util.HashMap<java.lang.String,java.lang.String>(2*_map196.size);
+            java.lang.String _key197;
+            java.lang.String _val198;
+            for (int _i199 = 0; _i199 < _map196.size; ++_i199)
             {
-              _key189 = iprot.readString();
-              _val190 = iprot.readString();
-              struct.params.put(_key189, _val190);
+              _key197 = iprot.readString();
+              _val198 = iprot.readString();
+              struct.params.put(_key197, _val198);
             }
           }
           struct.setParamsIsSet(true);
