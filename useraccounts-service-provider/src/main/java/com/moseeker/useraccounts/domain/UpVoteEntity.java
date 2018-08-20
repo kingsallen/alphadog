@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -145,6 +146,8 @@ public class UpVoteEntity {
             return 0;
         }
         logger.info("countRecentUpVote employeeId:{}, viewTime:{}, now:{}", employeeId, viewTime, now);
+
+        logger.info("countRecentUpVote start:{}, end:{}", new Timestamp(viewTime), new Timestamp(now));
         return upVoteDao.countUpVote(employeeId, viewTime, now);
     }
 
