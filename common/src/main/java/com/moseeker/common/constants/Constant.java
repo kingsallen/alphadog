@@ -261,4 +261,6 @@ public final class Constant {
 
 
     public static final int HKAMTW = 861;
+
+    public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
 }

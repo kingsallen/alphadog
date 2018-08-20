@@ -5,9 +5,12 @@ package com.moseeker.baseorm.db.historydb.tables;
 
 
 import com.moseeker.baseorm.db.historydb.Historydb;
+import com.moseeker.baseorm.db.historydb.Keys;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeUpvoteRecord;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Generated;
 
@@ -15,6 +18,7 @@ import org.jooq.Field;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
+import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -31,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserEmployeeUpvote extends TableImpl<HistoryUserEmployeeUpvoteRecord> {
 
-    private static final long serialVersionUID = -773559911;
+    private static final long serialVersionUID = -1728579882;
 
     /**
      * The reference instance of <code>historydb.history_user_employee_upvote</code>
@@ -119,6 +123,22 @@ public class HistoryUserEmployeeUpvote extends TableImpl<HistoryUserEmployeeUpvo
     @Override
     public Schema getSchema() {
         return Historydb.HISTORYDB;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UniqueKey<HistoryUserEmployeeUpvoteRecord> getPrimaryKey() {
+        return Keys.KEY_HISTORY_USER_EMPLOYEE_UPVOTE_PRIMARY;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<UniqueKey<HistoryUserEmployeeUpvoteRecord>> getKeys() {
+        return Arrays.<UniqueKey<HistoryUserEmployeeUpvoteRecord>>asList(Keys.KEY_HISTORY_USER_EMPLOYEE_UPVOTE_PRIMARY);
     }
 
     /**

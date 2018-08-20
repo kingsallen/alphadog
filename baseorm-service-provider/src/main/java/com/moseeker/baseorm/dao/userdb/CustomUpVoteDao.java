@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.jooq.impl.DSL.*;
 
@@ -136,5 +138,43 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID.eq(id))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .execute();
+    }
+
+    public UserEmployeeUpvoteRecord fetchBySenderAndReceiver(int sender, int receiver) {
+        return using(configuration())
+                .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
+                .fetchOne();
+    }
+
+    public int countUpVote(int employeeId, long start, long end) {
+
+        return using(configuration())
+                .selectCount()
+                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
+                .fetchOne().value1();
+    }
+
+    public int count(long lastFriday, long currentFriday) {
+        return using(configuration())
+                .selectCount()
+                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(lastFriday)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(currentFriday)))
+                .fetchOne()
+                .value1();
+    }
+
+    public List<UserEmployeeUpvoteRecord> fetchByInterval(int size, long start, long end) {
+        return using(configuration())
+                .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
+                .limit(0,size)
+                .fetch();
     }
 }

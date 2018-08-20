@@ -134,4 +134,11 @@ public class HrTeamMemberDao extends DAOImpl<HrTeamMemberRecord, com.moseeker.ba
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeamMember> fetchByResAttrs(String... values) {
         return fetch(HrTeamMember.HR_TEAM_MEMBER.RES_ATTRS, values);
     }
+
+    /**
+     * Fetch records that have <code>orders IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrTeamMember> fetchByOrders(Integer... values) {
+        return fetch(HrTeamMember.HR_TEAM_MEMBER.ORDERS, values);
+    }
 }

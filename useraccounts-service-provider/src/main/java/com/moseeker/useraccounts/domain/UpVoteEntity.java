@@ -1,16 +1,34 @@
 package com.moseeker.useraccounts.domain;
 
 import com.moseeker.baseorm.constant.UpVoteState;
+import com.moseeker.baseorm.dao.historydb.CustomHistoryUpVoteDao;
 import com.moseeker.baseorm.dao.userdb.CustomUpVoteDao;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeUpvoteRecord;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeUpvoteRecord;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -21,6 +39,15 @@ public class UpVoteEntity {
 
     @Autowired
     private CustomUpVoteDao upVoteDao;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private CustomHistoryUpVoteDao customHistoryUpVoteDao;
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -40,7 +67,9 @@ public class UpVoteEntity {
             throw UserAccountException.EMPLOYEE_ALREADY_UP_VOTE;
         }
 
-        return upVoteDao.insert(receiver.getCompanyId(), receiver.getId(), sender.getId());
+        int id = upVoteDao.insert(receiver.getCompanyId(), receiver.getId(), sender.getId());
+
+        return id;
     }
 
     /**
@@ -57,5 +86,128 @@ public class UpVoteEntity {
         upVote.setCancelTime(new Timestamp(System.currentTimeMillis()));
         upVote.setCancel((byte) UpVoteState.UnUpVote.getValue());
         upVoteDao.cancelUpVote(upVote.getId());
+    }
+
+    /**
+     * 校验是否做过点赞
+     * @param sender 点赞人
+     * @param receiver 被点赞人
+     * @return 是否点过赞 true 点过赞 false 未点过赞
+     */
+    public boolean isPraise(int sender, int receiver) {
+        UserEmployeeUpvoteRecord record = upVoteDao.fetchBySenderAndReceiver(sender, receiver);
+        return record != null;
+    }
+
+    /**
+     * 计算未读的点赞数量
+     * @param employeeId 员工编号
+     * @return 未读点赞数
+     * @throws EmployeeException 异常信息
+     */
+    public int countRecentUpVote(int employeeId) throws EmployeeException {
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
+        if (employeeDO == null) {
+            throw EmployeeException.EMPLOYEE_NOT_EXISTS;
+        }
+        long now = System.currentTimeMillis();
+        String viewTimeStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+                Constant.LEADER_BOARD_UPVOTE_COUNT, String.valueOf(employeeId));
+
+        LocalDateTime nowLocalDateTime = LocalDateTime.now();
+
+        long viewTime;
+        if (org.apache.commons.lang.StringUtils.isNotBlank(viewTimeStr)) {
+            viewTime = Long.parseLong(viewTimeStr);
+        } else {
+            viewTime = 0;
+        }
+        LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
+            viewTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        } else if (viewTime < lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
+            viewTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        }
+        if (viewTime >= now) {
+            return 0;
+        }
+        return upVoteDao.countUpVote(employeeId, viewTime, now);
+    }
+
+    /**
+     *
+     * @param employeeId
+     * @param viewTime
+     */
+    public void logViewTime(int employeeId, long viewTime) {
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
+        if (employeeDO == null) {
+            throw EmployeeException.EMPLOYEE_NOT_EXISTS;
+        }
+        long now = System.currentTimeMillis();
+        LocalDateTime nowLocalDateTime = LocalDateTime.now();
+        LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        long endTime = 0;
+        if (now > lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
+            endTime = lastFriday.plusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        } else {
+            endTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        }
+
+        //计算过期时间
+        int ttl = (int) ((endTime - now)/1000);
+
+        client.set(AppId.APPID_ALPHADOG.getValue(), Constant.LEADER_BOARD_UPVOTE_COUNT, String.valueOf(employeeId),
+                "", String.valueOf(viewTime), ttl);
+    }
+
+    /**
+     * 每周清空点赞记录
+     */
+    public void clearUpVoteWeekly() {
+        LocalDateTime nowLocalDateTime = LocalDateTime.now();
+        LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        long currentFridayTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
+        long lastFridayTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+
+        if (nowLocalDateTime.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond() >= currentFridayTime) {
+            ThreadPool threadPool = ThreadPool.Instance;
+            threadPool.startTast(() -> {
+                int count = upVoteDao.count(lastFridayTime, currentFridayTime);
+                int totalExecute = 0;
+                while (totalExecute < count) {
+                    clearUpVote(Constant.DATABASE_PAGE_SIZE, lastFridayTime, currentFridayTime);
+                    totalExecute += Constant.DATABASE_PAGE_SIZE;
+                }
+                return true;
+            });
+
+        } else {
+            logger.error("clearUpVoteWeekly 时间超时！！！当前时间：{}", nowLocalDateTime.toString());
+        }
+
+    }
+
+    /**
+     * 清空点赞数据，迁移到历史库中
+     * @param size 数量
+     * @param start 开始时间
+     * @param end 结束时间
+     */
+    @Transactional
+    private void clearUpVote(int size, long start, long end) {
+        List<UserEmployeeUpvoteRecord> upvoteRecords = upVoteDao.fetchByInterval(size, start, end);
+        if (upvoteRecords != null && upvoteRecords.size() > 0) {
+            List<HistoryUserEmployeeUpvoteRecord> histories = new ArrayList<>();
+            for (UserEmployeeUpvoteRecord upvoteRecord : upvoteRecords) {
+                HistoryUserEmployeeUpvoteRecord historyUserEmployeeUpvoteRecord = new HistoryUserEmployeeUpvoteRecord();
+                BeanUtils.copyProperties(historyUserEmployeeUpvoteRecord, upvoteRecord);
+                histories.add(historyUserEmployeeUpvoteRecord);
+            }
+            customHistoryUpVoteDao.batchInsert(histories);
+            upVoteDao.deleteById(upvoteRecords.stream().map(UserEmployeeUpvoteRecord::getId).collect(Collectors.toList()));
+        }
     }
 }

@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.historydb;
 import com.moseeker.baseorm.db.historydb.tables.ConfigSysCvTpl;
 import com.moseeker.baseorm.db.historydb.tables.HistoryCampaignPersonaRecom;
 import com.moseeker.baseorm.db.historydb.tables.HistoryHrCompany;
+import com.moseeker.baseorm.db.historydb.tables.HistoryHrOperationRecord;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplication;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition;
 import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
@@ -47,6 +48,12 @@ public class Tables {
      * 公司表归档表
      */
     public static final HistoryHrCompany HISTORY_HR_COMPANY = com.moseeker.baseorm.db.historydb.tables.HistoryHrCompany.HISTORY_HR_COMPANY;
+
+    /**
+     * 15年的一批hr申请状态操作记录老数据，在进行数据处理时，其中一些数据目前无法处理，暂时移到历史表中，这些数据中包括申请状态是hr操作记录包括1的，
+hr申请记录无法梳理出合理的流程的记录
+     */
+    public static final HistoryHrOperationRecord HISTORY_HR_OPERATION_RECORD = com.moseeker.baseorm.db.historydb.tables.HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD;
 
     /**
      * 申请记录归档表

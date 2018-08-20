@@ -175,4 +175,24 @@ public class AppConfig {
                     .with("user_unfollow_wechat_check_employee_identity"));
         }};
     }
+
+    @Bean
+    public Queue clearUnViewdUpVoteQueue() {
+        Queue queue = new Queue("employee_view_leade_board_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange clearUnViewdUpVoteExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_view_leade_board_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> binglearUnViewdUpVote() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(clearUnViewdUpVoteQueue()).to(clearUnViewdUpVoteExchange())
+                    .with("employee_view_leade_board_routing_key"));
+        }};
+    }
 }

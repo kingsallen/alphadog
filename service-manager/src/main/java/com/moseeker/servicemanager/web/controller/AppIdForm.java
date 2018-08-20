@@ -5,7 +5,7 @@ package com.moseeker.servicemanager.web.controller;
  * @Date: 2018/8/16
  */
 public class AppIdForm {
-    private int appid;
+    protected int appid;
 
     public int getAppid() {
         return appid;
