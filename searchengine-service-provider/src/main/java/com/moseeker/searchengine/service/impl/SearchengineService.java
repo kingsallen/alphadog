@@ -870,10 +870,10 @@ public class SearchengineService {
             try {
                 SearchResponse sortResponse = searchClient.prepareSearch("awards").setTypes("award")
                         .setQuery(query)
-                        .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
-                        .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
                         .setSize(0).execute().get();
-                return (int)sortResponse.getHits().getTotalHits();
+                int count = (int)sortResponse.getHits().getTotalHits();
+                logger.info("countLeaderBoard count");
+                return count;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 return 0;
