@@ -171,7 +171,7 @@ public class AppConfig {
     @Bean
     public List<Binding> bingUnFollowWechat() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(followWechatQueue()).to(followWechatExchange())
+            add(BindingBuilder.bind(unFollowWechatExchange()).to(followWechatExchange())
                     .with("user_unfollow_wechat_check_employee_identity"));
         }};
     }
