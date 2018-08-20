@@ -124,10 +124,10 @@ public class UpVoteEntity {
         }
         LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
-            viewTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-        } else if (viewTime < lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
-            viewTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+        if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            viewTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+        } else if (viewTime < lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            viewTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         }
         if (viewTime >= now) {
             return 0;
@@ -148,7 +148,7 @@ public class UpVoteEntity {
         long now = System.currentTimeMillis();
         LocalDateTime nowLocalDateTime = LocalDateTime.now();
         LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        long endTime = 0;
+        long endTime;
         if (now > lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()) {
             endTime = lastFriday.plusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
         } else {
@@ -156,14 +156,14 @@ public class UpVoteEntity {
         }
 
         //计算过期时间
-        int ttl = (int) ((endTime - now)/1000);
+        int ttl = (int) ((now-endTime)/1000);
 
         client.set(AppId.APPID_ALPHADOG.getValue(), Constant.LEADER_BOARD_UPVOTE_COUNT, String.valueOf(employeeId),
                 "", String.valueOf(viewTime), ttl);
     }
 
     /**
-     * 每周清空点赞记录
+     * 清空本周的点赞数
      */
     public void clearUpVoteWeekly() {
         LocalDateTime nowLocalDateTime = LocalDateTime.now();
@@ -209,5 +209,9 @@ public class UpVoteEntity {
             customHistoryUpVoteDao.batchInsert(histories);
             upVoteDao.deleteById(upvoteRecords.stream().map(UserEmployeeUpvoteRecord::getId).collect(Collectors.toList()));
         }
+    }
+
+    public static void main(String[] args) {
+        System.out.println(System.currentTimeMillis());
     }
 }
