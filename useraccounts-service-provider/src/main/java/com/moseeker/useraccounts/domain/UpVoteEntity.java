@@ -245,22 +245,15 @@ public class UpVoteEntity {
      * @param receiverIdList 被点赞人员工编号
      */
     public List<UpVoteData> fetchUpVote(int sender, List<Integer> receiverIdList) {
-        logger.info("fetchUpVote sender:{}, receiverIdList:{}", sender, receiverIdList);
         IntervalTime intervalTime = IntervalTime.buildIntervalTime();
         logger.info("fetchUpVote startTime:{}, endTime:{}", intervalTime.getStartTime(), intervalTime.getEndTime());
         List<UserEmployeeUpvote> upVoteList = upVoteDao.fetchBySenderAndReceiverList(sender, receiverIdList,
                 intervalTime.getStartTime(), intervalTime.getEndTime());
 
-        logger.info("fetchUpVote upVoteList:{}", upVoteList);
-
         Map<Integer, Integer> upVoteCount = upVoteDao.countUpVoteByReceiverIdList(receiverIdList,
                 intervalTime.getStartTime(), intervalTime.getEndTime());
 
-        //todo delete
-        logger.info("fetchUpVote upVoteCount:{}", JSON.toJSONString(upVoteCount));
-
         return receiverIdList.stream().map(receiver -> {
-            logger.info("fetchUpVote receiver:{}", receiver);
             UpVoteData upVoteData1 = new UpVoteData();
             upVoteData1.setReceiver(receiver);
             if (upVoteList != null && upVoteList.size() > 0) {
@@ -268,13 +261,8 @@ public class UpVoteEntity {
                         .stream()
                         .filter(userEmployeeUpvote -> userEmployeeUpvote.getReceiver().equals(receiver))
                         .findAny();
-                logger.info("fetchUpVote receiver:{}, sender:{}", upVoteList.get(0).getReceiver(), upVoteList.get(0).getSender());
-                logger.info("fetchUpVote upvoteOptional.isPresent():{}", upvoteOptional.isPresent());
                 if (upvoteOptional.isPresent()) {
-                    logger.info("fetchUpVote upVote:{}", upvoteOptional.get());
                     upVoteData1.setUpVote(true);
-                } else {
-                    logger.info("fetchUpVote upVote not vote");
                 }
             }
             Integer count = upVoteCount.get(receiver);
