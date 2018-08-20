@@ -99,10 +99,32 @@ public class TalentpoolSearchengine {
                                         }
                                     }
                                 }
+                            }
+                            /*
+                             过滤掉不是查询职位 的申请
+                             */
+                            String positionWord=params.get("position_key_word");
+                            String positionIds=params.get("position_id");
+                            if(StringUtils.isNotNullOrEmpty(positionWord)||StringUtils.isNotNullOrEmpty(positionIds)){
+                                List<Integer> positionIdList=searchUtil.stringConvertIntList(positionIds);
+                                if(!StringUtils.isEmptyList(positionIdList)){
+                                    List<Map<String,Object>> applications=(List<Map<String, Object>>) user.get("applications");
+                                    if(!StringUtils.isEmptyList(applications)){
+                                        List<Map<String,Object>> applicationNewList=new ArrayList<>();
+                                        for(Map<String,Object> application:applications){
+                                            int positionId= (int) application.get("posiion_id");
+                                            if(positionIdList.contains(positionId)){
+                                                applicationNewList.add(application);
+                                            }
+                                        }
+                                        if(!StringUtils.isEmptyList(applicationNewList)){
+                                            user.put("applications",applicationNewList);
+                                        }
+                                    }
 
+                                }
 
                             }
-
                         }
                     }
                 }
