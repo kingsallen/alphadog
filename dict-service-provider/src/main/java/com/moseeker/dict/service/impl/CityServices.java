@@ -7,6 +7,10 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.CityPojo;
@@ -16,10 +20,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.swing.StringUIClientPropertyKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CityServices {
@@ -151,6 +157,144 @@ public class CityServices {
         List<CityPojo> cities = this.dao.getCitiesById(id);
         return ResponseUtils.success(cities);
     }
+
+    @CounterIface
+    public Map<String,Object> getProvinceCity(){
+        Map<String,Object> result=new HashMap<>();
+        Query query=new Query.QueryBuilder().where("is_using",1).buildQuery();
+        List<Map<String,Object>> list=dao.getMaps(query);
+        if(!StringUtils.isEmptyList(list)){
+            List<Map<String,Object>> hotCityList=this.getHotCity(list);
+            result.put("hot_city",hotCityList);
+            List<Integer> codeList=this.getOutCityCodeList();
+            List<Map<String,Object>> provinceList=this.getProvince(list,codeList);
+            if(!StringUtils.isEmptyList(provinceList)){
+                List<Map<String,Object>> dataList=this.handlerProvinceCityData(provinceList,list,codeList);
+                result.put("city_data",dataList);
+            }
+        }
+        return result;
+    }
+    @CounterIface
+    public Response getCityCodeByProvine(List<Integer> codes){
+        List<Integer> codeList=this.getOutCityCodeList();
+        if(!this.isProvinceComfortable(codes,codeList)){
+            return ResponseUtils.fail(1,"该省份下城市code不可查");
+        }
+        if(!this.isProvice(codes)){
+            return ResponseUtils.fail(1,"该code不是省份code");
+        }
+        Query query=new Query.QueryBuilder().where("is_using",1).and(new Condition("level",1, ValueOp.GT)).buildQuery();
+        List<Map<String,Object>> dataList=dao.getMaps(query);
+        if(!StringUtils.isEmptyList(dataList)){
+            List<Integer> result=new ArrayList<>();
+            for(Map<String,Object> data:dataList){
+                int codeItem= (int) data.get("code");
+                for(Integer code:codes){
+                    if(!codeList.contains(code)&&code<codeItem&&code+10000>codeItem){
+                        result.add(codeItem);
+                    }
+                }
+            }
+            return ResponseUtils.success(result);
+        }
+
+        return ResponseUtils.success(new ArrayList<Integer>());
+    }
+    /*
+     判断查询的是否是省份
+     */
+    private boolean isProvice(List<Integer> code){
+        Query query=new Query.QueryBuilder().where("is_using",1).and("level",1).and(new Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
+        int count=dao.getCount(query);
+        if(count>0&&count==code.size()){
+            return true;
+        }
+        return false;
+    }
+    /*
+    判断数据是否符合要求
+     */
+    private boolean isProvinceComfortable(List<Integer> codes, List<Integer> codeList){
+        for(Integer code:codes){
+            if(codeList.contains(code)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<Integer> getOutCityCodeList(){
+        List<Integer> codeList=new ArrayList<>();
+        codeList.add(110000);
+        codeList.add(111111);
+        codeList.add(120000);
+        codeList.add(233333);
+        codeList.add(310000);
+        codeList.add(500000);
+        codeList.add(710000);
+        codeList.add(810000);
+        codeList.add(820000);
+        return codeList;
+    }
+
+    /*
+     获取热门城市
+     */
+    private List<Map<String,Object>> getHotCity(List<Map<String,Object>> list){
+        if(!StringUtils.isEmptyList(list)){
+            List<Map<String,Object>> result=new ArrayList<>();
+            for(Map<String,Object> data:list){
+                int isHot= (int) data.get("hot_city");
+                if(isHot==1){
+                    result.add(data);
+                }
+            }
+            return result;
+        }
+        return null;
+    }
+    /*
+     获取省份城市数据
+     */
+    private List<Map<String,Object>> getProvince(List<Map<String,Object>> list,List<Integer> codeList){
+        if(!StringUtils.isEmptyList(list)){
+            List<Map<String,Object>> result=new ArrayList<>();
+            for(Map<String,Object> data:list){
+                int level= (int) data.get("level");
+                int code=(int) data.get("code");
+                if(level==1){
+                    if(!codeList.contains(code)){
+                        result.add(data);
+                    }
+                }
+            }
+            return result;
+        }
+        return null;
+    }
+    /*
+     处理数据，将城市数据归给省份数据下
+     */
+    private List<Map<String,Object>> handlerProvinceCityData(List<Map<String,Object>> provinceList,List<Map<String,Object>> list,List<Integer> codeList){
+        if(StringUtils.isEmptyList(provinceList)||StringUtils.isEmptyList(list)){
+            return null;
+        }
+        for(Map<String,Object> map:provinceList){
+            int code= (int) map.get("code");
+            List<Map<String,Object>> cityList=new ArrayList<>();
+            for(Map<String,Object> data:list){
+                int coityCode= (int) data.get("code");
+                int level=(int)data.get("level");
+                if(coityCode>code&&coityCode<code+10000&&level>1&&!codeList.contains(coityCode)){
+                    cityList.add(data);
+                }
+            }
+            map.put("child_city",cityList);
+
+        }
+        return provinceList;
+    }
 }
 
 class DictCityHashMap {
@@ -245,5 +389,7 @@ class DictCityHashMap {
         HashMap c = (HashMap) hm.get("" + cityCode);
         c.put("" + city.code, city.name);
     }
+
+
 
 }

@@ -9,6 +9,8 @@ service CityServices {
     common_struct.Response getCitiesById(1:i32 id);
     common_struct.Response getAllCitiesByLevelOrUsing(1:string level, 2:i32 is_using, 3:i32 hot_city);
     common_struct.Response getResources(1:common_struct.CommonQuery query);
+    common_struct.Response getProvinceAndCity();
+    common_struct.Response getCityByProvince(1:list<i32> codeList);
 }
 
 service CollegeServices {

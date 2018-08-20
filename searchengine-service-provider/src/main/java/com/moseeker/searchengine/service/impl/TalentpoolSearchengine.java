@@ -62,7 +62,6 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
-//            client = searchUtil.getEsClient1();
             QueryBuilder query = this.query(params);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerSortOrder(params, builder);
