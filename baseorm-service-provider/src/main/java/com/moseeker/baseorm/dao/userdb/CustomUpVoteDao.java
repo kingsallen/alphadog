@@ -7,13 +7,19 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeUpvoteRecord;
 import org.joda.time.DateTime;
 import org.jooq.Param;
 import org.jooq.Record1;
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.impl.DefaultConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -176,5 +182,40 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
                 .limit(0,size)
                 .fetch();
+    }
+
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote> fetchBySenderAndReceiverList(int sender, List<Integer> receiverIdList) {
+        Result<UserEmployeeUpvoteRecord> result = using(configuration())
+                .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result
+                    .stream()
+                    .map(record -> record.into(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote.class))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public Map<Integer,Integer> countUpVoteByReceiverIdList(List<Integer> receiverIdList,
+                                                            long startTime, long endTime) {
+
+        Result<Record2<Integer, Integer>> result =
+                using(configuration())
+                .select(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID.count())
+                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
+                .groupBy(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER)
+                .fetch();
+        if (result != null && result.size() > 0) {
+            return result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2));
+        } else {
+            return new HashMap<>();
+        }
     }
 }

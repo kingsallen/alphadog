@@ -17,6 +17,7 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
   private static final org.apache.thrift.protocol.TField AWARD_TOTAL_FIELD_DESC = new org.apache.thrift.protocol.TField("awardTotal", org.apache.thrift.protocol.TType.I32, (short)4);
   private static final org.apache.thrift.protocol.TField HEADIMGURL_FIELD_DESC = new org.apache.thrift.protocol.TField("headimgurl", org.apache.thrift.protocol.TType.STRING, (short)5);
   private static final org.apache.thrift.protocol.TField PRAISED_FIELD_DESC = new org.apache.thrift.protocol.TField("praised", org.apache.thrift.protocol.TType.BOOL, (short)6);
+  private static final org.apache.thrift.protocol.TField PRAISE_FIELD_DESC = new org.apache.thrift.protocol.TField("praise", org.apache.thrift.protocol.TType.I32, (short)7);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new EmployeeAwardStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new EmployeeAwardTupleSchemeFactory();
@@ -27,6 +28,7 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
   public int awardTotal; // optional
   public java.lang.String headimgurl; // optional
   public boolean praised; // optional
+  public int praise; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -35,7 +37,8 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
     RANKING((short)3, "ranking"),
     AWARD_TOTAL((short)4, "awardTotal"),
     HEADIMGURL((short)5, "headimgurl"),
-    PRAISED((short)6, "praised");
+    PRAISED((short)6, "praised"),
+    PRAISE((short)7, "praise");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -62,6 +65,8 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
           return HEADIMGURL;
         case 6: // PRAISED
           return PRAISED;
+        case 7: // PRAISE
+          return PRAISE;
         default:
           return null;
       }
@@ -106,8 +111,9 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
   private static final int __RANKING_ISSET_ID = 1;
   private static final int __AWARDTOTAL_ISSET_ID = 2;
   private static final int __PRAISED_ISSET_ID = 3;
+  private static final int __PRAISE_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.EMPLOYEE_ID,_Fields.NAME,_Fields.RANKING,_Fields.AWARD_TOTAL,_Fields.HEADIMGURL,_Fields.PRAISED};
+  private static final _Fields optionals[] = {_Fields.EMPLOYEE_ID,_Fields.NAME,_Fields.RANKING,_Fields.AWARD_TOTAL,_Fields.HEADIMGURL,_Fields.PRAISED,_Fields.PRAISE};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -123,6 +129,8 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.PRAISED, new org.apache.thrift.meta_data.FieldMetaData("praised", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+    tmpMap.put(_Fields.PRAISE, new org.apache.thrift.meta_data.FieldMetaData("praise", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(EmployeeAward.class, metaDataMap);
   }
@@ -145,6 +153,7 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       this.headimgurl = other.headimgurl;
     }
     this.praised = other.praised;
+    this.praise = other.praise;
   }
 
   public EmployeeAward deepCopy() {
@@ -163,6 +172,8 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
     this.headimgurl = null;
     setPraisedIsSet(false);
     this.praised = false;
+    setPraiseIsSet(false);
+    this.praise = 0;
   }
 
   public int getEmployeeId() {
@@ -305,6 +316,29 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
     __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRAISED_ISSET_ID, value);
   }
 
+  public int getPraise() {
+    return this.praise;
+  }
+
+  public EmployeeAward setPraise(int praise) {
+    this.praise = praise;
+    setPraiseIsSet(true);
+    return this;
+  }
+
+  public void unsetPraise() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __PRAISE_ISSET_ID);
+  }
+
+  /** Returns true if field praise is set (has been assigned a value) and false otherwise */
+  public boolean isSetPraise() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __PRAISE_ISSET_ID);
+  }
+
+  public void setPraiseIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __PRAISE_ISSET_ID, value);
+  }
+
   public void setFieldValue(_Fields field, java.lang.Object value) {
     switch (field) {
     case EMPLOYEE_ID:
@@ -355,6 +389,14 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       }
       break;
 
+    case PRAISE:
+      if (value == null) {
+        unsetPraise();
+      } else {
+        setPraise((java.lang.Integer)value);
+      }
+      break;
+
     }
   }
 
@@ -377,6 +419,9 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
 
     case PRAISED:
       return isPraised();
+
+    case PRAISE:
+      return getPraise();
 
     }
     throw new java.lang.IllegalStateException();
@@ -401,6 +446,8 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       return isSetHeadimgurl();
     case PRAISED:
       return isSetPraised();
+    case PRAISE:
+      return isSetPraise();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -474,6 +521,15 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
         return false;
     }
 
+    boolean this_present_praise = true && this.isSetPraise();
+    boolean that_present_praise = true && that.isSetPraise();
+    if (this_present_praise || that_present_praise) {
+      if (!(this_present_praise && that_present_praise))
+        return false;
+      if (this.praise != that.praise)
+        return false;
+    }
+
     return true;
   }
 
@@ -504,6 +560,10 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
     hashCode = hashCode * 8191 + ((isSetPraised()) ? 131071 : 524287);
     if (isSetPraised())
       hashCode = hashCode * 8191 + ((praised) ? 131071 : 524287);
+
+    hashCode = hashCode * 8191 + ((isSetPraise()) ? 131071 : 524287);
+    if (isSetPraise())
+      hashCode = hashCode * 8191 + praise;
 
     return hashCode;
   }
@@ -576,6 +636,16 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
         return lastComparison;
       }
     }
+    lastComparison = java.lang.Boolean.valueOf(isSetPraise()).compareTo(other.isSetPraise());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetPraise()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.praise, other.praise);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -637,6 +707,12 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       if (!first) sb.append(", ");
       sb.append("praised:");
       sb.append(this.praised);
+      first = false;
+    }
+    if (isSetPraise()) {
+      if (!first) sb.append(", ");
+      sb.append("praise:");
+      sb.append(this.praise);
       first = false;
     }
     sb.append(")");
@@ -732,6 +808,14 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 7: // PRAISE
+            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+              struct.praise = iprot.readI32();
+              struct.setPraiseIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -781,6 +865,11 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
         oprot.writeBool(struct.praised);
         oprot.writeFieldEnd();
       }
+      if (struct.isSetPraise()) {
+        oprot.writeFieldBegin(PRAISE_FIELD_DESC);
+        oprot.writeI32(struct.praise);
+        oprot.writeFieldEnd();
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -817,7 +906,10 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       if (struct.isSetPraised()) {
         optionals.set(5);
       }
-      oprot.writeBitSet(optionals, 6);
+      if (struct.isSetPraise()) {
+        optionals.set(6);
+      }
+      oprot.writeBitSet(optionals, 7);
       if (struct.isSetEmployeeId()) {
         oprot.writeI32(struct.employeeId);
       }
@@ -836,12 +928,15 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       if (struct.isSetPraised()) {
         oprot.writeBool(struct.praised);
       }
+      if (struct.isSetPraise()) {
+        oprot.writeI32(struct.praise);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, EmployeeAward struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(6);
+      java.util.BitSet incoming = iprot.readBitSet(7);
       if (incoming.get(0)) {
         struct.employeeId = iprot.readI32();
         struct.setEmployeeIdIsSet(true);
@@ -865,6 +960,10 @@ public class EmployeeAward implements org.apache.thrift.TBase<EmployeeAward, Emp
       if (incoming.get(5)) {
         struct.praised = iprot.readBool();
         struct.setPraisedIsSet(true);
+      }
+      if (incoming.get(6)) {
+        struct.praise = iprot.readI32();
+        struct.setPraiseIsSet(true);
       }
     }
   }

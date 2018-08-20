@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -367,7 +368,6 @@ public class EmployeeService {
             log.info("awardRanking:", result);
             if (result.getStatus() == 0){
 
-
                 // 解析数据
                 Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
                 query.clear();
@@ -407,6 +407,22 @@ public class EmployeeService {
                     employeeAward.setRanking(value.getIntValue("ranking"));
                     data.add(employeeAward);
                 });
+                List<Integer> employeeIdList = data.stream().map(EmployeeAward::getEmployeeId).collect(Collectors.toList());
+                List<com.moseeker.useraccounts.domain.pojo.UpVoteData> list= upVoteEntity.fetchUpVote(employeeId, employeeIdList);
+                if (list != null && list.size() > 0) {
+                    data.forEach(employeeAward -> {
+                        Optional<com.moseeker.useraccounts.domain.pojo.UpVoteData> upVoteDataOptional =
+                                list
+                                        .stream()
+                                        .filter(upVoteData -> upVoteData.getReceiver() == employeeAward.getEmployeeId())
+                                        .findAny();
+                        if (upVoteDataOptional.isPresent()) {
+                            employeeAward.setPraised(upVoteDataOptional.get().isUpVote());
+                            employeeAward.setPraise(upVoteDataOptional.get().getReceiverUpVoteCount());
+                        }
+                    });
+                }
+
             } else {
                 log.error("query awardRanking data error");
             }
