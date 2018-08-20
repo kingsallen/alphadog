@@ -414,6 +414,7 @@ public class EmployeeService {
                 });
                 List<Integer> employeeIdList = data.stream().map(EmployeeAward::getEmployeeId).collect(Collectors.toList());
                 List<com.moseeker.useraccounts.domain.pojo.UpVoteData> list= upVoteEntity.fetchUpVote(employeeId, employeeIdList);
+                log.info("fetchUpVote list:{}", list);
                 if (list != null && list.size() > 0) {
                     data.forEach(employeeAward -> {
                         Optional<com.moseeker.useraccounts.domain.pojo.UpVoteData> upVoteDataOptional =

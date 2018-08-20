@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.domain;
 
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -18,6 +19,7 @@ import java.util.concurrent.Future;
  * @Date: 2018/8/16
  */
 @Component
+@CounterIface
 public class UserEmployeeEntity {
 
     private ThreadPool threadPool = ThreadPool.Instance;
