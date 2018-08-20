@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.domain;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.UpVoteState;
 import com.moseeker.baseorm.dao.historydb.CustomHistoryUpVoteDao;
 import com.moseeker.baseorm.dao.userdb.CustomUpVoteDao;
@@ -234,8 +235,12 @@ public class UpVoteEntity {
         List<UserEmployeeUpvote> upVoteList = upVoteDao.fetchBySenderAndReceiverList(sender, receiverIdList);
 
         IntervalTime intervalTime = IntervalTime.buildIntervalTime();
+        logger.info("fetchUpVote startTime:{}, endTime:{}", intervalTime.getStartTime(), intervalTime.getEndTime());
         Map<Integer, Integer> upVoteCount = upVoteDao.countUpVoteByReceiverIdList(receiverIdList,
                 intervalTime.getStartTime(), intervalTime.getEndTime());
+
+        //todo delete
+        logger.info("fetchUpVote upVoteCount:{}", JSON.toJSONString(upVoteCount));
 
         return receiverIdList.stream().map(receiver -> {
             UpVoteData upVoteData1 = new UpVoteData();
