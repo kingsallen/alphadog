@@ -178,13 +178,13 @@ public class AppConfig {
 
     @Bean
     public Queue clearUnViewdUpVoteQueue() {
-        Queue queue = new Queue("employee_view_leade_board_queue", true, false, false);
+        Queue queue = new Queue("employee_view_leader_board_queue", true, false, false);
         return queue;
     }
 
     @Bean
     public TopicExchange clearUnViewdUpVoteExchange() {
-        TopicExchange topicExchange = new TopicExchange("employee_view_leade_board_exchange", true, false);
+        TopicExchange topicExchange = new TopicExchange("employee_view_leader_board_exchange", true, false);
         return topicExchange;
     }
 
