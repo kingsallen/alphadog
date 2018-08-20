@@ -12,7 +12,9 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.exception.EmployeeException;
+import com.moseeker.entity.pojo.profile.info.Intention;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.useraccounts.domain.pojo.IntervalTime;
 import com.moseeker.useraccounts.domain.pojo.UpVoteData;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.slf4j.Logger;
@@ -135,6 +137,18 @@ public class UpVoteEntity {
         return upVoteDao.countUpVote(employeeId, viewTime, now);
     }
 
+    public int countUpVote(int id) {
+
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(id);
+        if (employeeDO == null) {
+            throw EmployeeException.EMPLOYEE_NOT_EXISTS;
+        }
+        IntervalTime intervalTime = IntervalTime.buildIntervalTime();
+        return upVoteDao.countUpVote(id, intervalTime.getStartTime(), intervalTime.getEndTime());
+    }
+
+
+
     /**
      *
      * @param employeeId
@@ -219,19 +233,9 @@ public class UpVoteEntity {
     public List<UpVoteData> fetchUpVote(int sender, List<Integer> receiverIdList) {
         List<UserEmployeeUpvote> upVoteList = upVoteDao.fetchBySenderAndReceiverList(sender, receiverIdList);
 
-        long now = System.currentTimeMillis();
-        LocalDateTime nowLocalDateTime = LocalDateTime.now();
-        LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        long endTime;
-        long startTime;
-        if (now > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
-            startTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
-            endTime = currentFriday.plusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
-        } else {
-            startTime = currentFriday.minusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
-            endTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
-        }
-        Map<Integer, Integer> upVoteCount = upVoteDao.countUpVoteByReceiverIdList(receiverIdList, startTime, endTime);
+        IntervalTime intervalTime = IntervalTime.buildIntervalTime();
+        Map<Integer, Integer> upVoteCount = upVoteDao.countUpVoteByReceiverIdList(receiverIdList,
+                intervalTime.getStartTime(), intervalTime.getEndTime());
 
         return receiverIdList.stream().map(receiver -> {
             UpVoteData upVoteData1 = new UpVoteData();
