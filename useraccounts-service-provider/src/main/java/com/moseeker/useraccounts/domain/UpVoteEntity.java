@@ -251,6 +251,7 @@ public class UpVoteEntity {
         logger.info("fetchUpVote upVoteCount:{}", JSON.toJSONString(upVoteCount));
 
         return receiverIdList.stream().map(receiver -> {
+            logger.info("fetchUpVote receiver:{}", receiver);
             UpVoteData upVoteData1 = new UpVoteData();
             upVoteData1.setReceiver(receiver);
             if (upVoteList != null && upVoteList.size() > 0) {
@@ -259,7 +260,10 @@ public class UpVoteEntity {
                         .filter(userEmployeeUpvote -> userEmployeeUpvote.getReceiver() == receiver)
                         .findAny();
                 if (upvoteOptional.isPresent()) {
+                    logger.info("fetchUpVote upVote:{}", upvoteOptional.get());
                     upVoteData1.setUpVote(true);
+                } else {
+                    logger.info("fetchUpVote upVote not vote");
                 }
             }
             Integer count = upVoteCount.get(receiver);
