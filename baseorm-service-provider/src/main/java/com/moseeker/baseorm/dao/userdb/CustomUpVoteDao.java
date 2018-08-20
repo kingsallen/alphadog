@@ -188,12 +188,14 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .fetch();
     }
 
-    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote> fetchBySenderAndReceiverList(int sender, List<Integer> receiverIdList) {
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote> fetchBySenderAndReceiverList(int sender, List<Integer> receiverIdList, long startTime, long endTime) {
         Result<UserEmployeeUpvoteRecord> result = using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.in(receiverIdList))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
                 .fetch();
         if (result != null && result.size() > 0) {
             return result
