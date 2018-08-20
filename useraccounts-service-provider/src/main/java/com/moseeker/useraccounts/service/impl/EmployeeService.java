@@ -569,6 +569,7 @@ public class EmployeeService {
         leaderBoardInfo.setLevel(info.getSort());
         leaderBoardInfo.setPoint(info.getAward());
         leaderBoardInfo.setPraised(upVoteEntity.isPraise(id, id));
+        leaderBoardInfo.setPraise(upVoteEntity.countUpVote(id));
         return leaderBoardInfo;
     }
 
@@ -597,6 +598,7 @@ public class EmployeeService {
             leaderBoardInfo.setUsername(lastEmployee.getName());
             leaderBoardInfo.setIcon(lastEmployee.getHeadImg());
             leaderBoardInfo.setPraised(upVoteEntity.isPraise(id, info.getId()));
+            leaderBoardInfo.setPraise(upVoteEntity.countUpVote(info.getId()));
         }
 
         return leaderBoardInfo;
