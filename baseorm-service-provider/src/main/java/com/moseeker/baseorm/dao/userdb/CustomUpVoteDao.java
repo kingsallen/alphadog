@@ -120,7 +120,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
         if (result != null) {
             if (execute == 0 && result.getCancel().byteValue() != UpVoteState.UpVote.getValue()) {
                 result.setCancel((byte) UpVoteState.UpVote.getValue());
-                result.setUpdateTime(currentTime);
+                result.setUpvoteTime(currentTime);
                 using(configuration()).attach(result);
                 result.update();
             }
