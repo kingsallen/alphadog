@@ -163,6 +163,9 @@ public class CityServices {
         Map<String,Object> result=new HashMap<>();
         Query query=new Query.QueryBuilder().where("is_using",1).and(new Condition("level",1,ValueOp.GT)).buildQuery();
         List<Map<String,Object>> list=dao.getMaps(query);
+        logger.info("============================");
+        logger.info(JSON.toJSONString(list));
+        logger.info("============================");
         if(!StringUtils.isEmptyList(list)){
             List<Map<String,Object>> hotCityList=this.getHotCity();
             result.put("hot_city",hotCityList);
