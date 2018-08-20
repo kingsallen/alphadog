@@ -82,6 +82,7 @@ public class LeaderBoardEntity {
         HrLeaderBoard leaderBoard = leaderBoardTypeDao.fetchOneByCompanyId(companyId);
         if (leaderBoard == null) {
             leaderBoard = new HrLeaderBoard();
+            leaderBoard.setId(0);
             leaderBoard.setCompanyId(companyId);
             leaderBoard.setType((byte)1);
         }
