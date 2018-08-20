@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.Future;
 
 /**
@@ -53,7 +54,8 @@ public class UserEmployeeEntity {
             throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
         }
 
-        if (receiver.getCompanyId() != sender.getCompanyId() || receiver.getCompanyId() == 0) {
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(sender.getCompanyId());
+        if (!companyIdList.contains(receiver.getCompanyId())) {
             throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
         }
         return new UpVoteData(sender, receiver);
