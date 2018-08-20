@@ -473,7 +473,7 @@ public class UserEmployeeController {
 
     @RequestMapping(value="/v1/company/{id}/leader-board", method = RequestMethod.PATCH)
     @ResponseBody
-    public String updateLeaderBoardType(@PathVariable int id, @RequestParam LeaderBoardTypeForm form) throws Exception {
+    public String updateLeaderBoardType(@PathVariable int id, @RequestBody LeaderBoardTypeForm form) throws Exception {
 
         if (form.getAppid() <= 0) {
             throw CommonException.PROGRAM_APPID_REQUIRED;
@@ -490,7 +490,7 @@ public class UserEmployeeController {
         return com.moseeker.servicemanager.web.controller.Result.success(employeeService.countEmplyee(id)).toJson();
     }
 
-    @RequestMapping(value="/v1/employee/upvotes", method = RequestMethod.DELETE)
+    @RequestMapping(value="/v1/employee/upvotes", method = RequestMethod.GET)
     @ResponseBody
     public String clearUpVoteWeekly(@PathVariable int id, HttpServletRequest request) throws Exception {
 
