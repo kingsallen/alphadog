@@ -232,6 +232,7 @@ public class UpVoteEntity {
      * @param receiverIdList 被点赞人员工编号
      */
     public List<UpVoteData> fetchUpVote(int sender, List<Integer> receiverIdList) {
+        logger.info("fetchUpVote sender:{}, receiverIdList:{}", sender, receiverIdList);
         IntervalTime intervalTime = IntervalTime.buildIntervalTime();
         logger.info("fetchUpVote startTime:{}, endTime:{}", intervalTime.getStartTime(), intervalTime.getEndTime());
         List<UserEmployeeUpvote> upVoteList = upVoteDao.fetchBySenderAndReceiverList(sender, receiverIdList,
