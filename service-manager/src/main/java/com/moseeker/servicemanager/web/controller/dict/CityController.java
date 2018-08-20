@@ -93,7 +93,7 @@ public class CityController {
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             String cityCodes= (String) data.get("codes");
             List<Integer> codeList=ParamUtils.convertIntList(cityCodes);
-            if(!StringUtils.isEmptyList(codeList)){
+            if(StringUtils.isEmptyList(codeList)){
                 return ResponseLogNotification.fail(request, "省份code不能为空");
             }
             Response result = cityServices.getCityByProvince(codeList);
