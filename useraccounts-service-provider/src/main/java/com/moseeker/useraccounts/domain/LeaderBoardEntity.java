@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.domain;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.LeaderBoardTypeDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
@@ -9,6 +10,8 @@ import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.useraccounts.constant.LeaderBoardType;
 import com.moseeker.useraccounts.domain.pojo.EmployeeLeaderBoardInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,8 @@ import java.util.List;
  */
 @Component
 public class LeaderBoardEntity {
+
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     SearchengineEntity searchengineEntity;
@@ -52,6 +57,7 @@ public class LeaderBoardEntity {
             List<Integer> companyIdList = userEmployeeEntity.getCompanyIds(employeeInfo.getCompanyId());
             info.setSort(searchengineEntity.getSort(employeeInfo.getId(), employeeInfo.getAward(),timeSpan, companyIdList));
         }
+        logger.info("LeaderBoardEntity fetchLeaderBoardInfo info:{}", JSON.toJSONString(info));
         return info;
     }
 

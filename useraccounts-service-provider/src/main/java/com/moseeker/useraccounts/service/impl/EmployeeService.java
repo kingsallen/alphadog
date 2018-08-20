@@ -557,6 +557,7 @@ public class EmployeeService {
             throw UserAccountException.EMPLOYEE_LEADERBOARDER_NOT_EXISTS;
         }
         LeaderBoardInfo leaderBoardInfo = new LeaderBoardInfo();
+        leaderBoardInfo.setId(id);
         leaderBoardInfo.setUsername(employeeInfo.getName());
         leaderBoardInfo.setIcon(employeeInfo.getHeadImg());
         EmployeeLeaderBoardInfo info = leaderBoardEntity.fetchLeaderBoardInfo(employeeInfo, leaderBoardType);
