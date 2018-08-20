@@ -192,7 +192,7 @@ public class AppConfig {
     public List<Binding> binglearUnViewdUpVote() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(clearUnViewdUpVoteQueue()).to(clearUnViewdUpVoteExchange())
-                    .with("employee_view_leade_board_routing_key"));
+                    .with("employee_view_leader_board_routing_key"));
         }};
     }
 }
