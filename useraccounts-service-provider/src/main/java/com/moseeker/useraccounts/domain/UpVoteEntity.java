@@ -257,7 +257,7 @@ public class UpVoteEntity {
             if (upVoteList != null && upVoteList.size() > 0) {
                 Optional<UserEmployeeUpvote> upvoteOptional = upVoteList
                         .stream()
-                        .filter(userEmployeeUpvote -> userEmployeeUpvote.getReceiver() == receiver)
+                        .filter(userEmployeeUpvote -> userEmployeeUpvote.getReceiver().equals(receiver))
                         .findAny();
                 logger.info("fetchUpVote receiver:{}, sender:{}", upVoteList.get(0).getReceiver(), upVoteList.get(0).getSender());
                 logger.info("fetchUpVote upvoteOptional.isPresent():{}", upvoteOptional.isPresent());
