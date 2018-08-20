@@ -23,6 +23,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserReferralRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -142,6 +143,11 @@ public class Tables {
      * 员工主动推荐记录
      */
     public static final UserReferralRecord USER_REFERRAL_RECORD = com.moseeker.baseorm.db.userdb.tables.UserReferralRecord.USER_REFERRAL_RECORD;
+
+    /**
+     * 用户拒绝推荐信息表
+     */
+    public static final UserRecommendRefusal USER_RECOMMEND_REFUSAL = com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
 
     /**
      * 用户搜索条件(qx职位搜索)

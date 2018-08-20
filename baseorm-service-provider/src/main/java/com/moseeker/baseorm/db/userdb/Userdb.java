@@ -23,6 +23,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserReferralRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
 import com.moseeker.baseorm.db.userdb.tables.UserSysAuthGroup;
@@ -159,6 +160,11 @@ public class Userdb extends SchemaImpl {
     public final UserReferralRecord USER_REFERRAL_RECORD = com.moseeker.baseorm.db.userdb.tables.UserReferralRecord.USER_REFERRAL_RECORD;
 
     /**
+     * 用户拒绝推荐信息表
+     */
+    public final UserRecommendRefusal USER_RECOMMEND_REFUSAL = com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
+
+    /**
      * 用户搜索条件(qx职位搜索)
      */
     public final UserSearchCondition USER_SEARCH_CONDITION = com.moseeker.baseorm.db.userdb.tables.UserSearchCondition.USER_SEARCH_CONDITION;
@@ -242,6 +248,7 @@ public class Userdb extends SchemaImpl {
             UserIntention.USER_INTENTION,
             UserPositionEmail.USER_POSITION_EMAIL,
             UserReferralRecord.USER_REFERRAL_RECORD,
+            UserRecommendRefusal.USER_RECOMMEND_REFUSAL,
             UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,
             UserSysAuthGroup.USER_SYS_AUTH_GROUP,
