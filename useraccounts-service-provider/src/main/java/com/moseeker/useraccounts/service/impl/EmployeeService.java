@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -17,6 +18,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserWxEntity;
+import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
@@ -27,12 +29,16 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeReferralPolicyDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.moseeker.useraccounts.constant.LeaderBoardType;
+import com.moseeker.useraccounts.domain.LeaderBoardEntity;
 import com.moseeker.useraccounts.domain.UpVoteEntity;
 import com.moseeker.useraccounts.domain.UserEmployeeEntity;
+import com.moseeker.useraccounts.domain.pojo.EmployeeLeaderBoardInfo;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo;
 import com.moseeker.useraccounts.service.impl.pojos.UpVoteData;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -105,6 +111,9 @@ public class EmployeeService {
 
     @Autowired
     private UserEmployeeEntity userEmployeeEntity;
+
+    @Autowired
+    private LeaderBoardEntity leaderBoardEntity;
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -330,38 +339,60 @@ public class EmployeeService {
         return response;
     }
 
-    public List<EmployeeAward> awardRanking(int employeeId, int companyId, String timespan) {
-        List<EmployeeAward> response = new ArrayList<>();
+    public Pagination awardRanking(int employeeId, int companyId, String timespan, int pageNum, int pageSize) {
+        Pagination pagination = new Pagination();
+        if (pageNum <=0) {
+            pageNum = 1;
+        }
+        pagination.setPageNum(pageNum);
+        if (pageSize <= 0 || pageSize > Constant.DATABASE_PAGE_SIZE) {
+            pageSize = Constant.PAGE_SIZE;
+        }
+        pagination.setPageSize(pageSize);
+
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId);
         UserEmployeeDO employeeDO = employeeDao.getData(query.buildQuery());
         // 判断员工是否已认证
         if (employeeDO == null || employeeDO.getId() == 0 || employeeDO.getActivation() != 0) {
             log.info("员工信息不存在或未认证，employeeInfo = {}", employeeDO);
-            return response;
+            return pagination;
         }
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        int count = employeeEntity.countActiveEmployeeByCompanyIds(companyIds);
+        pagination.setTotalRow(count);
+        List<EmployeeAward> data = new ArrayList<>();
         try {
             Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
             log.info("awardRanking:", result);
             if (result.getStatus() == 0){
+
 
                 // 解析数据
                 Map<Integer, JSONObject> map = JSON.parseObject(result.getData(), Map.class);
                 query.clear();
                 query.where(new Condition("id", map.keySet(), ValueOp.IN));
                 Map<Integer, UserEmployeeDO> employeeDOMap = new HashMap<>();
-                employeeDOMap.putAll(employeeDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).collect(Collectors.toMap(k -> k.getId(), v -> v)));
+                employeeDOMap.putAll(employeeDao.getDatas(query.buildQuery())
+                        .stream().filter(m -> m != null && m.getId() > 0)
+                        .collect(Collectors.toMap(k -> k.getId(), v -> v)));
                 log.info("employeeDOMap:{}", employeeDOMap);
                 List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
                 // 用户头像获取，获取顺序 user_user.headimg > user_wx_user.headimgurl > ""(默认头像)
                 String defaultHeadImg = "https://cdn.moseeker.com/weixin/images/hr-avatar-default.png";
                 query.clear();
                 query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
-                List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getId() > 0).map(m -> m.getId()).collect(Collectors.toList());
+                List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery())
+                        .stream()
+                        .filter(m -> m != null && m.getId() > 0).map(m -> m.getId())
+                        .collect(Collectors.toList());
                 query.clear();
-                query.where(new Condition("sysuser_id", userIds, ValueOp.IN)).and(new Condition("wechat_id", wechatIds, ValueOp.IN));
-                Map<Integer, String> wxUserHeadimg = wxUserDao.getDatas(query.buildQuery()).stream().filter(m -> m != null && m.getSysuserId() > 0 && StringUtils.isNotNullOrEmpty(m.getHeadimgurl())).collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
+                query.where(new Condition("sysuser_id", userIds, ValueOp.IN))
+                        .and(new Condition("wechat_id", wechatIds, ValueOp.IN));
+                Map<Integer, String> wxUserHeadimg = wxUserDao.getDatas(query.buildQuery())
+                        .stream()
+                        .filter(m -> m != null && m.getSysuserId() > 0 && StringUtils.isNotNullOrEmpty(m.getHeadimgurl()))
+                        .collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
                 query.clear();
                 query.where(new Condition("id", userIds, ValueOp.IN));
                 Map<Integer, String> userHeadimg = userDao.getDatas(query.buildQuery()).stream().map(m -> m.setHeadimg(StringUtils.isNullOrEmpty(m.getHeadimg())?wxUserHeadimg.getOrDefault(m.getId(),defaultHeadImg):m.getHeadimg())).collect(Collectors.toMap(k -> k.getId(), v -> v.getHeadimg(), (newKey, oldKey) -> newKey));
@@ -374,15 +405,16 @@ public class EmployeeService {
                     employeeAward.setName(Optional.ofNullable(employeeDOMap.get(e.getKey())).map(UserEmployeeDO::getCname).orElse(""));
                     employeeAward.setHeadimgurl(Optional.ofNullable(employeeDOMap.get(e.getKey())).map(m -> userHeadimg.getOrDefault(m.getSysuserId(), defaultHeadImg)).orElse(defaultHeadImg));
                     employeeAward.setRanking(value.getIntValue("ranking"));
-                    response.add(employeeAward);
+                    data.add(employeeAward);
                 });
             } else {
                 log.error("query awardRanking data error");
             }
+            pagination.setData(data);
         } catch (TException e) {
             log.error(e.getMessage(), e);
         }
-        return response;
+        return pagination;
     }
 
 
@@ -490,5 +522,92 @@ public class EmployeeService {
     public void removeUpVote(int employeeId, int userId) throws UserAccountException {
         UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, userId);
         upVoteEntity.cancelUpVote(upVoteData.getReceiver(), upVoteData.getSender());
+    }
+
+    /**
+     * 查找指定员工的榜单信息
+     * @param id 员工编号
+     * @param type 榜单类型
+     * @return 榜单信息
+     * @throws CommonException 业务异常
+     */
+    public LeaderBoardInfo fetchLeaderBoardInfo(int id, int type) throws CommonException {
+        EmployeeInfo employeeInfo = employeeEntity.fetchEmployeeInfo(id);
+        if (employeeInfo == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        LeaderBoardType leaderBoardType = LeaderBoardType.instanceFromValue(type);
+        if (leaderBoardType == null) {
+            throw UserAccountException.EMPLOYEE_LEADERBOARDER_NOT_EXISTS;
+        }
+        LeaderBoardInfo leaderBoardInfo = new LeaderBoardInfo();
+        leaderBoardInfo.setUsername(employeeInfo.getName());
+        leaderBoardInfo.setIcon(employeeInfo.getHeadImg());
+        EmployeeLeaderBoardInfo info = leaderBoardEntity.fetchLeaderBoardInfo(employeeInfo, leaderBoardType);
+        leaderBoardInfo.setLevel(info.getSort());
+        leaderBoardInfo.setPoint(info.getAward());
+        leaderBoardInfo.setPraised(upVoteEntity.isPraise(id, id));
+        return leaderBoardInfo;
+    }
+
+    /**
+     * 查找非指定员工的最后一名的员工榜单信息
+     * @param id
+     * @param type
+     * @return
+     */
+    public LeaderBoardInfo fetchLastLeaderBoardInfo(int id, int type) {
+        EmployeeInfo employeeInfo = employeeEntity.fetchEmployeeInfo(id);
+        if (employeeInfo == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        LeaderBoardType leaderBoardType = LeaderBoardType.instanceFromValue(type);
+        if (leaderBoardType == null) {
+            throw UserAccountException.EMPLOYEE_LEADERBOARDER_NOT_EXISTS;
+        }
+        LeaderBoardInfo leaderBoardInfo = new LeaderBoardInfo();
+        EmployeeLeaderBoardInfo info = leaderBoardEntity.fetchLasteaderBoardInfo(employeeInfo, leaderBoardType);
+        if (info != null) {
+            leaderBoardInfo.setId(info.getId());
+            leaderBoardInfo.setPoint(info.getAward());
+            leaderBoardInfo.setLevel(info.getSort());
+            EmployeeInfo lastEmployee = employeeEntity.fetchEmployeeInfo(info.getId());
+            leaderBoardInfo.setUsername(lastEmployee.getName());
+            leaderBoardInfo.setIcon(lastEmployee.getHeadImg());
+            leaderBoardInfo.setPraised(upVoteEntity.isPraise(id, info.getId()));
+        }
+
+        return leaderBoardInfo;
+    }
+
+    public HrLeaderBoard fetchLeaderBoardType(int companyId) {
+        return leaderBoardEntity.fetchLeaderBoardType(companyId);
+    }
+
+    /**
+     * 修改榜单那信息
+     * @param companyId
+     * @param type
+     */
+    public void updateLeaderBoardType(int companyId, byte type) {
+        leaderBoardEntity.update(companyId, type);
+    }
+
+    /**
+     * 查找认证员工数量
+     * @param companyId 公司编号
+     * @return 员工数量
+     */
+    public int countEmployee(int companyId) {
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
+        return employeeEntity.countActiveEmployeeByCompanyIds(companyIdList);
+    }
+
+    public int countRecentUpVote(int employeeId) {
+        return upVoteEntity.countRecentUpVote(employeeId);
+    }
+
+    public void clearUpVoteWeekly() {
+        upVoteEntity.clearUpVoteWeekly();
     }
 }

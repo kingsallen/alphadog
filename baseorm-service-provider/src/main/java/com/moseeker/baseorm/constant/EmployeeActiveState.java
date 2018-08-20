@@ -1,5 +1,8 @@
 package com.moseeker.baseorm.constant;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 员工激活状态
  * Created by jack on 28/12/2017.
@@ -16,6 +19,18 @@ public enum EmployeeActiveState {
 
     private byte state;
     private String name;
+
+    private static Map<Byte, EmployeeActiveState> stateMap = new HashMap<>();
+
+    static {
+        for (EmployeeActiveState employeeActiveState : values()) {
+            stateMap.put(employeeActiveState.getState(), employeeActiveState);
+        }
+    }
+
+    public static EmployeeActiveState instanceFromValue(byte value) {
+        return stateMap.get(value);
+    }
 
     public byte getState() {
         return state;

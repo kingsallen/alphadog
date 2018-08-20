@@ -718,7 +718,9 @@ public class SearchengineService {
      * @param timespan 时间跨度--月、季、年
      * @return
      */
-    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan) {
+    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds,
+                                                         Integer employeeId, String activation, int pageSize,
+                                                         int pageNum, String timespan) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
@@ -838,13 +840,25 @@ public class SearchengineService {
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
+
+        return queryLeaderBoard(companyIds, timespan, employeeId, 1, 20);
+    }
+
+    public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum,
+                                    int pageSize) {
+        return queryLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
+    }
+
+    private Response queryLeaderBoard(List<Integer> companyIds, String timespan, Integer employeeId, int pageNum,
+                                     int pageSize) {
         // 保证插入有序，使用linkedhashMap˚
         Map<Integer, JSONObject> data = new LinkedHashMap<>();
         TransportClient searchClient =null;
         try {
             searchClient =searchUtil.getEsClient();
-                    // 查找所有员工的积分排行
-            SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0", 20, 1, timespan).execute().actionGet();
+            // 查找所有员工的积分排行
+            SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0",
+                    pageSize, pageNum, timespan).execute().actionGet();
             int index = 1;
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
@@ -859,47 +873,17 @@ public class SearchengineService {
             }
             // 当前用户在 >= 20 名，显示返回前20条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
             List<JSONObject> allRankingList = new ArrayList<>(data.values());
-            List<JSONObject> resultList = new ArrayList<>(23);
-            if ((!data.isEmpty() && data.containsKey(employeeId)) || (employeeId == null || employeeId == 0)) {
-                resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
-            } else {
-                // 默认查询前20条
-                resultList = allRankingList.subList(0, allRankingList.size() >= 20 ? 20 : allRankingList.size());
-                SearchResponse hitEmployee = getSearchRequestBuilder(searchClient, companyIds, employeeId, "0", 0, 0, timespan).execute().actionGet();
-                if (hitEmployee != null && hitEmployee.getHits().getHits().length > 0) {
-                    JSONObject employeeJson = JSONObject.parseObject(hitEmployee.getHits().getHits()[0].getSourceAsString()).getJSONObject("awards");
-                    if (employeeJson.containsKey(timespan) && employeeJson.getJSONObject(timespan).getIntValue("award") > 0 && employeeJson.getJSONObject(timespan).getString("last_update_time") != null) {
-                        // 获取用户名次
-                        int employeeAward = employeeJson.getJSONObject(timespan).getIntValue("award");
-                        long lastUpdateTime = LocalDateTime.parse(employeeJson.getJSONObject(timespan).getString("last_update_time")).toInstant(ZoneOffset.UTC).toEpochMilli();
-                        SearchRequestBuilder builder = getSearchRequestBuilder(searchClient, companyIds, null, "0", 0, 0, timespan).setSize(0)
-                                .addAggregation(handleAggScale("awards." + timespan, employeeAward, lastUpdateTime));
-                        logger.info(builder.toString());
-                        SearchResponse hitEmployeeRanking = builder.execute().actionGet();
-                        if (hitEmployeeRanking != null) {
-                            int ranking = (int) hitEmployeeRanking.getAggregations().asMap().get("ranking").getProperty("value");
-                            logger.info("员工:{} ，timespan:{} 排名:{}", employeeId, timespan, ranking + 1);
-                            SearchHits hits = getSearchRequestBuilder(searchClient, companyIds, null, "0", 0, 0, timespan).setFrom(ranking - 1).setSize(3).execute().actionGet().getHits();
-                            for (SearchHit searchHit : hits.getHits()) {
-                                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
-                                JSONObject obj = JSON.parseObject("{}");
-                                obj.put("employee_id", jsonObject.getIntValue("id"));
-                                obj.put("ranking", ranking++);
-                                obj.put("last_update_time", jsonObject.getJSONObject("awards").getJSONObject(timespan).getString("last_update_time"));
-                                obj.put("award", jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award"));
-                                resultList.add(obj);
-                            }
-                        }
-                    }
-                }
-            }
-            data = resultList.stream().collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")), v -> v, (oldKey, newKey) -> newKey));
+            data = allRankingList
+                    .stream()
+                    .collect(Collectors.toMap(k -> TypeUtils.castToInt(k.remove("employee_id")),
+                            v -> v, (oldKey, newKey) -> newKey));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(data);
     }
+
     @CounterIface
     public Map<String,Object> getPositionSuggest(Map<String,String> params){
         return searchMethodUtil.suggestPosition(params);

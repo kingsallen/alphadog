@@ -40,7 +40,7 @@ service EmployeeService {
     employee_struct.Result emailActivation(1: string activationCodee);
 
     // 积分排行榜
-    list<employee_struct.EmployeeAward> awardRanking(1: i32 employeeId, 2: i32 companyId, 3: employee_struct.Timespan timespan);
+    employee_struct.Pagination awardRanking(1: i32 employeeId, 2: i32 companyId, 3: employee_struct.Timespan timespan, 4: i32 pageNum, 5:i32 pageSize) throws (1: common_struct.BIZException e);
 
     // 员工填写认证自定义字段（更新redis中员工记录）
     employee_struct.Result setCacheEmployeeCustomInfo(1: i32 userId, 2: i32 companyId, 3: string customValues);
@@ -53,8 +53,22 @@ service EmployeeService {
     void updsertCompanyReferralPocily(1:i32 companyId, 2:i32 userId)throws (1: common_struct.BIZException e)
     //计算员工被点赞的数量
     i32 countUpVote(1:i32 employeeId)throws (1: common_struct.BIZException e)
+    //计算未查阅的点赞数量
+    i32 countRecentUpVote(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //点赞
     i32 upvote(1:i32 employeeId, 2: i32 userId)throws (1: common_struct.BIZException e)
     //取消点赞
     void removeUpvote(1:i32 employeeId, 2:i32 userId)throws (1: common_struct.BIZException e)
+    //每周清空点赞
+    void clearUpVoteWeekly()throws (1: common_struct.BIZException e)
+    //员工榜单信息
+    employee_struct.LeaderBoardInfo fetchLeaderBoardInfo(1:i32 id, 2: i32 type)throws (1: common_struct.BIZException e)
+    //最后一名非指定员工的榜单信息 
+    employee_struct.LeaderBoardInfo fetchLastLeaderBoardInfo(1:i32 id, 2: i32 type)throws (1: common_struct.BIZException e)
+    //查找榜单信息
+    employee_struct.LeaderBoardType fetchLeaderBoardType(1:i32 companyId)throws (1: common_struct.BIZException e)
+    //修改榜单类型
+    void updateLeaderBoardType(1:i32 companyId, 2: i8 type)throws (1: common_struct.BIZException e)
+    //员工数量
+    i32 countEmplyee(1:i32 companyId)throws (1: common_struct.BIZException e)
 }

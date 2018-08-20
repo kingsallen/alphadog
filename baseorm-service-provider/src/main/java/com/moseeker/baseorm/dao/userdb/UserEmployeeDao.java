@@ -16,6 +16,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+import static org.jooq.impl.DSL.selectOne;
+
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
 
@@ -168,5 +170,42 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .limit(1)
                 .fetchOne();
+    }
+    public void unFollowWechat(int id) {
+        create.update(UserEmployee.USER_EMPLOYEE)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.UnFollow.getState())
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(id))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .execute();
+    }
+
+    public UserEmployeeDO getUnFollowEmployeeByUserId(int userId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetchOneInto(UserEmployeeDO.class);
+    }
+
+    /**
+     * 叫取消关注状态的员工转回认证成功的状态。
+     * 但是必须保证一个sysuser_id 只能对应一个认证成功的员工
+     * @param id 员工编号
+     * @param sysuserId 用户编号
+     */
+    public void followWechat(int id, int sysuserId) {
+
+        create.update(UserEmployee.USER_EMPLOYEE)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.Actived.getState())
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(id))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
+                .andNotExists(
+                        selectOne()
+                        .from(UserEmployee.USER_EMPLOYEE)
+                        .where(UserEmployee.USER_EMPLOYEE.ID.notEqual(id))
+                        .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
+                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                )
+                .execute();
     }
 }

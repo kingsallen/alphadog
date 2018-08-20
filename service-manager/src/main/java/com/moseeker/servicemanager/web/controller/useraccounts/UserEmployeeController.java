@@ -13,9 +13,11 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
-import com.moseeker.servicemanager.web.controller.AppIdForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.ContributionDetail;
+import com.moseeker.servicemanager.web.controller.useraccounts.vo.LeaderBoardInfo;
+import com.moseeker.servicemanager.web.controller.useraccounts.vo.LeaderBoardType;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -29,6 +31,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -426,6 +429,73 @@ public class UserEmployeeController {
 
         ParamUtils.parseRequestParam(request);
         employeeService.removeUpvote(id, colleague);
+        return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/{id}/recent-upvote", method = RequestMethod.GET)
+    @ResponseBody
+    public String countRecentUpVote(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        if(org.apache.commons.lang.StringUtils.isBlank(request.getParameter("appid"))) {
+            throw CommonException.PROGRAM_APPID_REQUIRED;
+        }
+        return com.moseeker.servicemanager.web.controller.Result.success(employeeService.countRecentUpVote(id)).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/{id}/list-info", method = RequestMethod.GET)
+    @ResponseBody
+    public String leaderBoardInfo(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int type = params.getInt("type", 0);
+        LeaderBoardInfo leaderBoardInfo = LeaderBoardInfo.instanceFrom(employeeService.fetchLeaderBoardInfo(id, type));
+        return com.moseeker.servicemanager.web.controller.Result.success(leaderBoardInfo).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/{id}/last-list-info", method = RequestMethod.GET)
+    @ResponseBody
+    public String lastLeaderBoardInfo(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int type = params.getInt("type", 0);
+        LeaderBoardInfo leaderBoardInfo = LeaderBoardInfo.instanceFrom(employeeService.fetchLastLeaderBoardInfo(id, type));
+        return com.moseeker.servicemanager.web.controller.Result.success(leaderBoardInfo).toJson();
+    }
+
+    @RequestMapping(value="/v1/company/{id}/leader-board", method = RequestMethod.GET)
+    @ResponseBody
+    public String getLeaderBoardType(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        ParamUtils.parseRequestParam(request);
+        LeaderBoardType leaderBoardType = LeaderBoardType.instanceFrom(employeeService.fetchLeaderBoardType(id));
+        return com.moseeker.servicemanager.web.controller.Result.success(leaderBoardType).toJson();
+    }
+
+    @RequestMapping(value="/v1/company/{id}/leader-board", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateLeaderBoardType(@PathVariable int id, @RequestParam LeaderBoardTypeForm form) throws Exception {
+
+        if (form.getAppid() <= 0) {
+            throw CommonException.PROGRAM_APPID_REQUIRED;
+        }
+        employeeService.updateLeaderBoardType(id, form.getType());
+        return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
+    }
+
+    @RequestMapping(value="/v1/company/{id}/employees-count", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String countEmployee(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        ParamUtils.parseRequestParam(request);
+        return com.moseeker.servicemanager.web.controller.Result.success(employeeService.countEmplyee(id)).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/upvotes", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String clearUpVoteWeekly(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        ParamUtils.parseRequestParam(request);
+        employeeService.clearUpVoteWeekly();
         return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
     }
 }
