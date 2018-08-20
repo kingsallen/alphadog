@@ -243,7 +243,6 @@ public class UpVoteEntity {
                 intervalTime.getStartTime(), intervalTime.getEndTime());
 
         logger.info("fetchUpVote upVoteList:{}", upVoteList);
-        logger.info("fetchUpVote receiver:{}, sender:{}", upVoteList.get(0).getReceiver(), upVoteList.get(0).getSender());
 
         Map<Integer, Integer> upVoteCount = upVoteDao.countUpVoteByReceiverIdList(receiverIdList,
                 intervalTime.getStartTime(), intervalTime.getEndTime());
