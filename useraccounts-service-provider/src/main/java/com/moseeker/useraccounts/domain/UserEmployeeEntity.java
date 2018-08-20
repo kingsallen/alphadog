@@ -25,10 +25,10 @@ public class UserEmployeeEntity {
     @Autowired
     EmployeeEntity employeeEntity;
 
-    public UpVoteData findEmployee(int employeeId, int userId) throws UserAccountException {
+    public UpVoteData findEmployee(int employeeId, int colleague) throws UserAccountException {
 
         Future<UserEmployeeDO> senderFuture = threadPool.startTast(() -> employeeEntity.getEmployeeByID(employeeId));
-        Future<UserEmployeeDO> receiverFuture = threadPool.startTast(() -> employeeEntity.getActiveEmployeeDOByUserId(userId));
+        Future<UserEmployeeDO> receiverFuture = threadPool.startTast(() -> employeeEntity.getEmployeeByID(colleague));
 
         UserEmployeeDO sender;
         try {
