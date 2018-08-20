@@ -15,7 +15,7 @@ public class LeaderBoardType {
             LeaderBoardType leaderBoardType = new LeaderBoardType();
             leaderBoardType.setId(type.getId());
             leaderBoardType.setCompanyId(type.getCompany_id());
-            leaderBoardType.setType(leaderBoardType.getType());
+            leaderBoardType.setType(type.getType());
             return leaderBoardType;
         } else {
             return null;
