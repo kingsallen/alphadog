@@ -360,7 +360,12 @@ public class EmployeeService {
             return pagination;
         }
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-        int count = employeeEntity.countActiveEmployeeByCompanyIds(companyIds);
+        int count = 0;
+        try {
+            count = searchService.countLeaderBoard(companyIds, timespan);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
         pagination.setTotalRow(count);
         List<EmployeeAward> data = new ArrayList<>();
         try {

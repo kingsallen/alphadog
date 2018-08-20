@@ -849,6 +849,42 @@ public class SearchengineService {
         return queryLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
     }
 
+    public int countLeaderBoard(List<Integer> companyIds, String timeSpan) {
+        TransportClient searchClient =null;
+        try {
+            searchClient =searchUtil.getEsClient();
+
+            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
+
+            QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
+                    .gt(0);
+            ((BoolQueryBuilder) query).must(awardQuery);
+
+            QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIds);
+            ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
+
+            QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
+            ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+
+            try {
+                SearchResponse sortResponse = searchClient.prepareSearch("awards").setTypes("award")
+                        .setQuery(query)
+                        .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                        .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                        .setSize(0).execute().get();
+                return (int)sortResponse.getHits().getTotalHits();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+                return 0;
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return 0;
+        }
+    }
+
     private Response queryLeaderBoard(List<Integer> companyIds, String timespan, Integer employeeId, int pageNum,
                                      int pageSize) {
         // 保证插入有序，使用linkedhashMap˚

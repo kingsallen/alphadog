@@ -57,6 +57,7 @@ public class LeaderBoardEntity {
             List<Integer> companyIdList = userEmployeeEntity.getCompanyIds(employeeInfo.getCompanyId());
             info.setSort(searchengineEntity.getSort(employeeInfo.getId(), employeeInfo.getAward(),timeSpan, companyIdList));
         }
+        //todo delete
         logger.info("LeaderBoardEntity fetchLeaderBoardInfo info:{}", JSON.toJSONString(info));
         return info;
     }
