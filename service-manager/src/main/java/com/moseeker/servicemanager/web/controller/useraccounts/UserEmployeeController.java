@@ -482,7 +482,7 @@ public class UserEmployeeController {
         return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
     }
 
-    @RequestMapping(value="/v1/company/{id}/employees-count", method = RequestMethod.PATCH)
+    @RequestMapping(value="/v1/company/{id}/employees-count", method = RequestMethod.GET)
     @ResponseBody
     public String countEmployee(@PathVariable int id, HttpServletRequest request) throws Exception {
 
@@ -490,7 +490,7 @@ public class UserEmployeeController {
         return com.moseeker.servicemanager.web.controller.Result.success(employeeService.countEmplyee(id)).toJson();
     }
 
-    @RequestMapping(value="/v1/employee/upvotes", method = RequestMethod.GET)
+    @RequestMapping(value="/v1/employee/upvotes", method = RequestMethod.DELETE)
     @ResponseBody
     public String clearUpVoteWeekly(@PathVariable int id, HttpServletRequest request) throws Exception {
 
