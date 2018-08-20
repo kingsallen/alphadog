@@ -518,13 +518,13 @@ public class EmployeeService {
     /**
      * 点赞
      * @param employeeId 点赞的员工编号
-     * @param userId 被点赞的用户编号
+     * @param colleague 被点赞的员工编号
      * @return 点赞记录编号
      * @throws UserAccountException 业务异常
      */
-    public int upVote(int employeeId, int userId) throws UserAccountException {
+    public int upVote(int employeeId, int colleague) throws UserAccountException {
 
-        UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, userId);
+        UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, colleague);
 
         return upVoteEntity.upVote(upVoteData.getReceiver(), upVoteData.getSender());
     }
@@ -532,11 +532,11 @@ public class EmployeeService {
     /**
      * 取消点赞
      * @param employeeId 点赞的员工编号
-     * @param userId 被点赞的用户编号
+     * @param colleague 被点赞的员工编号
      * @throws UserAccountException 业务异常
      */
-    public void removeUpVote(int employeeId, int userId) throws UserAccountException {
-        UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, userId);
+    public void removeUpVote(int employeeId, int colleague) throws UserAccountException {
+        UpVoteData upVoteData = userEmployeeEntity.findEmployee(employeeId, colleague);
         upVoteEntity.cancelUpVote(upVoteData.getReceiver(), upVoteData.getSender());
     }
 
