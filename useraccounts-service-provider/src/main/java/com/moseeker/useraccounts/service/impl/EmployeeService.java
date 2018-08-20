@@ -423,6 +423,7 @@ public class EmployeeService {
                                         .filter(upVoteData -> upVoteData.getReceiver() == employeeAward.getEmployeeId())
                                         .findAny();
                         if (upVoteDataOptional.isPresent()) {
+                            log.info("upVote exist employeeId:{}   upVote:{}", employeeAward.getEmployeeId(), JSON.toJSONString(upVoteDataOptional.get()));
                             employeeAward.setPraised(upVoteDataOptional.get().isUpVote());
                             employeeAward.setPraise(upVoteDataOptional.get().getReceiverUpVoteCount());
                         }
