@@ -845,6 +845,8 @@ public class SearchengineService {
 
     public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum,
                                     int pageSize) {
+        logger.info("queryAwardRankingInWx companyIds:{}, timespan:{}, employeeId:{}, pageNum:{}, pageSize:{}",
+                companyIds, timespan, employeeId, pageNum, pageSize);
         return queryLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
     }
 
