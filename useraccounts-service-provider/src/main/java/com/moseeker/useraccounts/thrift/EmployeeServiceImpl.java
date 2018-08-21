@@ -350,6 +350,4 @@ public class EmployeeServiceImpl implements Iface {
 			throw ExceptionUtils.convertException(e);
 		}
 	}
-
-
 }
