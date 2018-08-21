@@ -650,6 +650,7 @@ public class SearchengineEntity {
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
+            logger.info("getEmployeeInfo id:{},  response:{}", id, response);
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
@@ -678,10 +679,6 @@ public class SearchengineEntity {
 
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
-            if (employeeId == 884206) {
-                logger.info("getSort query:{}", query.toString());
-            }
-
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query)
