@@ -21,6 +21,7 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        super.paramCheck(bindingParams, certConf);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
                 .and("cname", bindingParams.getName())
