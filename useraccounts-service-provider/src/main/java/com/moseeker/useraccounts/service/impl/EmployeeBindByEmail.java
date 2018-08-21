@@ -51,6 +51,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        super.paramCheck(bindingParams, certConf);
         // 邮箱校验后缀
         if (JSONObject.parseArray(certConf.getEmailSuffix()).stream().noneMatch(m -> bindingParams.getEmail()
                 .endsWith(String.valueOf(m)))) {

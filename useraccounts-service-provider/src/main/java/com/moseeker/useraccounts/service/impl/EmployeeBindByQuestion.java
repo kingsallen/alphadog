@@ -21,6 +21,7 @@ public class EmployeeBindByQuestion extends EmployeeBinder{
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        super.paramCheck(bindingParams, certConf);
         // 问题校验
         List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
         log.info("answers: {}", answers);
