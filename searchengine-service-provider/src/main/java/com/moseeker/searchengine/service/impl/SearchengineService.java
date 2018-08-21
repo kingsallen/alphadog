@@ -906,6 +906,7 @@ public class SearchengineService {
             int index = from+1;
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                logger.info("queryLeaderBoard source:{}", jsonObject);
                 if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timespan) && jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                     JSONObject obj = JSON.parseObject("{}");
                     obj.put("employee_id", jsonObject.getIntValue("id"));
