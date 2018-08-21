@@ -187,19 +187,19 @@ public class CityServices {
         Query query=new Query.QueryBuilder().where("is_using",1).and(new Condition("level",1, ValueOp.GT)).buildQuery();
         List<Map<String,Object>> dataList=dao.getMaps(query);
         if(!StringUtils.isEmptyList(dataList)){
-            List<Integer> result=new ArrayList<>();
+            List<Map<String,Object>> result=new ArrayList<>();
             for(Map<String,Object> data:dataList){
                 int codeItem= (int) data.get("code");
                 for(Integer code:codes){
                     if(!codeList.contains(code)&&code<codeItem&&code+10000>codeItem){
-                        result.add(codeItem);
+                        result.add(data);
                     }
                 }
             }
             return ResponseUtils.success(result);
         }
 
-        return ResponseUtils.success(new ArrayList<Integer>());
+        return ResponseUtils.success(new ArrayList<Map<String,Object>>());
     }
     /*
      判断查询的是否是省份
