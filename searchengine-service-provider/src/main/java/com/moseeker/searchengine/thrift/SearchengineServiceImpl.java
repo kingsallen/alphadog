@@ -127,7 +127,8 @@ public class SearchengineServiceImpl implements Iface {
     }
 
 	@Override
-	public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum, int pageSize) throws BIZException, TException {
+	public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum,
+									int pageSize) throws BIZException, TException {
 		try {
 			return service.listLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
 		}catch(Exception e){
