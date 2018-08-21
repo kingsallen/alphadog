@@ -789,12 +789,22 @@ public class TalentpoolSearchengine {
                 params.put("city_code",cityNewCode);
             }
         }
+        logger.info("================原有城市数据为==========================");
+        logger.info(cityCode);
+        logger.info("==============处理后的城市数据为=========================");
+        logger.info(params.get("city_code"));
+        logger.info("=======================================================");
         if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
             String intentionNewCityCode=dictCityDao.handlerProvinceCity(intentionCityCode);
             if(StringUtils.isNotNullOrEmpty(intentionNewCityCode)){
                 params.put("intention_city_code",intentionNewCityCode);
             }
         }
+        logger.info("================原有期望城市数据为==========================");
+        logger.info(intentionCityCode);
+        logger.info("==============处理后的期望城市数据为=======");
+        logger.info(params.get("intention_city_code"));
+        logger.info("======================================");
     }
 
 
