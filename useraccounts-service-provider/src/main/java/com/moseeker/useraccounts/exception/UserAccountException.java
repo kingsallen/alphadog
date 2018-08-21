@@ -34,6 +34,9 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException AWARD_POINTS_CONF_LOST = new UserAccountException(42025, "积分配置确实!");
     public static final UserAccountException AWARD_EMPLOYEE_ELEGAL = new UserAccountException(42026, "员工信息不正确!");
     public static final UserAccountException HRACCOUNT_NOT_EXIST = new UserAccountException(42027, "HR账号不存在!");
+    public static final UserAccountException EMPLOYEE_ALREADY_UP_VOTE = new UserAccountException(42028, "已经点过赞!");
+    public static final UserAccountException EMPLOYEE_NOT_UP_VOTE = new UserAccountException(42029, "未点过赞!");
+    public static final UserAccountException EMPLOYEE_LEADERBOARDER_NOT_EXISTS = new UserAccountException(42030, "榜单类型错误!");
 
     private final int code;
 

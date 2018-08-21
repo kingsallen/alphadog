@@ -1,6 +1,6 @@
 package com.moseeker.useraccounts.infrastructure;
 
-import com.moseeker.baseorm.constant.EmployeeActivedState;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrPointsConf;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
@@ -177,7 +177,7 @@ public class AwardRepository {
                 .select(USER_EMPLOYEE.ID, USER_EMPLOYEE.AWARD)
                 .from(USER_EMPLOYEE)
                 .where(USER_EMPLOYEE.ID.in(employeeIdList))
-                .and(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                .and(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
                 .and(USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .fetch();
     }

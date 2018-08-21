@@ -1,6 +1,6 @@
 package com.moseeker.useraccounts.infrastructure;
 
-import com.moseeker.baseorm.constant.EmployeeActivedState;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.daos.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -49,7 +49,7 @@ public class UserEmployeeJOOQDao extends UserEmployeeDao {
                     .selectFrom(USER_EMPLOYEE)
                     .where(condition)
                     .and(USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
-                    .and(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                    .and(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
                     .fetch();
             if (result != null) {
                 return result.map(mapper());

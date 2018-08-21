@@ -20,6 +20,10 @@ service SearchengineServices {
     common_struct.Response queryAwardRanking(1: list<i32> companyIds, 2: string timespan, 3: i32 pageSize, 4: i32 pageNum,5:string keyword,6:i32 filter)throws (1: common_struct.BIZException e);
 
     common_struct.Response queryAwardRankingInWx(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId)throws (1: common_struct.BIZException e);
+    
+    common_struct.Response listLeaderBoard(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId, 4: i32 pageNum, 5: i32 pageSize)throws (1: common_struct.BIZException e);
+    
+    i32 countLeaderBoard(1: list<i32> companyIds, 2: string timespan)throws (1: common_struct.BIZException e);
 
     common_struct.Response updateEmployeeAwards(1: list<i32> employeeId)throws (1: common_struct.BIZException e);
 

@@ -56,4 +56,16 @@ public class HrWxWechatDao extends JooqCrudImpl<HrWxWechatDO, HrWxWechatRecord> 
                 .fetchInto(HrWxWechatDO.class);
         return result;
     }
+
+    /**
+     * 查找公司公众号信息
+     * @param wechatId 公众号编号
+     * @return
+     */
+    public HrWxWechatDO fetchWechat(int wechatId) {
+        return create.selectFrom(HrWxWechat.HR_WX_WECHAT)
+                .where(HrWxWechat.HR_WX_WECHAT.ID.eq(wechatId))
+                .fetchOneInto(HrWxWechatDO.class);
+
+    }
 }

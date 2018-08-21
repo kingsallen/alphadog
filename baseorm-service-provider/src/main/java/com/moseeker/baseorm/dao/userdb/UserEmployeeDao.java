@@ -1,6 +1,6 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import com.moseeker.baseorm.constant.EmployeeActivedState;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -9,15 +9,14 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
+
+import static org.jooq.impl.DSL.selectOne;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -167,9 +166,47 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
         return create.selectFrom(UserEmployee.USER_EMPLOYEE)
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .limit(1)
                 .fetchOne();
+    }
+
+    public void unFollowWechat(int id) {
+        create.update(UserEmployee.USER_EMPLOYEE)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.UnFollow.getState())
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(id))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .execute();
+    }
+
+    public UserEmployeeDO getUnFollowEmployeeByUserId(int userId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetchOneInto(UserEmployeeDO.class);
+    }
+
+    /**
+     * 叫取消关注状态的员工转回认证成功的状态。
+     * 但是必须保证一个sysuser_id 只能对应一个认证成功的员工
+     * @param id 员工编号
+     * @param sysuserId 用户编号
+     */
+    public void followWechat(int id, int sysuserId) {
+
+        create.update(UserEmployee.USER_EMPLOYEE)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.Actived.getState())
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(id))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
+                .andNotExists(
+                        selectOne()
+                        .from(UserEmployee.USER_EMPLOYEE)
+                        .where(UserEmployee.USER_EMPLOYEE.ID.notEqual(id))
+                        .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
+                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                )
+                .execute();
     }
 }

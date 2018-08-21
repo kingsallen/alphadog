@@ -40,13 +40,16 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -590,27 +593,82 @@ public class SearchengineEntity {
 
                 for (int i =0; i< employeeAwardsList.size(); i++) {
                     employeeAwardsList.get(i).setSort(getSort(client, employeeAwardsList.get(i).getId(),
-                            employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getLastUpdateTime(),
-                            employeeAwardsList.get(i).getTimeSpan(), companyIdListQueryBuild));
-                    logger.info("getCurrentMonthList - add sort employeeAwards:{}", JSONObject.toJSONString(employeeAwardsList.get(i)));
+                            employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getTimeSpan(),
+                            companyIdListQueryBuild));
                 }
             }
             return employeeAwardsList.stream().collect(Collectors.toMap(EmployeeAwards::getId, EmployeeAwards::getSort));
         }
     }
 
-    private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime, String timeSpan,
+    /**
+     * 获取员工排名
+     * @param id 员工编号
+     * @param award 积分
+     * @param timeSpan 时间跨度
+     * @param companyIdList 公司编号（集团公司是集团下的所有员工排名）
+     * @return 排名
+     * @throws CommonException 业务异常
+     */
+    public int getSort(int id, int award, String timeSpan, List<Integer> companyIdList) throws CommonException {
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            logger.error("无法获取ES客户端！！！！");
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
+        return getSort(client, id, award, timeSpan, companyIdListQueryBuild);
+    }
+
+    /**
+     * 增加排序脚本。针对月/季/年榜积分的特殊处理
+     * @param timspanc 时间
+     * @param field 字段
+     * @param sortOrder 排序规则 升序还是降序
+     * @return ES插叙预计
+     */
+    public SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("double score=0; awards=_source.awards;times=awards['" + timspanc +
+                "'];if(times){award=doc['awards." + timspanc + "." + field +
+                "'].value;if(award){score=award}}; return score");
+        return new ScriptSortBuilder(new Script(stringBuffer.toString()), "number").order(sortOrder);
+    }
+
+    /**
+     * 查询指定员工的索引信息
+     * @param id
+     * @return
+     */
+    public JSONObject getEmployeeInfo(int id) {
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            return new JSONObject();
+        } else {
+            QueryBuilder employeeIdListQueryBuild = QueryBuilders.termsQuery("id", String.valueOf(id));
+
+            SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
+                    .setQuery(employeeIdListQueryBuild);
+            SearchResponse response = searchRequestBuilder.execute().actionGet();
+            if (response.getHits() != null && response.getHits().totalHits() > 0) {
+                SearchHit searchHit = response.getHits().getAt(0);
+                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                return jsonObject;
+            } else {
+                return new JSONObject();
+            }
+        }
+    }
+
+    private int getSort(TransportClient client, int employeeId, int award,  String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
         if (award > 0) {
             QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
 
             QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
-                    .gt(award);
+                    .gte(award);
             ((BoolQueryBuilder) query).must(awardQuery);
-
-            logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toString());
-            logger.info("timespan:{}", Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()));
 
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
 
@@ -626,15 +684,57 @@ public class SearchengineEntity {
 
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
-                        .setQuery(query).setSize(0).execute().get();
-                if (employeeId == 884206) {
-                    logger.info("getSort sortResponse:{}", sortResponse);
-                }
+                        .setQuery(query)
+                        .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                        .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                        .setSize(0).execute().get();
                 return (int)sortResponse.getHits().getTotalHits()+1;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
         }
         return 0;
+    }
+
+    public JSONObject lastEmployeeInfo(int id, String timeSpan, List<Integer> companyIdList) {
+
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            logger.error("无法获取ES客户端！！！！");
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+
+        QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
+
+        QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
+                .gt(0);
+        ((BoolQueryBuilder) query).must(awardQuery);
+
+        QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
+        ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
+
+        QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
+                .termQuery("id", id);
+        ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
+
+        QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
+        ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+
+        try {
+            SearchResponse response = client.prepareSearch("awards").setTypes("award")
+                    .setQuery(query)
+                    .addSort(buildSortScript(timeSpan, "award", SortOrder.ASC))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.DESC))
+                    .setSize(1).execute().get();
+            if (response.getHits() != null && response.getHits().totalHits() > 0) {
+                SearchHit searchHit = response.getHits().getAt(0);
+                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                return jsonObject;
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return new JSONObject();
     }
 }

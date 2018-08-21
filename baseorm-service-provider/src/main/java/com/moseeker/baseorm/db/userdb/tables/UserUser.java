@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -92866057;
+    private static final long serialVersionUID = 887497385;
 
     /**
      * The reference instance of <code>userdb.user_user</code>
@@ -109,7 +109,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
     /**
      * The column <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
-    public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "手机号(未验证)");
+    public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "手机号(未验证)");
 
     /**
      * The column <code>userdb.user_user.email</code>. user pass email registe
@@ -134,7 +134,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
     /**
      * The column <code>userdb.user_user.name</code>. 真实姓名
      */
-    public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "真实姓名");
+    public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "真实姓名");
 
     /**
      * The column <code>userdb.user_user.headimg</code>. 头像
@@ -157,9 +157,9 @@ public class UserUser extends TableImpl<UserUserRecord> {
     public final TableField<UserUserRecord, String> UNIONID = createField("unionid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "存储仟寻服务号的unionid");
 
     /**
-     * The column <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)
+     * The column <code>userdb.user_user.source</code>. 来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传, 104 员工主动推荐
      */
-    public final TableField<UserUserRecord, Short> SOURCE = createField("source", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)");
+    public final TableField<UserUserRecord, Short> SOURCE = createField("source", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "来源：0:手机注册 1:聚合号一键登录 2:企业号一键登录 3:微信端百度 oauth 7:PC(正常添加) 8:PC(我要投递) 9:PC(我感兴趣) 10:PC(微信扫描后手机注册) 100:简历回收自动创建, 101支付宝, 103 程序导入(和黄)，102简历上传, 104 员工主动推荐");
 
     /**
      * The column <code>userdb.user_user.company</code>. 点击我感兴趣时填写的公司

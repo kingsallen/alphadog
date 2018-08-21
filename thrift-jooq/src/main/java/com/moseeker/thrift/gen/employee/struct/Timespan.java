@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.HashMap;
 import org.apache.thrift.TEnum;
 
-public enum Timespan implements TEnum {
+public enum Timespan implements org.apache.thrift.TEnum {
   month(0),
   quarter(1),
   year(2);

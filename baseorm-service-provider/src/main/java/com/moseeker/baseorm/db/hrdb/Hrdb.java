@@ -34,6 +34,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
@@ -90,7 +91,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -657176429;
+    private static final long serialVersionUID = 976115345;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -246,6 +247,11 @@ public class Hrdb extends SchemaImpl {
      * 企业用户导入数据异步处理监控操作表
      */
     public final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
+
+    /**
+     * 榜单开关
+     */
+    public final HrLeaderBoard HR_LEADER_BOARD = com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard.HR_LEADER_BOARD;
 
     /**
      * nps打分推荐表
@@ -457,6 +463,7 @@ public class Hrdb extends SchemaImpl {
             HrHtml5Statistics.HR_HTML5_STATISTICS,
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
+            HrLeaderBoard.HR_LEADER_BOARD,
             HrNps.HR_NPS,
             HrNpsRecommend.HR_NPS_RECOMMEND,
             HrOperationRecord.HR_OPERATION_RECORD,
