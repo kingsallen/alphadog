@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+import static org.jooq.impl.DSL.select;
 import static org.jooq.impl.DSL.selectOne;
 
 @Repository
@@ -184,6 +185,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .limit(1)
                 .fetchOneInto(UserEmployeeDO.class);
     }
 
@@ -195,17 +197,15 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
      */
     public void followWechat(int id, int sysuserId) {
 
-        create.update(UserEmployee.USER_EMPLOYEE)
-                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.Actived.getState())
-                .where(UserEmployee.USER_EMPLOYEE.ID.eq(id))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
-                .andNotExists(
-                        selectOne()
-                        .from(UserEmployee.USER_EMPLOYEE)
-                        .where(UserEmployee.USER_EMPLOYEE.ID.notEqual(id))
-                        .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
-                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
-                )
-                .execute();
+        create.execute("update " +
+                " userdb.user_employee u " +
+                "left join (" +
+                "  select uu.id, uu.sysuser_id as user_id " +
+                "  from userdb.user_employee uu " +
+                "  where uu.sysuser_id = "+sysuserId+" and uu.activation = 0 and uu.disable = 0) ut " +
+                " on u.sysuser_id = ut.user_id " +
+                " set u.activation = "+EmployeeActiveState.Actived.getState()+
+                " where u.activation = "+ EmployeeActiveState.UnFollow.getState() + " " +
+                " and u.id = "+ id + " and ut.id is null");
     }
 }
