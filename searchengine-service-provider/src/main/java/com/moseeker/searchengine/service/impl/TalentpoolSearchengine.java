@@ -1,6 +1,7 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -11,13 +12,10 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dict.service.CityServices;
 import org.apache.log4j.Logger;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -56,8 +54,8 @@ public class TalentpoolSearchengine {
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
     private SearchMethodUtil searchMethodUtil;
-
-    CityServices.Iface cityServices = ServiceManager.SERVICEMANAGER.getService(CityServices.Iface.class);
+    @Autowired
+    private DictCityDao dictCityDao;
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
         logger.info("===================+++++++++++++++++++++++++++++++++++");
@@ -786,8 +784,7 @@ public class TalentpoolSearchengine {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         this.handlerPositionId(params);
-        this.handlerIntentionCity(params);
-        this.handlerLiveCity(params);
+        this.handlerProvinceCity(params);
         this.queryCommons(params,query);
         this.queryProfiles(params,query);
         this.queryApplications(params,query);
@@ -802,86 +799,36 @@ public class TalentpoolSearchengine {
         this.queryTalentComment(params,query);
         return query;
     }
-    /*
-     处理期望城市的查询
-     */
-    private void handlerIntentionCity(Map<String,String> params) throws TException {
+
+    private void handlerProvinceCity(Map<String,String> params) throws TException {
         String cityCode=params.get("city_code");
+        String intentionCityCode=params.get("intention_city_code");
         if(StringUtils.isNotNullOrEmpty(cityCode)){
-           List<Integer> codeList= searchUtil.stringConvertIntList(cityCode);
-            String codes=this.getCityByprovince(codeList);
-            if(StringUtils.isNotNullOrEmpty(codes)){
-                params.put("city_code",codes);
+            String cityNewCode=dictCityDao.handlerProvinceCity(cityCode);
+            if(StringUtils.isNotNullOrEmpty(cityNewCode)){
+                params.put("city_code",cityNewCode);
             }
         }
-    }
-    /*
-    处理现居住地城市查询
-    */
-    private void handlerLiveCity(Map<String,String> params) throws TException {
-        String cityCode=params.get("intention_city_code");
-        if(StringUtils.isNotNullOrEmpty(cityCode)){
-            List<Integer> codeList= searchUtil.stringConvertIntList(cityCode);
-            String codes=this.getCityByprovince(codeList);
-            if(StringUtils.isNotNullOrEmpty(codes)){
-                params.put("intention_city_code",codes);
+        logger.info("================原有城市数据为==========================");
+        logger.info(cityCode);
+        logger.info("==============处理后的城市数据为=========================");
+        logger.info(params.get("city_code"));
+        logger.info("=======================================================");
+        if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
+            String intentionNewCityCode=dictCityDao.handlerProvinceCity(intentionCityCode);
+            if(StringUtils.isNotNullOrEmpty(intentionNewCityCode)){
+                params.put("intention_city_code",intentionNewCityCode);
             }
         }
-    }
-
-    private String getCityByprovince(List<Integer> codeList) throws TException {
-        List<Integer> outCodeList=getOutCityCodeList();
-        List<Integer> provinceCode=new ArrayList<>();
-        for(Integer code:codeList){
-            if(!outCodeList.contains(code)&&code%10000==0){
-                provinceCode.add(code);
-            }
-        }
-        if(!StringUtils.isEmptyList(provinceCode)){
-            List<Integer> provinceCityCode=new ArrayList<>();
-            Response res=cityServices.getCityByProvince(codeList);
-            if(res.getStatus()==0&&StringUtils.isNotNullOrEmpty(res.getData())){
-                List<Map<String,Object>> list= (List<Map<String, Object>>) JSON.parseObject(res.getData());
-                if(!StringUtils.isEmptyList(list)){
-                    for(Map<String,Object> data:list){
-                        int cityCode= (int) data.get("code");
-                        provinceCityCode.add(cityCode);
-                    }
-                }
-            }
-            if(!StringUtils.isEmptyList(provinceCityCode)){
-                codeList.addAll(provinceCityCode);
-                for(Integer code:provinceCode){
-                    codeList.remove(code);
-                }
-
-            }
-        }
-        String codes="";
-        if(!StringUtils.isEmptyList(codeList)){
-           for(Integer code:codeList){
-               codes+=code+",";
-           }
-           if(StringUtils.isNotNullOrEmpty(codes)){
-               codes=codes.substring(0,codes.lastIndexOf(","));
-           }
-        }
-
-        return codes;
+        logger.info("================原有期望城市数据为==========================");
+        logger.info(intentionCityCode);
+        logger.info("==============处理后的期望城市数据为=======");
+        logger.info(params.get("intention_city_code"));
+        logger.info("======================================");
     }
 
-    private List<Integer> getOutCityCodeList(){
-        List<Integer> codeList=new ArrayList<>();
-        codeList.add(110000);
-        codeList.add(111111);
-        codeList.add(120000);
-        codeList.add(233333);
-        codeList.add(310000);
-        codeList.add(500000);
-        codeList.add(810000);
-        codeList.add(820000);
-        return codeList;
-    }
+
+
     /*
      处理备注的情况
      */

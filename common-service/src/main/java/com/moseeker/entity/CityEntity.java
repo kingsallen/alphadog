@@ -1,11 +1,7 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.ParentCityRule;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,5 +85,6 @@ public class CityEntity {
         }
         return null;
     }
+
 
 }
