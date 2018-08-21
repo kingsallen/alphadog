@@ -1776,7 +1776,7 @@ public class PositionService {
      通过user_id 获取 CampaignPersonaRecomPojo 的数量
     */
     private int getPersonaRecomPositionListNum(int userId,int companyId,int type){
-        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("id", Order.ASC).buildQuery();
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).buildQuery();
         int result =campaignPersonaRecomDao.getCount(query);
         return result;
     }
