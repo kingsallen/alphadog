@@ -650,6 +650,7 @@ public class SearchengineEntity {
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
+            logger.info("getEmployeeInfo id:{},  response:{}", id, response);
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
