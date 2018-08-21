@@ -572,7 +572,7 @@ public class SearchUtil {
         }
     }
     /*
-     should的match的语句重载
+     should的terms的语句重载
      */
     public QueryBuilder shouldMatchQuery(List<String> fieldsList,List<String>dataIdList) {
         if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
@@ -624,6 +624,18 @@ public class SearchUtil {
             List<String> list = new ArrayList<String>();
             for (String ss : array) {
                 list.add(ss);
+            }
+            return list;
+        }
+        return null;
+    }
+    //将xx,xx,xx格式的字符串转化为list
+    public List<Integer> stringConvertIntList(String keyWords) {
+        if (StringUtils.isNotEmpty(keyWords)) {
+            String[] array = keyWords.split(",");
+            List<Integer> list = new ArrayList<Integer>();
+            for (String ss : array) {
+                list.add(Integer.parseInt(ss));
             }
             return list;
         }

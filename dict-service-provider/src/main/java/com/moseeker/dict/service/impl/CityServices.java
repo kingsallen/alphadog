@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CacheConfigNotExistException;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -176,54 +177,10 @@ public class CityServices {
         return result;
     }
     @CounterIface
-    public Response getCityCodeByProvine(List<Integer> codes){
-        List<Integer> codeList=this.getOutCityCodeList();
-        if(!this.isProvinceComfortable(codes,codeList)){
-            return ResponseUtils.fail(1,"该省份下城市code不可查");
-        }
-        if(!this.isProvice(codes)){
-            return ResponseUtils.fail(1,"该code不是省份code");
-        }
-        Query query=new Query.QueryBuilder().where("is_using",1).and(new Condition("level",1, ValueOp.GT)).buildQuery();
-        List<Map<String,Object>> dataList=dao.getMaps(query);
-        if(!StringUtils.isEmptyList(dataList)){
-            List<Map<String,Object>> result=new ArrayList<>();
-            for(Map<String,Object> data:dataList){
-                int codeItem= (int) data.get("code");
-                for(Integer code:codes){
-                    if(!codeList.contains(code)&&code<codeItem&&code+10000>codeItem){
-                        result.add(data);
-                    }
-                }
-            }
-            return ResponseUtils.success(result);
-        }
-
-        return ResponseUtils.success(new ArrayList<Map<String,Object>>());
+    public Response getCityCodeByProvine(List<Integer> codeList) throws CommonException {
+        List<Map<String,Object>> list=dao.getCityCodeByProvine(codeList);
+        return ResponseUtils.success(list);
     }
-    /*
-     判断查询的是否是省份
-     */
-    private boolean isProvice(List<Integer> code){
-        Query query=new Query.QueryBuilder().where("level",1).and(new Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
-        int count=dao.getCount(query);
-        if(count>0&&count==code.size()){
-            return true;
-        }
-        return false;
-    }
-    /*
-    判断数据是否符合要求
-     */
-    private boolean isProvinceComfortable(List<Integer> codes, List<Integer> codeList){
-        for(Integer code:codes){
-            if(codeList.contains(code)){
-                return false;
-            }
-        }
-        return true;
-    }
-
     private List<Integer> getOutCityCodeList(){
         List<Integer> codeList=new ArrayList<>();
         codeList.add(110000);
