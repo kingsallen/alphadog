@@ -369,8 +369,8 @@ public class EmployeeService {
         pagination.setTotalRow(count);
         List<EmployeeAward> data = new ArrayList<>();
         try {
-            Response result = searchService.queryAwardRankingInWx(companyIds, timespan, employeeId);
-            log.info("awardRanking:{}", result);
+            Response result = searchService.listLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
+            log.info("awardRanking:", result);
             if (result.getStatus() == 0){
 
                 // 解析数据
