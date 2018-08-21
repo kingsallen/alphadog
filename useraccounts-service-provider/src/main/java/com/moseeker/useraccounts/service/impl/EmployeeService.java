@@ -342,8 +342,8 @@ public class EmployeeService {
 
     public Pagination awardRanking(int employeeId, int companyId, String timespan, int pageNum, int pageSize) {
         Pagination pagination = new Pagination();
-        if (pageNum <=0) {
-            pageNum = 1;
+        if (pageNum <0) {
+            pageNum = 0;
         }
         pagination.setPageNum(pageNum);
         if (pageSize <= 0 || pageSize > Constant.DATABASE_PAGE_SIZE) {
