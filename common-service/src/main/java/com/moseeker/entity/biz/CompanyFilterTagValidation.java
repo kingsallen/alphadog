@@ -1,6 +1,7 @@
 package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.common.util.StringUtils;
@@ -22,6 +23,9 @@ public class CompanyFilterTagValidation {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicationDao jobApplicationDao;
+
+    @Autowired
+    private DictCityDao dictCityDao;
 
     public boolean  validateProfileAndComapnyTag(Map<String, Object> profiles, int userId, int companyId, Map<String, Object> tag) throws Exception {
         logger.info("简历数据是=================");
@@ -56,6 +60,15 @@ public class CompanyFilterTagValidation {
         }
         if(tag.get("cityCode") != null && StringUtils.isNotNullOrEmpty((String) tag.get("cityCode"))){
             String cityCode=(String) tag.get("cityCode");
+            logger.info("================原有城市数据为==========================");
+            logger.info(cityCode);
+            String result=dictCityDao.handlerProvinceCity(cityCode);
+            if(StringUtils.isNotNullOrEmpty(result)){
+                cityCode=result;
+            }
+            logger.info("==============处理后的城市数据为=========================");
+            logger.info(cityCode);
+            logger.info("======================================");
             if(!cityCode.contains("111111")){
                 cityCode=cityCode+",111111";
             }
@@ -90,6 +103,15 @@ public class CompanyFilterTagValidation {
         }
         if(tag.get("intentionCityCode") != null && StringUtils.isNotNullOrEmpty((String) tag.get("intentionCityCode"))){
             String intentionCityCode=(String) tag.get("intentionCityCode");
+            logger.info("================原有期望城市数据为==========================");
+            logger.info(intentionCityCode);
+            String result=dictCityDao.handlerProvinceCity(intentionCityCode);
+            if(StringUtils.isNotNullOrEmpty(result)){
+                intentionCityCode=result;
+            }
+            logger.info("==============选中的期望城市数据为=======");
+            logger.info(intentionCityCode);
+            logger.info("======================================");
             if(!intentionCityCode.contains("111111")){
                 intentionCityCode=intentionCityCode+",111111";
             }
