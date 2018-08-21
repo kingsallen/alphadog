@@ -906,6 +906,7 @@ public class SearchengineService {
             SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0",
                     pageSize, from, timespan).execute().actionGet();
             int index = from+1;
+            logger.info("queryLeaderBoard response:{}", response);
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
                 logger.info("queryLeaderBoard source:{}", jsonObject);
