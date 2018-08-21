@@ -343,7 +343,7 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         }
         if(!StringUtils.isEmptyList(provinceCode)){
             List<Integer> provinceCityCode=new ArrayList<>();
-            List<Map<String,Object>> list=getCityCodeByProvine(provinceCityCode);
+            List<Map<String,Object>> list=getCityCodeByProvine(provinceCode);
             if(!StringUtils.isEmptyList(list)){
                 for(Map<String,Object> data:list){
                     int cityCode= (int) data.get("code");
