@@ -406,8 +406,8 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
     private boolean isProvice(List<Integer> code){
         Query query=new Query.QueryBuilder().where("level",1).and(new com.moseeker.common.util.query.Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
         int count=this.getCount(query);
-        logger.info("count======",count);
-        logger.info("code.size======",code.size());
+        logger.info("count======"+count);
+        logger.info("code.size======"+code.size());
         if(count>0&&count==code.size()){
             return true;
         }
