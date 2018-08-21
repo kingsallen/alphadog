@@ -7,7 +7,6 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -28,6 +27,8 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeReferralPolicyDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.constant.LeaderBoardType;
@@ -384,7 +385,6 @@ public class EmployeeService {
                 log.info("employeeDOMap:{}", employeeDOMap);
                 List<Integer> userIds = employeeDOMap.values().stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
                 // 用户头像获取，获取顺序 user_user.headimg > user_wx_user.headimgurl > ""(默认头像)
-                String defaultHeadImg = "https://cdn.moseeker.com/weixin/images/hr-avatar-default.png";
                 query.clear();
                 query.where(new Condition("company_id", employeeEntity.getCompanyIds(companyId), ValueOp.IN));
                 List<Integer> wechatIds = wxWechatDao.getDatas(query.buildQuery())
@@ -394,21 +394,41 @@ public class EmployeeService {
                 query.clear();
                 query.where(new Condition("sysuser_id", userIds, ValueOp.IN))
                         .and(new Condition("wechat_id", wechatIds, ValueOp.IN));
-                Map<Integer, String> wxUserHeadimg = wxUserDao.getDatas(query.buildQuery())
+                Map<Integer, UserWxUserDO> wxUserHeadimg = wxUserDao.getDatas(query.buildQuery())
                         .stream()
                         .filter(m -> m != null && m.getSysuserId() > 0 && StringUtils.isNotNullOrEmpty(m.getHeadimgurl()))
-                        .collect(Collectors.toMap(k -> k.getSysuserId(), v -> v.getHeadimgurl(), (newKey, oldKey) -> newKey));
+                        .collect(Collectors.toMap(k -> k.getSysuserId(), v -> v, (newKey, oldKey) -> newKey));
                 query.clear();
                 query.where(new Condition("id", userIds, ValueOp.IN));
-                Map<Integer, String> userHeadimg = userDao.getDatas(query.buildQuery()).stream().map(m -> m.setHeadimg(StringUtils.isNullOrEmpty(m.getHeadimg())?wxUserHeadimg.getOrDefault(m.getId(),defaultHeadImg):m.getHeadimg())).collect(Collectors.toMap(k -> k.getId(), v -> v.getHeadimg(), (newKey, oldKey) -> newKey));
+                Map<Integer, UserUserDO> userHeadimg = userDao.getDatas(query.buildQuery()).stream().collect(Collectors.toMap(k -> k.getId(), v -> v));
                 log.info("userHeadimg:{}", userHeadimg);
                 map.entrySet().stream().forEach(e -> {
                     EmployeeAward employeeAward = new EmployeeAward();
                     JSONObject value = e.getValue();
                     employeeAward.setEmployeeId(e.getKey());
                     employeeAward.setAwardTotal(value.getInteger("award"));
-                    employeeAward.setName(Optional.ofNullable(employeeDOMap.get(e.getKey())).map(UserEmployeeDO::getCname).orElse(""));
-                    employeeAward.setHeadimgurl(Optional.ofNullable(employeeDOMap.get(e.getKey())).map(m -> userHeadimg.getOrDefault(m.getSysuserId(), defaultHeadImg)).orElse(defaultHeadImg));
+                    String name = employeeDOMap.get(e.getKey()).getCname();
+                    String headImg = "";
+
+                    if (userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
+                        if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                            name = org.apache.commons.lang.StringUtils
+                                    .isNotBlank(userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName())?
+                                    userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName():
+                                    userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getNickname();
+                        }
+                        headImg = userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getHeadimg();
+                    }
+                    if (wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
+                        if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                            name = wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getNickname();
+                        }
+                        if (org.apache.commons.lang.StringUtils.isBlank(headImg)) {
+                            headImg = wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getHeadimgurl();
+                        }
+                    }
+                    employeeAward.setName(Optional.ofNullable(name).orElse(""));
+                    employeeAward.setHeadimgurl(Optional.ofNullable(headImg).orElse(""));
                     employeeAward.setRanking(value.getIntValue("ranking"));
                     data.add(employeeAward);
                 });
