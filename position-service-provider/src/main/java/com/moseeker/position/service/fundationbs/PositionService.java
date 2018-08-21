@@ -1685,6 +1685,7 @@ public class PositionService {
             return null;
         }
         int count=this.getPersonaRecomPositionListNum(userId,companyId,type);
+        logger.info("=================================="+count);
         List<WechatPositionListData> result=this.getRecomWxPosition(pids,count);
         //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
         if (!StringUtils.isEmptyList(result) && pageNum > 1) {
@@ -1700,7 +1701,8 @@ public class PositionService {
             return null;
         }
 
-        int count=this.getCampaignRecomPositionlistByIdAndCompanyTypeCount(recomPushId,companyId,type);
+        int count=pids.size();
+        logger.info("=================================="+count);
         List<WechatPositionListData> result=this.getRecomWxPosition(pids,count);
 //        if(!StringUtils.isEmptyList(result)){
 //            for(WechatPositionListData position:result){
