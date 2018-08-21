@@ -9,6 +9,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.UserAccountEntity;
@@ -21,16 +22,19 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Resource;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -131,7 +135,15 @@ public abstract class EmployeeBinder {
      * @param certConf
      * @throws Exception
      */
-    protected abstract void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception;
+    protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("公司信息", bindingParams.getCompanyId(), null, null, 1, null);
+        validateUtil.addIntTypeValidate("用户信息", bindingParams.getUserId(), null, null, 1, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            throw UserAccountException.validateFailed(result);
+        }
+    }
 
 
     /**
@@ -144,14 +156,16 @@ public abstract class EmployeeBinder {
         log.info("doneBind param: useremployee={}", useremployee);
         Result response = new Result();
         int employeeId;
-        if (useremployee.getId() == 0) {
-            employeeId = employeeDao.addData(useremployee).getId();
-            useremployee.setId(employeeId);
-        } else {
+        if (useremployee.getId() != 0) {
             useremployee.setUpdateTime(null);
             employeeDao.updateData(useremployee);
             employeeId = useremployee.getId();
+        } else {
+            log.info("doneBind now:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
+            log.info("doneBind persist employee:{}", useremployee);
+            employeeId = employeeDao.registerEmployee(useremployee);
         }
+
         if (useremployee.getSysuserId() > 0
                 && org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
             UserUserDO userUserDO = new UserUserDO();
