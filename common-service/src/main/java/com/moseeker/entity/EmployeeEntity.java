@@ -1105,6 +1105,7 @@ public class EmployeeEntity {
             throw EmployeeException.EMPLOYEE_NOT_EXISTS;
         }
         EmployeeInfo employeeInfo = new EmployeeInfo();
+        employeeInfo.setId(id);
         employeeInfo.setAward(userEmployeeDO.getAward());
         employeeInfo.setCompanyId(userEmployeeDO.getCompanyId());
         employeeInfo.setEmployeeActiveState(EmployeeActiveState.instanceFromValue((byte) userEmployeeDO.getActivation()));
