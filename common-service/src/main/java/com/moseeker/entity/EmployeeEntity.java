@@ -1129,6 +1129,8 @@ public class EmployeeEntity {
             if (wxUserDO != null) {
                 if (org.apache.commons.lang.StringUtils.isBlank(name)) {
                     name = wxUserDO.getNickname();
+                }
+                if (org.apache.commons.lang.StringUtils.isBlank(headImg)) {
                     headImg = wxUserDO.getHeadimgurl();
                 }
             }
