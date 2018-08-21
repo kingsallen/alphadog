@@ -1,7 +1,11 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.ParentCityRule;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 城市实体
@@ -84,4 +89,5 @@ public class CityEntity {
         }
         return null;
     }
+
 }
