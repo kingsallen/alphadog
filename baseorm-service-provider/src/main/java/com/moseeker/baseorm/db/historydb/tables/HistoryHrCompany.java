@@ -211,7 +211,7 @@ public class HistoryHrCompany extends TableImpl<HistoryHrCompanyRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HistoryHrCompany rename(String name) {
         return new HistoryHrCompany(name, null);
     }

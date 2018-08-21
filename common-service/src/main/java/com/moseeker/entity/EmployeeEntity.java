@@ -1,13 +1,14 @@
 package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.constant.EmployeeActivedState;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.*;
@@ -15,17 +16,15 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.userdb.tables.*;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.UserUser;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
-import com.moseeker.baseorm.db.userdb.tables.pojos.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -34,13 +33,16 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.EmployeeType;
 import com.moseeker.entity.biz.EmployeeEntityBiz;
+import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
+import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrGroupCompanyRelDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrPointsConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
@@ -49,14 +51,13 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.joda.time.DateTime;
-import org.jooq.Record2;
-import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -112,6 +113,8 @@ public class EmployeeEntity {
     @Autowired
     private UserWxUserDao userWxUserDao;
 
+    @Autowired
+    private HrWxWechatDao wechatDao;
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
@@ -708,7 +711,7 @@ public class EmployeeEntity {
     public int countActiveEmployeeByCompanyIds(List<Integer> companyIdList) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         return employeeDao.getCount(queryBuilder.buildQuery());
     }
@@ -991,7 +994,7 @@ public class EmployeeEntity {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeId)
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE);
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         return employeeDao.getData(queryBuilder.buildQuery());
     }
 
@@ -1021,7 +1024,7 @@ public class EmployeeEntity {
                 .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN);
         queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
                 .and(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), 0, ValueOp.NEQ));
         return queryBuilder;
     }
@@ -1057,11 +1060,83 @@ public class EmployeeEntity {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId)
-                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActivedState.Actived.getState())
+                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
                     .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
             return employeeDao.getData(queryBuilder.buildQuery());
         } else {
             return null;
         }
+    }
+
+    public void followWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+        HrWxWechatDO wxWechatDO = wechatDao.fetchWechat(wechatId);
+        if (wxWechatDO == null) {
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
+        UserEmployeeDO employeeDO = employeeDao.getUnFollowEmployeeByUserId(userId);
+        if (employeeDO == null) {
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
+        if (wxWechatDO.getCompanyId() != employeeDO.getCompanyId()) {
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
+        employeeDao.followWechat(employeeDO.getId(), employeeDO.getSysuserId());
+    }
+
+    public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+        HrWxWechatDO wxWechatDO = wechatDao.fetchWechat(wechatId);
+        if (wxWechatDO == null) {
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
+        UserEmployeeDO employeeDO = getActiveEmployeeDOByUserId(userId);
+        if (employeeDO == null) {
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
+        if (wxWechatDO.getCompanyId() != employeeDO.getCompanyId()) {
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
+        employeeDao.unFollowWechat(employeeDO.getId());
+    }
+
+    /**
+     * 查找员工信息。员工姓名 cname > user_user.name > user_user.nickname > user_wx_user.nickname
+     * @param id 员工编号
+     * @return 员工信息
+     */
+    public EmployeeInfo fetchEmployeeInfo(int id) throws EmployeeException {
+
+        UserEmployeeDO userEmployeeDO = getEmployeeByID(id);
+        if (userEmployeeDO == null) {
+            throw EmployeeException.EMPLOYEE_NOT_EXISTS;
+        }
+        EmployeeInfo employeeInfo = new EmployeeInfo();
+        employeeInfo.setAward(userEmployeeDO.getAward());
+        employeeInfo.setCompanyId(userEmployeeDO.getCompanyId());
+        employeeInfo.setEmployeeActiveState(EmployeeActiveState.instanceFromValue((byte) userEmployeeDO.getActivation()));
+        employeeInfo.setName(userEmployeeDO.getCname());
+        employeeInfo.setUserId(userEmployeeDO.getSysuserId());
+        String name = null;
+        String headImg = null;
+        UserUserDO userUserDO = userUserDao.getUser(userEmployeeDO.getSysuserId());
+        if (userUserDO != null) {
+            UserWxUserRecord wxUserDO = userWxUserDao.getWXUserByUserId(userUserDO.getId());
+            headImg = userUserDO.getHeadimg();
+            if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                name = org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName()) ?
+                        userUserDO.getName():userUserDO.getNickname();
+            }
+            if (wxUserDO != null) {
+                if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                    name = wxUserDO.getNickname();
+                    headImg = wxUserDO.getHeadimgurl();
+                }
+            }
+
+        } else {
+            logger.error("员工编号:{} 对应的用户信息不存在！ 用户编号：{}", id, userEmployeeDO.getSysuserId());
+        }
+        employeeInfo.setName(name);
+        employeeInfo.setHeadImg(headImg);
+        return employeeInfo;
     }
 }

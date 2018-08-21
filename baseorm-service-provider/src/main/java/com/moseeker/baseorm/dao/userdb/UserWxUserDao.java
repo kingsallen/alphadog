@@ -4,9 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -34,10 +32,14 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
         super(table, userWxUserDOClass);
     }
 
-    public UserWxUserRecord getWXUserByUserId(int userId) throws SQLException {
+    public UserWxUserRecord getWXUserByUserId(int userId) {
         UserWxUserRecord wxuser = null;
         if(userId > 0) {
-            wxuser = create.selectFrom(UserWxUser.USER_WX_USER).where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userId)).limit(1).fetchOne();
+            wxuser = create.selectFrom(UserWxUser.USER_WX_USER)
+                    .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(userId))
+                    .orderBy(UserWxUser.USER_WX_USER.CREATE_TIME.desc())
+                    .limit(1)
+                    .fetchOne();
         }
         return wxuser;
     }

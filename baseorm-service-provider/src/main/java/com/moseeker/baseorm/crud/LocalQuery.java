@@ -210,6 +210,7 @@ class LocalQuery<R extends Record> {
         if (orders != null && orders.size() > 0) {
             select.orderBy(orders);
         }
+        logger.debug(select.getSQL());
         return select;
     }
 
