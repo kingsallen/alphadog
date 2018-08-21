@@ -1116,16 +1116,22 @@ public class EmployeeEntity {
         employeeInfo.setEmployeeActiveState(EmployeeActiveState.instanceFromValue((byte) userEmployeeDO.getActivation()));
         employeeInfo.setName(userEmployeeDO.getCname());
         employeeInfo.setUserId(userEmployeeDO.getSysuserId());
-        String name = null;
+        String name = userEmployeeDO.getCname();
         String headImg = null;
+
         UserUserDO userUserDO = userUserDao.getUser(userEmployeeDO.getSysuserId());
         if (userUserDO != null) {
-            UserWxUserRecord wxUserDO = userWxUserDao.getWXUserByUserId(userUserDO.getId());
-            headImg = userUserDO.getHeadimg();
             if (org.apache.commons.lang.StringUtils.isBlank(name)) {
                 name = org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName()) ?
-                        userUserDO.getName():userUserDO.getNickname();
+                        userUserDO.getName() : userUserDO.getNickname();
             }
+            headImg = userUserDO.getHeadimg();
+
+        } else {
+            logger.error("员工编号:{} 对应的用户信息不存在！ 用户编号：{}", id, userEmployeeDO.getSysuserId());
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(name) || org.apache.commons.lang.StringUtils.isBlank(headImg)) {
+            UserWxUserRecord wxUserDO = userWxUserDao.getWXUserByUserId(userUserDO.getId());
             if (wxUserDO != null) {
                 if (org.apache.commons.lang.StringUtils.isBlank(name)) {
                     name = wxUserDO.getNickname();
@@ -1134,10 +1140,8 @@ public class EmployeeEntity {
                     headImg = wxUserDO.getHeadimgurl();
                 }
             }
-
-        } else {
-            logger.error("员工编号:{} 对应的用户信息不存在！ 用户编号：{}", id, userEmployeeDO.getSysuserId());
         }
+
         employeeInfo.setName(name);
         employeeInfo.setHeadImg(headImg);
         return employeeInfo;
