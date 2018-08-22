@@ -172,7 +172,7 @@ public abstract class EmployeeBinder {
             UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                     useremployee.getCompanyId());
             if (userEmployee != null) {
-                log.info("userEmployee != null");
+                log.info("userEmployee != null  userEmployee:{}", userEmployee);
                 employeeId = userEmployee.getId();
                 log.info("userEmployee active:{}", userEmployee.getActivation());
                 if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
