@@ -68,8 +68,6 @@ public class Schedule {
 	private void sendNotice(Set<String> employeeEmailVerifyNotices) {
         threadPool.startTast(() -> {
             employeeEmailVerifyNotices.forEach(content -> {
-
-
                 JSONObject jsonObject = JSON.parseObject(content);
                 int userId = jsonObject.getInteger("userId");
                 int companyId = jsonObject.getInteger("companyId");
@@ -78,7 +76,6 @@ public class Schedule {
 
             });
             return true;
-
         });
     }
 }
