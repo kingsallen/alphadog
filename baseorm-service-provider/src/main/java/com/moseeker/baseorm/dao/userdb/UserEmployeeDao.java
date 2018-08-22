@@ -10,7 +10,6 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.joda.time.DateTime;
 import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
@@ -234,14 +233,18 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Param<Timestamp> createTimeParam;
         if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCreateTime())) {
             createTimeParam = param(UserEmployee.USER_EMPLOYEE.CREATE_TIME.getName(),
-                    new Timestamp(DateTime.parse(useremployee.getCreateTime()).getMillis()));
+                    new Timestamp(LocalDateTime.parse(useremployee.getCreateTime(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
         } else {
             createTimeParam = param(UserEmployee.USER_EMPLOYEE.CREATE_TIME.getName(), now);
         }
         Param<Timestamp> BindingTimeParam;
         if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
             BindingTimeParam = param(UserEmployee.USER_EMPLOYEE.BINDING_TIME.getName(),
-                    new Timestamp(DateTime.parse(useremployee.getBindingTime()).getMillis()));
+                    new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
         } else {
             BindingTimeParam = param(UserEmployee.USER_EMPLOYEE.BINDING_TIME.getName(), now);
         }
