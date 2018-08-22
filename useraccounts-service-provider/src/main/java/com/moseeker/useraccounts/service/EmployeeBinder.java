@@ -166,6 +166,9 @@ public abstract class EmployeeBinder {
         if (useremployee.getId() != 0) {
             useremployee.setUpdateTime(null);
             log.info("doneBind useremployee.authMethod:{}, useremployee.bindingTime:{}", useremployee.getAuthMethod(), useremployee.getBindingTime());
+
+            log.info("result:{}", useremployee.getAuthMethod() == 1 &&
+                    org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime()));
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
                 log.info("自定义添加积分！");
