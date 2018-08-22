@@ -492,7 +492,7 @@ public class UserEmployeeController {
 
     @RequestMapping(value="/v1/employee/upvotes", method = RequestMethod.DELETE)
     @ResponseBody
-    public String clearUpVoteWeekly(@PathVariable int id, HttpServletRequest request) throws Exception {
+    public String clearUpVoteWeekly(HttpServletRequest request) throws Exception {
 
         ParamUtils.parseRequestParam(request);
         employeeService.clearUpVoteWeekly();
