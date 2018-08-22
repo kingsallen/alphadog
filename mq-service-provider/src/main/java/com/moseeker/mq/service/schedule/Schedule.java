@@ -1,11 +1,17 @@
 package com.moseeker.mq.service.schedule;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import java.util.Set;
 import javax.annotation.Resource;
+
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.mq.service.impl.TemlateMsgHttp;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -27,6 +33,10 @@ public class Schedule {
 	@Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+	@Autowired
+    TemlateMsgHttp temlateMsgHttp;
+
+	ThreadPool threadPool = ThreadPool.Instance;
     /**
      * 负责从延迟队列中查找符合要求的消息模版，将其转移到消息模版的执行队列中
      * 每分钟执行一次
@@ -42,5 +52,33 @@ public class Schedule {
                         Constant.REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE, task);
             });
         }
+
+        Set<String> employeeEmailVerifyNotices = redisClient.rangeByScore(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(), 0l, now);
+        if (employeeEmailVerifyNotices != null && employeeEmailVerifyNotices.size() > 0) {
+            redisClient.zRemRangeByScore(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(), 0l, now);
+
+            threadPool.startTast(() -> {
+                sendNotice(employeeEmailVerifyNotices);
+                return true;
+            });
+        }
+
 	}
+
+	private void sendNotice(Set<String> employeeEmailVerifyNotices) {
+        threadPool.startTast(() -> {
+            employeeEmailVerifyNotices.forEach(content -> {
+
+
+                JSONObject jsonObject = JSON.parseObject(content);
+                int userId = jsonObject.getInteger("userId");
+                int companyId = jsonObject.getInteger("companyId");
+                String company = jsonObject.getString("companyName");
+                temlateMsgHttp.noticeEmployeeVerify(userId, companyId, company);
+
+            });
+            return true;
+
+        });
+    }
 }

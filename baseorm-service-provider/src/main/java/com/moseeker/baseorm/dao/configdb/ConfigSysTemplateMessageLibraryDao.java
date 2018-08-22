@@ -32,4 +32,12 @@ public class ConfigSysTemplateMessageLibraryDao extends JooqCrudImpl<ConfigSysTe
         return result;
     }
 
+    public ConfigSysTemplateMessageLibraryRecord getByTemplateIdAndTitle(String templateIdShort, String title) {
+
+        return create.selectFrom(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY)
+                .where(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.TEMPLATE_ID_SHORT.eq(templateIdShort))
+                .and(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.TITLE.eq(title))
+                .limit(1)
+                .fetchOne();
+    }
 }

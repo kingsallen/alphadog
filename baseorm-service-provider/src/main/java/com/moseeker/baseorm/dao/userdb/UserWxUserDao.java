@@ -80,4 +80,25 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .where(USER_WX_USER.SYSUSER_ID.eq(beDelUserId))
                 .execute();
     }
+
+    /**
+     * 用户换绑微信账号的时候，需要把之前的user_wx_user的sysuser_id置为0
+     * 如果用户之后想换回这次 被换绑的微信，被换绑的微信的sysuser_id不为0就会造成无法绑定
+     * @param unionid   C端账号ID
+     * @return
+     */
+    public int invalidOldWxUser(String unionid){
+        return create.update(USER_WX_USER)
+                .set(USER_WX_USER.SYSUSER_ID,0)
+                .where(USER_WX_USER.UNIONID.eq(unionid))
+                .execute();
+    }
+
+    public UserWxUserRecord getWxUserByUserIdAndWechatId(int userId, int wechatId) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.SYSUSER_ID.eq(userId))
+                .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
+                .limit(1)
+                .fetchOne();
+    }
 }
