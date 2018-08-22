@@ -884,7 +884,8 @@ public class UserHrAccountService {
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 3
-                                || (Byte) map.get("activation") == 4) {
+                                || (Byte) map.get("activation") == 4
+                                || (Byte) map.get("activation") == 5) {
                             unCount+=(Integer) map.get("activation_count");
 //                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         }
