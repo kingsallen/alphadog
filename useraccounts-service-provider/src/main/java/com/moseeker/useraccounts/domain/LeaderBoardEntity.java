@@ -57,7 +57,7 @@ public class LeaderBoardEntity {
         if (info.getAward() > 0) {
             List<Integer> companyIdList = userEmployeeEntity.getCompanyIds(employeeInfo.getCompanyId());
             logger.info("fetchLeaderBoardInfo id:{}, award:{}, timeSpan:{}, cmopanyIdList:{}", employeeInfo.getId(), employeeInfo.getAward(),timeSpan, companyIdList);
-            int sort = searchengineEntity.getSort(employeeInfo.getId(), employeeInfo.getAward(), employeeInfo.getLastUpdateTime(),timeSpan, companyIdList);
+            int sort = searchengineEntity.getSort(employeeInfo.getId(), info.getAward(), info.getLastUpdateTime(),timeSpan, companyIdList);
             logger.info("fetchLeaderBoardInfo sort:{}", sort);
             info.setSort(sort);
         }
