@@ -131,6 +131,7 @@ public class TemlateMsgHttp {
             logger.info("noticeEmployeeVerify url : {}", url);
             try {
                 result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+                logger.info("noticeEmployeeVerify result:{}", result);
             } catch (ConnectException e) {
                 logger.error(e.getMessage(), e);
             }
