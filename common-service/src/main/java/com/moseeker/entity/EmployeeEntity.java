@@ -176,16 +176,20 @@ public class EmployeeEntity {
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
+            logger.info("addReward  userEmployee exist!");
             // 修改用户总积分, 积分不能扣成负数
             int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
+            logger.info("addReward  userEmployee totalAward:{}", totalAward);
             if (totalAward < 0) {
                 logger.error("增加用户积分失败，用户积分不足：为用户{},用户当前积分{}点,添加积分{}点, reason:{}", employeeId, userEmployeeDO.getAward(), ueprDo.getAward(), ueprDo.getReason());
                 throw EmployeeException.EMPLOYEE_AWARD_NOT_ENOUGH;
             }
             int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward, userEmployeeDO.getAward());
+            logger.info("addReward  userEmployee row:{}", row);
             // 积分记录
             if (row > 0) {
                 ueprDo = ueprDao.addData(ueprDo);
+                logger.info("addReward  userEmployee ueprDo:{}", ueprDo);
                 if (ueprDo.getId() > 0) {
                     logger.info("增加用户积分成功：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
                     // 记录积分来源公司
