@@ -169,9 +169,13 @@ public abstract class EmployeeBinder {
 
             log.info("result:{}", useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime()));
+            String bindTime = useremployee.getBindingTime();
+            if (org.apache.commons.lang.StringUtils.isBlank(useremployee.bindingTime)) {
+                useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+            }
             employeeDao.updateData(useremployee);
             if (useremployee.getAuthMethod() == 1 &&
-                    org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
+                    org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
                 log.info("自定义添加积分！");
                 employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
             }
