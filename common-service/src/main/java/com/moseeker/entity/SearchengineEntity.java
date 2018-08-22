@@ -697,7 +697,7 @@ public class SearchengineEntity {
             QueryBuilder award1Query = QueryBuilders.termQuery("awards." + timeSpan + ".award", award);
             ((BoolQueryBuilder) query).must(award1Query);
 
-            QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".lastUpdateTime")
+            QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".last_update_time")
                     .lte(lastUpdateTime);
             ((BoolQueryBuilder) query).must(lastUpdateTimeQuery);
 
