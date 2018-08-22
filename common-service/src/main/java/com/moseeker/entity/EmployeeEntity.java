@@ -12,19 +12,18 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -57,7 +56,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -172,7 +170,7 @@ public class EmployeeEntity {
      * @return 员工当前总积分
      */
     @Transactional
-    public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws Exception {
+    public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws EmployeeException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
@@ -181,7 +179,7 @@ public class EmployeeEntity {
             int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
             if (totalAward < 0) {
                 logger.error("增加用户积分失败，用户积分不足：为用户{},用户当前积分{}点,添加积分{}点, reason:{}", employeeId, userEmployeeDO.getAward(), ueprDo.getAward(), ueprDo.getReason());
-                throw new RuntimeException("用户积分不足");
+                throw EmployeeException.EMPLOYEE_AWARD_NOT_ENOUGH;
             }
             int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward, userEmployeeDO.getAward());
             // 积分记录
@@ -199,7 +197,7 @@ public class EmployeeEntity {
                     return totalAward;
                 } else {
                     logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
-                    throw new RuntimeException("增加积分失败");
+                    throw EmployeeException.EMPLOYEE_AWARD_ADD_FAILED;
                 }
             }
         }
@@ -245,6 +243,35 @@ public class EmployeeEntity {
             ueprDo.setEmployeeId(employeeId);
             addReward(employeeId, companyId, ueprDo);
         }
+        return true;
+    }
+
+    public boolean addRewardByEmployeeVerified(int employeeId, int companyId) throws EmployeeException {
+
+        HrPointsConfRecord record = hrPointsConfDao.getEmployeeVerified(companyId);
+        String reason;
+        int award;
+        if (record == null) {
+            ConfigSysPointsConfTplRecord configSysPointsConfTplRecord = configSysPointsConfTplDao.getEmployeeVerified();
+            if (configSysPointsConfTplRecord == null) {
+                throw EmployeeException.EMPLOYEE_VERIFY_AWARD_NOT_EXIST;
+            }
+            reason = configSysPointsConfTplRecord.getStatus();
+            award = configSysPointsConfTplRecord.getAward();
+        } else {
+            reason = record.getStatusName();
+            award = record.getReward().intValue();
+        }
+
+        UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
+        ueprDo.setReason(reason);
+        ueprDo.setAward(award);
+        ueprDo.setApplicationId(0);
+        ueprDo.setAwardConfigId(0);
+        ueprDo.setBerecomUserId(0);
+        ueprDo.setPositionId(0);
+        ueprDo.setEmployeeId(employeeId);
+        addReward(employeeId, companyId, ueprDo);
         return true;
     }
 
