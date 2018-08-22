@@ -76,16 +76,12 @@ public class Schedule {
 
         logger.info("sendNotice employeeEmailVerifyNotices:{}", employeeEmailVerifyNotices);
             employeeEmailVerifyNotices.forEach(content -> {
+                JSONObject jsonObject = JSON.parseObject(content);
+                int userId = jsonObject.getInteger("userId");
+                int companyId = jsonObject.getInteger("companyId");
+                String company = jsonObject.getString("companyName");
+                temlateMsgHttp.noticeEmployeeVerify(userId, companyId, company);
 
-
-            JSONObject jsonObject = JSON.parseObject(content);
-            int userId = jsonObject.getInteger("userId");
-            int companyId = jsonObject.getInteger("companyId");
-            String company = jsonObject.getString("companyName");
-            logger.info("sendNotice jsonObject:{}", jsonObject);
-            temlateMsgHttp.noticeEmployeeVerify(userId, companyId, company);
-
-
-        });
+            });
     }
 }

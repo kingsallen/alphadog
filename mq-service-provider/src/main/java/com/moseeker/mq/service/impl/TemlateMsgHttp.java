@@ -4,12 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.Constant;
@@ -27,6 +30,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMessageRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import java.net.ConnectException;
 import java.util.Date;
@@ -63,6 +67,9 @@ public class TemlateMsgHttp {
     private HrWxWechatDao hrWxWechatDao;
 
     @Autowired
+    private HrWxTemplateMessageDao wxTemplateMessageDao;
+
+    @Autowired
     private Environment env;
 
     @Autowired
@@ -74,6 +81,7 @@ public class TemlateMsgHttp {
             "认证信息：{{keyword3.DATA}}\n" +
             "处理时间：{{keyword4.DATA}}";
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
+    private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
@@ -89,51 +97,79 @@ public class TemlateMsgHttp {
 
             ConfigSysTemplateMessageLibraryRecord record =
                     templateMessageLibraryDao.getByTemplateIdAndTitle("OPENTM204875750", "员工认证提醒通知");
-            if (record != null && org.apache.commons.lang.StringUtils.isNotBlank(record.getContent())) {
-                content = record.getContent();
-                first = record.getFirst();
-            }
 
-            UserWxUserRecord wxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(userId, 279);
-            HrWxWechatRecord wechatRecord = hrWxWechatDao.getById(279);
-            if (wxUserRecord == null) {
-                logger.error("微信账号不存在！userId:{}, companyId:{}", userId, companyId);
-                return;
-            }
+            //公司公众号
+            HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
+                    companyId).buildQuery());
 
-            content.replace("{{keyword1.DATA}}", "尚未完成认证").replace("{{keyword2.DATA}}", "员工认证")
-                    .replace("{{keyword3.DATA}}", companyName)
-                    .replace("{{keyword4.DATA}}", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+            if (hrChatDO != null) {
+                String templateId;
+                HrWxTemplateMessageDO hrWxTemplateMessage = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                        hrChatDO.getId()).and("sys_template_id", Constant.EMPLOYEE_EMAILVERIFY_NOT_VERIFY_NOTICE_TPL).and("disable", "0").buildQuery());
+                if (hrWxTemplateMessage == null) {
+                    templateId = NoticeEmployeeVerifyFirstTemplateId;
+                } else {
+                    templateId = hrWxTemplateMessage.getWxTemplateId();
+                }
 
-            JSONObject colMap = new JSONObject();
+                logger.info("noticeEmployeeVerify templateId:{}", templateId);
+                UserWxUserDO userWxUserDO = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
+                        userId).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
 
-           /* JSONObject firstBody = new JSONObject();
-            firstBody.put("color", "#173177");
-            firstBody.put("value", first);
+                if (userWxUserDO != null) {
 
-            colMap.put("first",firstBody);*/
+                    logger.info("noticeEmployeeVerify openid:{}", userWxUserDO.getOpenid());
 
-            JSONObject body = new JSONObject();
-            body.put("color", "#173177");
-            body.put("value", content);
-            colMap.put("first", body);
+                    JSONObject colMap = new JSONObject();
 
-            Map<String, Object> applierTemplate = new HashMap<>();
-            applierTemplate.put("data", colMap);
-            applierTemplate.put("touser", wxUserRecord.getOpenid());
-            applierTemplate.put("template_id", "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM");
-            applierTemplate.put("topcolor", "#FF0000");
+                    JSONObject keywords1 = new JSONObject();
+                    keywords1.put("color", "#173177");
+                    keywords1.put("value", "尚未完成认证");
+                    colMap.put("keyword1", keywords1);
 
-            logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+                    JSONObject keywords2 = new JSONObject();
+                    keywords2.put("color", "#173177");
+                    keywords2.put("value", "员工认证");
+                    colMap.put("keyword2", keywords2);
 
-            String result = null;
-            String url=env.getProperty("message.template.delivery.url").replace("{}", wechatRecord.getAccessToken());
-            logger.info("noticeEmployeeVerify url : {}", url);
-            try {
-                result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
-                logger.info("noticeEmployeeVerify result:{}", result);
-            } catch (ConnectException e) {
-                logger.error(e.getMessage(), e);
+                    JSONObject keywords3 = new JSONObject();
+                    keywords3.put("color", "#173177");
+                    keywords3.put("value", companyName);
+                    colMap.put("keyword3", keywords3);
+
+                    JSONObject keywords4 = new JSONObject();
+                    keywords4.put("color", "#173177");
+                    keywords4.put("value", companyName);
+                    colMap.put("keyword4", keywords4);
+
+                    JSONObject body = new JSONObject();
+                    body.put("color", "#173177");
+                    body.put("value", content);
+                    colMap.put("first", body);
+
+                    Map<String, Object> applierTemplate = new HashMap<>();
+                    applierTemplate.put("data", colMap);
+                    applierTemplate.put("touser", userWxUserDO.getOpenid());
+                    applierTemplate.put("template_id", templateId);
+                    applierTemplate.put("topcolor", "#FF0000");
+
+                    logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+                    String url=env.getProperty("message.template.delivery.url").replace("{}", hrChatDO.getAccessToken());
+                    logger.info("noticeEmployeeVerify url : {}", url);
+
+                    try {
+                        String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+                        logger.info("noticeEmployeeVerify result:{}", result);
+                    } catch (ConnectException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else {
+                    logger.error("微信账号不存在！userId:{}, companyId:{}", userId, companyId);
+                }
+
+            } else {
+                logger.error("微信公众号不存在！userId:{}, companyId:{}", userId, companyId);
             }
         }
     }
