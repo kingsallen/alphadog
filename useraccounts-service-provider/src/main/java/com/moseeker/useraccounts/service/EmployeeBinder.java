@@ -169,12 +169,12 @@ public abstract class EmployeeBinder {
 
             log.info("result:{}", useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime()));
+            employeeDao.updateData(useremployee);
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
                 log.info("自定义添加积分！");
                 employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
             }
-            employeeDao.updateData(useremployee);
             employeeId = useremployee.getId();
         } else {
             log.info("doneBind now:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
