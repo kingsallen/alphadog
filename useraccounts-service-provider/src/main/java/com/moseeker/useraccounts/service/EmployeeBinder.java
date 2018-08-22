@@ -34,7 +34,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
@@ -184,7 +186,15 @@ public abstract class EmployeeBinder {
                         userEmployee.setCname(useremployee.getCname());
                     }
                     userEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                    log.info("userEmployee update record");
+                    if (useremployee.getAuthMethod() == 1 && userEmployee.getBindingTime() == null) {
+                        userEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+                        employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                    }
                     employeeDao.updateRecord(userEmployee);
+
                 }
             } else {
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
