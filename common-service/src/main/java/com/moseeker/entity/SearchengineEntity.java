@@ -679,11 +679,13 @@ public class SearchengineEntity {
 
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+            logger.info("getSort activeEmployeeCondition:{}", activeEmployeeCondition);
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query)
                         .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
                         .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                        .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
                         .setSize(0).execute().get();
                 return (int)sortResponse.getHits().getTotalHits()+1;
             } catch (Exception e) {
@@ -723,6 +725,7 @@ public class SearchengineEntity {
                     .setQuery(query)
                     .addSort(buildSortScript(timeSpan, "award", SortOrder.ASC))
                     .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.DESC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
                     .setSize(1).execute().get();
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
