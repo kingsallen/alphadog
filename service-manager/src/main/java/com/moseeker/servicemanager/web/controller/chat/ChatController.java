@@ -590,7 +590,7 @@ public class ChatController {
                     && value instanceof String){
                 ChatVO chat = (ChatVO)object;
                 if(chat.getMsgType().equals(ChatMsgType.JOB.value())){
-                    return JSON.parseObject(chat.getContent());
+                    return JSON.parseObject(chat.getCompoundContent());
                 }
             }
             return value;

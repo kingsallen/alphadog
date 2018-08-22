@@ -47,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -342,6 +343,10 @@ public class EmployeeService {
     }
 
     public Pagination awardRanking(int employeeId, int companyId, String timespan, int pageNum, int pageSize) {
+
+        StopWatch stopWatch = new StopWatch();
+
+        stopWatch.start("head");
         Pagination pagination = new Pagination();
         if (pageNum <0) {
             pageNum = 0;
@@ -369,8 +374,12 @@ public class EmployeeService {
         }
         pagination.setTotalRow(count);
         List<EmployeeAward> data = new ArrayList<>();
+        stopWatch.stop();
         try {
+            stopWatch.start("listLeaderBoard");
             Response result = searchService.listLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
+            stopWatch.stop();
+            stopWatch.start("package info");
             log.info("awardRanking:", result);
             if (result.getStatus() == 0){
 
@@ -407,24 +416,29 @@ public class EmployeeService {
                     JSONObject value = e.getValue();
                     employeeAward.setEmployeeId(e.getKey());
                     employeeAward.setAwardTotal(value.getInteger("award"));
-                    String name = employeeDOMap.get(e.getKey()).getCname();
-                    String headImg = "";
-
-                    if (userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
-                        if (org.apache.commons.lang.StringUtils.isBlank(name)) {
-                            name = org.apache.commons.lang.StringUtils
-                                    .isNotBlank(userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName())?
-                                    userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName():
-                                    userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getNickname();
-                        }
-                        headImg = userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getHeadimg();
+                    String name = "";
+                    if (employeeDOMap.get(e.getKey()) != null) {
+                        name = employeeDOMap.get(e.getKey()).getCname();
                     }
-                    if (wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
-                        if (org.apache.commons.lang.StringUtils.isBlank(name)) {
-                            name = wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getNickname();
+                    String headImg = "";
+                    if (employeeDOMap.get(e.getKey()) != null) {
+                        if (userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
+                            if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                                log.info("key:{},  value:{}", employeeDOMap.get(e.getKey()).getSysuserId(), userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()));
+                                name = org.apache.commons.lang.StringUtils
+                                        .isNotBlank(userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName())?
+                                        userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName():
+                                        userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getNickname();
+                            }
+                            headImg = userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getHeadimg();
                         }
-                        if (org.apache.commons.lang.StringUtils.isBlank(headImg)) {
-                            headImg = wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getHeadimgurl();
+                        if (wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
+                            if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                                name = wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getNickname();
+                            }
+                            if (org.apache.commons.lang.StringUtils.isBlank(headImg)) {
+                                headImg = wxUserHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getHeadimgurl();
+                            }
                         }
                     }
                     employeeAward.setName(Optional.ofNullable(name).orElse(""));
@@ -453,10 +467,12 @@ public class EmployeeService {
             } else {
                 log.error("query awardRanking data error");
             }
+            stopWatch.stop();
             pagination.setData(data);
         } catch (TException e) {
             log.error(e.getMessage(), e);
         }
+        log.info(stopWatch.prettyPrint());
         return pagination;
     }
 

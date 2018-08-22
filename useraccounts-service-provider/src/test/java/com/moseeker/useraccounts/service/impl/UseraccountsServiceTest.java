@@ -36,7 +36,7 @@ public class UseraccountsServiceTest {
 
     @Test
     public void userChangeBind(){
-        service.userChangeBind("oHhnJt_2P7DvK9BS6iKrmco6Sokg","18817628386","086");
+        service.userChangeBind("oHhnJt-3bven2j52m7d6Vs_dozLD","13472722191","86");
     }
 
 //    @Mock

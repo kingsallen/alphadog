@@ -172,16 +172,16 @@ public abstract class EmployeeBinder {
             UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                     useremployee.getCompanyId());
             if (userEmployee != null) {
-                log.info("userEmployee != null");
+                log.info("userEmployee != null  userEmployee:{}", userEmployee);
                 employeeId = userEmployee.getId();
                 log.info("userEmployee active:{}", userEmployee.getActivation());
                 if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
                     log.info("userEmployee not active");
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getEmail())) {
-                        userEmployee.setEmail(useremployee.getEmail());
+                        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
                     }
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getMobile())) {
-                        userEmployee.setMobile(useremployee.getMobile());
+                        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
                     }
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
                         userEmployee.setCname(useremployee.getCname());

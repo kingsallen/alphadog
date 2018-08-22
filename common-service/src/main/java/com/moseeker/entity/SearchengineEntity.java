@@ -616,6 +616,7 @@ public class SearchengineEntity {
             logger.error("无法获取ES客户端！！！！");
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getSort id:{}, award:{}, timeSpan:{}, companyIdList:{}", id, award, timeSpan, companyIdList);
         QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
         return getSort(client, id, award, timeSpan, companyIdListQueryBuild);
     }
@@ -663,6 +664,7 @@ public class SearchengineEntity {
 
     private int getSort(TransportClient client, int employeeId, int award,  String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
+        logger.info("getSort award:{}", award);
         if (award > 0) {
             QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
@@ -679,11 +681,20 @@ public class SearchengineEntity {
 
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+            logger.info("getSort activeEmployeeCondition:{}", query);
+
+            logger.info("ex sql :{}", client.prepareSearch("awards").setTypes("award")
+                    .setQuery(query)
+                    .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
+                    .setSize(0).toString());
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(query)
                         .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
                         .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                        .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
                         .setSize(0).execute().get();
                 return (int)sortResponse.getHits().getTotalHits()+1;
             } catch (Exception e) {
@@ -723,6 +734,7 @@ public class SearchengineEntity {
                     .setQuery(query)
                     .addSort(buildSortScript(timeSpan, "award", SortOrder.ASC))
                     .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.DESC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
                     .setSize(1).execute().get();
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
