@@ -48,6 +48,9 @@ public class TemplateMsgProducer {
     @Autowired
     private HrWxNoticeMessageDao noticeMessageDao;
 
+    @Autowired
+	TemlateMsgHttp temlateMsgHttp;
+
 	/**
 	 * 消息模板通知接口
 	 *

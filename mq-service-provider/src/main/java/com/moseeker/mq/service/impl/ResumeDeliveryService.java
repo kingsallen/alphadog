@@ -259,6 +259,8 @@ public class ResumeDeliveryService {
         return  ResponseUtils.success("success");
     }
 
+
+
     /**
      * 给求职者发送企业号模板消息
      * @param templateMessageDO 模板对象
@@ -297,6 +299,8 @@ public class ResumeDeliveryService {
         logger.info("sendEmailToHr sendTemplateMessageToApplier:{}", response);
         return response;
     }
+
+
 
     /**
      * 给求职者发送聚合号模板消息

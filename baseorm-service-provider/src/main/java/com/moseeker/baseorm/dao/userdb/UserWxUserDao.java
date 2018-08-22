@@ -93,4 +93,12 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .where(USER_WX_USER.UNIONID.eq(unionid))
                 .execute();
     }
+
+    public UserWxUserRecord getWxUserByUserIdAndWechatId(int userId, int wechatId) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.SYSUSER_ID.eq(userId))
+                .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
+                .limit(1)
+                .fetchOne();
+    }
 }
