@@ -693,7 +693,7 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(award1Query);
 
             QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".last_update_time")
-                    .lte(dateTime.toString("yyyy-MM-ddTHH:mm:ss"));
+                    .lte(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
             ((BoolQueryBuilder) query).must(lastUpdateTimeQuery);
 
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
