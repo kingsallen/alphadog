@@ -165,6 +165,10 @@ public abstract class EmployeeBinder {
         int employeeId;
         if (useremployee.getId() != 0) {
             useremployee.setUpdateTime(null);
+            if (useremployee.getAuthMethod() == 1 &&
+                    org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
+                employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
+            }
             employeeDao.updateData(useremployee);
             employeeId = useremployee.getId();
         } else {

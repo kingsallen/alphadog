@@ -62,7 +62,6 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployeeDO.setActivation((byte)0);
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         return userEmployeeDO;
     }
