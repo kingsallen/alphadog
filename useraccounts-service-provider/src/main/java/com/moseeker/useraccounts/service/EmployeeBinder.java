@@ -160,6 +160,7 @@ public abstract class EmployeeBinder {
      */
     protected Result doneBind(UserEmployeeDO useremployee) throws TException {
         log.info("doneBind param: useremployee={}", useremployee);
+        log.info("useremployee.authMethod:{}", useremployee.getAuthMethod());
         Result response = new Result();
         int employeeId;
         if (useremployee.getId() != 0) {
@@ -174,6 +175,7 @@ public abstract class EmployeeBinder {
             UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                     useremployee.getCompanyId());
             if (userEmployee != null) {
+                log.info("userEmployee.bindingTime:{}", userEmployee.getBindingTime());
                 log.info("userEmployee != null  userEmployee:{}", userEmployee);
                 employeeId = userEmployee.getId();
                 log.info("userEmployee active:{}", userEmployee.getActivation());
