@@ -616,7 +616,7 @@ public class SearchengineEntity {
             logger.error("无法获取ES客户端！！！！");
             throw CommonException.PROGRAM_EXCEPTION;
         }
-        logger.info("getSort id:{}, award:{}, timeSpan:{}, companyIdList:{}", id, award, timeSpan, companyIdList);
+        logger.info("getSort id:{}, award:{}, lastUpdateTime:{}, timeSpan:{}, companyIdList:{}", id, award, lastUpdateTime, timeSpan, companyIdList);
         QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
         return getSort(client, id, award, lastUpdateTime, timeSpan, companyIdListQueryBuild);
     }
