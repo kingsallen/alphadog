@@ -120,9 +120,11 @@ public class TalentpoolSearchengine {
                                     if(!StringUtils.isEmptyList(applications)){
                                         List<Map<String,Object>> applicationNewList=new ArrayList<>();
                                         for(Map<String,Object> application:applications){
-                                            int positionId= (int) application.get("posiion_id");
-                                            if(positionIdList.contains(positionId)){
-                                                applicationNewList.add(application);
+                                            if(application.get("position_id")!=null){
+                                                int positionId= (int) application.get("position_id");
+                                                if(positionIdList.contains(positionId)){
+                                                    applicationNewList.add(application);
+                                                }
                                             }
                                         }
                                         if(!StringUtils.isEmptyList(applicationNewList)){
