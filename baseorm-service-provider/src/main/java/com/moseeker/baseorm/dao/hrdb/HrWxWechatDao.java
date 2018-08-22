@@ -68,4 +68,10 @@ public class HrWxWechatDao extends JooqCrudImpl<HrWxWechatDO, HrWxWechatRecord> 
                 .fetchOneInto(HrWxWechatDO.class);
 
     }
+
+    public HrWxWechatRecord getById(int id) {
+        return create.selectFrom(HrWxWechat.HR_WX_WECHAT)
+                .where(HrWxWechat.HR_WX_WECHAT.ID.eq(id))
+                .fetchOne();
+    }
 }
