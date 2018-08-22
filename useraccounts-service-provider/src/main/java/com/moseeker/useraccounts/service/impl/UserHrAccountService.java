@@ -1052,6 +1052,7 @@ public class UserHrAccountService {
                 filters.add(2);
                 filters.add(3);
                 filters.add(4);
+                filters.add(5);
                 queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
             }
         }
