@@ -175,6 +175,7 @@ public class EmployeeEntity {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
+        logger.info("addReward userEmployeeDO:{}", userEmployeeDO);
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
             logger.info("addReward  userEmployee exist!");
             // 修改用户总积分, 积分不能扣成负数
@@ -205,6 +206,8 @@ public class EmployeeEntity {
                     throw EmployeeException.EMPLOYEE_AWARD_ADD_FAILED;
                 }
             }
+        } else {
+            logger.info("addReward  userEmployee not exist!");
         }
         return 0;
     }
