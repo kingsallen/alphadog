@@ -133,7 +133,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 jsonObject.put("userId", userEmployee.getSysuserId());
 
                 //延迟一小时通知
-                long oneHour =  60*60*1000;
+                //long oneHour =  60*60*1000;
+                long oneHour =  5*1000;
                 redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
                         KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(),
                         oneHour+System.currentTimeMillis(), jsonObject.toJSONString());
