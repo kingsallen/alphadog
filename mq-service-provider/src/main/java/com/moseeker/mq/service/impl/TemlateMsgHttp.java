@@ -96,7 +96,7 @@ public class TemlateMsgHttp {
             } else {
                  first = NoticeEmployeeVerifyFirst;
             }
-
+            logger.info("noticeEmployeeVerify first:{}", first);
             //公司公众号
             HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
                     companyId).buildQuery());
