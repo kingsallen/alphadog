@@ -164,11 +164,15 @@ public abstract class EmployeeBinder {
         int employeeId;
         if (useremployee.getId() != 0) {
             useremployee.setUpdateTime(null);
-            if (useremployee.getAuthMethod() == 1 &&
-                    org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
-                employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
+            String bindTime = useremployee.getBindingTime();
+            if (org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
+                useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
             }
             employeeDao.updateData(useremployee);
+            if (useremployee.getAuthMethod() == 1 &&
+                    org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
+                employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
+            }
             employeeId = useremployee.getId();
         } else {
             log.info("doneBind now:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
