@@ -190,6 +190,7 @@ public abstract class EmployeeBinder {
                     }
                     userEmployee.setActivation(EmployeeActiveState.Actived.getState());
                     log.info("userEmployee update record");
+                    log.info("useremployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), userEmployee.getBindingTime());
                     if (useremployee.getAuthMethod() == 1 && userEmployee.getBindingTime() == null) {
                         userEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
                                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
