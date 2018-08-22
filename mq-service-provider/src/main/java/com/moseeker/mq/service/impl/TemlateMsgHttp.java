@@ -47,6 +47,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TemlateMsgHttp {
+
     @Autowired
     private HrWxNoticeMessageDao wxNoticeMessageDao;
     @Autowired
@@ -78,8 +79,11 @@ public class TemlateMsgHttp {
 
     public void noticeEmployeeVerify(int userId, int companyId, String companyName) {
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployee(userId, companyId);
+
+        logger.info("noticeEmployeeVerify userEmployeeRecord:{}", userEmployeeRecord);
         if (userEmployeeRecord == null) {
 
+            logger.info("noticeEmployeeVerify userEmployeeRecord != null");
             String content = NoticeEmployeeVerifyContent;
             String first = NoticeEmployeeVerifyFirst;
 
@@ -119,9 +123,12 @@ public class TemlateMsgHttp {
             applierTemplate.put("touser", wxUserRecord.getOpenid());
             applierTemplate.put("template_id", "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM");
             applierTemplate.put("topcolor", "#FF0000");
-            String result = null;
 
+            logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+            String result = null;
             String url=env.getProperty("message.template.delivery.url").replace("{}", wechatRecord.getAccessToken());
+            logger.info("noticeEmployeeVerify url : {}", url);
             try {
                 result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
             } catch (ConnectException e) {
