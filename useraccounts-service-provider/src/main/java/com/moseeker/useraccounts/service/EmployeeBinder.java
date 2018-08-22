@@ -172,8 +172,11 @@ public abstract class EmployeeBinder {
             UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                     useremployee.getCompanyId());
             if (userEmployee != null) {
+                log.info("userEmployee != null");
                 employeeId = userEmployee.getId();
+                log.info("userEmployee active:{}", userEmployee.getActivation());
                 if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                    log.info("userEmployee not active");
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getEmail())) {
                         userEmployee.setEmail(useremployee.getEmail());
                     }
@@ -184,12 +187,16 @@ public abstract class EmployeeBinder {
                         userEmployee.setCname(useremployee.getCname());
                     }
                     userEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                    log.info("userEmployee update record");
                     employeeDao.updateRecord(userEmployee);
                 }
             } else {
+                log.info("employeeDao.registerEmployee");
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
                 employeeId = executeResult.getId();
+                log.info("executeResult :{}", JSON.toJSONString(executeResult));
                 if (executeResult.getExecute() > 0) {
+                    log.info("employee add award");
                     employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
                 }
             }
