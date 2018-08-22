@@ -45,6 +45,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -666,6 +668,7 @@ public class SearchengineEntity {
                         QueryBuilder companyIdListQueryBuild) {
         logger.info("getSort award:{}", award);
         if (award > 0) {
+            DateTime dateTime = new DateTime(lastUpdateTime);
             QueryBuilder defaultQueryGTAward = QueryBuilders.matchAllQuery();
             QueryBuilder queryGTAward = QueryBuilders.boolQuery().must(defaultQueryGTAward);
 
@@ -682,14 +685,6 @@ public class SearchengineEntity {
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
 
             ((BoolQueryBuilder) queryGTAward).must(activeEmployeeCondition);
-            logger.info("getSort activeEmployeeCondition:{}", queryGTAward);
-
-            logger.info("ex sql :{}", client.prepareSearch("awards").setTypes("award")
-                    .setQuery(queryGTAward)
-                    .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
-                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
-                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
-                    .setSize(0).toString());
 
             QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
@@ -698,7 +693,7 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(award1Query);
 
             QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".last_update_time")
-                    .lte(lastUpdateTime);
+                    .lte(dateTime.toString("yyyy-MM-ddTHH:mm:ss"));
             ((BoolQueryBuilder) query).must(lastUpdateTimeQuery);
 
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
