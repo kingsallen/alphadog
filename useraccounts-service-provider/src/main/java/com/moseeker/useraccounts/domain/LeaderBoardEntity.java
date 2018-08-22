@@ -52,10 +52,14 @@ public class LeaderBoardEntity {
 
         if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
             info.setAward(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getInteger("award"));
+            info.setLastUpdateTime(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
         }
         if (info.getAward() > 0) {
             List<Integer> companyIdList = userEmployeeEntity.getCompanyIds(employeeInfo.getCompanyId());
-            info.setSort(searchengineEntity.getSort(employeeInfo.getId(), employeeInfo.getAward(),timeSpan, companyIdList));
+            logger.info("fetchLeaderBoardInfo id:{}, award:{}, timeSpan:{}, cmopanyIdList:{}", employeeInfo.getId(), employeeInfo.getAward(),timeSpan, companyIdList);
+            int sort = searchengineEntity.getSort(employeeInfo.getId(), employeeInfo.getAward(), employeeInfo.getLastUpdateTime(),timeSpan, companyIdList);
+            logger.info("fetchLeaderBoardInfo sort:{}", sort);
+            info.setSort(sort);
         }
         //todo delete
         logger.info("LeaderBoardEntity fetchLeaderBoardInfo info:{}", JSON.toJSONString(info));
@@ -77,9 +81,10 @@ public class LeaderBoardEntity {
             info.setId(lastEmployeeInfo.getInteger("id"));
             if (lastEmployeeInfo.getJSONObject("awards") != null && lastEmployeeInfo.getJSONObject("awards").getJSONObject(timeSpan) != null) {
                 info.setAward(lastEmployeeInfo.getJSONObject("awards").getJSONObject(timeSpan).getInteger("award"));
+                info.setLastUpdateTime(lastEmployeeInfo.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
             }
             if (info.getAward() > 0) {
-                info.setSort(searchengineEntity.getSort(info.getId(), info.getAward(), timeSpan, companyIdList));
+                info.setSort(searchengineEntity.getSort(info.getId(), info.getAward(), info.getLastUpdateTime(), timeSpan, companyIdList));
             }
         }
         return info;

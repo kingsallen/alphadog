@@ -571,7 +571,7 @@ public class SearchengineEntity {
 
                 for (int i =0; i< employeeAwardsList.size(); i++) {
                     employeeAwardsList.get(i).setSort(getSort(client, employeeAwardsList.get(i).getId(),
-                            employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getTimeSpan(),
+                            employeeAwardsList.get(i).getAward(), employeeAwardsList.get(i).getLastUpdateTime(), employeeAwardsList.get(i).getTimeSpan(),
                             companyIdListQueryBuild));
                 }
             }
@@ -588,14 +588,14 @@ public class SearchengineEntity {
      * @return 排名
      * @throws CommonException 业务异常
      */
-    public int getSort(int id, int award, String timeSpan, List<Integer> companyIdList) throws CommonException {
+    public int getSort(int id, int award, long lastUpdateTime, String timeSpan, List<Integer> companyIdList) throws CommonException {
         TransportClient client =this.getTransportClient();
         if (client == null) {
             logger.error("无法获取ES客户端！！！！");
             throw CommonException.PROGRAM_EXCEPTION;
         }
         QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
-        return getSort(client, id, award, timeSpan, companyIdListQueryBuild);
+        return getSort(client, id, award, lastUpdateTime, timeSpan, companyIdListQueryBuild);
     }
 
     /**
@@ -638,32 +638,64 @@ public class SearchengineEntity {
         }
     }
 
-    private int getSort(TransportClient client, int employeeId, int award,  String timeSpan,
+    private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime,  String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
         if (award > 0) {
-            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
-            QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
+            QueryBuilder defaultQueryGTAward = QueryBuilders.matchAllQuery();
+            QueryBuilder queryGTAward = QueryBuilders.boolQuery().must(defaultQueryGTAward);
 
             QueryBuilder awardQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".award")
-                    .gte(award);
-            ((BoolQueryBuilder) query).must(awardQuery);
+                    .gt(award);
+            ((BoolQueryBuilder) queryGTAward).must(awardQuery);
 
-            ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
+            ((BoolQueryBuilder) queryGTAward).must(companyIdListQueryBuild);
 
             QueryBuilder exceptCurrentEmployeeQuery = QueryBuilders
                     .termQuery("id", employeeId);
-            ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
+            ((BoolQueryBuilder) queryGTAward).mustNot(exceptCurrentEmployeeQuery);
 
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
+
+            ((BoolQueryBuilder) queryGTAward).must(activeEmployeeCondition);
+            logger.info("getSort activeEmployeeCondition:{}", queryGTAward);
+
+            logger.info("ex sql :{}", client.prepareSearch("awards").setTypes("award")
+                    .setQuery(queryGTAward)
+                    .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
+                    .setSize(0).toString());
+
+            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
+
+            QueryBuilder award1Query = QueryBuilders.termQuery("awards." + timeSpan + ".award", award);
+            ((BoolQueryBuilder) query).must(award1Query);
+
+            QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".lastUpdateTime")
+                    .lte(lastUpdateTime);
+            ((BoolQueryBuilder) query).must(lastUpdateTimeQuery);
+
+            ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
+            ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
+
+            logger.info("getSort activeEmployeeCondition:{}", query);
 
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
-                        .setQuery(query)
-                        .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
-                        .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                        .setQuery(queryGTAward)
                         .setSize(0).execute().get();
-                return (int)sortResponse.getHits().getTotalHits()+1;
+
+                SearchResponse sortResponse1 = client.prepareSearch("awards").setTypes("award")
+                        .setQuery(query)
+                        .setSize(0).execute().get();
+                int sort = (int)sortResponse.getHits().getTotalHits();
+                int sort2 = (int)sortResponse1.getHits().getTotalHits();
+
+                logger.info("getSort sort:{}, sort2:{}", sort, sort2);
+
+                return sort + sort2 + 1;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

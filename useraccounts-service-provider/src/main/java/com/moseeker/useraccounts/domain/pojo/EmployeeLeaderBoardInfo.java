@@ -8,6 +8,7 @@ public class EmployeeLeaderBoardInfo {
     private int id;
     private int award;
     private int sort;
+    private long lastUpdateTime;
 
     public int getId() {
         return id;
@@ -31,5 +32,13 @@ public class EmployeeLeaderBoardInfo {
 
     public void setSort(int sort) {
         this.sort = sort;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }
