@@ -195,26 +195,28 @@ public class UpVoteEntity {
      */
     public void clearUpVoteWeekly() {
         LocalDateTime nowLocalDateTime = LocalDateTime.now();
+
         LocalDateTime currentFriday = nowLocalDateTime.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        long currentFridayTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000;
-        LocalDateTime lastFriday = nowLocalDateTime.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
-        long lastFridayTime = lastFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000;
-
-        if (System.currentTimeMillis() >= currentFridayTime) {
-            ThreadPool threadPool = ThreadPool.Instance;
-            threadPool.startTast(() -> {
-                int count = upVoteDao.count(lastFridayTime, currentFridayTime);
-                int totalExecute = 0;
-                while (totalExecute < count) {
-                    clearUpVote(Constant.DATABASE_PAGE_SIZE, lastFridayTime, currentFridayTime);
-                    totalExecute += Constant.DATABASE_PAGE_SIZE;
-                }
-                return true;
-            });
-
+        long endTime;
+        long startTime;
+        if (System.currentTimeMillis() > currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000) {
+            startTime = currentFriday.minusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+            endTime = currentFriday.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         } else {
-            logger.error("clearUpVoteWeekly 时间超时！！！当前时间：{}", nowLocalDateTime.toString());
+            startTime = currentFriday.minusDays(14).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
+            endTime = currentFriday.minusDays(7).atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()*1000;
         }
+
+        ThreadPool threadPool = ThreadPool.Instance;
+        threadPool.startTast(() -> {
+            int count = upVoteDao.count(startTime, endTime);
+            int totalExecute = 0;
+            while (totalExecute < count) {
+                clearUpVote(Constant.DATABASE_PAGE_SIZE, startTime, endTime);
+                totalExecute += Constant.DATABASE_PAGE_SIZE;
+            }
+            return true;
+        });
 
     }
 
@@ -231,7 +233,7 @@ public class UpVoteEntity {
             List<HistoryUserEmployeeUpvoteRecord> histories = new ArrayList<>();
             for (UserEmployeeUpvoteRecord upvoteRecord : upvoteRecords) {
                 HistoryUserEmployeeUpvoteRecord historyUserEmployeeUpvoteRecord = new HistoryUserEmployeeUpvoteRecord();
-                BeanUtils.copyProperties(historyUserEmployeeUpvoteRecord, upvoteRecord);
+                BeanUtils.copyProperties(upvoteRecord, historyUserEmployeeUpvoteRecord);
                 histories.add(historyUserEmployeeUpvoteRecord);
             }
             customHistoryUpVoteDao.batchInsert(histories);

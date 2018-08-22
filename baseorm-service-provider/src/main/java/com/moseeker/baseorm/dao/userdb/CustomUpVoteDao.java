@@ -173,7 +173,6 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(lastFriday)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(currentFriday)))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .fetchOne()
                 .value1();
     }
@@ -183,7 +182,6 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .limit(0,size)
                 .fetch();
     }
