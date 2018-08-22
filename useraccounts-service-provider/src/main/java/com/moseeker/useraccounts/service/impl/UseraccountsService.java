@@ -142,12 +142,13 @@ public class UseraccountsService {
                 if (userUserDO.getUnionid().equals(unionid)) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_SAME);
                 }
+
+                // 把之前的user_wx_user的sysuser_id置为0
+                wxuserdao.invalidOldWxUser(userUserDO.getUnionid());
+
                 // 更新user_user
                 userUserDO.setUnionid(unionid);
                 userdao.updateData(userUserDO);
-
-                // 把之前的user_wx_user的sysuser_id置为0
-                wxuserdao.invalidOldWxUser(userUserDO.getId());
 
                 // 更新UserWxUser
                 userWxUserDO.setSysuserId(userUserDO.getId());
