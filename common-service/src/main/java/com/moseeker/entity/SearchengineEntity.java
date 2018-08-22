@@ -616,6 +616,7 @@ public class SearchengineEntity {
             logger.error("无法获取ES客户端！！！！");
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getSort id:{}, award:{}, timeSpan:{}, companyIdList:{}");
         QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
         return getSort(client, id, award, timeSpan, companyIdListQueryBuild);
     }
@@ -663,6 +664,7 @@ public class SearchengineEntity {
 
     private int getSort(TransportClient client, int employeeId, int award,  String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
+        logger.info("getSort award:{}");
         if (award > 0) {
             QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
