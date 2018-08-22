@@ -171,6 +171,7 @@ public class EmployeeEntity {
      */
     @Transactional
     public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws EmployeeException {
+        logger.info("addReward employeeId:{}, companyId:{}, ueprdDo:{}", employeeId, companyId, ueprDo);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
@@ -248,6 +249,7 @@ public class EmployeeEntity {
 
     public boolean addRewardByEmployeeVerified(int employeeId, int companyId) throws EmployeeException {
 
+        logger.info("addRewardByEmployeeVerified employeeId:{}, companyId:{}", employeeId, companyId);
         HrPointsConfRecord record = hrPointsConfDao.getEmployeeVerified(companyId);
         String reason;
         int award;
@@ -263,6 +265,7 @@ public class EmployeeEntity {
             award = record.getReward().intValue();
         }
 
+        logger.info("addRewardByEmployeeVerified reason:{}, award:{}", reason, award);
         UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
         ueprDo.setReason(reason);
         ueprDo.setAward(award);

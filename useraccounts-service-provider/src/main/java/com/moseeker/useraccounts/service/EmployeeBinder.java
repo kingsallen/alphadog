@@ -168,6 +168,7 @@ public abstract class EmployeeBinder {
             log.info("doneBind useremployee.authMethod:{}, useremployee.bindingTime:{}", useremployee.getAuthMethod(), useremployee.getBindingTime());
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
+                log.info("自定义添加积分！");
                 employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
             }
             employeeDao.updateData(useremployee);
