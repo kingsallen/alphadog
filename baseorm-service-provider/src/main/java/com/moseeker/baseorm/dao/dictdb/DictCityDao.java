@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
@@ -342,7 +343,7 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
         }
         if(!StringUtils.isEmptyList(provinceCode)){
             List<Integer> provinceCityCode=new ArrayList<>();
-            List<Map<String,Object>> list=getCityCodeByProvine(provinceCityCode);
+            List<Map<String,Object>> list=getCityCodeByProvine(provinceCode);
             if(!StringUtils.isEmptyList(list)){
                 for(Map<String,Object> data:list){
                     int cityCode= (int) data.get("code");
@@ -374,6 +375,7 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
      获取省份下城市数据
      需要整改，放在这个位置不对，但是为了简单，没办法
      */
+    @CounterIface
     public List<Map<String,Object>> getCityCodeByProvine(List<Integer> codes) throws CommonException {
         List<Map<String,Object>> result=new ArrayList<>();
         List<Integer> codeList=this.getOutCityCodeList();
@@ -404,6 +406,8 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
     private boolean isProvice(List<Integer> code){
         Query query=new Query.QueryBuilder().where("level",1).and(new com.moseeker.common.util.query.Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
         int count=this.getCount(query);
+        logger.info("count======"+count);
+        logger.info("code.size======"+code.size());
         if(count>0&&count==code.size()){
             return true;
         }
