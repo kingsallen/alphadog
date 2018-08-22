@@ -12,6 +12,7 @@ public class EmployeeInfo {
     private String name;
     private String headImg;
     private int award;
+    private long lastUpdateTime;
     private EmployeeActiveState employeeActiveState;
     private int companyId;
     private int userId;
@@ -70,5 +71,13 @@ public class EmployeeInfo {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
     }
 }
