@@ -416,10 +416,14 @@ public class EmployeeService {
                     JSONObject value = e.getValue();
                     employeeAward.setEmployeeId(e.getKey());
                     employeeAward.setAwardTotal(value.getInteger("award"));
-                    String name = org.apache.commons.lang.StringUtils.defaultIfBlank(employeeDOMap.get(e.getKey()).getCname(), "");
+                    String name = "";
+                    if (employeeDOMap.get(e.getKey()) != null) {
+                        name = employeeDOMap.get(e.getKey()).getCname();
+                    }
                     String headImg = "";
                     if (userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
                         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
+                            log.info("key:{},  value:{}", employeeDOMap.get(e.getKey()).getSysuserId()), userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()));
                             name = org.apache.commons.lang.StringUtils
                                     .isNotBlank(userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName())?
                                     userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()).getName():
