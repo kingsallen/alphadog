@@ -704,14 +704,9 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
-            logger.info("getSort activeEmployeeCondition:{}", query);
+            logger.info("getSort queryGTAward:{}", queryGTAward);
+            logger.info("getSort query:{}", query);
 
-            logger.info("ex sql :{}", client.prepareSearch("awards").setTypes("award")
-                    .setQuery(query)
-                    .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
-                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
-                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
-                    .setSize(0).toString());
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
                         .setQuery(queryGTAward)
