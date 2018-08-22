@@ -5,6 +5,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.StringUtils;
@@ -212,7 +213,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 " and u.id = "+ id + " and ut.id is null");
     }
 
-    public int registerEmployee(UserEmployeeDO useremployee) {
+    public ExecuteResult registerEmployee(UserEmployeeDO useremployee) {
+
+        ExecuteResult executeResult = new ExecuteResult();
 
         Param<Integer> companyIdParam = param(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), useremployee.getCompanyId());
         Param<String> employeeIdParam = param(UserEmployee.USER_EMPLOYEE.EMPLOYEEID.getName(),
@@ -277,6 +280,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                         )
                 )
                 .execute();
+        executeResult.setExecute(execute);
         if (execute == 0) {
             Record2<Integer, Byte> result = create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.ACTIVATION)
                     .from(UserEmployee.USER_EMPLOYEE)
@@ -303,9 +307,20 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
                 .fetchOne();
         if (record != null) {
-            return record.getId();
+            executeResult.setId(record.getId());
         } else {
-            return 0;
+            executeResult.setId(0);
         }
+        return executeResult;
+    }
+
+    public UserEmployeeRecord getUnActiveEmployee(int sysuserId, int companyId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc())
+                .limit(1)
+                .fetchOne();
     }
 }

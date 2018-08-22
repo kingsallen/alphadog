@@ -1,10 +1,13 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
@@ -148,6 +151,7 @@ public abstract class EmployeeBinder {
 
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
+     * todo 需要优化  代码过长
      * @param useremployee
      * @return
      * @throws TException
@@ -163,9 +167,33 @@ public abstract class EmployeeBinder {
         } else {
             log.info("doneBind now:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
             log.info("doneBind persist employee:{}", useremployee);
-            employeeId = employeeDao.registerEmployee(useremployee);
-        }
 
+
+            UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
+                    useremployee.getCompanyId());
+            if (userEmployee != null) {
+                employeeId = userEmployee.getId();
+                if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getEmail())) {
+                        userEmployee.setEmail(useremployee.getEmail());
+                    }
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getMobile())) {
+                        userEmployee.setMobile(useremployee.getMobile());
+                    }
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
+                        userEmployee.setCname(useremployee.getCname());
+                    }
+                    userEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                    employeeDao.updateRecord(userEmployee);
+                }
+            } else {
+                ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
+                employeeId = executeResult.getId();
+                if (executeResult.getExecute() > 0) {
+                    employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                }
+            }
+        }
         if (useremployee.getSysuserId() > 0
                 && org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
             UserUserDO userUserDO = new UserUserDO();

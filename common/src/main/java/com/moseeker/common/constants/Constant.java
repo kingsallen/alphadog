@@ -13,6 +13,7 @@ package com.moseeker.common.constants;
 public final class Constant {
 
     public static final int BONUS = 2;  //默认红包金额
+    public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
 
     private Constant() throws AssertionError {
         throw new AssertionError();
