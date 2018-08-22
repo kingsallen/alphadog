@@ -75,11 +75,6 @@ public class TemlateMsgHttp {
     @Autowired
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
 
-    private static String NoticeEmployeeVerifyContent = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~\n" +
-            "认证状态：{{keyword1.DATA}}\n" +
-            "认证类型：{{keyword2.DATA}}\n" +
-            "认证信息：{{keyword3.DATA}}\n" +
-            "处理时间：{{keyword4.DATA}}";
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
     private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
 
@@ -92,11 +87,15 @@ public class TemlateMsgHttp {
         if (userEmployeeRecord == null) {
 
             logger.info("noticeEmployeeVerify userEmployeeRecord != null");
-            String content = NoticeEmployeeVerifyContent;
-            String first = NoticeEmployeeVerifyFirst;
+            String first;
 
             ConfigSysTemplateMessageLibraryRecord record =
                     templateMessageLibraryDao.getByTemplateIdAndTitle("OPENTM204875750", "员工认证提醒通知");
+            if (record != null) {
+                first = record.getFirst();
+            } else {
+                 first = NoticeEmployeeVerifyFirst;
+            }
 
             //公司公众号
             HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
@@ -122,6 +121,11 @@ public class TemlateMsgHttp {
 
                     JSONObject colMap = new JSONObject();
 
+                    JSONObject firstJson = new JSONObject();
+                    firstJson.put("color", "#173177");
+                    firstJson.put("value", first);
+                    colMap.put("first", firstJson);
+
                     JSONObject keywords1 = new JSONObject();
                     keywords1.put("color", "#173177");
                     keywords1.put("value", "尚未完成认证");
@@ -141,11 +145,6 @@ public class TemlateMsgHttp {
                     keywords4.put("color", "#173177");
                     keywords4.put("value", companyName);
                     colMap.put("keyword4", keywords4);
-
-                    JSONObject body = new JSONObject();
-                    body.put("color", "#173177");
-                    body.put("value", content);
-                    colMap.put("first", body);
 
                     Map<String, Object> applierTemplate = new HashMap<>();
                     applierTemplate.put("data", colMap);
