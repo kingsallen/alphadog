@@ -175,10 +175,10 @@ public abstract class EmployeeBinder {
                 employeeId = userEmployee.getId();
                 if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getEmail())) {
-                        userEmployee.setEmail(useremployee.getEmail());
+                        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
                     }
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getMobile())) {
-                        userEmployee.setMobile(useremployee.getMobile());
+                        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
                     }
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
                         userEmployee.setCname(useremployee.getCname());
