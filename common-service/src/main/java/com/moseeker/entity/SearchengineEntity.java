@@ -669,7 +669,7 @@ public class SearchengineEntity {
                         QueryBuilder companyIdListQueryBuild) {
         logger.info("getSort award:{}", award);
         if (award > 0) {
-            LocalDateTime localDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
+            LocalDateTime lastUpdateDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
             QueryBuilder defaultQueryGTAward = QueryBuilders.matchAllQuery();
             QueryBuilder queryGTAward = QueryBuilders.boolQuery().must(defaultQueryGTAward);
 
@@ -694,7 +694,7 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(award1Query);
 
             QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".last_update_time")
-                    .lte(localDateTime.toString());
+                    .lte(lastUpdateDateTime.toString());
             ((BoolQueryBuilder) query).must(lastUpdateTimeQuery);
 
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
