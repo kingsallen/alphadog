@@ -170,7 +170,7 @@ public abstract class EmployeeBinder {
             log.info("result:{}", useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime()));
             String bindTime = useremployee.getBindingTime();
-            if (org.apache.commons.lang.StringUtils.isBlank(useremployee.bindingTime)) {
+            if (org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
                 useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
             }
             employeeDao.updateData(useremployee);
