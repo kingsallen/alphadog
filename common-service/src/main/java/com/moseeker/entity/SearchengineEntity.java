@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -668,7 +669,7 @@ public class SearchengineEntity {
                         QueryBuilder companyIdListQueryBuild) {
         logger.info("getSort award:{}", award);
         if (award > 0) {
-            DateTime dateTime = new DateTime(lastUpdateTime);
+            LocalDateTime localDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
             QueryBuilder defaultQueryGTAward = QueryBuilders.matchAllQuery();
             QueryBuilder queryGTAward = QueryBuilders.boolQuery().must(defaultQueryGTAward);
 
@@ -693,7 +694,7 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(award1Query);
 
             QueryBuilder lastUpdateTimeQuery = QueryBuilders.rangeQuery("awards." + timeSpan + ".last_update_time")
-                    .lte(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
+                    .lte(localDateTime.toString());
             ((BoolQueryBuilder) query).must(lastUpdateTimeQuery);
 
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
