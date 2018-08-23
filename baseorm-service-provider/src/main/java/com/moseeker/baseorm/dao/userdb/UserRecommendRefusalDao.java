@@ -78,6 +78,7 @@ public class UserRecommendRefusalDao extends JooqCrudImpl<UserRecommendRefusalDO
                 .where(USER_RECOMMEND_REFUSAL.USER_ID.eq(userId))
                 .and(USER_RECOMMEND_REFUSAL.WECHAT_ID.eq(wechatId))
                 .orderBy(USER_RECOMMEND_REFUSAL.REFUSE_TIME.desc())
+                .limit(1)
                 .fetchOneInto(UserRecommendRefusalDO.class);
     }
 }
