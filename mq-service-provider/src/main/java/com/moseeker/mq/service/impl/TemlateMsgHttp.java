@@ -85,13 +85,16 @@ public class TemlateMsgHttp {
 
             logger.info("noticeEmployeeVerify userEmployeeRecord != null");
             String first;
+            String remark;
 
             ConfigSysTemplateMessageLibraryRecord record =
                     templateMessageLibraryDao.getByTemplateIdAndTitle("OPENTM204875750", "员工认证提醒通知");
             if (record != null) {
                 first = record.getFirst();
+                remark = record.getRemark();
             } else {
                  first = NoticeEmployeeVerifyFirst;
+                remark = "";
             }
 
             //公司公众号
@@ -138,6 +141,11 @@ public class TemlateMsgHttp {
                     keywords4.put("color", "#173177");
                     keywords4.put("value", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
                     colMap.put("keyword4", keywords4);
+
+                    JSONObject remarkJson = new JSONObject();
+                    remarkJson.put("color", "#173177");
+                    remarkJson.put("value", remark);
+                    colMap.put("remark", remarkJson);
 
                     Map<String, Object> applierTemplate = new HashMap<>();
                     applierTemplate.put("data", colMap);
