@@ -151,7 +151,7 @@ public class UpVoteEntity {
         logger.info("countRecentUpVote employeeId:{}, viewTime:{}, now:{}", employeeId, viewTime, now);
 
         logger.info("countRecentUpVote start:{}, end:{}", new Timestamp(viewTime), new Timestamp(now));
-        return upVoteDao.countUpVote(employeeId, viewTime, now);
+        return upVoteDao.countExceptSelfUpVote(employeeId, viewTime, now);
     }
 
     public int countUpVote(int id) {
