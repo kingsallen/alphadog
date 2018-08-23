@@ -1118,6 +1118,8 @@ public class EmployeeEntity {
             throw EmployeeException.NODATA_EXCEPTION;
         }
         employeeDao.followWechat(employeeDO.getId(), employeeDO.getSysuserId());
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeDO.getId());}});
+
     }
 
     public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
@@ -1133,6 +1135,7 @@ public class EmployeeEntity {
             throw EmployeeException.NODATA_EXCEPTION;
         }
         employeeDao.unFollowWechat(employeeDO.getId());
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeDO.getId());}});
     }
 
     /**
