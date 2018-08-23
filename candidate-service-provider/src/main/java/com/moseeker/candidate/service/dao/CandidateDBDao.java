@@ -253,7 +253,7 @@ public class CandidateDBDao {
     }
     public List<CandidateRecomRecordDO> listCandidateRecomRecordDONew(int postUserId, String
             clickTime, List<Integer> recoms, List<Integer> positionIdList){
-        DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Timestamp time=new Timestamp(dateTime.getMillis());
         //        Timestamp time1=new Timestamp(dateTime.plusDays(1).getMillis());
