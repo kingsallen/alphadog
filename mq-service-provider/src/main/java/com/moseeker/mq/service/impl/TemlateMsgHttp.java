@@ -1,14 +1,27 @@
 package com.moseeker.mq.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
@@ -17,14 +30,18 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMessageRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import java.net.ConnectException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,7 +56,123 @@ public class TemlateMsgHttp {
     @Autowired
     private LogWxMessageRecordDao wxMessageRecordDao;
 
+    @Autowired
+    private UserEmployeeDao employeeDao;
+
+    @Autowired
+    private UserWxUserDao userWxUserDao;
+
+    @Autowired
+    private HrWxWechatDao hrWxWechatDao;
+
+    @Autowired
+    private HrWxTemplateMessageDao wxTemplateMessageDao;
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
+
+    private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
+    private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
+
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
+
+    public void noticeEmployeeVerify(int userId, int companyId, String companyName) {
+        UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployee(userId, companyId);
+        if (userEmployeeRecord == null) {
+
+            logger.info("noticeEmployeeVerify userEmployeeRecord != null");
+            String first;
+            String remark;
+
+            ConfigSysTemplateMessageLibraryRecord record =
+                    templateMessageLibraryDao.getByTemplateIdAndTitle("OPENTM204875750", "员工认证提醒通知");
+            if (record != null) {
+                first = record.getFirst();
+                remark = record.getRemark();
+            } else {
+                 first = NoticeEmployeeVerifyFirst;
+                remark = "";
+            }
+
+            //公司公众号
+            HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
+                    companyId).buildQuery());
+
+            if (hrChatDO != null) {
+                String templateId;
+                HrWxTemplateMessageDO hrWxTemplateMessage = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                        hrChatDO.getId()).and("sys_template_id", Constant.EMPLOYEE_EMAILVERIFY_NOT_VERIFY_NOTICE_TPL).and("disable", "0").buildQuery());
+                if (hrWxTemplateMessage == null) {
+                    templateId = NoticeEmployeeVerifyFirstTemplateId;
+                } else {
+                    templateId = hrWxTemplateMessage.getWxTemplateId();
+                }
+
+                UserWxUserDO userWxUserDO = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
+                        userId).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
+
+                if (userWxUserDO != null) {
+                    JSONObject colMap = new JSONObject();
+
+                    JSONObject firstJson = new JSONObject();
+                    firstJson.put("color", "#173177");
+                    firstJson.put("value", first);
+                    colMap.put("first", firstJson);
+
+                    JSONObject keywords1 = new JSONObject();
+                    keywords1.put("color", "#173177");
+                    keywords1.put("value", "尚未完成认证");
+                    colMap.put("keyword1", keywords1);
+
+                    JSONObject keywords2 = new JSONObject();
+                    keywords2.put("color", "#173177");
+                    keywords2.put("value", "员工认证");
+                    colMap.put("keyword2", keywords2);
+
+                    JSONObject keywords3 = new JSONObject();
+                    keywords3.put("color", "#173177");
+                    keywords3.put("value", companyName);
+                    colMap.put("keyword3", keywords3);
+
+                    JSONObject keywords4 = new JSONObject();
+                    keywords4.put("color", "#173177");
+                    keywords4.put("value", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+                    colMap.put("keyword4", keywords4);
+
+                    JSONObject remarkJson = new JSONObject();
+                    remarkJson.put("color", "#173177");
+                    remarkJson.put("value", remark);
+                    colMap.put("remark", remarkJson);
+
+                    Map<String, Object> applierTemplate = new HashMap<>();
+                    applierTemplate.put("data", colMap);
+                    applierTemplate.put("touser", userWxUserDO.getOpenid());
+                    applierTemplate.put("template_id", templateId);
+                    applierTemplate.put("topcolor", "#FF0000");
+
+                    logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+                    String url=env.getProperty("message.template.delivery.url").replace("{}", hrChatDO.getAccessToken());
+                    logger.info("noticeEmployeeVerify url : {}", url);
+
+                    try {
+                        String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+                        logger.info("noticeEmployeeVerify result:{}", result);
+                    } catch (ConnectException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                } else {
+                    logger.error("微信账号不存在！userId:{}, companyId:{}", userId, companyId);
+                }
+
+            } else {
+                logger.error("微信公众号不存在！userId:{}, companyId:{}", userId, companyId);
+            }
+        }
+    }
 
     /**
      * 向申请者发送微信模板消息

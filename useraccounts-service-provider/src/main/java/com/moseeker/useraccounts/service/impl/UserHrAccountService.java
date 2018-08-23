@@ -884,7 +884,8 @@ public class UserHrAccountService {
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 3
-                                || (Byte) map.get("activation") == 4) {
+                                || (Byte) map.get("activation") == 4
+                                || (Byte) map.get("activation") == 5) {
                             unCount+=(Integer) map.get("activation_count");
 //                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         }
@@ -1052,6 +1053,7 @@ public class UserHrAccountService {
                 filters.add(2);
                 filters.add(3);
                 filters.add(4);
+                filters.add(5);
                 queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
             }
         }

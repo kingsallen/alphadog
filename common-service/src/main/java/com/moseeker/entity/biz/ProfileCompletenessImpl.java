@@ -160,11 +160,7 @@ public class ProfileCompletenessImpl {
         UserSettingsRecord settingRecord = null;
         if (userRecord != null) {
             settingRecord = settingDao.getUserSettingsById(userId);
-            try {
-                wxuserRecord = wxuserDao.getWXUserByUserId(userId);
-            } catch (SQLException e) {
-                logger.error(e.getMessage(), e);
-            }
+            wxuserRecord = wxuserDao.getWXUserByUserId(userId);
             useruserCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
                     wxuserRecord);
         }
@@ -198,11 +194,7 @@ public class ProfileCompletenessImpl {
                 UserSettingsRecord settingRecord = null;
                 if (userRecord != null) {
                     settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
-                    try {
-                        wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
-                    } catch (SQLException e) {
-                        logger.error(e.getMessage(), e);
-                    }
+                    wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
                     int useruserCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
                             wxuserRecord);
 
@@ -665,11 +657,7 @@ public class ProfileCompletenessImpl {
             UserSettingsRecord settingRecord = null;
             if (userRecord != null) {
                 settingRecord = settingDao.getUserSettingsById(profileRecord.getUserId().intValue());
-                try {
-                    wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
-                } catch (SQLException e) {
-                    logger.error(e.getMessage(), e);
-                }
+                wxuserRecord = wxuserDao.getWXUserByUserId(userRecord.getId().intValue());
                 int useruserCompleteness = CompletenessCalculator.calculateUserUser(userRecord, settingRecord,
                         wxuserRecord);
                 completenessRecord.setUserUser(useruserCompleteness);
@@ -818,7 +806,8 @@ public class ProfileCompletenessImpl {
                 + completenessRecord.getProfileLanguage() + completenessRecord.getProfileSkill()
                 + completenessRecord.getProfileCredentials() + completenessRecord.getProfileAwards()
                 + completenessRecord.getProfileWorks() + completenessRecord.getProfileIntention();
-        ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0, completenessRecord.getProfileId().intValue(), null);
+        ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(0,
+                completenessRecord.getProfileId().intValue(), null);
         if (profileRecord != null) {
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileDao.updateRecord(profileRecord);

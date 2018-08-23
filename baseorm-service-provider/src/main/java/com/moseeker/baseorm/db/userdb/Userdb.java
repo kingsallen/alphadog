@@ -5,10 +5,6 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -18,10 +14,12 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserIntention;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
+import com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal;
 import com.moseeker.baseorm.db.userdb.tables.UserReferralRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserSearchCondition;
 import com.moseeker.baseorm.db.userdb.tables.UserSettings;
@@ -56,7 +54,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Userdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -170558095;
+    private static final long serialVersionUID = 706364109;
 
     /**
      * The reference instance of <code>userdb</code>
@@ -67,26 +65,6 @@ public class Userdb extends SchemaImpl {
      * VIEW
      */
     public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
-
-    /**
-     * 消息业务表
-     */
-    public final ConsistencyBusiness CONSISTENCY_BUSINESS = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness.CONSISTENCY_BUSINESS;
-
-    /**
-     * 消息业务类型表
-     */
-    public final ConsistencyBusinessType CONSISTENCY_BUSINESS_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE;
-
-    /**
-     * 消息表
-     */
-    public final ConsistencyMessage CONSISTENCY_MESSAGE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage.CONSISTENCY_MESSAGE;
-
-    /**
-     * 消息类型表
-     */
-    public final ConsistencyMessageType CONSISTENCY_MESSAGE_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE;
 
     /**
      * 阿里用户信息表
@@ -134,6 +112,11 @@ public class Userdb extends SchemaImpl {
     public final UserEmployeeReferralPolicy USER_EMPLOYEE_REFERRAL_POLICY = com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY;
 
     /**
+     * 员工点赞记录
+     */
+    public final UserEmployeeUpvote USER_EMPLOYEE_UPVOTE = com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE;
+
+    /**
      * 用户职位收藏
      */
     public final UserFavPosition USER_FAV_POSITION = com.moseeker.baseorm.db.userdb.tables.UserFavPosition.USER_FAV_POSITION;
@@ -152,6 +135,11 @@ public class Userdb extends SchemaImpl {
      * 用户订阅职位推荐邮件
      */
     public final UserPositionEmail USER_POSITION_EMAIL = com.moseeker.baseorm.db.userdb.tables.UserPositionEmail.USER_POSITION_EMAIL;
+
+    /**
+     * 用户拒绝推荐信息表
+     */
+    public final UserRecommendRefusal USER_RECOMMEND_REFUSAL = com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
 
     /**
      * 员工主动推荐记录
@@ -224,10 +212,6 @@ public class Userdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM,
-            ConsistencyBusiness.CONSISTENCY_BUSINESS,
-            ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE,
-            ConsistencyMessage.CONSISTENCY_MESSAGE,
-            ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE,
             UserAliUser.USER_ALI_USER,
             UserBdUser.USER_BD_USER,
             UserCollectPosition.USER_COLLECT_POSITION,
@@ -237,10 +221,12 @@ public class Userdb extends SchemaImpl {
             UserEmployeePointsRecord.USER_EMPLOYEE_POINTS_RECORD,
             UserEmployeePointsRecordCompanyRel.USER_EMPLOYEE_POINTS_RECORD_COMPANY_REL,
             UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY,
+            UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE,
             UserFavPosition.USER_FAV_POSITION,
             UserHrAccount.USER_HR_ACCOUNT,
             UserIntention.USER_INTENTION,
             UserPositionEmail.USER_POSITION_EMAIL,
+            UserRecommendRefusal.USER_RECOMMEND_REFUSAL,
             UserReferralRecord.USER_REFERRAL_RECORD,
             UserSearchCondition.USER_SEARCH_CONDITION,
             UserSettings.USER_SETTINGS,

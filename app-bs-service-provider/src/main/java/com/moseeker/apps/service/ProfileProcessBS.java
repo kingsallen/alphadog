@@ -503,14 +503,10 @@ public class ProfileProcessBS {
             String dateStr = DateUtils.dateToNormalDate(new Date());
             MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
             if(StringUtils.isNullOrEmpty(userName)){
-                UserWxUserRecord wxUserDO = null;
-                try {
-                    wxUserDO = wxUserDao.getWXUserByUserId(applierId);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    logger.error(e.getMessage(),e);
+                UserWxUserRecord wxUserDO = wxUserDao.getWXUserByUserId(applierId);
+                if (wxUserDO != null) {
+                    userName = wxUserDO.getNickname();
                 }
-                userName = wxUserDO.getNickname();
             }
             this.handerTemplate(msInfo, userName, positionName, dateStr, templateNoticeStruct);
             templateNoticeStruct.setCompany_id(companyId);

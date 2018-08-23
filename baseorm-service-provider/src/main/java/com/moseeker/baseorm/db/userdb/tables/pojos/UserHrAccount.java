@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount implements Serializable {
 
-    private static final long serialVersionUID = -1443634367;
+    private static final long serialVersionUID = 1073746268;
 
     private Integer   id;
     private Integer   companyId;
