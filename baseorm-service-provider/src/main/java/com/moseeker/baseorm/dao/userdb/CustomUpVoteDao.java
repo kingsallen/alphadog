@@ -146,12 +146,14 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .execute();
     }
 
-    public UserEmployeeUpvoteRecord fetchBySenderAndReceiver(int sender, int receiver) {
+    public UserEmployeeUpvoteRecord fetchBySenderAndReceiver(int sender, int receiver, long startTime, long endTime) {
         return using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
                 .fetchOne();
     }
 

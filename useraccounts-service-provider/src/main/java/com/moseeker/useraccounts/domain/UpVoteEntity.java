@@ -103,7 +103,10 @@ public class UpVoteEntity {
      * @return 是否点过赞 true 点过赞 false 未点过赞
      */
     public boolean isPraise(int sender, int receiver) {
-        UserEmployeeUpvoteRecord record = upVoteDao.fetchBySenderAndReceiver(sender, receiver);
+
+        IntervalTime intervalTime = IntervalTime.buildIntervalTime();
+
+        UserEmployeeUpvoteRecord record = upVoteDao.fetchBySenderAndReceiver(sender, receiver, intervalTime.getStartTime(), intervalTime.getEndTime());
         return record != null;
     }
 
