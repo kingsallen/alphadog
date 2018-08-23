@@ -36,7 +36,10 @@ public class Schedule {
     private RedisClient redisClient;
 
 	@Autowired
-    TemlateMsgHttp temlateMsgHttp;
+    private TemlateMsgHttp temlateMsgHttp;
+
+	@Autowired
+    private ClearUpVote clearUpVote;
 
 	ThreadPool threadPool = ThreadPool.Instance;
 
@@ -70,6 +73,11 @@ public class Schedule {
             });
         }
 
+        //执行清空点赞校验
+        threadPool.startTast(() -> {
+            clearUpVote.clearUpVote();
+            return true;
+        });
 	}
 
 	private void sendNotice(Set<String> employeeEmailVerifyNotices) {
