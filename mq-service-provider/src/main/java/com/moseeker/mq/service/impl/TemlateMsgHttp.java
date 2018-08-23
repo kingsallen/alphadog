@@ -136,7 +136,7 @@ public class TemlateMsgHttp {
 
                     JSONObject keywords4 = new JSONObject();
                     keywords4.put("color", "#173177");
-                    keywords4.put("value", companyName);
+                    keywords4.put("value", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
                     colMap.put("keyword4", keywords4);
 
                     Map<String, Object> applierTemplate = new HashMap<>();
