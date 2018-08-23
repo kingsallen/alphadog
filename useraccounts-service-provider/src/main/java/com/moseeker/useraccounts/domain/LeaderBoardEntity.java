@@ -96,7 +96,7 @@ public class LeaderBoardEntity {
             leaderBoard = new HrLeaderBoard();
             leaderBoard.setId(0);
             leaderBoard.setCompanyId(companyId);
-            leaderBoard.setType((byte)1);
+            leaderBoard.setType((byte)2);
         }
         return leaderBoard;
     }
