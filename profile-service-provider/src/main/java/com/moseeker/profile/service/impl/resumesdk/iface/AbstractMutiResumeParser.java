@@ -51,7 +51,7 @@ public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
                 try {
                     r.add(parseResume(t));
                 } catch (ResumeParseException e) {
-                    logger.error(e.getMessage(), e);
+                    logger.error(e.getMessage()+" "+e.getErrorLog(), e);
                     addException(moseekerProfile,e);
                 }
             }
