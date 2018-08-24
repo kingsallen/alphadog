@@ -58,6 +58,7 @@ public class ResumeEntity {
 
             if (profileObj.getExceptions() != null && profileObj.getExceptions().size() > 0) {
                 exceptions.addAll(profileObj.getExceptions());
+                profileObj.setExceptions(null);
             }
 
             exceptions.addAll(profileObjRepository.fillProfile(profileObj, uid));
