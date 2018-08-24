@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl.resumesdk.iface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,8 +17,6 @@ import java.util.List;
  */
 public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
     Logger logger = LoggerFactory.getLogger(AbstractMutiResumeParser.class);
-
-    protected List<ResumeParseException> exceptions = new ArrayList<>();
 
     /**
      * 解析ResumeSDK列表对象中的一个
@@ -53,7 +52,7 @@ public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
                     r.add(parseResume(t));
                 } catch (ResumeParseException e) {
                     logger.error(e.getMessage(), e);
-                    exceptions.add(e);
+                    addException(moseekerProfile,e);
                 }
             }
         }
@@ -63,11 +62,16 @@ public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
     }
 
     /**
-     * 返回异常列表
-     * @return 异常列表
+     * 添加异常
+     * @param e 异常
      */
-    @Override
-    public List<ResumeParseException> getExceptions() {
-        return exceptions;
+    private void addException(ProfileObj moseekerProfile,ResumeParseException e){
+        List<ResumeParseException> temp = moseekerProfile.getExceptions();
+        if(temp == null){
+            temp = new ArrayList<>();
+        }
+        temp.add(e);
+        moseekerProfile.setExceptions(temp);
     }
+
 }

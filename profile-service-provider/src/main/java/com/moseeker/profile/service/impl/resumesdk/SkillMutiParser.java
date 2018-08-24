@@ -5,7 +5,7 @@ import com.moseeker.entity.pojo.profile.Skill;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.entity.pojo.resume.SkillsObjs;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParseException;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
