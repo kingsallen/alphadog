@@ -68,11 +68,6 @@ public class ResumeEntity {
                         .map(exception -> ResumeParserHelper.buildLogResumeRecord(exception, resumeObj, uid, fileName, null))
                         .collect(Collectors.toList());
                 if (logResumeRecordRecordList != null && logResumeRecordRecordList.size() > 0) {
-                    logResumeRecordRecordList.forEach(l->{
-                        if(l.getFieldValue()!=null && l.getFieldValue().length()>2000){
-                            l.setFieldValue(l.getFieldValue().substring(0,2000));
-                        }
-                    });
                     resumeDao.addRecords(logResumeRecordRecordList);
                 }
             }
