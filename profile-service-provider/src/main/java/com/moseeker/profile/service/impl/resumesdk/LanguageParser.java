@@ -5,7 +5,7 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.LangObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParseException;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
