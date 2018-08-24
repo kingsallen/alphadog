@@ -169,6 +169,19 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .fetchOne().value1();
     }
 
+    public int countExceptSelfUpVote(int employeeId, long start, long end) {
+
+        return using(configuration())
+                .selectCount()
+                .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.ne(employeeId))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
+                .fetchOne().value1();
+    }
+
     public int count(long lastFriday, long currentFriday) {
         return using(configuration())
                 .selectCount()

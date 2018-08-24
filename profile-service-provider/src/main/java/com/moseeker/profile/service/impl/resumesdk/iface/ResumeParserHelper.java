@@ -3,8 +3,7 @@ package com.moseeker.profile.service.impl.resumesdk.iface;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 
 public class ResumeParserHelper {
 

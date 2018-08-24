@@ -6,7 +6,7 @@ import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParseException;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,8 +21,6 @@ import java.util.List;
 @Component
 public class UserParser extends AbstractMutiResumeParser<Result, User> {
     Logger logger = LoggerFactory.getLogger(UserParser.class);
-
-    protected List<ResumeParseException> exceptions = new ArrayList<>();
 
     @Override
     public User parseResume(Result result) {
@@ -44,10 +42,5 @@ public class UserParser extends AbstractMutiResumeParser<Result, User> {
         if (r != null && r.size() > 0) {
             moseekerProfile.setUser(r.get(0));
         }
-    }
-
-    @Override
-    public List<ResumeParseException> getExceptions() {
-        return exceptions;
     }
 }

@@ -583,7 +583,6 @@ public class EmployeeService {
         upVoteEntity.cancelUpVote(upVoteData.getReceiver(), upVoteData.getSender());
     }
 
-
     /**
      * 查找指定员工的榜单信息
      * @param id 员工编号
