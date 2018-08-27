@@ -12,14 +12,13 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.constants.ProfileDefaultValues;
 import com.moseeker.profile.service.impl.resumesdk.ProfileObjRepository;
 import com.moseeker.profile.service.impl.resumesdk.iface.IResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParseException;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,10 +54,12 @@ public class ResumeEntity {
             List<ResumeParseException> exceptions = new ArrayList<>();
             resumeParsers.forEach(p-> {
                 p.parseResume(profileObj,resumeObj);
-                if (p.getExceptions() != null && p.getExceptions().size() > 0) {
-                    exceptions.addAll(p.getExceptions());
-                }
             });
+
+            if (profileObj.getExceptions() != null && profileObj.getExceptions().size() > 0) {
+                exceptions.addAll(profileObj.getExceptions());
+                profileObj.setExceptions(null);         //异常不返回
+            }
 
             exceptions.addAll(profileObjRepository.fillProfile(profileObj, uid));
             if (exceptions.size() > 0) {

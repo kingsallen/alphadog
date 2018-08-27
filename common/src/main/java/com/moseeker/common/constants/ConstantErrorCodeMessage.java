@@ -60,6 +60,8 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_OUTPUT_FAILED = "{'status':31022,'message':'导出失败!'}";
     public static final String PROFILE_ALLREADY_NOT_EXIST = "{'status':31023,'message':'个人profile不存在!'}";
 
+    public static final String PROFILE_CALL_RESUMESDK_RESULT_ERROR = "{'status':31024,'message':'调用ResumeSDK返回结果错误,log id:{}'}";
+
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
     public static final String COMPANY_SCALE_ELLEGAL = "{'status':33002,'message':'公司规模不合法!'}";

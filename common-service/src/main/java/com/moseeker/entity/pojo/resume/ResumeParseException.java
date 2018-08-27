@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl.resumesdk.iface;
+package com.moseeker.entity.pojo.resume;
 
 /**
  * Resume SDK 解析异常 
