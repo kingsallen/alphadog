@@ -288,7 +288,7 @@ public class TalentpoolSearchengine {
         return 0;
     }
 
-    private SearchResponse handlerSearch(Map<String,String> params){
+    private SearchResponse handlerSearch(Map<String,String> params) throws TException {
         TransportClient client=searchUtil.getEsClient();
         QueryBuilder query = this.getQueryByTag(params);
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
@@ -585,7 +585,7 @@ public class TalentpoolSearchengine {
         }
     }
 
-    private QueryBuilder convertBuild(List<Map<String,String>> mapList){
+    private QueryBuilder convertBuild(List<Map<String,String>> mapList) throws TException {
         QueryBuilder query = QueryBuilders.boolQuery();
         for(Map<String,String> map:mapList){
             QueryBuilder queryBuilder=this.getQueryByTag(map);
@@ -597,7 +597,8 @@ public class TalentpoolSearchengine {
     /*
       组装查询标签内容的部分，用于查处es中哪些标签是企业标签
      */
-    private QueryBuilder getQueryByTag(Map<String,String> params){
+    private QueryBuilder getQueryByTag(Map<String,String> params) throws TException {
+        this.handlerProvinceCity(params);
         int companyId=Integer.parseInt(params.get("company_id"));
         String origins=params.get("origins");
         String workYears=params.get("work_years");
