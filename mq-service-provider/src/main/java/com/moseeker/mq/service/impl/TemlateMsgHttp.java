@@ -193,9 +193,9 @@ public class TemlateMsgHttp {
                  || url== null || url.isEmpty()){
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
-        String companyName = companyDO.getAbbreviation();
+        String companyName = companyDO.getName();
         if(StringUtils.isNullOrEmpty(companyName)){
-            companyName = companyDO.getName();
+            companyName = companyDO.getAbbreviation();
         }
         try {
             Map<String, Object> applierTemplate = new HashMap<>();
