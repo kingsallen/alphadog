@@ -127,14 +127,11 @@ public class Tables {
     public static final UserRecommendRefusal USER_RECOMMEND_REFUSAL = com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
 
     /**
-<<<<<<< HEAD
-=======
      * 员工主动推荐记录
      */
     public static final UserReferralRecord USER_REFERRAL_RECORD = com.moseeker.baseorm.db.userdb.tables.UserReferralRecord.USER_REFERRAL_RECORD;
 
     /**
->>>>>>> master
      * 用户搜索条件(qx职位搜索)
      */
     public static final UserSearchCondition USER_SEARCH_CONDITION = com.moseeker.baseorm.db.userdb.tables.UserSearchCondition.USER_SEARCH_CONDITION;
