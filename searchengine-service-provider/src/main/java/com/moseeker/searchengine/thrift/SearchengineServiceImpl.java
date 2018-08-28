@@ -4,8 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
@@ -18,16 +16,15 @@ import com.moseeker.searchengine.service.impl.TalentpoolSearchengine;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices.Iface;
-
-import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchengineServiceImpl implements Iface {
@@ -129,7 +126,23 @@ public class SearchengineServiceImpl implements Iface {
 		}
     }
 
-    @Override
+	@Override
+	public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum,
+									int pageSize) throws BIZException, TException {
+		try {
+			return service.listLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int countLeaderBoard(List<Integer> companyIds, String timespan) throws BIZException, TException {
+		return service.countLeaderBoard(companyIds, timespan);
+	}
+
+	@Override
     public Response updateEmployeeAwards(List<Integer> employeeIds) throws BIZException,TException {
 		try {
 			return service.updateEmployeeAwards(employeeIds);

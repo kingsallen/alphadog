@@ -505,3 +505,16 @@ struct Pagination {
     3: optional i32 totalRow,
     4: optional list<EmployeeReferralContribution> details, 
 }
+
+//HR信息
+struct HRInfo {
+    1: optional i32 id,
+    2: optional string name,
+    3: optional string nickname,
+    4: optional string company,
+    5: optional string companyAbbreviation,
+    6: optional string accountType,
+    7: optional string mobile, 
+    8: optional string email,
+    9: optional string headImg
+}

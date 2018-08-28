@@ -45,4 +45,7 @@ service JobApplicationServices {
 
     //查看申请
     void viewApplications(1:i32 hrId, 2:list<i32> applicationIdList) throws (1: common_struct.BIZException e);
+    
+    //员工代理投递
+   list<i32> employeeProxyApply(1:i32 referenceId, 2: i32 applierId, 3: list<i32> positionIdList) throws (1: common_struct.BIZException e);
 }

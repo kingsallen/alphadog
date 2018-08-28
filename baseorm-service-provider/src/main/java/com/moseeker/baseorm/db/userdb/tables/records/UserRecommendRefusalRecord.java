@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecommendRefusalRecord extends UpdatableRecordImpl<UserRecommendRefusalRecord> implements Record5<Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1462075564;
+    private static final long serialVersionUID = 120139015;
 
     /**
      * Setter for <code>userdb.user_recommend_refusal.id</code>. 主key

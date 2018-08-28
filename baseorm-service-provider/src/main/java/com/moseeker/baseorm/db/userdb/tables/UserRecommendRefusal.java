@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserRecommendRefusal extends TableImpl<UserRecommendRefusalRecord> {
 
-    private static final long serialVersionUID = 1043937766;
+    private static final long serialVersionUID = 1866221739;
 
     /**
      * The reference instance of <code>userdb.user_recommend_refusal</code>

@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.talentpooldb;
 
+import com.moseeker.baseorm.constant.TalentType;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
@@ -39,5 +40,21 @@ public class TalentpoolTalentDao extends JooqCrudImpl<com.moseeker.baseorm.db.ta
                 .and(TalentpoolTalent.TALENTPOOL_TALENT.COMPANY_ID.eq(companyId))
                 .execute();
         return result;
+    }
+
+    /**
+     * 查找上传的人才信息
+     * @param userIdList 用户编号集合
+     * @param companyId 公司编号
+     * @return 人才集合
+     */
+    public List<TalentpoolTalentRecord> getTalents(List<Integer> userIdList, int companyId) {
+
+        return create
+                .selectFrom(TalentpoolTalent.TALENTPOOL_TALENT)
+                .where(TalentpoolTalent.TALENTPOOL_TALENT.UPLOAD.eq(TalentType.Upload.getValue()))
+                .and(TalentpoolTalent.TALENTPOOL_TALENT.USER_ID.in(userIdList))
+                .and(TalentpoolTalent.TALENTPOOL_TALENT.COMPANY_ID.eq(companyId))
+                .fetch();
     }
 }

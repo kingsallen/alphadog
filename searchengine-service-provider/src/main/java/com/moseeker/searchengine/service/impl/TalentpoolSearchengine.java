@@ -49,6 +49,9 @@ public class TalentpoolSearchengine {
 
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
+        logger.info("===================+++++++++++++++++++++++++++++++++++");
+        logger.info(JSON.toJSONString(params));
+        logger.info("===================+++++++++++++++++++++++++++++++++++");
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
@@ -1121,7 +1124,8 @@ public class TalentpoolSearchengine {
      */
     private void handlerPositionId(Map<String,String> params){
         String positionWord=params.get("position_key_word");
-        if(StringUtils.isNotNullOrEmpty(positionWord)){
+        String positionIdList=params.get("position_id");
+        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
             String positionIds=this.PositionIdQuery(params,positionWord);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);

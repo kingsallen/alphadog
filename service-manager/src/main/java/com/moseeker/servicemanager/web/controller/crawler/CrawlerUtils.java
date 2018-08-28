@@ -48,6 +48,7 @@ public class CrawlerUtils {
         String unionid = form.getUnionid();
         String version = form.getVersion();
         String maimai_appid = form.getMaimai_appid();
+        String mobile = form.getMobile();
 
         int type = form.getType();
         int lang = form.getLang();
@@ -91,7 +92,8 @@ public class CrawlerUtils {
                 break;
             case ZHILIAN:
                 param.put("username", userName);
-                param.put("password", password);
+                param.put("verify_code", form.getCode());
+                param.put("userid", user_id+"");
                 result = fetchResume(JSON.toJSONString(param), propertiesUtils.get("CRAWLER_ZHILIAN", String.class));
                 //result = "{\"status\": 0, \"resumes\": [{\"awards\": [{\"reward_date\": \"2014-02-01\", \"description\": \"\u8fd9\u662f\u83b7\u5956\u63cf\u8ff01\u8fd9\u662f\u83b7\u5956\u63cf\u8ff02\u8fd9\u662f\u83b7\u5956\u63cf\u8ff03\", \"name\": \"\u8fd9\u662f\u83b7\u5f97\u5956\u9879\"}, {\"reward_date\": \"2007-08-01\", \"description\": \"\u5956\u52b1\u63cf\u8ff0\uff0c\u5956\u52b1\u63cf\u8ff0\", \"name\": \"\u5956\u52b1\u5956\u52b1\u540d\u79f0\"}, {\"reward_date\": \"2009-11-01\", \"description\": \"\u5956\u52b1\u63cf\u8ff02\", \"name\": \"\u5956\u52b1\u540d\u79f02\"}], \"workexps\": [{\"industry_code\": 1103, \"company\": {\"company_scale\": 1, \"company_introduction\": \"\", \"company_name\": \"\u8fd9\u662f\u516c\u53f8\u540d1\", \"company_property\": 1, \"company_industry_code\": 1103, \"company_industry\": \"\u8ba1\u7b97\u673a\u670d\u52a1(\u7cfb\u7edf\u3001\u6570\u636e\u670d\u52a1\u3001\u7ef4\u4fee)\"}, \"start_date\": \"2005-01-01\", \"industry_name\": \"\u8ba1\u7b97\u673a\u670d\u52a1(\u7cfb\u7edf\u3001\u6570\u636e\u670d\u52a1\u3001\u7ef4\u4fee)\", \"job\": \"\u8fd9\u662f\u804c\u4f4d1\", \"salary_code\": 2, \"end_until_now\": 1, \"salary_type\": \"8\", \"end_date\": null, \"description\": \"\u8fd9\u662f\u516c\u53f81\u5de5\u4f5c\u63cf\u8ff0\u5185\u5bb9\u3002\u3002\u3002\"}, {\"industry_code\": 1503, \"company\": {\"company_scale\": 0, \"company_introduction\": \"\", \"company_name\": \"\u8fd9\u662f\u516c\u53f8\u540d\", \"company_property\": 1, \"company_industry_code\": 1503, \"company_industry\": \"\u52a0\u5de5\u5236\u9020\uff08\u539f\u6750\u6599\u52a0\u5de5/\u78e8\u5177\uff09\"}, \"start_date\": \"2002-02-01\", \"industry_name\": \"\u52a0\u5de5\u5236\u9020\uff08\u539f\u6750\u6599\u52a0\u5de5/\u78e8\u5177\uff09\", \"job\": \"\u8fd9\u662f\u804c\u4f4d\u540d\u79f0\", \"salary_code\": 2, \"end_until_now\": 0, \"salary_type\": \"1\", \"end_date\": \"2006-05-01\", \"description\": \"\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0\u8fd9\u662f\u5de5\u4f5c\u63cf\u8ff0123\"}], \"import\": {\"source\": \"3\", \"account_id\": \"jamie_qmx@163.com\", \"resume_id\": \"JM652070274R90250000000\", \"user_name\": \"jamie_qmx@163.com\"}, \"educations\": [{\"start_date\": \"2013-12-01\", \"major_name\": \"\u8fd9\u662f\u4e13\u4e1a\u540d\u79f0\", \"end_until_now\": 0, \"college_name\": \"\u8fd9\u662f\u5b66\u6821\u540d\u79f0\", \"end_date\": \"2016-01-01\", \"is_unified\": \"2\", \"degree\": \"7\"}, {\"start_date\": \"2005-01-01\", \"major_name\": \"\u7ba1\u7406\u79d1\u5b66\", \"end_until_now\": 0, \"college_name\": \"\u8fd9\u662f\u5b66\u6821\u540d\u79f01\", \"end_date\": \"2006-01-01\", \"is_unified\": \"1\", \"degree\": \"4\"}], \"skills\": [{\"month\": \"66\u4e2a\u6708\", \"level\": 4, \"name\": \"\u8ba1\u7b97\u673a\uff0fIT\"}, {\"month\": \"44\u4e2a\u6708\", \"level\": 2, \"name\": \"\u751f\u4ea7\u6280\u5de5\"}], \"other\": {\"Nation\": \"\", \"workyears\": \"\", \"schooljob\": [{\"end\": \"2005-02-01\", \"describe\": \"\u8fd9\u662f\u5b9e\u8df5\u63cf\u8ff0\u5185\u5bb91\u8fd9\u662f\u5b9e\u8df5\u63cf\u8ff0\u5185\u5bb92\u8fd9\u662f\u5b9e\u8df5\u63cf\u8ff0\u5185\u5bb93\u8fd9\u662f\u5b9e\u8df5\u63cf\u8ff0\u5185\u5bb94\", \"position\": \"\u8fd9\u662f\u5b9e\u8df5\u540d\u79f0\", \"start\": \"2005-01-01\"}, {\"end\": null, \"describe\": \"\u8fd9\u662f\u5728\u6837\u5b9e\u8df5\u63cf\u8ff0\u5185\u5bb9\u3002\u3002\u3002\", \"position\": \"\u8fd9\u662f\u5b9e\u8df5\u540d\u79f01\", \"start\": \"2005-01-01\"}], \"companyBrand\": \"\", \"location\": \"\u4e0a\u6d77\", \"internship\": \"\", \"expectedlocation\": \"\", \"cet4\": \"\", \"idnumber\": \"\", \"gmat\": \"\", \"IDPhoto\": \"\", \"height\": \"\", \"workstate\": \"\u6211\u76ee\u524d\u5728\u804c\uff0c\u6b63\u8003\u8651\u6362\u4e2a\u65b0\u73af\u5883\uff08\u5982\u6709\u5408\u9002\u7684\u5de5\u4f5c\u673a\u4f1a\uff0c\u5230\u5c97\u65f6\u95f4\u4e00\u4e2a\u6708\u5de6\u53f3\uff09\", \"ReferenceName\": \"\", \"cet6\": \"\", \"industry\": \"\", \"CollegeContactTel\": \"\", \"residencetype\": \"\", \"trip\": \"\", \"ReferenceRelation\": \"\", \"weight\": \"\", \"icanstart\": \"\", \"reward\": \"\", \"StudentFrom\": \"\", \"workdays\": \"\", \"language\": \"\", \"EmergencyPhone\": \"\", \"PoliticalStatus\": \"\", \"salary\": \"\", \"JapaneseLevel\": \"\", \"expectsalary\": \"\", \"gpa\": \"\", \"Address\": \"\", \"majorrank\": \"\", \"toefl\": \"\", \"CareerGoals\": \"\", \"recentjob\": \"\", \"IsFreshGraduated\": \"\", \"CollegeCity\": \"\", \"nightjob\": \"\", \"competition\": \"\", \"marriage\": \"\", \"gre\": \"\", \"frequency\": \"\", \"EmergencyContact\": \"\", \"residence\": \"\u4e0a\u6d77\", \"ReferenceContact\": \"\", \"ielts\": \"\", \"position\": \"\", \"CollegeContact\": \"\"}, \"projectexps\": [{\"start_date\": \"2015-01-01\", \"name\": \"\u8fd9\u662f\u9879\u76ee\u540d\u79f0\", \"end_until_now\": 0, \"end_date\": \"2016-02-01\", \"description\": \"\u5ba1\u9879\u76ee\u63cf\u8ff01\u5ba1\u9879\u76ee\u63cf\u8ff02\u5ba1\u9879\u76ee\u63cf\u8ff03\u5ba1\u9879\u76ee\u63cf\u8ff04\", \"responsibility\": \"\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23\u662f\u8fd9\u6211\u7684\u9879\u76ee\u804c\u8d23111\"}, {\"start_date\": \"2005-01-01\", \"name\": \"\u8fd9\u662f\u9879\u76ee\u540d\u79f01\", \"end_until_now\": 1, \"end_date\": null, \"description\": \"\u8fd9\u662f\u9879\u76ee\u63cf\u8ff0\u5185\u5bb9\u3002\u3002\u3002\", \"responsibility\": \"\u8fd9\u662f\u9879\u76ee\u4e2d\u804c\u8d23\u5185\u5bb9\u3002\u3002\u3002\"}], \"basic\": {\"birth\": \"1989-06-01\", \"self_introduction\": \"\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9\u8fd9\u662f\u81ea\u6211\u8bc4\u4ef7\u5185\u5bb9123\", \"city_name\": \"\u4e0a\u6d77\", \"gender\": \"2\", \"name\": \"\u6c5f\u95e8\u6613\"}, \"credentials\": [{\"reward_date\": \"2016-01-01\", \"name\": \"\u6258\u798f\"}, {\"reward_date\": \"2016-01-01\", \"name\": \"\u5168\u56fd\u8ba1\u7b97\u673a\u5e94\u7528\u6280\u672f\u8bc1\u4e66\"}, {\"reward_date\": \"2009-01-01\", \"name\": \"\u521d\u7ea7\u5de5\u7a0b\u5e08\"}, {\"reward_date\": \"2016-01-01\", \"name\": \"GRE\"}], \"user\": {\"mobile\": \"15900428801\", \"name\": \"\u6c5f\u95e8\u6613\", \"email\": \"jamie_qmx@163.com\"}, \"attachments\": [], \"intentions\": [{\"industries\": [{\"industry_code\": 1306, \"industry_name\": \"\u5bb6\u5177/\u5bb6\u7535/\u73a9\u5177/\u793c\u54c1\"}], \"salary_type\": 2, \"worktype\": \"1\", \"positions\": [{\"position_code\": \"0\", \"position_name\": \"\u9500\u552e\u7ba1\u7406\u3001\u5ba2\u670d/\u552e\u524d/\u552e\u540e\u6280\u672f\u652f\u6301\u3001\u5e02\u573a\"}], \"salary_code\": \"5\", \"cities\": [{\"city_code\": \"0\", \"city_name\": \"\u5317\u4eac\"}, {\"city_code\": \"0\", \"city_name\": \"\u4e0a\u6d77\"}, {\"city_code\": \"0\", \"city_name\": \"\u5929\u6d25\"}], \"workstate\": \"2\"}], \"languages\": [{\"level\": 4, \"name\": \"\u82f1\u8bed\"}, {\"level\": 2, \"name\": \"\u65e5\u8bed\"}, {\"level\": 2, \"name\": \"\u6cd5\u8bed\"}], \"works\": []}]}";
                 break;
@@ -124,7 +126,7 @@ public class CrawlerUtils {
                 break;
         }
         logger.info("fetchFirstResume:" + result);
-        return cleanning(result, lang, source, completeness, appid, user_id, ua, channelType);
+        return cleanning(result, lang, source, completeness, appid, user_id, ua, channelType,form);
     }
 
     /**
@@ -143,12 +145,14 @@ public class CrawlerUtils {
         /*
         导入次数需要做限制，每人每天只能导入三次
          */
-        int user_id = form.getUser_id();
-        StringBuffer sb = new StringBuffer();
-        sb.append(user_id).append("_").append(channelType);
-        String userIdStr = sb.toString();
-        if (!redisClient.isAllowed(PROFILE_IMPORT_UPPER_LIMIT, userIdStr, Constant.PROFILE_IMPORT_UPPER_LIMIT, "1")) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_IMPORT_UPPER_LIMIT);
+        if(!isZhilianGetVerifyCode(channelType,form)) {    // 智联获取验证码不用做导入限制 todo 是否加个操作类型字段更好
+            int user_id = form.getUser_id();
+            StringBuffer sb = new StringBuffer();
+            sb.append(user_id).append("_").append(channelType);
+            String userIdStr = sb.toString();
+            if (!redisClient.isAllowed(PROFILE_IMPORT_UPPER_LIMIT, userIdStr, Constant.PROFILE_IMPORT_UPPER_LIMIT, "1")) {
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_IMPORT_UPPER_LIMIT);
+            }
         }
 
         /*
@@ -186,7 +190,7 @@ public class CrawlerUtils {
 
     @SuppressWarnings("unchecked")
     private Response cleanning(String result, int lang, int source, int completeness, int appid, int user_id, int ua,
-                               ChannelType channelType) {
+                               ChannelType channelType,ImportCVForm form) {
         Object obj = JSON.parse(result);
         Map<String, Object> messagBean = null;
         if (obj instanceof Map) {
@@ -260,7 +264,9 @@ public class CrawlerUtils {
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_PROFILE_EMPTY);
         } else if (messagBean.get("status") != null
                 && (Integer) messagBean.get("status") == 6) {
-            decre(user_id, channelType);
+            if(!isZhilianGetVerifyCode(channelType,form)) {
+                decre(user_id, channelType);
+            }
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_NEED_VERIFY_CODE);
         } else if (messagBean.get("status") != null
                 && (Integer) messagBean.get("status") == 7) {
@@ -301,5 +307,9 @@ public class CrawlerUtils {
         }
 
         return sourceResult;
+    }
+
+    private boolean isZhilianGetVerifyCode(ChannelType channelType,ImportCVForm form){
+        return channelType == ChannelType.ZHILIAN && StringUtils.isNullOrEmpty(form.getCode());
     }
 }
