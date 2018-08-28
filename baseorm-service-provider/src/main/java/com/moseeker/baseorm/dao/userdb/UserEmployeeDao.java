@@ -1,23 +1,27 @@
 package com.moseeker.baseorm.dao.userdb;
 
-import com.moseeker.baseorm.constant.EmployeeActivedState;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import org.jooq.Record;
-import org.jooq.Record2;
-import org.jooq.Result;
-import org.jooq.SelectJoinStep;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static org.jooq.impl.DSL.*;
 
 @Repository
 public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRecord> {
@@ -167,9 +171,170 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
         return create.selectFrom(UserEmployee.USER_EMPLOYEE)
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .limit(1)
+                .fetchOne();
+    }
+    public void unFollowWechat(int id) {
+        create.update(UserEmployee.USER_EMPLOYEE)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.UnFollow.getState())
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(id))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .execute();
+    }
+
+    public UserEmployeeDO getUnFollowEmployeeByUserId(int userId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.UnFollow.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .limit(1)
+                .fetchOneInto(UserEmployeeDO.class);
+    }
+
+    /**
+     * 叫取消关注状态的员工转回认证成功的状态。
+     * 但是必须保证一个sysuser_id 只能对应一个认证成功的员工
+     * @param id 员工编号
+     * @param sysuserId 用户编号
+     */
+    public void followWechat(int id, int sysuserId) {
+
+        create.execute("update " +
+                " userdb.user_employee u " +
+                "left join (" +
+                "  select uu.id, uu.sysuser_id as user_id " +
+                "  from userdb.user_employee uu " +
+                "  where uu.sysuser_id = "+sysuserId+" and uu.activation = 0 and uu.disable = 0) ut " +
+                " on u.sysuser_id = ut.user_id " +
+                " set u.activation = "+EmployeeActiveState.Actived.getState()+
+                " where u.activation = "+ EmployeeActiveState.UnFollow.getState() + " " +
+                " and u.id = "+ id + " and ut.id is null");
+    }
+
+    public ExecuteResult registerEmployee(UserEmployeeDO useremployee) {
+
+        ExecuteResult executeResult = new ExecuteResult();
+
+        Param<Integer> companyIdParam = param(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), useremployee.getCompanyId());
+        Param<String> employeeIdParam = param(UserEmployee.USER_EMPLOYEE.EMPLOYEEID.getName(),
+                org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmployeeid(), ""));
+        Param<Integer> userIdParam = param(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), useremployee.getSysuserId());
+        Param<String> cnameParam = param(UserEmployee.USER_EMPLOYEE.CNAME.getName(), useremployee.getCname());
+        Param<String> mobileParam = param(UserEmployee.USER_EMPLOYEE.MOBILE.getName(),
+                org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
+        Param<String> emailParam = param(UserEmployee.USER_EMPLOYEE.EMAIL.getName(),
+                org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
+        Param<Integer> wxUserIdParam = param(UserEmployee.USER_EMPLOYEE.WXUSER_ID.getName(), useremployee.getWxuserId());
+        Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), useremployee.getAuthMethod());
+        Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte)useremployee.getActivation());
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Param<Timestamp> createTimeParam;
+        if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCreateTime())) {
+            createTimeParam = param(UserEmployee.USER_EMPLOYEE.CREATE_TIME.getName(),
+                    new Timestamp(LocalDateTime.parse(useremployee.getCreateTime(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+        } else {
+            createTimeParam = param(UserEmployee.USER_EMPLOYEE.CREATE_TIME.getName(), now);
+        }
+        Param<Timestamp> BindingTimeParam;
+        if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
+            BindingTimeParam = param(UserEmployee.USER_EMPLOYEE.BINDING_TIME.getName(),
+                    new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+        } else {
+            BindingTimeParam = param(UserEmployee.USER_EMPLOYEE.BINDING_TIME.getName(), now);
+        }
+
+        int execute = create.insertInto(UserEmployee.USER_EMPLOYEE,
+                UserEmployee.USER_EMPLOYEE.COMPANY_ID,
+                UserEmployee.USER_EMPLOYEE.SYSUSER_ID,
+                UserEmployee.USER_EMPLOYEE.EMPLOYEEID,
+                UserEmployee.USER_EMPLOYEE.CNAME,
+                UserEmployee.USER_EMPLOYEE.MOBILE,
+                UserEmployee.USER_EMPLOYEE.EMAIL,
+                UserEmployee.USER_EMPLOYEE.WXUSER_ID,
+                UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
+                UserEmployee.USER_EMPLOYEE.ACTIVATION,
+                UserEmployee.USER_EMPLOYEE.CREATE_TIME,
+                UserEmployee.USER_EMPLOYEE.BINDING_TIME)
+
+                .select(
+                        select(
+                                companyIdParam,
+                                userIdParam,
+                                employeeIdParam,
+                                cnameParam,
+                                mobileParam,
+                                emailParam,
+                                wxUserIdParam,
+                                authMethodParam,
+                                activationParam,
+                                createTimeParam,
+                                BindingTimeParam
+                        )
+                        .whereNotExists(
+                                selectOne()
+                                .from(UserEmployee.USER_EMPLOYEE)
+                                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(useremployee.getSysuserId()))
+                                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(useremployee.getCompanyId()))
+                        )
+                )
+                .execute();
+        executeResult.setExecute(execute);
+        if (execute == 0) {
+            Record2<Integer, Byte> result = create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.ACTIVATION)
+                    .from(UserEmployee.USER_EMPLOYEE)
+                    .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(useremployee.getSysuserId()))
+                    .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(useremployee.getCompanyId()))
+                    .orderBy(UserEmployee.USER_EMPLOYEE.ID.desc())
+                    .limit(1)
+                    .fetchOne();
+            if (result != null && result.value2() != EmployeeActiveState.Actived.getState()) {
+                int execute1 = create.update(UserEmployee.USER_EMPLOYEE)
+                        .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.Actived.getState())
+                        .where(UserEmployee.USER_EMPLOYEE.ID.eq(result.value1()))
+                        .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(result.value2()))
+                        .execute();
+                if (execute1 != 0) {
+                    logger.error("员工信息认证失败！");
+                }
+            }
+        }
+
+        UserEmployeeRecord record = create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(useremployee.getSysuserId()))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(useremployee.getCompanyId()))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .fetchOne();
+        if (record != null) {
+            executeResult.setId(record.getId());
+        } else {
+            executeResult.setId(0);
+        }
+        return executeResult;
+    }
+
+    public UserEmployeeRecord getUnActiveEmployee(int sysuserId, int companyId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc())
+                .limit(1)
+                .fetchOne();
+    }
+
+    public UserEmployeeRecord getActiveEmployee(int sysuserId, int companyId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .fetchOne();
     }
 }

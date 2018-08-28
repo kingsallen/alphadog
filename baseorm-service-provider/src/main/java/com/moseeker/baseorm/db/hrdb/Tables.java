@@ -34,6 +34,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
@@ -231,6 +232,11 @@ public class Tables {
      * 企业用户导入数据异步处理监控操作表
      */
     public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
+
+    /**
+     * 榜单开关
+     */
+    public static final HrLeaderBoard HR_LEADER_BOARD = com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard.HR_LEADER_BOARD;
 
     /**
      * nps打分推荐表

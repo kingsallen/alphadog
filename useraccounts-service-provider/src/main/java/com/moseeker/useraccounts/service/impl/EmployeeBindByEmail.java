@@ -5,8 +5,11 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -32,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  * Created by lucky8987 on 17/6/29.
  */
@@ -49,8 +54,12 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        super.paramCheck(bindingParams, certConf);
         // 邮箱校验后缀
         if (JSONObject.parseArray(certConf.getEmailSuffix()).stream().noneMatch(m -> bindingParams.getEmail()
                 .endsWith(String.valueOf(m)))) {
@@ -116,6 +125,19 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 String resultACode = client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode, authInfoKey);
                 log.info("set redisKey:EMPLOYEE_AUTH_INFO key:{}, result: {}", authInfoKey , resultAINFO);
                 log.info("set redisKey:EMPLOYEE_AUTH_CODE employeeId:{}, activationCode:{}, result: {}", userEmployee.getId(), activationCode , resultACode);
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("companyName", companyDO.getName());
+                jsonObject.put("companyAbbreviation", companyDO.getAbbreviation());
+                jsonObject.put("companyId", companyDO.getId());
+                jsonObject.put("userId", userEmployee.getSysuserId());
+
+                //延迟一小时通知
+                long oneHour =  60*60*1000;
+                redisClient.zadd(AppId.APPID_ALPHADOG.getValue(),
+                        KeyIdentifier.MQ_MESSAGE_NOTICE_VERIFY_EMAIL.toString(),
+                        oneHour+System.currentTimeMillis(), jsonObject.toJSONString());
+
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
             } else {
@@ -161,7 +183,6 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 }
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, value);
-
                 log.info("emailActivation del key activationCode:{}",activationCode);
             }
         } else {

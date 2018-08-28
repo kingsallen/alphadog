@@ -13,6 +13,7 @@ package com.moseeker.common.constants;
 public final class Constant {
 
     public static final int BONUS = 2;  //默认红包金额
+    public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
 
     private Constant() throws AssertionError {
         throw new AssertionError();
@@ -211,6 +212,7 @@ public final class Constant {
 
     public static final int TEMPLATES_APPLY_NOTICE_TPL = 3; //申请成功时的消息通知ID
     public static final int TEMPLATES_NEW_RESUME_TPL = 24; // 新简历通知的消息通知ID
+    public static final int EMPLOYEE_EMAILVERIFY_NOT_VERIFY_NOTICE_TPL = 79; // 新简历通知的消息通知ID
 
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
@@ -261,4 +263,6 @@ public final class Constant {
 
     public static final int HKAMTW = 861;
     public static final int UPPER_LIMIT = 500;  //接口处理的数据量的上限
+
+    public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
 }

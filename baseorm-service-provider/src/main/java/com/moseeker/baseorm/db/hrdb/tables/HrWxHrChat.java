@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = 495697686;
+    private static final long serialVersionUID = -505018282;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -92,9 +92,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Byte> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 ");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio
+     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
      */
-    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型：html、qrcode、image、button_radio");
+    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
