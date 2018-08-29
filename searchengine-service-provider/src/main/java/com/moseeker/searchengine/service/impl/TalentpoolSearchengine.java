@@ -1614,7 +1614,7 @@ public class TalentpoolSearchengine {
     }
 
     private String getLongTime(String submitTime){
-        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=new Date();
         long time=Long.parseLong(submitTime);
         if(time==1){
