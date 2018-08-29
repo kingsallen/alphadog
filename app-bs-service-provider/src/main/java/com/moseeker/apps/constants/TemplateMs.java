@@ -14,13 +14,13 @@ public enum TemplateMs {
 			        mi = new MsInfo(35,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=35","您好，您已入职成功", "入职成功", "点击查看投递进度详情");
 			        break;
 				case 13:
-				    mi = new MsInfo(36,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=36", "您好，感谢您对我司的关注！目前我们会考虑与该职位更匹配的候选人，现将您的简历纳入公司人才储备库中，后续有机会再与您联系。", "不匹配", "点击查看投递进度详情");
+				    mi = new MsInfo(36,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=36", "您好，感谢您对我司的关注！目前我们会考虑与该职位更合适的候选人，现将您的简历纳入公司人才储备库中，后续有机会再与您联系。", "不合适", "点击查看投递进度详情");
 				    break;
 				case 4:
 				    mi = new MsInfo(9,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=9", "您好，您的简历已被查阅", "已查阅简历", "点击查看求职进度详情");
 				    break;
 				case 7:
-				    mi = new MsInfo(32,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=32","你好，你的简历已通过初审", "初审通过", "点击查看求职进度详情");
+				    mi = new MsInfo(32,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=32","你好，你的简历已通过初筛", "初筛通过", "点击查看求职进度详情");
 				    break;
 				case 10:
 					mi = new MsInfo(45,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=45","您好，您的简历已通过面试", "面试通过", "点击查看求职进度详情");
@@ -57,7 +57,7 @@ public enum TemplateMs {
 			        mi = new MsInfo(60,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=60", MessageFormat.format("您好，您推荐的{0}已入职", args), "已入职", "感谢您对公司人才招聘的贡献，欢迎继续推荐");
 			        break;
 				case 13:
-				    mi = new MsInfo(61,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=61",MessageFormat.format("很遗憾，您推荐的候选人{0}和公司在招岗位不匹配", args), "简历不合适", "感谢您对公司人才招聘的贡献，欢迎继续推荐");
+				    mi = new MsInfo(61,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=61",MessageFormat.format("很遗憾，您推荐的候选人{0}和公司在招岗位不合适", args), "简历不合适", "感谢您对公司人才招聘的贡献，欢迎继续推荐");
 				    break;
 			}
 			return mi;
