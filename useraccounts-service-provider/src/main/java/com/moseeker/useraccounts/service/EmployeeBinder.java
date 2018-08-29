@@ -203,6 +203,10 @@ public abstract class EmployeeBinder {
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
                         userEmployee.setCname(useremployee.getCname());
                     }
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
+                            || "[]".equals(userEmployee.getCustomFieldValues())) {
+                        userEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+                    }
                     userEmployee.setActivation(EmployeeActiveState.Actived.getState());
                     log.info("userEmployee update record");
                     log.info("useremployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), userEmployee.getBindingTime());
