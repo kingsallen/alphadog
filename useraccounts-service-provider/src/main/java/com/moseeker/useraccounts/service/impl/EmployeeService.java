@@ -3,10 +3,12 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
@@ -482,6 +484,23 @@ public class EmployeeService {
             throws TException {
         log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
         Result response = new Result();
+
+        // 查询已经认证的员工
+        UserEmployeeRecord userEmployee = employeeDao.getActiveEmployee(userId,companyId);
+
+        // 如果员工已经认证，则更新custom_field_values
+        if (userEmployee != null) {
+            if ((org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
+                    || "[]".equals(userEmployee.getCustomFieldValues()))
+                    && StringUtils.isNotNullOrEmpty(customValues)) {
+                userEmployee.setCustomFieldValues(customValues);
+                employeeDao.updateRecord(userEmployee);
+            }
+
+            response.setSuccess(true);
+            response.setMessage("success");
+            return response;
+        }
         String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
         if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
             UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
