@@ -28,6 +28,7 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +80,7 @@ public class TalentpoolSearchengine {
 
     private void handlerResultData( Map<String, Object> result,Map<String, String> params){
         if(!StringUtils.isEmptyMap(result)){
+            String isOut=params.get("is_out");
             int totalNum=(int)((long)result.get("totalNum"));
             if(totalNum>0){
                 List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("users");
@@ -99,8 +101,35 @@ public class TalentpoolSearchengine {
                                         }
                                     }
                                 }
+                            }
+                            /*
+                             过滤掉不是查询职位 的申请
+                             */
+                            if(StringUtils.isNotNullOrEmpty(isOut)&&"1".equals(isOut)){
+                                String positionWord=params.get("position_key_word");
+                                String positionIds=params.get("position_id");
+                                if(StringUtils.isNotNullOrEmpty(positionWord)||StringUtils.isNotNullOrEmpty(positionIds)){
+                                    List<Integer> positionIdList=searchUtil.stringConvertIntList(positionIds);
+                                    if(!StringUtils.isEmptyList(positionIdList)){
+                                        List<Map<String,Object>> applications=(List<Map<String, Object>>) user.get("applications");
+                                        if(!StringUtils.isEmptyList(applications)){
+                                            List<Map<String,Object>> applicationNewList=new ArrayList<>();
+                                            for(Map<String,Object> application:applications){
+                                                if(application.get("position_id")!=null){
+                                                    int positionId= (int) application.get("position_id");
+                                                    if(positionIdList.contains(positionId)){
+                                                        applicationNewList.add(application);
+                                                    }
+                                                }
+                                            }
+                                            if(!StringUtils.isEmptyList(applicationNewList)){
+                                                user.put("applications",applicationNewList);
+                                            }
+                                        }
 
+                                    }
 
+                                }
                             }
 
                         }
