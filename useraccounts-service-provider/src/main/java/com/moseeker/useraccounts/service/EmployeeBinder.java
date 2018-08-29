@@ -201,8 +201,9 @@ public abstract class EmployeeBinder {
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
                         userEmployee.setCname(useremployee.getCname());
                     }
-                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
-                            || "[]".equals(userEmployee.getCustomFieldValues())) {
+                    if ((org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
+                            || "[]".equals(userEmployee.getCustomFieldValues()))
+                            && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
                         userEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
                     }
                     userEmployee.setActivation(EmployeeActiveState.Actived.getState());
