@@ -43,7 +43,7 @@ public class ConfigPropertiesUtil {
             properties.load(inputStreamReader);
             files.add("common.properties");
         } catch (Exception e) {
-            //todo 错误信息需要记录到日志中
+            logger.error(e.getMessage(), e);
         } finally {
             if (inputStreamReader != null) {
                 try {

@@ -23,7 +23,8 @@ struct MessageTemplateNoticeStruct {
     8: optional i64 delay = 0,
     9: optional string validators,
     10: optional string id,
-    11: optional string validators_params
+    11: optional string validators_params,
+    12: optional i32 wx_id
 }
 
 struct EmailStruct {

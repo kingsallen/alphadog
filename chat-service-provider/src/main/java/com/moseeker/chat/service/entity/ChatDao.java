@@ -246,7 +246,7 @@ public class ChatDao {
         String idStr = StringUtils.converFromArrayToStr(hrIdArray);
         QueryUtil queryUtil = new QueryUtil();
         queryUtil.addSelectAttribute("id").addSelectAttribute("company_id").addSelectAttribute("username")
-                .addSelectAttribute("headimgurl").addSelectAttribute("wxuser_id");
+                .addSelectAttribute("headimgurl").addSelectAttribute("wxuser_id").addSelectAttribute("remark_name");
         queryUtil.addEqualFilter("id", idStr);
         List<UserHrAccountDO> userHrAccountDOList = null;
         userHrAccountDOList = userHrAccountDao.getDatas(queryUtil);
@@ -417,7 +417,8 @@ public class ChatDao {
 
         QueryUtil findHR = new QueryUtil();
         findHR.addSelectAttribute("id").addSelectAttribute("username").addSelectAttribute("wxuser_id")
-                .addSelectAttribute("company_id").addSelectAttribute("headimgurl");
+                .addSelectAttribute("company_id").addSelectAttribute("headimgurl").addSelectAttribute("mobile")
+                .addSelectAttribute("remark_name");
         findHR.addEqualFilter("id", hrId);
 
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getData(findHR);
@@ -490,10 +491,7 @@ public class ChatDao {
      * @return 用户信息
      */
     public UserUserDO getUser(int userId) {
-        QueryUtil queryUtil = new QueryUtil();
-        queryUtil.addSelectAttribute("id").addSelectAttribute("name").addSelectAttribute("nickname");
-        queryUtil.addEqualFilter("id", userId);
-        return userUserDao.getData(queryUtil);
+        return userUserDao.getUser(userId);
     }
 
     /**
@@ -673,6 +671,7 @@ public class ChatDao {
                 chatVO.setMsgType(hrWxHrChatDO.getMsgType());
                 chatVO.setPositionId(hrWxHrChatDO.getPid());
                 chatVO.setSpeaker(hrWxHrChatDO.getSpeaker());
+                chatVO.setCompoundContent(hrWxHrChatDO.getCompoundContent());
                 return chatFactory.outputHandle(chatVO);
             }).collect(Collectors.toList());
         } else {

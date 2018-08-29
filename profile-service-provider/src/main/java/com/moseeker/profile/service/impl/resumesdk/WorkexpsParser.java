@@ -9,7 +9,7 @@ import com.moseeker.entity.pojo.profile.Workexps;
 import com.moseeker.entity.pojo.resume.JobExpObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import com.moseeker.profile.utils.DictCode;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +22,14 @@ import java.util.List;
 @Component
 public class WorkexpsParser extends AbstractMutiResumeParser<JobExpObj,Workexps> {
     @Override
-    protected Workexps parseResume(JobExpObj jobExpObj) throws ResumeParserHelper.ResumeParseException {
+    protected Workexps parseResume(JobExpObj jobExpObj) throws ResumeParseException {
         Workexps workexps = new Workexps();
         Company company = new Company();
         company.setCompanyIndustry(jobExpObj.getJob_industry());
         if (StringUtils.isNotNullOrEmpty(jobExpObj.getJob_cpy())) {
             company.setCompanyName(jobExpObj.getJob_cpy());
         } else {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("公司名称为空")
                     .fieldValue("job_exp_obj: " + JSONObject.toJSONString(jobExpObj));
         }
@@ -38,7 +38,7 @@ public class WorkexpsParser extends AbstractMutiResumeParser<JobExpObj,Workexps>
             companyScaleMaxValue = Arrays.stream(org.apache.commons.lang.StringUtils.defaultIfBlank(jobExpObj.getJob_cpy_size() == null ? "0-0" :
                     jobExpObj.getJob_cpy_size().replaceAll("[\\u4E00-\\u9FA5]", ""), "0-0").split("-", 2)).max(String::compareTo).map(m -> Integer.valueOf(m)).get();
         } catch (Exception e) {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("公司规模转换异常: " + e.getMessage())
                     .fieldValue("companyScale: " + jobExpObj.getJob_cpy_size());
         }
@@ -62,12 +62,12 @@ public class WorkexpsParser extends AbstractMutiResumeParser<JobExpObj,Workexps>
                 workexps.setEndDate(DateUtils.dateRepair(jobExpObj.getEnd_date(), "\\."));
             }
         } catch (Exception e) {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("日期转换异常: " + e.getMessage())
                     .fieldValue("workexp: {\"startDate\": " + jobExpObj.getStart_date() + "\", \"endDate\":" + jobExpObj.getEnd_date()+"}");
         }
         if (StringUtils.isNullOrEmpty(jobExpObj.getJob_position())) {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("工作职位为空: ");
         } else {
             workexps.setJob(jobExpObj.getJob_position());

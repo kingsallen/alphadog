@@ -4,9 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeFilter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
-import com.moseeker.baseorm.constant.EmployeeActivedState;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.dao.profiledb.entity.ProfileDownloadService;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.dictdb.tables.*;
@@ -18,7 +17,6 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationAtsRecord;
 import com.moseeker.baseorm.db.profiledb.tables.*;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.*;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
@@ -762,6 +760,9 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             }
             //========================发现原来没有，现在添加上＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝＝
             if (userRecord != null) {
+                if (org.apache.commons.lang.StringUtils.isBlank(userRecord.getName())) {
+                    userRecord.setName("未填写");
+                }
                 create.attach(userRecord);
                 userRecord.update();
 
@@ -887,7 +888,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
 
             create.update(USER_EMPLOYEE)
                     .set(USER_EMPLOYEE.CNAME, name)
-                    .where(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActivedState.Actived.getState()))
+                    .where(USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
                     .and(USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                     .and(USER_EMPLOYEE.SYSUSER_ID.eq(record.getUserId()))
                     .execute();

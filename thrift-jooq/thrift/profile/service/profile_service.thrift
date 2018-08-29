@@ -70,6 +70,7 @@ service ProfileServices {
     common_struct.Response resumeTalentProfile(1:string fileName,2:string file,3: i32 companyId)throws (1: common_struct.BIZException e);
     list<profile_struct.UserProfile> fetchUserProfile(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileTokenDecrypt(1:string token);
+    i32 parseText(1: string profile, 2: i32 reference) throws (1: common_struct.BIZException e);
 }
 
 service AttachmentServices {

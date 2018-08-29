@@ -1,44 +1,90 @@
 package com.moseeker.common.constants;
 
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.chat.struct.ChatVO;
+import org.apache.commons.lang.StringUtils;
 
+/**
+ *
+ */
 public enum ChatMsgType {
     HTML("html") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getContent());
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getContent());
         }
     },
     QRCODE("qrcode") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getAssetUrl());
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getAssetUrl());
         }
     },
     IMAGE("image") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getAssetUrl());
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getAssetUrl());
         }
     },
     BUTTON_RADIO("button_radio") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getBtnContent());
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
     },
     VOICE("voice") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            return chatVO != null && !StringUtils.isNullOrEmpty(chatVO.getMsgType()) && "voice".equals(chatVO.getMsgType());
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getMsgType()) && "voice".equals(chatVO.getMsgType());
         }
     },
     JOB("job") {
         @Override
         public boolean vaildChat(ChatVO chatVO) {
-            String content = chatVO.getContent();
-            return chatVO != null && !StringUtils.isNullOrEmpty(content) && content.trim().startsWith("{") && content.trim().endsWith("}");
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent())
+                    && chatVO.getCompoundContent().trim().startsWith("{")
+                    && chatVO.getCompoundContent().endsWith("}");
+        }
+    },
+    JOBCARD("jobCard") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    cards("cards") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    CITYSELECT("citySelect") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    TEAMSELECT("teamSelect") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    REDIRECT("redirect") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    JOBSELECT("jobSelect") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    EMPLOYEEBIND("employeeBind") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
     }
     ;

@@ -3,27 +3,28 @@ package com.moseeker.useraccounts.thrift;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
+import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
 import com.moseeker.thrift.gen.employee.struct.*;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
+import com.moseeker.useraccounts.service.impl.EmployeeService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
-import com.moseeker.useraccounts.service.impl.EmployeeService;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * @author ltf
@@ -76,6 +77,15 @@ public class EmployeeServiceImpl implements Iface {
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			throw new SysBIZException();
+		}
+	}
+
+	@Override
+	public EmployeeVerificationConfResponse getEmployeeVerificationConfByUserId(int userId) throws BIZException, TException {
+		try {
+			return service.getEmployeeVerificationConfByUserId(userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
 		}
 	}
 
@@ -186,25 +196,22 @@ public class EmployeeServiceImpl implements Iface {
 		}
 	}
 
-    @Override
-    public List<EmployeeAward> awardRanking(int employeeId, int companyId, Timespan timespan) throws TException {
-        String timeStr;
-        if (timespan == Timespan.year) {
-            timeStr = String.valueOf(LocalDate.now().getYear());
-        } else if(timespan == Timespan.quarter) {
-            timeStr = String.valueOf(LocalDate.now().getYear()).concat(String.valueOf((LocalDate.now().getMonthValue()+2)/3));
-        } else {
-            timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        }
-		try {
-			return service.awardRanking(employeeId, companyId, timeStr);
-		} catch (CommonException e) {
-			throw ExceptionConvertUtil.convertCommonException(e);
-		} catch (Exception e) {
-			logger.error(e.getMessage(), e);
-			throw new SysBIZException();
+	@Override
+	public Pagination awardRanking(int employeeId, int companyId, Timespan timespan, int pageNum, int pageSize) throws BIZException, TException {
+		String timeStr;
+		if (timespan == Timespan.year) {
+			timeStr = String.valueOf(LocalDate.now().getYear());
+		} else if(timespan == Timespan.quarter) {
+			timeStr = String.valueOf(LocalDate.now().getYear()).concat(String.valueOf((LocalDate.now().getMonthValue()+2)/3));
+		} else {
+			timeStr = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
 		}
-    }
+		try {
+			return service.awardRanking(employeeId, companyId, timeStr, pageNum, pageSize);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
 
     @Override
     public Result setCacheEmployeeCustomInfo(int userId, int companyId, String customValues) throws TException {
@@ -249,5 +256,107 @@ public class EmployeeServiceImpl implements Iface {
         }
     }
 
+	@Override
+	public int countUpVote(int employeeId) throws BIZException, TException {
 
+		try {
+			return service.countUpVote(employeeId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int countRecentUpVote(int employeeId) throws BIZException, TException {
+		try {
+			return service.countRecentUpVote(employeeId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int upvote(int employeeId, int userId) throws BIZException, TException {
+		try {
+			return service.upVote(employeeId, userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void removeUpvote(int employeeId, int userId) throws BIZException, TException {
+		try {
+			service.removeUpVote(employeeId, userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void clearUpVoteWeekly() throws BIZException, TException {
+		try {
+			service.clearUpVoteWeekly();
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public LeaderBoardInfo fetchLeaderBoardInfo(int id, int type) throws BIZException, TException {
+		try {
+			com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo leaderBoardInfo =
+                    service.fetchLeaderBoardInfo(id, type);
+			LeaderBoardInfo l = new LeaderBoardInfo();
+			org.springframework.beans.BeanUtils.copyProperties(leaderBoardInfo, l);
+			return l;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public LeaderBoardInfo fetchLastLeaderBoardInfo(int id, int type) throws BIZException, TException {
+		try {
+			com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo leaderBoardInfo =
+                    service.fetchLastLeaderBoardInfo(id, type);
+			LeaderBoardInfo l = new LeaderBoardInfo();
+			org.springframework.beans.BeanUtils.copyProperties(leaderBoardInfo, l);
+			return l;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public LeaderBoardType fetchLeaderBoardType(int companyId) throws BIZException, TException {
+		try {
+			HrLeaderBoard leaderBoard = service.fetchLeaderBoardType(companyId);
+			LeaderBoardType leaderBoardType = new LeaderBoardType();
+			leaderBoardType.setId(leaderBoard.getId());
+			leaderBoardType.setCompany_id(leaderBoard.getCompanyId());
+			leaderBoardType.setType(leaderBoard.getType());
+			return leaderBoardType;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void updateLeaderBoardType(int companyId, byte type) throws BIZException, TException {
+		try {
+			service.updateLeaderBoardType(companyId, type);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int countEmplyee(int companyId) throws BIZException, TException {
+		try {
+			return service.countEmployee(companyId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
 }

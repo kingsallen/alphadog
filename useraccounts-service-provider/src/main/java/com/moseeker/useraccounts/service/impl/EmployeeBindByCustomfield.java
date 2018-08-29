@@ -21,6 +21,7 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        super.paramCheck(bindingParams, certConf);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
                 .and("cname", bindingParams.getName())
@@ -61,7 +62,6 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         userEmployeeDO.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployeeDO.setActivation((byte)0);
         userEmployeeDO.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        userEmployeeDO.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDO.setCustomField(org.apache.commons.lang.StringUtils.defaultIfBlank(bindingParams.getCustomField(), userEmployeeDO.getCustomField()));
         return userEmployeeDO;
     }

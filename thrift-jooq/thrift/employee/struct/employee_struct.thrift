@@ -133,7 +133,9 @@ struct EmployeeAward {
     2: optional string name,
     3: optional i32 ranking,
     4: optional i32 awardTotal,
-    5: optional string headimgurl
+    5: optional string headimgurl,
+    6: optional bool praised,
+    7: optional i32 praise
 }
 
 struct RewardVO{
@@ -163,6 +165,27 @@ struct RewardVOPageVO{
 }
 
 
+//榜单信息
+struct LeaderBoardInfo {
+    1:optional i32 id,
+    2:optional string username,
+    3:optional i32 point,
+    4:optional string icon,
+    5:optional i32 level,
+    6:optional i32 praise,
+    7:optional bool praised
+}
 
+//榜单类型
+struct LeaderBoardType {
+    1:optional i32 id,
+    2:optional i32 company_id,
+    3:optional i8 type
+}
 
-
+struct Pagination {
+    1: optional i32 totalRow,
+    2: optional i32 pageNum,
+    3: optional i32 pageSize,
+    4: optional list<EmployeeAward> data
+}

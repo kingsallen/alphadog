@@ -7,8 +7,8 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.CertObj;
 import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.profile.service.impl.resumesdk.iface.AbstractResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
+import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,11 +20,11 @@ import java.util.List;
  * 简历-证书
  */
 @Component
-public class CredentialParser extends AbstractResumeParser<Result,List<Credential>> {
+public class CredentialParser extends AbstractMutiResumeParser<Result,List<Credential>> {
     Logger logger = LoggerFactory.getLogger(CredentialParser.class);
 
     @Override
-    protected List<Credential> parseResume(Result result) throws ResumeParserHelper.ResumeParseException {
+    protected List<Credential> parseResume(Result result) throws ResumeParseException {
         List<CertObj> certObjs = result.getCert_objs();
         List<Credential> credentialList = new ArrayList<>();
         if (!StringUtils.isEmptyList(certObjs)) {
@@ -37,7 +37,7 @@ public class CredentialParser extends AbstractResumeParser<Result,List<Credentia
         logger.info("profileParser getCredentials:{}", JSON.toJSONString(credentialList));
 
         if (credentialList.isEmpty() && StringUtils.isNotNullOrEmpty(result.getCont_certificate())) {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("证书为空，证书内容却不为空 ")
                     .fieldValue("contCertificate: " + result.getCont_certificate());
         }
@@ -45,12 +45,14 @@ public class CredentialParser extends AbstractResumeParser<Result,List<Credentia
     }
 
     @Override
-    protected Result get(ResumeObj resumeProfile) {
-        return resumeProfile.getResult();
+    protected List<Result> get(ResumeObj resumeProfile) {
+        return new ArrayList<Result>(){{add(resumeProfile.getResult());}};
     }
 
     @Override
-    protected void set(ProfileObj moseekerProfile, List<Credential> credentials) {
-        moseekerProfile.setCredentials(credentials);
+    protected void set(ProfileObj moseekerProfile, List<List<Credential>> credentials) {
+        if (credentials != null && credentials.size() > 0 && credentials.get(0) != null && credentials.get(0).size() > 0) {
+            moseekerProfile.setCredentials(credentials.get(0));
+        }
     }
 }

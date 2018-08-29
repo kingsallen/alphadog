@@ -3,7 +3,6 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -19,12 +18,10 @@ import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.*;
-import com.moseeker.entity.pojo.profile.info.Internship;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
@@ -44,7 +41,6 @@ import javax.annotation.Resource;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -379,7 +375,8 @@ public class UserEmployeeServiceImpl {
                 logger.error(e.getMessage(), e);
             }
 
-            Map<Integer, Integer> userWechatMap = new HashMap<>();          //用户->员工->公众号
+            Map<Integer, Integer> userWechatMap = new HashMap<>();
+            Map<Integer, String> userWechatTokenMap = new HashMap<>();   //用户->员工->公众号
             if (wechatDOList != null && wechatDOList.size() > 0) {
                 for (UserEmployeeDO employeeDO: employeeDOS) {
                     Optional<HrWxWechatDO> wechatDOOptional = wechatDOList
@@ -388,6 +385,7 @@ public class UserEmployeeServiceImpl {
                             .findAny();
                     if (wechatDOOptional.isPresent()) {
                         userWechatMap.put(employeeDO.getSysuserId(), wechatDOOptional.get().getId());
+                        userWechatTokenMap.put(employeeDO.getId(), wechatDOOptional.get().getAccessToken());
                     }
                 }
             }
@@ -409,7 +407,6 @@ public class UserEmployeeServiceImpl {
             List<ContributionDetail> list = new ArrayList<>();
             for (UserEmployeeDO userEmployeeDO: employeeDOS) {
                 ContributionDetail contributionDetail = new ContributionDetail();
-
                 contributionDetail.setCompanyId(userEmployeeDO.getCompanyId());
                 contributionDetail.setUserId(userEmployeeDO.getSysuserId());
 
@@ -427,6 +424,9 @@ public class UserEmployeeServiceImpl {
                 }
                 if (sorts.get(userEmployeeDO.getId()) != null) {
                     contributionDetail.setRank(sorts.get(userEmployeeDO.getId()));
+                }
+                if (userWechatTokenMap.get(userEmployeeDO.getId()) != null) {
+                    contributionDetail.setAccessToken(userWechatTokenMap.get(userEmployeeDO.getId()));
                 }
                 list.add(contributionDetail);
             }
