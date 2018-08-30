@@ -8,7 +8,7 @@ import com.moseeker.entity.pojo.resume.CertObj;
 import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParseException;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

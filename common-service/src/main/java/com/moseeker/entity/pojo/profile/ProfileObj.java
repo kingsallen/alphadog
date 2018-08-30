@@ -2,6 +2,7 @@
 package com.moseeker.entity.pojo.profile;
 
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 
 import java.util.List;
 
@@ -19,8 +20,17 @@ public class ProfileObj {
     private User user;
     private Basic basic;
     private List<Credential> credentials;
+    private List<ResumeParseException> exceptions;
 
     private ResumeObj resumeObj;
+
+    public List<ResumeParseException> getExceptions() {
+        return exceptions;
+    }
+
+    public void setExceptions(List<ResumeParseException> exceptions) {
+        this.exceptions = exceptions;
+    }
 
     public ResumeObj getResumeObj() {
         return resumeObj;

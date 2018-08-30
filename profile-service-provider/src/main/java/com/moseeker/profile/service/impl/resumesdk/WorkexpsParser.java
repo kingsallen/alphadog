@@ -9,7 +9,7 @@ import com.moseeker.entity.pojo.profile.Workexps;
 import com.moseeker.entity.pojo.resume.JobExpObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParseException;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import com.moseeker.profile.utils.DictCode;
 import org.springframework.stereotype.Component;
 

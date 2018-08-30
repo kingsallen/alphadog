@@ -363,7 +363,7 @@ public class HistoryUserEmployee extends TableImpl<HistoryUserEmployeeRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HistoryUserEmployee rename(String name) {
         return new HistoryUserEmployee(name, null);
     }
