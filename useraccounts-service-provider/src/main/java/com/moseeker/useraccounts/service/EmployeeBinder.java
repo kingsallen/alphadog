@@ -283,6 +283,7 @@ public abstract class EmployeeBinder {
             response.setMessage("fail");
         }
         log.info("updateEmployee response : {}", response);
+        useremployee.setId(employeeId);
         return response;
     }
     /*
