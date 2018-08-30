@@ -235,7 +235,7 @@ public class CityServices {
             List<Map<String,Object>> cityList=new ArrayList<>();
             for(Map<String,Object> data:list){
                 int coityCode= (int) data.get("code");
-                int level=(int)data.get("level");
+                byte level= (byte) data.get("level");
                 if(coityCode>code&&coityCode<code+10000&&level>1&&!codeList.contains(coityCode)){
                     cityList.add(data);
                 }
