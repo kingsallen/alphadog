@@ -183,6 +183,7 @@ public final class Constant {
 	
 	public static final String EMPLOYEE_AUTH_CODE = "EMPLOYEE_AUTH_CODE"; // 员工认证 （邮箱激活链接）
     public static final String EMPLOYEE_AUTH_INFO = "EMPLOYEE_AUTH_INFO"; // 员工认证（员工认证信息）
+    public static final String EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE = "[]"; // user_employee.custom_field_value默认值
 
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	

@@ -192,7 +192,7 @@ public abstract class EmployeeBinder {
                         userEmployee.setCname(useremployee.getCname());
                     }
                     if ((org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
-                            || "[]".equals(userEmployee.getCustomFieldValues()))
+                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(userEmployee.getCustomFieldValues()))
                             && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
                         userEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
                     }
@@ -269,6 +269,7 @@ public abstract class EmployeeBinder {
             response.setMessage("fail");
         }
         log.info("updateEmployee response : {}", response);
+        useremployee.setId(employeeId);
         return response;
     }
     /*
