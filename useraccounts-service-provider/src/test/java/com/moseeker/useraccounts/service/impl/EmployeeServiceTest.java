@@ -63,7 +63,10 @@ public class EmployeeServiceTest {
 //        ));
 //    }
 
-
+    @Test
+    public void test() throws TException {
+        service.setCacheEmployeeCustomInfo(2192148,248355,"[{\"50\": [\"技术部\"]}]");
+    }
 
     @Test
     public void getEmployee() throws Exception {
