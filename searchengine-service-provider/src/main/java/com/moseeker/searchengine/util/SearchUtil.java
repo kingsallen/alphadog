@@ -572,7 +572,7 @@ public class SearchUtil {
         }
     }
     /*
-     should的match的语句重载
+     should的terms的语句重载
      */
     public QueryBuilder shouldMatchQuery(List<String> fieldsList,List<String>dataIdList) {
         if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
