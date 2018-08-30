@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.jooq.*;
@@ -229,6 +230,12 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         Param<Integer> wxUserIdParam = param(UserEmployee.USER_EMPLOYEE.WXUSER_ID.getName(), useremployee.getWxuserId());
         Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), useremployee.getAuthMethod());
         Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte)useremployee.getActivation());
+        Param<String> customFieldValueParam;
+        if(StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
+            customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), useremployee.getCustomFieldValues());
+        } else {
+            customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE);
+        }
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Param<Timestamp> createTimeParam;
         if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCreateTime())) {
@@ -260,7 +267,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 UserEmployee.USER_EMPLOYEE.AUTH_METHOD,
                 UserEmployee.USER_EMPLOYEE.ACTIVATION,
                 UserEmployee.USER_EMPLOYEE.CREATE_TIME,
-                UserEmployee.USER_EMPLOYEE.BINDING_TIME)
+                UserEmployee.USER_EMPLOYEE.BINDING_TIME,
+                UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES)
 
                 .select(
                         select(
@@ -274,7 +282,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                                 authMethodParam,
                                 activationParam,
                                 createTimeParam,
-                                BindingTimeParam
+                                BindingTimeParam,
+                                customFieldValueParam
                         )
                         .whereNotExists(
                                 selectOne()
