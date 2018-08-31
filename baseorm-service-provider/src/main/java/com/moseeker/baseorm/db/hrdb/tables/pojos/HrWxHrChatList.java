@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatList implements Serializable {
 
-    private static final long serialVersionUID = 1006261839;
+    private static final long serialVersionUID = -1242813485;
 
     private Integer   id;
     private Integer   sysuserId;
@@ -34,6 +34,7 @@ public class HrWxHrChatList implements Serializable {
     private Timestamp updateTime;
     private Integer   hrUnreadCount;
     private Integer   userUnreadCount;
+    private Byte      welcomeStatus;
 
     public HrWxHrChatList() {}
 
@@ -47,6 +48,7 @@ public class HrWxHrChatList implements Serializable {
         this.updateTime = value.updateTime;
         this.hrUnreadCount = value.hrUnreadCount;
         this.userUnreadCount = value.userUnreadCount;
+        this.welcomeStatus = value.welcomeStatus;
     }
 
     public HrWxHrChatList(
@@ -58,7 +60,8 @@ public class HrWxHrChatList implements Serializable {
         Timestamp hrChatTime,
         Timestamp updateTime,
         Integer   hrUnreadCount,
-        Integer   userUnreadCount
+        Integer   userUnreadCount,
+        Byte      welcomeStatus
     ) {
         this.id = id;
         this.sysuserId = sysuserId;
@@ -69,6 +72,7 @@ public class HrWxHrChatList implements Serializable {
         this.updateTime = updateTime;
         this.hrUnreadCount = hrUnreadCount;
         this.userUnreadCount = userUnreadCount;
+        this.welcomeStatus = welcomeStatus;
     }
 
     public Integer getId() {
@@ -143,6 +147,14 @@ public class HrWxHrChatList implements Serializable {
         this.userUnreadCount = userUnreadCount;
     }
 
+    public Byte getWelcomeStatus() {
+        return this.welcomeStatus;
+    }
+
+    public void setWelcomeStatus(Byte welcomeStatus) {
+        this.welcomeStatus = welcomeStatus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxHrChatList (");
@@ -156,6 +168,7 @@ public class HrWxHrChatList implements Serializable {
         sb.append(", ").append(updateTime);
         sb.append(", ").append(hrUnreadCount);
         sb.append(", ").append(userUnreadCount);
+        sb.append(", ").append(welcomeStatus);
 
         sb.append(")");
         return sb.toString();

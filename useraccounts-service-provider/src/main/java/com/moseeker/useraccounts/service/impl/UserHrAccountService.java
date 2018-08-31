@@ -172,6 +172,9 @@ public class UserHrAccountService {
     @Autowired
     private HrAppCvConfDao appCvConfDao;
 
+    @Autowired
+    private HrWxHrChatListDao chatListDao;
+
     /**
      * 修改手机号码
      *
@@ -459,7 +462,9 @@ public class UserHrAccountService {
             // 添加HR用户
             UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
                     UserHrAccountRecord.class);
-
+            if(userHrAccount.isSetUsername()){
+                chatListDao.updateWelcomeStatusByHrAccountId(userHrAccountRecord.getId());
+            }
             int userHrAccountId = userHrAccountDao.updateRecord(userHrAccountRecord);
             if (userHrAccountId > 0) {
                 return ResponseUtils.success(new HashMap<String, Object>() {
