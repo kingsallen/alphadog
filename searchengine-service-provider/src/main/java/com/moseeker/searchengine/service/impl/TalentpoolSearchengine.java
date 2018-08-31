@@ -2,8 +2,6 @@ package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -32,6 +30,7 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,10 +47,6 @@ public class TalentpoolSearchengine {
     private SearchUtil searchUtil;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
-    @Autowired
-    private JobPositionDao jobPositionDao;
-    @Autowired
-    private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
     private SearchMethodUtil searchMethodUtil;
     @Autowired
@@ -87,6 +82,7 @@ public class TalentpoolSearchengine {
 
     private void handlerResultData( Map<String, Object> result,Map<String, String> params){
         if(!StringUtils.isEmptyMap(result)){
+            String isOut=params.get("is_out");
             int totalNum=(int)((long)result.get("totalNum"));
             if(totalNum>0){
                 List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("users");
@@ -111,29 +107,31 @@ public class TalentpoolSearchengine {
                             /*
                              过滤掉不是查询职位 的申请
                              */
-                            String positionWord=params.get("position_key_word");
-                            String positionIds=params.get("position_id");
-                            if(StringUtils.isNotNullOrEmpty(positionWord)||StringUtils.isNotNullOrEmpty(positionIds)){
-                                List<Integer> positionIdList=searchUtil.stringConvertIntList(positionIds);
-                                if(!StringUtils.isEmptyList(positionIdList)){
-                                    List<Map<String,Object>> applications=(List<Map<String, Object>>) user.get("applications");
-                                    if(!StringUtils.isEmptyList(applications)){
-                                        List<Map<String,Object>> applicationNewList=new ArrayList<>();
-                                        for(Map<String,Object> application:applications){
-                                            if(application.get("position_id")!=null){
-                                                int positionId= (int) application.get("position_id");
-                                                if(positionIdList.contains(positionId)){
-                                                    applicationNewList.add(application);
+                            if(StringUtils.isNotNullOrEmpty(isOut)&&"1".equals(isOut)){
+                                String positionWord=params.get("position_key_word");
+                                String positionIds=params.get("position_id");
+                                if(StringUtils.isNotNullOrEmpty(positionWord)||StringUtils.isNotNullOrEmpty(positionIds)){
+                                    List<Integer> positionIdList=searchUtil.stringConvertIntList(positionIds);
+                                    if(!StringUtils.isEmptyList(positionIdList)){
+                                        List<Map<String,Object>> applications=(List<Map<String, Object>>) user.get("applications");
+                                        if(!StringUtils.isEmptyList(applications)){
+                                            List<Map<String,Object>> applicationNewList=new ArrayList<>();
+                                            for(Map<String,Object> application:applications){
+                                                if(application.get("position_id")!=null){
+                                                    int positionId= (int) application.get("position_id");
+                                                    if(positionIdList.contains(positionId)){
+                                                        applicationNewList.add(application);
+                                                    }
                                                 }
                                             }
+                                            if(!StringUtils.isEmptyList(applicationNewList)){
+                                                user.put("applications",applicationNewList);
+                                            }
                                         }
-                                        if(!StringUtils.isEmptyList(applicationNewList)){
-                                            user.put("applications",applicationNewList);
-                                        }
+
                                     }
 
                                 }
-
                             }
                         }
                     }
@@ -1678,7 +1676,7 @@ public class TalentpoolSearchengine {
     }
 
     private String getLongTime(String submitTime){
-        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=new Date();
         long time=Long.parseLong(submitTime);
         if(time==1){

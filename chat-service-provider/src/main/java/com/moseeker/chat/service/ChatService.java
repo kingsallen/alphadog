@@ -717,12 +717,18 @@ public class ChatService {
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
             chatRoom.setSysuserId(userId);
+            chatRoom.setWelcomeStatus((byte)1);
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
 
         if (chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
+            if(chatRoom.getWelcomeStatus() == 1){
+                createChat(resultOfSaveRoomVO, is_gamma);
+                chatRoom.setWelcomeStatus((byte)0);
+                chaoDao.updateChatRoom(chatRoom);
+            }
             if (chatDebut) {
                 HrChatUnreadCountDO unreadCountDO = new HrChatUnreadCountDO();
                 unreadCountDO.setHrId(hrId);
@@ -731,8 +737,6 @@ public class ChatService {
                 unreadCountDO.setUserHaveUnreadMsg((byte) 1);
                 unreadCountDO.setRoomId(chatRoom.getId());
                 chaoDao.saveUnreadCount(unreadCountDO);
-
-                createChat(resultOfSaveRoomVO, is_gamma);
                 resultOfSaveRoomVO.setChatDebut(chatDebut);
             } else {
                 //默认清空C端账号的未读消息

@@ -120,4 +120,11 @@ public class HrWxHrChatListDao extends DAOImpl<HrWxHrChatListRecord, com.moseeke
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChatList> fetchByUserUnreadCount(Integer... values) {
         return fetch(HrWxHrChatList.HR_WX_HR_CHAT_LIST.USER_UNREAD_COUNT, values);
     }
+
+    /**
+     * Fetch records that have <code>welcome_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChatList> fetchByWelcomeStatus(Byte... values) {
+        return fetch(HrWxHrChatList.HR_WX_HR_CHAT_LIST.WELCOME_STATUS, values);
+    }
 }
