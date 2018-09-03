@@ -314,6 +314,11 @@ public class UserEmployeeController {
                                 ContributionDetail contributionDetail = new ContributionDetail();
                                 org.springframework.beans.BeanUtils.copyProperties(employeeReferralContribution,
                                         contributionDetail);
+                                logger.info("getContribution contributionDetail companyId:{}, openid:{}, userId:{}, " +
+                                        "point:{}, rank:{}",
+                                        contributionDetail.getCompanyId(), contributionDetail.getOpenid(),
+                                        contributionDetail.getUserId(), contributionDetail.getPoint(),
+                                        contributionDetail.getRank());
                                 return contributionDetail;
                             }).collect(Collectors.toList());
                     result.setList(contributionDetails);
