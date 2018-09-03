@@ -21,6 +21,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.employee.struct.Employee;
 import org.jooq.Configuration;
 import org.jooq.Record2;
@@ -54,6 +55,7 @@ public class ApplicationRepository {
     private HrWxNoticeMessageJOOQDao noticeMessageJOOQDao;
     private UserEmployeeJOOQDao employeeJOOQDao;
     private UserWxUserJOOQDao wxUserJOOQDao;
+    private HrCompanyAccountJOOQDao companyAccountJOOQDao;
 
     /**
      * es数据模板，tableName: 表名， user_id: 用户id
@@ -79,6 +81,7 @@ public class ApplicationRepository {
         userJOOQDao = new UserUserJOOQDao(configuration);
         employeeJOOQDao = new UserEmployeeJOOQDao(configuration);
         wxUserJOOQDao = new UserWxUserJOOQDao(configuration);
+        companyAccountJOOQDao = new HrCompanyAccountJOOQDao(configuration);
     }
 
     public JobApplicationJOOQDao getJobApplicationDao() {
@@ -144,6 +147,52 @@ public class ApplicationRepository {
      * @param applicationIdList 申请编号
      * @return 申请和公司的关系
      */
+    public Map<Integer, HrCompany> getCompaniesSubByApplicationIdList(List<Integer> applicationIdList) {
+        List<Record2<Integer, Integer>> appIdPositionIdList = jobApplicationDao.fetchPositionIdListByApplicationIdList(applicationIdList);
+        List<Integer> positionIds = appIdPositionIdList.stream().map(m -> m.value2()).collect(Collectors.toList());
+        List<JobPosition> positionList = positionJOOQDao.fetchPublisherByAppIds(positionIds);
+        List<Integer> accountIdList = positionList.stream().map(m -> m.getPublisher()).collect(Collectors.toList());
+        List<HrCompanyAccountDO> companyAccountDOList = companyAccountJOOQDao.fetchByIdList(accountIdList);
+
+
+        List<Integer> companyIdList = companyAccountDOList.stream().map(record -> record.getCompanyId()).collect(Collectors.toList());
+        List<HrCompany> companyList = companyJOOQDao.fetchByIdList(companyIdList);
+        Map<Integer, HrCompany> map = new HashMap<>();
+
+        applicationIdList.forEach(appid -> {
+            Optional<Record2<Integer, Integer>> optional = appIdPositionIdList
+                    .stream()
+                    .filter(ac -> ac.value1().intValue() == appid)
+                    .findAny();
+            if (optional.isPresent()) {
+                Optional<JobPosition> position = positionList.stream().filter(f -> f.getId() == optional.get().value2().intValue())
+                        .findAny();
+                if(position.isPresent()){
+                    Optional<HrCompanyAccountDO> companyAccount = companyAccountDOList.stream()
+                            .filter(f -> f.getAccountId() == position.get().getPublisher())
+                            .findAny();
+                    if(companyAccount.isPresent()){
+                        Optional<HrCompany> companyOptional = companyList
+                                .stream()
+                                .filter(hrCompany -> hrCompany.getId().intValue() == companyAccount.get().getCompanyId())
+                                .findAny();
+                        if (companyOptional.isPresent()) {
+                            map.put(appid, companyOptional.get());
+                        }
+                    }
+                }
+
+            }
+        });
+
+        return map;
+    }
+
+    /**
+     * 查找申请和公司的关系
+     * @param applicationIdList 申请编号
+     * @return 申请和公司的关系
+     */
     public Map<Integer, HrCompany> getCompaniesByApplicationIdList(List<Integer> applicationIdList) {
         List<Record2<Integer, Integer>> appIdCompanyIdList = jobApplicationDao.fetchCompanyIdListByApplicationIdList(applicationIdList);
         List<Integer> companyIdList = appIdCompanyIdList.stream().map(record -> record.value2()).collect(Collectors.toList());
@@ -163,6 +212,7 @@ public class ApplicationRepository {
                 if (companyOptional.isPresent()) {
                     map.put(appid, companyOptional.get());
                 }
+
             }
         });
 

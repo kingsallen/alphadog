@@ -123,6 +123,27 @@ public class JobApplicationJOOQDao extends com.moseeker.baseorm.db.jobdb.tables.
 
     /**
      *
+     * 查找申请的职位编号
+     *
+     * @param applicationIdList 申请编号
+     * @return 公司编号集合
+     */
+    public List<Record2<Integer, Integer>> fetchPositionIdListByApplicationIdList(List<Integer> applicationIdList) {
+        if (applicationIdList != null && applicationIdList.size() > 0) {
+            Result<Record2<Integer, Integer>> result = using(configuration())
+                    .select(JobApplication.JOB_APPLICATION.ID, JobApplication.JOB_APPLICATION.POSITION_ID)
+                    .from(JobApplication.JOB_APPLICATION)
+                    .where(JobApplication.JOB_APPLICATION.ID.in(applicationIdList))
+                    .fetch();
+            if (result != null && result.size() > 0) {
+                return result;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     *
      * 查找申请与申请人编号
      *
      * @param applicationIdList 申请编号集合
