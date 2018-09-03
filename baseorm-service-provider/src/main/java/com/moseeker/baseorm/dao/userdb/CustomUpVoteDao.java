@@ -4,7 +4,6 @@ import com.moseeker.baseorm.constant.UpVoteState;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.daos.UserEmployeeUpvoteDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeUpvoteRecord;
-import org.joda.time.DateTime;
 import org.jooq.Param;
 import org.jooq.Record1;
 import org.jooq.Record2;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
