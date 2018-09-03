@@ -58,7 +58,8 @@ struct ProcessValidationStruct{
 	8: optional string applier_name,
 	9: optional string position_name,
 	10: optional i32 recommender_user_id,
-	11: optional i32 position_id
+	11: optional i32 publisher,
+	12: optional i32 position_id
 }
 
 struct ApplicationAts{
