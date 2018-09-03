@@ -462,7 +462,8 @@ public class UserHrAccountService {
             // 添加HR用户
             UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
                     UserHrAccountRecord.class);
-            if(userHrAccount.isSetUsername()){
+            UserHrAccountDO accountDO = userHrAccountDao.getUserHrAccountById((int)userHrAccount.getId());
+            if(checkNameMobify(accountDO, userHrAccount)){
                 chatListDao.updateWelcomeStatusByHrAccountId(userHrAccountRecord.getId());
             }
             int userHrAccountId = userHrAccountDao.updateRecord(userHrAccountRecord);
@@ -482,6 +483,35 @@ public class UserHrAccountService {
             // do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+    private boolean checkNameMobify(UserHrAccountDO oldAccount, UserHrAccount newAccount){
+        String username = newAccount.getUsername().trim();
+        if(username == null || oldAccount.getUsername().trim().equals(username)){
+            if(newAccount.getWxuser_id()  != oldAccount.getWxuserId()) {
+                UserWxUserDO oldWxUser = userWxUserDao.getWXUserById(oldAccount.getWxuserId());
+                UserWxUserDO newWxUser = userWxUserDao.getWXUserById((int)newAccount.getWxuser_id());
+                if(oldWxUser != null && newWxUser != null){
+                    String oldNickName = oldWxUser.getNickname().trim();
+                    String newNickName = newWxUser.getNickname().trim();
+                    if(!oldNickName.equals(newNickName)){
+                        return true;
+                    }
+                }else if(oldWxUser == null && newWxUser == null){
+                }else {
+                    return true;
+                }
+            }
+            String oldMobile = oldAccount.getMobile();
+            oldMobile = StringUtils.isNullOrEmpty(oldMobile) && oldMobile.length()==11
+                    ? "" : oldMobile.substring(0,3)+"****"+oldMobile.substring(7);
+            String newMobile = newAccount.getMobile();
+            newMobile = StringUtils.isNullOrEmpty(oldMobile) && oldMobile.length()==11
+                    ? "" : oldMobile.substring(0,3)+"****"+oldMobile.substring(7);
+            if(oldMobile.equals(newMobile)){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
