@@ -58,6 +58,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
      */
     public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote fetchUpVote(int receiver, int sender,
                                                                                       long start, long end) {
+        
         UserEmployeeUpvoteRecord result = using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
