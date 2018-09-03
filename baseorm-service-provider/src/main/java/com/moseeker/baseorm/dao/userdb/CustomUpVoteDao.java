@@ -38,27 +38,33 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
     /**
      * 计算点赞数
      * @param employeeId 员工编号
-     * @param companyId 公司编号
      * @return 被点赞的次数
      */
-    public int countUpVote(int employeeId, int companyId) {
+    public int countUpVote(int employeeId) {
         Record1<Integer> count = using(configuration())
                 .selectCount()
                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.eq(companyId))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .fetchOne();
         return count.value1();
     }
 
-    public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote fetchUpVote(int companyId, int receiver, int sender) {
+    /**
+     * 查找点赞记录
+     * @param receiver 被点赞员工
+     * @param sender 点赞员工
+     * @return 返回点赞记录
+     */
+    public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote fetchUpVote(int receiver, int sender,
+                                                                                      long start, long end) {
 
         UserEmployeeUpvoteRecord result = using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.eq(companyId))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .fetchOne();
         if (result != null) {
@@ -75,7 +81,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
      * @param sender 点赞的员工编号
      * @return 点赞记录编号
      */
-    public int insert(int companyId, int receiver, int sender) {
+    public int insert(int companyId, int receiver, int sender, long startTime, long endTime) {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Param<Integer> senderParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.getName(), sender);
         Param<Integer> receiverParam = param(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.getName(), receiver);
@@ -103,18 +109,20 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                         .whereNotExists(
                                 selectOne()
                                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.eq(companyId))
-                                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
+                                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
                                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
+                                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
                         )
                 )
                 .execute();
 
         UserEmployeeUpvoteRecord result = using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID.eq(companyId))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
                 .fetchOne();
 
         if (result != null) {
@@ -149,11 +157,11 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
     public UserEmployeeUpvoteRecord fetchBySenderAndReceiver(int sender, int receiver, long startTime, long endTime) {
         return using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
-                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
+                .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.eq(sender))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(startTime)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(endTime)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte)UpVoteState.UpVote.getValue()))
                 .fetchOne();
     }
 
@@ -163,9 +171,9 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .selectCount()
                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .fetchOne().value1();
     }
 
@@ -176,9 +184,9 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .from(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(employeeId))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER.ne(employeeId))
-                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.gt(new Timestamp(start)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
+                .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .fetchOne().value1();
     }
 

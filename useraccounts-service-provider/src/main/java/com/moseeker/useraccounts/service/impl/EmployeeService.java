@@ -560,7 +560,7 @@ public class EmployeeService {
         if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
             throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
         }
-        return upvoteDao.countUpVote(employeeId, userEmployeeDO.getCompanyId());
+        return upvoteDao.countUpVote(employeeId);
     }
 
     /**
