@@ -182,7 +182,7 @@ struct LeaderBoardType {
     2:optional i32 company_id,
     3:optional i8 type
 }
-
+//榜单分页信息
 struct Pagination {
     1: optional i32 totalRow,
     2: optional i32 pageNum,

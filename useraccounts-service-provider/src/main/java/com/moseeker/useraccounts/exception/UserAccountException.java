@@ -37,6 +37,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_ALREADY_UP_VOTE = new UserAccountException(42028, "已经点过赞!");
     public static final UserAccountException EMPLOYEE_NOT_UP_VOTE = new UserAccountException(42029, "未点过赞!");
     public static final UserAccountException EMPLOYEE_LEADERBOARDER_NOT_EXISTS = new UserAccountException(42030, "榜单类型错误!");
+    public static final UserAccountException PROFILE_PARSE_TEXT_FAILED = new UserAccountException(42031, "简历解析失败!");
 
     private final int code;
 
