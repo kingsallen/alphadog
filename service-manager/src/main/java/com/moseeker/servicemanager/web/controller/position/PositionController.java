@@ -112,6 +112,7 @@ public class PositionController {
             query.setPage_from(Integer.valueOf((String) map.getOrDefault("page_from", "0")));
             query.setPage_size(Integer.valueOf((String) map.getOrDefault("page_size", "10")));
 
+            query.setUser_id(Integer.valueOf((String) map.getOrDefault("user_id", "0")));
             query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
             query.setCities(StringUtils.filterStringForSearch((String) map.getOrDefault("cities", "")));
             query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
