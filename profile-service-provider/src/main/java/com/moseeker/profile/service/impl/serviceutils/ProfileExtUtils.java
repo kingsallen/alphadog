@@ -3,7 +3,6 @@ package com.moseeker.profile.service.impl.serviceutils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
@@ -15,10 +14,8 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.profile.constants.EmailVerifyState;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.vo.FileNameData;
-import com.moseeker.profile.utils.ProfileSource;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.UUID;
 
 @Component

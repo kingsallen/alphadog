@@ -6,10 +6,9 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.profile.exception.ProfileException;
+import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
-import com.moseeker.profile.service.ReferralService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -123,20 +122,6 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public ProfileParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData)
-            throws BIZException, TException {
-        try {
-            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
-                    referralService.parseFileProfile(employeeId, fileName, fileData);
-            ProfileParseResult profileParseResult = new ProfileParseResult();
-            BeanUtils.copyProperties(result, profileParseResult);
-            return profileParseResult;
-        } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte referralType)
             throws BIZException, TException {
@@ -155,6 +140,20 @@ public class ProfileServicesImpl implements Iface {
             com.moseeker.profile.service.impl.vo.CandidateInfo candidate = new com.moseeker.profile.service.impl.vo.CandidateInfo();
             BeanUtils.copyProperties(candidate, candidateInfo);
             return referralService.postCandidateInfo(employeeId, candidate);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ProfileParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData)
+            throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    referralService.parseFileProfile(employeeId, fileName, fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

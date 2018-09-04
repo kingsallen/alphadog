@@ -22,6 +22,11 @@ import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.constants.GenderType;
+import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.pojo.profile.ProfileObj;
+import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
@@ -36,6 +41,8 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
+import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +57,10 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.nio.ByteBuffer;
 
 /**
  * 内推服务
