@@ -1,17 +1,14 @@
-package com.moseeker.profile.utils;
+package com.moseeker.entity.biz;
 
 import com.moseeker.common.email.Email;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.entity.pojo.resume.Account;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 简历相关邮件发送工具
