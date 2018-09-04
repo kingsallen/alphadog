@@ -1592,10 +1592,12 @@ public class PositionService {
             logger.info("getPositionList did:{},company_id:{},query:{}", query.getDid(), query.getCompany_id(), BeanUtils.convertStructToJSON(query));
 
             //记录搜索历史
-            pool.startTast(() ->{
-                updateRedisUserSearchPositionHistory(query.getUser_id(), query.getKeywords());
-                return 0;
-            });
+            if(query.getUser_id()> 0 && StringUtils.isNotNullOrEmpty(query.getKeywords())) {
+                pool.startTast(() -> {
+                    updateRedisUserSearchPositionHistory(query.getUser_id(), query.getKeywords());
+                    return 0;
+                });
+            }
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
