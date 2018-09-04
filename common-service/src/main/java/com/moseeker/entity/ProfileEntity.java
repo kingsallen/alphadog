@@ -21,6 +21,7 @@ import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ProfileException;
@@ -69,6 +70,9 @@ public class ProfileEntity {
 
     @Autowired
     ProfileParseUtil profileParseUtil;
+
+    @Autowired
+    private ProfileMailUtil profileMailUtil;
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -87,7 +91,12 @@ public class ProfileEntity {
      * @return
      */
     public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
-       return profileParser(fileName, file);
+        ResumeObj resumeObj =  profileParser(fileName, file);
+        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+        if(resumeObj != null && resumeObj.getAccount() != null && resumeObj.getAccount().getUsage_remaining() < 1000){
+            profileMailUtil.sendProfileParseWarnMail(resumeObj.getAccount());
+        }
+        return resumeObj;
     }
 
     /**

@@ -8,6 +8,7 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
+import com.moseeker.profile.service.ReferralService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -15,13 +16,16 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 @Service
@@ -31,6 +35,9 @@ public class ProfileServicesImpl implements Iface {
 
     @Autowired
     private ProfileService service;
+
+    @Autowired
+    private ReferralService referralService;
 
     @Autowired
     com.moseeker.profile.service.ProfileService profileService;
@@ -111,6 +118,20 @@ public class ProfileServicesImpl implements Iface {
     @Override
     public Response parseProfileAttachment(String fileName, String file) throws BIZException, TException {
         return service.profileParser(fileName, file);
+    }
+
+    @Override
+    public ProfileParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData)
+            throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    referralService.parseFileProfile(employeeId, fileName, fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override

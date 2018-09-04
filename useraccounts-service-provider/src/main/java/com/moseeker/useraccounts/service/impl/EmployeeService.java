@@ -3,7 +3,6 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
