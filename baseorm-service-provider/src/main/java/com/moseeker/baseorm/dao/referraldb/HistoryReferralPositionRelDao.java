@@ -16,4 +16,8 @@ public class HistoryReferralPositionRelDao extends com.moseeker.baseorm.db.refer
     public HistoryReferralPositionRelDao(Configuration configuration) {
         super(configuration);
     }
+
+    public HistoryReferralPositionRelDao() {
+        super();
+    }
 }
