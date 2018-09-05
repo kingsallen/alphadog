@@ -1,20 +1,19 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.tools.ProfileDocCheckTool;
 import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +62,34 @@ public class ReferralController {
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工推荐简历
+     * @param id 员工编号
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfile(@PathVariable int id, @RequestParam ReferralForm referralForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", referralForm.getName());
+        validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
+
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
+                    referralForm.getMobile(), referralForm.getReferralReasons());
+            return Result.success(referralId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
