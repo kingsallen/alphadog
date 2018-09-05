@@ -762,7 +762,7 @@ public class SearchengineEntity {
 
         logger.info(JSONObject.toJSONString(jsonObject));
         UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
-                .setScript(new Script("ctx._source.position.is_referral = " + isReferral))
+                .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
         return ResponseUtils.success(true);
     }
