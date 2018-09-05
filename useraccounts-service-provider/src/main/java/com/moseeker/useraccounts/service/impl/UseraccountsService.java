@@ -31,6 +31,7 @@ import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -43,6 +44,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
+import java.util.*;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -52,10 +54,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -1196,5 +1194,19 @@ public class UseraccountsService {
         return false;
     }
 
+    public Response getUserSearchPositionHistory(int userId) throws BIZException {
+        String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
+        List<String> history = null;
+        if(StringUtils.isNotNullOrEmpty(info)){
+            history = (List)JSONObject.parse(info);
+        }
+        return ResponseUtils.success(history);
+    }
+
+
+    public Response deleteUserSearchPositionHistory(int userId) throws BIZException {
+        redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
+        return ResponseUtils.success("");
+    }
 
 }
