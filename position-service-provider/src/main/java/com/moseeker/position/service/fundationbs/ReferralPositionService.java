@@ -39,7 +39,7 @@ public class ReferralPositionService {
     public void updatePointsConfig(Integer companyId,Integer flag)  {
 
         ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
-        
+
         if(referralCompanyConf != null) {
             referralCompanyConf.setPositionPointsFlag(flag.byteValue());
             referralCompanyConfJooqDao.update(referralCompanyConf);
