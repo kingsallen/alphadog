@@ -27,7 +27,6 @@ public class ReferralPositionRelDao extends com.moseeker.baseorm.db.referraldb.t
 
 
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel> fetchReferralRecords(List<Integer> positionIds) {
-
         Result<ReferralPositionRelRecord>  result = using(configuration())
                 .selectFrom(ReferralPositionRel.REFERRAL_POSITION_REL)
                 .where(ReferralPositionRel.REFERRAL_POSITION_REL.POSITION_ID.in(positionIds))

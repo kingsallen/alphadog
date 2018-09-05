@@ -20,10 +20,8 @@ public class ReferralPositionService {
     @Autowired
     PositionEntity positionEntity;
 
-
     @Autowired
     ReferralCompanyConfDao referralCompanyConfJooqDao;
-
 
     @CounterIface
     @Transactional
