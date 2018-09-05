@@ -5,7 +5,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionRelReco
 import org.jooq.Configuration;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import static org.jooq.impl.DSL.using;
  * @Date: 2018/9/4
  * @Author: JackYang
  */
-@Service
+@Repository
 public class ReferralPositionRelDao extends com.moseeker.baseorm.db.referraldb.tables.daos.ReferralPositionRelDao{
 
     @Autowired
