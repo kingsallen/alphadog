@@ -343,9 +343,9 @@ public class UseraccountsService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        String validateMobile=String.valueOf(user.mobile);
+        String validateMobile=user.username;
         if(StringUtils.isNotNullOrEmpty(user.getCountryCode()) && !"86".equals(user.getCountryCode())){
-            validateMobile=user.getCountryCode()+user.mobile;
+            validateMobile=user.getCountryCode()+user.username;
         }
 
         if (!StringUtils.isNullOrEmpty(code) && !validateCode(validateMobile, code, 1)) {
