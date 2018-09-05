@@ -345,8 +345,6 @@ public class PositionEntity {
                 historyReferralPositionRel.setPositionId(rel.getPositionId());
                 historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
                 historyReferralPositionRelDao.insert(historyReferralPositionRel);
-
-                //更新ES中职位is_referal字段为1
                 searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
             });
         }
