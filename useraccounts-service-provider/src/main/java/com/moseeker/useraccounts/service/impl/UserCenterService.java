@@ -290,6 +290,8 @@ public class UserCenterService {
                     recommendationRecordVO.setClick_time(candidateRecomRecordDO.getClickTime());
                     recommendationRecordVO.setRecom_status((byte)candidateRecomRecordDO.getIsRecom());
 
+                    logger.info("getRecommendations recommendationRecordVO id:{}, click_time:{}, recom_status:{}", recommendationRecordVO.getId(), recommendationRecordVO.getClick_time(), recommendationRecordVO.getRecom_status());
+
                     /** 匹配职位名称 */
                     if (positions != null && positions.size() > 0) {
                         positions.stream().filter(position -> position.getId() == candidateRecomRecordDO.getPositionId() && position.getId() > 0)
@@ -307,6 +309,7 @@ public class UserCenterService {
                     }
                     /** 匹配转发者的名称 */
                     if (candidateRecomRecordDO.getPostUserId() != candidateRecomRecordDO.getRepostUserId()) {
+                        logger.info("getRecommendations postUserId:{}, rePostUserId:{}", candidateRecomRecordDO.getPostUserId(), candidateRecomRecordDO.getRepostUserId());
                         if (reposts != null && reposts.size() > 0) {
                             reposts.stream().filter(repost -> repost.getId() == candidateRecomRecordDO.getRepostUserId())
                                     .forEach(repost ->
