@@ -280,8 +280,8 @@ public class PositionEntity {
             });
         }
 
-        logger.info("records {}", JSON.toJSON(records).toString());
-        System.out.println(JSON.toJSON(records).toString());
+        logger.info("records {}", JSON.toJSON(records));
+        System.out.println(JSON.toJSON(records));
     }
 
     /**
