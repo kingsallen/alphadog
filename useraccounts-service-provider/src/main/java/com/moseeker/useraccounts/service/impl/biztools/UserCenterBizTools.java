@@ -156,9 +156,10 @@ public class UserCenterBizTools {
         switch (type) {
             case 1:			//查找所有相关的职位转发记录
                 Query.QueryBuilder qu = new Query.QueryBuilder();
-                qu.select("id").select("app_id").select("repost_user_id")
+                qu.select("id").select("app_id")
                         .select("click_time").select("recom_time").select("is_recom")
                         .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID.getName())
+                        .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.getName())
                         .select("presentee_user_id").select("position_id");
                 qu.where("post_user_id", userId).and(new Condition("position_id", positionIdList, ValueOp.IN));
                 qu.groupBy("presentee_user_id").groupBy("position_id");
