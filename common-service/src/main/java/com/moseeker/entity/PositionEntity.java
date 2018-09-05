@@ -1,15 +1,20 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
+import com.moseeker.baseorm.dao.referraldb.HistoryReferralPositionRelDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionRelDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -18,9 +23,10 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.position.service.HistoryReferralPositionRecordType;
 import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.Result;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +54,17 @@ public class PositionEntity {
 
     @Autowired
     private HrCompanyFeatureDao hrCompanyFeatureDao;
+
+    @Autowired
+    private ReferralPositionRelDao referralPositionRelDao;
+
+    @Autowired
+    private HistoryReferralPositionRelDao historyReferralPositionRelDao;
+
+    @Autowired
+    private SearchengineEntity searchengineEntity;
+
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 查找职位信息
@@ -230,4 +247,54 @@ public class PositionEntity {
     public List<JobPosition> getPositionInfoByIdList(List<Integer> positionIdList) {
         return positionDao.getJobPositionByIdList(positionIdList);
     }
+
+    public void putReferralPositions(List<Integer> pids){
+        List<ReferralPositionRel> records = new ArrayList<>();
+        logger.info("pids {}",pids);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+
+        List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+        for(JobPositionDO jobPositionDO: jobPositionDOS) {
+
+            //插入内推记录表
+           ReferralPositionRel referralPositionRel = new ReferralPositionRel();
+            referralPositionRel.setPositionId(jobPositionDO.getId());
+            referralPositionRel.setCompanyId(jobPositionDO.getCompanyId());
+            records.add(referralPositionRel);
+        }
+        referralPositionRelDao.insert(records);
+
+        records.stream().forEach(rel->{
+            HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
+            historyReferralPositionRel.setCompanyId(rel.getCompanyId());
+            historyReferralPositionRel.setPositionId(rel.getPositionId());
+            historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
+            historyReferralPositionRelDao.insert(historyReferralPositionRel);
+
+            //searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
+        });
+        logger.info("records {}", JSON.toJSON(records).toString());
+        System.out.println(JSON.toJSON(records).toString());
+    }
+
+    public void delReferralPositions(List<Integer> pids){
+
+        List<ReferralPositionRel> referralPositionRels = referralPositionRelDao.fetchReferralRecords(pids);
+
+        referralPositionRels.stream().forEach(rel->{
+            HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
+            historyReferralPositionRel.setCompanyId(rel.getCompanyId());
+            historyReferralPositionRel.setPositionId(rel.getPositionId());
+            historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.DELETE.name());
+            historyReferralPositionRelDao.insert(historyReferralPositionRel);
+
+           // searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+
+        });
+
+        referralPositionRelDao.delete(referralPositionRels);
+
+    }
+
 }

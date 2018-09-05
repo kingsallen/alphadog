@@ -134,3 +134,20 @@ service PositionDao{
 	common_struct.Response getJobCustoms(1:common_struct.CommonQuery query);
 	common_struct.Response getJobOccupations(1:common_struct.CommonQuery query);
 }
+
+/*
+    内推职位功能
+*/
+service ReferralPositionServices{
+    void putReferralPositions(1:list<i32> pids);
+    void delReferralPositions(1:list<i32> pids);
+}
+
+/*
+
+*/
+enum HistoryReferralPositionRecordType {
+    ADD,
+    UPDATE,
+    DELETE
+}

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryReferralPositionRel extends TableImpl<HistoryReferralPositionRelRecord> {
 
-    private static final long serialVersionUID = 809997575;
+    private static final long serialVersionUID = -924551684;
 
     /**
      * The reference instance of <code>referraldb.history_referral_position_rel</code>
@@ -55,11 +55,6 @@ public class HistoryReferralPositionRel extends TableImpl<HistoryReferralPositio
      * The column <code>referraldb.history_referral_position_rel.id</code>. 序列ID
      */
     public final TableField<HistoryReferralPositionRelRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "序列ID");
-
-    /**
-     * The column <code>referraldb.history_referral_position_rel.refer_id</code>. referral_position_rel 记录的ID
-     */
-    public final TableField<HistoryReferralPositionRelRecord, Integer> REFER_ID = createField("refer_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "referral_position_rel 记录的ID");
 
     /**
      * The column <code>referraldb.history_referral_position_rel.position_id</code>. 职位ID

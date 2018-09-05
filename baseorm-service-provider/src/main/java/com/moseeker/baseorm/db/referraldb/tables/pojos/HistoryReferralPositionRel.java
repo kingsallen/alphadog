@@ -23,10 +23,9 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryReferralPositionRel implements Serializable {
 
-    private static final long serialVersionUID = 1941706947;
+    private static final long serialVersionUID = 14533514;
 
     private Integer   id;
-    private Integer   referId;
     private Integer   positionId;
     private Integer   companyId;
     private String    recordType;
@@ -37,7 +36,6 @@ public class HistoryReferralPositionRel implements Serializable {
 
     public HistoryReferralPositionRel(HistoryReferralPositionRel value) {
         this.id = value.id;
-        this.referId = value.referId;
         this.positionId = value.positionId;
         this.companyId = value.companyId;
         this.recordType = value.recordType;
@@ -47,7 +45,6 @@ public class HistoryReferralPositionRel implements Serializable {
 
     public HistoryReferralPositionRel(
         Integer   id,
-        Integer   referId,
         Integer   positionId,
         Integer   companyId,
         String    recordType,
@@ -55,7 +52,6 @@ public class HistoryReferralPositionRel implements Serializable {
         Timestamp updateTime
     ) {
         this.id = id;
-        this.referId = referId;
         this.positionId = positionId;
         this.companyId = companyId;
         this.recordType = recordType;
@@ -69,14 +65,6 @@ public class HistoryReferralPositionRel implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getReferId() {
-        return this.referId;
-    }
-
-    public void setReferId(Integer referId) {
-        this.referId = referId;
     }
 
     public Integer getPositionId() {
@@ -124,7 +112,6 @@ public class HistoryReferralPositionRel implements Serializable {
         StringBuilder sb = new StringBuilder("HistoryReferralPositionRel (");
 
         sb.append(id);
-        sb.append(", ").append(referId);
         sb.append(", ").append(positionId);
         sb.append(", ").append(companyId);
         sb.append(", ").append(recordType);

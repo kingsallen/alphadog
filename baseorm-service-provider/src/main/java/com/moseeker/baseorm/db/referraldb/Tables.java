@@ -6,6 +6,8 @@ package com.moseeker.baseorm.db.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 
 import javax.annotation.Generated;
@@ -33,6 +35,16 @@ public class Tables {
      * The table <code>referraldb.history_referral_position_rel</code>.
      */
     public static final HistoryReferralPositionRel HISTORY_REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL;
+
+    /**
+     * The table <code>referraldb.referral_company_conf</code>.
+     */
+    public static final ReferralCompanyConf REFERRAL_COMPANY_CONF = com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf.REFERRAL_COMPANY_CONF;
+
+    /**
+     * 内推记录
+     */
+    public static final ReferralLog REFERRAL_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralLog.REFERRAL_LOG;
 
     /**
      * The table <code>referraldb.referral_position_rel</code>.
