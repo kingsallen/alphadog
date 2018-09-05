@@ -6,6 +6,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.profile.service.ReferralService;
@@ -117,7 +118,11 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public Response parseProfileAttachment(String fileName, String file) throws BIZException, TException {
-        return service.profileParser(fileName, file);
+        try {
+            return service.profileParser(fileName, file);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
@@ -129,6 +134,16 @@ public class ProfileServicesImpl implements Iface {
             ProfileParseResult profileParseResult = new ProfileParseResult();
             BeanUtils.copyProperties(result, profileParseResult);
             return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position)
+            throws BIZException, TException {
+        try {
+            return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

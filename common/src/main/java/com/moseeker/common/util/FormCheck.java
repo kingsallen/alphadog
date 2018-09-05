@@ -9,6 +9,12 @@ import java.util.regex.PatternSyntaxException;
 
 public class FormCheck {
 
+	private static String MOBILE_EXP = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
+
+	public static String getMobileExp() {
+		return MOBILE_EXP;
+	}
+
 	/**
 	 * @param str
 	 *            被校验的字符串
@@ -158,7 +164,7 @@ public class FormCheck {
 		if (str == null || str.trim().equals("")) {
 			throw new ParamNullException();
 		}
-		String regEx = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
+		String regEx = getMobileExp();
 		Pattern p = Pattern.compile(regEx);
 		Matcher m = p.matcher(str);
 		return m.find();

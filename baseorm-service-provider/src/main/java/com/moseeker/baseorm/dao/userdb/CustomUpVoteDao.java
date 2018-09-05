@@ -66,6 +66,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .fetchOne();
+
         if (result != null) {
             return result.into(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote.class);
         } else {

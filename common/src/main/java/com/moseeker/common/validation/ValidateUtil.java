@@ -419,6 +419,19 @@ public class ValidateUtil {
 	}
 
 	/**
+	 * 往验证器中添加RegExpressValidateRule
+	 * @param paramName 属性名称
+	 * @param beanToBeValidated 被检验的字符串
+	 * @param regExpress 正则表达式
+	 * @return
+	 * @throws ValidateNotAppointParamException
+	 */
+	public ValidateRule addRegExpressValidate(String paramName,
+											  String beanToBeValidated, String regExpress) throws ValidateNotAppointParamException {
+		return addRegExpressValidate(paramName, beanToBeValidated, regExpress, null, null);
+	}
+
+	/**
 	 * 敏感词校验器
 	 * 
 	 * @param paramName
