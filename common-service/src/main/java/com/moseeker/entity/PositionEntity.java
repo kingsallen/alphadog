@@ -29,6 +29,7 @@ import org.jooq.Result;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -256,29 +257,48 @@ public class PositionEntity {
 
         List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
         for(JobPositionDO jobPositionDO: jobPositionDOS) {
-
             //插入内推记录表
            ReferralPositionRel referralPositionRel = new ReferralPositionRel();
             referralPositionRel.setPositionId(jobPositionDO.getId());
             referralPositionRel.setCompanyId(jobPositionDO.getCompanyId());
             records.add(referralPositionRel);
+
+            //更新
+            jobPositionDO.setIs_referral(1);
         }
         referralPositionRelDao.insert(records);
+        positionDao.updateDatas(jobPositionDOS);
 
-        records.stream().forEach(rel->{
-            HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
-            historyReferralPositionRel.setCompanyId(rel.getCompanyId());
-            historyReferralPositionRel.setPositionId(rel.getPositionId());
-            historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
-            historyReferralPositionRelDao.insert(historyReferralPositionRel);
+        if(!CollectionUtils.isEmpty(records)) {
+            records.stream().forEach(rel->{
+                HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
+                historyReferralPositionRel.setCompanyId(rel.getCompanyId());
+                historyReferralPositionRel.setPositionId(rel.getPositionId());
+                historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
+                historyReferralPositionRelDao.insert(historyReferralPositionRel);
+                //searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
+            });
+        }
 
-            //searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
-        });
         logger.info("records {}", JSON.toJSON(records).toString());
         System.out.println(JSON.toJSON(records).toString());
     }
 
+    /**
+     *
+     * @param pids
+     */
     public void delReferralPositions(List<Integer> pids){
+
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+
+        List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+        for(JobPositionDO jobPositionDO: jobPositionDOS) {
+            //更新内推标示
+            jobPositionDO.setIs_referral(0);
+        }
+        positionDao.updateDatas(jobPositionDOS);
 
         List<ReferralPositionRel> referralPositionRels = referralPositionRelDao.fetchReferralRecords(pids);
 
@@ -289,7 +309,7 @@ public class PositionEntity {
             historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.DELETE.name());
             historyReferralPositionRelDao.insert(historyReferralPositionRel);
 
-           // searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+           searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
 
         });
 
