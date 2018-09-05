@@ -276,7 +276,7 @@ public class PositionEntity {
                 historyReferralPositionRel.setPositionId(rel.getPositionId());
                 historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
                 historyReferralPositionRelDao.insert(historyReferralPositionRel);
-                //searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
+                searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
             });
         }
 
