@@ -36,6 +36,7 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
@@ -765,5 +766,22 @@ public class SearchengineEntity {
             logger.error(e.getMessage(), e);
         }
         return new JSONObject();
+    }
+
+
+    public Response updateReferralPostionStatus(Integer positionId,Integer isReferral){
+        String idx = "" + positionId;
+        // 连接ES
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        JSONObject jsonObject = new JSONObject();
+
+        logger.info(JSONObject.toJSONString(jsonObject));
+        UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
+                .setScript(new Script("ctx._source.is_referral = " + isReferral))
+                .get();
+        return ResponseUtils.success(true);
     }
 }

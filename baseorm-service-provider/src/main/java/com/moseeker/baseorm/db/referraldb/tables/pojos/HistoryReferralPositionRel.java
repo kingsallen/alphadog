@@ -23,10 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryReferralPositionRel implements Serializable {
 
+<<<<<<< HEAD
     private static final long serialVersionUID = 1941706947;
 
     private Integer   id;
     private Integer   referId;
+=======
+    private static final long serialVersionUID = 14533514;
+
+    private Integer   id;
+>>>>>>> 内推职位新增删除接口
     private Integer   positionId;
     private Integer   companyId;
     private String    recordType;
@@ -37,7 +43,10 @@ public class HistoryReferralPositionRel implements Serializable {
 
     public HistoryReferralPositionRel(HistoryReferralPositionRel value) {
         this.id = value.id;
+<<<<<<< HEAD
         this.referId = value.referId;
+=======
+>>>>>>> 内推职位新增删除接口
         this.positionId = value.positionId;
         this.companyId = value.companyId;
         this.recordType = value.recordType;
@@ -47,7 +56,10 @@ public class HistoryReferralPositionRel implements Serializable {
 
     public HistoryReferralPositionRel(
         Integer   id,
+<<<<<<< HEAD
         Integer   referId,
+=======
+>>>>>>> 内推职位新增删除接口
         Integer   positionId,
         Integer   companyId,
         String    recordType,
@@ -55,7 +67,10 @@ public class HistoryReferralPositionRel implements Serializable {
         Timestamp updateTime
     ) {
         this.id = id;
+<<<<<<< HEAD
         this.referId = referId;
+=======
+>>>>>>> 内推职位新增删除接口
         this.positionId = positionId;
         this.companyId = companyId;
         this.recordType = recordType;
@@ -71,6 +86,7 @@ public class HistoryReferralPositionRel implements Serializable {
         this.id = id;
     }
 
+<<<<<<< HEAD
     public Integer getReferId() {
         return this.referId;
     }
@@ -79,6 +95,8 @@ public class HistoryReferralPositionRel implements Serializable {
         this.referId = referId;
     }
 
+=======
+>>>>>>> 内推职位新增删除接口
     public Integer getPositionId() {
         return this.positionId;
     }
@@ -124,7 +142,10 @@ public class HistoryReferralPositionRel implements Serializable {
         StringBuilder sb = new StringBuilder("HistoryReferralPositionRel (");
 
         sb.append(id);
+<<<<<<< HEAD
         sb.append(", ").append(referId);
+=======
+>>>>>>> 内推职位新增删除接口
         sb.append(", ").append(positionId);
         sb.append(", ").append(companyId);
         sb.append(", ").append(recordType);
