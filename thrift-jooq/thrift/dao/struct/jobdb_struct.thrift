@@ -99,5 +99,6 @@ struct JobPositionDO {
     61: optional i32 targetIndustry,        // 期望所在的行业
     62: optional i8 currentStatus,          // 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭 
     63: optional i16 positionCode,          // 职能字典code, dict_position.code
-    64: optional i32 teamId                 // 职位所属团队
+    64: optional i32 teamId,                 // 职位所属团队
+    65: optional i8 is_referral                  // 0:不是内推职位 1:是内推职位
 }
