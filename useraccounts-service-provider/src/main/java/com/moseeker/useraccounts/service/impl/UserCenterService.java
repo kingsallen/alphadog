@@ -203,7 +203,7 @@ public class UserCenterService {
      */
     @SuppressWarnings("unchecked")
     public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws CommonException {
-        logger.info("userId:{}, type:{}, pageNo:{}, pageSize:{}", userId, type, pageNo, pageSize);
+        logger.info("getRecommendations userId:{}, type:{}, pageNo:{}, pageSize:{}", userId, type, pageNo, pageSize);
         RecommendationVO recommendationForm = new RecommendationVO();
         try {
 
@@ -214,6 +214,7 @@ public class UserCenterService {
             /** 并行查找三个统计信息 */
 
             List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+            logger.info("getRecommendations positionIdList:{}", positionIdList);
             if (positionIdList == null) {
                 return recommendationForm;
             }
