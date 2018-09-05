@@ -203,6 +203,7 @@ public class UserCenterService {
      */
     @SuppressWarnings("unchecked")
     public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws CommonException {
+        logger.info("userId:{}, type:{}, pageNo:{}, pageSize:{}", userId, type, pageNo, pageSize);
         RecommendationVO recommendationForm = new RecommendationVO();
         try {
 
