@@ -1,6 +1,7 @@
 package com.moseeker.profile.service;
 
 import com.moseeker.profile.exception.ProfileException;
+import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 
 import java.nio.ByteBuffer;
@@ -34,4 +35,12 @@ public interface ReferralService {
      */
     int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position)
             throws ProfileException;
+
+    /**
+     * 员工提交候选人关键信息
+     * @param employeeId 员工编号
+     * @param candidate 候选人信息
+     * @return 推荐记录编号
+     */
+    int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException;
 }

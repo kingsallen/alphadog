@@ -15,10 +15,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
-import com.moseeker.thrift.gen.profile.struct.Profile;
-import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
-import com.moseeker.thrift.gen.profile.struct.ProfileParseResult;
-import com.moseeker.thrift.gen.profile.struct.UserProfile;
+import com.moseeker.thrift.gen.profile.struct.*;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +141,17 @@ public class ProfileServicesImpl implements Iface {
             throws BIZException, TException {
         try {
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int postCandidateInfo(int employeeId, CandidateInfo candidateInfo) throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.CandidateInfo candidate = new com.moseeker.profile.service.impl.vo.CandidateInfo();
+            BeanUtils.copyProperties(candidate, candidateInfo);
+            return referralService.postCandidateInfo(employeeId, candidate);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

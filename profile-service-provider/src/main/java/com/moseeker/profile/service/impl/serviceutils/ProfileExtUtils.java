@@ -3,13 +3,19 @@ package com.moseeker.profile.service.impl.serviceutils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
+import com.moseeker.profile.constants.EmailVerifyState;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.vo.FileNameData;
+import com.moseeker.profile.utils.ProfileSource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -57,11 +63,24 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 	 */
 	public static JSONObject createReferralProfileData() {
 		JSONObject profileProfile = new JSONObject();
-		profileProfile.put("source", 222);                                      //内推
+		profileProfile.put("source", com.moseeker.profile.constants.ProfileSource.EmployeeReferral.getValue());                                      //内推
 		profileProfile.put("origin", "100000000000000000000000000000");         //内推
 		profileProfile.put("uuid", UUID.randomUUID().toString());               //内推
 		profileProfile.put("user_id", 0);
 		return profileProfile;
+	}
+
+	/**
+	 * 生成内推来源的profile_profile数据
+	 * @return profile_profile的json格式数据
+	 */
+	public static void createReferralProfileData(ProfilePojo profilePojo) {
+		ProfileProfileRecord profileProfileRecord = new ProfileProfileRecord();
+		profileProfileRecord.setSource(com.moseeker.profile.constants.ProfileSource.EmployeeReferral.getValue());
+		profileProfileRecord.setOrigin("100000000000000000000000000000");
+		profileProfileRecord.setUuid(UUID.randomUUID().toString());
+		profileProfileRecord.setUserId(0);
+		profilePojo.setProfileRecord(profileProfileRecord);
 	}
 
 	/**
@@ -85,11 +104,33 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 		}
 	}
 
+	/**
+	 * 设置用户信息
+	 * @param jsonObject 简历数据
+	 * @param name 姓名
+	 * @param mobile 手机号码
+	 */
 	public static void createReferralUser(JSONObject jsonObject, String name, String mobile) {
 		JSONObject user = new JSONObject();
 		user.put("name", name);
 		user.put("mobile", mobile);
 		user.put("source", UserSource.EMPLOYEE_REFERRAL.getValue());
 		jsonObject.put("user", user);
+	}
+
+	/**
+	 * 设置用户信息
+	 * @param profilePojo 简历数据
+	 * @param name 姓名
+	 * @param mobile 手机号码
+	 * @param email 邮箱
+	 */
+	public static void createReferralUser(ProfilePojo profilePojo, String name, String mobile, String email) {
+		UserUserRecord userUserRecord = new UserUserRecord();
+		userUserRecord.setName(name);
+		userUserRecord.setMobile(Long.valueOf(mobile));
+		userUserRecord.setEmail(email);
+		userUserRecord.setEmailVerified(EmailVerifyState.UnVerified.getValue());
+		profilePojo.setUserRecord(userUserRecord);
 	}
 }

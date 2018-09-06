@@ -189,3 +189,34 @@ struct Pagination {
     3: optional i32 pageSize,
     4: optional list<EmployeeAward> data
 }
+
+struct City {
+    1: optional i32 code,
+    2: optional string name,
+    3: optional string ename
+}
+
+struct ReferralPosition {
+    1: optional i32 id,
+    2: optional string title,
+    3: optional string companyName,
+    4: optional string companyAbbreviation,
+    5: optional i32 salaryBottom,
+    6: optional i32 salaryTop,
+    7: optional i32 experience,
+    8: optional bool experienceAbove,
+    9: optional string team,
+    10: optional string logo,
+    11: optional list<City> cities,
+}
+
+//推荐片名
+struct ReferralCard {
+    1: optional string userName,
+    2: optional string employeeName,
+    3: optional string companyName,
+    4: optional string companyAbbreviation,
+    5: optional string position,
+    6: optional string mobile,
+    7: optional i32 applyId,
+}

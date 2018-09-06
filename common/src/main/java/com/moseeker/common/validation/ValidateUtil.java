@@ -206,6 +206,22 @@ public class ValidateUtil {
 
 	/**
 	 * 往验证器中添加一个StringLengthValidateRule
+	 *
+	 * @param param
+	 * @param beanToBeValidated
+	 * @param minRange
+	 * @param maxRange
+	 * @return DasValidateRule
+	 */
+	public ValidateRule addStringLengthValidate(String param,
+												Object beanToBeValidated,
+												Integer minRange, Integer maxRange)
+			throws ValidateNotAppointParamException {
+		return addStringLengthValidate(param, beanToBeValidated, null, null, minRange, maxRange);
+	}
+
+	/**
+	 * 往验证器中添加一个StringLengthValidateRule
 	 * 
 	 * @param param
 	 * @param beanToBeValidated

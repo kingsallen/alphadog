@@ -256,3 +256,15 @@ struct ProfileParseResult {
     2: optional string name,
     3: optional string mobile
 }
+
+//候选人关键信息
+struct CandidateInfo {
+    1: optional i32 positionId,
+    2: optional string name,
+    3: optional i8 gender,
+    4: optional string mobile,
+    5: optional string email,
+    6: optional string company,
+    7: optional string job,
+    8: optional list<string> reasons
+}

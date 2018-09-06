@@ -1,7 +1,6 @@
 package com.moseeker.common.util;
 
 import com.moseeker.common.exception.ParamNullException;
-import org.junit.Test;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,9 +9,14 @@ import java.util.regex.PatternSyntaxException;
 public class FormCheck {
 
 	private static String MOBILE_EXP = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
+	private static String EMAIL_EXP = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
 
 	public static String getMobileExp() {
 		return MOBILE_EXP;
+	}
+
+	public static String getEmailExp() {
+		return EMAIL_EXP;
 	}
 
 	/**
@@ -86,8 +90,7 @@ public class FormCheck {
 		if (str == null || str.trim().equals("")) {
 			throw new ParamNullException();
 		}
-		String regEx = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
-		Pattern p = Pattern.compile(regEx);
+		Pattern p = Pattern.compile(getEmailExp());
 		Matcher m = p.matcher(str);
 		return m.find();
 	}
@@ -164,8 +167,7 @@ public class FormCheck {
 		if (str == null || str.trim().equals("")) {
 			throw new ParamNullException();
 		}
-		String regEx = getMobileExp();
-		Pattern p = Pattern.compile(regEx);
+		Pattern p = Pattern.compile(getMobileExp());
 		Matcher m = p.matcher(str);
 		return m.find();
 	}

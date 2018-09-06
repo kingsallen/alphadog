@@ -106,4 +106,11 @@ public class ReferralLogDao extends DAOImpl<ReferralLogRecord, com.moseeker.base
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByUpdateTime(Timestamp... values) {
         return fetch(ReferralLog.REFERRAL_LOG.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByType(Integer... values) {
+        return fetch(ReferralLog.REFERRAL_LOG.TYPE, values);
+    }
 }

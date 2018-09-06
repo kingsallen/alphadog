@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog implements Serializable {
 
-    private static final long serialVersionUID = -806433732;
+    private static final long serialVersionUID = 522116734;
 
     private Integer   id;
     private Integer   employeeId;
@@ -32,6 +32,7 @@ public class ReferralLog implements Serializable {
     private Timestamp referralTime;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   type;
 
     public ReferralLog() {}
 
@@ -43,6 +44,7 @@ public class ReferralLog implements Serializable {
         this.referralTime = value.referralTime;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.type = value.type;
     }
 
     public ReferralLog(
@@ -52,7 +54,8 @@ public class ReferralLog implements Serializable {
         Integer   positionId,
         Timestamp referralTime,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   type
     ) {
         this.id = id;
         this.employeeId = employeeId;
@@ -61,6 +64,7 @@ public class ReferralLog implements Serializable {
         this.referralTime = referralTime;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.type = type;
     }
 
     public Integer getId() {
@@ -119,9 +123,17 @@ public class ReferralLog implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getType() {
+        return this.type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("ReferralLogDao (");
+        StringBuilder sb = new StringBuilder("ReferralLog (");
 
         sb.append(id);
         sb.append(", ").append(employeeId);
@@ -130,6 +142,7 @@ public class ReferralLog implements Serializable {
         sb.append(", ").append(referralTime);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(type);
 
         sb.append(")");
         return sb.toString();

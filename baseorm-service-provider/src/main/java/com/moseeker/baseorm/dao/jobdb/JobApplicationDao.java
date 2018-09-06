@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.nullif;
 
 /**
  * 封装申请表基本操作
@@ -206,4 +207,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
 				.fetch();
 	}
+
+    public com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication getByUserIdAndPositionId(Integer referenceId, Integer positionId) {
+		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(referenceId))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+				.fetchOne();
+		if (record == null) {
+			return null;
+		} else {
+			return record.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
+		}
+    }
 }
