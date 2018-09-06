@@ -41,7 +41,6 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
-import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -67,7 +66,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -948,7 +946,7 @@ public class ProfileService {
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
             resumeEntity.fillDefault(profilePojo);
-            userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
+            userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
         }

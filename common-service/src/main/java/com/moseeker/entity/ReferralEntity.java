@@ -1,15 +1,20 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import org.jooq.Record2;
-import org.jooq.Record4;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +35,14 @@ public class ReferralEntity {
     @Autowired
     UserEmployeePointsRecordDao pointsRecordDao;
 
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private ReferralLogDao referralLogDao;
+
+    @Autowired
+    private CandidateRecomRecordDao candidateRecomRecordDao;
 
     /**
      * 计算给定时间内的员工内推带来的转发次数
@@ -85,5 +98,24 @@ public class ReferralEntity {
         } else {
             return new HashMap<>();
         }
+    }
+
+    public void logReferralOperation(int position, int applicationId, int depth, List<String> referralReasons,
+                                     String mobile, int postUserId, int presenteeUserId) {
+        CandidateRecomRecordRecord recomRecordRecord = new CandidateRecomRecordRecord();
+        recomRecordRecord.setPositionId(position);
+        recomRecordRecord.setAppId(applicationId);
+        recomRecordRecord.setRecomTime(new Timestamp(System.currentTimeMillis()));
+        recomRecordRecord.setDepth(depth);
+        recomRecordRecord.setRecomReason(referralReasons.stream().collect(Collectors.joining(",")));
+        recomRecordRecord.setMobile(mobile);
+        recomRecordRecord.setPresenteeId(presenteeUserId);
+        recomRecordRecord.setPostUserId(postUserId);
+        candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
+    }
+
+    public int logReferralOperation(int employeeId, int userId, int position) {
+
+        return referralLogDao.createReferralLog(employeeId, userId, position);
     }
 }

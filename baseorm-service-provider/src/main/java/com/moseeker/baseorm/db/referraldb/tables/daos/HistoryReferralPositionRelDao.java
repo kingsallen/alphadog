@@ -66,13 +66,6 @@ public class HistoryReferralPositionRelDao extends DAOImpl<HistoryReferralPositi
     }
 
     /**
-     * Fetch records that have <code>refer_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.HistoryReferralPositionRel> fetchByReferId(Integer... values) {
-        return fetch(HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.REFER_ID, values);
-    }
-
-    /**
      * Fetch records that have <code>position_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.HistoryReferralPositionRel> fetchByPositionId(Integer... values) {

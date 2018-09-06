@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserReferralRecord implements Serializable {
 
-    private static final long serialVersionUID = -82252053;
+    private static final long serialVersionUID = 1765066727;
 
     private Integer   id;
     private Integer   userId;
@@ -31,6 +31,7 @@ public class UserReferralRecord implements Serializable {
     private Integer   companyId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Byte      scene;
 
     public UserReferralRecord() {}
 
@@ -41,6 +42,7 @@ public class UserReferralRecord implements Serializable {
         this.companyId = value.companyId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.scene = value.scene;
     }
 
     public UserReferralRecord(
@@ -49,7 +51,8 @@ public class UserReferralRecord implements Serializable {
         Integer   referenceId,
         Integer   companyId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      scene
     ) {
         this.id = id;
         this.userId = userId;
@@ -57,6 +60,7 @@ public class UserReferralRecord implements Serializable {
         this.companyId = companyId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.scene = scene;
     }
 
     public Integer getId() {
@@ -107,6 +111,14 @@ public class UserReferralRecord implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getScene() {
+        return this.scene;
+    }
+
+    public void setScene(Byte scene) {
+        this.scene = scene;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("UserReferralRecord (");
@@ -117,6 +129,7 @@ public class UserReferralRecord implements Serializable {
         sb.append(", ").append(companyId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(scene);
 
         sb.append(")");
         return sb.toString();

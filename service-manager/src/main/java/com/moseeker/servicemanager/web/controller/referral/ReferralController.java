@@ -6,6 +6,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
 import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.tools.ProfileDocCheckTool;
 import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
@@ -82,14 +83,39 @@ public class ReferralController {
         validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
         validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
-
         validateUtil.addIntTypeValidate("员工", id, 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 1, null);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
-                    referralForm.getMobile(), referralForm.getReferralReasons());
+                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition());
             return Result.success(referralId).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工推荐简历
+     * @param id 员工编号
+     * @param form 员工选择PC端上传的方式上传简历的通知表单
+     * @return 处理结果
+     * @throws Exception 异常信息
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfile(@PathVariable int id, @RequestParam PCUploadProfileTypeForm form) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("职位", form.getPosition(), 1, null);
+        validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            /*int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
+                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition());*/
+            return Result.success().toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
