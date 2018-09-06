@@ -304,12 +304,15 @@ public class UserCenterService {
                                 });
                     }
                     /** 匹配转发者的名称 */
-                    if (reposts != null && reposts.size() > 0) {
-                        reposts.stream().filter(repost -> repost.getId() == candidateRecomRecordDO.getRepostUserId())
-                                .forEach(repost ->
-                                        recommendationRecordVO.setApplier_rel(StringUtils.isNotNullOrEmpty(repost.getName())
-                                                ? repost.getName() : repost.getNickname()));
+                    if (candidateRecomRecordDO.getPostUserId() != candidateRecomRecordDO.getRepostUserId()) {
+                        if (reposts != null && reposts.size() > 0) {
+                            reposts.stream().filter(repost -> repost.getId() == candidateRecomRecordDO.getRepostUserId())
+                                    .forEach(repost ->
+                                            recommendationRecordVO.setApplier_rel(StringUtils.isNotNullOrEmpty(repost.getName())
+                                                    ? repost.getName() : repost.getNickname()));
+                        }
                     }
+
                     /** 计算招聘进度 */
                     recommendationRecordVO.setStatus((short)0);
                     if(apps != null && apps.size() > 0) {

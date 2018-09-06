@@ -165,9 +165,7 @@ public abstract class EmployeeBinder {
         if (useremployee.getId() != 0) {
             useremployee.setUpdateTime(null);
             String bindTime = useremployee.getBindingTime();
-            if (org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime())) {
-                useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
-            }
+            useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
             employeeDao.updateData(useremployee);
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
@@ -193,6 +191,11 @@ public abstract class EmployeeBinder {
                     if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
                         userEmployee.setCname(useremployee.getCname());
                     }
+                    if ((org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
+                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(userEmployee.getCustomFieldValues()))
+                            && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
+                        userEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+                    }
                     userEmployee.setActivation(EmployeeActiveState.Actived.getState());
                     log.info("userEmployee update record");
                     if (useremployee.getAuthMethod() == 1 && userEmployee.getBindingTime() == null) {
@@ -201,6 +204,7 @@ public abstract class EmployeeBinder {
                                 .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
                         employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
                     }
+                    useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
                     employeeDao.updateRecord(userEmployee);
 
                 }
@@ -265,6 +269,7 @@ public abstract class EmployeeBinder {
             response.setMessage("fail");
         }
         log.info("updateEmployee response : {}", response);
+        useremployee.setId(employeeId);
         return response;
     }
     /*
