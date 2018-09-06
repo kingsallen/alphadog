@@ -65,7 +65,7 @@ public class HREntity {
             if (result == 0) {
                 retryCount++;
             } else {
-                if(StringUtils.isNullOrEmpty(hr.getRemarkName()) && StringUtils.isNullOrEmpty(hr.getUpdateTime())){
+                if(StringUtils.isNullOrEmpty(hr.getRemarkName()) && StringUtils.isNullOrEmpty(hr.getUsername())){
                     UserWxUserDO wxUser = wxUserDao.getWXUserById(hr.getWxuserId());
                     if(wxUser == null || StringUtils.isNullOrEmpty(wxUser.getNickname())){
                         chatListDao.updateWelcomeStatusByHrAccountId(hr.getId());
