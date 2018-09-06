@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
 import com.moseeker.entity.pojo.profile.ProfileObj;
@@ -82,5 +83,13 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 			attachments.add(attachment);
 			jsonObject.put("attachments", attachments);
 		}
+	}
+
+	public static void createReferralUser(JSONObject jsonObject, String name, String mobile) {
+		JSONObject user = new JSONObject();
+		user.put("name", name);
+		user.put("mobile", mobile);
+		user.put("source", UserSource.EMPLOYEE_REFERRAL.getValue());
+		jsonObject.put("user", user);
 	}
 }

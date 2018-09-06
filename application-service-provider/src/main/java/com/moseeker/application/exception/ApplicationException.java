@@ -7,7 +7,7 @@ import com.moseeker.common.exception.CommonException;
  */
 public class ApplicationException extends CommonException {
 
-    public static final ApplicationException APPLICATION_POSITION_NOTEXIST = new ApplicationException(41008,"职位信息不正确！");
+    public static final ApplicationException APPLICATION_POSITION_NOTEXIST = new ApplicationException(41021,"职位信息不正确！");
     public static final ApplicationException APPLICATION_VALIDATE_COUNT_CHECK = new ApplicationException(41001, "本月您已达到投递次数上限!");
     public static final ApplicationException APPLICATION_POSITION_DUPLICATE = new ApplicationException(41002,"该职位已经申请过!");
     public static final ApplicationException APPLICATION_ARCHIVE_FAILED = new ApplicationException(41003,  "申请归档失败!" );

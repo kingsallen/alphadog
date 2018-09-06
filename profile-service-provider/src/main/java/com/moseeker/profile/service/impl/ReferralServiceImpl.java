@@ -1,13 +1,23 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.ProfileEntity;
+import com.moseeker.common.constants.Position.PositionStatus;
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.FormCheck;
+import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.Constant.ApplicationSource;
+import com.moseeker.entity.*;
+import com.moseeker.entity.biz.ProfileExtParam;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.ResumeEntity;
@@ -17,7 +27,12 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +52,7 @@ import java.util.List;
  * @Date: 2018/9/4
  */
 @Service
+@CounterIface
 @PropertySource("classpath:setting.properties")
 public class ReferralServiceImpl implements ReferralService {
 
@@ -45,11 +61,21 @@ public class ReferralServiceImpl implements ReferralService {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
+    private ThreadPool tp = ThreadPool.Instance;
+
     @Autowired
-    public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity, Environment env) {
+    public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
+                               UserAccountEntity userAccountEntity, ProfileParseUtil profileParseUtil,
+                               PositionEntity positionEntity, ReferralEntity referralEntity,
+
+                               Environment env ) {
         this.employeeEntity = employeeEntity;
         this.profileEntity = profileEntity;
         this.resumeEntity = resumeEntity;
+        this.userAccountEntity = userAccountEntity;
+        this.profileParseUtil = profileParseUtil;
+        this.positionEntity = positionEntity;
+        this.referralEntity = referralEntity;
         this.env = env;
     }
 
@@ -89,9 +115,9 @@ public class ReferralServiceImpl implements ReferralService {
         profileObj.setResumeObj(null);
         JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
         ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
+        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", JSONObject.toJSONString(profilePojo), 24*60*60);
@@ -113,19 +139,104 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position) throws ProfileException {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
+        validateUtil.addRequiredStringValidate("候选人姓名", name);
+        validateUtil.addRequiredStringValidate("手机号码", mobile);
+        validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isNotBlank(validateResult)) {
+            throw ProfileException.validateFailed(validateResult);
+        }
+
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
         if (employeeDO == null || employeeDO.getId() <= 0) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
+
+        JobPositionRecord positionRecord = positionEntity.getPositionByID(position);
+        if (positionRecord == null || positionRecord.getStatus() != PositionStatus.ACTIVED.getValue()) {
+            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+        }
+
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
+        if (!companyIdList.contains(positionRecord.getCompanyId())) {
+            throw ApplicationException.NO_PERMISSION_EXCEPTION;
+        }
+
         String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
-        
-        return 0;
+
+        if (StringUtils.isBlank(profilePojoStr)) {
+            throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
+        } else {
+            client.del(AppId.APPID_ALPHADOG.getValue(),
+                    KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        }
+
+        JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
+
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
+        profilePojo.getUserRecord().setName(name);
+        profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
+
+        UserUserRecord userRecord = userAccountEntity.getReferralUser(
+                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
+        int userId;
+        if (userRecord != null) {
+            userId = userRecord.getId();
+            profilePojo.setUserRecord(userRecord);
+            profileEntity.mergeProfile(profilePojo, userRecord.getId());
+        } else {
+            userRecord = profileEntity.storeReferralUser(profilePojo, employeeId, employeeDO.getCompanyId());
+            profilePojo.getProfileRecord().setUserId(userRecord.getId());
+            userId = userRecord.getId();
+        }
+
+        int referralId = referralEntity.logReferralOperation(employeeId, userId, position);
+        if (referralId == 0) {
+            throw ProfileException.REFERRAL_REPEATE_REFERRAL;
+        }
+
+        tp.startTast(() -> {
+            try {
+                JobApplication jobApplication = new JobApplication();
+                jobApplication.setApp_tpl_id(userId);
+                jobApplication.setCompany_id(positionRecord.getCompanyId());
+                jobApplication.setAppid(0);
+                jobApplication.setApplier_name(name);
+                jobApplication.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.getValue());
+                jobApplication.setRecommender_user_id(employeeDO.getSysuserId());
+                Response response = applicationService.postApplication(jobApplication);
+
+                int applicationId = 0;
+                if (response.getStatus() == 0) {
+                    JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
+                    applicationId = jsonObject1.getInteger("jobApplicationId");
+                }
+                referralEntity.logReferralOperation(position, applicationId, 1, referralReasons, mobile, employeeDO.getSysuserId(), userId);
+
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            return null;
+        });
+
+        return referralId;
     }
+
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
 
     private EmployeeEntity employeeEntity;
     private ProfileEntity profileEntity;
     private ResumeEntity resumeEntity;
+    private UserAccountEntity userAccountEntity;
+    private ProfileParseUtil profileParseUtil;
+    private PositionEntity positionEntity;
+    private ReferralEntity referralEntity;
+
     private Environment env;
 
 }

@@ -1,4 +1,4 @@
-package com.moseeker.application.service.impl;
+package com.moseeker.entity.application;
 
 import com.alibaba.fastjson.JSONObject;
 

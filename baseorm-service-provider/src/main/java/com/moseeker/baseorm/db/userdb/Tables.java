@@ -5,6 +5,10 @@ package com.moseeker.baseorm.db.userdb;
 
 
 import com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage;
+import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -50,6 +54,26 @@ public class Tables {
      * VIEW
      */
     public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.userdb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
+
+    /**
+     * 消息业务表
+     */
+    public static final ConsistencyBusiness CONSISTENCY_BUSINESS = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness.CONSISTENCY_BUSINESS;
+
+    /**
+     * 消息业务类型表
+     */
+    public static final ConsistencyBusinessType CONSISTENCY_BUSINESS_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE;
+
+    /**
+     * 消息表
+     */
+    public static final ConsistencyMessage CONSISTENCY_MESSAGE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage.CONSISTENCY_MESSAGE;
+
+    /**
+     * 消息类型表
+     */
+    public static final ConsistencyMessageType CONSISTENCY_MESSAGE_TYPE = com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE;
 
     /**
      * 阿里用户信息表
