@@ -1682,6 +1682,7 @@ public class PositionService {
     }
 
     private void updateRedisUserSearchPositionHistory(int userId, String keywords){
+        logger.info("updateRedisUserSearchPositionHistory keywords:{}",keywords);
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         List<String> history = null;
         if(StringUtils.isNotNullOrEmpty(info)){
@@ -1695,6 +1696,7 @@ public class PositionService {
             history.remove(history.size()-1);
         }
         String result = JSONObject.toJSONString(history);
+        logger.info("updateRedisUserSearchPositionHistory result:{}",result);
         redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId), result);
     }
 
