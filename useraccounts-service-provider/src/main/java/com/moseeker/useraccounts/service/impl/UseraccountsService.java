@@ -1197,9 +1197,11 @@ public class UseraccountsService {
     public Response getUserSearchPositionHistory(int userId) throws BIZException {
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         List<String> history = null;
+        logger.info("getUserSearchPositionHistory info --------------:{}",info);
         if(StringUtils.isNotNullOrEmpty(info)){
             history = (List)JSONObject.parse(info);
         }
+        logger.info("getUserSearchPositionHistory history --------------:{}",history);
         return ResponseUtils.success(history);
     }
 
