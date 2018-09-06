@@ -114,7 +114,11 @@ public class ReferralController {
     }
 
     /**
+<<<<<<< HEAD
      * 员工提交候选人关键信息
+=======
+     * 获取电脑端上传配置的职位信息
+>>>>>>> 完成 获取推荐记录卡片接口
      * @param id 员工编号
      * @param form 表单新
      * @return 职位信息
