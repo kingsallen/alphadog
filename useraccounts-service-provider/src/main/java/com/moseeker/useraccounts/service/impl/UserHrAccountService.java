@@ -884,7 +884,8 @@ public class UserHrAccountService {
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 3
-                                || (Byte) map.get("activation") == 4) {
+                                || (Byte) map.get("activation") == 4
+                                || (Byte) map.get("activation") == 5) {
                             unCount+=(Integer) map.get("activation_count");
 //                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         }
@@ -1052,6 +1053,7 @@ public class UserHrAccountService {
                 filters.add(2);
                 filters.add(3);
                 filters.add(4);
+                filters.add(5);
                 queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
             }
         }
@@ -1624,19 +1626,45 @@ public class UserHrAccountService {
             query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = appCvConfDao.getDatas(query.buildQuery());
             if (hrAppCvConfDOList != null && !hrAppCvConfDOList.isEmpty()) {
-                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+//                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+                Set<String> configFieldName=new HashSet<>();
+                for(HrAppCvConfDO hrAppCvConfDO:hrAppCvConfDOList){
+                    String fieldValue=hrAppCvConfDO.getFieldValue();
+                    if(StringUtils.isNotNullOrEmpty(fieldValue)){
+                        JSONArray array=JSONArray.parseArray(fieldValue);
+                        if(array!=null&&array.size()>0){
+                            for(int i=0;i<array.size();i++){
+                                JSONObject jsonObject=array.getJSONObject(i);
+                                JSONArray jsonArray=jsonObject.getJSONArray("fields");
+                                if(jsonArray!=null&&jsonArray.size()>0){
+                                    for(int j=0;j<jsonArray.size();j++){
+                                        JSONObject object=jsonArray.getJSONObject(j);
+                                        String fieldName=object.getString("field_name");
+                                        if(StringUtils.isNotNullOrEmpty(fieldName)){
+                                            configFieldName.add(fieldName) ;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
                 hrAppExportFieldsDOList.stream().forEach(e -> {
                     if (configFieldName.contains(e.getFieldName())) {
                         e.showed = 1;
                     }
                 });
             }
+
         }
         List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
+        List<HrAppExportFieldsDO> result=new ArrayList<>();
         if (showedApplicationExportFieldsList != null) {
-            showedApplicationExportFieldsList.addAll(fetchDefaultExportFields());
+            result.addAll(fetchDefaultExportFields());
+            result.addAll(showedApplicationExportFieldsList);
         }
-        return showedApplicationExportFieldsList;
+        return result;
     }
 
     /**
@@ -1646,68 +1674,13 @@ public class UserHrAccountService {
      */
     private List<HrAppExportFieldsDO> fetchDefaultExportFields() {
         List<HrAppExportFieldsDO> fieldsDOList = new ArrayList<>();
-
-        HrAppExportFieldsDO hrAppExportFieldsDO1 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO1.setFieldTitle("职位发布人");
-        hrAppExportFieldsDO1.setSample("张三");
-        hrAppExportFieldsDO1.setFieldName("position_publisher_name");
-        hrAppExportFieldsDO1.setShowed(0);
-        hrAppExportFieldsDO1.setSelected(0);
-        hrAppExportFieldsDO1.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO1);
-
-        HrAppExportFieldsDO hrAppExportFieldsDO2 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO2.setFieldTitle("职位所属部门");
-        hrAppExportFieldsDO2.setSample("财务部");
-        hrAppExportFieldsDO2.setFieldName("position_department");
-        hrAppExportFieldsDO2.setShowed(0);
-        hrAppExportFieldsDO2.setSelected(0);
-        hrAppExportFieldsDO2.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO2);
-
-        HrAppExportFieldsDO hrAppExportFieldsDO3 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO3.setFieldTitle("职位招聘类型");
-        hrAppExportFieldsDO3.setSample("社招");
-        hrAppExportFieldsDO3.setFieldName("position_candidate_source");
-        hrAppExportFieldsDO3.setShowed(0);
-        hrAppExportFieldsDO3.setSelected(0);
-        hrAppExportFieldsDO3.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO3);
-
-        HrAppExportFieldsDO hrAppExportFieldsDO4 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO4.setFieldTitle("职位招聘性质");
-        hrAppExportFieldsDO4.setSample("全职");
-        hrAppExportFieldsDO4.setFieldName("position_employment_type");
-        hrAppExportFieldsDO4.setShowed(0);
-        hrAppExportFieldsDO4.setSelected(0);
-        hrAppExportFieldsDO4.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO4);
-
-        HrAppExportFieldsDO hrAppExportFieldsDO5 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO5.setFieldTitle("自定义字段１");
-        hrAppExportFieldsDO5.setSample("abc");
-        hrAppExportFieldsDO5.setFieldName("position_occupation_name");
-        hrAppExportFieldsDO5.setShowed(0);
-        hrAppExportFieldsDO5.setSelected(0);
-        hrAppExportFieldsDO5.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO5);
-
-        HrAppExportFieldsDO hrAppExportFieldsDO6 = new HrAppExportFieldsDO();
-        hrAppExportFieldsDO6.setFieldTitle("自定义字段2");
-        hrAppExportFieldsDO6.setSample("def");
-        hrAppExportFieldsDO6.setFieldName("position_custom_name");
-        hrAppExportFieldsDO6.setShowed(0);
-        hrAppExportFieldsDO6.setSelected(0);
-        hrAppExportFieldsDO6.setDisplayOrder(0);
-        fieldsDOList.add(hrAppExportFieldsDO6);
-
         HrAppExportFieldsDO hrAppExportFieldsDO7 = new HrAppExportFieldsDO();
         hrAppExportFieldsDO7.setFieldTitle("职位编号");
         hrAppExportFieldsDO7.setSample("001");
         hrAppExportFieldsDO7.setFieldName("jobnumber");
         hrAppExportFieldsDO7.setShowed(0);
         hrAppExportFieldsDO7.setSelected(0);
-        hrAppExportFieldsDO7.setDisplayOrder(0);
+        hrAppExportFieldsDO7.setDisplayOrder(1);
         fieldsDOList.add(hrAppExportFieldsDO7);
 
         HrAppExportFieldsDO hrAppExportFieldsDO8 = new HrAppExportFieldsDO();
@@ -1716,8 +1689,26 @@ public class UserHrAccountService {
         hrAppExportFieldsDO8.setFieldName("title");
         hrAppExportFieldsDO8.setShowed(0);
         hrAppExportFieldsDO8.setSelected(0);
-        hrAppExportFieldsDO8.setDisplayOrder(0);
+        hrAppExportFieldsDO8.setDisplayOrder(1);
         fieldsDOList.add(hrAppExportFieldsDO8);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO1 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO1.setFieldTitle("职位发布人");
+        hrAppExportFieldsDO1.setSample("张三");
+        hrAppExportFieldsDO1.setFieldName("position_publisher_name");
+        hrAppExportFieldsDO1.setShowed(0);
+        hrAppExportFieldsDO1.setSelected(0);
+        hrAppExportFieldsDO1.setDisplayOrder(3);
+        fieldsDOList.add(hrAppExportFieldsDO1);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO2 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO2.setFieldTitle("职位所属部门");
+        hrAppExportFieldsDO2.setSample("财务部");
+        hrAppExportFieldsDO2.setFieldName("position_department");
+        hrAppExportFieldsDO2.setShowed(0);
+        hrAppExportFieldsDO2.setSelected(0);
+        hrAppExportFieldsDO2.setDisplayOrder(4);
+        fieldsDOList.add(hrAppExportFieldsDO2);
 
         HrAppExportFieldsDO hrAppExportFieldsDO9 = new HrAppExportFieldsDO();
         hrAppExportFieldsDO9.setFieldTitle("招聘地点");
@@ -1725,8 +1716,44 @@ public class UserHrAccountService {
         hrAppExportFieldsDO9.setFieldName("city");
         hrAppExportFieldsDO9.setShowed(0);
         hrAppExportFieldsDO9.setSelected(0);
-        hrAppExportFieldsDO9.setDisplayOrder(0);
+        hrAppExportFieldsDO9.setDisplayOrder(5);
         fieldsDOList.add(hrAppExportFieldsDO9);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO3 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO3.setFieldTitle("职位招聘类型");
+        hrAppExportFieldsDO3.setSample("社招");
+        hrAppExportFieldsDO3.setFieldName("position_candidate_source");
+        hrAppExportFieldsDO3.setShowed(0);
+        hrAppExportFieldsDO3.setSelected(0);
+        hrAppExportFieldsDO3.setDisplayOrder(6);
+        fieldsDOList.add(hrAppExportFieldsDO3);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO4 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO4.setFieldTitle("职位招聘性质");
+        hrAppExportFieldsDO4.setSample("全职");
+        hrAppExportFieldsDO4.setFieldName("position_employment_type");
+        hrAppExportFieldsDO4.setShowed(0);
+        hrAppExportFieldsDO4.setSelected(0);
+        hrAppExportFieldsDO4.setDisplayOrder(7);
+        fieldsDOList.add(hrAppExportFieldsDO4);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO5 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO5.setFieldTitle("自定义字段１");
+        hrAppExportFieldsDO5.setSample("abc");
+        hrAppExportFieldsDO5.setFieldName("position_occupation_name");
+        hrAppExportFieldsDO5.setShowed(0);
+        hrAppExportFieldsDO5.setSelected(0);
+        hrAppExportFieldsDO5.setDisplayOrder(8);
+        fieldsDOList.add(hrAppExportFieldsDO5);
+
+        HrAppExportFieldsDO hrAppExportFieldsDO6 = new HrAppExportFieldsDO();
+        hrAppExportFieldsDO6.setFieldTitle("自定义字段2");
+        hrAppExportFieldsDO6.setSample("def");
+        hrAppExportFieldsDO6.setFieldName("position_custom_name");
+        hrAppExportFieldsDO6.setShowed(0);
+        hrAppExportFieldsDO6.setSelected(0);
+        hrAppExportFieldsDO6.setDisplayOrder(9);
+        fieldsDOList.add(hrAppExportFieldsDO6);
 
         return fieldsDOList;
     }
@@ -1855,4 +1882,29 @@ public class UserHrAccountService {
         return requiresNotNullAccount(accountId);
     }
 
+    public HRInfo getHR(int id) throws UserAccountException {
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(id);
+        if (hrAccountDO == null) {
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
+        }
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
+        if (hrAccountDO == null) {
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
+        }
+        HRInfo hrInfo = new HRInfo();
+        packageHRInfo(hrInfo, hrAccountDO, hrCompanyDO);
+        return hrInfo;
+    }
+
+    private void packageHRInfo(HRInfo hrInfo, UserHrAccountDO hrAccountDO, HrCompanyDO hrCompanyDO) {
+        hrInfo.setId(hrAccountDO.getId());
+        HRAccountType accountType = HRAccountType.initFromType(hrAccountDO.getAccountType());
+        hrInfo.setAccountType(accountType.toString());
+        hrInfo.setEmail(hrAccountDO.getEmail());
+        hrInfo.setHeadImg(hrAccountDO.getHeadimgurl());
+        hrInfo.setMobile(hrAccountDO.getMobile());
+        hrInfo.setName(hrAccountDO.getUsername());
+        hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
+        hrInfo.setCompany(hrCompanyDO.getName());
+    }
 }

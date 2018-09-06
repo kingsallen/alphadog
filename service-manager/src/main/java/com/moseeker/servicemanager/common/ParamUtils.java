@@ -77,7 +77,8 @@ public class ParamUtils {
         data.putAll(initParamFromRequestBody(request));
 
         if (data.get("appid") == null) {
-            throw new CommonException(1,"请设置 appid!");
+
+            throw CommonException.PROGRAM_APPID_LOST;
         }
         return data;
     }
@@ -87,7 +88,7 @@ public class ParamUtils {
         Params<String, Object> data = new Params<>();
         data.putAll(initParamFromRequestParameter(request));
         if (data.get("appid") == null) {
-            throw new Exception("请设置 appid!");
+            throw CommonException.PROGRAM_APPID_LOST;
         }
         return data;
     }

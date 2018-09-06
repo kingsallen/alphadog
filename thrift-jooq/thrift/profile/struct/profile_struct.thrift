@@ -90,7 +90,9 @@ struct Education {
     15: optional i16 is_study_abroad,
     16: optional string study_abroad_country,
     17: optional Timestamp create_time,
-    18: optional Timestamp update_time
+    18: optional Timestamp update_time,
+    19: optional i32 country_id,
+    20: optional string country_name
 }
 
 struct ProfileImport { 

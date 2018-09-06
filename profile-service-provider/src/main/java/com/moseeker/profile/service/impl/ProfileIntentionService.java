@@ -2,10 +2,12 @@ package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
+import com.moseeker.baseorm.dao.dictdb.DictIndustryTypeDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryTypeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionIndustryRecord;
@@ -54,6 +56,9 @@ public class ProfileIntentionService {
 
     @Autowired
     private DictIndustryDao dictIndustryDao;
+
+    @Autowired
+    private DictIndustryTypeDao dictIndustryTypeDao;
 
     @Autowired
     private DictPositionDao dictPositionDao;
@@ -425,20 +430,21 @@ public class ProfileIntentionService {
                     }
                 }
             }
+            if (selectedPositionRecords != null && selectedPositionRecords.size() > 0) {
+                intentionPositionDao.deleteRecords(selectedPositionRecords);
+            }
         }
         if (toBeAddIntentionPosition != null) {
             intentionPositionDao.addRecord(toBeAddIntentionPosition);
         }
-        if (selectedPositionRecords != null && selectedPositionRecords.size() > 0) {
-            intentionPositionDao.deleteRecords(selectedPositionRecords);
-        }
+
     }
 
     private void updateIntentionIndustry(Intention struct, int intentionId) {
         QueryUtil industryQuery = new QueryUtil();
         industryQuery.setPageNo(1);
         industryQuery.setPageSize(Integer.MAX_VALUE);
-        List<DictIndustryRecord> industryRecordList = dictIndustryDao.getRecords(industryQuery);
+        List<DictIndustryRecord> industryList = dictIndustryDao.getRecords(industryQuery);
 
         QueryUtil selectedIndustryQuery = new QueryUtil();
         selectedIndustryQuery.addEqualFilter("profile_intention_id", String.valueOf(intentionId));
@@ -466,7 +472,7 @@ public class ProfileIntentionService {
                     if (entry.getValue() != null && entry.getValue().intValue() > 0) {
 
                         DictIndustryRecord legalRecord = null;
-                        for (DictIndustryRecord dictIndustryRecord : industryRecordList) {
+                        for (DictIndustryRecord dictIndustryRecord : industryList) {
                             if (dictIndustryRecord.getCode().intValue() == entry.getValue().intValue()) {
                                 legalRecord = dictIndustryRecord;
                                 break;
@@ -484,7 +490,7 @@ public class ProfileIntentionService {
                         if (!StringUtils.isNullOrEmpty(entry.getKey())) {
                             toBeAddIntentionIndustry = new ProfileIntentionIndustryRecord();
                             DictIndustryRecord legalRecord = null;
-                            for (DictIndustryRecord dictIndustryRecord : industryRecordList) {
+                            for (DictIndustryRecord dictIndustryRecord : industryList) {
                                 if (dictIndustryRecord.getName().equals(entry.getKey())) {
                                     legalRecord = dictIndustryRecord;
                                     break;
@@ -500,13 +506,14 @@ public class ProfileIntentionService {
                     }
                 }
             }
+            if (selectedIndustryRecords != null && selectedIndustryRecords.size() > 0) {
+                intentionIndustryDao.deleteRecords(selectedIndustryRecords);
+            }
         }
         if (toBeAddIntentionIndustry != null) {
             intentionIndustryDao.addRecord(toBeAddIntentionIndustry);
         }
-        if (selectedIndustryRecords != null && selectedIndustryRecords.size() > 0) {
-            intentionIndustryDao.deleteRecords(selectedIndustryRecords);
-        }
+
     }
 
     /**
@@ -559,7 +566,6 @@ public class ProfileIntentionService {
                             tobeAddCityRecord.setCityCode(legalRecord.getCode());
                             tobeAddCityRecord.setCityName(legalRecord.getName());
                             tobeAddCityRecord.setProfileIntentionId(intentionId);
-                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
@@ -577,17 +583,20 @@ public class ProfileIntentionService {
                             }
                             tobeAddCityRecord.setCityName(entry.getKey());
                             tobeAddCityRecord.setProfileIntentionId((int) (intentionId));
+
                         }
+                    }
+                    if (tobeAddCityRecord != null) {
+                        intentionCityDao.addRecord(tobeAddCityRecord);
                     }
                 }
             }
+            if (selectedCityRecords != null && selectedCityRecords.size() > 0) {
+                intentionCityDao.deleteRecords(selectedCityRecords);
+            }
         }
-        if (tobeAddCityRecord != null) {
-            intentionCityDao.addRecord(tobeAddCityRecord);
-        }
-        if (selectedCityRecords != null && selectedCityRecords.size() > 0) {
-            intentionCityDao.deleteRecords(selectedCityRecords);
-        }
+
+
     }
 
     private boolean isSameOfPositionRecord(Entry<String, Integer> entry,

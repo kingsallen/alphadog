@@ -79,6 +79,7 @@ public class IntentionController {
 		}
 	}
 
+
 	@RequestMapping(value = "/profile/intention", method = RequestMethod.DELETE)
 	@ResponseBody
 	public String delete(HttpServletRequest request, HttpServletResponse response) {

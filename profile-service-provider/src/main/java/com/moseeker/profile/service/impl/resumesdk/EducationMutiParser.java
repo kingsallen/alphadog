@@ -7,7 +7,7 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.EducationObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import com.moseeker.profile.utils.DegreeSource;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ import java.util.List;
 @Component
 public class EducationMutiParser extends AbstractMutiResumeParser<EducationObj, Education> {
     @Override
-    protected Education parseResume(EducationObj educationObj) throws ResumeParserHelper.ResumeParseException {
+    protected Education parseResume(EducationObj educationObj) throws ResumeParseException {
         Education education = new Education();
         if (educationObj.getEdu_degree() != null) {
             int degree = DegreeSource.get(educationObj.getEdu_degree());
@@ -34,7 +34,7 @@ public class EducationMutiParser extends AbstractMutiResumeParser<EducationObj, 
                 education.setEndDate(DateUtils.dateRepair(educationObj.getEnd_date(), "\\."));
             }
         } catch (ParseException e) {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("日期转换异常: " + e.getMessage())
                     .fieldValue("education: {\"startDate\": " + educationObj.getStart_date() + "\", \"endDate\":" + educationObj.getEnd_date() + "}");
         }

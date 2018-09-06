@@ -19,6 +19,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices.Iface;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -253,6 +254,8 @@ public class WholeProfileServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+
 
 
 }

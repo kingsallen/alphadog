@@ -28,7 +28,7 @@ public class ConfigSysCvTplDao extends JooqCrudImpl<ConfigSysCvTplDO, ConfigSysC
 
     public List<ConfigSysCvTplDO> findAll(){
         List<ConfigSysCvTplDO> tplDOS = create.selectFrom(ConfigSysCvTpl.CONFIG_SYS_CV_TPL)
-                .where(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.DISABLE.eq(0))
+                .where(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.DISABLE.eq(0)).orderBy(ConfigSysCvTpl.CONFIG_SYS_CV_TPL.PRIORITY)
                 .fetchInto(ConfigSysCvTplDO.class);
         if(StringUtils.isEmptyList(tplDOS)){
             return new ArrayList<>();
@@ -36,5 +36,4 @@ public class ConfigSysCvTplDao extends JooqCrudImpl<ConfigSysCvTplDO, ConfigSysC
             return tplDOS;
         }
     }
-
 }

@@ -19,10 +19,29 @@ struct City {
 */
 struct College {
     1: optional i32 college_code,
-    2: optional string collge_name,
-    3: optional string collge_logo,
+    2: optional string college_name,
+    3: optional string college_logo,
+    4: optional i32 country_code, // 所在国家 code
+    5: optional string country_name, // 所在国家 名称
+    6: optional string country_ename //所在国家英文名称
+}
+
+/*
+  院校字典实体
+*/
+struct CollegeProvince {
+    1: optional i32 college_code,
+    2: optional string college_name,
+    3: optional string college_logo,
     4: optional i32 province_code, // 所在地 code
     5: optional string province_name // 所在地 名称
+}
+
+
+struct CollegeBasic{
+    1: optional i32 code,
+    2: optional string name,
+    3: optional string logo
 }
 
 /*

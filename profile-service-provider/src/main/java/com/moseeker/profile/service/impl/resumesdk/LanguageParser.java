@@ -5,7 +5,7 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.LangObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class LanguageParser extends AbstractMutiResumeParser<LangObj,Language> {
     @Override
-    protected Language parseResume(LangObj langObj) throws ResumeParserHelper.ResumeParseException {
+    protected Language parseResume(LangObj langObj) throws ResumeParseException {
         Language language = new Language();
         language.setName(langObj.getLanguage_name());
         return language;

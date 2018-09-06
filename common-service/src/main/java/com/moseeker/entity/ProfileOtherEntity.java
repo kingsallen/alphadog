@@ -141,19 +141,9 @@ public class ProfileOtherEntity {
         String photo = "";
         for(Map.Entry<String, Object> entry : entries){
             if(entry.getValue() instanceof String) {
-                Map<String, Object> map = new HashMap<>();
                 if("IDPhoto".equals(entry.getKey())){
                     photo =  (String) entry.getValue();
                     continue;
-                }
-                for(ConfigSysCvTplDO tplDO : tplDOList) {
-                    if(tplDO.getFieldName().equals(entry.getKey())) {
-                        map.put("key", tplDO.getFieldTitle());
-                        if (entry.getValue() != null && !"".equals(entry.getValue())) {
-                            map.put("value", entry.getValue());
-                            otherList.add(map);
-                        }
-                    }
                 }
             }else if(entry.getValue() instanceof List){
                 List infoList= (List)entry.getValue();
@@ -161,10 +151,35 @@ public class ProfileOtherEntity {
                         otherMap.put(entry.getKey(), infoList);
                 }
             }
-            otherMap.put("keyvalues", otherList);
             long end = System.currentTimeMillis();
         }
         otherMap.put("photo", photo);
+        parentValues.remove("IDPhoto");
+        for(ConfigSysCvTplDO tplDO : tplDOList) {
+            String fieldName=tplDO.getFieldName();
+            for(String key:parentValues.keySet()){
+                if(parentValues.get(key) instanceof String){
+                    if(fieldName.equals(key)){
+                        Map<String,Object> map=new HashMap<>();
+                        map.put("key",tplDO.getFieldTitle());
+                        map.put("value",parentValues.get(key));
+                        otherList.add(map);
+                        break;
+                    }
+                }else if(parentValues.get(key) instanceof Map){
+                    if(fieldName.equals(key)){
+                        Map<String, Object> params = (Map<String, Object>)parentValues.get(key);
+                        Map<String,Object> map=new HashMap<>();
+                        map.put("key",tplDO.getFieldTitle());
+                        map.put("value",params.get("name"));
+                        otherList.add(map);
+                        break;
+                    }
+                }
+
+            }
+        }
+        otherMap.put("keyvalues", otherList);
         return otherMap;
     }
 

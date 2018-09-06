@@ -1270,4 +1270,22 @@ public class TalentpoolController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+      职位邀请投递
+     */
+    @RequestMapping(value = "/api/talent/comment/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String getCommentList(HttpServletRequest request) throws Exception {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId=(Integer)params.get("company_id");
+            List<Integer> userIdList= (List<Integer>) params.get("user_ids");
+            Response result=service.getCompanyCommentByUserIdList(companyId,userIdList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

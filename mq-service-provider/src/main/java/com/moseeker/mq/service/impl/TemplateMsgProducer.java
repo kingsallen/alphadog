@@ -48,6 +48,9 @@ public class TemplateMsgProducer {
     @Autowired
     private HrWxNoticeMessageDao noticeMessageDao;
 
+    @Autowired
+	TemlateMsgHttp temlateMsgHttp;
+
 	/**
 	 * 消息模板通知接口
 	 *
@@ -110,7 +113,7 @@ public class TemplateMsgProducer {
 	private Response validateMessageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) {
 		Response response = new Response(0, "ok");
 
-		if (messageTemplateNoticeStruct.getUser_id() == 0) {
+		if (messageTemplateNoticeStruct.getUser_id() == 0&&messageTemplateNoticeStruct.getWx_id()==0) {
 			return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_VALIDATE_REQUIRED.replace("{0}", "user_id"));
 		}
 		if (messageTemplateNoticeStruct.getSys_template_id() == 0) {

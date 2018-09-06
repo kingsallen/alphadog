@@ -51,6 +51,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -183,6 +184,8 @@ public class WholeProfileService {
     @Autowired
     ProfileParseUtil profileParseUtil;
 
+
+
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
 
@@ -309,6 +312,7 @@ public class WholeProfileService {
             logger.debug("WholeProfileService getResource importRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
+            profileParseUtil.handerSortOtherList(otherRecords);
             List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
             logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
@@ -320,6 +324,10 @@ public class WholeProfileService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
     }
+
+
+
+
 
     @SuppressWarnings("unchecked")
     @Transactional
@@ -402,7 +410,7 @@ public class WholeProfileService {
             List<ProfileEducationRecord> educationRecords = null;
             try {
                 educationRecords = profileUtils
-                        .mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
+                        .mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"), extParam);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -904,6 +912,10 @@ public class WholeProfileService {
                 collegeCodes.add(record.getCollegeCode());
             });
             List<DictCollegeDO> collegeRecords = collegeDao.getCollegesByIDs(collegeCodes);
+            List<DictCountryDO> countryDOList = countryDao.getAll();
+            List<Integer> parentCodes = new ArrayList<>();
+            parentCodes.add(Constant.DICT_CONSTANT_DEGREE_USER);
+            List<DictConstantRecord> constantDOS = constantDao.getCitiesByParentCodes(parentCodes);
             records.forEach(record -> {
                 Map<String, Object> map = new HashMap<String, Object>();
                 map.put("id", record.getId().intValue());
@@ -922,9 +934,30 @@ public class WholeProfileService {
                         }
                     }
                 }
+                if(!StringUtils.isEmptyList(countryDOList)){
+                    for(DictCountryDO country : countryDOList){
+                        if(record.getCountryId().intValue() == country.getId()){
+                            map.put("country_id", record.getCountryId().intValue());
+                            map.put("country_name", country.getName());
+                            break;
+                        }else if(record.getCountryId().intValue() == Constant.HKAMTW){
+                            map.put("country_id", record.getCountryId().intValue());
+                            map.put("country_name", "港澳台地区");
+                            break;
+                        }
+                    }
+                }
                 map.put("major_name", record.getMajorName());
                 map.put("major_code", record.getMajorCode());
                 map.put("degree", record.getDegree().intValue());
+                if(!StringUtils.isEmptyList(constantDOS)){
+                    for(DictConstantRecord record1 : constantDOS) {
+                        if (record.getDegree().intValue() == record1.getCode()){
+                            map.put("degree_name", record1.getName());
+                            break;
+                        }
+                    }
+                }
                 if (record.getStart() != null) {
                     map.put("start_date", DateUtils.dateToNormalDate(record.getStart()));
                 }

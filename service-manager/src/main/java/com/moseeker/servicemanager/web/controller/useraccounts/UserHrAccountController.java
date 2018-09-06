@@ -15,6 +15,9 @@ import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.service.HRService;
+import com.moseeker.servicemanager.service.vo.HRInfo;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -26,21 +29,21 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -65,6 +68,9 @@ public class UserHrAccountController {
     public UserHrAccountController() {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
+
+    @Autowired
+    private HRService hrService;
 
 
     /**
@@ -1238,5 +1244,12 @@ public class UserHrAccountController {
             e.printStackTrace();
         }
         return ResponseLogNotification.failJson(request, "后台异常");
+    }
+
+    @RequestMapping(value = "/hr/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHR(@PathVariable int id) throws Exception {
+        HRInfo hrInfo = hrService.getHR(id);
+        return Result.success(hrInfo).toJson();
     }
 }

@@ -1,6 +1,8 @@
 package com.moseeker.servicemanager.web.controller.util;
 
+import com.moseeker.common.util.StringUtils;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -51,12 +53,29 @@ public class IntentionParamUtil {
 				//查找城市信息
 				if(entry.getKey().startsWith("cities[")) {
 					if(entry.getKey().contains("city_code")) {
+
 						cityCode.put(Integer.valueOf(entry.getKey().charAt(7)), BeanUtils.converToInteger(entry.getValue()));
 					}
 					if(entry.getKey().contains("city_name")) {
-						cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
+                        cityName.put((String)entry.getValue(), Integer.valueOf(entry.getKey().charAt(7)));
 					}
 				}
+
+                //查找城市信息
+                if(entry.getKey().startsWith("city")) {
+                    List<Map<String, Object>> cities = (List<Map<String,Object>>) entry.getValue();
+                    if(!StringUtils.isEmptyList(cities)) {
+                        for (int i = 0; i < cities.size(); i++) {
+                            Map<String, Object> city = cities.get(i);
+                            if (city.get("city_code") != null) {
+                                cityCode.put(i, BeanUtils.converToInteger(city.get("city_code")));
+                            }
+                            if (city.get("city_name") != null) {
+                                cityName.put((String) city.get("city_name"), i);
+                            }
+                        }
+                    }
+                }
 				//查找职能信息
 				if(entry.getKey().startsWith("positions[")) {
 					if(entry.getKey().contains("position_code")) {
@@ -68,6 +87,7 @@ public class IntentionParamUtil {
 				}
 			}
 		}
+
 		//拼装行业信息
 		if(industryName.size() > 0) {
 			for(Entry<String, Integer> entry : industryName.entrySet()) {
@@ -82,7 +102,15 @@ public class IntentionParamUtil {
 				}
 				intention.getIndustries().put(entry.getKey(), code);
 			}
-		}
+		}else if(industryCode.size() > 0) {
+            for(Entry<Integer, Integer> entry : industryCode.entrySet()) {
+                if(intention.getIndustries() == null) {
+                    intention.setIndustries(new HashMap<String, Integer>());
+                }
+                intention.getIndustries().put(String.valueOf(entry.getValue()), entry.getValue());
+            }
+        }
+
 		//拼装职能信息
 		if(positionName.size() > 0) {
 			for(Entry<String, Integer> entry : positionName.entrySet()) {

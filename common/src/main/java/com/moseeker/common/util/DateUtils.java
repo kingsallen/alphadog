@@ -383,5 +383,4 @@ public class DateUtils {
         String time = start + " - " + end;
         return  time;
     }
-
 }

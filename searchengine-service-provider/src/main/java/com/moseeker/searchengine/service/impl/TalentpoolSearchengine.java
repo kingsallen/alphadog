@@ -28,6 +28,7 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +50,9 @@ public class TalentpoolSearchengine {
 
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
+        logger.info("===================+++++++++++++++++++++++++++++++++++");
+        logger.info(JSON.toJSONString(params));
+        logger.info("===================+++++++++++++++++++++++++++++++++++");
         Map<String, Object> result=new HashMap<>();
         TransportClient client=null;
         try {
@@ -63,6 +67,7 @@ public class TalentpoolSearchengine {
             logger.info(builder.toString());
             SearchResponse response = builder.execute().actionGet();
             result = searchUtil.handleData(response, "users");
+            this.handlerResultData(result,params);
             return result;
         } catch (Exception e) {
             logger.info(e.getMessage()+"=================",e);
@@ -71,6 +76,67 @@ public class TalentpoolSearchengine {
             }
         }
         return result;
+    }
+
+    private void handlerResultData( Map<String, Object> result,Map<String, String> params){
+        if(!StringUtils.isEmptyMap(result)){
+            String isOut=params.get("is_out");
+            int totalNum=(int)((long)result.get("totalNum"));
+            if(totalNum>0){
+                List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("users");
+                if(!StringUtils.isEmptyList(list)){
+                    for(Map<String,Object> map:list){
+                        Map<String,Object> user= (Map<String, Object>) map.get("user");
+                        if(!StringUtils.isEmptyMap(user)){
+                            List<Map<String,Object>> commentList= (List<Map<String, Object>>) user.get("talentpool_comment");
+                            if(!StringUtils.isEmptyList(commentList)){
+                                String companyId=params.get("company_id");
+                                if(StringUtils.isNotNullOrEmpty(companyId)){
+                                    for(Map<String,Object> comment:commentList){
+                                        int id= (int) comment.get("company_id");
+                                        if(id==Integer.parseInt(companyId)){
+                                            int count=(int)((int)comment.get("count"));
+                                            user.put("remark_count",count);
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            /*
+                             过滤掉不是查询职位 的申请
+                             */
+                            if(StringUtils.isNotNullOrEmpty(isOut)&&"1".equals(isOut)){
+                                String positionWord=params.get("position_key_word");
+                                String positionIds=params.get("position_id");
+                                if(StringUtils.isNotNullOrEmpty(positionWord)||StringUtils.isNotNullOrEmpty(positionIds)){
+                                    List<Integer> positionIdList=searchUtil.stringConvertIntList(positionIds);
+                                    if(!StringUtils.isEmptyList(positionIdList)){
+                                        List<Map<String,Object>> applications=(List<Map<String, Object>>) user.get("applications");
+                                        if(!StringUtils.isEmptyList(applications)){
+                                            List<Map<String,Object>> applicationNewList=new ArrayList<>();
+                                            for(Map<String,Object> application:applications){
+                                                if(application.get("position_id")!=null){
+                                                    int positionId= (int) application.get("position_id");
+                                                    if(positionIdList.contains(positionId)){
+                                                        applicationNewList.add(application);
+                                                    }
+                                                }
+                                            }
+                                            if(!StringUtils.isEmptyList(applicationNewList)){
+                                                user.put("applications",applicationNewList);
+                                            }
+                                        }
+
+                                    }
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
     }
     @CounterIface
     public List<Integer> getTalentUserList(Map<String, String> params){
@@ -728,7 +794,30 @@ public class TalentpoolSearchengine {
         if(queryNest!=null){
             ((BoolQueryBuilder) query).filter(queryNest);
         }
+        this.queryTalentComment(params,query);
         return query;
+    }
+    /*
+     处理备注的情况
+     */
+    private void queryTalentComment(Map<String,String> params, QueryBuilder query){
+        if(!StringUtils.isEmptyMap(params)){
+            String remark=params.get("remark");
+            String companyId=params.get("company_id");
+            //处理在这家公司下有备注的情况
+            if(StringUtils.isNotNullOrEmpty(remark)&&"1".equals(remark)){
+                searchUtil.handleTerm(companyId,query,"user.talentpool_comment.company_id");
+            }else if(StringUtils.isNotNullOrEmpty(remark)&&"0".equals(remark)){
+                this.handlerNoComment(query,companyId);
+            }
+        }
+    }
+    /*
+     处理在这家公司下无备注的条件查询
+     */
+    private void handlerNoComment(QueryBuilder query,String companyId){
+        QueryBuilder filter1 = QueryBuilders.matchQuery("user.talentpool_comment.company_id",companyId);
+        ((BoolQueryBuilder) query).mustNot(filter1);
     }
     private void handlerSortOrder(Map<String,String> params,SearchRequestBuilder builder){
         String publisherIds=params.get("publisher");
@@ -1064,7 +1153,8 @@ public class TalentpoolSearchengine {
      */
     private void handlerPositionId(Map<String,String> params){
         String positionWord=params.get("position_key_word");
-        if(StringUtils.isNotNullOrEmpty(positionWord)){
+        String positionIdList=params.get("position_id");
+        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
             String positionIds=this.PositionIdQuery(params,positionWord);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);
@@ -1553,7 +1643,7 @@ public class TalentpoolSearchengine {
     }
 
     private String getLongTime(String submitTime){
-        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat ff=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date date=new Date();
         long time=Long.parseLong(submitTime);
         if(time==1){

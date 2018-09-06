@@ -45,105 +45,105 @@ public class Tables {
     /**
      * 51的职位表
      */
-    public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
+    public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_alipaycampus_city</code>.
      */
-    public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
+    public static final DictAlipaycampusCity DICT_ALIPAYCAMPUS_CITY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY;
 
     /**
      * dict_alipaycampus_jobcategory[alipay校园招聘-职位类别]
      */
-    public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
+    public static final DictAlipaycampusJobcategory DICT_ALIPAYCAMPUS_JOBCATEGORY = com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY;
 
     /**
      * 民航招聘的职位职能表
      */
-    public static final DictCarnocOccupation DICT_CARNOC_OCCUPATION = DictCarnocOccupation.DICT_CARNOC_OCCUPATION;
+    public static final DictCarnocOccupation DICT_CARNOC_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation.DICT_CARNOC_OCCUPATION;
 
     /**
      * 城市字典表
      */
-    public static final DictCity DICT_CITY = DictCity.DICT_CITY;
+    public static final DictCity DICT_CITY = com.moseeker.baseorm.db.dictdb.tables.DictCity.DICT_CITY;
 
     /**
      * The table <code>dictdb.dict_city_liepin</code>.
      */
-    public static final DictCityLiepin DICT_CITY_LIEPIN = DictCityLiepin.DICT_CITY_LIEPIN;
+    public static final DictCityLiepin DICT_CITY_LIEPIN = com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin.DICT_CITY_LIEPIN;
 
     /**
      * 城市字典code映射表
      */
-    public static final DictCityMap DICT_CITY_MAP = DictCityMap.DICT_CITY_MAP;
+    public static final DictCityMap DICT_CITY_MAP = com.moseeker.baseorm.db.dictdb.tables.DictCityMap.DICT_CITY_MAP;
 
     /**
      * The table <code>dictdb.dict_city_postcode</code>.
      */
-    public static final DictCityPostcode DICT_CITY_POSTCODE = DictCityPostcode.DICT_CITY_POSTCODE;
+    public static final DictCityPostcode DICT_CITY_POSTCODE = com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode.DICT_CITY_POSTCODE;
 
     /**
      * 学校字典表
      */
-    public static final DictCollege DICT_COLLEGE = DictCollege.DICT_COLLEGE;
+    public static final DictCollege DICT_COLLEGE = com.moseeker.baseorm.db.dictdb.tables.DictCollege.DICT_COLLEGE;
 
     /**
      * The table <code>dictdb.dict_constant</code>.
      */
-    public static final DictConstant DICT_CONSTANT = DictConstant.DICT_CONSTANT;
+    public static final DictConstant DICT_CONSTANT = com.moseeker.baseorm.db.dictdb.tables.DictConstant.DICT_CONSTANT;
 
     /**
      * 城市字典表
      */
-    public static final DictCountry DICT_COUNTRY = DictCountry.DICT_COUNTRY;
+    public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
-    public static final DictIndustry DICT_INDUSTRY = DictIndustry.DICT_INDUSTRY;
+    public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
     /**
      * 行业一级分类字典表
      */
-    public static final DictIndustryType DICT_INDUSTRY_TYPE = DictIndustryType.DICT_INDUSTRY_TYPE;
+    public static final DictIndustryType DICT_INDUSTRY_TYPE = com.moseeker.baseorm.db.dictdb.tables.DictIndustryType.DICT_INDUSTRY_TYPE;
 
     /**
      * 一览人才的职位表
      */
-    public static final DictJob1001Occupation DICT_JOB1001_OCCUPATION = DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
+    public static final DictJob1001Occupation DICT_JOB1001_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation.DICT_JOB1001_OCCUPATION;
 
     /**
      * JobsDB的职位职能表
      */
-    public static final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
+    public static final DictJobsdbOccupation DICT_JOBSDB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_liepin_occupation</code>.
      */
-    public static final DictLiepinOccupation DICT_LIEPIN_OCCUPATION = DictLiepinOccupation.DICT_LIEPIN_OCCUPATION;
+    public static final DictLiepinOccupation DICT_LIEPIN_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation.DICT_LIEPIN_OCCUPATION;
 
     /**
      * 专业字典表
      */
-    public static final DictMajor DICT_MAJOR = DictMajor.DICT_MAJOR;
+    public static final DictMajor DICT_MAJOR = com.moseeker.baseorm.db.dictdb.tables.DictMajor.DICT_MAJOR;
 
     /**
      * 职能分类字典表
      */
-    public static final DictPosition DICT_POSITION = DictPosition.DICT_POSITION;
+    public static final DictPosition DICT_POSITION = com.moseeker.baseorm.db.dictdb.tables.DictPosition.DICT_POSITION;
 
     /**
      * The table <code>dictdb.dict_test_mobile</code>.
      */
-    public static final DictTestMobile DICT_TEST_MOBILE = DictTestMobile.DICT_TEST_MOBILE;
+    public static final DictTestMobile DICT_TEST_MOBILE = com.moseeker.baseorm.db.dictdb.tables.DictTestMobile.DICT_TEST_MOBILE;
 
     /**
      * 最佳东方的职位职能表
      */
-    public static final DictVeryeastOccupation DICT_VERYEAST_OCCUPATION = DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION;
+    public static final DictVeryeastOccupation DICT_VERYEAST_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation.DICT_VERYEAST_OCCUPATION;
 
     /**
      * 智联的职位表
      */
-    public static final DictZhilianOccupation DICT_ZHILIAN_OCCUPATION = DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION;
+    public static final DictZhilianOccupation DICT_ZHILIAN_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION;
 }

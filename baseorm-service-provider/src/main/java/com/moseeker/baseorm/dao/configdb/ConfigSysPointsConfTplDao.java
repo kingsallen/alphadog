@@ -4,6 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import java.util.ArrayList;
@@ -66,4 +67,13 @@ public class ConfigSysPointsConfTplDao extends JooqCrudImpl<ConfigSysPointsConfT
 		}
 		return list;
 	}
+
+
+    public ConfigSysPointsConfTplRecord getEmployeeVerified() {
+    	return
+				create.selectFrom(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
+				.where(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.STATUS.eq(Constant.POINTS_CONF_EMPLOYEE_VERIFIED))
+				.limit(1)
+				.fetchOne();
+    }
 }

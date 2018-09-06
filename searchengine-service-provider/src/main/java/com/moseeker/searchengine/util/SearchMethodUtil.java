@@ -118,6 +118,7 @@ public class SearchMethodUtil {
             SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(), "number");
             builder.order(SortOrder.DESC);
             responseBuilder.addSort(builder);
+            responseBuilder.addSort("id",SortOrder.DESC);
         }
     }
     /*

@@ -629,6 +629,18 @@ public class SearchUtil {
         }
         return null;
     }
+    //将xx,xx,xx格式的字符串转化为list
+    public List<Integer> stringConvertIntList(String keyWords) {
+        if (StringUtils.isNotEmpty(keyWords)) {
+            String[] array = keyWords.split(",");
+            List<Integer> list = new ArrayList<Integer>();
+            for (String ss : array) {
+                list.add(Integer.parseInt(ss));
+            }
+            return list;
+        }
+        return null;
+    }
     //将list格式的字符串转化为xx,xx,xx
     public String listConvertString(List<Integer> positionIdList) {
         if (positionIdList!=null&&positionIdList.size()>0) {

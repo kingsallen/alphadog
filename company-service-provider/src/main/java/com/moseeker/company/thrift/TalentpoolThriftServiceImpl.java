@@ -703,4 +703,15 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }
         return param;
     }
+
+    @Override
+    public Response getCompanyCommentByUserIdList( int companyId,List<Integer> userIdList) throws TException {
+        try{
+            Map<Integer,String> result=talentPoolService.getUserComment(companyId,userIdList);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
