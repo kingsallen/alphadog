@@ -39,7 +39,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
     }
     generator() {
         database() {
-            inputSchema("historydb")
+            inputSchema("referraldb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
         }
@@ -53,7 +53,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.historydb')
+            packageName('com.moseeker.baseorm.db.referraldb')
             directory('src/main/java')
         }
     }

@@ -126,10 +126,6 @@ public class ReferralServiceImpl implements ReferralService {
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", JSONObject.toJSONString(profilePojo), 24*60*60);
-
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", JSONObject.toJSONString(profilePojo), 24*60*60);
-
         return profileDocParseResult;
     }
 

@@ -5,25 +5,20 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
