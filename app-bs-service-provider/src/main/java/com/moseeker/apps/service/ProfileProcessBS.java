@@ -15,6 +15,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
@@ -47,10 +48,7 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailStruct;
@@ -326,6 +324,7 @@ public class ProfileProcessBS {
                         rewardsToBeAdd.stream().forEach(e -> {
                             e.setEmployee_id(userIdToEmployeeId.containsKey((int)e.getRecommender_id()) ? userIdToEmployeeId.get((int)e.getRecommender_id()) : 0);
                         });
+                        List<Integer> accountIdList = new ArrayList<>();
                         // 修改招聘进度
                         for (ProcessValidationStruct process : list) {
                             process.setRecruit_order(progressStatus);
@@ -334,6 +333,7 @@ public class ProfileProcessBS {
                             if(progressStatus == 13) {
                                 sendProfileFilterExecuteEmail(process.getApplier_id(), process.getPosition_id());
                             }
+                            accountIdList.add(process.getPublisher());
                         }
                         this.updateRecruitState(progressStatus, list,
                                 turnToCVCheckeds, employeesToBeUpdates, result,
@@ -351,23 +351,39 @@ public class ProfileProcessBS {
                         client.lpush(Constant.APPID_ALPHADOG,
                                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", jsb.toJSONString());
                         logger.info("lpush ES_REALTIME_UPDATE_INDEX_USER_IDS:{} success", jsb.toJSONString());
+                        List<HrCompanyAccountDO> companyAccountDOList = companyAccountDao.getByHrIdList(accountIdList);
+                        List<Integer> companyIdList = new ArrayList<>();
+                        if(!StringUtils.isEmptyList(companyAccountDOList)) {
+                            companyIdList = companyAccountDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+                        }
+                        List<HrCompanyDO> comapnyList = hrCompanyDao.getHrCompanyByCompanyIds(companyIdList);
                         list.forEach(pvs -> {
+                            HrCompanyDO  company = new HrCompanyDO();
+                            Optional<HrCompanyAccountDO>  companyAccount = companyAccountDOList.stream().filter(f -> f.getAccountId() == pvs.getPublisher())
+                                    .findAny();
+                            if(companyAccount.isPresent()){
+                                Optional<HrCompanyDO> companyOptional = comapnyList.stream().filter(f -> f.getId() == companyAccount.get().getCompanyId())
+                                        .findAny();
+                                if(companyOptional.isPresent()){
+                                    company = companyOptional.get();
+                                }
+                            }
                             //当为这三种状态时说明HR做了重新考虑
                             if(ProcessUtils.LETTERS_RECRUITMENT_REOFFERED.equals(result.getReason())
                                 || ProcessUtils.LETTERS_RECRUITMENT_RECVPASSED.equals(result.getReason())
                                     || ProcessUtils.LETTERS_RECRUITMENT_RECVCHECKED.equals(result.getReason())){
                                 sendTemplate(pvs.getApplier_id(),
-                                        pvs.getApplier_name(), companyId,
+                                        pvs.getApplier_name(), companyId, company,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.RESRT);
                             }else {
                                 sendTemplate(pvs.getApplier_id(),
-                                        pvs.getApplier_name(), companyId,
+                                        pvs.getApplier_name(), companyId, company,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.TOSEEKER);
                                 if(employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId)) {
                                     sendTemplate(pvs.getRecommender_user_id(),
-                                            pvs.getApplier_name(), companyId,
+                                            pvs.getApplier_name(), companyId, company,
                                             progressStatus, pvs.getPosition_name(),
                                             pvs.getId(), TemplateMs.TORECOM);
                                     //因为发给推荐者的消息模板有两种类型，数据不相同，所以不能用同一段代码处理
@@ -418,7 +434,7 @@ public class ProfileProcessBS {
      * @throws TException 
      */
     @CounterIface
-    public void sendTemplate(int userId, String userName, int companyId,
+    public void sendTemplate(int userId, String userName, int companyId, HrCompanyDO company,
                              int status, String positionName, int applicationId, TemplateMs tm)  {
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
@@ -442,14 +458,8 @@ public class ProfileProcessBS {
         }
         if (msInfo != null) {
             String companyName = "";
-            try {
-            	Query query = new Query.QueryBuilder().where("id", companyId).buildQuery();
-                HrCompanyDO company = hrCompanyDao.getData(query);
-                if(company != null){
-                	companyName = company.getName();
-                }
-            } catch (Exception e2) {
-                log.error(e2.getMessage(), e2);
+            if(company != null){
+                companyName = company.getAbbreviation();
             }
             MessageTemplateNoticeStruct templateNoticeStruct = new MessageTemplateNoticeStruct();
             this.handerTemplate(msInfo, companyName, positionName, msInfo.getStatusDesc(), templateNoticeStruct);
