@@ -34,6 +34,8 @@ public class ProfileException extends CommonException {
     public static final ProfileException PROFILE_PARSE_TEXT_FAILED = new ProfileException(30033,"简历信息解析错误！");
     public static final ProfileException PROFILE_EMPLOYEE_NOT_EXIST = new ProfileException(30034,"员工信息不存在！");
     public static final ProfileException PROFILE_FILE_SAVE_FAILED = new ProfileException(30035,"简历文件保存失败！");
+    public static final ProfileException REFERRAL_PROFILE_NOT_EXIST = new ProfileException(30036,"简历数据不存在！");
+    public static final ProfileException REFERRAL_REPEATE_REFERRAL = new ProfileException(30037,"重复推荐！");
 
     protected ProfileException(int code, String message) {
         super(code, message);

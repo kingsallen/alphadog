@@ -25,6 +25,7 @@ public class CommonException extends RuntimeException {
     public static final CommonException PROGRAM_UPDATE_FIALED = new CommonException(90016,"超过重试次数！");
     public static final CommonException PROGRAM_APPID_LOST = new CommonException(90017,"请设置appid！");
     public static final CommonException PROGRAM_APPID_REQUIRED = new CommonException(1,"请设置 appid!");
+    public static final CommonException PROGRAM_DOUBLE_CLICK = new CommonException(90017,"重复录入!");
 
     private static final long serialVersionUID = 1982007458282752099L;
 

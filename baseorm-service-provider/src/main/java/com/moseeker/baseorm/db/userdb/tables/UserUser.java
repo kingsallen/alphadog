@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = 887497385;
+    private static final long serialVersionUID = -662480273;
 
     /**
      * The reference instance of <code>userdb.user_user</code>
@@ -109,7 +109,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
     /**
      * The column <code>userdb.user_user.mobile</code>. 手机号(未验证)
      */
-    public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "手机号(未验证)");
+    public final TableField<UserUserRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "手机号(未验证)");
 
     /**
      * The column <code>userdb.user_user.email</code>. user pass email registe
@@ -134,7 +134,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
     /**
      * The column <code>userdb.user_user.name</code>. 真实姓名
      */
-    public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "真实姓名");
+    public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "真实姓名");
 
     /**
      * The column <code>userdb.user_user.headimg</code>. 头像

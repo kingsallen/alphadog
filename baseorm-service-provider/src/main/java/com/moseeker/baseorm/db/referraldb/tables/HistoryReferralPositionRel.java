@@ -37,10 +37,14 @@ import org.jooq.impl.TableImpl;
 public class HistoryReferralPositionRel extends TableImpl<HistoryReferralPositionRelRecord> {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     private static final long serialVersionUID = 809997575;
 =======
     private static final long serialVersionUID = -924551684;
 >>>>>>> 内推职位新增删除接口
+=======
+    private static final long serialVersionUID = -924551684;
+>>>>>>> 完成员工推荐接口
 
     /**
      * The reference instance of <code>referraldb.history_referral_position_rel</code>
@@ -62,6 +66,7 @@ public class HistoryReferralPositionRel extends TableImpl<HistoryReferralPositio
 
     /**
 <<<<<<< HEAD
+<<<<<<< HEAD
      * The column <code>referraldb.history_referral_position_rel.refer_id</code>. referral_position_rel 记录的ID
      */
     public final TableField<HistoryReferralPositionRelRecord, Integer> REFER_ID = createField("refer_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "referral_position_rel 记录的ID");
@@ -69,6 +74,8 @@ public class HistoryReferralPositionRel extends TableImpl<HistoryReferralPositio
     /**
 =======
 >>>>>>> 内推职位新增删除接口
+=======
+>>>>>>> 完成员工推荐接口
      * The column <code>referraldb.history_referral_position_rel.position_id</code>. 职位ID
      */
     public final TableField<HistoryReferralPositionRelRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职位ID");

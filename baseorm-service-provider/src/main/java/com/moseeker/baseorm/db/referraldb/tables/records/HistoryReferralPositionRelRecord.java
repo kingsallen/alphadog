@@ -13,12 +13,17 @@ import javax.annotation.Generated;
 import org.jooq.Field;
 import org.jooq.Record1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import org.jooq.Record7;
 import org.jooq.Row7;
 =======
 import org.jooq.Record6;
 import org.jooq.Row6;
 >>>>>>> 内推职位新增删除接口
+=======
+import org.jooq.Record6;
+import org.jooq.Row6;
+>>>>>>> 完成员工推荐接口
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -34,6 +39,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 <<<<<<< HEAD
+<<<<<<< HEAD
 public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<HistoryReferralPositionRelRecord> implements Record7<Integer, Integer, Integer, Integer, String, Timestamp, Timestamp> {
 
     private static final long serialVersionUID = -1829807023;
@@ -42,6 +48,11 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
 
     private static final long serialVersionUID = -128091223;
 >>>>>>> 内推职位新增删除接口
+=======
+public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<HistoryReferralPositionRelRecord> implements Record6<Integer, Integer, Integer, String, Timestamp, Timestamp> {
+
+    private static final long serialVersionUID = -128091223;
+>>>>>>> 完成员工推荐接口
 
     /**
      * Setter for <code>referraldb.history_referral_position_rel.id</code>. 序列ID
@@ -58,6 +69,7 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     }
 
     /**
+<<<<<<< HEAD
 <<<<<<< HEAD
      * Setter for <code>referraldb.history_referral_position_rel.refer_id</code>. referral_position_rel 记录的ID
      */
@@ -83,6 +95,12 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     public void setPositionId(Integer value) {
         set(1, value);
 >>>>>>> 内推职位新增删除接口
+=======
+     * Setter for <code>referraldb.history_referral_position_rel.position_id</code>. 职位ID
+     */
+    public void setPositionId(Integer value) {
+        set(1, value);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -90,10 +108,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public Integer getPositionId() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return (Integer) get(2);
 =======
         return (Integer) get(1);
 >>>>>>> 内推职位新增删除接口
+=======
+        return (Integer) get(1);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -101,10 +123,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public void setCompanyId(Integer value) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         set(3, value);
 =======
         set(2, value);
 >>>>>>> 内推职位新增删除接口
+=======
+        set(2, value);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -112,10 +138,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public Integer getCompanyId() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return (Integer) get(3);
 =======
         return (Integer) get(2);
 >>>>>>> 内推职位新增删除接口
+=======
+        return (Integer) get(2);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -123,10 +153,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public void setRecordType(String value) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         set(4, value);
 =======
         set(3, value);
 >>>>>>> 内推职位新增删除接口
+=======
+        set(3, value);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -134,10 +168,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public String getRecordType() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return (String) get(4);
 =======
         return (String) get(3);
 >>>>>>> 内推职位新增删除接口
+=======
+        return (String) get(3);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -145,10 +183,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public void setCreateTime(Timestamp value) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         set(5, value);
 =======
         set(4, value);
 >>>>>>> 内推职位新增删除接口
+=======
+        set(4, value);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -156,10 +198,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public Timestamp getCreateTime() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return (Timestamp) get(5);
 =======
         return (Timestamp) get(4);
 >>>>>>> 内推职位新增删除接口
+=======
+        return (Timestamp) get(4);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -167,10 +213,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public void setUpdateTime(Timestamp value) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         set(6, value);
 =======
         set(5, value);
 >>>>>>> 内推职位新增删除接口
+=======
+        set(5, value);
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -178,10 +228,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     public Timestamp getUpdateTime() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return (Timestamp) get(6);
 =======
         return (Timestamp) get(5);
 >>>>>>> 内推职位新增删除接口
+=======
+        return (Timestamp) get(5);
+>>>>>>> 完成员工推荐接口
     }
 
     // -------------------------------------------------------------------------
@@ -198,10 +252,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
 
     // -------------------------------------------------------------------------
 <<<<<<< HEAD
+<<<<<<< HEAD
     // Record7 type implementation
 =======
     // Record6 type implementation
 >>>>>>> 内推职位新增删除接口
+=======
+    // Record6 type implementation
+>>>>>>> 完成员工推荐接口
     // -------------------------------------------------------------------------
 
     /**
@@ -209,12 +267,17 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Row7<Integer, Integer, Integer, Integer, String, Timestamp, Timestamp> fieldsRow() {
         return (Row7) super.fieldsRow();
 =======
     public Row6<Integer, Integer, Integer, String, Timestamp, Timestamp> fieldsRow() {
         return (Row6) super.fieldsRow();
 >>>>>>> 内推职位新增删除接口
+=======
+    public Row6<Integer, Integer, Integer, String, Timestamp, Timestamp> fieldsRow() {
+        return (Row6) super.fieldsRow();
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -222,12 +285,17 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Row7<Integer, Integer, Integer, Integer, String, Timestamp, Timestamp> valuesRow() {
         return (Row7) super.valuesRow();
 =======
     public Row6<Integer, Integer, Integer, String, Timestamp, Timestamp> valuesRow() {
         return (Row6) super.valuesRow();
 >>>>>>> 内推职位新增删除接口
+=======
+    public Row6<Integer, Integer, Integer, String, Timestamp, Timestamp> valuesRow() {
+        return (Row6) super.valuesRow();
+>>>>>>> 完成员工推荐接口
     }
 
     /**
@@ -244,6 +312,7 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     @Override
     public Field<Integer> field2() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.REFER_ID;
     }
 
@@ -254,6 +323,8 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     public Field<Integer> field3() {
 =======
 >>>>>>> 内推职位新增删除接口
+=======
+>>>>>>> 完成员工推荐接口
         return HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.POSITION_ID;
     }
 
@@ -262,10 +333,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Field<Integer> field4() {
 =======
     public Field<Integer> field3() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Field<Integer> field3() {
+>>>>>>> 完成员工推荐接口
         return HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.COMPANY_ID;
     }
 
@@ -274,10 +349,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Field<String> field5() {
 =======
     public Field<String> field4() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Field<String> field4() {
+>>>>>>> 完成员工推荐接口
         return HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.RECORD_TYPE;
     }
 
@@ -286,10 +365,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Field<Timestamp> field6() {
 =======
     public Field<Timestamp> field5() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Field<Timestamp> field5() {
+>>>>>>> 完成员工推荐接口
         return HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.CREATE_TIME;
     }
 
@@ -298,10 +381,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Field<Timestamp> field7() {
 =======
     public Field<Timestamp> field6() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Field<Timestamp> field6() {
+>>>>>>> 完成员工推荐接口
         return HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.UPDATE_TIME;
     }
 
@@ -319,6 +406,7 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     @Override
     public Integer value2() {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return getReferId();
     }
 
@@ -329,6 +417,8 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     public Integer value3() {
 =======
 >>>>>>> 内推职位新增删除接口
+=======
+>>>>>>> 完成员工推荐接口
         return getPositionId();
     }
 
@@ -337,10 +427,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Integer value4() {
 =======
     public Integer value3() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Integer value3() {
+>>>>>>> 完成员工推荐接口
         return getCompanyId();
     }
 
@@ -349,10 +443,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public String value5() {
 =======
     public String value4() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public String value4() {
+>>>>>>> 完成员工推荐接口
         return getRecordType();
     }
 
@@ -361,10 +459,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Timestamp value6() {
 =======
     public Timestamp value5() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Timestamp value5() {
+>>>>>>> 完成员工推荐接口
         return getCreateTime();
     }
 
@@ -373,10 +475,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Timestamp value7() {
 =======
     public Timestamp value6() {
 >>>>>>> 内推职位新增删除接口
+=======
+    public Timestamp value6() {
+>>>>>>> 完成员工推荐接口
         return getUpdateTime();
     }
 
@@ -395,6 +501,7 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     @Override
     public HistoryReferralPositionRelRecord value2(Integer value) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         setReferId(value);
         return this;
     }
@@ -406,6 +513,8 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
     public HistoryReferralPositionRelRecord value3(Integer value) {
 =======
 >>>>>>> 内推职位新增删除接口
+=======
+>>>>>>> 完成员工推荐接口
         setPositionId(value);
         return this;
     }
@@ -415,10 +524,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public HistoryReferralPositionRelRecord value4(Integer value) {
 =======
     public HistoryReferralPositionRelRecord value3(Integer value) {
 >>>>>>> 内推职位新增删除接口
+=======
+    public HistoryReferralPositionRelRecord value3(Integer value) {
+>>>>>>> 完成员工推荐接口
         setCompanyId(value);
         return this;
     }
@@ -428,10 +541,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public HistoryReferralPositionRelRecord value5(String value) {
 =======
     public HistoryReferralPositionRelRecord value4(String value) {
 >>>>>>> 内推职位新增删除接口
+=======
+    public HistoryReferralPositionRelRecord value4(String value) {
+>>>>>>> 完成员工推荐接口
         setRecordType(value);
         return this;
     }
@@ -441,10 +558,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public HistoryReferralPositionRelRecord value6(Timestamp value) {
 =======
     public HistoryReferralPositionRelRecord value5(Timestamp value) {
 >>>>>>> 内推职位新增删除接口
+=======
+    public HistoryReferralPositionRelRecord value5(Timestamp value) {
+>>>>>>> 完成员工推荐接口
         setCreateTime(value);
         return this;
     }
@@ -454,10 +575,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public HistoryReferralPositionRelRecord value7(Timestamp value) {
 =======
     public HistoryReferralPositionRelRecord value6(Timestamp value) {
 >>>>>>> 内推职位新增删除接口
+=======
+    public HistoryReferralPositionRelRecord value6(Timestamp value) {
+>>>>>>> 完成员工推荐接口
         setUpdateTime(value);
         return this;
     }
@@ -467,10 +592,14 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      */
     @Override
 <<<<<<< HEAD
+<<<<<<< HEAD
     public HistoryReferralPositionRelRecord values(Integer value1, Integer value2, Integer value3, Integer value4, String value5, Timestamp value6, Timestamp value7) {
 =======
     public HistoryReferralPositionRelRecord values(Integer value1, Integer value2, Integer value3, String value4, Timestamp value5, Timestamp value6) {
 >>>>>>> 内推职位新增删除接口
+=======
+    public HistoryReferralPositionRelRecord values(Integer value1, Integer value2, Integer value3, String value4, Timestamp value5, Timestamp value6) {
+>>>>>>> 完成员工推荐接口
         value1(value1);
         value2(value2);
         value3(value3);
@@ -478,9 +607,12 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
         value5(value5);
         value6(value6);
 <<<<<<< HEAD
+<<<<<<< HEAD
         value7(value7);
 =======
 >>>>>>> 内推职位新增删除接口
+=======
+>>>>>>> 完成员工推荐接口
         return this;
     }
 
@@ -499,6 +631,7 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
      * Create a detached, initialised HistoryReferralPositionRelRecord
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     public HistoryReferralPositionRelRecord(Integer id, Integer referId, Integer positionId, Integer companyId, String recordType, Timestamp createTime, Timestamp updateTime) {
         super(HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL);
 
@@ -514,11 +647,20 @@ public class HistoryReferralPositionRelRecord extends UpdatableRecordImpl<Histor
         super(HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL);
 
         set(0, id);
+=======
+    public HistoryReferralPositionRelRecord(Integer id, Integer positionId, Integer companyId, String recordType, Timestamp createTime, Timestamp updateTime) {
+        super(HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL);
+
+        set(0, id);
+>>>>>>> 完成员工推荐接口
         set(1, positionId);
         set(2, companyId);
         set(3, recordType);
         set(4, createTime);
         set(5, updateTime);
+<<<<<<< HEAD
 >>>>>>> 内推职位新增删除接口
+=======
+>>>>>>> 完成员工推荐接口
     }
 }
