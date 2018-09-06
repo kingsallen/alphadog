@@ -2,12 +2,15 @@ package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.referraldb.HistoryReferralPositionRelDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionRelDao;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
@@ -21,7 +24,10 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
+import com.moseeker.entity.pojos.PositionInfo;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.service.HistoryReferralPositionRecordType;
 import org.jooq.Record1;
@@ -67,6 +73,12 @@ public class PositionEntity {
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private HrTeamDao teamDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
     /**
      * 查找职位信息
      * 城市信息，如果存在job_position_city 则取code对应的name；不存在则取jobdb.job_position.city
@@ -88,6 +100,53 @@ public class PositionEntity {
             }
         }
         return positionRecord;
+    }
+
+    /**
+     * 查找职位信息
+     * 城市信息，如果存在job_position_city 则取code对应的name；不存在则取jobdb.job_position.city
+     * @param ID 根据编号查找职位
+     * @return 职位信息
+     * @throws CommonException 异常信息
+     */
+    public PositionInfo getPositionInfo(int ID) throws CommonException {
+        JobPositionRecord positionRecord = positionDao.getPositionById(ID);
+        if (positionRecord != null) {
+
+            PositionInfo positionInfo = positionRecord.into(PositionInfo.class);
+
+            List<DictCityDO> dictCityDOList = positionCityDao.getPositionCitys(positionRecord.getId());
+
+            HrTeamDO teamDO = teamDao.getHrTeam(positionInfo.getTeamId());
+
+            HrCompanyDO companyDO = companyDao.getCompanyById(positionRecord.getCompanyId());
+
+
+            if (dictCityDOList != null && dictCityDOList.size() > 0) {
+                List<DictCity> cities = dictCityDOList.stream().map(struct -> {
+                    DictCity city = new DictCity();
+                    city.setEname(struct.getEname());
+                    city.setCode(struct.getCode());
+                    city.setName(struct.getName());
+                    return city;
+                }).collect(Collectors.toList());
+                positionInfo.setCities(cities);
+            }
+
+            if (teamDO != null) {
+                positionInfo.setTeamName(teamDO.getName());
+            }
+
+            if (companyDO != null) {
+                positionInfo.setCompanyName(companyDO.getName());
+                positionInfo.setCompanyAbbreviation(companyDO.getAbbreviation());
+                positionInfo.setLogo(companyDO.getLogo());
+            }
+
+            return positionInfo;
+        } else {
+            return null;
+        }
     }
 
     /**

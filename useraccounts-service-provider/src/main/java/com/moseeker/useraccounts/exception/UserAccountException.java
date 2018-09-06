@@ -38,6 +38,9 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_NOT_UP_VOTE = new UserAccountException(42029, "未点过赞!");
     public static final UserAccountException EMPLOYEE_LEADERBOARDER_NOT_EXISTS = new UserAccountException(42030, "榜单类型错误!");
     public static final UserAccountException PROFILE_PARSE_TEXT_FAILED = new UserAccountException(42031, "简历解析失败!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_TYPE_NOT_EXIST = new UserAccountException(42032, "职位信息不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_LOG_NOT_EXIST = new UserAccountException(42033, "推荐记录不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_USER_NOT_EXIST = new UserAccountException(42034, "用户信息不存在!");
 
     private final int code;
 

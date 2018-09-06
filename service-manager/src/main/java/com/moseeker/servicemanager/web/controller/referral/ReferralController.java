@@ -5,13 +5,21 @@ import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
 import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
 import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.tools.ProfileDocCheckTool;
+import com.moseeker.servicemanager.web.controller.referral.vo.City;
 import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
+import com.moseeker.servicemanager.web.controller.referral.vo.ReferralPositionInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.employee.service.EmployeeService;
+import com.moseeker.thrift.gen.employee.struct.ReferralCard;
+import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -29,6 +39,7 @@ import java.nio.ByteBuffer;
 public class ReferralController {
 
     private ProfileServices.Iface profileService =  ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
+    private EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
 
     /**
      * 员工上传简历
@@ -97,27 +108,122 @@ public class ReferralController {
     }
 
     /**
-     * 员工推荐简历
+     * 获取电脑端上传配置的职位信息
      * @param id 员工编号
-     * @param form 员工选择PC端上传的方式上传简历的通知表单
-     * @return 处理结果
+     * @param form 表单新
+     * @return 职位信息
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.GET)
+    @ResponseBody
+    public String postCandidateInfo(@PathVariable int id, @RequestParam CandidateInfo form) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("姓名", form.getName());
+        validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
+        validateUtil.addRequiredStringValidate("邮箱", form.getEmail());
+        validateUtil.addRequiredStringValidate("就职公司", form.getCompany());
+        validateUtil.addRequiredStringValidate("就职职位", form.getPosition());
+        validateUtil.addRequiredOneValidate("推荐理由", form.getReasons());
+        validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+
+            com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
+            BeanUtils.copyProperties(candidateInfoStruct, form);
+            int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
+            return Result.success(referralLogId).toJson();
+        } else {
+            return Result.validateFailed(result).toJson();
+        }
+    }
+
+    /**
+     * 设置电脑端上传的推荐职位信息
+     * @param id 员工
+     * @param form 表单信息
+     * @return 操作结果
      * @throws Exception 异常信息
      */
     @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.POST)
     @ResponseBody
-    public String referralProfile(@PathVariable int id, @RequestParam PCUploadProfileTypeForm form) throws Exception {
+    public String setReferralType(@PathVariable int id, @RequestParam PCUploadProfileTypeForm form) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("职位", form.getPosition(), 1, null);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-
-            /*int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
-                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition());*/
+            if (form.getType() == 0) {
+                form.setType(2);
+            }
+            employeeService.setUploadType(id, form.getPosition(), (byte) form.getType());
             return Result.success().toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
+    }
+
+    /**
+     * 获取电脑端上传配置的职位信息
+     * @param id 员工编号
+     * @param form 表单新
+     * @return 职位信息
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralType(@PathVariable int id, @RequestParam PCUploadProfileTypeForm form) throws Exception {
+        if (form.getAppid() == 0) {
+            return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
+        }
+
+        ReferralPosition referralPosition = employeeService.getUploadType(id);
+
+        return Result.success(convertReferralPosition(referralPosition)).toJson();
+    }
+
+    /**
+     * 获取电脑端上传配置的职位信息
+     * @param id 员工编号
+     * @param request http请求参数
+     * @return 职位信息
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral-records/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralCard(@PathVariable int id, HttpServletRequest request) throws Exception {
+        String appid = request.getParameter("appid");
+        if (StringUtils.isBlank(appid)) {
+            return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
+        }
+        ReferralCard referralCard = employeeService.getReferralCard(id);
+        com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard card = new com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard();
+        BeanUtils.copyProperties(referralCard, card);
+        return Result.success(card).toJson();
+    }
+
+    private ReferralPositionInfo convertReferralPosition(ReferralPosition referralPosition) {
+        ReferralPositionInfo referralPositionInfo = new ReferralPositionInfo();
+        referralPositionInfo.setCompanyAbbreviation(referralPosition.getCompanyAbbreviation());
+        referralPositionInfo.setCompanyName(referralPosition.getCompanyName());
+        referralPositionInfo.setExperience(referralPosition.getExperience());
+        referralPositionInfo.setExperienceAbove(referralPosition.isExperienceAbove());
+        referralPositionInfo.setId(referralPosition.getId());
+        referralPositionInfo.setLogo(referralPosition.getLogo());
+        referralPositionInfo.setSalaryBottom(referralPosition.getSalaryBottom());
+        referralPositionInfo.setSalaryTop(referralPosition.getSalaryTop());
+        referralPositionInfo.setTeam(referralPosition.getTeam());
+        referralPositionInfo.setTitle(referralPosition.getTitle());
+        if (referralPosition.getCities() != null && referralPosition.getCities().size() > 0) {
+            List<City> cities = referralPosition.getCities().stream().map(cityStruct -> {
+                City city = new City();
+                city.setCode(cityStruct.getCode());
+                city.setName(cityStruct.getName());
+                city.setEname(cityStruct.getEname());
+                return city;
+            }).collect(Collectors.toList());
+            referralPositionInfo.setCities(cities);
+        }
+        return referralPositionInfo;
     }
 }
