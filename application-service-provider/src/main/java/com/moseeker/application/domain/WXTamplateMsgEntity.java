@@ -98,8 +98,10 @@ public class WXTamplateMsgEntity {
     private WxMsgPojo initData() {
 
         Map<Integer, String> positionNames = applicationRepository.getPositionName(applicationIdList);
+        //HR对应公司信息（存在子公司的情况）
+        Map<Integer,HrCompany> hrCompanyMap = applicationRepository.getCompaniesSubByApplicationIdList(applicationIdList);
+        //HR对应公司信息（不存在子公司的情况）
         Map<Integer,HrCompany> companyMap = applicationRepository.getCompaniesByApplicationIdList(applicationIdList);
-
         List<Integer> companyIdList = companyMap.entrySet().stream().map(m -> m.getValue().getId()).collect(Collectors.toList());
 
         List<HrWxWechat> companySignatures = applicationRepository.getSignatureByCompanyId(companyIdList);
@@ -120,10 +122,11 @@ public class WXTamplateMsgEntity {
             pojo.setPositionName(positionNames.get(appId));
 
             HrCompany company = companyMap.get(appId);
+            HrCompany subCompany = hrCompanyMap.get(appId);
             pojo.setSendStatus(true);
             if (company != null) {
                 pojo.setCompanyId(company.getId());
-                pojo.setCompanyName(company.getName());
+                pojo.setCompanyName(subCompany.getAbbreviation());
                 if(companySignatures != null && companySignatures.size()>0){
                     for(HrWxWechat wechat : companySignatures){
                         if(wechat.getCompanyId().intValue() == company.getId().intValue()){

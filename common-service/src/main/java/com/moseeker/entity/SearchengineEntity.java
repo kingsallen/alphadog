@@ -497,13 +497,31 @@ public class SearchengineEntity {
             }
             bulkResponse = bulkRequest.execute().actionGet();
             if (bulkResponse.buildFailureMessage() != null) {
-                return ResponseUtils.fail(9999, bulkResponse.buildFailureMessage());
+                return this.handlerSingleDelEmployeeEs(employeeIds,client);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(),e);
+            return this.handlerSingleDelEmployeeEs(employeeIds,client);
         }
         logger.info("----删除员工积分索引信息结束-------");
         return ResponseUtils.success("");
+    }
+    /*
+     单独删除雇员es的数据
+     */
+    private Response handlerSingleDelEmployeeEs(List<Integer> employeeIds,TransportClient client){
+        try{
+            if(employeeIds != null && employeeIds.size()>0){
+                for(Integer employeeId :employeeIds){
+                    client.prepareDelete("awards", "award", employeeId + "").execute().actionGet();
+                }
+            }
+            return ResponseUtils.success("");
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            logger.error("执行失败的雇员的id列表为==", JSON.toJSONString(employeeIds));
+            return ResponseUtils.fail(9999,"执行失败");
+        }
     }
 
     /**

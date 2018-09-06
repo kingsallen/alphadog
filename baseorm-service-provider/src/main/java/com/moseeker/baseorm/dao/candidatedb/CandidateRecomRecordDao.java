@@ -313,6 +313,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         SelectSeekStep1 selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
@@ -400,6 +401,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                 .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID

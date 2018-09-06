@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
 
-    private static final long serialVersionUID = -1430778130;
+    private static final long serialVersionUID = -1667188082;
 
     /**
      * The reference instance of <code>hrdb.hr_points_conf</code>
@@ -92,9 +92,9 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
     public final TableField<HrPointsConfRecord, Timestamp> _UPDATE_TIME = createField("_update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>hrdb.hr_points_conf.tag</code>.
+     * The column <code>hrdb.hr_points_conf.tag</code>. 已弃用
      */
-    public final TableField<HrPointsConfRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR.length(30), this, "");
+    public final TableField<HrPointsConfRecord, String> TAG = createField("tag", org.jooq.impl.SQLDataType.VARCHAR.length(30), this, "已弃用");
 
     /**
      * The column <code>hrdb.hr_points_conf.is_applier_send</code>. 申请者是否发送消息模板0:发送1:不发送
@@ -127,9 +127,9 @@ public class HrPointsConf extends TableImpl<HrPointsConfRecord> {
     public final TableField<HrPointsConfRecord, String> RECOM_REMARK = createField("recom_remark", org.jooq.impl.SQLDataType.VARCHAR.length(256).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "推荐者申请状态模板发送结束语");
 
     /**
-     * The column <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
+     * The column <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，config_sys_points_conf_tpl.id
      */
-    public final TableField<HrPointsConfRecord, Integer> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "申请状态模板ID，hr_award_config_template.id");
+    public final TableField<HrPointsConfRecord, Integer> TEMPLATE_ID = createField("template_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "申请状态模板ID，config_sys_points_conf_tpl.id");
 
     /**
      * Create a <code>hrdb.hr_points_conf</code> table reference
