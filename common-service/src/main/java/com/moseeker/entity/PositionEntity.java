@@ -261,6 +261,12 @@ public class PositionEntity {
 
         List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
         for(JobPositionDO jobPositionDO: jobPositionDOS) {
+
+            List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel> dbrecords = referralPositionRelDao.fetchByPositionId(jobPositionDO.getId());
+            //如果已经添加过记录,就跳过
+            if(!CollectionUtils.isEmpty(dbrecords)) {
+                continue;
+            }
             //插入内推记录表
             ReferralPositionRel referralPositionRel = new ReferralPositionRel();
             referralPositionRel.setPositionId(jobPositionDO.getId());
@@ -296,31 +302,33 @@ public class PositionEntity {
      */
     public void delReferralPositions(List<Integer> pids){
 
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
-
-        List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
-        for(JobPositionDO jobPositionDO: jobPositionDOS) {
-            //更新内推标示
-            jobPositionDO.setIs_referral(0);
-        }
-        positionDao.updateDatas(jobPositionDOS);
-
         List<ReferralPositionRel> referralPositionRels = referralPositionRelDao.fetchReferralRecords(pids);
 
-        referralPositionRels.stream().forEach(rel->{
-            HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
-            historyReferralPositionRel.setCompanyId(rel.getCompanyId());
-            historyReferralPositionRel.setPositionId(rel.getPositionId());
-            historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.DELETE.name());
-            historyReferralPositionRelDao.insert(historyReferralPositionRel);
+        if(!CollectionUtils.isEmpty(referralPositionRels)) {
+            referralPositionRels.stream().forEach(rel->{
+                HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
+                historyReferralPositionRel.setCompanyId(rel.getCompanyId());
+                historyReferralPositionRel.setPositionId(rel.getPositionId());
+                historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.DELETE.name());
+                historyReferralPositionRelDao.insert(historyReferralPositionRel);
 
-            //更新ES中职位is_referal字段为0
-            searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+                //更新ES中职位is_referal字段为0
+                searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
 
-        });
+            });
 
-        referralPositionRelDao.delete(referralPositionRels);
+            referralPositionRelDao.delete(referralPositionRels);
+
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+
+            List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+            for(JobPositionDO jobPositionDO: jobPositionDOS) {
+                //更新内推标示
+                jobPositionDO.setIs_referral(0);
+            }
+            positionDao.updateDatas(jobPositionDOS);
+        }
 
     }
 
