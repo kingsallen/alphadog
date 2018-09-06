@@ -249,6 +249,10 @@ public class PositionEntity {
         return positionDao.getJobPositionByIdList(positionIdList);
     }
 
+    /**
+     * 新增内推职位记录
+     * @param pids
+     */
     public void putReferralPositions(List<Integer> pids){
         List<ReferralPositionRel> records = new ArrayList<>();
         logger.info("pids {}",pids);
@@ -258,12 +262,12 @@ public class PositionEntity {
         List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
         for(JobPositionDO jobPositionDO: jobPositionDOS) {
             //插入内推记录表
-           ReferralPositionRel referralPositionRel = new ReferralPositionRel();
+            ReferralPositionRel referralPositionRel = new ReferralPositionRel();
             referralPositionRel.setPositionId(jobPositionDO.getId());
             referralPositionRel.setCompanyId(jobPositionDO.getCompanyId());
             records.add(referralPositionRel);
 
-            //更新
+            //更新职位is_referral字段
             jobPositionDO.setIs_referral(1);
         }
         referralPositionRelDao.insert(records);
@@ -276,6 +280,8 @@ public class PositionEntity {
                 historyReferralPositionRel.setPositionId(rel.getPositionId());
                 historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
                 historyReferralPositionRelDao.insert(historyReferralPositionRel);
+
+                //更新ES中职位is_referal字段为1
                 searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
             });
         }
@@ -285,7 +291,7 @@ public class PositionEntity {
     }
 
     /**
-     *
+     * 删除内推职位记录
      * @param pids
      */
     public void delReferralPositions(List<Integer> pids){
@@ -309,7 +315,8 @@ public class PositionEntity {
             historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.DELETE.name());
             historyReferralPositionRelDao.insert(historyReferralPositionRel);
 
-           searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+            //更新ES中职位is_referal字段为0
+            searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
 
         });
 
