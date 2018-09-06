@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record12<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String, String> {
 
-    private static final long serialVersionUID = 1511611885;
+    private static final long serialVersionUID = -978706451;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -61,14 +61,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
+     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
      */
     public void setContent(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
+     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
      */
     public String getContent() {
         return (String) get(2);
@@ -145,14 +145,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
     public String getMsgType() {
         return (String) get(8);

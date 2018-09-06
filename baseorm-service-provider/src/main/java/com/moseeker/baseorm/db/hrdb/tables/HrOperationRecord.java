@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
 
-    private static final long serialVersionUID = -788763936;
+    private static final long serialVersionUID = -1110386732;
 
     /**
      * The reference instance of <code>hrdb.hr_operation_record</code>
@@ -72,9 +72,9 @@ public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
     public final TableField<HrOperationRecordRecord, Long> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "job_application.id");
 
     /**
-     * The column <code>hrdb.hr_operation_record.status_id</code>. hr_award_config.id
+     * The column <code>hrdb.hr_operation_record.status_id</code>. hr_points_conf.id
      */
-    public final TableField<HrOperationRecordRecord, Long> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "hr_award_config.id");
+    public final TableField<HrOperationRecordRecord, Long> STATUS_ID = createField("status_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "hr_points_conf.id");
 
     /**
      * The column <code>hrdb.hr_operation_record.opt_time</code>. 操作时间
@@ -82,9 +82,9 @@ public class HrOperationRecord extends TableImpl<HrOperationRecordRecord> {
     public final TableField<HrOperationRecordRecord, Timestamp> OPT_TIME = createField("opt_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "操作时间");
 
     /**
-     * The column <code>hrdb.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
+     * The column <code>hrdb.hr_operation_record.operate_tpl_id</code>. config_sys_points_conf_tpl.id
      */
-    public final TableField<HrOperationRecordRecord, Integer> OPERATE_TPL_ID = createField("operate_tpl_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_award_config_template.id");
+    public final TableField<HrOperationRecordRecord, Integer> OPERATE_TPL_ID = createField("operate_tpl_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "config_sys_points_conf_tpl.id");
 
     /**
      * Create a <code>hrdb.hr_operation_record</code> table reference
