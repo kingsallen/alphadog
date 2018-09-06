@@ -1,14 +1,18 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.dao.hrdb.HrWxHrChatListDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import static com.moseeker.entity.exception.HRException.MOBILE_EXIST;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,12 @@ public class HREntity {
 
     @Autowired
     UserHrAccountDao hrAccountDao;
+
+    @Autowired
+    UserWxUserDao wxUserDao;
+
+    @Autowired
+    HrWxHrChatListDao chatListDao;
 
     /**
      * 修改HR手机号码
@@ -55,6 +65,12 @@ public class HREntity {
             if (result == 0) {
                 retryCount++;
             } else {
+                if(StringUtils.isNullOrEmpty(hr.getRemarkName()) && StringUtils.isNullOrEmpty(hr.getUpdateTime())){
+                    UserWxUserDO wxUser = wxUserDao.getWXUserById(hr.getWxuserId());
+                    if(wxUser == null || StringUtils.isNullOrEmpty(wxUser.getNickname())){
+                        chatListDao.updateWelcomeStatusByHrAccountId(hr.getId());
+                    }
+                }
                 return true;
             }
         }
