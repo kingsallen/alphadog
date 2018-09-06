@@ -361,16 +361,6 @@ public class PositionEntity {
      */
     public void delReferralPositions(List<Integer> pids){
 
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
-
-        List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
-        for(JobPositionDO jobPositionDO: jobPositionDOS) {
-            //更新内推标示
-            jobPositionDO.setIs_referral(0);
-        }
-        positionDao.updateDatas(jobPositionDOS);
-
         List<ReferralPositionRel> referralPositionRels = referralPositionRelDao.fetchReferralRecords(pids);
 
         if(!CollectionUtils.isEmpty(referralPositionRels)) {
@@ -387,6 +377,16 @@ public class PositionEntity {
             });
 
             referralPositionRelDao.delete(referralPositionRels);
+
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+
+            List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+            for(JobPositionDO jobPositionDO: jobPositionDOS) {
+                //更新内推标示
+                jobPositionDO.setIs_referral(0);
+            }
+            positionDao.updateDatas(jobPositionDOS);
         }
 
     }
