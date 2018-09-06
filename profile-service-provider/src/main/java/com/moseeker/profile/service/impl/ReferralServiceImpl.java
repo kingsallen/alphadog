@@ -9,6 +9,7 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
@@ -25,6 +26,7 @@ import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
+import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -45,6 +47,9 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * 内推服务
@@ -133,7 +138,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @param mobile 手机号码
      * @param referralReasons 推荐理由
      * @param position 职位编号
-     * @return
+     * @return 推荐记录编号
      * @throws ProfileException
      */
     @Override
@@ -142,7 +147,12 @@ public class ReferralServiceImpl implements ReferralService {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
+        if (referralReasons != null) {
+            String reasons = referralReasons.stream().collect(Collectors.joining(","));
+            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+        }
         validateUtil.addRequiredStringValidate("候选人姓名", name);
+        validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
         validateUtil.addRequiredStringValidate("手机号码", mobile);
         validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
         String validateResult = validateUtil.validate();
@@ -181,6 +191,78 @@ public class ReferralServiceImpl implements ReferralService {
         profilePojo.getUserRecord().setName(name);
         profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
 
+        return recommend(profilePojo, employeeDO, positionRecord, name, mobile, referralReasons);
+    }
+
+    /**
+     * 员工提交候选人关键信息
+     * @param employeeId 员工编号
+     * @param candidate 候选人信息
+     * @return 推荐记录编号
+     * @throws ProfileException 业务异常
+     */
+    @Override
+    public int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("姓名", candidate.getName());
+        validateUtil.addStringLengthValidate("姓名", candidate.getName(), 0, 100);
+        validateUtil.addRequiredStringValidate("手机号码", candidate.getMobile());
+        validateUtil.addRegExpressValidate("手机号码", candidate.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredStringValidate("邮箱", candidate.getEmail());
+        validateUtil.addRegExpressValidate("邮箱", candidate.getEmail(), FormCheck.getEmailExp());
+        validateUtil.addStringLengthValidate("邮箱", candidate.getEmail(), null, 50);
+        validateUtil.addRequiredStringValidate("就职公司", candidate.getCompany());
+        validateUtil.addStringLengthValidate("就职公司", candidate.getCompany(), null, 200);
+        validateUtil.addRequiredStringValidate("就职职位", candidate.getPosition());
+        validateUtil.addStringLengthValidate("就职职位", candidate.getPosition(), null, 200);
+        validateUtil.addRequiredOneValidate("推荐理由", candidate.getReasons());
+        if (candidate.getReasons() != null) {
+            String reasons = candidate.getReasons().stream().collect(Collectors.joining(","));
+            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+        }
+
+        String result = validateUtil.validate();
+
+        if (StringUtils.isNotBlank(result)) {
+            throw ProfileException.validateFailed(result);
+        }
+
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
+        if (employeeDO == null || employeeDO.getId() <= 0) {
+            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+        }
+
+        JobPositionRecord positionRecord = positionEntity.getPositionByID(candidate.getPosition());
+        if (positionRecord == null || positionRecord.getStatus() != PositionStatus.ACTIVED.getValue()) {
+            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+        }
+
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
+        if (!companyIdList.contains(positionRecord.getCompanyId())) {
+            throw ApplicationException.NO_PERMISSION_EXCEPTION;
+        }
+
+        ProfilePojo profilePojo = new ProfilePojo();
+        ProfileExtUtils.createReferralProfileData(profilePojo);
+        ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
+
+        return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(), candidate.getReasons());
+
+    }
+
+    /**
+     * 推荐执行的业务
+     * @param profilePojo 简历数据
+     * @param employeeDO 员工数据
+     * @param positionRecord 职位数据
+     * @param name 用户姓名
+     * @param mobile 用户手机号码
+     * @param referralReasons 推荐理由
+     * @return 推荐记录编号
+     * @throws ProfileException 业务异常
+     */
+    private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
+                          String name, String mobile, List<String> referralReasons) throws ProfileException {
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
@@ -189,17 +271,17 @@ public class ReferralServiceImpl implements ReferralService {
             profilePojo.setUserRecord(userRecord);
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
-            userRecord = profileEntity.storeReferralUser(profilePojo, employeeId, employeeDO.getCompanyId());
+            userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId());
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
         }
 
-        int referralId = referralEntity.logReferralOperation(employeeId, userId, position);
+        int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId());
         if (referralId == 0) {
             throw ProfileException.REFERRAL_REPEATE_REFERRAL;
         }
 
-        tp.startTast(() -> {
+        Future<Response> responseFeature = tp.startTast(() -> {
             try {
                 JobApplication jobApplication = new JobApplication();
                 jobApplication.setApp_tpl_id(userId);
@@ -215,15 +297,26 @@ public class ReferralServiceImpl implements ReferralService {
                     JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
                     applicationId = jsonObject1.getInteger("jobApplicationId");
                 }
-                referralEntity.logReferralOperation(position, applicationId, 1, referralReasons, mobile, employeeDO.getSysuserId(), userId);
+                referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons, mobile, employeeDO.getSysuserId(), userId);
 
+                return response;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
+                return new Response(ProfileException.PROGRAM_EXCEPTION.getCode(), ProfileException.PROGRAM_EXCEPTION.getMessage());
             }
-            return null;
         });
 
-        return referralId;
+        try {
+            Response response = responseFeature.get();
+            if (response.status == 0) {
+                return referralId;
+            } else {
+                throw  new CommonException(response.getStatus(), response.getMessage());
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ProfileException.PROGRAM_EXCEPTION;
+        }
     }
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER

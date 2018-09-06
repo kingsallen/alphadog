@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import org.jooq.Record2;
@@ -117,5 +118,9 @@ public class ReferralEntity {
     public int logReferralOperation(int employeeId, int userId, int position) {
 
         return referralLogDao.createReferralLog(employeeId, userId, position);
+    }
+
+    public ReferralLog fetchReferralLog(int referralLogId) {
+        return referralLogDao.fetchOneById(referralLogId);
     }
 }
