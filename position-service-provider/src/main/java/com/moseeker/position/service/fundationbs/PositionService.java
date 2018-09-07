@@ -1683,6 +1683,7 @@ public class PositionService {
         history.remove(keywords);
         history.add(0, keywords);
         if(history.size()>10){
+        if(history.size()>10){
             history.remove(history.size()-1);
         }
         String result = JSONObject.toJSONString(history);
@@ -1692,7 +1693,6 @@ public class PositionService {
     /*
        微信端获取个人画像推送职位
      */
-    @CounterIface
     public List<WechatPositionListData> getPersonaRecomPosition(int userId, int companyId, int type, int pageNum, int pageSize) throws Exception {
         List<CampaignPersonaRecomRecord> list = this.getPersonaRecomPositionList(userId, companyId, type, pageNum, pageSize);
         List<Integer> pids = this.getRecomPositionIdList(list);
@@ -1709,7 +1709,6 @@ public class PositionService {
         return result;
     }
 
-    @CounterIface
     public List<WechatPositionListData> getEmployeeRecomPositionList(int recomPushId, int companyId, int type, int pageNum, int pageSize) {
         List<Integer> pids = this.handlerEmployeeRecom(recomPushId, companyId, type, pageNum, pageSize);
         if (StringUtils.isEmptyList(pids)) {
