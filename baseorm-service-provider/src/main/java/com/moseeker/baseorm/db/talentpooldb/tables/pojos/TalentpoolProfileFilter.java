@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter implements Serializable {
 
-    private static final long serialVersionUID = 141827862;
+    private static final long serialVersionUID = 2015990278;
 
     private Integer   id;
     private Integer   companyId;
@@ -45,8 +45,8 @@ public class TalentpoolProfileFilter implements Serializable {
     private String    companyName;
     private Integer   inLastJobSearchCompany;
     private Timestamp createTime;
-    private Integer   disable;
     private Timestamp updateTime;
+    private Integer   disable;
 
     public TalentpoolProfileFilter() {}
 
@@ -71,8 +71,8 @@ public class TalentpoolProfileFilter implements Serializable {
         this.companyName = value.companyName;
         this.inLastJobSearchCompany = value.inLastJobSearchCompany;
         this.createTime = value.createTime;
-        this.disable = value.disable;
         this.updateTime = value.updateTime;
+        this.disable = value.disable;
     }
 
     public TalentpoolProfileFilter(
@@ -96,8 +96,8 @@ public class TalentpoolProfileFilter implements Serializable {
         String    companyName,
         Integer   inLastJobSearchCompany,
         Timestamp createTime,
-        Integer   disable,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   disable
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -119,8 +119,8 @@ public class TalentpoolProfileFilter implements Serializable {
         this.companyName = companyName;
         this.inLastJobSearchCompany = inLastJobSearchCompany;
         this.createTime = createTime;
-        this.disable = disable;
         this.updateTime = updateTime;
+        this.disable = disable;
     }
 
     public Integer getId() {
@@ -283,20 +283,20 @@ public class TalentpoolProfileFilter implements Serializable {
         this.createTime = createTime;
     }
 
-    public Integer getDisable() {
-        return this.disable;
-    }
-
-    public void setDisable(Integer disable) {
-        this.disable = disable;
-    }
-
     public Timestamp getUpdateTime() {
         return this.updateTime;
     }
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getDisable() {
+        return this.disable;
+    }
+
+    public void setDisable(Integer disable) {
+        this.disable = disable;
     }
 
     @Override
@@ -323,8 +323,8 @@ public class TalentpoolProfileFilter implements Serializable {
         sb.append(", ").append(companyName);
         sb.append(", ").append(inLastJobSearchCompany);
         sb.append(", ").append(createTime);
-        sb.append(", ").append(disable);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(disable);
 
         sb.append(")");
         return sb.toString();

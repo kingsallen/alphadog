@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 人才库人HR与标签的关系
+ * 人才库人HR与备注的关系
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
 
-    private static final long serialVersionUID = 1478380891;
+    private static final long serialVersionUID = -1104327906;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_comment</code>
@@ -59,7 +59,7 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     /**
      * The column <code>talentpooldb.talentpool_comment.content</code>. 备注内容
      */
-    public final TableField<TalentpoolCommentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "备注内容");
+    public final TableField<TalentpoolCommentRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.VARCHAR.length(600).nullable(false), this, "备注内容");
 
     /**
      * The column <code>talentpooldb.talentpool_comment.hr_id</code>. HR 编号
@@ -72,6 +72,11 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     public final TableField<TalentpoolCommentRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "人才 编号");
 
     /**
+     * The column <code>talentpooldb.talentpool_comment.company_id</code>.
+     */
+    public final TableField<TalentpoolCommentRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
      * The column <code>talentpooldb.talentpool_comment.create_time</code>. 创建时间
      */
     public final TableField<TalentpoolCommentRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
@@ -80,11 +85,6 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
      * The column <code>talentpooldb.talentpool_comment.update_time</code>.
      */
     public final TableField<TalentpoolCommentRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>talentpooldb.talentpool_comment.company_id</code>.
-     */
-    public final TableField<TalentpoolCommentRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>talentpooldb.talentpool_comment</code> table reference
@@ -105,7 +105,7 @@ public class TalentpoolComment extends TableImpl<TalentpoolCommentRecord> {
     }
 
     private TalentpoolComment(String alias, Table<TalentpoolCommentRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "人才库人HR与标签的关系");
+        super(alias, null, aliased, parameters, "人才库人HR与备注的关系");
     }
 
     /**

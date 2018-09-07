@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolApplication extends TableImpl<TalentpoolApplicationRecord> {
 
-    private static final long serialVersionUID = -1863936966;
+    private static final long serialVersionUID = 1081488498;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_application</code>
@@ -71,9 +71,9 @@ public class TalentpoolApplication extends TableImpl<TalentpoolApplicationRecord
     public final TableField<TalentpoolApplicationRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>talentpooldb.talentpool_application.type</code>. 0开启普通人才库，1开启高端人才库
+     * The column <code>talentpooldb.talentpool_application.type</code>.  0开启普通人才库，1开启高端人才库
      */
-    public final TableField<TalentpoolApplicationRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0开启普通人才库，1开启高端人才库");
+    public final TableField<TalentpoolApplicationRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, " 0开启普通人才库，1开启高端人才库");
 
     /**
      * Create a <code>talentpooldb.talentpool_application</code> table reference

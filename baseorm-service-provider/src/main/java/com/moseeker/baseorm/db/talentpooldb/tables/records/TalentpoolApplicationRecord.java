@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolApplicationRecord extends UpdatableRecordImpl<TalentpoolApplicationRecord> implements Record5<Integer, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -1030231535;
+    private static final long serialVersionUID = 2116147749;
 
     /**
      * Setter for <code>talentpooldb.talentpool_application.hr_id</code>. hr主账号编号
@@ -89,14 +89,14 @@ public class TalentpoolApplicationRecord extends UpdatableRecordImpl<TalentpoolA
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_application.type</code>. 0开启普通人才库，1开启高端人才库
+     * Setter for <code>talentpooldb.talentpool_application.type</code>.  0开启普通人才库，1开启高端人才库
      */
     public void setType(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_application.type</code>. 0开启普通人才库，1开启高端人才库
+     * Getter for <code>talentpooldb.talentpool_application.type</code>.  0开启普通人才库，1开启高端人才库
      */
     public Integer getType() {
         return (Integer) get(4);

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRecord> {
 
-    private static final long serialVersionUID = -230180120;
+    private static final long serialVersionUID = -1861378628;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter</code>
@@ -79,12 +79,12 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.city_name</code>. 现居住地
      */
-    public final TableField<TalentpoolProfileFilterRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "现居住地");
+    public final TableField<TalentpoolProfileFilterRecord, String> CITY_NAME = createField("city_name", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "现居住地");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.city_code</code>. 城市的code
      */
-    public final TableField<TalentpoolProfileFilterRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "城市的code");
+    public final TableField<TalentpoolProfileFilterRecord, String> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "城市的code");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.degree</code>. 学历 传code
@@ -119,7 +119,7 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.intention_city_code</code>. 期望城市的code
      */
-    public final TableField<TalentpoolProfileFilterRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期望城市的code");
+    public final TableField<TalentpoolProfileFilterRecord, String> INTENTION_CITY_CODE = createField("intention_city_code", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "期望城市的code");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.intention_salary_code</code>. 期待薪资
@@ -139,7 +139,7 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.company_name</code>. 工作过的公司
      */
-    public final TableField<TalentpoolProfileFilterRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(1024).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "工作过的公司");
+    public final TableField<TalentpoolProfileFilterRecord, String> COMPANY_NAME = createField("company_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "工作过的公司");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_filter.in_last_job_search_company</code>. 是否只搜最近一个公司 0否，1是
@@ -152,14 +152,14 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     public final TableField<TalentpoolProfileFilterRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
+     * The column <code>talentpooldb.talentpool_profile_filter.update_time</code>. 更新时间
+     */
+    public final TableField<TalentpoolProfileFilterRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
      * The column <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0无效，2关闭
      */
     public final TableField<TalentpoolProfileFilterRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "1有效，0无效，2关闭");
-
-    /**
-     * The column <code>talentpooldb.talentpool_profile_filter.update_time</code>.
-     */
-    public final TableField<TalentpoolProfileFilterRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>talentpooldb.talentpool_profile_filter</code> table reference
