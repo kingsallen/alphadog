@@ -135,17 +135,6 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int postCandidateInfo(int employeeId, CandidateInfo candidateInfo) throws BIZException, TException {
-        try {
-            com.moseeker.profile.service.impl.vo.CandidateInfo candidate = new com.moseeker.profile.service.impl.vo.CandidateInfo();
-            BeanUtils.copyProperties(candidate, candidateInfo);
-            return referralService.postCandidateInfo(employeeId, candidate);
-        } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
     public ProfileParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData)
             throws BIZException, TException {
         try {
