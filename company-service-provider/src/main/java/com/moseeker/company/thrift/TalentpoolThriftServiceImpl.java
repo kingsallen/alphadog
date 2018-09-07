@@ -600,6 +600,17 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }
     }
 
+    @Override
+    public void handlerCompanyTagAndProfile(Set<Integer> userid_list, int company_id) throws BIZException, TException {
+        try{
+            talentPoolService.handlerProfileCompanyTag(userid_list,company_id);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+
+    }
+
 
     private Set<Integer> ConvertListToSet(List<Integer> list){
         Set<Integer> param=new HashSet<>();
