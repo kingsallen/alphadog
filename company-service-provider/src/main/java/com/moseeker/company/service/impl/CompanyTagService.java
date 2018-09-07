@@ -159,16 +159,16 @@ public class CompanyTagService {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTagUser> deleList=new ArrayList<>();
-            List<TalentpoolCompanyTag> tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
+            List<Map<String, Object>>  tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
                     Response res = profileService.getResource(userId, 0, null);
                     if (res.getStatus() == 0 && StringUtils.isNotNullOrEmpty(res.getData())) {
                         Map<String, Object> profiles = JSON.parseObject(res.getData());
-                        for (TalentpoolCompanyTag tag : tagList) {
+                        for (Map<String, Object> tag : tagList) {
                             TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
                             delRecord.setUserId(userId);
-                            delRecord.setTagId(tag.getId());
+                            delRecord.setTagId((Integer) tag.get("id"));
                             deleList.add(delRecord);
                             String tagStr = JSON.toJSONString(tag);
                             Map<String, Object> tagMap = JSON.parseObject(tagStr);
@@ -176,8 +176,8 @@ public class CompanyTagService {
                             if (isflag) {
                                 TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
                                 record.setUserId(userId);
-                                record.setTagId(tag.getId());
-                                tagIdList.add(tag.getId());
+                                record.setTagId((Integer) tag.get("id"));
+                                tagIdList.add((Integer) tag.get("id"));
                                 list.add(record);
                             }
                         }
