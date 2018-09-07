@@ -13,6 +13,7 @@ public class ReferralForm {
     private String name;
     private String mobile;
     private int position;
+    private byte referralType;
     private List<String> referralReasons;
 
     public int getAppid() {
@@ -45,6 +46,14 @@ public class ReferralForm {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public byte getReferralType() {
+        return referralType;
+    }
+
+    public void setReferralType(byte referralType) {
+        this.referralType = referralType;
     }
 
     public List<String> getReferralReasons() {

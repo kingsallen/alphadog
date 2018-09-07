@@ -13,7 +13,7 @@ public class ApplicationException extends CommonException {
     public static final ApplicationException APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK = new ApplicationException(41008, "本月您申请校招职位已达到投递次数上限!");
 
     public static final ApplicationException APPLICATION_POSITION_NOTEXIST = new ApplicationException(41021,"职位信息不正确！");
-    public static final ApplicationException APPLICATION_ = new ApplicationException(41021,"职位信息不正确！");
+    public static final ApplicationException APPLICATION_REFERRAL_TYPE_NOT_EXIST = new ApplicationException(41523,"员工推荐候选人类型不正确！");
 
     public ApplicationException(int code, String message) {
         super(code, message);

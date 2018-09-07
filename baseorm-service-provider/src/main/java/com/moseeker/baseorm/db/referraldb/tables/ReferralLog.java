@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog extends TableImpl<ReferralLogRecord> {
 
-    private static final long serialVersionUID = -459508584;
+    private static final long serialVersionUID = -1488421464;
 
     /**
      * The reference instance of <code>referraldb.referral_log</code>
@@ -85,6 +85,11 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
      * The column <code>referraldb.referral_log.update_time</code>. 更新时间
      */
     public final TableField<ReferralLogRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>referraldb.referral_log.type</code>. 推荐方式 1 手机文件上传，2 电脑扫码上传简历 3 推荐人才关键信息
+     */
+    public final TableField<ReferralLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "推荐方式 1 手机文件上传，2 电脑扫码上传简历 3 推荐人才关键信息");
 
     /**
      * Create a <code>referraldb.referral_log</code> table reference
@@ -137,7 +142,7 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
      */
     @Override
     public List<UniqueKey<ReferralLogRecord>> getKeys() {
-        return Arrays.<UniqueKey<ReferralLogRecord>>asList(Keys.KEY_REFERRAL_LOG_PRIMARY);
+        return Arrays.<UniqueKey<ReferralLogRecord>>asList(Keys.KEY_REFERRAL_LOG_PRIMARY, Keys.KEY_REFERRAL_LOG_REFERRAL_LOG_UNIQUE);
     }
 
     /**

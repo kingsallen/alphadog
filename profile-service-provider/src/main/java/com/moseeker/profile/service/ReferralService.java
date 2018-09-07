@@ -30,10 +30,11 @@ public interface ReferralService {
      * @param mobile 手机号码
      * @param referralReasons 推荐理由
      * @param position 职位编号
+     * @param referralType 推荐方式 1 手机端上传 2 电脑端上传 3 推荐关键信息
      * @return 推荐记录编号
      * @throws ProfileException 业务异常
      */
-    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position)
+    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType)
             throws ProfileException;
 
     /**

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogResumeRecordRecord extends UpdatableRecordImpl<LogResumeRecordRecord> implements Record9<Integer, Integer, String, String, String, String, Timestamp, String, String> {
 
-    private static final long serialVersionUID = 750557458;
+    private static final long serialVersionUID = -1541544290;
 
     /**
      * Setter for <code>logdb.log_resume_record.id</code>.
@@ -103,14 +103,14 @@ public class LogResumeRecordRecord extends UpdatableRecordImpl<LogResumeRecordRe
     }
 
     /**
-     * Setter for <code>logdb.log_resume_record.result_data</code>.
+     * Setter for <code>logdb.log_resume_record.result_data</code>. resume解析后的原始数据
      */
     public void setResultData(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>logdb.log_resume_record.result_data</code>.
+     * Getter for <code>logdb.log_resume_record.result_data</code>. resume解析后的原始数据
      */
     public String getResultData() {
         return (String) get(5);

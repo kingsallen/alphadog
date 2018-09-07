@@ -440,6 +440,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         Param<String> mobileParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE.getName(), recomRecordRecord.getMobile());
         Param<Integer> presenteeUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPresenteeUserId());
         Param<Integer> postUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
+        Param<Byte> genderParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER.getName(), recomRecordRecord.getGender());
+        Param<String> emailParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL.getName(), recomRecordRecord.getEmail());
 
         create.insertInto(CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
@@ -449,17 +451,21 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL
         ).select(
                 select(
-                    positionIdParam,
-                    applicationIdParam,
-                    recomTimeParam,
-                    depthParam,
-                    reasonParam,
-                    mobileParam,
-                    presenteeUserIdParam,
-                    postUserIdParam
+                        positionIdParam,
+                        applicationIdParam,
+                        recomTimeParam,
+                        depthParam,
+                        reasonParam,
+                        mobileParam,
+                        presenteeUserIdParam,
+                        postUserIdParam,
+                        genderParam,
+                        emailParam
                 )
                 .whereNotExists(
                         selectOne()
