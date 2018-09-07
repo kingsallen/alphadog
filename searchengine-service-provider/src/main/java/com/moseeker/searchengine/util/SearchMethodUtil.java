@@ -149,6 +149,7 @@ public class SearchMethodUtil {
         String companyIds=params.get("company_id");
         String publisher=params.get("publisher");
         String publisherCompanyId=params.get("did");
+        String isReferral=params.get("is_referral");
         searchUtil.handleTerms(companyIds,query,"company_id");
         String flag=params.get("flag");
         if(StringUtils.isBlank(flag)){
@@ -188,6 +189,9 @@ public class SearchMethodUtil {
         }
         if(StringUtils.isNotBlank(custom)){
             searchUtil.handleTerm(custom,query,"search_data.custom");
+        }
+        if(StringUtils.isNotBlank(isReferral)){
+            searchUtil.handleTerm(isReferral,query,"is_referral");
         }
 
     }

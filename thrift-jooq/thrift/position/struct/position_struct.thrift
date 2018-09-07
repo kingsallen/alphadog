@@ -81,7 +81,8 @@ struct WechatPositionListQuery {
     14: optional i32 did,
     15: optional string department
     16: optional bool order_by_priority,
-    17: optional string custom
+    17: optional string custom,
+    18: optional i32 is_referral
 }
 
 struct WechatPositionListData {
@@ -105,7 +106,8 @@ struct WechatPositionListData {
     19: optional i32 totalNum,
     20: optional i32 candidate_source,
     21: optional string requirement,
-    22: optional string city_ename
+    22: optional string city_ename,
+    23: optional i32 is_referral
 }
 
 // 微信端职位列表的附加红包信息
@@ -137,7 +139,8 @@ struct WechatRpPositionListData {
     18: optional i32 candidate_source,
     19: optional string requirement,
     20: optional i32 totalNum,
-    21: optional string city_ename
+    21: optional string city_ename,
+    22: optional i32 is_referral
 }
 
 // 微信端获取红包分享信息
