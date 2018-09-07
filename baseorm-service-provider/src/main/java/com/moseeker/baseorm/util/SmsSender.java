@@ -3,12 +3,14 @@ package com.moseeker.baseorm.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
 import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.SmsNationUtil;
 import com.moseeker.common.exception.CacheConfigNotExistException;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.taobao.api.ApiException;
@@ -230,25 +232,21 @@ public class SmsSender {
     }
     
     public boolean sendSMS(String mobile, int scene,String countryCode) throws Exception {
-    	String event = null;
-    	switch(scene) {
-    	case 1:event= "SMS_SIGNUP"; break;
-    	case 2:event = "SMS_PWD_FORGOT"; break;
-    	case 3:event = "SMS_CHANGEMOBILE_CODE"; break;
-    	case 4:event = "SMS_RESETMOBILE_CODE"; break;
-    	}
+        SMSScene smsScene = SMSScene.instanceFromValue(scene);
+    	if (smsScene == null) {
+    	    throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
         HashMap<String, String> params = new HashMap<String, String>();
         String passwordforgotcode = getRandomStr();
         params.put("code", passwordforgotcode);
         if(StringUtils.isNullOrEmpty(countryCode) || "86".equals(countryCode)){
-            redisClient.set(0, event, mobile, passwordforgotcode);
+            smsScene.saveVerifyCode("", mobile, passwordforgotcode, redisClient);
             return sendSMS(mobile,"SMS_5755096",params);
         }else{
-            redisClient.set(0, event, countryCode+mobile, passwordforgotcode);
+            smsScene.saveVerifyCode(countryCode, mobile, passwordforgotcode, redisClient);
             return sendNationalSMS(countryCode,mobile,"SMS_5755096",params);
         }
-
-    } 
+    }
 
     /**
      * SMS_5855001
