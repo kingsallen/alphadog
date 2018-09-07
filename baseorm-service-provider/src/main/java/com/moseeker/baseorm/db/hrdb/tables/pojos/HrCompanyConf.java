@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -1579683057;
+    private static final long serialVersionUID = 186143591;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -49,8 +49,8 @@ public class HrCompanyConf implements Serializable {
     private String    employeeSlug;
     private String    displayLocale;
     private Byte      talentpoolStatus;
-    private Byte      veryeastSwitch;
     private Byte      job51SalaryDiscuss;
+    private Byte      veryeastSwitch;
 
     public HrCompanyConf() {}
 
@@ -79,8 +79,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
-        this.veryeastSwitch = value.veryeastSwitch;
         this.job51SalaryDiscuss = value.job51SalaryDiscuss;
+        this.veryeastSwitch = value.veryeastSwitch;
     }
 
     public HrCompanyConf(
@@ -108,8 +108,8 @@ public class HrCompanyConf implements Serializable {
         String    employeeSlug,
         String    displayLocale,
         Byte      talentpoolStatus,
-        Byte      veryeastSwitch,
-        Byte      job51SalaryDiscuss
+        Byte      job51SalaryDiscuss,
+        Byte      veryeastSwitch
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -135,8 +135,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
-        this.veryeastSwitch = veryeastSwitch;
         this.job51SalaryDiscuss = job51SalaryDiscuss;
+        this.veryeastSwitch = veryeastSwitch;
     }
 
     public Integer getCompanyId() {
@@ -331,20 +331,20 @@ public class HrCompanyConf implements Serializable {
         this.talentpoolStatus = talentpoolStatus;
     }
 
-    public Byte getVeryeastSwitch() {
-        return this.veryeastSwitch;
-    }
-
-    public void setVeryeastSwitch(Byte veryeastSwitch) {
-        this.veryeastSwitch = veryeastSwitch;
-    }
-
     public Byte getJob51SalaryDiscuss() {
         return this.job51SalaryDiscuss;
     }
 
     public void setJob51SalaryDiscuss(Byte job51SalaryDiscuss) {
         this.job51SalaryDiscuss = job51SalaryDiscuss;
+    }
+
+    public Byte getVeryeastSwitch() {
+        return this.veryeastSwitch;
+    }
+
+    public void setVeryeastSwitch(Byte veryeastSwitch) {
+        this.veryeastSwitch = veryeastSwitch;
     }
 
     @Override
@@ -375,8 +375,8 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
-        sb.append(", ").append(veryeastSwitch);
         sb.append(", ").append(job51SalaryDiscuss);
+        sb.append(", ").append(veryeastSwitch);
 
         sb.append(")");
         return sb.toString();
