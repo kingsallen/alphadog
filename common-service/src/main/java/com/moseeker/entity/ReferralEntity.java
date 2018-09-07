@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
@@ -7,7 +8,6 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
-import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -102,7 +102,7 @@ public class ReferralEntity {
     }
 
     public void logReferralOperation(int position, int applicationId, int depth, List<String> referralReasons,
-                                     String mobile, int postUserId, int presenteeUserId) {
+                                     String mobile, int postUserId, int presenteeUserId, byte gender, String email) {
         CandidateRecomRecordRecord recomRecordRecord = new CandidateRecomRecordRecord();
         recomRecordRecord.setPositionId(position);
         recomRecordRecord.setAppId(applicationId);
@@ -112,12 +112,14 @@ public class ReferralEntity {
         recomRecordRecord.setMobile(mobile);
         recomRecordRecord.setPresenteeId(presenteeUserId);
         recomRecordRecord.setPostUserId(postUserId);
+        recomRecordRecord.setGender(gender);
+        recomRecordRecord.setEmail(email);
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
     }
 
-    public int logReferralOperation(int employeeId, int userId, int position) {
+    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType) {
 
-        return referralLogDao.createReferralLog(employeeId, userId, position);
+        return referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
     }
 
     public ReferralLog fetchReferralLog(int referralLogId) {

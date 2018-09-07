@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -15,12 +16,12 @@ import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.*;
-import com.moseeker.entity.biz.ProfileExtParam;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.profile.constants.GenderType;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
@@ -47,7 +48,6 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -138,12 +138,13 @@ public class ReferralServiceImpl implements ReferralService {
      * @param mobile 手机号码
      * @param referralReasons 推荐理由
      * @param position 职位编号
+     * @param referralType 推荐方式
      * @return 推荐记录编号
      * @throws ProfileException
      */
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
-                                       int position) throws ProfileException {
+                                       int position, byte referralType) throws ProfileException {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
@@ -155,9 +156,15 @@ public class ReferralServiceImpl implements ReferralService {
         validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
         validateUtil.addRequiredStringValidate("手机号码", mobile);
         validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
+        validateUtil.addIntTypeValidate("推荐方式", referralType, 1, 4);
         String validateResult = validateUtil.validate();
         if (StringUtils.isNotBlank(validateResult)) {
             throw ProfileException.validateFailed(validateResult);
+        }
+
+        ReferralType type = ReferralType.instanceFromValue(referralType);
+        if (type == null) {
+            throw ApplicationException.APPLICATION_REFERRAL_TYPE_NOT_EXIST;
         }
 
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
@@ -191,7 +198,16 @@ public class ReferralServiceImpl implements ReferralService {
         profilePojo.getUserRecord().setName(name);
         profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
 
-        return recommend(profilePojo, employeeDO, positionRecord, name, mobile, referralReasons);
+        GenderType genderType = GenderType.Secret;
+        if (profilePojo.getBasicRecord() != null && profilePojo.getBasicRecord().getGender() != null) {
+            if (GenderType.instanceFromValue(profilePojo.getBasicRecord().getGender().intValue()) != null) {
+                genderType = GenderType.instanceFromValue(profilePojo.getBasicRecord().getGender().intValue());
+            }
+        }
+        String email = StringUtils.defaultIfBlank(profilePojo.getUserRecord().getEmail(), "");
+
+        return recommend(profilePojo, employeeDO, positionRecord, name, mobile, referralReasons,
+                (byte)genderType.getValue(), email, type);
     }
 
     /**
@@ -246,7 +262,8 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralProfileData(profilePojo);
         ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
 
-        return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(), candidate.getReasons());
+        return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(),
+                candidate.getReasons(), candidate.getGender(), candidate.getEmail(), ReferralType.PostInfo);
 
     }
 
@@ -258,11 +275,15 @@ public class ReferralServiceImpl implements ReferralService {
      * @param name 用户姓名
      * @param mobile 用户手机号码
      * @param referralReasons 推荐理由
-     * @return 推荐记录编号
+     * @param gender
+     * @param email @return 推荐记录编号
+     * @param referralType 推荐方式
      * @throws ProfileException 业务异常
      */
     private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
-                          String name, String mobile, List<String> referralReasons) throws ProfileException {
+                          String name, String mobile, List<String> referralReasons, byte gender, String email, ReferralType referralType)
+            throws ProfileException {
+
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
@@ -276,10 +297,8 @@ public class ReferralServiceImpl implements ReferralService {
             userId = userRecord.getId();
         }
 
-        int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId());
-        if (referralId == 0) {
-            throw ProfileException.REFERRAL_REPEATE_REFERRAL;
-        }
+        int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
+                referralType);
 
         Future<Response> responseFeature = tp.startTast(() -> {
             try {
@@ -290,6 +309,7 @@ public class ReferralServiceImpl implements ReferralService {
                 jobApplication.setApplier_name(name);
                 jobApplication.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.getValue());
                 jobApplication.setRecommender_user_id(employeeDO.getSysuserId());
+                jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
                 Response response = applicationService.postApplication(jobApplication);
 
                 int applicationId = 0;
@@ -297,7 +317,8 @@ public class ReferralServiceImpl implements ReferralService {
                     JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
                     applicationId = jsonObject1.getInteger("jobApplicationId");
                 }
-                referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons, mobile, employeeDO.getSysuserId(), userId);
+                referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
+                        mobile, employeeDO.getSysuserId(), userId, gender, email);
 
                 return response;
             } catch (Exception e) {
