@@ -240,7 +240,7 @@ public final class Constant {
     public static final int PAGE_SIZE=20;
     public static final int PAGE_=20;
 
-    public static final String CHINA_CODE ="86";
+    public static final String CHINA_CODE ="43";
 
     public static final int DATABASE_PAGE_SIZE=500;
 
