@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
@@ -20,6 +21,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -974,44 +976,13 @@ public class UseraccountsService {
      * @param code   验证码
      * @param type   1:注册 2:忘记密码
      */
-    private boolean validateCode(String mobile, String code, int type) {
-        String codeinRedis = null;
-        try {
-            switch (type) {
-                case 1:
-                    codeinRedis = redisClient.get(0, "SMS_SIGNUP", mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_SIGNUP", mobile);
-                        return true;
-                    }
-                    break;
-                case 2:
-                    codeinRedis = redisClient.get(0, "SMS_PWD_FORGOT", mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_PWD_FORGOT", mobile);
-                        return true;
-                    }
-                case 3:
-                    codeinRedis = redisClient.get(0, "SMS_CHANGEMOBILE_CODE",
-                            mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
-                        return true;
-                    }
-                case 4:
-                    codeinRedis = redisClient
-                            .get(0, "SMS_RESETMOBILE_CODE", mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_RESETMOBILE_CODE", mobile);
-                        return true;
-                    }
-                    break;
-                default:
-            }
-        } catch (RedisException e) {
-            WarnService.notify(e);
+    private boolean validateCode(String mobile, String code, int type) throws CommonException {
+
+        SMSScene smsScene = SMSScene.instanceFromValue(type);
+        if (smsScene == null) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
-        return false;
+        return smsScene.validateVerifyCode("", mobile, code, redisClient);
     }
 
     public Response validateVerifyCode(String mobile, String code, int type,String countryCode) throws TException {
