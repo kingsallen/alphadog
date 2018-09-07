@@ -13,6 +13,9 @@ dependencies {
     compile deps["spring-rabbit"]
     compile deps["jetty-support"]
     compile deps["spring-test"]
+
+
+
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
