@@ -577,6 +577,7 @@ public class ChatDao {
         }
     }
 
+
     public HrChatUnreadCountDO addUnreadCount(int roomId, byte speaker, String date) {
         logger.info("ChatDao addUnreadCount roomId:{}, speaker:{}, date:{}", roomId, speaker, date);
         QueryUtil queryUtil = new QueryUtil();
