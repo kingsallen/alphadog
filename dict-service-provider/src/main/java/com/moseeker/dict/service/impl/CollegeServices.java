@@ -58,7 +58,7 @@ public class CollegeServices {
         Response result = null;
         int appid = 0; // query.appid
         try {
-            cachedResult = redisClient.get(appid, KeyIdentifier.DICT_COLLEGE_COUNTRY.toString(), Constant.CHINA_CODE, () -> {
+            cachedResult = redisClient.get(appid, KeyIdentifier.DICT_COLLEGE_COUNTRY.toString(), Constant.CHINA_ID, () -> {
                 String r = null;
                 try {
                     List<CollegeProvince> joinedResult = this.dao.getCollegeByDomestic();

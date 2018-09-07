@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.thrift.TException;
@@ -537,7 +538,31 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 	}
 
-	@Override
+    @Override
+    public Response getUserSearchPositionHistory(int userId) throws BIZException, TException {
+        try {
+            return service.getUserSearchPositionHistory(userId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public Response deleteUserSearchPositionHistory(int userId) throws BIZException, TException {
+        try {
+            return service.deleteUserSearchPositionHistory(userId);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new SysBIZException();
+        }
+    }
+
+    @Override
 	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {

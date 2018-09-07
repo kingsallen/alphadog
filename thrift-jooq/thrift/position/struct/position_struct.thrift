@@ -81,7 +81,8 @@ struct WechatPositionListQuery {
     14: optional i32 did,
     15: optional string department
     16: optional bool order_by_priority,
-    17: optional string custom
+    17: optional string custom,
+    18: optional i32 user_id
 }
 
 struct WechatPositionListData {
