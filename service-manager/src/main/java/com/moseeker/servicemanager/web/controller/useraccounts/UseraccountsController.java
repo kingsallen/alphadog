@@ -1068,4 +1068,52 @@ public class UseraccountsController {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}
 	}
+
+    /**
+     * 清空职位搜索历史
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/position/search/history/delete", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String deleteUserSearchPositionHistory(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+
+            Response result = useraccountsServices.deleteUserSearchPositionHistory(userId);
+            if (result.getStatus() == 0) {
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, result);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 批量查询用户搜索职位历史记录
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/position/search/history", method = RequestMethod.GET)
+    @ResponseBody
+    public String getUserSearchPositionHistory(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int userId = params.getInt("user_id", 0);
+
+            Response result = useraccountsServices.getUserSearchPositionHistory(userId);
+            if (result.getStatus() == 0) {
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, result);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
