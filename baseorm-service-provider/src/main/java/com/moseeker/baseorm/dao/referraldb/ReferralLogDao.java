@@ -23,26 +23,28 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         super(configuration);
     }
 
-    public int createReferralLog(int employeeId, int referenceId, int position) {
+    public int createReferralLog(int employeeId, int referenceId, int position, int referralType) {
 
         Param<Integer> employeeIdParam = param(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.getName(), employeeId);
         Param<Integer> referenceIdParam = param(ReferralLog.REFERRAL_LOG.REFERENCE_ID.getName(), referenceId);
         Param<Integer> positionIdParam = param(ReferralLog.REFERRAL_LOG.POSITION_ID.getName(), position);
         Param<Timestamp> referralTime = param(ReferralLog.REFERRAL_LOG.REFERRAL_TIME.getName(), new Timestamp(System.currentTimeMillis()));
-
+        Param<Integer> referralTypeParam = param(ReferralLog.REFERRAL_LOG.TYPE.getName(), referralType);
 
         ReferralLogRecord referralLogRecord = using(configuration()).insertInto(
                 ReferralLog.REFERRAL_LOG,
                 ReferralLog.REFERRAL_LOG.EMPLOYEE_ID,
                 ReferralLog.REFERRAL_LOG.REFERENCE_ID,
                 ReferralLog.REFERRAL_LOG.POSITION_ID,
-                ReferralLog.REFERRAL_LOG.REFERRAL_TIME
+                ReferralLog.REFERRAL_LOG.REFERRAL_TIME,
+                ReferralLog.REFERRAL_LOG.TYPE
         ).select(
                 select(
                         employeeIdParam,
                         referenceIdParam,
                         positionIdParam,
-                        referralTime
+                        referralTime,
+                        referralTypeParam
                 ).whereNotExists(
                         selectOne()
                         .from(ReferralLog.REFERRAL_LOG)

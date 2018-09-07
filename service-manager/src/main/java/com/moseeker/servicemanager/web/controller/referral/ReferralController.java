@@ -96,11 +96,13 @@ public class ReferralController {
         validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
-                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition());
+                    referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
+                    referralForm.getReferralType());
             return Result.success(referralId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
@@ -108,7 +110,7 @@ public class ReferralController {
     }
 
     /**
-     * 获取电脑端上传配置的职位信息
+     * 员工提交候选人关键信息
      * @param id 员工编号
      * @param form 表单新
      * @return 职位信息

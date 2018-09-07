@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
 
-    private static final long serialVersionUID = -747736796;
+    private static final long serialVersionUID = -1931059400;
 
     /**
      * The reference instance of <code>logdb.log_resume_record</code>
@@ -77,9 +77,9 @@ public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
     public final TableField<LogResumeRecordRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.VARCHAR.length(2000).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>logdb.log_resume_record.result_data</code>.
+     * The column <code>logdb.log_resume_record.result_data</code>. resume解析后的原始数据
      */
-    public final TableField<LogResumeRecordRecord, String> RESULT_DATA = createField("result_data", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<LogResumeRecordRecord, String> RESULT_DATA = createField("result_data", org.jooq.impl.SQLDataType.CLOB, this, "resume解析后的原始数据");
 
     /**
      * The column <code>logdb.log_resume_record.create_time</code>.
