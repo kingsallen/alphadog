@@ -6,6 +6,8 @@ package com.moseeker.baseorm.db.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 
 import java.util.ArrayList;
@@ -32,7 +34,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1081108122;
+    private static final long serialVersionUID = -1798845048;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -48,6 +50,16 @@ public class Referraldb extends SchemaImpl {
      * The table <code>referraldb.history_referral_position_rel</code>.
      */
     public final HistoryReferralPositionRel HISTORY_REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL;
+
+    /**
+     * The table <code>referraldb.referral_company_conf</code>.
+     */
+    public final ReferralCompanyConf REFERRAL_COMPANY_CONF = com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf.REFERRAL_COMPANY_CONF;
+
+    /**
+     * 员工主动推荐记录
+     */
+    public final ReferralLog REFERRAL_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralLog.REFERRAL_LOG;
 
     /**
      * The table <code>referraldb.referral_position_rel</code>.
@@ -81,6 +93,8 @@ public class Referraldb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD,
             HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL,
+            ReferralCompanyConf.REFERRAL_COMPANY_CONF,
+            ReferralLog.REFERRAL_LOG,
             ReferralPositionRel.REFERRAL_POSITION_REL);
     }
 }

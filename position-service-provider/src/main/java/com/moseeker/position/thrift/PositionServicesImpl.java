@@ -6,7 +6,6 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -35,15 +34,16 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -686,6 +686,10 @@ public class PositionServicesImpl implements Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
+    }
+    @Override
+    public List<WechatPositionListData> getReferralPositionList(Map<String, String> query) throws TException {
+        return service.getReferralPositionList(query);
     }
 
 }

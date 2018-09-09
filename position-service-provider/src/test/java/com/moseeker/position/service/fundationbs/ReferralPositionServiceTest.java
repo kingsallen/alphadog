@@ -37,5 +37,13 @@ public class ReferralPositionServiceTest {
         referralPositionService.delReferralPositions(pids);
     }
 
+    @Test
+    @Transactional
+    @Rollback(false)
+    public void updatePointsConf() throws  Exception {
+        Integer companyId = 4;
+        Integer flag =0   ;
+        referralPositionService.updatePointsConfig(companyId,flag);
+    }
 
 }

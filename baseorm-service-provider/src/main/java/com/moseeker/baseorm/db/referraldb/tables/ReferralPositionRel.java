@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralPositionRel extends TableImpl<ReferralPositionRelRecord> {
 
-    private static final long serialVersionUID = 459344136;
+    private static final long serialVersionUID = 819904803;
 
     /**
      * The reference instance of <code>referraldb.referral_position_rel</code>
@@ -127,7 +127,7 @@ public class ReferralPositionRel extends TableImpl<ReferralPositionRelRecord> {
      */
     @Override
     public List<UniqueKey<ReferralPositionRelRecord>> getKeys() {
-        return Arrays.<UniqueKey<ReferralPositionRelRecord>>asList(Keys.KEY_REFERRAL_POSITION_REL_PRIMARY);
+        return Arrays.<UniqueKey<ReferralPositionRelRecord>>asList(Keys.KEY_REFERRAL_POSITION_REL_PRIMARY, Keys.KEY_REFERRAL_POSITION_REL_IDX_POSITION_COMPANY);
     }
 
     /**

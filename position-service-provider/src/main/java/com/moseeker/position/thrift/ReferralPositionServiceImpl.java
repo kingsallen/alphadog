@@ -39,4 +39,11 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public void updatePointsConfig(int companyId, int flag) throws TException {
+        referralPositionService.updatePointsConfig(companyId,flag);
+    }
+
+
 }
