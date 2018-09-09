@@ -125,7 +125,8 @@ service PositionServices {
 
      common_struct.Response getPositionFeatureBetch(1:list<i32> pidList);
 
-
+    //内推职位列表
+    list<position_struct.WechatPositionListData> getReferralPositionList(1: map<string,string> query);
 }
 /*
 	查询第三方自定义职能
@@ -141,6 +142,7 @@ service PositionDao{
 service ReferralPositionServices{
     void putReferralPositions(1:list<i32> pids);
     void delReferralPositions(1:list<i32> pids);
+    void updatePointsConfig(1:i32 companyId,2:i32 flag);
 }
 
 /*
