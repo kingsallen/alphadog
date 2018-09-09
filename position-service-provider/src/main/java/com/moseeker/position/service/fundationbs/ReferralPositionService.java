@@ -1,6 +1,6 @@
 package com.moseeker.position.service.fundationbs;
 
-import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.db.referraldb.tables.daos.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.entity.PositionEntity;
@@ -21,7 +21,7 @@ public class ReferralPositionService {
     PositionEntity positionEntity;
 
     @Autowired
-    ReferralCompanyConfDao referralCompanyConfJooqDao;
+    ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
 
     @CounterIface
     @Transactional
@@ -39,7 +39,6 @@ public class ReferralPositionService {
     public void updatePointsConfig(Integer companyId,Integer flag)  {
 
         ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
-
         if(referralCompanyConf != null) {
             referralCompanyConf.setPositionPointsFlag(flag.byteValue());
             referralCompanyConfJooqDao.update(referralCompanyConf);
