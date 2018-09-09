@@ -109,6 +109,9 @@ struct WechatPositionListData {
     21: optional string requirement,
     22: optional string city_ename,
     23: optional i32 is_referral
+    24: optional i32 employment_type;
+    25: optional string employment_type_name;
+
 }
 
 // 微信端职位列表的附加红包信息

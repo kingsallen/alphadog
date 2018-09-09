@@ -165,6 +165,7 @@ public class PositionService {
     @Autowired
     LiePinReceiverHandler receiverHandler;
 
+
     private ThreadPool pool = ThreadPool.Instance;
 
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
@@ -1888,6 +1889,7 @@ public class PositionService {
                     e.setRequirement(jr.getRequirement());
                     e.setTotalNum(count);
                     e.setIs_referral(jr.getIsReferral());
+                    e.setEmployment_type(jr.getEmploymentType());
                     dataList.add(e);
                     break;
                 }
@@ -2634,4 +2636,48 @@ public class PositionService {
         }
         return flag;
     }
+
+
+    /**
+     * 获取内职位列表
+     *
+     * @param query 查询条件
+     * @return 微信端职位列表信息
+     */
+    @CounterIface
+    public List<WechatPositionListData> getReferralPositionList(Map<String,String> query) {
+
+        List<WechatPositionListData> dataList = new ArrayList<>();
+        try {
+
+            Response res =  searchengineServices.searchPositionSuggest(query);
+
+            if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
+                JSONObject jobj = JSON.parseObject(res.getData());
+                long totalNum = jobj.getLong("totalNum");
+                JSONArray jsonArray  =  jobj.getJSONArray("suggest");
+
+                List<Integer> jdIdList = new ArrayList<>();
+
+                if(jsonArray!=null&&jsonArray.size()>0){
+                    for(int j=0;j<jsonArray.size();j++) {
+                        JSONObject object = jsonArray.getJSONObject(j);
+                        Integer pid = object.getIntValue("id");
+                        jdIdList.add(pid);
+                    }
+                }
+
+                dataList = this.getWxPosition(jdIdList,(int)totalNum);
+            } else {
+                return new ArrayList<>();
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return new ArrayList<>();
+        } finally {
+            // do nothing
+        }
+        return dataList;
+    }
+
 }
