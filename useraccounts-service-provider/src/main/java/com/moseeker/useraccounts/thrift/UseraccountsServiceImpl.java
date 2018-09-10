@@ -4,7 +4,6 @@ import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;

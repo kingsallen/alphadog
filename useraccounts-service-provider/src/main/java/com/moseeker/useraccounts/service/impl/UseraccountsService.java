@@ -49,11 +49,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
-<<<<<<< HEAD
-import java.util.*;
-=======
 import com.moseeker.useraccounts.service.impl.pojos.ClaimForm;
->>>>>>> 增加推荐简历加积分
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -64,6 +60,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -223,7 +223,7 @@ public class UseraccountsService {
                     resp.put("name", user.getName());
                     resp.put("headimg", user.getHeadimg());
 
-                    user.setLastLoginTime(new Timestamp(new Date().getTime()));
+                    user.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
                     user.setLoginCount(user.getLoginCount() + 1);
 
                     userdao.updateRecord(user);
@@ -1171,7 +1171,6 @@ public class UseraccountsService {
         return false;
     }
 
-<<<<<<< HEAD
     public Response getUserSearchPositionHistory(int userId) throws BIZException {
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         List<String> history = null;
@@ -1186,7 +1185,6 @@ public class UseraccountsService {
         redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         return ResponseUtils.success("");
     }
-=======
     /**
      * 认领员工推荐卡片
      * @param claimForm 参数
@@ -1204,7 +1202,6 @@ public class UseraccountsService {
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
->>>>>>> 增加推荐简历加积分
 
         if (!claimForm.getName().equals(userUserDO.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
