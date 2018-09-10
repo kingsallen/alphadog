@@ -41,6 +41,9 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException ERMPLOYEE_REFERRAL_TYPE_NOT_EXIST = new UserAccountException(42032, "职位信息不存在!");
     public static final UserAccountException ERMPLOYEE_REFERRAL_LOG_NOT_EXIST = new UserAccountException(42033, "推荐记录不存在!");
     public static final UserAccountException ERMPLOYEE_REFERRAL_USER_NOT_EXIST = new UserAccountException(42034, "用户信息不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_USER_NOT_WRITE = new UserAccountException(42035, "用户信息错误!");
+
+    public static final UserAccountException INVALID_SMS_CODE = new UserAccountException(10011, "无效验证码！");
 
     private final int code;
 

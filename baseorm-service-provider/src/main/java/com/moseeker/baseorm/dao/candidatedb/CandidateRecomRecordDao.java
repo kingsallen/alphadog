@@ -488,4 +488,18 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
 
         return recomRecordRecord1.getId();
     }
+
+    /**
+     * 修改推荐人
+     * @param postUserId 历史推荐人
+     * @param referenceId 被推荐人
+     * @param id 新推荐人
+     */
+    public void changePostUserId(int postUserId, Integer referenceId, int id) {
+        create.update(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                .set(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID, id)
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(postUserId))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(referenceId))
+                .execute();
+    }
 }
