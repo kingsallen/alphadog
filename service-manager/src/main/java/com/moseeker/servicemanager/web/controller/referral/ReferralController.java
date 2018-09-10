@@ -92,7 +92,7 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.POST)
     @ResponseBody
-    public String referralProfile(@PathVariable int id, @RequestParam ReferralForm referralForm) throws Exception {
+    public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("手机", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
@@ -122,7 +122,7 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.GET)
     @ResponseBody
-    public String postCandidateInfo(@PathVariable int id, @RequestParam CandidateInfo form) throws Exception {
+    public String postCandidateInfo(@PathVariable int id, @RequestBody CandidateInfo form) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredStringValidate("姓名", form.getName());
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
@@ -152,7 +152,7 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.POST)
     @ResponseBody
-    public String setReferralType(@PathVariable int id, @RequestParam PCUploadProfileTypeForm form) throws Exception {
+    public String setReferralType(@PathVariable int id, @RequestBody PCUploadProfileTypeForm form) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("职位", form.getPosition(), 1, null);
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
@@ -178,7 +178,7 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.GET)
     @ResponseBody
-    public String getReferralType(@PathVariable int id, @RequestParam PCUploadProfileTypeForm form) throws Exception {
+    public String getReferralType(@PathVariable int id, @RequestBody PCUploadProfileTypeForm form) throws Exception {
         if (form.getAppid() == 0) {
             return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
         }
@@ -210,7 +210,7 @@ public class ReferralController {
 
     @RequestMapping(value = "/v1/referral/claim", method = RequestMethod.POST)
     @ResponseBody
-    public String claimReferralCard(@RequestParam ClainForm clainForm) throws Exception {
+    public String claimReferralCard(@RequestBody ClainForm clainForm) throws Exception {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("appid", clainForm.getAppid(), 1, null);
