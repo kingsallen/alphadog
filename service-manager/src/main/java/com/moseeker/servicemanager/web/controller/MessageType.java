@@ -9,7 +9,9 @@ package com.moseeker.servicemanager.web.controller;
  */
 public enum MessageType {
 
-    PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!");
+    PROGRAM_PARAM_NOTEXIST(90015, "参数不正确!"),
+    APPID_NOT_EXIST(90017, "请设置appid！");
+
     private MessageType(int code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -29,5 +31,4 @@ public enum MessageType {
     public void setMsg(String msg){
         this.msg = msg;
     }
-
 }

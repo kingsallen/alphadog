@@ -3,6 +3,7 @@ package com.moseeker.entity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -21,18 +22,14 @@ import com.moseeker.common.util.EmojiFilter;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ProfileException;
-import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.entity.pojo.resume.Status;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import java.sql.Timestamp;
-
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
@@ -50,6 +47,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -69,6 +67,9 @@ public class ProfileEntity {
 
     @Autowired
     ProfileParseUtil profileParseUtil;
+
+    @Autowired
+    private ProfileMailUtil profileMailUtil;
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -87,7 +88,12 @@ public class ProfileEntity {
      * @return
      */
     public ResumeObj profileParserAdaptor(String fileName, String file) throws TException, IOException {
-       return profileParser(fileName, file);
+        ResumeObj resumeObj =  profileParser(fileName, file);
+        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+        if(resumeObj != null && resumeObj.getAccount() != null && resumeObj.getAccount().getUsage_remaining() < 1000){
+            profileMailUtil.sendProfileParseWarnMail(resumeObj.getAccount());
+        }
+        return resumeObj;
     }
 
     /**
@@ -622,6 +628,7 @@ public class ProfileEntity {
     /**
      * 将用户信息持久化到数据库中
      * todo 应该要移到用户实体中
+     * todo 内推业务已改移出仟寻用户生成的业务之外
      * @param profilePojo 简历数据
      * @param reference 推荐人
      * @param companyId 公司编号
@@ -629,7 +636,8 @@ public class ProfileEntity {
      * @return 用户编号
      */
     @Transactional
-    public UserUserRecord storeUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source) throws ProfileException {
+    public UserUserRecord storeChatBotUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source)
+            throws ProfileException {
 
         UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
         if (employeeRecord == null) {
@@ -638,32 +646,57 @@ public class ProfileEntity {
         //获取companyUser
         //Redis 同步锁
 
-        UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference,
-                companyId, profilePojo.getUserRecord().getMobile());
         if (profilePojo.getUserRecord() != null) {
-            if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
-                profilePojo.getUserRecord().setPassword("");
+            UserReferralRecordRecord referralRecordRecord = userReferralRecordDao.insertIfNotExist(reference, companyId,
+                    profilePojo.getUserRecord().getMobile(),
+                            ReferralScene.ChatBot);
+
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, source);
+            if (referralRecordRecord != null && userUserRecord1 != null) {
+                referralRecordRecord.setUserId(userUserRecord1.getId());
+                userReferralRecordDao.updateRecord(referralRecordRecord);
             }
-            short shortSource = 0;
-            if (source != null) {
-                shortSource = (short) source.getValue();
-            }
-            profilePojo.getUserRecord().setSource(shortSource);
-            UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+            return userUserRecord1;
 
-            referralRecordRecord.setUserId(userUserRecord.getId());
-            userReferralRecordDao.updateRecord(referralRecordRecord);
-
-
-            logger.info("mergeProfile userId:{}", userUserRecord.getId());
-            profilePojo.setUserRecord(userUserRecord);
-            profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
-            storeProfile(profilePojo);
-
-            return userUserRecord;
         } else {
             throw ProfileException.PROFILE_USER_CREATE_FAILED;
         }
+    }
+
+    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
+
+        UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
+                companyId, profilePojo.getUserRecord().getMobile(),
+                ReferralScene.Referral);
+        if (referralRecordRecord != null) {
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL);
+            if (referralRecordRecord != null && userUserRecord1 != null) {
+                referralRecordRecord.setUserId(userUserRecord1.getId());
+                userReferralRecordDao.updateRecord(referralRecordRecord);
+            }
+            return userUserRecord1;
+        } else {
+            throw ProfileException.PROGRAM_DOUBLE_CLICK;
+        }
+    }
+
+    private UserUserRecord storeUserRecord(ProfilePojo profilePojo, UserSource source) {
+        if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
+            profilePojo.getUserRecord().setPassword("");
+        }
+        short shortSource = 0;
+        if (source != null) {
+            shortSource = (short) source.getValue();
+        }
+        profilePojo.getUserRecord().setSource(shortSource);
+        UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
+
+        logger.info("mergeProfile userId:{}", userUserRecord.getId());
+        profilePojo.setUserRecord(userUserRecord);
+        profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
+        storeProfile(profilePojo);
+
+        return userUserRecord;
     }
 
     @Autowired

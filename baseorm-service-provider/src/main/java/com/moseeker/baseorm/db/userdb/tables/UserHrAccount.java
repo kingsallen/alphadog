@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
 
-    private static final long serialVersionUID = -596905637;
+    private static final long serialVersionUID = 78020497;
 
     /**
      * The reference instance of <code>userdb.user_hr_account</code>
@@ -157,9 +157,9 @@ public class UserHrAccount extends TableImpl<UserHrAccountRecord> {
     public final TableField<UserHrAccountRecord, Byte> LEAVE_TO_MOBOT = createField("leave_to_mobot", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "HR聊天是否托管给智能招聘助手，0 不托管，1 托管");
 
     /**
-     * The column <code>userdb.user_hr_account.remark_name</code>. 备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称
+     * The column <code>userdb.user_hr_account.remark_name</code>. 备注名
      */
-    public final TableField<UserHrAccountRecord, String> REMARK_NAME = createField("remark_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注名，是由HR主账号设置的对外显示名称，暂时在微信端聊天时使用到，即C端用户看到的HR名称");
+    public final TableField<UserHrAccountRecord, String> REMARK_NAME = createField("remark_name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "备注名");
 
     /**
      * Create a <code>userdb.user_hr_account</code> table reference
