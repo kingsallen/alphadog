@@ -2,23 +2,26 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+<<<<<<< HEAD
 import com.moseeker.thrift.gen.common.struct.BIZException;
+=======
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
+>>>>>>> 3e9142a05780eac20606ee30c8ba4d020f8036fb
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.service.impl.UseraccountsService;
+import com.moseeker.useraccounts.service.impl.pojos.ClaimForm;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.BindType;
-import com.moseeker.thrift.gen.useraccounts.struct.User;
-import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
-import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
-import com.moseeker.useraccounts.service.impl.UseraccountsService;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -538,6 +541,7 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 	}
 
+<<<<<<< HEAD
     @Override
     public Response getUserSearchPositionHistory(int userId) throws BIZException, TException {
         try {
@@ -563,6 +567,20 @@ public class UseraccountsServiceImpl implements Iface {
     }
 
     @Override
+=======
+	@Override
+	public void claimReferralCard(ClaimReferralCardForm form) throws BIZException, TException {
+		try {
+			ClaimForm claimForm = new ClaimForm();
+			BeanUtils.copyProperties(form, claimForm);
+			service.claimReferralCard(claimForm);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+>>>>>>> 3e9142a05780eac20606ee30c8ba4d020f8036fb
 	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {

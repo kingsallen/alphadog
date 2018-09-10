@@ -14,6 +14,8 @@ public final class Constant {
 
     public static final int BONUS = 2;  //默认红包金额
     public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
+    public static final String POINTS_CONF_REFINE_CANDIDATE= "完善被推荐人信息";
+    public static final String EMPLOYEE_PARSE_PROFILE_DOCUMENT = "员工简历简历数据";
 
     private Constant() throws AssertionError {
         throw new AssertionError();
@@ -79,6 +81,8 @@ public final class Constant {
     public static final int RECRUIT_STATUS_OFFERACCEPTED    = 11;      // 接受录取通知
     public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
+    public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
+    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;    // 工上传人才简历
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,

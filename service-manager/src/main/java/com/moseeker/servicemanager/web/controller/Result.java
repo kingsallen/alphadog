@@ -104,6 +104,11 @@ public class Result {
         return result;
     }
 
+    public static Result validateFailed(String message) {
+        Result result = new Result(MessageType.PROGRAM_PARAM_NOTEXIST.getCode(), message);
+        return result;
+    }
+
     public static Result success() {
         return new Result(0, "success");
     }

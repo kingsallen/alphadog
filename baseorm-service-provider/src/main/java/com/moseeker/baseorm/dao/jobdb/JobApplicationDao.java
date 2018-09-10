@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.nullif;
 
 /**
  * 封装申请表基本操作
@@ -127,13 +128,13 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	}
 
     /**
-     * insert 判断是否已存在
+     * insertIfNotExist 判断是否已存在
      * @param record
      * @return
      */
 	public ApplicationSaveResultVO addIfNotExists(JobApplicationRecord record) {
         List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
-        String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
+        String insertSql = " insertIfNotExist into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
                 .concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
                 .concat(" from dual where not exists ( ")
                 .concat(" select id from jobdb.job_application where ")
@@ -206,4 +207,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
 				.fetch();
 	}
+
+    public com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication getByUserIdAndPositionId(Integer referenceId, Integer positionId) {
+		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(referenceId))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+				.fetchOne();
+		if (record == null) {
+			return null;
+		} else {
+			return record.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
+		}
+    }
 }

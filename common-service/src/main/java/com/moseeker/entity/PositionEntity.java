@@ -1,28 +1,41 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
+import com.moseeker.baseorm.dao.referraldb.HistoryReferralPositionRelDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionRelDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
+import com.moseeker.entity.pojos.PositionInfo;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.position.service.HistoryReferralPositionRecordType;
 import org.jooq.Record1;
-import org.jooq.Record2;
 import org.jooq.Result;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,6 +62,23 @@ public class PositionEntity {
     @Autowired
     private HrCompanyFeatureDao hrCompanyFeatureDao;
 
+    @Autowired
+    private HrTeamDao teamDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private ReferralPositionRelDao referralPositionRelDao;
+
+    @Autowired
+    private HistoryReferralPositionRelDao historyReferralPositionRelDao;
+
+    @Autowired
+    private SearchengineEntity searchengineEntity;
+
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      * 查找职位信息
      * 城市信息，如果存在job_position_city 则取code对应的name；不存在则取jobdb.job_position.city
@@ -70,6 +100,53 @@ public class PositionEntity {
             }
         }
         return positionRecord;
+    }
+
+    /**
+     * 查找职位信息
+     * 城市信息，如果存在job_position_city 则取code对应的name；不存在则取jobdb.job_position.city
+     * @param ID 根据编号查找职位
+     * @return 职位信息
+     * @throws CommonException 异常信息
+     */
+    public PositionInfo getPositionInfo(int ID) throws CommonException {
+        JobPositionRecord positionRecord = positionDao.getPositionById(ID);
+        if (positionRecord != null) {
+
+            PositionInfo positionInfo = positionRecord.into(PositionInfo.class);
+
+            List<DictCityDO> dictCityDOList = positionCityDao.getPositionCitys(positionRecord.getId());
+
+            HrTeamDO teamDO = teamDao.getHrTeam(positionInfo.getTeamId());
+
+            HrCompanyDO companyDO = companyDao.getCompanyById(positionRecord.getCompanyId());
+
+
+            if (dictCityDOList != null && dictCityDOList.size() > 0) {
+                List<DictCity> cities = dictCityDOList.stream().map(struct -> {
+                    DictCity city = new DictCity();
+                    city.setEname(struct.getEname());
+                    city.setCode(struct.getCode());
+                    city.setName(struct.getName());
+                    return city;
+                }).collect(Collectors.toList());
+                positionInfo.setCities(cities);
+            }
+
+            if (teamDO != null) {
+                positionInfo.setTeamName(teamDO.getName());
+            }
+
+            if (companyDO != null) {
+                positionInfo.setCompanyName(companyDO.getName());
+                positionInfo.setCompanyAbbreviation(companyDO.getAbbreviation());
+                positionInfo.setLogo(companyDO.getLogo());
+            }
+
+            return positionInfo;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -230,4 +307,88 @@ public class PositionEntity {
     public List<JobPosition> getPositionInfoByIdList(List<Integer> positionIdList) {
         return positionDao.getJobPositionByIdList(positionIdList);
     }
+
+    /**
+     * 新增内推职位记录
+     * @param pids
+     */
+    public void putReferralPositions(List<Integer> pids){
+        List<ReferralPositionRel> records = new ArrayList<>();
+        logger.info("pids {}",pids);
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+
+        List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+        for(JobPositionDO jobPositionDO: jobPositionDOS) {
+
+            List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel> dbrecords = referralPositionRelDao.fetchByPositionId(jobPositionDO.getId());
+            //如果已经添加过记录,就跳过
+            if(!CollectionUtils.isEmpty(dbrecords)) {
+                continue;
+            }
+            //插入内推记录表
+            ReferralPositionRel referralPositionRel = new ReferralPositionRel();
+            referralPositionRel.setPositionId(jobPositionDO.getId());
+            referralPositionRel.setCompanyId(jobPositionDO.getCompanyId());
+            records.add(referralPositionRel);
+
+            //更新职位is_referral字段
+            jobPositionDO.setIs_referral(1);
+        }
+        referralPositionRelDao.insert(records);
+        positionDao.updateDatas(jobPositionDOS);
+
+        if(!CollectionUtils.isEmpty(records)) {
+            records.stream().forEach(rel->{
+                HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
+                historyReferralPositionRel.setCompanyId(rel.getCompanyId());
+                historyReferralPositionRel.setPositionId(rel.getPositionId());
+                historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.ADD.name());
+                historyReferralPositionRelDao.insert(historyReferralPositionRel);
+
+                //更新ES中职位is_referal字段为1
+                searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
+            });
+        }
+
+        logger.info("records {}", JSON.toJSON(records));
+        System.out.println(JSON.toJSON(records));
+    }
+
+    /**
+     * 删除内推职位记录
+     * @param pids
+     */
+    public void delReferralPositions(List<Integer> pids){
+
+        List<ReferralPositionRel> referralPositionRels = referralPositionRelDao.fetchReferralRecords(pids);
+
+        if(!CollectionUtils.isEmpty(referralPositionRels)) {
+            referralPositionRels.stream().forEach(rel->{
+                HistoryReferralPositionRel historyReferralPositionRel = new HistoryReferralPositionRel();
+                historyReferralPositionRel.setCompanyId(rel.getCompanyId());
+                historyReferralPositionRel.setPositionId(rel.getPositionId());
+                historyReferralPositionRel.setRecordType(HistoryReferralPositionRecordType.DELETE.name());
+                historyReferralPositionRelDao.insert(historyReferralPositionRel);
+
+                //更新ES中职位is_referal字段为0
+                searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+
+            });
+
+            referralPositionRelDao.delete(referralPositionRels);
+
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+
+            List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+            for(JobPositionDO jobPositionDO: jobPositionDOS) {
+                //更新内推标示
+                jobPositionDO.setIs_referral(0);
+            }
+            positionDao.updateDatas(jobPositionDOS);
+        }
+
+    }
+
 }

@@ -18,10 +18,12 @@ import org.jooq.impl.TableImpl;
 import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -427,5 +429,77 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
             candidateRecomRecordDOList = BeanUtils.DBToStruct(com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO.class, result);
         }
         return candidateRecomRecordDOList;
+    }
+
+
+    public int insertIfNotExist(CandidateRecomRecordRecord recomRecordRecord) {
+
+        Param<Integer> positionIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.getName(), recomRecordRecord.getPositionId());
+        Param<Integer> applicationIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.getName(), recomRecordRecord.getAppId());
+        Param<Timestamp> recomTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), new Timestamp(System.currentTimeMillis()));
+        Param<Integer> depthParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.DEPTH.getName(), recomRecordRecord.getDepth());
+        Param<String> reasonParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON.getName(), recomRecordRecord.getRecomReason());
+        Param<String> mobileParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE.getName(), recomRecordRecord.getMobile());
+        Param<Integer> presenteeUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPresenteeUserId());
+        Param<Integer> postUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
+        Param<Byte> genderParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER.getName(), recomRecordRecord.getGender());
+        Param<String> emailParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL.getName(), recomRecordRecord.getEmail());
+
+        create.insertInto(CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.DEPTH,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL
+        ).select(
+                select(
+                        positionIdParam,
+                        applicationIdParam,
+                        recomTimeParam,
+                        depthParam,
+                        reasonParam,
+                        mobileParam,
+                        presenteeUserIdParam,
+                        postUserIdParam,
+                        genderParam,
+                        emailParam
+                )
+                .whereNotExists(
+                        selectOne()
+                        .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                        .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                )
+        ).execute();
+
+        CandidateRecomRecordRecord recomRecordRecord1 = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc())
+                .limit(1)
+                .fetchOne();
+
+        return recomRecordRecord1.getId();
+    }
+
+    /**
+     * 修改推荐人
+     * @param postUserId 历史推荐人
+     * @param referenceId 被推荐人
+     * @param id 新推荐人
+     */
+    public void changePostUserId(int postUserId, Integer referenceId, int id) {
+        create.update(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                .set(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID, id)
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(postUserId))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(referenceId))
+                .execute();
     }
 }

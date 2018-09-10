@@ -11,9 +11,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -22,14 +20,12 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
-
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -632,7 +628,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     public JobPositionRecord getUniquePositionIgnoreDelete(int companyId, int source, int sourceId, String jobnumber) {
         return create.selectFrom(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
-                .and(JobPosition.JOB_POSITION.SOURCE.eq((short)source))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
                 .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(sourceId))
                 .and(JobPosition.JOB_POSITION.JOBNUMBER.eq(jobnumber))
                 .and(JobPosition.JOB_POSITION.STATUS.ne((byte)PositionStatus.DELETED.getValue()))

@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployee extends TableImpl<UserEmployeeRecord> {
 
-    private static final long serialVersionUID = -1096392506;
+    private static final long serialVersionUID = 641871824;
 
     /**
      * The reference instance of <code>userdb.user_employee</code>
@@ -198,9 +198,9 @@ public class UserEmployee extends TableImpl<UserEmployeeRecord> {
     public final TableField<UserEmployeeRecord, String> EMAIL = createField("email", org.jooq.impl.SQLDataType.VARCHAR.length(50).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "email");
 
     /**
-     * The column <code>userdb.user_employee.activation</code>. '员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证 5:取消关注，再关注
+     * The column <code>userdb.user_employee.activation</code>. '员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证
      */
-    public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "'员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证 5:取消关注，再关注");
+    public final TableField<UserEmployeeRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("3", org.jooq.impl.SQLDataType.TINYINT)), this, "'员工认证激活状态，0：认证成功，1：认证后取消认证 2：认证失败 3：未认证 4：认证后又认证了其他公司导致本条数据变成未认证");
 
     /**
      * The column <code>userdb.user_employee.activation_code</code>. 激活码

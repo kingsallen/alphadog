@@ -6,7 +6,6 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -14,6 +13,7 @@ import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionMiniBean;
@@ -35,15 +35,16 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PositionServicesImpl implements Iface {
@@ -75,6 +76,8 @@ public class PositionServicesImpl implements Iface {
     @Autowired
     private PositionMiniService positionMiniService;
 
+    @Autowired
+    private EmployeeEntity employeeEntity;
     /**
      * 获取推荐职位
      * <p></p>
@@ -686,6 +689,17 @@ public class PositionServicesImpl implements Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
+    }
+    @Override
+    public List<WechatPositionListData> getReferralPositionList(Map<String, String> query) throws TException {
+        String accountType = query.get("account_type");
+        String companyId = query.get("company_id");
+            if(accountType.equals("0")) {
+               List<Integer> companyIds =  employeeEntity.getCompanyIds(Integer.valueOf(companyId));
+                String company_id =  org.apache.commons.lang.StringUtils.join(companyIds.toArray(), ",");
+            query.put("company_id",company_id);
+            }
+        return service.getReferralPositionList(query);
     }
 
 }

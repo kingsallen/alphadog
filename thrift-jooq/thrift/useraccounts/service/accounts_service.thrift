@@ -74,11 +74,15 @@ service UseraccountsServices {
     // 换绑操作
     common_struct.Response userChangeBind(1:string unionid, 2: string countryCode, 3:string mobile);
 
+<<<<<<< HEAD
     common_struct.Response getUserSearchPositionHistory(1: i32 userId)throws (1: common_struct.BIZException e);
 
     common_struct.Response deleteUserSearchPositionHistory(1: i32 userId)throws (1: common_struct.BIZException e);
 
 
+=======
+    void claimReferralCard(1: useraccounts_struct.ClaimReferralCardForm form) throws (1: common_struct.BIZException e);
+>>>>>>> 3e9142a05780eac20606ee30c8ba4d020f8036fb
 }
 
 /**

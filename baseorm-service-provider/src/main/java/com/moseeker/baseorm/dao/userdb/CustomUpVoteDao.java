@@ -58,7 +58,10 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
      */
     public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote fetchUpVote(int receiver, int sender,
                                                                                       long start, long end) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3e9142a05780eac20606ee30c8ba4d020f8036fb
         UserEmployeeUpvoteRecord result = using(configuration())
                 .selectFrom(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE)
                 .where(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER.eq(receiver))
@@ -67,6 +70,7 @@ public class CustomUpVoteDao extends UserEmployeeUpvoteDao {
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.UPVOTE_TIME.le(new Timestamp(end)))
                 .and(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.CANCEL.eq((byte) UpVoteState.UpVote.getValue()))
                 .fetchOne();
+
         if (result != null) {
             return result.into(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote.class);
         } else {
