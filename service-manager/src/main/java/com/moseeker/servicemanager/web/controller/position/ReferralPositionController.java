@@ -1,11 +1,14 @@
 package com.moseeker.servicemanager.web.controller.position;
 
+import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.QRCodeUtil;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.position.bean.ReferralPointFlagVO;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
@@ -225,7 +228,11 @@ public class ReferralPositionController {
             }
             Response result  = referralPositionService.getPointsConfig(Integer.valueOf(companyId));
 
-            return ResponseLogNotification.success(request, result);
+            ReferralCompanyConf referralCompanyConf =  JSON.parseObject(result.getData(), ReferralCompanyConf.class);
+
+            ReferralPointFlagVO vo = new ReferralPointFlagVO(referralCompanyConf.getCompanyId(),Integer.valueOf(referralCompanyConf.getPositionPointsFlag()) );
+
+            return ResponseLogNotification.successJson(request, vo);
 
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
