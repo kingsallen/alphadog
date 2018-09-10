@@ -1893,8 +1893,8 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
      * @param record 简历数据
      * @param newUserId 简历的新的所有人
      */
-    public void changUserId(ProfileProfileRecord record, int newUserId) {
-        int execute = create.update(ProfileProfile.PROFILE_PROFILE)
+    public int changUserId(ProfileProfileRecord record, int newUserId) {
+        return create.update(ProfileProfile.PROFILE_PROFILE)
                 .set(ProfileProfile.PROFILE_PROFILE.USER_ID, newUserId)
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(record.getUserId()))
                 .and(ProfileProfile.PROFILE_PROFILE.ID.eq(record.getId()))
@@ -1903,8 +1903,5 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         .from(ProfileProfile.PROFILE_PROFILE)
                         .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(newUserId))
                 ).execute();
-        if (execute > 0) {
-            CompletenessCalculator.calculate
-        }
     }
 }

@@ -179,8 +179,9 @@ public class ReferralEntity {
         if (profileProfileRecord == null) {
             ProfileProfileRecord record = profileDao.getProfileByUserId(referralLog.getReferenceId());
             if (record != null) {
-                profileDao.changUserId(record, userUserDO.getId());
-                completeness.reCalculateProfileCompleteness(record.getId());
+                if (profileDao.changUserId(record, userUserDO.getId()) > 0) {
+                    completeness.reCalculateProfileCompleteness(record.getId());
+                }
             }
         }
 
