@@ -266,4 +266,6 @@ public final class Constant {
     public static final int UPPER_LIMIT = 500;  //接口处理的数据量的上限
 
     public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
+
+    public static final String COMPANY_LOGO_DEFAULT = "http://o6yey4xgg.bkt.clouddn.com/common/images/default-company-logo.jpg";
 }
