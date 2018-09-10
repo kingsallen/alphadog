@@ -23,7 +23,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 邮件额度每天使用日志
+ * 公司和CS匹配表
  */
 @Generated(
     value = {
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyCs extends TableImpl<HrCompanyCsRecord> {
 
-    private static final long serialVersionUID = -160284513;
+    private static final long serialVersionUID = 1663087523;
 
     /**
      * The reference instance of <code>hrdb.hr_company_cs</code>
@@ -94,7 +94,7 @@ public class HrCompanyCs extends TableImpl<HrCompanyCsRecord> {
     }
 
     private HrCompanyCs(String alias, Table<HrCompanyCsRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "邮件额度每天使用日志");
+        super(alias, null, aliased, parameters, "公司和CS匹配表");
     }
 
     /**

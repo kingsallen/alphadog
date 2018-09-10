@@ -58,4 +58,12 @@ public class HrWxHrChatListDao extends JooqCrudImpl<HrWxHrChatListDO, HrWxHrChat
                 .where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID.eq(roomId))
                 .fetch();
     }
+
+
+    public int updateWelcomeStatusByHrAccountId(int hrId){
+        return create.update(HrWxHrChatList.HR_WX_HR_CHAT_LIST)
+                .set(HrWxHrChatList.HR_WX_HR_CHAT_LIST.WELCOME_STATUS, (byte)1)
+                .where(HrWxHrChatList.HR_WX_HR_CHAT_LIST.HRACCOUNT_ID.eq(hrId))
+                .execute();
+    }
 }

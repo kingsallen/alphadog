@@ -1591,6 +1591,13 @@ public class PositionService {
 
             logger.info("getPositionList did:{},company_id:{},query:{}", query.getDid(), query.getCompany_id(), BeanUtils.convertStructToJSON(query));
 
+            //记录搜索历史
+            if(query.getUser_id()> 0 && StringUtils.isNotNullOrEmpty(query.getKeywords())) {
+                pool.startTast(() -> {
+                    updateRedisUserSearchPositionHistory(query.getUser_id(), query.getKeywords());
+                    return 0;
+                });
+            }
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
@@ -1675,6 +1682,23 @@ public class PositionService {
             // do nothing
         }
         return dataList;
+    }
+
+    private void updateRedisUserSearchPositionHistory(int userId, String keywords){
+        String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
+        List<String> history = null;
+        if(StringUtils.isNotNullOrEmpty(info)){
+            history = (List)JSONObject.parse(info);
+        }else{
+            history = new ArrayList<>();
+        }
+        history.remove(keywords);
+        history.add(0, keywords);
+        if(history.size()>10){
+            history.remove(history.size()-1);
+        }
+        String result = JSONObject.toJSONString(history);
+        redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId), result);
     }
 
     /*
