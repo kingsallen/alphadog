@@ -1231,8 +1231,8 @@ public class TalentPoolService {
 
             if(!StringUtils.isEmptyList(tagProfileList)){
                 for(Map<String, Object> map:tagProfileList){
-                    TalentpoolCompanyTag companyTag= (TalentpoolCompanyTag) map.get("company_tag");
-                    int id=companyTag.getId();
+                    Map<String, Object> companyTag= (Map<String, Object>) map.get("company_tag");
+                    int id=(Integer)companyTag.get("id");
                     //获取企业标签下人数
                     int totalNum=tagService.getTagtalentNum(hrId,companyId,id);
                     map.put("person_num",totalNum);

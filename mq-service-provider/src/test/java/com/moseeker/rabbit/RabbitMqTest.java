@@ -2,6 +2,7 @@
 //
 //import com.moseeker.common.util.MD5Util;
 //import com.moseeker.mq.config.AppConfig;
+//import com.moseeker.mq.rabbit.Sender;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = AppConfig.class)
 //public class RabbitMqTest {
+//    @Autowired
+//    Sender sender;
+//
 //    @Test
 //   public  void test(){
 //       String MDString= MD5Util.md5(39978+""+123212+""+new Date().getTime());
@@ -23,4 +27,9 @@
 //       System.out.println(MDString);
 //   }
 //
+//
+//    @Test
+//    public void senderTest(){
+//       sender.send("测试数据");
+//   }
 //}
