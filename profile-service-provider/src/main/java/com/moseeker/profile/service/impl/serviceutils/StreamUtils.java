@@ -81,6 +81,7 @@ public class StreamUtils {
             fop.flush();
             fop.close();
         } catch (Exception e) {
+            logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_FILE_SAVE_FAILED;
         }
 
