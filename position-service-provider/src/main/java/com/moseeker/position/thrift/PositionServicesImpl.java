@@ -694,10 +694,10 @@ public class PositionServicesImpl implements Iface {
     public List<WechatPositionListData> getReferralPositionList(Map<String, String> query) throws TException {
         String accountType = query.get("account_type");
         String companyId = query.get("company_id");
-            if(accountType.equals("0")) {
+            if(StringUtils.isNotNullOrEmpty(accountType) && accountType.equals("0")) {
                List<Integer> companyIds =  employeeEntity.getCompanyIds(Integer.valueOf(companyId));
-                String company_id =  org.apache.commons.lang.StringUtils.join(companyIds.toArray(), ",");
-            query.put("company_id",company_id);
+               String company_id =  org.apache.commons.lang.StringUtils.join(companyIds.toArray(), ",");
+               query.put("company_id",company_id);
             }
         return service.getReferralPositionList(query);
     }
