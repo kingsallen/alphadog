@@ -1904,7 +1904,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(newUserId))
                 ).execute();
         if (execute > 0) {
-            CompletenessCalculator.calculate
+            //CompletenessCalculator.calcat
         }
     }
 }
