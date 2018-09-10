@@ -10,7 +10,7 @@ public enum ProfileMoveStateEnum {
     /**
      * 正在搬家
      */
-    MOVING((byte)0, "获取中"),
+    FAILED((byte)0, "获取失败"),
     /**
      * 简历搬家已经成功
      */
@@ -18,7 +18,7 @@ public enum ProfileMoveStateEnum {
     /**
      * 简历搬家失败
      */
-    FAILED((byte)2, "获取失败");
+    MOVING((byte)2, "获取中");
 
 
     byte value;

@@ -83,9 +83,20 @@ public class Tables {
     public static final TalentpoolTalent TALENTPOOL_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent.TALENTPOOL_TALENT;
 
     /**
-     * 简历搬家操作记录表
+     * The table <code>talentpooldb.talentpool_profile_move</code>.
      */
     public static final TalentpoolProfileMove TALENTPOOL_PROFILE_MOVE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE;
+
+    /**
+     * 凡是记录在该表的手机号对应的简历都是已成功入库的简历搬家简历，
+     但是如果简历搬家失败时根据status字段标记出哪些简历是搬家失败的，下次搬家时不会因为重新合并一次导致数据不准确
+     */
+    public static final TalentpoolProfileMoveDetail TALENTPOOL_PROFILE_MOVE_DETAIL = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL;
+
+    /**
+     * 简历搬家操作记录表
+     */
+    public static final TalentpoolProfileMoveRecord TALENTPOOL_PROFILE_MOVE_RECORD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD;
 
     /**
      * 人才库简历上传记录表

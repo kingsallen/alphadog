@@ -39,28 +39,29 @@ public class ProfileMoveReceiver {
 
     @RabbitHandler
     @RabbitListener(queues = {ProfileMoveConstant.PROFILE_MOVE_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    public void receiveEmailNum(Message message) {
+    public void receiveProfileMoveResult(Message message) {
         String json = "";
         try{
             logger.info("==============================接受邮件总数rabbitmq开始消费，message:{}", message);
             json=new String(message.getBody(), "UTF-8");
             Response response = JSONObject.parseObject(json, Response.class);
+            JSONObject params = JSONObject.parseObject(response.getData());
+            int operationId = params.getIntValue("operation_id");
+            TalentpoolProfileMoveRecord record = profileMoveDao.getProfileMoveById(operationId);
             if(response.getStatus() == 0){
-                JSONObject params = JSONObject.parseObject(response.getData());
-                int operationId = params.getIntValue("operation_id");
                 int totalEmailNum = params.getIntValue("success_email_num");
-                TalentpoolProfileMoveRecord record = profileMoveDao.getProfileMoveById(operationId);
                 if(record == null){
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_NOT_EXIST);
                 }
-                if(totalEmailNum == record.getCurrentEmailNum()){
-                    record.setStatus( ProfileMoveStateEnum.SUCCESS.getValue());
-                    profileMoveDao.updateRecord(record);
-                }
+                record.setTotalEmailNum(totalEmailNum);
+            }else{
+                // todo 发邮件给产品，修改搬家状态
+                mailUtil.sendMvHouseFailedEmail(null, "rabbitmq接收邮件总数时发生异常" + json);
+                record.setStatus(ProfileMoveStateEnum.FAILED.getValue());
             }
-
+            profileMoveDao.updateRecord(record);
         } catch (Exception e){
-            mailUtil.sendMvHouseFailedEmail(e, "rabbitmq接收邮件总数时发生异常");
+            mailUtil.sendMvHouseFailedEmail(e, "rabbitmq接收邮件总数时发生异常" + json);
             logger.error("handle profile move email num Error : {}, message :{}",e.getMessage(),json);
         }
     }

@@ -15,6 +15,10 @@ public class ProfileMoveConstant {
      */
     public final static String PROFILE_MOVE_QUEUE="mvhouse_queue";
     /**
+     * 简历搬家状态rabbitmq队列
+     */
+    public final static String PROFILE_MOVE_STATUS_QUEUE="mvhouse_status_queue";
+    /**
      * 简历搬家用户登录队列路由key
      */
     public final static String PROFILE_MOVE_ROUTING_KEY_REQUEST="mvhouse.request";

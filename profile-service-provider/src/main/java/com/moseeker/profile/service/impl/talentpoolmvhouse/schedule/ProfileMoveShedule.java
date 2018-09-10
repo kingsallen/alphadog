@@ -1,17 +1,22 @@
 package com.moseeker.profile.service.impl.talentpoolmvhouse.schedule;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDao;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.profile.utils.ProfileMailUtil;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +37,11 @@ public class ProfileMoveShedule {
 
     private final ProfileMailUtil mailUtil;
 
+    private final long timeOut = 5 * 60 * 1000;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
     @Autowired
     public ProfileMoveShedule(TalentPoolProfileMoveDao profileMoveDao, ProfileMailUtil mailUtil) {
         this.profileMoveDao = profileMoveDao;
@@ -45,8 +55,8 @@ public class ProfileMoveShedule {
      * @author cjm
      * @date 2018/7/9
      */
-    @Scheduled(cron = "0 0 0/2 * * ?")
-    public void refreshMoveHouseState() {
+//    @Scheduled(cron = "0 0/2 * * * ?")
+    public void refreshEmailNum() {
         try {
             Date date = new Date();
             long timeout = 2 * 60 * 60 * 1000;
@@ -81,5 +91,42 @@ public class ProfileMoveShedule {
             mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常");
             logger.error(e.getMessage(), e);
         }
+    }
+
+    /**
+     * [{
+     *     time:""
+     * },
+     * {
+     *     time:""
+     * }
+     * ]
+     */
+//    @Scheduled(cron = "0 0/2 * * * ?")
+    public void refreshMoveHouseState() {
+        // todo 从redis中取出time，opt_id，如果比当前时间小5分钟以上，更改简历搬家状态，删除reidis中对应的缓存
+        String redisKey = "profile_move";
+        String value = redisClient.get(0, redisKey, null);
+        JSONObject jsonObject = JSONObject.parseObject(value);
+        String time = "";
+        long currentTime = System.currentTimeMillis();
+        long cacheTime = 0;
+        List<Integer> ids = new ArrayList<>();
+        try {
+            cacheTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(currentTime - cacheTime > timeOut){
+            // todo 将操作id加入list
+            redisClient.del(0, redisKey, null);
+        }
+        // 批量更新
+        try {
+            profileMoveDao.batchUpdateStatus(ids, ProfileMoveStateEnum.FAILED.getValue());
+        } catch (BIZException e) {
+            e.printStackTrace();
+        }
+
     }
 }

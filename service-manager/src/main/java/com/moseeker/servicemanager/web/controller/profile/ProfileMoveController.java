@@ -48,26 +48,12 @@ public class ProfileMoveController {
             Object obj = params.get("profile_move_vo");
             ProfileMoveForm form = JSONObject.parseObject(JSON.toJSONString(obj), ProfileMoveForm.class);
             Integer hrId = form.getHr_id();
-            Integer companyId = form.getCompany_id();
             Integer channel = form.getChannel();
-            Integer crawlType = form.getCrawl_type();
-            String startDate = form.getStart_date();
-            String endDate = form.getEnd_date();
-
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addIntTypeValidate("hrId", hrId, null, null, 1, Integer.MAX_VALUE);
             validateUtil.addRequiredValidate("hrId", hrId, null, null);
-            validateUtil.addIntTypeValidate("公司id", companyId, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addRequiredValidate("公司id", companyId, null, null);
             validateUtil.addIntTypeValidate("渠道", channel, null, null, 1, Integer.MAX_VALUE);
             validateUtil.addRequiredValidate("渠道", channel, null, null);
-            validateUtil.addIntTypeValidate("简历类型", crawlType, null, null, 1, Integer.MAX_VALUE);
-            validateUtil.addRequiredValidate("简历类型", crawlType, null, null);
-            validateUtil.addStringLengthValidate("开始时间", startDate, null, null, 0, 50);
-            validateUtil.addRequiredValidate("开始时间", crawlType, null, null);
-            validateUtil.addStringLengthValidate("结束时间", endDate, null, null, 0, 50);
-            validateUtil.addRequiredValidate("结束时间", crawlType, null, null);
-
             String message = validateUtil.validate();
 
             if (StringUtils.isBlank(message)) {

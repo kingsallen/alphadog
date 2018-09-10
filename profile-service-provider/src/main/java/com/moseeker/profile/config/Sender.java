@@ -48,6 +48,6 @@ public class Sender {
         // 延迟发送，避免大量请求在同一时间发送
         msp.setDelay(random.nextInt(5000));
         amqpTemplate.send(exchange, routingKey, MessageBuilder.withBody(formParams.getBytes()).andProperties(msp).build());
-        System.out.println("send success...");
+        logger.info("send success...");
     }
 }
