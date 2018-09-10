@@ -2,14 +2,10 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
-<<<<<<< HEAD
-import com.moseeker.thrift.gen.common.struct.BIZException;
-=======
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
->>>>>>> 3e9142a05780eac20606ee30c8ba4d020f8036fb
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices.Iface;
@@ -541,7 +537,6 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 	}
 
-<<<<<<< HEAD
     @Override
     public Response getUserSearchPositionHistory(int userId) throws BIZException, TException {
         try {
@@ -566,8 +561,6 @@ public class UseraccountsServiceImpl implements Iface {
         }
     }
 
-    @Override
-=======
 	@Override
 	public void claimReferralCard(ClaimReferralCardForm form) throws BIZException, TException {
 		try {
@@ -580,7 +573,6 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
->>>>>>> 3e9142a05780eac20606ee30c8ba4d020f8036fb
 	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {
