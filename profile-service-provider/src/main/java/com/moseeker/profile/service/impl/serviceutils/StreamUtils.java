@@ -62,7 +62,7 @@ public class StreamUtils {
             if (!rootFile.exists()) {
                 rootFile.mkdir();
             }
-            File monthFile = new File(dirAddress+File.pathSeparator+monthFileName);
+            File monthFile = new File(dirAddress+File.separator+monthFileName);
             if (!monthFile.exists()) {
                 monthFile.mkdir();
             }
@@ -70,9 +70,9 @@ public class StreamUtils {
 
         String fileName = UUID.randomUUID().toString()+"."+suffix;
         fileNameData.setFileName(fileName);
-        fileNameData.setFileAbsoluteName(dirAddress+File.pathSeparator+monthFileName+File.pathSeparator+fileName);
+        fileNameData.setFileAbsoluteName(dirAddress+File.separator+monthFileName+File.separator+fileName);
 
-        File file = new File(dirAddress+File.pathSeparator+monthFileName+File.pathSeparator+fileName);
+        File file = new File(dirAddress+File.separator+monthFileName+File.separator+fileName);
         try (FileOutputStream fop = new FileOutputStream(file)) {
             if (!file.exists()) {
                 file.createNewFile();
