@@ -143,6 +143,7 @@ service ReferralPositionServices{
     void putReferralPositions(1:list<i32> pids);
     void delReferralPositions(1:list<i32> pids);
     void updatePointsConfig(1:i32 companyId,2:i32 flag);
+    common_struct.Response getPointsConfig(1:i32 companyId);
 }
 
 /*

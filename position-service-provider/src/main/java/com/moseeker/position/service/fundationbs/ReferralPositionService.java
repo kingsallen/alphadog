@@ -3,7 +3,9 @@ package com.moseeker.position.service.fundationbs;
 import com.moseeker.baseorm.db.referraldb.tables.daos.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.entity.PositionEntity;
+import com.moseeker.thrift.gen.common.struct.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,24 @@ public class ReferralPositionService {
             referralCompanyConfJooqDao.insert(referralCompanyConf1);
         }
 
+
+    }
+
+    @CounterIface
+    @Transactional
+    public Response getPointsConfig(Integer companyId) {
+
+        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
+
+        if(referralCompanyConf != null) {
+            return ResponseUtils.success(referralCompanyConf);
+
+        } else {
+
+            ReferralCompanyConf newReferralCompanyConf  = new ReferralCompanyConf();
+            newReferralCompanyConf.setPositionPointsFlag((byte)0);
+            return ResponseUtils.success(newReferralCompanyConf);
+        }
 
     }
 }

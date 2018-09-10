@@ -7,6 +7,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
@@ -198,6 +199,34 @@ public class ReferralPositionController {
             referralPositionService.updatePointsConfig(comapanyId,flag);
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 根据companyID 查看只针对内推职位是否开启积分奖励
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/referral/company/config/pointsflag", method = RequestMethod.GET)
+    @ResponseBody
+    public String getConfigPointsFlag(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil validateUtil = new ValidateUtil();
+            Integer comapanyId = params.getInt("company_id");
+            validateUtil.addRequiredStringValidate("company_id", comapanyId);
+
+            if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
+                return ResponseLogNotification.failJson(request, validateUtil.getResult());
+            }
+            Response result  = referralPositionService.getPointsConfig(comapanyId);
+
+            return ResponseLogNotification.success(request, result);
+
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
