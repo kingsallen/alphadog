@@ -74,7 +74,7 @@ service UseraccountsServices {
     // 换绑操作
     common_struct.Response userChangeBind(1:string unionid, 2: string countryCode, 3:string mobile);
 
-
+    void claimReferralCard(1: useraccounts_struct.ClaimReferralCardForm form) throws (1: common_struct.BIZException e);
 }
 
 /**

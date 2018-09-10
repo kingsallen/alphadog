@@ -290,7 +290,9 @@ public class ReferralServiceImpl implements ReferralService {
         if (userRecord != null) {
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
-            profileEntity.mergeProfile(profilePojo, userRecord.getId());
+            if (StringUtils.isBlank(userRecord.getUsername())) {
+                profileEntity.mergeProfile(profilePojo, userRecord.getId());
+            }
         } else {
             userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId());
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
@@ -318,7 +320,7 @@ public class ReferralServiceImpl implements ReferralService {
                     applicationId = jsonObject1.getInteger("jobApplicationId");
                 }
                 referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
-                        mobile, employeeDO.getSysuserId(), userId, gender, email);
+                        mobile, employeeDO, userId, gender, email);
 
                 return response;
             } catch (Exception e) {
