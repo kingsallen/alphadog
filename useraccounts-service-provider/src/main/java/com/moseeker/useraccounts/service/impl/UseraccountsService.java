@@ -60,7 +60,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1185,6 +1184,7 @@ public class UseraccountsService {
         redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         return ResponseUtils.success("");
     }
+
     /**
      * 认领员工推荐卡片
      * @param claimForm 参数
