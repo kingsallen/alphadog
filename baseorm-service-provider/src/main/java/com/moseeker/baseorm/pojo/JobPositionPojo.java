@@ -98,6 +98,4 @@ public class JobPositionPojo {
     public SearchData search_data;
     public List<Map<String,Object>> position_feature;
     public String city_ename;
-
-    public int is_referral;//是否是内推职位 1 是 0不是
 }

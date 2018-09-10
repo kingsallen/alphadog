@@ -272,7 +272,7 @@ public class QRCodeUtil {
     /**
      *
      * @param matrix 二维码矩阵相关
-     * @param logoPath logo路径
+     * @param logoUrl logo路径
      * @throws IOException
      */
     public static BufferedImage writeLogoToQrcode(BitMatrix matrix,String logoUrl,int ratio) throws IOException {
