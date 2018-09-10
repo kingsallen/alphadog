@@ -101,7 +101,7 @@ public class ReferralServiceImpl implements ReferralService {
         }
 
         byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
-        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
         FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
         profileDocParseResult.setFile(fileNameData.getFileName());
         fileNameData.setOriginName(fileName);
@@ -123,6 +123,8 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+
+
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", JSONObject.toJSONString(profilePojo), 24*60*60);

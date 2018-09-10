@@ -12,9 +12,8 @@ import com.moseeker.common.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 简历工具类
@@ -398,6 +397,100 @@ public class ProfilePojo {
 		}
 
 		return pojo;
+	}
+
+	public String toJson() {
+		Map<String, Object> map = new HashMap<>();
+
+		if (this.userRecord != null)
+			map.put("user", this.userRecord.intoMap());
+		if (this.profileRecord != null) {
+			map.put("profile", profileRecord.intoMap());
+		}
+		if (this.basicRecord != null) {
+			map.put("basic", this.basicRecord.intoMap());
+		}
+		if (this.attachmentRecords != null && this.attachmentRecords.size() > 0) {
+			List<Map<String, Object>> attachments = new ArrayList<>();
+			for (ProfileAttachmentRecord attachment : this.attachmentRecords) {
+				Map<String, Object> attachmentMap = attachment.intoMap();
+				attachments.add(attachmentMap);
+			}
+			map.put("attachments", attachments);
+		}
+		if (this.awardsRecords != null && this.awardsRecords.size() > 0) {
+			List<Map<String, Object>> awardsRecordList = new ArrayList<>();
+			for (ProfileAwardsRecord awardsRecord : this.awardsRecords) {
+				Map<String, Object> awardsRecordMap = awardsRecord.intoMap();
+				awardsRecordList.add(awardsRecordMap);
+			}
+			map.put("awards", awardsRecordList);
+		}
+		if (this.credentialsRecords != null && this.credentialsRecords.size() > 0) {
+			List<Map<String, Object>> credentialRecordList = new ArrayList<>(credentialsRecords.size());
+			for (ProfileCredentialsRecord profileCredentialsRecord : this.credentialsRecords) {
+				Map<String, Object> map1 = profileCredentialsRecord.intoMap();
+				credentialRecordList.add(map1);
+			}
+			map.put("credentials", credentialRecordList);
+		}
+		if (this.educationRecords != null && this.educationRecords.size() > 0) {
+
+			List<Map<String, Object>> educationList = new ArrayList<>(this.educationRecords.size());
+			for (ProfileEducationRecord profileEducationRecord: this.educationRecords) {
+				Map<String, Object> map1 = profileEducationRecord.intoMap();
+				educationList.add(map1);
+			}
+			map.put("educations", educationList);
+		}
+		if (this.importRecords != null) {
+			map.put("import", this.importRecords.intoMap());
+		}
+		if (this.intentionRecords != null && this.intentionRecords.size() > 0) {
+			List<Map<String, Object>> intentionList = new ArrayList<>(this.intentionRecords.size());
+			for (IntentionRecord intentionRecord : this.intentionRecords) {
+				intentionList.add(intentionRecord.intoMapNew());
+			}
+			map.put("intentions", intentionList);
+		}
+		if (this.languageRecords != null && this.languageRecords.size() > 0) {
+			List<Map<String, Object>> languageList = new ArrayList<>(this.languageRecords.size());
+			map.put("languages", languageList);
+		}
+		if (this.otherRecord != null) {
+			map.put("other", this.otherRecord.intoMap());
+		}
+		if (this.projectExps != null && this.projectExps.size() > 0) {
+			List<Map<String, Object>> projectExpList = new ArrayList<>(this.projectExps.size());
+			for (ProfileProjectexpRecord profileProjectexpRecord : this.projectExps) {
+				projectExpList.add(profileProjectexpRecord.intoMap());
+			}
+			map.put("projectexps", projectExpList);
+		}
+		if (this.skillRecords != null && this.skillRecords.size() > 0) {
+			List<Map<String, Object>> skillList = new ArrayList<>(this.skillRecords.size());
+			for (ProfileSkillRecord profileSkillRecord : this.skillRecords) {
+				skillList.add(profileSkillRecord.intoMap());
+			}
+			map.put("skills", skillList);
+		}
+		if (this.workexpRecords != null && this.workexpRecords.size() > 0) {
+			List<Map<String, Object>> workexpList = new ArrayList<>(this.workexpRecords.size());
+			for (ProfileWorkexpEntity profileWorkexpEntity : this.workexpRecords) {
+				workexpList.add(profileWorkexpEntity.intoMapNew());
+			}
+			map.put("workexps", workexpList);
+		}
+		if (this.worksRecords != null && this.worksRecords.size() > 0) {
+			List<Map<String, Object>> worksList = new ArrayList<>(this.worksRecords.size());
+			for (ProfileWorksRecord profileWorksRecord : this.worksRecords) {
+				worksList.add(profileWorksRecord.intoMap());
+			}
+			map.put("works", worksList);
+		}
+
+		return JSON.toJSONString(map);
+
 	}
 
 	public UserUserRecord getUserRecord() {
