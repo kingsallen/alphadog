@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.referraldb.tables.daos.ReferralCompanyConfJooqDao
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class ReferralPositionService {
 
     @Autowired
     ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
+
 
     @CounterIface
     @Transactional
