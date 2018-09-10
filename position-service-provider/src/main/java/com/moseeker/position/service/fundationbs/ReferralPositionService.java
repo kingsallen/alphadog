@@ -23,6 +23,7 @@ public class ReferralPositionService {
     @Autowired
     ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
 
+
     @CounterIface
     @Transactional
     public void putReferralPositions(List<Integer> pids){

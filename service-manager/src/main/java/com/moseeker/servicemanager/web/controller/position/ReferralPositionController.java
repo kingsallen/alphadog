@@ -3,7 +3,6 @@ package com.moseeker.servicemanager.web.controller.position;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.QRCodeUtil;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -13,7 +12,6 @@ import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,8 +38,6 @@ public class ReferralPositionController {
 
     private PositionServices.Iface positonServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
-    @Autowired
-    private EmployeeEntity employeeEntity;
     /**
      * 根据postionId 删除内推职位
      * @param request
