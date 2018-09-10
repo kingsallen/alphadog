@@ -243,6 +243,8 @@ public class DeliveryEmailProducer {
         if(StringUtils.isNotNullOrEmpty(company.getLogo())) {
             String logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
             emailInfo.setCompanyLogo(logo);
+        }else{
+            emailInfo.setCompanyLogo(Constant.COMPANY_LOGO_DEFAULT);
         }
         //邮件头像默认地址
         emailInfo.setHeadimg(env.getProperty("email.user.heading.url"));
