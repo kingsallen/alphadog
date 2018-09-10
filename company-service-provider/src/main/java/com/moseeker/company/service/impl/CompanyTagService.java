@@ -172,13 +172,21 @@ public class CompanyTagService {
                             deleList.add(delRecord);
                             String tagStr = JSON.toJSONString(tag);
                             Map<String, Object> tagMap = JSON.parseObject(tagStr);
-                            boolean isflag = companyFilterTagValidation.validateProfileAndComapnyTag(profiles, userId, companyId, tagMap);
-                            if (isflag) {
-                                TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                                record.setUserId(userId);
-                                record.setTagId((Integer) tag.get("id"));
-                                tagIdList.add((Integer) tag.get("id"));
-                                list.add(record);
+                            if (tagMap != null && !tagMap.isEmpty()) {
+                                Map<String, String> params = new HashMap<>();
+                                for (String key : tagMap.keySet()) {
+                                    params.put(key, String.valueOf(tagMap.get(key)));
+                                }
+                                params.put("size", "0");
+                                params.put("user_id", String.valueOf(userId));
+                                int total = service.queryCompanyTagUserIdListCount(params);
+                                if(total>0){
+                                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                                    record.setUserId(userId);
+                                    record.setTagId((Integer) tag.get("id"));
+                                    tagIdList.add((Integer) tag.get("id"));
+                                    list.add(record);
+                                }
                             }
                         }
                     }
