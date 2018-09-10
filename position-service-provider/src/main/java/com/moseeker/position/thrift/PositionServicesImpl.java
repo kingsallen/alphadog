@@ -13,6 +13,7 @@ import com.moseeker.common.constants.SyncRequestType;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.position.pojo.JobPostionResponse;
 import com.moseeker.position.pojo.PositionMiniBean;
@@ -75,6 +76,8 @@ public class PositionServicesImpl implements Iface {
     @Autowired
     private PositionMiniService positionMiniService;
 
+    @Autowired
+    private EmployeeEntity employeeEntity;
     /**
      * 获取推荐职位
      * <p></p>
@@ -689,6 +692,13 @@ public class PositionServicesImpl implements Iface {
     }
     @Override
     public List<WechatPositionListData> getReferralPositionList(Map<String, String> query) throws TException {
+        String accountType = query.get("account_type");
+        String companyId = query.get("company_id");
+            if(accountType.equals("0")) {
+               List<Integer> companyIds =  employeeEntity.getCompanyIds(Integer.valueOf(companyId));
+                String company_id =  org.apache.commons.lang.StringUtils.join(companyIds.toArray(), ",");
+            query.put("company_id",company_id);
+            }
         return service.getReferralPositionList(query);
     }
 
