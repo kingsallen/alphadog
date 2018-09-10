@@ -46,7 +46,7 @@ public class ProfileDocCheckTool {
             fileSupportParam = fileSupport;
         }
         for (String support : fileSupportParam) {
-            if (fileName.endsWith(support)) {
+            if (fileName.toUpperCase().endsWith(support)) {
                 return true;
             }
         }
