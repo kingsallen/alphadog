@@ -8,6 +8,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
+import com.moseeker.servicemanager.web.controller.referral.form.ClainForm;
 import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
 import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.tools.ProfileDocCheckTool;
@@ -19,6 +20,8 @@ import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.ReferralCard;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
+import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
@@ -40,6 +43,7 @@ public class ReferralController {
 
     private ProfileServices.Iface profileService =  ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
     private EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
+    private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
 
     /**
      * 员工上传简历
@@ -202,6 +206,30 @@ public class ReferralController {
         com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard card = new com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard();
         BeanUtils.copyProperties(referralCard, card);
         return Result.success(card).toJson();
+    }
+
+    @RequestMapping(value = "/v1/referral/claim", method = RequestMethod.POST)
+    @ResponseBody
+    public String claimReferralCard(@RequestParam ClainForm clainForm) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", clainForm.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("推荐卡片", clainForm.getReferralRecordId(), 1, null);
+        validateUtil.addIntTypeValidate("用户", clainForm.getUser(), 1, null);
+        validateUtil.addRequiredStringValidate("用户姓名", clainForm.getName());
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isNotBlank(validateResult)) {
+            ClaimReferralCardForm form = new ClaimReferralCardForm();
+            form.setName(clainForm.getName());
+            form.setMobile(clainForm.getMobile());
+            form.setReferralRecordId(clainForm.getReferralRecordId());
+            form.setUserId(clainForm.getUser());
+            form.setVerifyCode(clainForm.getVcode());
+            userService.claimReferralCard(form);
+            return Result.validateFailed(validateResult).toJson();
+        } else {
+            return Result.success(true).toJson();
+        }
     }
 
     private ReferralPositionInfo convertReferralPosition(ReferralPosition referralPosition) {

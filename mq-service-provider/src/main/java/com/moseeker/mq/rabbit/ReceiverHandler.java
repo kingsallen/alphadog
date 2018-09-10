@@ -64,8 +64,10 @@ public class ReceiverHandler {
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            employeeEntity.addAwardBefore(jsonObject.getIntValue("employeeId"), jsonObject.getIntValue("companyId"),
-                    jsonObject.getIntValue("positionId"), jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"), jsonObject.getIntValue("applicationId"));
+            employeeEntity.addAwardBefore(jsonObject.getIntValue("employeeId"),
+                    jsonObject.getIntValue("companyId"), jsonObject.getIntValue("positionId"),
+                    jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"),
+                    jsonObject.getIntValue("applicationId"));
         } catch (Exception e) {
             // 错误日志记录到数据库 的 log_dead_letter 表中
             LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
