@@ -64,7 +64,7 @@ public class ReferralController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(file.getName())) {
+            if (!ProfileDocCheckTool.checkFileName(file.getOriginalFilename())) {
                 return Result.fail("文件格式不支持！").toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
@@ -74,7 +74,7 @@ public class ReferralController {
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileProfile(employeeId, file.getName(), byteBuffer);
+                    profileService.parseFileProfile(employeeId, file.getOriginalFilename(), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
