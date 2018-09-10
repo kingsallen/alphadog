@@ -187,16 +187,16 @@ public class ReferralPositionController {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             ValidateUtil validateUtil = new ValidateUtil();
-            Integer comapanyId = params.getInt("company_id");
-            Integer flag = params.getInt("flag");
-            validateUtil.addRequiredStringValidate("company_id", comapanyId);
+            String companyId = params.getString("company_id");
+            String flag = params.getString("flag");
+            validateUtil.addRequiredStringValidate("company_id", companyId);
             validateUtil.addRequiredStringValidate("flag", flag);
 
             if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
                 return ResponseLogNotification.failJson(request, validateUtil.getResult());
             }
 
-            referralPositionService.updatePointsConfig(comapanyId,flag);
+            referralPositionService.updatePointsConfig(Integer.valueOf(companyId),Integer.valueOf(flag));
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
@@ -217,13 +217,13 @@ public class ReferralPositionController {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             ValidateUtil validateUtil = new ValidateUtil();
-            Integer comapanyId = params.getInt("company_id");
-            validateUtil.addRequiredStringValidate("company_id", comapanyId);
+            String companyId = params.getString("company_id");
+            validateUtil.addRequiredStringValidate("company_id", companyId);
 
             if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
                 return ResponseLogNotification.failJson(request, validateUtil.getResult());
             }
-            Response result  = referralPositionService.getPointsConfig(comapanyId);
+            Response result  = referralPositionService.getPointsConfig(Integer.valueOf(companyId));
 
             return ResponseLogNotification.success(request, result);
 
