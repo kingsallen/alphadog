@@ -1,9 +1,11 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.QRCodeUtil;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -165,9 +167,16 @@ public class ReferralPositionController {
             for(String key :map.keySet()) {
                 queryMapString.put(key,map.get(key).toString());
             }
-            
+            //HR后台接口只看内推职位,固定传is_referral=1
             queryMapString.put("is_referral","1");
+            String accountType = queryMapString.get("account_type");
+            String accountId  =queryMapString.get("account_id");
 
+            //如果HR使用子账号,那就只用publisher=accountId的所有职位,并将查询参数company_id设置为空
+            if(StringUtils.isNotNullOrEmpty(accountType) && accountType.equals(String.valueOf(HRAccountType.SubAccount.getType())) && StringUtils.isNotNullOrEmpty(accountId)) {
+                queryMapString.put("company_id","");
+                queryMapString.put("publisher",accountId);
+            }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
