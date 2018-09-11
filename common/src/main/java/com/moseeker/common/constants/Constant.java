@@ -183,6 +183,7 @@ public final class Constant {
 	
 	public static final String EMPLOYEE_AUTH_CODE = "EMPLOYEE_AUTH_CODE"; // 员工认证 （邮箱激活链接）
     public static final String EMPLOYEE_AUTH_INFO = "EMPLOYEE_AUTH_INFO"; // 员工认证（员工认证信息）
+    public static final String EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE = "[]"; // user_employee.custom_field_value默认值
 
 	public static final byte LOG_SMS_SENDRECORD_SYS_ALPHADOG = 5;
 	
@@ -239,7 +240,7 @@ public final class Constant {
     public static final int PAGE_SIZE=20;
     public static final int PAGE_=20;
 
-    public static final String CHINA_CODE ="86";
+    public static final String CHINA_ID ="43";
 
     public static final int DATABASE_PAGE_SIZE=500;
 
@@ -265,4 +266,6 @@ public final class Constant {
     public static final int UPPER_LIMIT = 500;  //接口处理的数据量的上限
 
     public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
+
+    public static final String COMPANY_LOGO_DEFAULT = "http://o6yey4xgg.bkt.clouddn.com/common/images/default-company-logo.jpg";
 }

@@ -12,6 +12,7 @@ struct HrWxHrChatListDO {
 	6: optional string hrChatTime,	//HR最近一次聊天时间
 	7: optional string updateTime,	//更新时间
 	8: optional i32 hrUnreadCount,	//hr未读消息数量
-	9: optional i32 userUnreadCount	//C端用户未读消息数量
+	9: optional i32 userUnreadCount,	//C端用户未读消息数量
+	10: optional i8 welcomeStatus   //是否发送欢迎语
 
 }

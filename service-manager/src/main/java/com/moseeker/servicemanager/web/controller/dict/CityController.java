@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.servicemanager.common.ParamUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +17,9 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dict.service.CityServices;
+
+import java.util.List;
+import java.util.Map;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -71,4 +76,32 @@ public class CityController {
 		}
 	}
 
+    @RequestMapping(value = "/dict/provinceandcitys", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProvinceAndCitys( HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Response result = cityServices.getProvinceAndCity();
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    @RequestMapping(value = "/dict/province/citycode", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProvinceCityCode(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> data = ParamUtils.parseRequestParam(request);
+            String cityCodes= (String) data.get("codes");
+            List<Integer> codeList=ParamUtils.convertIntList(cityCodes);
+            if(StringUtils.isEmptyList(codeList)){
+                return ResponseLogNotification.fail(request, "省份code不能为空");
+            }
+            Response result = cityServices.getCityByProvince(codeList);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

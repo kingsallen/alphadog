@@ -562,4 +562,11 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
                 .and(UserHrAccount.USER_HR_ACCOUNT.LEAVE_TO_MOBOT.eq(expect))
                 .execute();
     }
+
+
+    public UserHrAccountDO getUserHrAccountById(int id){
+        return create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(id))
+                .fetchOneInto(UserHrAccountDO.class);
+    }
 }
