@@ -35,6 +35,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final org.apache.thrift.protocol.TField IS_REFERRAL_FIELD_DESC = new org.apache.thrift.protocol.TField("is_referral", org.apache.thrift.protocol.TType.I32, (short)23);
   private static final org.apache.thrift.protocol.TField EMPLOYMENT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("employment_type", org.apache.thrift.protocol.TType.I32, (short)24);
   private static final org.apache.thrift.protocol.TField EMPLOYMENT_TYPE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("employment_type_name", org.apache.thrift.protocol.TType.STRING, (short)25);
+  private static final org.apache.thrift.protocol.TField PUBLISHER_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher_name", org.apache.thrift.protocol.TType.STRING, (short)26);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new WechatPositionListDataStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new WechatPositionListDataTupleSchemeFactory();
@@ -63,6 +64,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   public int is_referral; // optional
   public int employment_type; // optional
   public java.lang.String employment_type_name; // optional
+  public java.lang.String publisher_name; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -89,7 +91,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     CITY_ENAME((short)22, "city_ename"),
     IS_REFERRAL((short)23, "is_referral"),
     EMPLOYMENT_TYPE((short)24, "employment_type"),
-    EMPLOYMENT_TYPE_NAME((short)25, "employment_type_name");
+    EMPLOYMENT_TYPE_NAME((short)25, "employment_type_name"),
+    PUBLISHER_NAME((short)26, "publisher_name");
 
     private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -152,6 +155,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
           return EMPLOYMENT_TYPE;
         case 25: // EMPLOYMENT_TYPE_NAME
           return EMPLOYMENT_TYPE_NAME;
+        case 26: // PUBLISHER_NAME
+          return PUBLISHER_NAME;
         default:
           return null;
       }
@@ -206,7 +211,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final int __IS_REFERRAL_ISSET_ID = 11;
   private static final int __EMPLOYMENT_TYPE_ISSET_ID = 12;
   private short __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.TITLE,_Fields.SALARY_TOP,_Fields.SALARY_BOTTOM,_Fields.PUBLISH_DATE,_Fields.DEPARTMENT,_Fields.VISITNUM,_Fields.IN_HB,_Fields.COUNT,_Fields.COMPANY_ABBR,_Fields.COMPANY_LOGO,_Fields.COMPANY_NAME,_Fields.IS_NEW,_Fields.CITY,_Fields.PRIORITY,_Fields.PUBLISHER,_Fields.ACCOUNTABILITIES,_Fields.TOTAL_NUM,_Fields.CANDIDATE_SOURCE,_Fields.REQUIREMENT,_Fields.CITY_ENAME,_Fields.IS_REFERRAL,_Fields.EMPLOYMENT_TYPE,_Fields.EMPLOYMENT_TYPE_NAME};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.TITLE,_Fields.SALARY_TOP,_Fields.SALARY_BOTTOM,_Fields.PUBLISH_DATE,_Fields.DEPARTMENT,_Fields.VISITNUM,_Fields.IN_HB,_Fields.COUNT,_Fields.COMPANY_ABBR,_Fields.COMPANY_LOGO,_Fields.COMPANY_NAME,_Fields.IS_NEW,_Fields.CITY,_Fields.PRIORITY,_Fields.PUBLISHER,_Fields.ACCOUNTABILITIES,_Fields.TOTAL_NUM,_Fields.CANDIDATE_SOURCE,_Fields.REQUIREMENT,_Fields.CITY_ENAME,_Fields.IS_REFERRAL,_Fields.EMPLOYMENT_TYPE,_Fields.EMPLOYMENT_TYPE_NAME,_Fields.PUBLISHER_NAME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -257,6 +262,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     tmpMap.put(_Fields.EMPLOYMENT_TYPE, new org.apache.thrift.meta_data.FieldMetaData("employment_type", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.EMPLOYMENT_TYPE_NAME, new org.apache.thrift.meta_data.FieldMetaData("employment_type_name", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.PUBLISHER_NAME, new org.apache.thrift.meta_data.FieldMetaData("publisher_name", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(WechatPositionListData.class, metaDataMap);
@@ -316,6 +323,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     if (other.isSetEmployment_type_name()) {
       this.employment_type_name = other.employment_type_name;
     }
+    if (other.isSetPublisher_name()) {
+      this.publisher_name = other.publisher_name;
+    }
   }
 
   public WechatPositionListData deepCopy() {
@@ -361,6 +371,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     setEmployment_typeIsSet(false);
     this.employment_type = 0;
     this.employment_type_name = null;
+    this.publisher_name = null;
   }
 
   public int getId() {
@@ -926,6 +937,30 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     }
   }
 
+  public java.lang.String getPublisher_name() {
+    return this.publisher_name;
+  }
+
+  public WechatPositionListData setPublisher_name(java.lang.String publisher_name) {
+    this.publisher_name = publisher_name;
+    return this;
+  }
+
+  public void unsetPublisher_name() {
+    this.publisher_name = null;
+  }
+
+  /** Returns true if field publisher_name is set (has been assigned a value) and false otherwise */
+  public boolean isSetPublisher_name() {
+    return this.publisher_name != null;
+  }
+
+  public void setPublisher_nameIsSet(boolean value) {
+    if (!value) {
+      this.publisher_name = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, java.lang.Object value) {
     switch (field) {
     case ID:
@@ -1120,6 +1155,14 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       }
       break;
 
+    case PUBLISHER_NAME:
+      if (value == null) {
+        unsetPublisher_name();
+      } else {
+        setPublisher_name((java.lang.String)value);
+      }
+      break;
+
     }
   }
 
@@ -1197,6 +1240,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     case EMPLOYMENT_TYPE_NAME:
       return getEmployment_type_name();
 
+    case PUBLISHER_NAME:
+      return getPublisher_name();
+
     }
     throw new java.lang.IllegalStateException();
   }
@@ -1256,6 +1302,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       return isSetEmployment_type();
     case EMPLOYMENT_TYPE_NAME:
       return isSetEmployment_type_name();
+    case PUBLISHER_NAME:
+      return isSetPublisher_name();
     }
     throw new java.lang.IllegalStateException();
   }
@@ -1491,6 +1539,15 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return false;
     }
 
+    boolean this_present_publisher_name = true && this.isSetPublisher_name();
+    boolean that_present_publisher_name = true && that.isSetPublisher_name();
+    if (this_present_publisher_name || that_present_publisher_name) {
+      if (!(this_present_publisher_name && that_present_publisher_name))
+        return false;
+      if (!this.publisher_name.equals(that.publisher_name))
+        return false;
+    }
+
     return true;
   }
 
@@ -1593,6 +1650,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     hashCode = hashCode * 8191 + ((isSetEmployment_type_name()) ? 131071 : 524287);
     if (isSetEmployment_type_name())
       hashCode = hashCode * 8191 + employment_type_name.hashCode();
+
+    hashCode = hashCode * 8191 + ((isSetPublisher_name()) ? 131071 : 524287);
+    if (isSetPublisher_name())
+      hashCode = hashCode * 8191 + publisher_name.hashCode();
 
     return hashCode;
   }
@@ -1845,6 +1906,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return lastComparison;
       }
     }
+    lastComparison = java.lang.Boolean.valueOf(isSetPublisher_name()).compareTo(other.isSetPublisher_name());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetPublisher_name()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.publisher_name, other.publisher_name);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -2049,6 +2120,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         sb.append("null");
       } else {
         sb.append(this.employment_type_name);
+      }
+      first = false;
+    }
+    if (isSetPublisher_name()) {
+      if (!first) sb.append(", ");
+      sb.append("publisher_name:");
+      if (this.publisher_name == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.publisher_name);
       }
       first = false;
     }
@@ -2289,6 +2370,14 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 26: // PUBLISHER_NAME
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.publisher_name = iprot.readString();
+              struct.setPublisher_nameIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -2446,6 +2535,13 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
           oprot.writeFieldEnd();
         }
       }
+      if (struct.publisher_name != null) {
+        if (struct.isSetPublisher_name()) {
+          oprot.writeFieldBegin(PUBLISHER_NAME_FIELD_DESC);
+          oprot.writeString(struct.publisher_name);
+          oprot.writeFieldEnd();
+        }
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -2536,7 +2632,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetEmployment_type_name()) {
         optionals.set(23);
       }
-      oprot.writeBitSet(optionals, 24);
+      if (struct.isSetPublisher_name()) {
+        optionals.set(24);
+      }
+      oprot.writeBitSet(optionals, 25);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
@@ -2609,12 +2708,15 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetEmployment_type_name()) {
         oprot.writeString(struct.employment_type_name);
       }
+      if (struct.isSetPublisher_name()) {
+        oprot.writeString(struct.publisher_name);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, WechatPositionListData struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(24);
+      java.util.BitSet incoming = iprot.readBitSet(25);
       if (incoming.get(0)) {
         struct.id = iprot.readI32();
         struct.setIdIsSet(true);
@@ -2710,6 +2812,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (incoming.get(23)) {
         struct.employment_type_name = iprot.readString();
         struct.setEmployment_type_nameIsSet(true);
+      }
+      if (incoming.get(24)) {
+        struct.publisher_name = iprot.readString();
+        struct.setPublisher_nameIsSet(true);
       }
     }
   }
