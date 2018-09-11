@@ -12,7 +12,7 @@ public class ReferralPositionServices {
 
   public interface Iface {
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException;
+    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id) throws org.apache.thrift.TException;
 
     public void delReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException;
 
@@ -22,7 +22,7 @@ public class ReferralPositionServices {
 
   public interface AsyncIface {
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
+    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
     public void delReferralPositions(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
@@ -50,16 +50,18 @@ public class ReferralPositionServices {
       super(iprot, oprot);
     }
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException
+    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id) throws org.apache.thrift.TException
     {
-      send_putReferralPositions(pids);
+      send_putReferralPositions(pids, all_selected, company_id);
       recv_putReferralPositions();
     }
 
-    public void send_putReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException
+    public void send_putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id) throws org.apache.thrift.TException
     {
       putReferralPositions_args args = new putReferralPositions_args();
       args.setPids(pids);
+      args.setAll_selected(all_selected);
+      args.setCompany_id(company_id);
       sendBase("putReferralPositions", args);
     }
 
@@ -129,24 +131,30 @@ public class ReferralPositionServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      putReferralPositions_call method_call = new putReferralPositions_call(pids, resultHandler, this, ___protocolFactory, ___transport);
+      putReferralPositions_call method_call = new putReferralPositions_call(pids, all_selected, company_id, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class putReferralPositions_call extends org.apache.thrift.async.TAsyncMethodCall<Void> {
       private java.util.List<java.lang.Integer> pids;
-      public putReferralPositions_call(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private boolean all_selected;
+      private int company_id;
+      public putReferralPositions_call(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.pids = pids;
+        this.all_selected = all_selected;
+        this.company_id = company_id;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("putReferralPositions", org.apache.thrift.protocol.TMessageType.CALL, 0));
         putReferralPositions_args args = new putReferralPositions_args();
         args.setPids(pids);
+        args.setAll_selected(all_selected);
+        args.setCompany_id(company_id);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -262,7 +270,7 @@ public class ReferralPositionServices {
 
       public putReferralPositions_result getResult(I iface, putReferralPositions_args args) throws org.apache.thrift.TException {
         putReferralPositions_result result = new putReferralPositions_result();
-        iface.putReferralPositions(args.pids);
+        iface.putReferralPositions(args.pids, args.all_selected, args.company_id);
         return result;
       }
     }
@@ -382,7 +390,7 @@ public class ReferralPositionServices {
       }
 
       public void start(I iface, putReferralPositions_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
-        iface.putReferralPositions(args.pids,resultHandler);
+        iface.putReferralPositions(args.pids, args.all_selected, args.company_id,resultHandler);
       }
     }
 
@@ -512,15 +520,21 @@ public class ReferralPositionServices {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("putReferralPositions_args");
 
     private static final org.apache.thrift.protocol.TField PIDS_FIELD_DESC = new org.apache.thrift.protocol.TField("pids", org.apache.thrift.protocol.TType.LIST, (short)1);
+    private static final org.apache.thrift.protocol.TField ALL_SELECTED_FIELD_DESC = new org.apache.thrift.protocol.TField("all_selected", org.apache.thrift.protocol.TType.BOOL, (short)2);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)3);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new putReferralPositions_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new putReferralPositions_argsTupleSchemeFactory();
 
     public java.util.List<java.lang.Integer> pids; // required
+    public boolean all_selected; // required
+    public int company_id; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      PIDS((short)1, "pids");
+      PIDS((short)1, "pids"),
+      ALL_SELECTED((short)2, "all_selected"),
+      COMPANY_ID((short)3, "company_id");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -537,6 +551,10 @@ public class ReferralPositionServices {
         switch(fieldId) {
           case 1: // PIDS
             return PIDS;
+          case 2: // ALL_SELECTED
+            return ALL_SELECTED;
+          case 3: // COMPANY_ID
+            return COMPANY_ID;
           default:
             return null;
         }
@@ -577,12 +595,19 @@ public class ReferralPositionServices {
     }
 
     // isset id assignments
+    private static final int __ALL_SELECTED_ISSET_ID = 0;
+    private static final int __COMPANY_ID_ISSET_ID = 1;
+    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.PIDS, new org.apache.thrift.meta_data.FieldMetaData("pids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.ALL_SELECTED, new org.apache.thrift.meta_data.FieldMetaData("all_selected", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
+      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(putReferralPositions_args.class, metaDataMap);
     }
@@ -591,20 +616,29 @@ public class ReferralPositionServices {
     }
 
     public putReferralPositions_args(
-      java.util.List<java.lang.Integer> pids)
+      java.util.List<java.lang.Integer> pids,
+      boolean all_selected,
+      int company_id)
     {
       this();
       this.pids = pids;
+      this.all_selected = all_selected;
+      setAll_selectedIsSet(true);
+      this.company_id = company_id;
+      setCompany_idIsSet(true);
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public putReferralPositions_args(putReferralPositions_args other) {
+      __isset_bitfield = other.__isset_bitfield;
       if (other.isSetPids()) {
         java.util.List<java.lang.Integer> __this__pids = new java.util.ArrayList<java.lang.Integer>(other.pids);
         this.pids = __this__pids;
       }
+      this.all_selected = other.all_selected;
+      this.company_id = other.company_id;
     }
 
     public putReferralPositions_args deepCopy() {
@@ -614,6 +648,10 @@ public class ReferralPositionServices {
     @Override
     public void clear() {
       this.pids = null;
+      setAll_selectedIsSet(false);
+      this.all_selected = false;
+      setCompany_idIsSet(false);
+      this.company_id = 0;
     }
 
     public int getPidsSize() {
@@ -655,6 +693,52 @@ public class ReferralPositionServices {
       }
     }
 
+    public boolean isAll_selected() {
+      return this.all_selected;
+    }
+
+    public putReferralPositions_args setAll_selected(boolean all_selected) {
+      this.all_selected = all_selected;
+      setAll_selectedIsSet(true);
+      return this;
+    }
+
+    public void unsetAll_selected() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ALL_SELECTED_ISSET_ID);
+    }
+
+    /** Returns true if field all_selected is set (has been assigned a value) and false otherwise */
+    public boolean isSetAll_selected() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ALL_SELECTED_ISSET_ID);
+    }
+
+    public void setAll_selectedIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ALL_SELECTED_ISSET_ID, value);
+    }
+
+    public int getCompany_id() {
+      return this.company_id;
+    }
+
+    public putReferralPositions_args setCompany_id(int company_id) {
+      this.company_id = company_id;
+      setCompany_idIsSet(true);
+      return this;
+    }
+
+    public void unsetCompany_id() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
+    }
+
+    /** Returns true if field company_id is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompany_id() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
+    }
+
+    public void setCompany_idIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANY_ID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case PIDS:
@@ -665,6 +749,22 @@ public class ReferralPositionServices {
         }
         break;
 
+      case ALL_SELECTED:
+        if (value == null) {
+          unsetAll_selected();
+        } else {
+          setAll_selected((java.lang.Boolean)value);
+        }
+        break;
+
+      case COMPANY_ID:
+        if (value == null) {
+          unsetCompany_id();
+        } else {
+          setCompany_id((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -672,6 +772,12 @@ public class ReferralPositionServices {
       switch (field) {
       case PIDS:
         return getPids();
+
+      case ALL_SELECTED:
+        return isAll_selected();
+
+      case COMPANY_ID:
+        return getCompany_id();
 
       }
       throw new java.lang.IllegalStateException();
@@ -686,6 +792,10 @@ public class ReferralPositionServices {
       switch (field) {
       case PIDS:
         return isSetPids();
+      case ALL_SELECTED:
+        return isSetAll_selected();
+      case COMPANY_ID:
+        return isSetCompany_id();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -714,6 +824,24 @@ public class ReferralPositionServices {
           return false;
       }
 
+      boolean this_present_all_selected = true;
+      boolean that_present_all_selected = true;
+      if (this_present_all_selected || that_present_all_selected) {
+        if (!(this_present_all_selected && that_present_all_selected))
+          return false;
+        if (this.all_selected != that.all_selected)
+          return false;
+      }
+
+      boolean this_present_company_id = true;
+      boolean that_present_company_id = true;
+      if (this_present_company_id || that_present_company_id) {
+        if (!(this_present_company_id && that_present_company_id))
+          return false;
+        if (this.company_id != that.company_id)
+          return false;
+      }
+
       return true;
     }
 
@@ -724,6 +852,10 @@ public class ReferralPositionServices {
       hashCode = hashCode * 8191 + ((isSetPids()) ? 131071 : 524287);
       if (isSetPids())
         hashCode = hashCode * 8191 + pids.hashCode();
+
+      hashCode = hashCode * 8191 + ((all_selected) ? 131071 : 524287);
+
+      hashCode = hashCode * 8191 + company_id;
 
       return hashCode;
     }
@@ -742,6 +874,26 @@ public class ReferralPositionServices {
       }
       if (isSetPids()) {
         lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pids, other.pids);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetAll_selected()).compareTo(other.isSetAll_selected());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetAll_selected()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.all_selected, other.all_selected);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      lastComparison = java.lang.Boolean.valueOf(isSetCompany_id()).compareTo(other.isSetCompany_id());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCompany_id()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.company_id, other.company_id);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -773,6 +925,14 @@ public class ReferralPositionServices {
         sb.append(this.pids);
       }
       first = false;
+      if (!first) sb.append(", ");
+      sb.append("all_selected:");
+      sb.append(this.all_selected);
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("company_id:");
+      sb.append(this.company_id);
+      first = false;
       sb.append(")");
       return sb.toString();
     }
@@ -792,6 +952,8 @@ public class ReferralPositionServices {
 
     private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -834,6 +996,22 @@ public class ReferralPositionServices {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 2: // ALL_SELECTED
+              if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
+                struct.all_selected = iprot.readBool();
+                struct.setAll_selectedIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            case 3: // COMPANY_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.company_id = iprot.readI32();
+                struct.setCompany_idIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -861,6 +1039,12 @@ public class ReferralPositionServices {
           }
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(ALL_SELECTED_FIELD_DESC);
+        oprot.writeBool(struct.all_selected);
+        oprot.writeFieldEnd();
+        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+        oprot.writeI32(struct.company_id);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -882,7 +1066,13 @@ public class ReferralPositionServices {
         if (struct.isSetPids()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetAll_selected()) {
+          optionals.set(1);
+        }
+        if (struct.isSetCompany_id()) {
+          optionals.set(2);
+        }
+        oprot.writeBitSet(optionals, 3);
         if (struct.isSetPids()) {
           {
             oprot.writeI32(struct.pids.size());
@@ -892,12 +1082,18 @@ public class ReferralPositionServices {
             }
           }
         }
+        if (struct.isSetAll_selected()) {
+          oprot.writeBool(struct.all_selected);
+        }
+        if (struct.isSetCompany_id()) {
+          oprot.writeI32(struct.company_id);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, putReferralPositions_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(3);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list123 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
@@ -910,6 +1106,14 @@ public class ReferralPositionServices {
             }
           }
           struct.setPidsIsSet(true);
+        }
+        if (incoming.get(1)) {
+          struct.all_selected = iprot.readBool();
+          struct.setAll_selectedIsSet(true);
+        }
+        if (incoming.get(2)) {
+          struct.company_id = iprot.readI32();
+          struct.setCompany_idIsSet(true);
         }
       }
     }

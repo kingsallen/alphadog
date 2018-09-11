@@ -81,11 +81,14 @@ public class ReferralPositionController {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             List<Integer> pids = (List<Integer>)params.get("position_ids");
+            Boolean all_selected = params.getBoolean("all_selected",false);
+            Integer companyId = params.getInt("company_id",0);
             if (CollectionUtils.isEmpty(pids)) {
                 return ResponseLogNotification.fail(request, "position_ids不能为空");
             }
 
-            referralPositionService.putReferralPositions(pids);
+
+            referralPositionService.putReferralPositions(pids,all_selected,companyId);
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {

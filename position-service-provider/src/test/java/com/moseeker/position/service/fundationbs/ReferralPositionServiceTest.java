@@ -26,7 +26,9 @@ public class ReferralPositionServiceTest {
     @Rollback(false)
     public void putReferralPositions() throws  Exception{
         List<Integer> pids = Lists.newArrayList(1,2);
-        referralPositionService.putReferralPositions(pids);
+        Boolean all_selected = false;
+        Integer company_id = 0;
+        referralPositionService.putReferralPositions(pids,all_selected,company_id);
     }
 
     @Test
