@@ -1928,7 +1928,7 @@ public class PositionService {
 
         hrm2.where(condition2);
         List<UserHrAccountDO> userAccountList = userHrAccountDao.getDatas(hrm2.buildQuery(), UserHrAccountDO.class);
-
+        logger.info(userAccountList.toString());
         for (UserHrAccountDO userHrAccountDO : userAccountList) {
             publisherUserHrAccountMap.put(userHrAccountDO.getId(), userHrAccountDO);
         }
