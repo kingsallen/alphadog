@@ -164,6 +164,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_OCCUPATION_INVALID="{'status':52007,'message':'传入职能中没有有效的职能code!'}";
     public static final String POSITION_PUBLISHCITY_INVALID="{'status':52008,'message':'该职位查不到发布地区!'}";
     public static final String POSITION_CITYCODE_INVALID="{'status':52009,'message':'错误的仟寻citycode，查不到该code的所有城市level!'}";
+    public static final String POSITION_REFERRAL_UPDATE_INVALID="{'status':52010,'message':'更新数量超过上线500条'}";
 
     //职位同步
     public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";
