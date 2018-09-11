@@ -135,10 +135,15 @@ public class ReferralPositionController {
 
             Params<String, Object> map = ParamUtils.parseRequestParam(request);
             logger.info("map: " + map.toString());
-
             Map<String,String> queryMapString = new HashMap<>();
             for(String key :map.keySet()) {
                 queryMapString.put(key,map.get(key).toString());
+            }
+
+            //特殊处理，将page_from用page_num代替
+            String page_num  =queryMapString.get("page_num");
+            if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
+                queryMapString.put("page_from",page_num);
             }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
 
@@ -167,6 +172,13 @@ public class ReferralPositionController {
             for(String key :map.keySet()) {
                 queryMapString.put(key,map.get(key).toString());
             }
+
+            //特殊处理，将page_from用page_num代替
+            String page_num  =queryMapString.get("page_num");
+            if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
+                queryMapString.put("page_from",page_num);
+            }
+
             //HR后台接口只看内推职位,固定传is_referral=1
             queryMapString.put("is_referral","1");
             String accountType = queryMapString.get("account_type");

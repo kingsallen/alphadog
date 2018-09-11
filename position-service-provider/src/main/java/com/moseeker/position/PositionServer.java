@@ -1,5 +1,6 @@
 package com.moseeker.position;
 
+import com.moseeker.position.thrift.ReferralPositionServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -17,7 +18,7 @@ public class PositionServer {
         try {
         	MoServer server = new MoServer(
                   acac,"",
-                  acac.getBean(PositionServicesImpl.class)
+                  acac.getBean(PositionServicesImpl.class),acac.getBean(ReferralPositionServiceImpl.class)
           );
         	server.startServer();
             server.shutDownHook();
