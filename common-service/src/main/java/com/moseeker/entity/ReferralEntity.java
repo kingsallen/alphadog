@@ -148,12 +148,6 @@ public class ReferralEntity {
         recomRecordRecord.setGender(gender);
         recomRecordRecord.setEmail(email);
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
-        try {
-            employeeEntity.addAwardBefore(employeeDO.getId(), employeeDO.getCompanyId(), position, 16, presenteeUserId, applicationId);
-            employeeEntity.addAwardBefore(employeeDO.getId(), employeeDO.getCompanyId(), position, 13, presenteeUserId, applicationId);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
     }
 
     public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType) {
