@@ -49,6 +49,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -87,8 +89,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     protected HrCompanyAccountDao hrCompanyAccountDao;
 
     protected Logger logger = LoggerFactory.getLogger(AbstractProfileMoveService.class);
-
-    protected SerializeConfig serializeConfig = new SerializeConfig();
 
     protected ThreadPool pool = ThreadPool.Instance;
 
@@ -162,7 +162,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @author cjm
      * @date 2018/7/18
      */
-    public Response getMoveOperationList(int hrId, int pageNumber, int pageSize) {
+    public Response getMoveOperationList(int hrId, int pageNumber, int pageSize) throws ParseException {
         int rows = profileMoveDao.getTotalCount(hrId);
         int startIndex = pageSize * (pageNumber - 1);
         // 如果起始下标大于总行数，重置起始下标为最后一页第一个数据
@@ -426,14 +426,13 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     }
 
 
-    private List<MvHouseOperationVO> getOperationList(Map<Integer, List<TalentPoolProfileMoveRecordDO>> map, List<TalentPoolProfileMoveDO> profileMoveDOS) {
+    private List<MvHouseOperationVO> getOperationList(Map<Integer, List<TalentPoolProfileMoveRecordDO>> map, List<TalentPoolProfileMoveDO> profileMoveDOS) throws ParseException {
         List<MvHouseOperationVO> operationList = new ArrayList<>();
         for(TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS){
             MvHouseOperationVO mvHouseOperationVO = new MvHouseOperationVO();
             byte status = getMvHouseState(profileMoveDO.getId(), map);
             int crawlNum = getMvProfileNum(profileMoveDO.getId(), map);
             mvHouseOperationVO.setStatus(status);
-
             if (status == ProfileMoveStateEnum.MOVING.getValue()) {
                 mvHouseOperationVO.setStatus_display(ProfileMoveStateEnum.MOVING.getName());
             } else {
@@ -441,13 +440,28 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 mvHouseOperationVO.setStatus_display(ProfileMoveStateEnum.SUCCESS.getName());
             }
             mvHouseOperationVO.setCrawl_num(crawlNum);
-            mvHouseOperationVO.setStart_date(profileMoveDO.getStartDate());
+            String startDate = formatDatePattern(profileMoveDO.getStartDate(), null, null);
+            mvHouseOperationVO.setStart_date(startDate);
+            String endDate = formatDatePattern(profileMoveDO.getEndDate(), null, null);
+            mvHouseOperationVO.setEnd_date(endDate);
+            String pattern = "yyyy/MM/dd HH:mm";
+            String createDate = formatDatePattern(profileMoveDO.getCreateTime(), pattern, pattern);
+            mvHouseOperationVO.setCreate_time(createDate);
             mvHouseOperationVO.setChannel(profileMoveDO.getChannel());
-            mvHouseOperationVO.setEnd_date(profileMoveDO.getEndDate());
-            mvHouseOperationVO.setCreate_time(profileMoveDO.getCreateTime());
             operationList.add(mvHouseOperationVO);
         }
         return operationList;
+    }
+
+    private String formatDatePattern(String startDate, String oldPattern, String newPattern) throws ParseException {
+        if(StringUtils.isNullOrEmpty(oldPattern) || StringUtils.isNullOrEmpty(newPattern)){
+            oldPattern = "yyyy-MM-dd";
+            newPattern = "yyyy-MM-dd";
+        }
+        DateFormat dateFormat = new SimpleDateFormat(oldPattern);
+        Date date = dateFormat.parse(startDate);
+        DateFormat dateFormat1 = new SimpleDateFormat(newPattern);
+        return dateFormat1.format(date);
     }
 
     private int getMvProfileNum(int id, Map<Integer, List<TalentPoolProfileMoveRecordDO>> map) {
