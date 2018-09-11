@@ -14,6 +14,7 @@ public class EmployeeException extends CommonException {
     public static final EmployeeException EMPLOYEE_AWARD_NOT_ENOUGH= new EmployeeException(42503, "用户积分不足!");
     public static final EmployeeException EMPLOYEE_AWARD_ADD_FAILED= new EmployeeException(42504, "积分添加失败!");
     public static final EmployeeException EMPLOYEE_AWARD_REPEAT_PLUS= new EmployeeException(42505, "重复添加积分!");
+    public static final EmployeeException EMPLOYEE_REPEAT_RECOMMEND= new EmployeeException(42506, "重复推荐!");
 
     public EmployeeException(int code, String message) {
         super(code, message);
