@@ -21,10 +21,11 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     @Autowired
     ReferralPositionService referralPositionService;
 
+
     @Override
-    public void putReferralPositions(List<Integer> pids) throws TException {
+    public void putReferralPositions(List<Integer> pids, boolean all_selected, int company_id) throws TException {
         try {
-            referralPositionService.putReferralPositions(pids);
+            referralPositionService.putReferralPositions(pids,all_selected,company_id);
         } catch (Exception e) {
             e.printStackTrace();
             throw ExceptionUtils.convertException(e);

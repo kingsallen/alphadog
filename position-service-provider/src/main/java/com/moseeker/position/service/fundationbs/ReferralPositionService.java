@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,7 +30,11 @@ public class ReferralPositionService {
 
     @CounterIface
     @Transactional
-    public void putReferralPositions(List<Integer> pids){
+    public void putReferralPositions(List<Integer> pids, Boolean all_selected,Integer companyId){
+        //如果all_selected=true,将该companyID下所有职位变成内推职位
+        if(all_selected && companyId > 0) {
+            pids  =  positionEntity.getPositionIdList(new ArrayList<>(companyId));
+        }
         positionEntity.putReferralPositions(pids);
     }
     @CounterIface

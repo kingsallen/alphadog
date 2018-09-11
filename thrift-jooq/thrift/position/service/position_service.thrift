@@ -140,7 +140,7 @@ service PositionDao{
     内推职位功能
 */
 service ReferralPositionServices{
-    void putReferralPositions(1:list<i32> pids);
+    void putReferralPositions(1:list<i32> pids,2:bool all_selected,3:i32 company_id);
     void delReferralPositions(1:list<i32> pids);
     void updatePointsConfig(1:i32 companyId,2:i32 flag);
     common_struct.Response getPointsConfig(1:i32 companyId);

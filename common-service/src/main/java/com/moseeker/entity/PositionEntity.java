@@ -319,11 +319,16 @@ public class PositionEntity {
         Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
 
         List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+        Integer[] jobids = jobPositionDOS.stream().map(JobPositionDO::getId).toArray(Integer[]::new);
+
+        List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel> dbrecords = referralPositionRelDao.fetchByPositionId(jobids);
+
+        List<Integer> referJobIds = dbrecords.stream().map(ReferralPositionRel::getPositionId).collect(Collectors.toList());
+
         for(JobPositionDO jobPositionDO: jobPositionDOS) {
 
-            List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel> dbrecords = referralPositionRelDao.fetchByPositionId(jobPositionDO.getId());
             //如果已经添加过记录,就跳过
-            if(!CollectionUtils.isEmpty(dbrecords)) {
+            if(referJobIds.contains(jobPositionDO.getId())) {
                 continue;
             }
             //插入内推记录表
