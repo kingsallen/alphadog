@@ -106,7 +106,7 @@ public class ReferralController {
 
             int referralId = profileService.employeeReferralProfile(id, referralForm.getName(),
                     referralForm.getMobile(), referralForm.getReferralReasons(), referralForm.getPosition(),
-                    referralForm.getReferralType());
+                    (byte) referralForm.getReferralType());
             return Result.success(referralId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();

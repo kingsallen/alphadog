@@ -12,7 +12,7 @@ public class CandidateInfo {
     private int appid;
     private int position;
     private String name;
-    private byte gender;
+    private int gender;
     private String mobile;
     private String email;
     private String company;
@@ -31,7 +31,7 @@ public class CandidateInfo {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(int positiotn) {
         this.position = position;
     }
 
@@ -41,14 +41,6 @@ public class CandidateInfo {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public byte getGender() {
-        return gender;
-    }
-
-    public void setGender(byte gender) {
-        this.gender = gender;
     }
 
     public String getMobile() {
@@ -89,5 +81,13 @@ public class CandidateInfo {
 
     public void setReasons(List<String> reasons) {
         this.reasons = reasons;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
     }
 }
