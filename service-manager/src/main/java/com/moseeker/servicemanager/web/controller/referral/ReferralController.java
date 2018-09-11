@@ -172,14 +172,14 @@ public class ReferralController {
     /**
      * 获取电脑端上传配置的职位信息
      * @param id 员工编号
-     * @param form 表单新
+     * @param request 表单新
      * @return 职位信息
      * @throws Exception
      */
     @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.GET)
     @ResponseBody
-    public String getReferralType(@PathVariable int id, @RequestBody PCUploadProfileTypeForm form) throws Exception {
-        if (form.getAppid() == 0) {
+    public String getReferralType(@PathVariable int id, HttpServletRequest request) throws Exception {
+        if (request.getParameter("appid") == null) {
             return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
         }
 
