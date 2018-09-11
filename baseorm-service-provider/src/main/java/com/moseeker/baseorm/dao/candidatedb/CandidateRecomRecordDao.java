@@ -444,6 +444,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         Param<Integer> postUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
         Param<Byte> genderParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER.getName(), recomRecordRecord.getGender());
         Param<String> emailParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL.getName(), recomRecordRecord.getEmail());
+        Param<Integer> recomStateParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.getName(), 0);
 
         create.insertInto(CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
@@ -455,7 +456,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM
         ).select(
                 select(
                         positionIdParam,
@@ -467,7 +469,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                         presenteeUserIdParam,
                         postUserIdParam,
                         genderParam,
-                        emailParam
+                        emailParam,
+                        recomStateParam
                 )
                 .whereNotExists(
                         selectOne()

@@ -69,6 +69,7 @@ public class ReceiverHandler {
                     jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"),
                     jsonObject.getIntValue("applicationId"));
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             // 错误日志记录到数据库 的 log_dead_letter 表中
             LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
             logDeadLetterDO.setAppid(Integer.valueOf(message.getMessageProperties().getAppId()));

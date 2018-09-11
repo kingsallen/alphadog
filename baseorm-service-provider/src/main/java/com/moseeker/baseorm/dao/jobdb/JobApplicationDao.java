@@ -134,7 +134,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
      */
 	public ApplicationSaveResultVO addIfNotExists(JobApplicationRecord record) {
         List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
-        String insertSql = " insertIfNotExist into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
+        String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
                 .concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
                 .concat(" from dual where not exists ( ")
                 .concat(" select id from jobdb.job_application where ")

@@ -17,7 +17,7 @@ public class CandidateInfo {
     private String email;
     private String company;
     private String job;
-    private List<String> reasons;
+    private List<String> referralReasons;
 
     public int getAppid() {
         return appid;
@@ -31,7 +31,7 @@ public class CandidateInfo {
         return position;
     }
 
-    public void setPosition(int positiotn) {
+    public void setPosition(int position) {
         this.position = position;
     }
 
@@ -75,12 +75,12 @@ public class CandidateInfo {
         this.job = job;
     }
 
-    public List<String> getReasons() {
-        return reasons;
+    public List<String> getReferralReasons() {
+        return referralReasons;
     }
 
-    public void setReasons(List<String> reasons) {
-        this.reasons = reasons;
+    public void setReferralReasons(List<String> referralReasons) {
+        this.referralReasons = referralReasons;
     }
 
     public int getGender() {

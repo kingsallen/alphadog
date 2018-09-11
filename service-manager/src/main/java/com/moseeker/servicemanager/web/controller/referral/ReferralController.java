@@ -120,7 +120,7 @@ public class ReferralController {
      * @return 职位信息
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.POST)
     @ResponseBody
     public String postCandidateInfo(@PathVariable int id, @RequestBody CandidateInfo form) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
@@ -128,14 +128,17 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
         validateUtil.addRequiredStringValidate("邮箱", form.getEmail());
         validateUtil.addRequiredStringValidate("就职公司", form.getCompany());
-        validateUtil.addRequiredStringValidate("就职职位", form.getPosition());
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReasons());
-        validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("职位信息", form.getPosition(), 1, null);
+        validateUtil.addRequiredStringValidate("就职职位", form.getJob());
+        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
+        validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
 
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
-            BeanUtils.copyProperties(candidateInfoStruct, form);
+            BeanUtils.copyProperties(form, candidateInfoStruct);
+            candidateInfoStruct.setPositionId(form.getPosition());
+            candidateInfoStruct.setReasons(form.getReferralReasons());
             int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
             return Result.success(referralLogId).toJson();
         } else {
@@ -172,14 +175,14 @@ public class ReferralController {
     /**
      * 获取电脑端上传配置的职位信息
      * @param id 员工编号
-     * @param form 表单新
+     * @param request 表单新
      * @return 职位信息
      * @throws Exception
      */
     @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.GET)
     @ResponseBody
-    public String getReferralType(@PathVariable int id, @RequestBody PCUploadProfileTypeForm form) throws Exception {
-        if (form.getAppid() == 0) {
+    public String getReferralType(@PathVariable int id, HttpServletRequest request) throws Exception {
+        if (request.getParameter("appid") == null) {
             return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
         }
 

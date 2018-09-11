@@ -39,9 +39,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -213,7 +213,7 @@ public class ReferralServiceImpl implements ReferralService {
         String email = StringUtils.defaultIfBlank(profilePojo.getUserRecord().getEmail(), "");
 
         return recommend(profilePojo, employeeDO, positionRecord, name, mobile, referralReasons,
-                (byte)genderType.getValue(), email, type);
+                genderType, email, type);
     }
 
     /**
@@ -235,8 +235,9 @@ public class ReferralServiceImpl implements ReferralService {
         validateUtil.addStringLengthValidate("邮箱", candidate.getEmail(), null, 50);
         validateUtil.addRequiredStringValidate("就职公司", candidate.getCompany());
         validateUtil.addStringLengthValidate("就职公司", candidate.getCompany(), null, 200);
-        validateUtil.addRequiredStringValidate("就职职位", candidate.getPosition());
-        validateUtil.addStringLengthValidate("就职职位", candidate.getPosition(), null, 200);
+        validateUtil.addIntTypeValidate("职位信息", candidate.getPosition(), 1, null);
+        validateUtil.addRequiredStringValidate("就职职位", candidate.getJob());
+        validateUtil.addStringLengthValidate("就职职位", candidate.getJob(), null, 200);
         validateUtil.addRequiredOneValidate("推荐理由", candidate.getReasons());
         if (candidate.getReasons() != null) {
             String reasons = candidate.getReasons().stream().collect(Collectors.joining(","));
@@ -244,9 +245,13 @@ public class ReferralServiceImpl implements ReferralService {
         }
 
         String result = validateUtil.validate();
-
         if (StringUtils.isNotBlank(result)) {
             throw ProfileException.validateFailed(result);
+        }
+
+        GenderType genderType = GenderType.instanceFromValue(candidate.getGender());
+        if (genderType == null) {
+            genderType = GenderType.Secret;
         }
 
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
@@ -269,7 +274,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
 
         return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(),
-                candidate.getReasons(), candidate.getGender(), candidate.getEmail(), ReferralType.PostInfo);
+                candidate.getReasons(), genderType, candidate.getEmail(), ReferralType.PostInfo);
 
     }
 
@@ -287,7 +292,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @throws ProfileException 业务异常
      */
     private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
-                          String name, String mobile, List<String> referralReasons, byte gender, String email, ReferralType referralType)
+                          String name, String mobile, List<String> referralReasons, GenderType gender, String email, ReferralType referralType)
             throws ProfileException {
 
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
@@ -314,6 +319,8 @@ public class ReferralServiceImpl implements ReferralService {
                 jobApplication.setApp_tpl_id(userId);
                 jobApplication.setCompany_id(positionRecord.getCompanyId());
                 jobApplication.setAppid(0);
+                jobApplication.setApplier_id(userId);
+                jobApplication.setPosition_id(positionRecord.getId());
                 jobApplication.setApplier_name(name);
                 jobApplication.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.getValue());
                 jobApplication.setRecommender_user_id(employeeDO.getSysuserId());
@@ -326,7 +333,7 @@ public class ReferralServiceImpl implements ReferralService {
                     applicationId = jsonObject1.getInteger("jobApplicationId");
                 }
                 referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
-                        mobile, employeeDO, userId, gender, email);
+                        mobile, employeeDO, userId, (byte) gender.getValue(), email);
 
                 addRecommandReward(employeeDO, userId, applicationId, positionRecord);
 
@@ -342,7 +349,7 @@ public class ReferralServiceImpl implements ReferralService {
             if (response.status == 0) {
                 return referralId;
             } else {
-                throw  new CommonException(response.getStatus(), response.getMessage());
+                throw new CommonException(response.getStatus(), response.getMessage());
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -361,12 +368,15 @@ public class ReferralServiceImpl implements ReferralService {
             jsonObject.put("berecomUserId", userId);
             jsonObject.put("applicationId", applicationId);
             jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
+            MessageProperties mp = new MessageProperties();
+            mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
+            mp.setReceivedExchange("user_action_topic_exchange");
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
             jsonObject.put("positionId", positionRecord.getId());
             jsonObject.put("templateId", 13);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
