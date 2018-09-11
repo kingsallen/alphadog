@@ -749,7 +749,7 @@ public class EmployeeService {
             throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
         }
         List<Integer> companyIdList = employeeEntity.getCompanyIds(userEmployeeDO.getCompanyId());
-        if (companyIdList.contains(positionInfo.getCompanyId())) {
+        if (!companyIdList.contains(positionInfo.getCompanyId())) {
             throw UserAccountException.NO_PERMISSION_EXCEPTION;
         }
 
