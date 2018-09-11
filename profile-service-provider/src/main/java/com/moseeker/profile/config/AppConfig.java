@@ -3,6 +3,7 @@ package com.moseeker.profile.config;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -86,5 +87,11 @@ public class AppConfig {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
         return listenerContainerFactory;
+    }
+
+    @Bean
+    public TopicExchange topicExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
+        return topicExchange;
     }
 }
