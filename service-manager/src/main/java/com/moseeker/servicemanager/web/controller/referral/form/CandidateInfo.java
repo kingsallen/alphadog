@@ -31,7 +31,7 @@ public class CandidateInfo {
         return position;
     }
 
-    public void setPosition(int positiotn) {
+    public void setPosition(int position) {
         this.position = position;
     }
 

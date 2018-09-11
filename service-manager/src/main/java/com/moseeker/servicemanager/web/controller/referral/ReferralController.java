@@ -128,9 +128,9 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("手机号码", form.getMobile());
         validateUtil.addRequiredStringValidate("邮箱", form.getEmail());
         validateUtil.addRequiredStringValidate("就职公司", form.getCompany());
-        validateUtil.addRequiredStringValidate("就职职位", form.getPosition());
+        validateUtil.addIntTypeValidate("就职职位", form.getPosition(), 1, null);
         validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
-        validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
 
