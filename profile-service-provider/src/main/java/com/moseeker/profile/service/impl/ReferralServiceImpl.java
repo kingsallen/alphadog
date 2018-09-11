@@ -359,6 +359,7 @@ public class ReferralServiceImpl implements ReferralService {
             jsonObject.put("templateId", 16);
             jsonObject.put("berecomUserId", userId);
             jsonObject.put("applicationId", applicationId);
+            jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
             jsonObject.put("positionId", positionRecord.getId());
