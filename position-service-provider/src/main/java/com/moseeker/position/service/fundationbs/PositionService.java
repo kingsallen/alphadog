@@ -1885,7 +1885,7 @@ public class PositionService {
                     e.setAccountabilities(jr.getAccountabilities());
                     e.setCandidate_source(jr.getCandidateSource());
                     e.setRequirement(jr.getRequirement());
-                    e.setTotalNum(count);
+                    e.setTotal_num(count);
                     e.setIs_referral(jr.getIsReferral());
                     e.setEmployment_type(jr.getEmploymentType());
                     e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
@@ -2130,7 +2130,7 @@ public class PositionService {
             e.setCity_ename(jr.getCityEname());
             e.setCandidate_source(jr.getCandidateSource());
             e.setRequirement(jr.getRequirement());
-            e.setTotalNum(totalNum);
+            e.setTotal_num(totalNum);
             e.setIs_referral(jr.getIsReferral());
             result.add(e);
         }
