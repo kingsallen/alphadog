@@ -18,6 +18,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
+import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.jooq.Record2;
@@ -150,8 +151,12 @@ public class ReferralEntity {
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
     }
 
-    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType) {
+    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType) throws EmployeeException {
 
+        int referralId = referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
+        if (referralId == 0) {
+            throw EmployeeException.EMPLOYEE_REPEAT_RECOMMEND;
+        }
         return referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
     }
 
