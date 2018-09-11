@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -360,12 +361,15 @@ public class ReferralServiceImpl implements ReferralService {
             jsonObject.put("berecomUserId", userId);
             jsonObject.put("applicationId", applicationId);
             jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
+            MessageProperties mp = new MessageProperties();
+            mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
+            mp.setReceivedExchange("user_action_topic_exchange");
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
             jsonObject.put("positionId", positionRecord.getId());
             jsonObject.put("templateId", 13);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
