@@ -129,13 +129,15 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("邮箱", form.getEmail());
         validateUtil.addRequiredStringValidate("就职公司", form.getCompany());
         validateUtil.addRequiredStringValidate("就职职位", form.getPosition());
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReasons());
+        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
 
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
-            BeanUtils.copyProperties(candidateInfoStruct, form);
+            BeanUtils.copyProperties(form, candidateInfoStruct);
+            candidateInfoStruct.setPositionId(form.getPosition());
+            candidateInfoStruct.setReasons(form.getReferralReasons());
             int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
             return Result.success(referralLogId).toJson();
         } else {

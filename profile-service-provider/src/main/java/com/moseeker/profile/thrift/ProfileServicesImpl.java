@@ -152,7 +152,8 @@ public class ProfileServicesImpl implements Iface {
     public int postCandidateInfo(int employeeId, CandidateInfo candidateInfo) throws BIZException, TException {
         try {
             com.moseeker.profile.service.impl.vo.CandidateInfo candidate = new com.moseeker.profile.service.impl.vo.CandidateInfo();
-            BeanUtils.copyProperties(candidate, candidateInfo);
+            BeanUtils.copyProperties(candidateInfo, candidate);
+            candidate.setPosition(candidateInfo.getPositionId());
             return referralService.postCandidateInfo(employeeId, candidate);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
