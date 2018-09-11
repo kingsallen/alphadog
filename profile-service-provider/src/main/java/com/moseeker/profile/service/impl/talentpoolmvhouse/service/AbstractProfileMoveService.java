@@ -444,8 +444,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             mvHouseOperationVO.setStart_date(startDate);
             String endDate = formatDatePattern(profileMoveDO.getEndDate(), null, null);
             mvHouseOperationVO.setEnd_date(endDate);
-            String pattern = "yyyy/MM/dd HH:mm";
-            String createDate = formatDatePattern(profileMoveDO.getCreateTime(), pattern, pattern);
+            String oldPattern = "yyyy-MM-dd HH:mm";
+            String newPattern = "yyyy/MM/dd HH:mm";
+            String createDate = formatDatePattern(profileMoveDO.getCreateTime(), oldPattern, newPattern);
             mvHouseOperationVO.setCreate_time(createDate);
             mvHouseOperationVO.setChannel(profileMoveDO.getChannel());
             operationList.add(mvHouseOperationVO);
