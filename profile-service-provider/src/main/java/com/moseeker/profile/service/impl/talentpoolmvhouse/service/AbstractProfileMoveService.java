@@ -457,7 +457,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     private String formatDatePattern(String startDate, String oldPattern, String newPattern) throws ParseException {
         if(StringUtils.isNullOrEmpty(oldPattern) || StringUtils.isNullOrEmpty(newPattern)){
             oldPattern = "yyyy-MM-dd";
-            newPattern = "yyyy-MM-dd";
+            newPattern = "yyyy/MM/dd";
         }
         DateFormat dateFormat = new SimpleDateFormat(oldPattern);
         Date date = dateFormat.parse(startDate);
