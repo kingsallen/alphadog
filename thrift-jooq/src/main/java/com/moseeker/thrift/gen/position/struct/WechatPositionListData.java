@@ -28,7 +28,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.TField("priority", org.apache.thrift.protocol.TType.I32, (short)16);
   private static final org.apache.thrift.protocol.TField PUBLISHER_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher", org.apache.thrift.protocol.TType.I32, (short)17);
   private static final org.apache.thrift.protocol.TField ACCOUNTABILITIES_FIELD_DESC = new org.apache.thrift.protocol.TField("accountabilities", org.apache.thrift.protocol.TType.STRING, (short)18);
-  private static final org.apache.thrift.protocol.TField TOTAL_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("totalNum", org.apache.thrift.protocol.TType.I32, (short)19);
+  private static final org.apache.thrift.protocol.TField TOTAL_NUM_FIELD_DESC = new org.apache.thrift.protocol.TField("total_num", org.apache.thrift.protocol.TType.I32, (short)19);
   private static final org.apache.thrift.protocol.TField CANDIDATE_SOURCE_FIELD_DESC = new org.apache.thrift.protocol.TField("candidate_source", org.apache.thrift.protocol.TType.I32, (short)20);
   private static final org.apache.thrift.protocol.TField REQUIREMENT_FIELD_DESC = new org.apache.thrift.protocol.TField("requirement", org.apache.thrift.protocol.TType.STRING, (short)21);
   private static final org.apache.thrift.protocol.TField CITY_ENAME_FIELD_DESC = new org.apache.thrift.protocol.TField("city_ename", org.apache.thrift.protocol.TType.STRING, (short)22);
@@ -57,7 +57,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   public int priority; // optional
   public int publisher; // optional
   public java.lang.String accountabilities; // optional
-  public int totalNum; // optional
+  public int total_num; // optional
   public int candidate_source; // optional
   public java.lang.String requirement; // optional
   public java.lang.String city_ename; // optional
@@ -85,7 +85,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     PRIORITY((short)16, "priority"),
     PUBLISHER((short)17, "publisher"),
     ACCOUNTABILITIES((short)18, "accountabilities"),
-    TOTAL_NUM((short)19, "totalNum"),
+    TOTAL_NUM((short)19, "total_num"),
     CANDIDATE_SOURCE((short)20, "candidate_source"),
     REQUIREMENT((short)21, "requirement"),
     CITY_ENAME((short)22, "city_ename"),
@@ -206,7 +206,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final int __IS_NEW_ISSET_ID = 6;
   private static final int __PRIORITY_ISSET_ID = 7;
   private static final int __PUBLISHER_ISSET_ID = 8;
-  private static final int __TOTALNUM_ISSET_ID = 9;
+  private static final int __TOTAL_NUM_ISSET_ID = 9;
   private static final int __CANDIDATE_SOURCE_ISSET_ID = 10;
   private static final int __IS_REFERRAL_ISSET_ID = 11;
   private static final int __EMPLOYMENT_TYPE_ISSET_ID = 12;
@@ -249,7 +249,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.ACCOUNTABILITIES, new org.apache.thrift.meta_data.FieldMetaData("accountabilities", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.TOTAL_NUM, new org.apache.thrift.meta_data.FieldMetaData("totalNum", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.TOTAL_NUM, new org.apache.thrift.meta_data.FieldMetaData("total_num", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.CANDIDATE_SOURCE, new org.apache.thrift.meta_data.FieldMetaData("candidate_source", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
@@ -310,7 +310,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     if (other.isSetAccountabilities()) {
       this.accountabilities = other.accountabilities;
     }
-    this.totalNum = other.totalNum;
+    this.total_num = other.total_num;
     this.candidate_source = other.candidate_source;
     if (other.isSetRequirement()) {
       this.requirement = other.requirement;
@@ -360,8 +360,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     setPublisherIsSet(false);
     this.publisher = 0;
     this.accountabilities = null;
-    setTotalNumIsSet(false);
-    this.totalNum = 0;
+    setTotal_numIsSet(false);
+    this.total_num = 0;
     setCandidate_sourceIsSet(false);
     this.candidate_source = 0;
     this.requirement = null;
@@ -773,27 +773,27 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     }
   }
 
-  public int getTotalNum() {
-    return this.totalNum;
+  public int getTotal_num() {
+    return this.total_num;
   }
 
-  public WechatPositionListData setTotalNum(int totalNum) {
-    this.totalNum = totalNum;
-    setTotalNumIsSet(true);
+  public WechatPositionListData setTotal_num(int total_num) {
+    this.total_num = total_num;
+    setTotal_numIsSet(true);
     return this;
   }
 
-  public void unsetTotalNum() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __TOTALNUM_ISSET_ID);
+  public void unsetTotal_num() {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __TOTAL_NUM_ISSET_ID);
   }
 
-  /** Returns true if field totalNum is set (has been assigned a value) and false otherwise */
-  public boolean isSetTotalNum() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __TOTALNUM_ISSET_ID);
+  /** Returns true if field total_num is set (has been assigned a value) and false otherwise */
+  public boolean isSetTotal_num() {
+    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __TOTAL_NUM_ISSET_ID);
   }
 
-  public void setTotalNumIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TOTALNUM_ISSET_ID, value);
+  public void setTotal_numIsSet(boolean value) {
+    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TOTAL_NUM_ISSET_ID, value);
   }
 
   public int getCandidate_source() {
@@ -1101,9 +1101,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
 
     case TOTAL_NUM:
       if (value == null) {
-        unsetTotalNum();
+        unsetTotal_num();
       } else {
-        setTotalNum((java.lang.Integer)value);
+        setTotal_num((java.lang.Integer)value);
       }
       break;
 
@@ -1220,7 +1220,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       return getAccountabilities();
 
     case TOTAL_NUM:
-      return getTotalNum();
+      return getTotal_num();
 
     case CANDIDATE_SOURCE:
       return getCandidate_source();
@@ -1289,7 +1289,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     case ACCOUNTABILITIES:
       return isSetAccountabilities();
     case TOTAL_NUM:
-      return isSetTotalNum();
+      return isSetTotal_num();
     case CANDIDATE_SOURCE:
       return isSetCandidate_source();
     case REQUIREMENT:
@@ -1476,12 +1476,12 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return false;
     }
 
-    boolean this_present_totalNum = true && this.isSetTotalNum();
-    boolean that_present_totalNum = true && that.isSetTotalNum();
-    if (this_present_totalNum || that_present_totalNum) {
-      if (!(this_present_totalNum && that_present_totalNum))
+    boolean this_present_total_num = true && this.isSetTotal_num();
+    boolean that_present_total_num = true && that.isSetTotal_num();
+    if (this_present_total_num || that_present_total_num) {
+      if (!(this_present_total_num && that_present_total_num))
         return false;
-      if (this.totalNum != that.totalNum)
+      if (this.total_num != that.total_num)
         return false;
     }
 
@@ -1623,9 +1623,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     if (isSetAccountabilities())
       hashCode = hashCode * 8191 + accountabilities.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetTotalNum()) ? 131071 : 524287);
-    if (isSetTotalNum())
-      hashCode = hashCode * 8191 + totalNum;
+    hashCode = hashCode * 8191 + ((isSetTotal_num()) ? 131071 : 524287);
+    if (isSetTotal_num())
+      hashCode = hashCode * 8191 + total_num;
 
     hashCode = hashCode * 8191 + ((isSetCandidate_source()) ? 131071 : 524287);
     if (isSetCandidate_source())
@@ -1836,12 +1836,12 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return lastComparison;
       }
     }
-    lastComparison = java.lang.Boolean.valueOf(isSetTotalNum()).compareTo(other.isSetTotalNum());
+    lastComparison = java.lang.Boolean.valueOf(isSetTotal_num()).compareTo(other.isSetTotal_num());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetTotalNum()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.totalNum, other.totalNum);
+    if (isSetTotal_num()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.total_num, other.total_num);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2069,10 +2069,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       }
       first = false;
     }
-    if (isSetTotalNum()) {
+    if (isSetTotal_num()) {
       if (!first) sb.append(", ");
-      sb.append("totalNum:");
-      sb.append(this.totalNum);
+      sb.append("total_num:");
+      sb.append(this.total_num);
       first = false;
     }
     if (isSetCandidate_source()) {
@@ -2316,8 +2316,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
             break;
           case 19: // TOTAL_NUM
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.totalNum = iprot.readI32();
-              struct.setTotalNumIsSet(true);
+              struct.total_num = iprot.readI32();
+              struct.setTotal_numIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -2494,9 +2494,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetTotalNum()) {
+      if (struct.isSetTotal_num()) {
         oprot.writeFieldBegin(TOTAL_NUM_FIELD_DESC);
-        oprot.writeI32(struct.totalNum);
+        oprot.writeI32(struct.total_num);
         oprot.writeFieldEnd();
       }
       if (struct.isSetCandidate_source()) {
@@ -2611,7 +2611,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetAccountabilities()) {
         optionals.set(16);
       }
-      if (struct.isSetTotalNum()) {
+      if (struct.isSetTotal_num()) {
         optionals.set(17);
       }
       if (struct.isSetCandidate_source()) {
@@ -2687,8 +2687,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetAccountabilities()) {
         oprot.writeString(struct.accountabilities);
       }
-      if (struct.isSetTotalNum()) {
-        oprot.writeI32(struct.totalNum);
+      if (struct.isSetTotal_num()) {
+        oprot.writeI32(struct.total_num);
       }
       if (struct.isSetCandidate_source()) {
         oprot.writeI32(struct.candidate_source);
@@ -2786,8 +2786,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         struct.setAccountabilitiesIsSet(true);
       }
       if (incoming.get(17)) {
-        struct.totalNum = iprot.readI32();
-        struct.setTotalNumIsSet(true);
+        struct.total_num = iprot.readI32();
+        struct.setTotal_numIsSet(true);
       }
       if (incoming.get(18)) {
         struct.candidate_source = iprot.readI32();

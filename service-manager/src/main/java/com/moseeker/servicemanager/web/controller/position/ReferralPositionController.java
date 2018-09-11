@@ -135,10 +135,15 @@ public class ReferralPositionController {
 
             Params<String, Object> map = ParamUtils.parseRequestParam(request);
             logger.info("map: " + map.toString());
-
             Map<String,String> queryMapString = new HashMap<>();
             for(String key :map.keySet()) {
                 queryMapString.put(key,map.get(key).toString());
+            }
+
+            //特殊处理，将page_from用page_num代替
+            String page_num  =queryMapString.get("page_num");
+            if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
+                queryMapString.put("page_from",page_num);
             }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
 
@@ -166,6 +171,23 @@ public class ReferralPositionController {
             Map<String,String> queryMapString = new HashMap<>();
             for(String key :map.keySet()) {
                 queryMapString.put(key,map.get(key).toString());
+            }
+
+            //特殊处理，将page_from用page_num代替
+            String page_num  =queryMapString.get("page_num");
+            if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
+                queryMapString.put("page_from",page_num);
+            }
+
+            //HR后台接口只看内推职位,固定传is_referral=1
+            queryMapString.put("is_referral","1");
+            String accountType = queryMapString.get("account_type");
+            String accountId  =queryMapString.get("account_id");
+
+            //如果HR使用子账号,那就只用publisher=accountId的所有职位,并将查询参数company_id设置为空
+            if(StringUtils.isNotNullOrEmpty(accountType) && accountType.equals(String.valueOf(HRAccountType.SubAccount.getType())) && StringUtils.isNotNullOrEmpty(accountId)) {
+                queryMapString.put("company_id","");
+                queryMapString.put("publisher",accountId);
             }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
 
