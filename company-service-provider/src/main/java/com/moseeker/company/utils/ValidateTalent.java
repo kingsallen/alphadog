@@ -42,16 +42,29 @@ public class ValidateTalent {
             applierIdList=this.getIdListByApplicationList(list);
         }
         // todo 新增，通过简历搬家收藏的人才不能取消收藏
-        List<ProfileProfileDO> profileProfileDOS = profileProfileDao.getProfileByUidList(userIdList);
-        userIdList = profileProfileDOS.stream().filter(profileProfileDO ->
-                (!ChannelType.MVHOUSEJOB51.getOrigin("").equals(profileProfileDO.getOrigin())
-                        && !ChannelType.MVHOUSEZHILIAN.getOrigin("").equals(profileProfileDO.getOrigin())))
-                .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
-
+        applierIdList = filterMvHouseApplierId(applierIdList);
         unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
         bean.setUnUseUserIdSet(unUsedApplierIdList);
         bean.setUserIdSet(applierIdList);
         return bean;
+    }
+    /**
+     * 过滤简历搬家的人才id
+     * @param   userIdList userIdList
+     * @author  cjm
+     * @date  2018/9/11
+     * @return  过滤后的userIdList
+     */
+    private Set<Integer> filterMvHouseApplierId(Set<Integer> userIdList){
+        List<ProfileProfileDO> profileProfileDOS = profileProfileDao.getProfileByUidList(userIdList);
+        userIdList = profileProfileDOS.stream().filter(profileProfileDO ->
+                (!ChannelType.MVHOUSEJOB51DOWNLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
+                        && !ChannelType.MVHOUSEJOB51UPLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
+                        && !ChannelType.MVHOUSEZHILIANDOWNLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
+                        && !ChannelType.MVHOUSEZHILIANUPLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
+                ))
+                .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
+        return userIdList;
     }
 
     /*

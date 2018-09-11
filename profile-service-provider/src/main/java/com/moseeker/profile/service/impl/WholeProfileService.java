@@ -1259,7 +1259,7 @@ public class WholeProfileService {
     }
 
     /*
-     保存上传的简历
+     保存上传的简历 upload 表示是否上传的，目前简历搬家传来的upload为0 ，非上传
      */
     public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId,int source, int upload) throws TException {
         params = EmojiFilter.filterEmoji1(params);

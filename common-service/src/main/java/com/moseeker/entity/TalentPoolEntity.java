@@ -1613,6 +1613,10 @@ public class TalentPoolEntity {
                 TalentpoolHrTalentRecord record=new TalentpoolHrTalentRecord();
                 record.setHrId(hrId);
                 record.setUserId(id);
+                if(flag == 0){
+                    // 表示简历搬家搬过来的人才
+                    record.setPublic((byte)1);
+                }
                 recordList.add(record);
             }
             talentpoolHrTalentDao.addAllRecord(recordList);

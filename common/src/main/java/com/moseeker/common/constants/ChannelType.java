@@ -224,25 +224,47 @@ public enum ChannelType {
             }
             return result;
         }
-    },MVHOUSEJOB51(29, "mvHouse", "简历搬家（前程无忧）", "mvHouse"){
+    },MVHOUSEJOB51UPLOAD(29, "mvHouse(51)upload", "前程无忧-收到的简历", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
             if (StringUtils.isNullOrEmpty(origin)) {
-                result = "10000000000000000000000000000";
+                result = "1000000000000000000000000000000";
             } else {
                 result = getResult(origin, 29);
             }
             return result;
         }
-    },MVHOUSEZHILIAN(30, "mvHouse", "简历搬家（智联）", "mvHouse"){
+    },MVHOUSEJOB51DOWNLOAD(30, "mvHouse(51)download", "前程无忧-下载的简历", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
             if (StringUtils.isNullOrEmpty(origin)) {
-                result = "100000000000000000000000000000";
+                result = "10000000000000000000000000000000";
             } else {
                 result = getResult(origin, 30);
+            }
+            return result;
+        }
+    },MVHOUSEZHILIANUPLOAD(31, "mvHouse(ZhiLian)upload", "智联-收到的简历", "mvHouse"){
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "100000000000000000000000000000000";
+            } else {
+                result = getResult(origin, 31);
+            }
+            return result;
+        }
+    },MVHOUSEZHILIANDOWNLOAD(32, "mvHouse(ZhiLian)download", "智联-下载的简历", "mvHouse"){
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "1000000000000000000000000000000000";
+            } else {
+                result = getResult(origin, 32);
             }
             return result;
         }
