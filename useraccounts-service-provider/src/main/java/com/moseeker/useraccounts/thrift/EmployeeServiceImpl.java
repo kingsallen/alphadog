@@ -387,7 +387,7 @@ public class EmployeeServiceImpl implements Iface {
 	public ReferralCard getReferralCard(int referralLogId) throws BIZException, TException {
 		com.moseeker.useraccounts.service.impl.pojos.ReferralCard card = service.getReferralCard(referralLogId);
 		ReferralCard referralCard = new ReferralCard();
-		BeanUtils.copyProperties(referralCard, card);
+		BeanUtils.copyProperties(card, referralCard);
 		return referralCard;
 	}
 
