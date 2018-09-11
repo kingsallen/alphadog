@@ -385,7 +385,7 @@ public enum RecruitmentScheduleEnum {
             return  "HR将您的状态改为待重新面试";
         }
         if(id == RecruitmentScheduleEnum.CV_CHECKED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
-            return  "HR将您的状态改为待重新评审";
+            return  "HR将您的状态改为待重新初筛";
         }
         String eventDescription = applierView;
         /** 如果投递时邮件投递，并且投递状态是成功投递 */
