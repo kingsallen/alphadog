@@ -185,6 +185,18 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .execute();
     }
 
+    /**
+     * 取消认证多个员工
+     * @param ids   员工ID
+     */
+    public void mutiUnFollowWechat(List<Integer> ids) {
+        create.update(UserEmployee.USER_EMPLOYEE)
+                .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.UnFollow.getState())
+                .where(UserEmployee.USER_EMPLOYEE.ID.in(ids))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq(EmployeeActiveState.Actived.getState()))
+                .execute();
+    }
+
     public UserEmployeeDO getUnFollowEmployeeByUserId(int userId) {
         return create.selectFrom(UserEmployee.USER_EMPLOYEE)
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))

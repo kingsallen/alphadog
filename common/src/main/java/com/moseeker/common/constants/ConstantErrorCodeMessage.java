@@ -127,6 +127,8 @@ public final class ConstantErrorCodeMessage {
     public static final String DEL_NO_AUTHORIZED ="{'status':42022,'message':'删除第三方账号失败，这个HR没有操作这个账号权限!'}";
     public static final String THIRD_PARTY_ACCOUNT_NOT_EXIST="{'status':43001,'message':'第三方账号不存在！'}";
     public static final String THIRD_PARTY_ACCOUNT_PWD_ERROR="{'status':43002,'message':'会员名、用户名或密码错误，请重新绑定账号！'}";
+    public static final String NO_MATCH_AUTH_METHOD="{'status':43003,'message':'没有匹配的员工认证方式！'}";
+
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";
