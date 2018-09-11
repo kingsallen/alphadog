@@ -1371,6 +1371,10 @@ public class TalentPoolService {
                         try {
                             tp.startTast(() -> {
                                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
+                                if(companyTagDO.isSetKeyword_list()){
+                                    String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+                                    map.put("keywords", keyword);
+                                }
                                 tagService.handlerCompanyTag(idList, 0, map);
                                 return 0;
                             });
@@ -1495,6 +1499,10 @@ public class TalentPoolService {
         }
         if(companyTagDO.isSetIn_last_job_search_company()){
             map.put("in_last_job_search_company",companyTagDO.getIn_last_job_search_company());
+        }
+        if(companyTagDO.isSetKeyword_list()){
+            String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+            map.put("keywords", keyword);
         }
     }
     /*
