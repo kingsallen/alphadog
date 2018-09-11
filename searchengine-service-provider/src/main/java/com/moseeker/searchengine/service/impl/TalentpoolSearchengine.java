@@ -19,10 +19,7 @@ import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.ScriptQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -711,8 +708,22 @@ public class TalentpoolSearchengine {
                 if(org.apache.commons.lang.StringUtils.isBlank(keyword)){
                     continue;
                 }
-                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword);
                 logger.info("searchengine ================ containAnykey:"+containAnykey);
+                QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(keyword);
+//                        .field("title")
+//                        .field("city")
+//                        .field("city_ename")
+//                        .field("team_name")
+//                        .field("custom")
+//                        .field("occupation");
+                List<String> colums = StringUtils.stringToList(Constant.PROFILE_SEARCH_KEYWORD_COLUMS,";");
+                if(!StringUtils.isEmptyList(colums)){
+                    for(String colum :colums){
+                        if(StringUtils.isNotNullOrEmpty(colum)) {
+                            fullf.field("user.profile.profie." + colum);
+                        }
+                    }
+                }
                 if(StringUtils.isNotNullOrEmpty(containAnykey) && Integer.parseInt(containAnykey) == 1){
                     ((BoolQueryBuilder) keyand).should(fullf);
                 }else{
