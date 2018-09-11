@@ -36,6 +36,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final org.apache.thrift.protocol.TField EMPLOYMENT_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("employment_type", org.apache.thrift.protocol.TType.I32, (short)24);
   private static final org.apache.thrift.protocol.TField EMPLOYMENT_TYPE_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("employment_type_name", org.apache.thrift.protocol.TType.STRING, (short)25);
   private static final org.apache.thrift.protocol.TField PUBLISHER_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("publisher_name", org.apache.thrift.protocol.TType.STRING, (short)26);
+  private static final org.apache.thrift.protocol.TField UPDATE_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("update_time", org.apache.thrift.protocol.TType.STRING, (short)27);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new WechatPositionListDataStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new WechatPositionListDataTupleSchemeFactory();
@@ -65,6 +66,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   public int employment_type; // optional
   public String employment_type_name; // optional
   public String publisher_name; // optional
+  public String update_time; // optional
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -92,7 +94,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     IS_REFERRAL((short)23, "is_referral"),
     EMPLOYMENT_TYPE((short)24, "employment_type"),
     EMPLOYMENT_TYPE_NAME((short)25, "employment_type_name"),
-    PUBLISHER_NAME((short)26, "publisher_name");
+    PUBLISHER_NAME((short)26, "publisher_name"),
+    UPDATE_TIME((short)27, "update_time");
 
     private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
@@ -157,6 +160,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
           return EMPLOYMENT_TYPE_NAME;
         case 26: // PUBLISHER_NAME
           return PUBLISHER_NAME;
+        case 27: // UPDATE_TIME
+          return UPDATE_TIME;
         default:
           return null;
       }
@@ -211,7 +216,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
   private static final int __IS_REFERRAL_ISSET_ID = 11;
   private static final int __EMPLOYMENT_TYPE_ISSET_ID = 12;
   private short __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.ID,_Fields.TITLE,_Fields.SALARY_TOP,_Fields.SALARY_BOTTOM,_Fields.PUBLISH_DATE,_Fields.DEPARTMENT,_Fields.VISITNUM,_Fields.IN_HB,_Fields.COUNT,_Fields.COMPANY_ABBR,_Fields.COMPANY_LOGO,_Fields.COMPANY_NAME,_Fields.IS_NEW,_Fields.CITY,_Fields.PRIORITY,_Fields.PUBLISHER,_Fields.ACCOUNTABILITIES,_Fields.TOTAL_NUM,_Fields.CANDIDATE_SOURCE,_Fields.REQUIREMENT,_Fields.CITY_ENAME,_Fields.IS_REFERRAL,_Fields.EMPLOYMENT_TYPE,_Fields.EMPLOYMENT_TYPE_NAME,_Fields.PUBLISHER_NAME};
+  private static final _Fields optionals[] = {_Fields.ID,_Fields.TITLE,_Fields.SALARY_TOP,_Fields.SALARY_BOTTOM,_Fields.PUBLISH_DATE,_Fields.DEPARTMENT,_Fields.VISITNUM,_Fields.IN_HB,_Fields.COUNT,_Fields.COMPANY_ABBR,_Fields.COMPANY_LOGO,_Fields.COMPANY_NAME,_Fields.IS_NEW,_Fields.CITY,_Fields.PRIORITY,_Fields.PUBLISHER,_Fields.ACCOUNTABILITIES,_Fields.TOTAL_NUM,_Fields.CANDIDATE_SOURCE,_Fields.REQUIREMENT,_Fields.CITY_ENAME,_Fields.IS_REFERRAL,_Fields.EMPLOYMENT_TYPE,_Fields.EMPLOYMENT_TYPE_NAME,_Fields.PUBLISHER_NAME,_Fields.UPDATE_TIME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -264,6 +269,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     tmpMap.put(_Fields.EMPLOYMENT_TYPE_NAME, new org.apache.thrift.meta_data.FieldMetaData("employment_type_name", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.PUBLISHER_NAME, new org.apache.thrift.meta_data.FieldMetaData("publisher_name", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+    tmpMap.put(_Fields.UPDATE_TIME, new org.apache.thrift.meta_data.FieldMetaData("update_time", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(WechatPositionListData.class, metaDataMap);
@@ -326,6 +333,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     if (other.isSetPublisher_name()) {
       this.publisher_name = other.publisher_name;
     }
+    if (other.isSetUpdate_time()) {
+      this.update_time = other.update_time;
+    }
   }
 
   public WechatPositionListData deepCopy() {
@@ -372,6 +382,7 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     this.employment_type = 0;
     this.employment_type_name = null;
     this.publisher_name = null;
+    this.update_time = null;
   }
 
   public int getId() {
@@ -961,6 +972,30 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     }
   }
 
+  public String getUpdate_time() {
+    return this.update_time;
+  }
+
+  public WechatPositionListData setUpdate_time(String update_time) {
+    this.update_time = update_time;
+    return this;
+  }
+
+  public void unsetUpdate_time() {
+    this.update_time = null;
+  }
+
+  /** Returns true if field update_time is set (has been assigned a value) and false otherwise */
+  public boolean isSetUpdate_time() {
+    return this.update_time != null;
+  }
+
+  public void setUpdate_timeIsSet(boolean value) {
+    if (!value) {
+      this.update_time = null;
+    }
+  }
+
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
     case ID:
@@ -1163,6 +1198,14 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       }
       break;
 
+    case UPDATE_TIME:
+      if (value == null) {
+        unsetUpdate_time();
+      } else {
+        setUpdate_time((String)value);
+      }
+      break;
+
     }
   }
 
@@ -1243,6 +1286,9 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     case PUBLISHER_NAME:
       return getPublisher_name();
 
+    case UPDATE_TIME:
+      return getUpdate_time();
+
     }
     throw new IllegalStateException();
   }
@@ -1304,6 +1350,8 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       return isSetEmployment_type_name();
     case PUBLISHER_NAME:
       return isSetPublisher_name();
+    case UPDATE_TIME:
+      return isSetUpdate_time();
     }
     throw new IllegalStateException();
   }
@@ -1548,6 +1596,15 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return false;
     }
 
+    boolean this_present_update_time = true && this.isSetUpdate_time();
+    boolean that_present_update_time = true && that.isSetUpdate_time();
+    if (this_present_update_time || that_present_update_time) {
+      if (!(this_present_update_time && that_present_update_time))
+        return false;
+      if (!this.update_time.equals(that.update_time))
+        return false;
+    }
+
     return true;
   }
 
@@ -1654,6 +1711,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
     hashCode = hashCode * 8191 + ((isSetPublisher_name()) ? 131071 : 524287);
     if (isSetPublisher_name())
       hashCode = hashCode * 8191 + publisher_name.hashCode();
+
+    hashCode = hashCode * 8191 + ((isSetUpdate_time()) ? 131071 : 524287);
+    if (isSetUpdate_time())
+      hashCode = hashCode * 8191 + update_time.hashCode();
 
     return hashCode;
   }
@@ -1916,6 +1977,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         return lastComparison;
       }
     }
+    lastComparison = Boolean.valueOf(isSetUpdate_time()).compareTo(other.isSetUpdate_time());
+    if (lastComparison != 0) {
+      return lastComparison;
+    }
+    if (isSetUpdate_time()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.update_time, other.update_time);
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+    }
     return 0;
   }
 
@@ -2130,6 +2201,16 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
         sb.append("null");
       } else {
         sb.append(this.publisher_name);
+      }
+      first = false;
+    }
+    if (isSetUpdate_time()) {
+      if (!first) sb.append(", ");
+      sb.append("update_time:");
+      if (this.update_time == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.update_time);
       }
       first = false;
     }
@@ -2378,6 +2459,14 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
+          case 27: // UPDATE_TIME
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.update_time = iprot.readString();
+              struct.setUpdate_timeIsSet(true);
+            } else { 
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+            }
+            break;
           default:
             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
         }
@@ -2542,6 +2631,13 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
           oprot.writeFieldEnd();
         }
       }
+      if (struct.update_time != null) {
+        if (struct.isSetUpdate_time()) {
+          oprot.writeFieldBegin(UPDATE_TIME_FIELD_DESC);
+          oprot.writeString(struct.update_time);
+          oprot.writeFieldEnd();
+        }
+      }
       oprot.writeFieldStop();
       oprot.writeStructEnd();
     }
@@ -2635,7 +2731,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetPublisher_name()) {
         optionals.set(24);
       }
-      oprot.writeBitSet(optionals, 25);
+      if (struct.isSetUpdate_time()) {
+        optionals.set(25);
+      }
+      oprot.writeBitSet(optionals, 26);
       if (struct.isSetId()) {
         oprot.writeI32(struct.id);
       }
@@ -2711,12 +2810,15 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (struct.isSetPublisher_name()) {
         oprot.writeString(struct.publisher_name);
       }
+      if (struct.isSetUpdate_time()) {
+        oprot.writeString(struct.update_time);
+      }
     }
 
     @Override
     public void read(org.apache.thrift.protocol.TProtocol prot, WechatPositionListData struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-      java.util.BitSet incoming = iprot.readBitSet(25);
+      java.util.BitSet incoming = iprot.readBitSet(26);
       if (incoming.get(0)) {
         struct.id = iprot.readI32();
         struct.setIdIsSet(true);
@@ -2816,6 +2918,10 @@ public class WechatPositionListData implements org.apache.thrift.TBase<WechatPos
       if (incoming.get(24)) {
         struct.publisher_name = iprot.readString();
         struct.setPublisher_nameIsSet(true);
+      }
+      if (incoming.get(25)) {
+        struct.update_time = iprot.readString();
+        struct.setUpdate_timeIsSet(true);
       }
     }
   }
