@@ -165,6 +165,8 @@ public class ReferralPositionController {
             for(String key :map.keySet()) {
                 queryMapString.put(key,map.get(key).toString());
             }
+            
+            queryMapString.put("is_referral","1");
 
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
 
