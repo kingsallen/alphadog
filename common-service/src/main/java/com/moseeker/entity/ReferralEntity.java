@@ -145,7 +145,7 @@ public class ReferralEntity {
         recomRecordRecord.setDepth(depth);
         recomRecordRecord.setRecomReason(referralReasons.stream().collect(Collectors.joining(",")));
         recomRecordRecord.setMobile(mobile);
-        recomRecordRecord.setPresenteeId(presenteeUserId);
+        recomRecordRecord.setPresenteeUserId(presenteeUserId);
         recomRecordRecord.setPostUserId(employeeDO.getSysuserId());
         recomRecordRecord.setGender(gender);
         recomRecordRecord.setEmail(email);
