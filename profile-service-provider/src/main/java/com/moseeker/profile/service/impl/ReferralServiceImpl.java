@@ -315,6 +315,8 @@ public class ReferralServiceImpl implements ReferralService {
                 jobApplication.setApp_tpl_id(userId);
                 jobApplication.setCompany_id(positionRecord.getCompanyId());
                 jobApplication.setAppid(0);
+                jobApplication.setApplier_id(userId);
+                jobApplication.setPosition_id(positionRecord.getId());
                 jobApplication.setApplier_name(name);
                 jobApplication.setOrigin(ApplicationSource.EMPLOYEE_REFERRAL.getValue());
                 jobApplication.setRecommender_user_id(employeeDO.getSysuserId());
@@ -343,7 +345,7 @@ public class ReferralServiceImpl implements ReferralService {
             if (response.status == 0) {
                 return referralId;
             } else {
-                throw  new CommonException(response.getStatus(), response.getMessage());
+                throw new CommonException(response.getStatus(), response.getMessage());
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
