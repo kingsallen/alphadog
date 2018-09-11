@@ -7,7 +7,7 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.vo;
  **/
 public class MvHouseVO {
     private int account_id;
-    private String operation_info;
+    private ProfileMoveOperationInfoVO operation_info;
     private String member_name;
     private int operation_id;
     private String user_name;
@@ -31,11 +31,11 @@ public class MvHouseVO {
         this.account_id = account_id;
     }
 
-    public String getOperation_info() {
+    public ProfileMoveOperationInfoVO getOperation_info() {
         return operation_info;
     }
 
-    public void setOperation_info(String operation_info) {
+    public void setOperation_info(ProfileMoveOperationInfoVO operation_info) {
         this.operation_info = operation_info;
     }
 

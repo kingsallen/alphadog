@@ -132,7 +132,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 int firstId = profileMoveRecordDOS.get(0).getProfileMoveId();
                 for(TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS){
                     if(profileMoveDO.getId() == firstId){
-                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDOS.get(0).getEndDate());
+                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
                         break;
                     }
                 }
@@ -385,7 +385,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             mvHouseVO.setOperation_id(record.getId());
             mvHouseVO.setUser_name(hrThirdPartyAccountDO.getUsername());
             mvHouseVO.setPassword(password);
-            mvHouseVO.setOperation_info(JSON.toJSONString(operationInfoVO));
+            mvHouseVO.setOperation_info(operationInfoVO);
             mvHouseVOS.add(mvHouseVO);
         }
         return mvHouseVOS;

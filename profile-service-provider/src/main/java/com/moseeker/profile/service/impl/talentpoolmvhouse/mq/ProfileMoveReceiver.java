@@ -61,6 +61,7 @@ public class ProfileMoveReceiver {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_NOT_EXIST);
             }
             record.setTotalEmailNum(totalEmailNum);
+            record.setUpdateTime(null);
             profileMoveRecordDao.updateRecord(record);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "rabbitmq接收邮件总数时发生异常" + json);
