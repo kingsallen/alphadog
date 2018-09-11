@@ -240,11 +240,12 @@ public class DeliveryEmailProducer {
         ProfileEmailInfo emailInfo = new ProfileEmailInfo();
         emailInfo.setCompanyName(company.getAbbreviation());
         emailInfo.setPositionName(position.getTitle());
-        String logo = env.getProperty("http.cdn.url") + Constant.COMPANY_LOGO_URL;
-        if (company.getLogo() != null) {
-            logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
+        if(StringUtils.isNotNullOrEmpty(company.getLogo())) {
+            String logo = company.getLogo().trim().startsWith("http") ? company.getLogo() : env.getProperty("http.cdn.url") + company.getLogo();
+            emailInfo.setCompanyLogo(logo);
+        }else{
+            emailInfo.setCompanyLogo(Constant.COMPANY_LOGO_DEFAULT);
         }
-        emailInfo.setCompanyLogo(logo);
         //邮件头像默认地址
         emailInfo.setHeadimg(env.getProperty("email.user.heading.url"));
         //hr端人才详情路径
@@ -357,8 +358,7 @@ public class DeliveryEmailProducer {
             emailInfo.setIntention(intentions);
 
             //获取工作经验
-            logger.info("=======================data:{}", data);
-            List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", null);
+            List<Map<String, Object>> workexpList = (List<Map<String, Object>>) data.getOrDefault("workexps", new ArrayList<>());
             if (!StringUtils.isEmptyList(workexpList)) {
                 List<WorkExps> workList = new ArrayList<>();
                 basic.setPosition((String) workexpList.get(0).getOrDefault("job", ""));
@@ -374,7 +374,7 @@ public class DeliveryEmailProducer {
                 emailInfo.setWorkExps(workList);
             }
             //获取语言
-            List<Map<String, Object>> languageList = (List<Map<String, Object>>) data.getOrDefault("languages", null);
+            List<Map<String, Object>> languageList = (List<Map<String, Object>>) data.getOrDefault("languages", new ArrayList<>());
             if (!StringUtils.isEmptyList(languageList)) {
                 List<Languages> languagesList = new ArrayList<>();
                 for (Map<String, Object> languageData : languageList) {
@@ -391,8 +391,9 @@ public class DeliveryEmailProducer {
                 }
                 emailInfo.setLanguages(languagesList);
             }
+
             //获取技能
-            List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", null);
+            List<Map<String, Object>> skillsList = (List<Map<String, Object>>) data.getOrDefault("skills", new ArrayList<>());
             if (!StringUtils.isEmptyList(skillsList)) {
                 List<String> strList = new ArrayList<>();
                 for (Map<String, Object> skills : skillsList) {
@@ -401,7 +402,7 @@ public class DeliveryEmailProducer {
                 emailInfo.setSkills(strList);
             }
             //获取证书
-            List<Map<String, Object>> credentialsList = (List<Map<String, Object>>) data.getOrDefault("credentials", null);
+            List<Map<String, Object>> credentialsList = (List<Map<String, Object>>) data.getOrDefault("credentials", new ArrayList<>());
             if (!StringUtils.isEmptyList(credentialsList)) {
                 List<String> strList = new ArrayList<>();
                 for (Map<String, Object> skills : credentialsList) {
@@ -410,7 +411,7 @@ public class DeliveryEmailProducer {
                 emailInfo.setCredentials(strList);
             }
             //获取个人作品
-            List<Map<String, Object>> worksList = (List<Map<String, Object>>) data.getOrDefault("works", null);
+            List<Map<String, Object>> worksList = (List<Map<String, Object>>) data.getOrDefault("works", new ArrayList<>());
             if (!StringUtils.isEmptyList(worksList)) {
                 Works works = new Works();
                 Map<String, Object> worksData = worksList.get(0);
