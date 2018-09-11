@@ -3,26 +3,25 @@ package com.moseeker.useraccounts.service.impl.ats.employee;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 
+@Component
 public class EmployeeBatchHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeBatchHandler.class);
@@ -38,14 +37,26 @@ public class EmployeeBatchHandler {
 
     private final static int NEED_UPDATE = 2;
     private final static int NEED_ADD = 1;
-    private final static int batchSize = 500;
+    private final static int BATCH_SIZE = 500;
+    private final static int BATCH_DELETE_SIZE = 500;
+
 
     public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws CommonException, BIZException {
         if (batchForm == null || batchForm.getData() == null || batchForm.getData().size() == 0) {
             return new int[0];
         }
 
-        logger.info("postPutUserEmployeeBatch {},auth_method:{},总数据:{}条", batchForm.getCompany_id(),batchForm.getAuth_method(), batchForm.getData().size());
+        // 默认自定义认证
+        if (!batchForm.isSetAuth_method()) {
+            batchForm.setAuth_method(EmployeeAuthMethod.CUSTOM_AUTH.getCode());
+        }
+
+        // 默认物理删除
+        if (!batchForm.isSetCancel_auth()) {
+            batchForm.setCancel_auth(false);
+        }
+
+        logger.info("postPutUserEmployeeBatch {},auth_method:{},总数据:{}条", batchForm.getCompany_id(), batchForm.getAuth_method(), batchForm.getData().size());
 
         //这批数据的特征值集合
         List<String> uniqueFlags = new ArrayList<>();
@@ -107,7 +118,7 @@ public class EmployeeBatchHandler {
         logger.info("postPutUserEmployeeBatch {},不在集合中的数据:{}条", batchForm.getCompany_id(), delIds.size());
 
         if (batchForm.isDel_not_include() && delIds.size() > 0) {
-            delEmployees(delIds,batchForm);
+            delEmployees(delIds, batchForm);
         }
 
         //要更新的数据
@@ -129,11 +140,11 @@ public class EmployeeBatchHandler {
 
 
         if (addDatas.size() > 0) {
-            addEmployees(addDatas,batchForm);
+            addEmployees(addDatas, batchForm);
         }
 
         if (updateDatas.size() > 0) {
-            updateEmployees(updateDatas,batchForm);
+            updateEmployees(updateDatas, batchForm);
         }
 
         logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500 ? Arrays.toString(dataStatus) : ("成功处理" + dataStatus.length + "条"));
@@ -169,10 +180,10 @@ public class EmployeeBatchHandler {
     private void addEmployees(List<UserEmployeeStruct> addDatas, UserEmployeeBatchForm batchForm) {
         //每次最多一次插入100条
         int start = 0;
-        while ((start + batchSize) < addDatas.size()) {
-            addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
-            start += batchSize;
-            logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, addDatas.size() - start);
+        while ((start + BATCH_SIZE) < addDatas.size()) {
+            addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, start + BATCH_SIZE), UserEmployeeRecord.class));
+            start += BATCH_SIZE;
+            logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), BATCH_SIZE, addDatas.size() - start);
         }
         addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, addDatas.size()), UserEmployeeRecord.class));
         logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), addDatas.size() - start, 0);
@@ -187,20 +198,25 @@ public class EmployeeBatchHandler {
     private void updateEmployees(List<UserEmployeeStruct> updateDatas, UserEmployeeBatchForm batchForm) {
         //每次最多一次更新100条
         int start = 0;
-        while ((start + batchSize) < updateDatas.size()) {
-            employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
-            start += batchSize;
-            logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
+        while ((start + BATCH_SIZE) < updateDatas.size()) {
+            employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, start + BATCH_SIZE), UserEmployeeRecord.class));
+            start += BATCH_SIZE;
+            logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), BATCH_SIZE, updateDatas.size() - start);
         }
         employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
         searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
         logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
     }
 
-    private void delEmployees(Set<Integer> delIds, UserEmployeeBatchForm batchForm){
+    /**
+     * 删除员工，500个一删
+     *
+     * @param delIds
+     * @param batchForm
+     */
+    private void delEmployees(Set<Integer> delIds, UserEmployeeBatchForm batchForm) {
         logger.info("postPutUserEmployeeBatch {},删除数据:{}条", batchForm.getCompany_id(), delIds.size());
         //把不在userEmployees中的数据从数据库中删除
-        int batchDeleteSize = 500;
         Iterator<Integer> delIterator = delIds.iterator();
         List<Integer> delBatch = new ArrayList<>();
 
@@ -208,7 +224,7 @@ public class EmployeeBatchHandler {
         while (delIterator.hasNext()) {
             delBatch.add(delIterator.next());
             delIterator.remove();
-            if (delBatch.size() >= 500) {
+            if (delBatch.size() >= BATCH_DELETE_SIZE) {
                 delete(delBatch, batchForm.cancel_auth);
                 delBatch.clear();
             }
@@ -228,15 +244,9 @@ public class EmployeeBatchHandler {
      */
     private void delete(List<Integer> delBatch, boolean cancel_auth) throws CommonException {
         if (cancel_auth) {
-            employeeDao.mutiUnFollowWechat(delBatch);
+            employeeEntity.unbind(delBatch);
         } else {
-            Condition condition = new Condition("id", delBatch, ValueOp.IN);
-            if (condition != null) {
-                Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-                queryBuilder.select("id").where(condition);
-                List<UserEmployeeDO> employeeRecordList = employeeDao.getDatas(queryBuilder.buildQuery());
-                employeeEntity.removeEmployee(employeeRecordList.stream().map(m -> m.getId()).collect(Collectors.toList()));
-            }
+            employeeEntity.removeEmployee(delBatch);
         }
     }
 }

@@ -27,7 +27,7 @@ public class LogViewLeaderBoardTimeTool {
     @Autowired
     UpVoteEntity upVoteEntity;
 
-    @RabbitListener(queues = "#{clearUnViewdUpVoteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitListener(queues = "#{clearUnViewdUpVoteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void logViewLeaderBoardTime(Message message) {
 
