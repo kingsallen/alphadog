@@ -52,7 +52,7 @@ public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecor
     }
 
     /**
-     *获取中国大陆的院校数据， 86 是中国的国家字典表code， 710000台湾省 ，810000香港，820000澳门
+     *获取中国大陆的院校数据， 43 是中国的国家字典表id， 710000台湾省 ，810000香港，820000澳门
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -65,7 +65,7 @@ public class DictCollegeDao extends JooqCrudImpl<DictCollegeDO, DictCollegeRecor
                 .from(DictCollege.DICT_COLLEGE)
                 .join(DictCity.DICT_CITY)
                 .on(DictCollege.DICT_COLLEGE.PROVINCE.equal(DictCity.DICT_CITY.CODE))
-                .where(DictCollege.DICT_COLLEGE.COUNTRY_CODE.eq(86))
+                .where(DictCollege.DICT_COLLEGE.COUNTRY_CODE.eq(43))
                 .fetchInto(CollegeProvince.class);
     }
 

@@ -21,8 +21,8 @@ public class ChatHelper {
         } else if (wxUserDO != null && !StringUtils.isNullOrEmpty(wxUserDO.getNickname())) {
             return wxUserDO.getNickname();
         }
-        return StringUtils.isNullOrEmpty(hrAccountDO.getMobile()) && hrAccountDO.getMobile().length()==11
-                ? "" : hrAccountDO.getMobile().substring(0,3)+"****"+hrAccountDO.getMobile().substring(7);
+        return StringUtils.isNotNullOrEmpty(hrAccountDO.getMobile()) && hrAccountDO.getMobile().length()==11
+                ? hrAccountDO.getMobile().substring(0,3)+"****"+hrAccountDO.getMobile().substring(7): "" ;
     }
 
 }

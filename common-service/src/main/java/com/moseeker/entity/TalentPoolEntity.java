@@ -229,7 +229,9 @@ public class TalentPoolEntity {
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
                 || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
+                || !StringUtils.isEmptyList(companyTagDO.getKeyword_list())
                 ){
+            String result = "";
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("名称", companyTagDO.getName());
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins())){
@@ -269,8 +271,14 @@ public class TalentPoolEntity {
                 vu.addStringSplitLengthValidate("就职公司", companyTagDO.getCompany_name(),"最多选择10个",null, 1, 11, ",");
                 vu.addStringLengthValidate("就职公司", companyTagDO.getCompany_name(),null,null, 0, 1024);
             }
-
-            String result = vu.validate();
+            if(!StringUtils.isEmptyList(companyTagDO.getKeyword_list())){
+                if(companyTagDO.getKeyword_list().size()>10){
+                    result = "关键词不能超过10个";
+                }
+                String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+                vu.addStringLengthValidate("关键词", keyword,null,null, 0, 512);
+            }
+            result = result + vu.validate();
             return result;
         }
         return "标签全为默认值;";
@@ -423,12 +431,16 @@ public class TalentPoolEntity {
      */
     public Map<String, Object> getCompanyTagInfo(int companyId, int company_tag_id){
 
-        List<TalentpoolCompanyTag> tagRecordList = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
-        if(tagRecordList == null || tagRecordList.size()==0 ){
+        Map<String, Object> tagRecord = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
+        if(tagRecord == null){
             return null;
         }
         Map<String, Object> params = new HashMap<>();
-        params.put("company_tag", tagRecordList.get(0));
+        if(tagRecord.get("keywords")!= null && !"".equals((String)tagRecord.get("keywords"))){
+            List<String> keywords = StringUtils.stringToList((String)tagRecord.get("keywords"), ";");
+            tagRecord.put("keyword_list", keywords);
+        }
+        params.put("company_tag", tagRecord);
         return params;
     }
 
@@ -440,6 +452,8 @@ public class TalentPoolEntity {
     @Transactional
     public int addCompanyTag(TalentpoolCompanyTagDO companyTagDO){
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
+        String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+        tagRecord.setKeywords(keyword);
         talentpoolCompanyTagDao.addRecord(tagRecord);
         return tagRecord.getId();
     }
@@ -554,12 +568,14 @@ public class TalentPoolEntity {
      */
     @Transactional
     public int updateCompanyTag(TalentpoolCompanyTagDO companyTagDO){
-        logger.info("TalentpoolCompanyTagDO info :{}", companyTagDO);
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
-        logger.info("TalentpoolCompanyTagRecord info :{}", tagRecord);
+        String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+        tagRecord.setKeywords(keyword);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
         return tagRecord.getId();
     }
+
+
 
     /*
      通过TalentpoolHrTalentRecord 的集合获取User_id的list
@@ -785,8 +801,8 @@ public class TalentPoolEntity {
     /*
      通过CompanyId获取企业标签
      */
-    public List<TalentpoolCompanyTag> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
-        List<TalentpoolCompanyTag> tagRecordList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, pageNum, pageSize);
+    public List<Map<String, Object>> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
+        List<Map<String, Object>> tagRecordList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, pageNum, pageSize);
         return tagRecordList;
     }
 
@@ -875,12 +891,14 @@ public class TalentPoolEntity {
     /*
     通过标签编号获取每个标签下面的人才数量
     */
-    public List<Map<String, Object>> handlerTagCountByTagIdList(List<TalentpoolCompanyTag> companyTagList){
-        List<Integer> tagIds = companyTagList.stream().map(m -> m.getId()).collect(Collectors.toList());
+    public List<Map<String, Object>> handlerTagCountByTagIdList(List<Map<String, Object>> companyTagList){
+        List<Integer> tagIds = companyTagList.stream().map(m -> (Integer)m.get("id")).collect(Collectors.toList());
         Map<Integer, Integer> tagRecordList = talentpoolCompanyTagUserDao.getTagCountByTagIdList(tagIds);
         List<Map<String, Object>> companyTagMapList = new ArrayList<>();
-        for(TalentpoolCompanyTag companyTag : companyTagList){
+        for(Map<String, Object> companyTag : companyTagList){
             Map<String, Object> tagMap = new HashMap<>();
+            List<String> result = StringUtils.stringToList((String)companyTag.get("keywords"), ";");
+            companyTag.put("keyword_list", result);
             tagMap.put("company_tag", companyTag);
 
 //            tagMap.put("person_num", 0);
@@ -2290,8 +2308,8 @@ public class TalentPoolEntity {
         return talentpoolCompanyTagUserDao.getRecords(query);
     }
 
-    public List<TalentpoolCompanyTag> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
-        List<TalentpoolCompanyTag> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
+    public Map<String, Object>getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
+        Map<String, Object> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
         return list;
     }
 
