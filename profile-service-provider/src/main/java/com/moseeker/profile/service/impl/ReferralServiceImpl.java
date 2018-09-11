@@ -157,7 +157,7 @@ public class ReferralServiceImpl implements ReferralService {
         validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
         validateUtil.addRequiredStringValidate("手机号码", mobile);
         validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
-        validateUtil.addIntTypeValidate("推荐方式", referralType, 1, 4);
+        validateUtil.addIntTypeValidate("推荐方式", (int)referralType, 1, 4);
         String validateResult = validateUtil.validate();
         if (StringUtils.isNotBlank(validateResult)) {
             throw ProfileException.validateFailed(validateResult);
