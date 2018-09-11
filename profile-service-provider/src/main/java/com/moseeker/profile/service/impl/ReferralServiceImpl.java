@@ -39,6 +39,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -67,6 +70,9 @@ public class ReferralServiceImpl implements ReferralService {
     private RedisClient client;
 
     private ThreadPool tp = ThreadPool.Instance;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
@@ -123,8 +129,6 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", profilePojo.toJson(), 24*60*60);
@@ -324,6 +328,8 @@ public class ReferralServiceImpl implements ReferralService {
                 referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
                         mobile, employeeDO, userId, gender, email);
 
+                addRecommandReward(employeeDO, userId, applicationId, positionRecord);
+
                 return response;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
@@ -342,6 +348,29 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROGRAM_EXCEPTION;
         }
+    }
+
+    private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
+                                    JobPositionRecord positionRecord) throws ApplicationException {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("employeeId", employeeDO.getId());
+            jsonObject.put("companyId", employeeDO.getCompanyId());
+            jsonObject.put("positionId", 0);
+            jsonObject.put("templateId", 16);
+            jsonObject.put("berecomUserId", userId);
+            jsonObject.put("applicationId", applicationId);
+            amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+            jsonObject.put("positionId", positionRecord.getId());
+            jsonObject.put("templateId", 13);
+            amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).build());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
+        }
+
     }
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER

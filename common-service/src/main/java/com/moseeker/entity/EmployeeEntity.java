@@ -173,7 +173,7 @@ public class EmployeeEntity {
         UserEmployeePointsRecordDO userEmployeePointsRecordDO = ueprDao.getData(query.buildQuery());
         if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
             logger.warn("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
-            throw new Exception("重复的加积分操作");
+            throw EmployeeException.EMPLOYEE_AWARD_REPEAT_PLUS;
         }
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);

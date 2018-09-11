@@ -14,6 +14,7 @@ public class ApplicationException extends CommonException {
 
     public static final ApplicationException APPLICATION_POSITION_NOTEXIST = new ApplicationException(41021,"职位信息不正确！");
     public static final ApplicationException APPLICATION_REFERRAL_TYPE_NOT_EXIST = new ApplicationException(41523,"员工推荐候选人类型不正确！");
+    public static final ApplicationException APPLICATION_REFERRAL_REWARD_CREATE_FAILED = new ApplicationException(41524,"积分添加失败！");
 
     public ApplicationException(int code, String message) {
         super(code, message);
