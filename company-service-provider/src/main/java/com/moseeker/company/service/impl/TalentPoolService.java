@@ -1375,6 +1375,7 @@ public class TalentPoolService {
                                     String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
                                     map.put("keywords", keyword);
                                 }
+
                                 tagService.handlerCompanyTag(idList, 0, map);
                                 return 0;
                             });
@@ -1423,6 +1424,7 @@ public class TalentPoolService {
                 try {
                     tp.startTast(() -> {
                         Map<String, Object> tag = handlerCompanyData(id, companyTagDO);
+                        logger.info("==============tag:{}",JSON.toJSONString(tag));
                         tagService.handlerCompanyTag(idList, 1, tag);
                         return 0;
                     });

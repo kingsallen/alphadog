@@ -712,6 +712,7 @@ public class TalentpoolSearchengine {
                     continue;
                 }
                 QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword);
+                logger.info("searchengine ================ containAnykey:"+containAnykey);
                 if(StringUtils.isNotNullOrEmpty(containAnykey) && Integer.parseInt(containAnykey) == 1){
                     ((BoolQueryBuilder) keyand).should(fullf);
                 }else{
