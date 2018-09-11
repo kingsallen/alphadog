@@ -120,7 +120,7 @@ public class ReferralController {
      * @return 职位信息
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/employee/{id}/post-candidate-info", method = RequestMethod.POST)
     @ResponseBody
     public String postCandidateInfo(@PathVariable int id, @RequestBody CandidateInfo form) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
