@@ -164,6 +164,7 @@ public class PositionService {
     LiePinReceiverHandler receiverHandler;
 
 
+
     private ThreadPool pool = ThreadPool.Instance;
 
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
@@ -1888,6 +1889,7 @@ public class PositionService {
                     e.setTotalNum(count);
                     e.setIs_referral(jr.getIsReferral());
                     e.setEmployment_type(jr.getEmploymentType());
+                    e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
                     dataList.add(e);
                     break;
                 }
@@ -1918,16 +1920,33 @@ public class PositionService {
 
         }
 
-        //拼装 company 相关内容
+        // 获取发布人信息，拼装发布人姓名
+        Map<Integer /* publisher id */, UserHrAccountDO> publisherUserHrAccountMap = new HashMap<>();
+
+        //  根据publishSet 查询 user_hr_account
+        Condition condition2 = new Condition("id", publisherSet.toArray(), ValueOp.IN);
+        Query.QueryBuilder hrm2 = new Query.QueryBuilder();
+
+        hrm2.where(condition2);
+        List<UserHrAccountDO> userAccountList = userHrAccountDao.getDatas(hrm2.buildQuery(), UserHrAccountDO.class);
+
+        for (UserHrAccountDO userHrAccountDO : userAccountList) {
+            publisherUserHrAccountMap.put(userHrAccountDO.getId(), userHrAccountDO);
+        }
+
+        //拼装 company 和 publisher 相关内容
         dataList = dataList.stream().map(s -> {
             s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
             s.setCompany_logo(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getLogo());
             s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
+            //添加发布人姓名
+            s.setPublisher_name(publisherUserHrAccountMap.get(s.getPublisher()) == null ? "" : publisherUserHrAccountMap.get(s.getPublisher()).getUsername());
             return s;
         }).collect(Collectors.toList());
-        return dataList;
-    }
 
+        return dataList;
+
+    }
     /**
      * 获得红包活动的分享信息
      *
