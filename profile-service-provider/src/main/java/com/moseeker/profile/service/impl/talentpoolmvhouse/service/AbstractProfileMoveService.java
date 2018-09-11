@@ -27,7 +27,6 @@ import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveC
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.profile.service.impl.WholeProfileService;
-import com.moseeker.profile.service.impl.talentpoolmvhouse.util.AESUtils;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseOperationVO;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseVO;
 
@@ -372,7 +371,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords = insertProfileMoveRecordRecord(profileMoveId, thirdpartyAccountCompanyDOS);
         List<MvHouseVO> mvHouseVOS = new ArrayList<>();
         String password = hrThirdPartyAccountDO.getPassword();
-        password = decryPwd(password);
         for(TalentpoolProfileMoveRecordRecord record : profileMoveRecordRecords){
             ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();
             operationInfoVO.setStart_date(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
@@ -391,11 +389,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             mvHouseVOS.add(mvHouseVO);
         }
         return mvHouseVOS;
-    }
-
-    private String decryPwd(String passwordHex) throws Exception {
-        byte[] target = AESUtils.decrypt(passwordHex);
-        return new String(target, "UTF-8").trim();
     }
 
     private List<TalentpoolProfileMoveRecordRecord> insertProfileMoveRecordRecord(int profileMoveId, List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS) {
