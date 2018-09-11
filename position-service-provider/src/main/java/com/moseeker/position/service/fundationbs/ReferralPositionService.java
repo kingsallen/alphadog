@@ -3,6 +3,12 @@ package com.moseeker.position.service.fundationbs;
 import com.moseeker.baseorm.db.referraldb.tables.daos.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
+<<<<<<< HEAD
+=======
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
+>>>>>>> 校验更新职位不能超过500条
 import com.moseeker.entity.PositionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +37,9 @@ public class ReferralPositionService {
         //如果all_selected=true,将该companyID下所有职位变成内推职位
         if(all_selected && companyId > 0) {
             pids  =  positionEntity.getPositionIdList(new ArrayList<>(companyId));
+            if(pids.size()>500) {
+                ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_REFERRAL_UPDATE_INVALID);
+            }
         }
         positionEntity.putReferralPositions(pids);
     }
