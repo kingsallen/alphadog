@@ -39,7 +39,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
@@ -214,7 +213,7 @@ public class ReferralServiceImpl implements ReferralService {
         String email = StringUtils.defaultIfBlank(profilePojo.getUserRecord().getEmail(), "");
 
         return recommend(profilePojo, employeeDO, positionRecord, name, mobile, referralReasons,
-                (byte)genderType.getValue(), email, type);
+                genderType, email, type);
     }
 
     /**
@@ -245,9 +244,13 @@ public class ReferralServiceImpl implements ReferralService {
         }
 
         String result = validateUtil.validate();
-
         if (StringUtils.isNotBlank(result)) {
             throw ProfileException.validateFailed(result);
+        }
+
+        GenderType genderType = GenderType.instanceFromValue(candidate.getGender());
+        if (genderType == null) {
+            genderType = GenderType.Secret;
         }
 
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
@@ -270,7 +273,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
 
         return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(),
-                candidate.getReasons(), candidate.getGender(), candidate.getEmail(), ReferralType.PostInfo);
+                candidate.getReasons(), genderType, candidate.getEmail(), ReferralType.PostInfo);
 
     }
 
@@ -288,7 +291,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @throws ProfileException 业务异常
      */
     private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
-                          String name, String mobile, List<String> referralReasons, byte gender, String email, ReferralType referralType)
+                          String name, String mobile, List<String> referralReasons, GenderType gender, String email, ReferralType referralType)
             throws ProfileException {
 
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
@@ -329,7 +332,7 @@ public class ReferralServiceImpl implements ReferralService {
                     applicationId = jsonObject1.getInteger("jobApplicationId");
                 }
                 referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
-                        mobile, employeeDO, userId, gender, email);
+                        mobile, employeeDO, userId, (byte) gender.getValue(), email);
 
                 addRecommandReward(employeeDO, userId, applicationId, positionRecord);
 
