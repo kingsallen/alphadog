@@ -224,47 +224,47 @@ public enum ChannelType {
             }
             return result;
         }
-    },MVHOUSEJOB51UPLOAD(29, "mvHouse(51)upload", "前程无忧-收到的简历", "mvHouse"){
+    },MVHOUSEJOB51UPLOAD(31, "mvHouse(51)upload", "前程无忧-收到的简历", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
             if (StringUtils.isNullOrEmpty(origin)) {
                 result = "1000000000000000000000000000000";
             } else {
-                result = getResult(origin, 29);
+                result = getResult(origin, 31);
             }
             return result;
         }
-    },MVHOUSEJOB51DOWNLOAD(30, "mvHouse(51)download", "前程无忧-下载的简历", "mvHouse"){
+    },MVHOUSEJOB51DOWNLOAD(32, "mvHouse(51)download", "前程无忧-下载的简历", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
             if (StringUtils.isNullOrEmpty(origin)) {
                 result = "10000000000000000000000000000000";
             } else {
-                result = getResult(origin, 30);
+                result = getResult(origin, 32);
             }
             return result;
         }
-    },MVHOUSEZHILIANUPLOAD(31, "mvHouse(ZhiLian)upload", "智联-收到的简历", "mvHouse"){
+    },MVHOUSEZHILIANUPLOAD(33, "mvHouse(ZhiLian)upload", "智联-收到的简历", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
             if (StringUtils.isNullOrEmpty(origin)) {
                 result = "100000000000000000000000000000000";
             } else {
-                result = getResult(origin, 31);
+                result = getResult(origin, 33);
             }
             return result;
         }
-    },MVHOUSEZHILIANDOWNLOAD(32, "mvHouse(ZhiLian)download", "智联-下载的简历", "mvHouse"){
+    },MVHOUSEZHILIANDOWNLOAD(34, "mvHouse(ZhiLian)download", "智联-下载的简历", "mvHouse"){
         @Override
         public String getOrigin(String origin) {
             String result;
             if (StringUtils.isNullOrEmpty(origin)) {
                 result = "1000000000000000000000000000000000";
             } else {
-                result = getResult(origin, 32);
+                result = getResult(origin, 34);
             }
             return result;
         }
