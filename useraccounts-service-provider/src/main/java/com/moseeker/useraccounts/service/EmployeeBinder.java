@@ -1,14 +1,18 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.UserAccountEntity;
@@ -21,16 +25,21 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import javax.annotation.Resource;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -131,11 +140,20 @@ public abstract class EmployeeBinder {
      * @param certConf
      * @throws Exception
      */
-    protected abstract void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception;
+    protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("公司信息", bindingParams.getCompanyId(), null, null, 1, null);
+        validateUtil.addIntTypeValidate("用户信息", bindingParams.getUserId(), null, null, 1, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            throw UserAccountException.validateFailed(result);
+        }
+    }
 
 
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
+     * todo 需要优化  代码过长
      * @param useremployee
      * @return
      * @throws TException
@@ -144,13 +162,59 @@ public abstract class EmployeeBinder {
         log.info("doneBind param: useremployee={}", useremployee);
         Result response = new Result();
         int employeeId;
-        if (useremployee.getId() == 0) {
-            employeeId = employeeDao.addData(useremployee).getId();
-            useremployee.setId(employeeId);
-        } else {
-//            useremployee.setUpdateTime(null);
+        if (useremployee.getId() != 0) {
+            useremployee.setUpdateTime(null);
+            String bindTime = useremployee.getBindingTime();
+            useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
             employeeDao.updateData(useremployee);
+            if (useremployee.getAuthMethod() == 1 &&
+                    org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
+                employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
+            }
             employeeId = useremployee.getId();
+        } else {
+            log.info("doneBind now:{}", new DateTime().toString("YYYY-MM-dd HH:mm:ss"));
+            log.info("doneBind persist employee:{}", useremployee);
+
+
+            UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
+                    useremployee.getCompanyId());
+            if (userEmployee != null) {
+                employeeId = userEmployee.getId();
+                if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getEmail())) {
+                        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
+                    }
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getMobile())) {
+                        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
+                    }
+                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
+                        userEmployee.setCname(useremployee.getCname());
+                    }
+                    if ((org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
+                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(userEmployee.getCustomFieldValues()))
+                            && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
+                        userEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+                    }
+                    userEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                    log.info("userEmployee update record");
+                    if (useremployee.getAuthMethod() == 1 && userEmployee.getBindingTime() == null) {
+                        userEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                                .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+                        employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                    }
+                    useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+                    employeeDao.updateRecord(userEmployee);
+
+                }
+            } else {
+                ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
+                employeeId = executeResult.getId();
+                if (executeResult.getExecute() > 0) {
+                    employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                }
+            }
         }
         if (useremployee.getSysuserId() > 0
                 && org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
@@ -205,6 +269,7 @@ public abstract class EmployeeBinder {
             response.setMessage("fail");
         }
         log.info("updateEmployee response : {}", response);
+        useremployee.setId(employeeId);
         return response;
     }
     /*

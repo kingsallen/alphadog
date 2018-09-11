@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
+import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.baseorm.dao.dictdb.DictMajorDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -9,6 +10,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileEducationRecord;
 import com.moseeker.baseorm.tool.RecordTool;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.StringUtils;
@@ -19,6 +21,7 @@ import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictMajorDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileEducationDO;
 import com.moseeker.thrift.gen.profile.struct.Education;
@@ -47,6 +50,9 @@ public class ProfileEducationService {
 
     @Autowired
     private DictMajorDao majorDao;
+
+    @Autowired
+    private DictCountryDao countryDao;
 
     @Autowired
     private ProfileProfileDao profileDao;
@@ -78,8 +84,11 @@ public class ProfileEducationService {
             });
             // 学校
             List<DictCollegeDO> colleges = collegeDao.getCollegesByIDs(College_codes);
-            if (colleges != null && colleges.size() > 0) {
-                for (Education education : educations) {
+            // 专业
+            List<DictMajorDO> majors = majorDao.getMajorsByIDs(Major_codes);
+            List<DictCountryDO> countryDOList = countryDao.getAll();
+            for (Education education : educations) {
+                if (colleges != null && colleges.size() > 0) {
                     for (DictCollegeDO college : colleges) {
                         if (education.getCollege_code() == college.getCode()) {
                             education.setCollege_name(college.getName());
@@ -88,11 +97,7 @@ public class ProfileEducationService {
                         }
                     }
                 }
-            }
-            // 专业
-            List<DictMajorDO> majors = majorDao.getMajorsByIDs(Major_codes);
-            if (majors != null && majors.size() > 0) {
-                for (Education education : educations) {
+                if (majors != null && majors.size() > 0) {
                     for (DictMajorDO major : majors) {
                         if (education.getMajor_code().equals(major.getCode())) {
                             education.setMajor_name(major.getName());
@@ -100,8 +105,18 @@ public class ProfileEducationService {
                         }
                     }
                 }
+                if(!StringUtils.isEmptyList(countryDOList)){
+                    for(DictCountryDO country : countryDOList){
+                        if(education.getCountry_id() == country.getId()){
+                            education.setCountry_name(country.getName());
+                            break;
+                        }else if(education.getCountry_id() == Constant.HKAMTW){
+                            education.setCountry_name("港澳台地区");
+                            break;
+                        }
+                    }
+                }
             }
-
         }
         return educations;
     }
@@ -155,6 +170,7 @@ public class ProfileEducationService {
                 if (college != null) {
                     education.setCollege_name(college.getName());
                     education.setCollege_logo(college.getLogo());
+                    education.setCountry_id(college.getCountry_code());
                 } else {
                     throw ProfileException.PROFILE_DICT_COLLEGE_NOTEXIST;
                 }
@@ -193,6 +209,7 @@ public class ProfileEducationService {
                 if (college != null) {
                     education.setCollege_name(college.getName());
                     education.setCollege_logo(college.getLogo());
+                    education.setCountry_id(college.getCountry_code());
                 } else {
                     throw ProfileException.PROFILE_DICT_COLLEGE_NOTEXIST;
                 }

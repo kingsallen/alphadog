@@ -6,6 +6,8 @@ import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
@@ -191,6 +193,26 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public List<Integer> employeeProxyApply(int referenceId, int applierId, List<Integer> positionIdList)
+            throws BIZException, TException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredOneValidate("职位", positionIdList);
+        validateUtil.addUpperLimitValidate("职位", positionIdList);
+        validateUtil.addIntTypeValidate("求职者", applierId, 1, null);
+        validateUtil.addIntTypeValidate("推荐者", referenceId, 1, null);
+        String result = validateUtil.validate();
+        if (StringUtils.isNotBlank(result)) {
+            throw ExceptionUtils.convertException(CommonException.validateFailed(result));
+        }
+
+        try {
+            return service.employeeProxyApply(referenceId, applierId, positionIdList);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
@@ -199,7 +221,11 @@ public class JobApplicataionServicesImpl implements Iface {
      * @param companyId 公司id
      */
     public Response deleteRedisKeyApplicationCheckCount(long userId, long companyId) throws TException {
-        return service.deleteRedisKeyApplicationCheckCount(userId, companyId);
+        try {
+            return service.deleteRedisKeyApplicationCheckCount(userId, companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
 

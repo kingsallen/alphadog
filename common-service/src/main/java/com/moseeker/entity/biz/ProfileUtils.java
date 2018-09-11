@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
@@ -22,6 +23,7 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +39,9 @@ public class ProfileUtils {
 
 
 	private final static int DEFAULT_FLAG=0;
+
+	@Autowired
+    private DictCollegeDao collegeDao;
 
 	public List<ProfileWorksRecord> mapToWorksRecords(List<Map<String, Object>> works) {
 		List<ProfileWorksRecord> worksRecords = new ArrayList<>();
@@ -507,7 +512,7 @@ public class ProfileUtils {
 		return record;
 	}
 
-	public List<ProfileEducationRecord> mapToEducationRecords(List<Map<String, Object>> educations) {
+	public List<ProfileEducationRecord> mapToEducationRecords(List<Map<String, Object>> educations, ProfileExtParam extParam) {
 	    logger.info("prfile resume educations:{}",educations);
 		List<ProfileEducationRecord> educationRecords = new ArrayList<>();
 		if (educations != null && educations.size() > 0) {
@@ -532,6 +537,14 @@ public class ProfileUtils {
 					if(education.get("end_until_now")==null){
 						record.setEndUntilNow((byte)0);
 					}
+					if(record.getCollegeName() != null){
+                        if(extParam.getCollegeMap().get(record.getCollegeName()) != null && record.getCountryId() == null ){
+                            DictCollegeDO collegeDO = extParam.getCollegeMap().get(record.getCollegeName());
+                            record.setCollegeCode(collegeDO.getCode());
+                            record.setCollegeLogo(collegeDO.getLogo());
+                            record.setCountryId(collegeDO.getCountry_code());
+                        }
+                    }
 
 					ValidationMessage<ProfileEducationRecord> vm = ProfileValidation.verifyEducation(record);
                     logger.info("prfile resume education vm:{}",vm.isPass()+":"+vm.getResult());

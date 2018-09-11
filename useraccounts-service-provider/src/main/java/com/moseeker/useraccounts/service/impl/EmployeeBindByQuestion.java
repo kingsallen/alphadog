@@ -21,10 +21,13 @@ public class EmployeeBindByQuestion extends EmployeeBinder{
 
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
+        super.paramCheck(bindingParams, certConf);
         // 问题校验
         List<String> answers = JSONObject.parseArray(certConf.getQuestions()).stream().map(m -> JSONObject.parseObject(String.valueOf(m)).getString("a")).collect(Collectors.toList());
         log.info("answers: {}", answers);
-        String[] replys = {bindingParams.getAnswer1().trim(), bindingParams.getAnswer2().trim()};
+        String answer1 = org.apache.commons.lang.StringUtils.isNotBlank(bindingParams.getAnswer1())?bindingParams.getAnswer1().trim():"";
+        String answer2 = org.apache.commons.lang.StringUtils.isNotBlank(bindingParams.getAnswer2())?bindingParams.getAnswer2().trim():"";
+        String[] replys = {answer1, answer2};
         if (!StringUtils.isEmptyList(answers)) {
             for (int i = 0; i < answers.size(); i++) {
                 if (!org.apache.commons.lang.StringUtils.defaultString(answers.get(i), "").equals(replys[i])) {

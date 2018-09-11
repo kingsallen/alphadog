@@ -57,7 +57,7 @@ public class ProfileMailUtil {
         sendProfileParseWarnMail(profileParseDev, account);
     }
 
-    private void sendMvHouseFailedEmail(List<String> mails, Exception mvHouseException, String ext){
+    public void sendMvHouseFailedEmail(List<String> mails, Exception mvHouseException, String ext){
         if (mails == null || mails.size() == 0) {
             logger.warn("没有配置同步邮箱地址!");
             return;

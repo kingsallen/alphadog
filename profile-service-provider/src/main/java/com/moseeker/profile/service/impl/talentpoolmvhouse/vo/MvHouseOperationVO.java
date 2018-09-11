@@ -7,69 +7,79 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.vo;
  **/
 public class MvHouseOperationVO {
     private Byte channel;
-    private String startDate;
-    private String endDate;
-    private Integer crawlNum;
+    private String start_date;
+    private String end_date;
+    private Integer crawl_num;
     private Byte status;
-    private String statusDisplay;
+    private String status_display;
+    private String create_time;
 
-    public byte getChannel() {
+    public Byte getChannel() {
         return channel;
     }
 
-    public void setChannel(byte channel) {
+    public void setChannel(Byte channel) {
         this.channel = channel;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public String getStart_date() {
+        return start_date;
     }
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
+    public void setStart_date(String start_date) {
+        this.start_date = start_date;
     }
 
-    public String getEndDate() {
-        return endDate;
+    public String getEnd_date() {
+        return end_date;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setEnd_date(String end_date) {
+        this.end_date = end_date;
     }
 
-    public int getCrawlNum() {
-        return crawlNum;
+    public Integer getCrawl_num() {
+        return crawl_num;
     }
 
-    public void setCrawlNum(int crawlNum) {
-        this.crawlNum = crawlNum;
+    public void setCrawl_num(Integer crawl_num) {
+        this.crawl_num = crawl_num;
     }
 
-    public byte getStatus() {
+    public Byte getStatus() {
         return status;
     }
 
-    public void setStatus(byte status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 
-    public String getStatusDisplay() {
-        return statusDisplay;
+    public String getStatus_display() {
+        return status_display;
     }
 
-    public void setStatusDisplay(String statusDisplay) {
-        this.statusDisplay = statusDisplay;
+    public void setStatus_display(String status_display) {
+        this.status_display = status_display;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
     }
 
     @Override
     public String toString() {
         return "MvHouseOperationVO{" +
                 "channel=" + channel +
-                ", startDate='" + startDate + '\'' +
-                ", endDate='" + endDate + '\'' +
-                ", crawlNum=" + crawlNum +
+                ", start_date='" + start_date + '\'' +
+                ", end_date='" + end_date + '\'' +
+                ", crawl_num=" + crawl_num +
                 ", status=" + status +
-                ", statusDisplay='" + statusDisplay + '\'' +
+                ", status_display='" + status_display + '\'' +
+                ", create_time='" + create_time + '\'' +
                 '}';
     }
 }

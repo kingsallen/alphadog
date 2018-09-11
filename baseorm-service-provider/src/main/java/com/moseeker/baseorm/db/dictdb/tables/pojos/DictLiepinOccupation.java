@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictLiepinOccupation implements Serializable {
 
-    private static final long serialVersionUID = 2028058517;
+    private static final long serialVersionUID = 1503912861;
 
     private Integer   id;
     private Integer   code;
@@ -34,6 +34,7 @@ public class DictLiepinOccupation implements Serializable {
     private Timestamp updateTime;
     private Integer   status;
     private String    name;
+    private Byte      candidateSource;
 
     public DictLiepinOccupation() {}
 
@@ -47,6 +48,7 @@ public class DictLiepinOccupation implements Serializable {
         this.updateTime = value.updateTime;
         this.status = value.status;
         this.name = value.name;
+        this.candidateSource = value.candidateSource;
     }
 
     public DictLiepinOccupation(
@@ -58,7 +60,8 @@ public class DictLiepinOccupation implements Serializable {
         Timestamp createTime,
         Timestamp updateTime,
         Integer   status,
-        String    name
+        String    name,
+        Byte      candidateSource
     ) {
         this.id = id;
         this.code = code;
@@ -69,6 +72,7 @@ public class DictLiepinOccupation implements Serializable {
         this.updateTime = updateTime;
         this.status = status;
         this.name = name;
+        this.candidateSource = candidateSource;
     }
 
     public Integer getId() {
@@ -143,6 +147,14 @@ public class DictLiepinOccupation implements Serializable {
         this.name = name;
     }
 
+    public Byte getCandidateSource() {
+        return this.candidateSource;
+    }
+
+    public void setCandidateSource(Byte candidateSource) {
+        this.candidateSource = candidateSource;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DictLiepinOccupation (");
@@ -156,6 +168,7 @@ public class DictLiepinOccupation implements Serializable {
         sb.append(", ").append(updateTime);
         sb.append(", ").append(status);
         sb.append(", ").append(name);
+        sb.append(", ").append(candidateSource);
 
         sb.append(")");
         return sb.toString();

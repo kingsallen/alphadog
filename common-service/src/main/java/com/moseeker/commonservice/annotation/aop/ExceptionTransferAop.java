@@ -40,8 +40,6 @@ public class ExceptionTransferAop implements Ordered {
         }
     }
 
-
-
     @Override
     public int getOrder() {
         return 10;

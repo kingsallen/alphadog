@@ -6,6 +6,9 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMove
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -23,9 +26,10 @@ public class TalentPoolProfileMoveDao extends JooqCrudImpl<TalentPoolProfileMove
         super(table, talentPoolProfileMoveDOClass);
     }
 
-    public List<TalentPoolProfileMoveDO> getListByHrIdDesc(int hrId){
+    public List<TalentPoolProfileMoveDO> getListByHrIdAndChannel(int hrId, int channel){
         return create.selectFrom(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE)
                 .where(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.HR_ID.eq(hrId))
+                .and(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CHANNEL.eq((byte)channel))
                 .fetchInto(TalentPoolProfileMoveDO.class);
     }
 
@@ -57,5 +61,12 @@ public class TalentPoolProfileMoveDao extends JooqCrudImpl<TalentPoolProfileMove
         return create.selectFrom(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE)
                 .where(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.ID.eq(profileMoveId))
                 .fetchOne();
+    }
+
+    public List<TalentPoolProfileMoveDO> getProfileMoveDOByHrId(int hrId, Timestamp timestamp) {
+        return create.selectFrom(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE)
+                .where(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.HR_ID.eq(hrId))
+                .and(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CREATE_TIME.gt(timestamp))
+                .fetchInto(TalentPoolProfileMoveDO.class);
     }
 }

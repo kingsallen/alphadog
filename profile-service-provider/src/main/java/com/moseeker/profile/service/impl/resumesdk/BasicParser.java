@@ -2,39 +2,31 @@ package com.moseeker.profile.service.impl.resumesdk;
 
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.pojo.profile.Basic;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.Result;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.profile.service.impl.resumesdk.iface.AbstractResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
+import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import com.moseeker.profile.utils.DictCode;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 简历-基本信息
  */
 @Component
-public class BasicParser extends AbstractResumeParser<Result, Basic> {
+public class BasicParser extends AbstractMutiResumeParser<Result, Basic> {
     Logger logger = LoggerFactory.getLogger(BasicParser.class);
 
-    @Autowired
-    DictCountryDao dictCountryDao;
-
-    @Autowired
-    DictCityDao dictCityDao;
-
     @Override
-    protected Basic parseResume(Result result) throws ResumeParserHelper.ResumeParseException {
+    protected Basic parseResume(Result result) throws ResumeParseException {
         // basic信息
         logger.info("profileParser result.getCity():{}", result.getCity());
         logger.info("profileParser result.getGender():{}", result.getGender());
@@ -43,11 +35,7 @@ public class BasicParser extends AbstractResumeParser<Result, Basic> {
         logger.info("profileParser result.getBirthday():{}", result.getBirthday());
         logger.info("profileParser result.getNationality():{}", result.getNationality());
         Basic basic = new Basic();
-        if (StringUtils.isNotNullOrEmpty(result.getCity())) {
-            setCity(basic, result.getCity());
-        } else if (StringUtils.isNotNullOrEmpty(result.getLiving_address())) {
-            setCity(basic, result.getLiving_address());
-        }
+        setCity(basic, result.getCity(), result.getLiving_address());
         if (StringUtils.isNotNullOrEmpty(result.getGender())) {
             basic.setGender(DictCode.gender(result.getGender()));
         }
@@ -57,41 +45,33 @@ public class BasicParser extends AbstractResumeParser<Result, Basic> {
             try {
                 basic.setBirth(DateUtils.dateRepair(result.getBirthday(), "\\."));
             } catch (Exception e) {
-                throw new ResumeParserHelper.ResumeParseException()
+                throw new ResumeParseException()
                         .errorLog("出生日期转换异常: " + e.getMessage())
                         .fieldValue("birthday: " + result.getBirthday());
             }
         }
 
         if (StringUtils.isNotNullOrEmpty(result.getNationality())) {
-            DictCountryDO countryDO = dictCountryDao.getCountryByNameOrEName(result.getNationality());
-            if (countryDO != null) {
-                basic.setNationalityCode(countryDO.getCode());
-                basic.setNationalityName(countryDO.getName());
-            }
+            basic.setNationalityName(result.getNationality());
         }
         basic.setQq(result.getQq());
         logger.info("profileParser getBasic:{}", JSON.toJSONString(basic));
         return basic;
     }
 
-    public void setCity(Basic basic, String cityName) {
-        DictCityDO city = dictCityDao.getCityByNameOrEname(cityName);
-        if (city != null) {
-            basic.setCityName(city.getName());
-            basic.setCityCode(city.getCode());
-        } else {
-            basic.setCityName(cityName);
+    public void setCity(Basic basic, String cityName, String livingAddress) {
+        basic.setCityName(org.apache.commons.lang.StringUtils.isNotBlank(cityName)?cityName:livingAddress);
+    }
+
+    @Override
+    protected List<Result> get(ResumeObj resumeProfile) {
+        return new ArrayList<Result>(){{add(resumeProfile.getResult());}};
+    }
+
+    @Override
+    protected void set(ProfileObj moseekerProfile, List<Basic> basic) {
+        if (basic != null && basic.size() > 0) {
+            moseekerProfile.setBasic(basic.get(0));
         }
-    }
-
-    @Override
-    protected Result get(ResumeObj resumeProfile) {
-        return resumeProfile.getResult();
-    }
-
-    @Override
-    protected void set(ProfileObj moseekerProfile, Basic basic) {
-        moseekerProfile.setBasic(basic);
     }
 }

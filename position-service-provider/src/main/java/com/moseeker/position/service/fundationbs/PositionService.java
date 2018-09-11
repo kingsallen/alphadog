@@ -1591,6 +1591,13 @@ public class PositionService {
 
             logger.info("getPositionList did:{},company_id:{},query:{}", query.getDid(), query.getCompany_id(), BeanUtils.convertStructToJSON(query));
 
+            //记录搜索历史
+            if(query.getUser_id()> 0 && StringUtils.isNotNullOrEmpty(query.getKeywords())) {
+                pool.startTast(() -> {
+                    updateRedisUserSearchPositionHistory(query.getUser_id(), query.getKeywords());
+                    return 0;
+                });
+            }
             if (query.isSetDid() && query.getDid() != 0) {
                 // 如果有did, 赋值 childCompanyId
                 childCompanyId = String.valueOf(query.getDid());
@@ -1659,12 +1666,12 @@ public class PositionService {
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
                 long totalNum = jobj.getLong("total");
                 List<Integer> jdIdList = jdIdJsonArray.stream().map(m -> Integer.valueOf(String.valueOf(m))).collect(Collectors.toList());
-                dataList = this.getWxPosition(jdIdList);
-                if (!StringUtils.isEmptyList(dataList)) {
-                    for (WechatPositionListData data : dataList) {
-                        data.setTotalNum((int) totalNum);
-                    }
-                }
+                dataList = this.getWxPosition(jdIdList,(int)totalNum);
+//                if (!StringUtils.isEmptyList(dataList)) {
+//                    for (WechatPositionListData data : dataList) {
+//                        data.setTotalNum((int) totalNum);
+//                    }
+//                }
             } else {
                 return new ArrayList<>();
             }
@@ -1677,6 +1684,23 @@ public class PositionService {
         return dataList;
     }
 
+    private void updateRedisUserSearchPositionHistory(int userId, String keywords){
+        String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
+        List<String> history = null;
+        if(StringUtils.isNotNullOrEmpty(info)){
+            history = (List)JSONObject.parse(info);
+        }else{
+            history = new ArrayList<>();
+        }
+        history.remove(keywords);
+        history.add(0, keywords);
+        if(history.size()>10){
+            history.remove(history.size()-1);
+        }
+        String result = JSONObject.toJSONString(history);
+        redisClient.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId), result);
+    }
+
     /*
        微信端获取个人画像推送职位
      */
@@ -1687,7 +1711,9 @@ public class PositionService {
         if (StringUtils.isEmptyList(pids)) {
             return null;
         }
-        List<WechatPositionListData> result=this.getRecomWxPosition(pids);
+        int count=this.getPersonaRecomPositionListNum(userId,companyId,type);
+        logger.info("=================================="+count);
+        List<WechatPositionListData> result=this.getRecomWxPosition(pids,count);
         //这段本来可以不加，可是涉及到分页，所以肯定要在这边加上修改是否推送的功能
         if (!StringUtils.isEmptyList(result) && pageNum > 1) {
             this.updateIsSendStatus(list);
@@ -1701,13 +1727,15 @@ public class PositionService {
         if (StringUtils.isEmptyList(pids)) {
             return null;
         }
-        int count=this.getCampaignRecomPositionlistByIdAndCompanyTypeCount(recomPushId,companyId,type);
-        List<WechatPositionListData> result=this.getRecomWxPosition(pids);
-        if(!StringUtils.isEmptyList(result)){
-            for(WechatPositionListData position:result){
-                position.setTotalNum(count);
-            }
-        }
+
+        int count=pids.size();
+        logger.info("=================================="+count);
+        List<WechatPositionListData> result=this.getRecomWxPosition(pids,count);
+//        if(!StringUtils.isEmptyList(result)){
+//            for(WechatPositionListData position:result){
+//                position.setTotalNum(count);
+//            }
+//        }
         return result;
     }
 
@@ -1763,12 +1791,21 @@ public class PositionService {
     }
 
     /*
-      通过user_id 获取 CampaignPersonaRecomPojo 的list集合
+      通过user_id ,公司id，类型 获取 CampaignPersonaRecomPojo 的list集合
      */
+
     private  List<CampaignPersonaRecomRecord> getPersonaRecomPositionList(int userId,int companyId,int type, int pageNum, int pageSize){
         Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).orderBy("id", Order.ASC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<CampaignPersonaRecomRecord> list=campaignPersonaRecomDao.getRecords(query);
         return list;
+    }
+    /*
+     通过user_id 获取 CampaignPersonaRecomPojo 的数量
+    */
+    private int getPersonaRecomPositionListNum(int userId,int companyId,int type){
+        Query query=new Query.QueryBuilder().where("user_id",userId).and("company_id",companyId).and("type",(byte)type).buildQuery();
+        int result =campaignPersonaRecomDao.getCount(query);
+        return result;
     }
 
     /*
@@ -1804,29 +1841,29 @@ public class PositionService {
         }
     }
 
-    private List<WechatPositionListData> getRecomWxPosition(List<Integer> jdIdList){
+    private List<WechatPositionListData> getRecomWxPosition(List<Integer> jdIdList,int count){
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords);
+        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
         return dataList;
     }
 
     /*
      将通过position.id获取微信端职位列表的接口拆出来，单独成立私有方法，从而保证可共用性
      */
-    private List<WechatPositionListData> getWxPosition(List<Integer> jdIdList) {
+    private List<WechatPositionListData> getWxPosition(List<Integer> jdIdList,int count) {
         // 通过 pid 列表查询 position 信息
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).and("status", 0).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords);
+        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
         return dataList;
     }
 
-    private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList,List<JobPositionRecordWithCityName> jobRecords){
+    private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList,List<JobPositionRecordWithCityName> jobRecords,int count){
         List<WechatPositionListData> dataList = new ArrayList<>();
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
@@ -1860,6 +1897,7 @@ public class PositionService {
                     e.setAccountabilities(jr.getAccountabilities());
                     e.setCandidate_source(jr.getCandidateSource());
                     e.setRequirement(jr.getRequirement());
+                    e.setTotalNum(count);
                     dataList.add(e);
                     break;
                 }

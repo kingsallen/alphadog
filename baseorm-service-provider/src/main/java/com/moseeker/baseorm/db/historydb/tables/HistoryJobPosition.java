@@ -431,7 +431,7 @@ public class HistoryJobPosition extends TableImpl<HistoryJobPositionRecord> {
     /**
      * Rename this table
      */
-
+    @Override
     public HistoryJobPosition rename(String name) {
         return new HistoryJobPosition(name, null);
     }

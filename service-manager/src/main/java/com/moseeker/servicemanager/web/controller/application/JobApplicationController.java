@@ -1,14 +1,19 @@
 package com.moseeker.servicemanager.web.controller.application;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.application.form.EmployeeProxyApplyForm;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -236,20 +241,44 @@ public class JobApplicationController {
 	}
 
     /**
-     * 获取HR有多少未读简历
-     */
-    @RequestMapping(value = "/application/isView/count", method = RequestMethod.GET)
-    @ResponseBody
-    public String getAppliationIsViewCount(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            Integer accountId = params.getInt("accountId");
-            Response res =  applicationService.getHrIsViewApplication(accountId);
-            return ResponseLogNotification.success(request, res);
+	 * 获取HR有多少未读简历
+	 */
+	@RequestMapping(value = "/application/isView/count", method = RequestMethod.GET)
+	@ResponseBody
+	public String getAppliationIsViewCount(HttpServletRequest request, HttpServletResponse response) {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			Integer accountId = params.getInt("accountId");
+			Response res =  applicationService.getHrIsViewApplication(accountId);
+			return ResponseLogNotification.success(request, res);
 
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return ResponseLogNotification.fail(request,e.getMessage());
-        }
-    }
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			return ResponseLogNotification.fail(request,e.getMessage());
+		}
+	}
+
+	/**
+	 * 员工主动上传
+	 */
+	@RequestMapping(value = "/v1/application/proxy", method = RequestMethod.POST)
+	@ResponseBody
+	public String employeeProxyApply(@RequestBody EmployeeProxyApplyForm form) throws Exception {
+		if (form.getAppid() <= 0) {
+			throw CommonException.PROGRAM_APPID_LOST;
+
+		}
+		ValidateUtil validateUtil = new ValidateUtil();
+		validateUtil.addRequiredOneValidate("职位", form.getPositionIds());
+		validateUtil.addRequiredValidate("求职者", form.getApplierId());
+		validateUtil.addRequiredValidate("推荐者", form.getReferenceId());
+		validateUtil.addUpperLimitValidate("职位", form.getPositionIds());
+		String result = validateUtil.validate();
+		if (StringUtils.isNotBlank(result)) {
+			throw CommonException.validateFailed(result);
+		} else {
+			List<Integer> applyIdList = applicationService.employeeProxyApply(form.getReferenceId(), form.getApplierId(), form.getPositionIds());
+			return Result.success(applyIdList).toJson();
+		}
+	}
 }

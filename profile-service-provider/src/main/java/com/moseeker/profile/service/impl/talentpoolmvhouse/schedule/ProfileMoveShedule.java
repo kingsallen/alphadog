@@ -1,22 +1,18 @@
 package com.moseeker.profile.service.impl.talentpoolmvhouse.schedule;
 
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDao;
-import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDetailDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveRecordDao;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.profile.utils.ProfileMailUtil;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
+import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveRecordDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,18 +29,16 @@ public class ProfileMoveShedule {
 
     private Logger logger = LoggerFactory.getLogger(ProfileMoveShedule.class);
 
-    private final TalentPoolProfileMoveDao profileMoveDao;
+    private final TalentPoolProfileMoveRecordDao profileMoveRecordDao;
+
+    private final TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao;
 
     private final ProfileMailUtil mailUtil;
 
-    private final long timeOut = 5 * 60 * 1000;
-
-    @Resource(name = "cacheClient")
-    private RedisClient redisClient;
-
     @Autowired
-    public ProfileMoveShedule(TalentPoolProfileMoveDao profileMoveDao, ProfileMailUtil mailUtil) {
-        this.profileMoveDao = profileMoveDao;
+    public ProfileMoveShedule(TalentPoolProfileMoveRecordDao profileMoveRecordDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao) {
+        this.profileMoveRecordDao = profileMoveRecordDao;
+        this.poolProfileMoveDetailDao = poolProfileMoveDetailDao;
         this.mailUtil = mailUtil;
     }
 
@@ -55,18 +49,18 @@ public class ProfileMoveShedule {
      * @author cjm
      * @date 2018/7/9
      */
-//    @Scheduled(cron = "0 0/2 * * * ?")
+//    @Scheduled(cron = "0 * 0/2 * * ?")
     public void refreshEmailNum() {
         try {
             Date date = new Date();
             long timeout = 2 * 60 * 60 * 1000;
             Timestamp timestamp = new Timestamp(date.getTime() - timeout);
             // 获取距当前时间超过两个小时并且status为正在进行搬家的数据
-            List<TalentPoolProfileMoveDO> profileMoveDOS = profileMoveDao.getProfileMoveByStatusAndDate(ProfileMoveStateEnum.MOVING.getValue(), timestamp);
+            List<TalentPoolProfileMoveRecordDO> profileMoveDOS = profileMoveRecordDao.getProfileMoveByStatusAndDate(ProfileMoveStateEnum.MOVING.getValue(), timestamp);
             logger.info("=====================刷新简历搬家状态开始");
             List<Integer> successIdList = new ArrayList<>();
             List<Integer> failedIdList = new ArrayList<>();
-            for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
+            for (TalentPoolProfileMoveRecordDO profileMoveDO : profileMoveDOS) {
                 // 当验证码错误时会创建一条总邮件为0，当前邮件为0的数据，这条数据认为搬家失败
                 if (profileMoveDO.getCurrentEmailNum() == 0 && profileMoveDO.getTotalEmailNum() == 0) {
                     failedIdList.add(profileMoveDO.getId());
@@ -81,11 +75,13 @@ public class ProfileMoveShedule {
             }
             if (successIdList.size() > 0) {
                 logger.info("========================简历搬家状态刷新successIdList:{}", successIdList);
-                profileMoveDao.batchUpdateStatus(successIdList, ProfileMoveStateEnum.SUCCESS.getValue());
+                profileMoveRecordDao.batchUpdateStatus(successIdList, ProfileMoveStateEnum.SUCCESS.getValue());
             }
             if (failedIdList.size() > 0) {
                 logger.info("========================简历搬家状态刷新failedIdList:{}", failedIdList);
-                profileMoveDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
+                // 刷新时将detail表的状态一并刷新
+                profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
+                poolProfileMoveDetailDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
             }
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常");
@@ -93,40 +89,4 @@ public class ProfileMoveShedule {
         }
     }
 
-    /**
-     * [{
-     *     time:""
-     * },
-     * {
-     *     time:""
-     * }
-     * ]
-     */
-//    @Scheduled(cron = "0 0/2 * * * ?")
-    public void refreshMoveHouseState() {
-        // todo 从redis中取出time，opt_id，如果比当前时间小5分钟以上，更改简历搬家状态，删除reidis中对应的缓存
-        String redisKey = "profile_move";
-        String value = redisClient.get(0, redisKey, null);
-        JSONObject jsonObject = JSONObject.parseObject(value);
-        String time = "";
-        long currentTime = System.currentTimeMillis();
-        long cacheTime = 0;
-        List<Integer> ids = new ArrayList<>();
-        try {
-            cacheTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(time).getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if(currentTime - cacheTime > timeOut){
-            // todo 将操作id加入list
-            redisClient.del(0, redisKey, null);
-        }
-        // 批量更新
-        try {
-            profileMoveDao.batchUpdateStatus(ids, ProfileMoveStateEnum.FAILED.getValue());
-        } catch (BIZException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

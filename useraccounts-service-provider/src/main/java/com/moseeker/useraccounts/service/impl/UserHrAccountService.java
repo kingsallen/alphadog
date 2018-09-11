@@ -172,6 +172,9 @@ public class UserHrAccountService {
     @Autowired
     private HrAppCvConfDao appCvConfDao;
 
+    @Autowired
+    private HrWxHrChatListDao chatListDao;
+
     /**
      * 修改手机号码
      *
@@ -459,7 +462,10 @@ public class UserHrAccountService {
             // 添加HR用户
             UserHrAccountRecord userHrAccountRecord = (UserHrAccountRecord) BeanUtils.structToDB(userHrAccount,
                     UserHrAccountRecord.class);
-
+            UserHrAccountDO accountDO = userHrAccountDao.getUserHrAccountById((int)userHrAccount.getId());
+            if(checkNameMobify(accountDO, userHrAccount)){
+                chatListDao.updateWelcomeStatusByHrAccountId(userHrAccountRecord.getId());
+            }
             int userHrAccountId = userHrAccountDao.updateRecord(userHrAccountRecord);
             if (userHrAccountId > 0) {
                 return ResponseUtils.success(new HashMap<String, Object>() {
@@ -477,6 +483,31 @@ public class UserHrAccountService {
             // do nothing
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
+    }
+    private boolean checkNameMobify(UserHrAccountDO oldAccount, UserHrAccount newAccount){
+        String username = newAccount.getUsername();
+        if(!"".equals(oldAccount.getUsername()) && !newAccount.isSetUsername()){
+            return false;
+        }else if(newAccount.isSetUsername() && !oldAccount.getUsername().equals(username.trim())){
+            return true;
+        }
+        UserWxUserDO oldWxUser = userWxUserDao.getWXUserById(oldAccount.getWxuserId());
+        UserWxUserDO newWxUser = userWxUserDao.getWXUserById((int)newAccount.getWxuser_id());
+        if(oldWxUser != null && !"".equals(oldWxUser.getNickname()) && (newWxUser == null || "".equals(newWxUser.getNickname()))){
+            return false;
+        }else if(newWxUser != null && !"".equals(newWxUser.getNickname()) && (oldWxUser == null || !oldWxUser.getNickname().equals(newWxUser.getNickname()))){
+            return true;
+        }
+        String oldMobile = oldAccount.getMobile();
+        oldMobile = StringUtils.isNullOrEmpty(oldMobile) && oldMobile.length()==11
+                ? "" : oldMobile.substring(0,3)+"****"+oldMobile.substring(7);
+        String newMobile = newAccount.getMobile();
+        newMobile = StringUtils.isNullOrEmpty(oldMobile) && oldMobile.length()==11
+                ? "" : oldMobile.substring(0,3)+"****"+oldMobile.substring(7);
+        if(oldMobile.equals(newMobile)){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -884,7 +915,8 @@ public class UserHrAccountService {
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 3
-                                || (Byte) map.get("activation") == 4) {
+                                || (Byte) map.get("activation") == 4
+                                || (Byte) map.get("activation") == 5) {
                             unCount+=(Integer) map.get("activation_count");
 //                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         }
@@ -1052,6 +1084,7 @@ public class UserHrAccountService {
                 filters.add(2);
                 filters.add(3);
                 filters.add(4);
+                filters.add(5);
                 queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
             }
         }
@@ -1624,13 +1657,37 @@ public class UserHrAccountService {
             query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = appCvConfDao.getDatas(query.buildQuery());
             if (hrAppCvConfDOList != null && !hrAppCvConfDOList.isEmpty()) {
-                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+//                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
+                Set<String> configFieldName=new HashSet<>();
+                for(HrAppCvConfDO hrAppCvConfDO:hrAppCvConfDOList){
+                    String fieldValue=hrAppCvConfDO.getFieldValue();
+                    if(StringUtils.isNotNullOrEmpty(fieldValue)){
+                        JSONArray array=JSONArray.parseArray(fieldValue);
+                        if(array!=null&&array.size()>0){
+                            for(int i=0;i<array.size();i++){
+                                JSONObject jsonObject=array.getJSONObject(i);
+                                JSONArray jsonArray=jsonObject.getJSONArray("fields");
+                                if(jsonArray!=null&&jsonArray.size()>0){
+                                    for(int j=0;j<jsonArray.size();j++){
+                                        JSONObject object=jsonArray.getJSONObject(j);
+                                        String fieldName=object.getString("field_name");
+                                        if(StringUtils.isNotNullOrEmpty(fieldName)){
+                                            configFieldName.add(fieldName) ;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
                 hrAppExportFieldsDOList.stream().forEach(e -> {
                     if (configFieldName.contains(e.getFieldName())) {
                         e.showed = 1;
                     }
                 });
             }
+
         }
         List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
         List<HrAppExportFieldsDO> result=new ArrayList<>();
@@ -1856,4 +1913,29 @@ public class UserHrAccountService {
         return requiresNotNullAccount(accountId);
     }
 
+    public HRInfo getHR(int id) throws UserAccountException {
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(id);
+        if (hrAccountDO == null) {
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
+        }
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(hrAccountDO.getCompanyId());
+        if (hrAccountDO == null) {
+            throw UserAccountException.HRACCOUNT_NOT_EXIST;
+        }
+        HRInfo hrInfo = new HRInfo();
+        packageHRInfo(hrInfo, hrAccountDO, hrCompanyDO);
+        return hrInfo;
+    }
+
+    private void packageHRInfo(HRInfo hrInfo, UserHrAccountDO hrAccountDO, HrCompanyDO hrCompanyDO) {
+        hrInfo.setId(hrAccountDO.getId());
+        HRAccountType accountType = HRAccountType.initFromType(hrAccountDO.getAccountType());
+        hrInfo.setAccountType(accountType.toString());
+        hrInfo.setEmail(hrAccountDO.getEmail());
+        hrInfo.setHeadImg(hrAccountDO.getHeadimgurl());
+        hrInfo.setMobile(hrAccountDO.getMobile());
+        hrInfo.setName(hrAccountDO.getUsername());
+        hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
+        hrInfo.setCompany(hrCompanyDO.getName());
+    }
 }

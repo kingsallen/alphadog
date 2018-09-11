@@ -7,7 +7,7 @@ import com.moseeker.entity.pojo.profile.Projectexps;
 import com.moseeker.entity.pojo.resume.ProjectexpObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.service.impl.resumesdk.iface.AbstractMutiResumeParser;
-import com.moseeker.profile.service.impl.resumesdk.iface.ResumeParserHelper;
+import com.moseeker.entity.pojo.resume.ResumeParseException;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -21,7 +21,7 @@ public class ProjectexpsParser extends AbstractMutiResumeParser<ProjectexpObj, P
 
 
     @Override
-    protected Projectexps parseResume(ProjectexpObj projectexpObj) throws ResumeParserHelper.ResumeParseException {
+    protected Projectexps parseResume(ProjectexpObj projectexpObj) throws ResumeParseException {
         Projectexps project = new Projectexps();
         try {
             if (projectexpObj.getEnd_date() != null && projectexpObj.getEnd_date().equals("至今")) {
@@ -31,7 +31,7 @@ public class ProjectexpsParser extends AbstractMutiResumeParser<ProjectexpObj, P
             }
             project.setStartDate(DateUtils.dateRepair(projectexpObj.getStart_date(), "\\."));
         } catch (ParseException e) {
-            throw new ResumeParserHelper.ResumeParseException()
+            throw new ResumeParseException()
                     .errorLog("日期转换异常: " + e.getMessage())
                     .fieldValue("projectexp: {\"startDate\": " + projectexpObj.getStart_date() + "\", \"endDate\":" + projectexpObj.getEnd_date() + "}");
         }

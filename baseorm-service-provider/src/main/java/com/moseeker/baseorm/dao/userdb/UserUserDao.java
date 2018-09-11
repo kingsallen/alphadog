@@ -6,6 +6,8 @@ import com.moseeker.baseorm.db.userdb.Userdb;
 import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
@@ -426,5 +428,31 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public UserUserDO getUnIdentifyUserByMobile(String mobile) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(UserUser.USER_USER.MOBILE.getName(), mobile)
+                .and(UserUser.USER_USER.SOURCE.getName(), 103);
+        return getData(queryBuilder.buildQuery());
+    }
+
+    /**
+     * 根据手机号码查找按照公司隔离的用户信息。目前人才库上传和员工主动上传是按照公司隔离。
+     * @param phone 手机号码
+     * @param countryCode 国家代码
+     * @return 用户集合
+     */
+    public List<UserUserRecord> getCompanyUserUser(String phone, String countryCode) {
+        List<Short> sources = new ArrayList<>();
+        sources.add((short) UserSource.TALENT_UPLOAD.getValue());
+        sources.add((short) UserSource.EMPLOYEE_REFERRAL.getValue());
+        return create
+                .selectFrom(UserUser.USER_USER)
+                .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
+                .and(UserUser.USER_USER.COUNTRY_CODE.eq(countryCode))
+                .and(UserUser.USER_USER.SOURCE.in(sources))
+                .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetch();
     }
 }

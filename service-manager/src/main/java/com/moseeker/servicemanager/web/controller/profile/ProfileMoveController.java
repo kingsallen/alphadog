@@ -104,6 +104,33 @@ public class ProfileMoveController {
     }
 
     /**
+     * 获取简历搬家列表
+     * @author  cjm
+     * @date  2018/7/18
+     */
+    @RequestMapping(value = "/profile/move/getOperationState", method = RequestMethod.GET)
+    @ResponseBody
+    public String getMoveOperationState(HttpServletRequest request){
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer hrId = params.getInt("hr_id");
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addIntTypeValidate("hrId", hrId, null, null, 1, Integer.MAX_VALUE);
+            validateUtil.addRequiredValidate("hrId", hrId, null, null);
+            String message = validateUtil.validate();
+            if (StringUtils.isBlank(message)) {
+                // 分页查询
+                return ResponseLogNotification.success(request, profileMoveService.getMoveOperationState(hrId));
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
      * 简历搬家的最终操作--简历合并、入库
      * @author  cjm
      * @date  2018/7/18

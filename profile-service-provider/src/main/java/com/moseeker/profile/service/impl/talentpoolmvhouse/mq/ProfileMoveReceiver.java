@@ -2,7 +2,9 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.mq;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveRecordDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecordRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
@@ -29,12 +31,15 @@ public class ProfileMoveReceiver {
 
     private final TalentPoolProfileMoveDao profileMoveDao;
 
+    private final TalentPoolProfileMoveRecordDao profileMoveRecordDao;
+
     private final ProfileMailUtil mailUtil;
 
     @Autowired
-    public ProfileMoveReceiver(TalentPoolProfileMoveDao profileMoveDao, ProfileMailUtil mailUtil) {
+    public ProfileMoveReceiver(TalentPoolProfileMoveDao profileMoveDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveRecordDao profileMoveRecordDao) {
         this.profileMoveDao = profileMoveDao;
         this.mailUtil = mailUtil;
+        this.profileMoveRecordDao = profileMoveRecordDao;
     }
 
     @RabbitHandler
@@ -47,7 +52,7 @@ public class ProfileMoveReceiver {
             Response response = JSONObject.parseObject(json, Response.class);
             JSONObject params = JSONObject.parseObject(response.getData());
             int operationId = params.getIntValue("operation_id");
-            TalentpoolProfileMoveRecord record = profileMoveDao.getProfileMoveById(operationId);
+            TalentpoolProfileMoveRecordRecord record = profileMoveRecordDao.getProfileMoveRecordById(operationId);
             if(response.getStatus() == 0){
                 int totalEmailNum = params.getIntValue("success_email_num");
                 if(record == null){
@@ -59,7 +64,7 @@ public class ProfileMoveReceiver {
                 mailUtil.sendMvHouseFailedEmail(null, "rabbitmq接收邮件总数时发生异常" + json);
                 record.setStatus(ProfileMoveStateEnum.FAILED.getValue());
             }
-            profileMoveDao.updateRecord(record);
+            profileMoveRecordDao.updateRecord(record);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "rabbitmq接收邮件总数时发生异常" + json);
             logger.error("handle profile move email num Error : {}, message :{}",e.getMessage(),json);

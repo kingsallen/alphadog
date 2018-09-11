@@ -129,12 +129,70 @@ public class AppConfig {
         return queue;
     }
 
-
-
     @Bean
     public List<Binding> webBindingPreset() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(presetQueue()).to(webPresetExchange()).with("preset.response"));
+        }};
+    }
+
+    @Bean
+    public Queue followWechatQueue() {
+        Queue queue = new Queue("user_follow_wechat_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange followWechatExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_follow_wechat_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> bingFollowWechat() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(followWechatQueue()).to(followWechatExchange())
+                    .with("user_follow_wechat_check_employee_identity"));
+        }};
+    }
+
+    @Bean
+    public Queue unFollowWechatQueue() {
+        Queue queue = new Queue("user_unfollow_wechat_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange unFollowWechatExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_unfollow_wechat_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> bingUnFollowWechat() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(unFollowWechatQueue()).to(unFollowWechatExchange())
+                    .with("user_unfollow_wechat_check_employee_identity"));
+        }};
+    }
+
+    @Bean
+    public Queue clearUnViewdUpVoteQueue() {
+        Queue queue = new Queue("employee_view_leader_board_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange clearUnViewdUpVoteExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_view_leader_board_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> binglearUnViewdUpVote() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(clearUnViewdUpVoteQueue()).to(clearUnViewdUpVoteExchange())
+                    .with("employee_view_leader_board_routing_key"));
         }};
     }
 }

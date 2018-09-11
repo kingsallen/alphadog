@@ -45,7 +45,7 @@ public class ProfileMoveThriftServiceImpl implements Iface {
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "简历搬家用户登录时发生异常");
             logger.info(e.getMessage(), e);
-            throw e;
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
@@ -58,7 +58,7 @@ public class ProfileMoveThriftServiceImpl implements Iface {
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家操作记录时发生异常");
             logger.info(e.getMessage(), e);
-            throw e;
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
@@ -74,6 +74,23 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             throw e;
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "简历搬家简历合并入库时发生异常");
+            logger.error(e.getMessage(), e);
+            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public Response getMoveOperationState(int hrId) throws BIZException, TException {
+        try {
+            int channel = 0;
+            AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
+            return profileMoveService.getMoveOperationState(hrId);
+        } catch (BIZException e) {
+            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家状态异常");
+            logger.info(e.getMessage(), e);
+            throw e;
+        } catch (Exception e){
+            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家状态异常");
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }

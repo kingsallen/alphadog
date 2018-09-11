@@ -2,7 +2,6 @@ package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -12,7 +11,6 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -53,7 +51,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.TalentpoolServices;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCountryDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.*;
@@ -412,7 +410,7 @@ public class WholeProfileService {
             List<ProfileEducationRecord> educationRecords = null;
             try {
                 educationRecords = profileUtils
-                        .mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"));
+                        .mapToEducationRecords((List<Map<String, Object>>) resume.get("educations"), extParam);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -914,6 +912,7 @@ public class WholeProfileService {
                 collegeCodes.add(record.getCollegeCode());
             });
             List<DictCollegeDO> collegeRecords = collegeDao.getCollegesByIDs(collegeCodes);
+            List<DictCountryDO> countryDOList = countryDao.getAll();
             List<Integer> parentCodes = new ArrayList<>();
             parentCodes.add(Constant.DICT_CONSTANT_DEGREE_USER);
             List<DictConstantRecord> constantDOS = constantDao.getCitiesByParentCodes(parentCodes);
@@ -931,6 +930,19 @@ public class WholeProfileService {
                                 && !StringUtils.isNullOrEmpty(collegeRecord.getLogo())) {
                             map.put("college_logo", collegeRecord.getLogo());
                             map.put("college_name", collegeRecord.getName());
+                            break;
+                        }
+                    }
+                }
+                if(!StringUtils.isEmptyList(countryDOList)){
+                    for(DictCountryDO country : countryDOList){
+                        if(record.getCountryId().intValue() == country.getId()){
+                            map.put("country_id", record.getCountryId().intValue());
+                            map.put("country_name", country.getName());
+                            break;
+                        }else if(record.getCountryId().intValue() == Constant.HKAMTW){
+                            map.put("country_id", record.getCountryId().intValue());
+                            map.put("country_name", "港澳台地区");
                             break;
                         }
                     }

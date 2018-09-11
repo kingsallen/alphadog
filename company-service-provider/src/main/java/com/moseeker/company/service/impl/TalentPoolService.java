@@ -6,17 +6,22 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.annotation.notify.UpdateEs;
@@ -42,6 +47,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import java.util.*;
@@ -84,6 +91,8 @@ public class TalentPoolService {
     private TalentpoolTalentDao talentpoolTalentDao;
     @Autowired
     private JobApplicationDao jobApplicationDao;
+    @Autowired
+    private JobPositionDao jobPositionDao;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
     @Autowired
@@ -487,6 +496,8 @@ public class TalentPoolService {
         return ResponseUtils.success(this.getTalentpoolTagById(record.getId()));
     }
 
+
+
     private Map<String,Object> getTalentpoolTagById(int tagId){
         Query query=new Query.QueryBuilder().where("id",tagId).buildQuery();
         Map<String,Object> result=talentpoolTagDao.getMap(query);
@@ -607,14 +618,13 @@ public class TalentPoolService {
       @return response(status:0,message:"success,data:[])
              response(status:1,message:"xxxxxx")
      */
-    @Transactional
     public Response addTalentComment(int hrId,int companyId,int userId,String content)throws TException{
 
         if(StringUtils.isNullOrEmpty(content)){
             return ResponseUtils.fail(1,"该hr的备注内容不能为空");
         }
-        if(content.length()>100){
-            return ResponseUtils.fail(1,"备注内容需在50字以内");
+        if(content.length()>600){
+            return ResponseUtils.fail(1,"备注内容需在300字以内");
         }
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
@@ -637,7 +647,31 @@ public class TalentPoolService {
         List<Map<String,Object>> list=new ArrayList<>();
         list.add(map);
         list=this.handlerHrCommentData(list);
+        talentPoolEntity.realTimeUpdateComment(userId);
         return ResponseUtils.success(list);
+    }
+
+    @CounterIface
+    public Response addProfileComment(int userId,int accountId, String content)throws TException{
+
+        if(StringUtils.isNullOrEmpty(content)){
+            return ResponseUtils.fail(1,"该hr的备注内容不能为空");
+        }
+        if(content.length()>600){
+            return ResponseUtils.fail(1,"备注内容需在300字以内");
+        }
+        UserHrAccount account = userHrAccountDao.getHrAccount(accountId);
+        int validate=talentPoolEntity.validateComment(accountId,account.getCompanyId(),userId);
+        if(validate==0){
+            return ResponseUtils.fail(1,"该hr无权操作此简历");
+        }
+        TalentpoolCommentRecord record=new TalentpoolCommentRecord();
+        record.setCompanyId(account.getCompanyId());
+        record.setHrId(accountId);
+        record.setUserId(userId);
+        record.setContent(content);
+        talentpoolCommentDao.addRecord(record);
+        return ResponseUtils.success("");
     }
 
     /*
@@ -738,7 +772,6 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
      */
     @CounterIface
-    @Transactional
     public Response delTalentComment(int hrId,int companyId,int comId)throws TException{
         int count=talentPoolEntity.getUserHrCommentCount(comId,hrId);
         if(count==0){
@@ -748,9 +781,16 @@ public class TalentPoolService {
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
+        Query query=new Query.QueryBuilder().where("id",comId).buildQuery();
+        TalentpoolCommentRecord record1= talentpoolCommentDao.getRecord(query);
+
         TalentpoolCommentRecord record=new TalentpoolCommentRecord();
         record.setId(comId);
         talentpoolCommentDao.deleteRecord(record);
+        if(record1!=null){
+            int userId=record1.getUserId();
+            talentPoolEntity.realTimeUpdateComment(userId);
+        }
         return ResponseUtils.success("");
     }
 
@@ -1722,6 +1762,8 @@ public class TalentPoolService {
                     if(StringUtils.isNotNullOrEmpty(result.get(userId))){
                         String comments=result.get(userId)+";"+content;
                         result.put(userId,comments);
+                    }else{
+                        result.put(userId,content);
                     }
                 }
             }

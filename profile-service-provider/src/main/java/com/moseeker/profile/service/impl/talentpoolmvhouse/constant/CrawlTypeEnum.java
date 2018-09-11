@@ -1,7 +1,5 @@
 package com.moseeker.profile.service.impl.talentpoolmvhouse.constant;
 
-import com.moseeker.thrift.gen.common.struct.BIZException;
-
 /**
  * 简历搬家操作类型
  * @author cjm
@@ -28,12 +26,4 @@ public enum CrawlTypeEnum {
         return status;
     }
 
-    public static CrawlTypeEnum getCrawlType(byte status) throws BIZException {
-        for(CrawlTypeEnum crawlTypeEnum : CrawlTypeEnum.values()){
-            if(status == crawlTypeEnum.getStatus()){
-                return crawlTypeEnum;
-            }
-        }
-        throw new BIZException(99999, "不存在简历类型");
-    }
 }

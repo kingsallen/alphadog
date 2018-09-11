@@ -22,12 +22,13 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCollege implements Serializable {
 
-    private static final long serialVersionUID = -755120633;
+    private static final long serialVersionUID = -620254498;
 
     private Integer code;
     private String  name;
     private Integer province;
     private String  logo;
+    private Integer countryCode;
 
     public DictCollege() {}
 
@@ -36,18 +37,21 @@ public class DictCollege implements Serializable {
         this.name = value.name;
         this.province = value.province;
         this.logo = value.logo;
+        this.countryCode = value.countryCode;
     }
 
     public DictCollege(
         Integer code,
         String  name,
         Integer province,
-        String  logo
+        String  logo,
+        Integer countryCode
     ) {
         this.code = code;
         this.name = name;
         this.province = province;
         this.logo = logo;
+        this.countryCode = countryCode;
     }
 
     public Integer getCode() {
@@ -82,6 +86,14 @@ public class DictCollege implements Serializable {
         this.logo = logo;
     }
 
+    public Integer getCountryCode() {
+        return this.countryCode;
+    }
+
+    public void setCountryCode(Integer countryCode) {
+        this.countryCode = countryCode;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("DictCollege (");
@@ -90,6 +102,7 @@ public class DictCollege implements Serializable {
         sb.append(", ").append(name);
         sb.append(", ").append(province);
         sb.append(", ").append(logo);
+        sb.append(", ").append(countryCode);
 
         sb.append(")");
         return sb.toString();

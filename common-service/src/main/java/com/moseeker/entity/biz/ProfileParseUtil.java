@@ -2,6 +2,7 @@ package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
+import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
 import com.moseeker.baseorm.dao.dictdb.DictCountryDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryTypeDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
@@ -29,6 +30,9 @@ public class ProfileParseUtil {
     private DictIndustryTypeDao industryTypeDao;
 
     @Autowired
+    private DictCollegeDao collegeDao;
+
+    @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
 
     /**
@@ -39,6 +43,7 @@ public class ProfileParseUtil {
         ProfileExtParam extParam = new ProfileExtParam();
         extParam.setCountryDOList(countryDao.getAll());
         extParam.setDictIndustryTypeDOList(industryTypeDao.getAll());
+        extParam.setCollegeMap(collegeDao.getCollegeMap());
         return extParam;
     }
 

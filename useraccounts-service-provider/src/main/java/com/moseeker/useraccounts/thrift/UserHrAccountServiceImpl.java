@@ -21,6 +21,7 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
 import java.util.List;
@@ -707,6 +708,15 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e){
             logger.error("==========bindLiepinUserAccount liepinToken:{},liepinUserId:{},hrThirdAccountId:{}=========", liepinToken,liepinUserId,hrThirdAccountId,e);
             throw new SysBIZException();
+        }
+    }
+
+    @Override
+    public HRInfo getHR(int id) throws BIZException, TException {
+        try {
+            return service.getHR(id);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
     }
 }

@@ -3,12 +3,15 @@ package com.moseeker.baseorm.dao.dictdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.dictdb.tables.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.dictdb.CityPojo;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import org.apache.thrift.TException;
 import org.jooq.Condition;
 import org.jooq.Result;
 import org.jooq.SelectConditionStep;
@@ -287,5 +290,153 @@ public class DictCityDao extends JooqCrudImpl<DictCityDO, DictCityRecord> {
     public List<DictCityDO> getFullCity() {
         return create.selectFrom(DictCity.DICT_CITY).fetchInto(DictCityDO.class);
     }
+
+    /**
+     * 根据城市名称查找城市常量信息
+     * @param cityNameList 城市名称
+     * @return 城市数据
+     */
+    public List<DictCityDO> getByNameList(List<String> cityNameList) {
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder
+                .where(new com.moseeker.common.util.query.Condition(
+                        DictCity.DICT_CITY.NAME.getName(), cityNameList, ValueOp.IN))
+                .or(new com.moseeker.common.util.query.Condition(
+                        DictCity.DICT_CITY.ENAME.getName(), cityNameList, ValueOp.IN));
+        return getDatas(queryBuilder.buildQuery());
+    }
+
+    /*
+     处理现居住地城市查询
+
+     需要整改，放在这个位置不对，但是为了简单，没办法
+     */
+
+    public String handlerProvinceCity(String cityCode) throws TException {
+        if(StringUtils.isNotNullOrEmpty(cityCode)){
+            List<Integer> codeList= this.stringConvertIntList(cityCode);
+            String codes=this.getCityByprovince(codeList);
+            return codes;
+        }
+        return null;
+    }
+    //将xx,xx,xx格式的字符串转化为list
+    public List<Integer> stringConvertIntList(String keyWords) {
+        if (org.apache.commons.lang.StringUtils.isNotEmpty(keyWords)) {
+            String[] array = keyWords.split(",");
+            List<Integer> list = new ArrayList<Integer>();
+            for (String ss : array) {
+                list.add(Integer.parseInt(ss));
+            }
+            return list;
+        }
+        return null;
+    }
+
+    private String getCityByprovince(List<Integer> codeList) throws TException {
+        List<Integer> outCodeList=getOutCityCodeList();
+        List<Integer> provinceCode=new ArrayList<>();
+        for(Integer code:codeList){
+            if(!outCodeList.contains(code)&&code%10000==0){
+                provinceCode.add(code);
+            }
+        }
+        if(!StringUtils.isEmptyList(provinceCode)){
+            List<Integer> provinceCityCode=new ArrayList<>();
+            List<Map<String,Object>> list=getCityCodeByProvine(provinceCode);
+            if(!StringUtils.isEmptyList(list)){
+                for(Map<String,Object> data:list){
+                    int cityCode= (int) data.get("code");
+                    provinceCityCode.add(cityCode);
+                }
+
+            }
+            if(!StringUtils.isEmptyList(provinceCityCode)){
+                codeList.addAll(provinceCityCode);
+                for(Integer code:provinceCode){
+                    codeList.remove(code);
+                }
+
+            }
+        }
+        String codes="";
+        if(!StringUtils.isEmptyList(codeList)){
+            for(Integer code:codeList){
+                codes+=code+",";
+            }
+            if(StringUtils.isNotNullOrEmpty(codes)){
+                codes=codes.substring(0,codes.lastIndexOf(","));
+            }
+        }
+
+        return codes;
+    }
+    /*
+     获取省份下城市数据
+     需要整改，放在这个位置不对，但是为了简单，没办法
+     */
+    @CounterIface
+    public List<Map<String,Object>> getCityCodeByProvine(List<Integer> codes) throws CommonException {
+        List<Map<String,Object>> result=new ArrayList<>();
+        List<Integer> codeList=this.getOutCityCodeList();
+        if(!this.isProvinceComfortable(codes,codeList)){
+            throw new CommonException(1,"该省份下城市code不可查");
+        }
+        if(!this.isProvice(codes)){
+            throw new CommonException(1,"该code不是省份code");
+        }
+        Query query=new Query.QueryBuilder().where("is_using",1).and(new com.moseeker.common.util.query.Condition("level",1, ValueOp.GT)).buildQuery();
+        List<Map<String,Object>> dataList=this.getMaps(query);
+        if(!StringUtils.isEmptyList(dataList)){
+            for(Map<String,Object> data:dataList){
+                int codeItem= (int) data.get("code");
+                for(Integer code:codes){
+                    if(!codeList.contains(code)&&code<codeItem&&code+10000>codeItem){
+                        result.add(data);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+    /*
+     判断查询的是否是省份
+     */
+    private boolean isProvice(List<Integer> code){
+        Query query=new Query.QueryBuilder().where("level",1).and(new com.moseeker.common.util.query.Condition("code",code.toArray(),ValueOp.IN)).buildQuery();
+        int count=this.getCount(query);
+        logger.info("count======"+count);
+        logger.info("code.size======"+code.size());
+        if(count>0&&count==code.size()){
+            return true;
+        }
+        return false;
+    }
+    /*
+    判断数据是否符合要求
+     */
+    private boolean isProvinceComfortable(List<Integer> codes, List<Integer> codeList){
+        for(Integer code:codes){
+            if(codeList.contains(code)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<Integer> getOutCityCodeList(){
+        List<Integer> codeList=new ArrayList<>();
+        codeList.add(110000);
+        codeList.add(111111);
+        codeList.add(120000);
+        codeList.add(233333);
+        codeList.add(310000);
+        codeList.add(500000);
+        codeList.add(810000);
+        codeList.add(820000);
+        return codeList;
+    }
+
 
 }

@@ -3,32 +3,18 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
-import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
-import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
-import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.logdb.LogResumeDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
-import com.moseeker.baseorm.db.profiledb.tables.ProfileProfile;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -41,56 +27,49 @@ import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
-import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.FileUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.PositionEntity;
-import com.moseeker.entity.ProfileEntity;
-import com.moseeker.entity.ProfileOtherEntity;
-import com.moseeker.entity.TalentPoolEntity;
+import com.moseeker.entity.*;
 import com.moseeker.entity.biz.CommonUtils;
-import com.moseeker.entity.biz.ProfileParseUtil;
-import com.moseeker.entity.pojo.profile.*;
-import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
-import com.moseeker.entity.pojo.resume.*;
-import com.moseeker.profile.service.impl.resumesdk.iface.IResumeParser;
+import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.pojo.profile.ProfileObj;
+import com.moseeker.entity.pojo.profile.User;
+import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.profile.domain.ResumeEntity;
+import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
-import com.moseeker.profile.utils.DegreeSource;
-import com.moseeker.profile.utils.DictCode;
 import com.moseeker.profile.utils.ProfileMailUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictPositionDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.Profile;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import java.io.IOException;
-import java.text.ParseException;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.http.Consts;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @CounterIface
@@ -110,12 +89,6 @@ public class ProfileService {
 
     @Autowired
     protected ProfileCompletenessDao completenessDao;
-
-    @Autowired
-    private HrCompanyDao hrCompanyDao;
-
-    @Autowired
-    private JobPositionDao jobPositionDao;
 
     @Autowired
     private JobApplicationDao jobApplicationDao;
@@ -139,25 +112,10 @@ public class ProfileService {
     private ProfileOtherDao profileOtherDao;
 
     @Autowired
-    private ConfigSysCvTplDao confTplDao;
-
-    @Autowired
-    private LogResumeDao resumeDao;
-
-    @Autowired
-    private DictCityDao dictCityDao;
-
-    @Autowired
-    private DictPositionDao dictPositionDao;
-
-    @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
 
     @Autowired
     private TalentPoolEntity talentPoolEntity;
-
-    @Autowired
-    private HrCompanyAccountDao hrCompanyAccountDao;
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
@@ -166,10 +124,14 @@ public class ProfileService {
     private ProfileMailUtil profileMailUtil;
 
     @Autowired
-    private ProfileParseUtil profileParseUtil;
+    private ResumeEntity resumeEntity;
 
     @Autowired
-    private List<IResumeParser> resumeParsers;
+    private UserAccountEntity userAccountEntity;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
+
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
             .getService(JobApplicationServices.Iface.class);
@@ -579,7 +541,8 @@ public class ProfileService {
             validateParseLimit(resumeObj);
             logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
             // 调用成功,开始转换对象,我把它单独独立出来
-            profileObj=handlerParseData(resumeObj,uid,fileName);
+            profileObj=resumeEntity.handlerParseData(resumeObj,uid,fileName);
+            resumeEntity.fillProfileObj(profileObj, resumeObj, uid, fileName, null);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -598,15 +561,6 @@ public class ProfileService {
         if(resumeObj != null && resumeObj.getAccount() != null && resumeObj.getAccount().getUsage_remaining() < 1000){
             profileMailUtil.sendProfileParseWarnMail(resumeObj.getAccount());
         }
-    }
-
-
-    public ProfileObj handlerParseData(ResumeObj resumeObj,int uid,String fileName ){
-        ProfileObj profileObj = new ProfileObj();
-        if (resumeObj.getStatus().getCode() == 200) {
-            resumeParsers.forEach(p->p.parseResume(profileObj,resumeObj,uid,fileName));
-        }
-        return profileObj;
     }
 
     /**
@@ -937,7 +891,8 @@ public class ProfileService {
                 }
 
             }
-            ProfileObj profileObj = handlerParseData(resumeObj, userId, fileName);
+            ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj, userId, fileName);
+            resumeEntity.fillProfileObj(profileObj, resumeObj, 0, fileName, null);
             logger.info(JSON.toJSONString(profileObj));
             result.put("profile", profileObj);
         } else {
@@ -949,4 +904,91 @@ public class ProfileService {
     public List<UserProfile> fetchUserProfile(List<Integer> userIdList) {
         return profileEntity.fetchUserProfile(userIdList);
     }
+
+    /**
+     * 解析简历数据并产生公司下的虚拟用户以及简历数据
+     * @param profile 简历内容
+     * @param referenceId 推荐者的编号
+     * @return 用户编号
+     * @throws ProfileException
+     */
+    public int parseText(String profile, int referenceId) throws ProfileException {
+
+        UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(referenceId);
+        if (employeeDO == null) {
+            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+        }
+        logger.info("parseText ");
+        File file;
+        try {
+            file = FileUtil.createFile("employee_proxy_apply.txt", profile);
+        } catch (IOException e) {
+            logger.error(this.getClass().getName()+" parseText error", e);
+            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
+        }
+        byte[] fileBytes;
+        try {
+            fileBytes = FileUtil.convertToBytes(file);
+        } catch (IOException e) {
+            logger.error(this.getClass().getName()+" parseText error", e);
+            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
+        }
+        String data = new String(org.apache.commons.codec.binary.Base64.encodeBase64(fileBytes), Consts.UTF_8);
+
+        // 调用SDK得到结果
+        ResumeObj resumeObj;
+        try {
+            resumeObj = profileEntity.profileParserAdaptor(file.getName(), data);
+        } catch (TException | IOException e) {
+            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
+        }
+        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
+        validateParseLimit(resumeObj);
+        logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
+
+        ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
+
+        if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
+            throw ProfileException.PROFILE_USER_NOTEXIST;
+        }
+        resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
+
+        profileObj.setResumeObj(null);
+        JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
+        JSONObject profileProfile = createProfileData();
+        jsonObject.put("profile", profileProfile);
+
+        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+
+        UserUserRecord userRecord = userAccountEntity.getCompanyUser(
+                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
+        int userId;
+        if (userRecord != null) {
+            userId = userRecord.getId();
+            profilePojo.setUserRecord(userRecord);
+            profileEntity.mergeProfile(profilePojo, userRecord.getId());
+        } else {
+            resumeEntity.fillDefault(profilePojo);
+            userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
+            profilePojo.getProfileRecord().setUserId(userRecord.getId());
+            userId = userRecord.getId();
+        }
+
+        return userId;
+    }
+
+    /**
+     * 生成简历来源的数据
+     * @return
+     */
+    private JSONObject createProfileData() {
+        JSONObject profileProfile = new JSONObject();
+        profileProfile.put("source", 221);                                      //员工主动上传
+        profileProfile.put("origin", "10000000000000000000000000000");          //员工主动上传
+        profileProfile.put("uuid", UUID.randomUUID().toString());               //员工主动上传
+        profileProfile.put("user_id", 0);
+        return profileProfile;
+    }
+
+
 }

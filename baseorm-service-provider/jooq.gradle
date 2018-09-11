@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.jooq:jooq:3.9.1'
+    compile 'org.jooq:jooq:3.9.6'
 
     runtime 'mysql:mysql-connector-java:5.1.6'
     testCompile 'junit:junit:4.11'
@@ -21,32 +21,25 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.jooq:jooq-codegen:3.9.1'
+        classpath 'org.jooq:jooq-codegen:3.9.6'
         classpath 'mysql:mysql-connector-java:5.1.6'
     }
 }
-
 
 // Use your favourite XML builder to construct the code generation configuration file
 // ----------------------------------------------------------------------------------
 def writer = new StringWriter()
 def xml = new groovy.xml.MarkupBuilder(writer)
-        .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.9.0.xsd') {
+        .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.9.2.xsd') {
     jdbc() {
         driver('com.mysql.jdbc.Driver')
-        url('jdbc:mysql://192.168.31.66:3306/userdb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
-        user('wyf')
-        password('moseeker.com')
-//        url('jdbc:mysql://db1.dqprism.com:3306/userdb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
-//        user('daqi')
-//        password('5F51692091B4031640E18E7C27430E071BC878C8')
+        url('jdbc:mysql://db2.dqprism.com:3306/hrdb?useUnicode=true&characterEncoding=utf8&autoReconnect=true&rewriteBatchedStatements=TRUE&zeroDateTimeBehavior=convertToNull')
+        user('daqi')
+        password('5F51692091B4031640E18E7C27430E071BC878C8')
     }
     generator() {
         database() {
-//            inputSchema("configdb")
             inputSchema("hrdb")
-            includes("hr_third_party_account")
-
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
         }
