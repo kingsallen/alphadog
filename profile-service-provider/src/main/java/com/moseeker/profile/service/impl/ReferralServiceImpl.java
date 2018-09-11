@@ -235,8 +235,9 @@ public class ReferralServiceImpl implements ReferralService {
         validateUtil.addStringLengthValidate("邮箱", candidate.getEmail(), null, 50);
         validateUtil.addRequiredStringValidate("就职公司", candidate.getCompany());
         validateUtil.addStringLengthValidate("就职公司", candidate.getCompany(), null, 200);
-        validateUtil.addRequiredStringValidate("就职职位", candidate.getPosition());
-        validateUtil.addStringLengthValidate("就职职位", candidate.getPosition(), null, 200);
+        validateUtil.addIntTypeValidate("职位信息", candidate.getPosition(), 1, null);
+        validateUtil.addRequiredStringValidate("就职职位", candidate.getJob());
+        validateUtil.addStringLengthValidate("就职职位", candidate.getJob(), null, 200);
         validateUtil.addRequiredOneValidate("推荐理由", candidate.getReasons());
         if (candidate.getReasons() != null) {
             String reasons = candidate.getReasons().stream().collect(Collectors.joining(","));
