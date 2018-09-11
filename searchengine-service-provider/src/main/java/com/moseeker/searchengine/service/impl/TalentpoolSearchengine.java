@@ -708,7 +708,6 @@ public class TalentpoolSearchengine {
                 if(org.apache.commons.lang.StringUtils.isBlank(keyword)){
                     continue;
                 }
-                logger.info("searchengine ================ containAnykey:"+containAnykey);
                 QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(keyword);
 //                        .field("title")
 //                        .field("city")
@@ -720,10 +719,11 @@ public class TalentpoolSearchengine {
                 if(!StringUtils.isEmptyList(colums)){
                     for(String colum :colums){
                         if(StringUtils.isNotNullOrEmpty(colum)) {
-                            fullf.field("user.profile.profie." + colum);
+                            fullf.field("user.profiles.profile." + colum);
                         }
                     }
                 }
+
                 if(StringUtils.isNotNullOrEmpty(containAnykey) && Integer.parseInt(containAnykey) == 1){
                     ((BoolQueryBuilder) keyand).should(fullf);
                 }else{
@@ -1364,7 +1364,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
             sb.append("val.status=="+positionStatus+"&&");
         }
-        if(StringUtils.isNotNullOrEmpty(companyId)&& (StringUtils.isNullOrEmpty(tagIds)||StringUtils.isNotNullOrEmpty(recommend))){
+        if(StringUtils.isNotNullOrEmpty(companyId)&& StringUtils.isNullOrEmpty(tagIds)){
             sb.append("val.company_id=="+companyId+"&&");
         }
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
