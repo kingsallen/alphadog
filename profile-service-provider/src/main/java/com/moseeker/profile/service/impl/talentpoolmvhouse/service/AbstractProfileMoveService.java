@@ -122,16 +122,13 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         List<Integer> moveIds = profileMoveDOS.stream().map(TalentPoolProfileMoveDO::getId).collect(Collectors.toList());
         List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS = profileMoveRecordDao.getListByMoveIds(moveIds);
         // 过滤出搬家成功的list，去除第一个的创建时间为本次搬家的起始时间，如果list为空，则减去6个月为起始时间
-        // todo 这里好像有问题，如果上次搬家同一渠道有四个操作，其中有的失败有的成功，那这次搬家就会漏掉上次的失败的
-        profileMoveRecordDOS = profileMoveRecordDOS.stream()
-                .filter(profileMoveRecordDO -> profileMoveRecordDO.getStatus() == 1).collect(Collectors.toList());
         Date startDate = new Date();
         Date endDate = new Date();
         try {
             if (profileMoveRecordDOS.size() != 0) {
-                int firstId = profileMoveRecordDOS.get(0).getProfileMoveId();
+                int successMoveId = getSuccessMoveId(profileMoveRecordDOS);
                 for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
-                    if (profileMoveDO.getId() == firstId) {
+                    if (profileMoveDO.getId() == successMoveId) {
                         startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
                         break;
                     }
@@ -150,6 +147,26 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             Thread.sleep(10000);
         }
         return ResponseUtils.success(new HashMap<>(1 >> 4));
+    }
+
+    private int getSuccessMoveId(List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS) {
+        List<Integer> moveIds = profileMoveRecordDOS.stream().map(TalentPoolProfileMoveRecordDO::getProfileMoveId).collect(Collectors.toList());
+        for(Integer moveId : moveIds){
+            boolean flag = true;
+            for(TalentPoolProfileMoveRecordDO recordDO : profileMoveRecordDOS){
+                if(moveId == recordDO.getProfileMoveId()){
+                    if(recordDO.getStatus() != 1){
+                        flag = false;
+                        break;
+                    }
+                }
+            }
+            if(flag){
+                return moveId;
+            }
+        }
+        return moveIds.get(moveIds.size() - 1);
+
     }
 
     /**
@@ -367,23 +384,20 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         int thirdPartAccountId = hrDO.getThirdPartyAccountId();
         // 通过第三方账号获取第三方公司名称
         List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(thirdPartAccountId);
-        // 获取公司id对应的名字
-        Map<Integer, String> companyNames = thirdpartyAccountCompanyDOS.stream().collect(Collectors.toMap(ThirdpartyAccountCompanyDO::getId, ThirdpartyAccountCompanyDO::getCompanyName));
         // 插入简历搬家操作TalentpoolProfileMoveRecord表
         List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords = insertProfileMoveRecordRecord(profileMoveId, thirdpartyAccountCompanyDOS);
         List<MvHouseVO> mvHouseVOS = new ArrayList<>();
         String password = hrThirdPartyAccountDO.getPassword();
-        for (TalentpoolProfileMoveRecordRecord record : profileMoveRecordRecords) {
+        if(profileMoveRecordRecords.size() > 0){
             ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();
             operationInfoVO.setStart_date(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
             operationInfoVO.setEnd_date(new SimpleDateFormat("yyyy-MM-dd").format(endDate));
-            operationInfoVO.setCompany_name(companyNames.get(record.getThirdpartyCompanyId()));
             MvHouseVO mvHouseVO = new MvHouseVO();
             mvHouseVO.setAccount_id(userHrAccountDO.getId());
             mvHouseVO.setChannel(hrThirdPartyAccountDO.getChannel());
             mvHouseVO.setMember_name(hrThirdPartyAccountDO.getExt());
             mvHouseVO.setMobile(userHrAccountDO.getMobile());
-            mvHouseVO.setOperation_id(record.getId());
+            mvHouseVO.setOperation_id(profileMoveRecordRecords.get(0).getId());
             mvHouseVO.setUser_name(hrThirdPartyAccountDO.getUsername());
             mvHouseVO.setPassword(password);
             mvHouseVO.setOperation_info(operationInfoVO);
