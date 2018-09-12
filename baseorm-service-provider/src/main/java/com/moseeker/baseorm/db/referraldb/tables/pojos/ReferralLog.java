@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 员工主动推荐记录
+ * 内推记录
  */
 @Generated(
     value = {
@@ -23,16 +23,18 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog implements Serializable {
 
-    private static final long serialVersionUID = 522116734;
+    private static final long serialVersionUID = -786566848;
 
     private Integer   id;
     private Integer   employeeId;
     private Integer   referenceId;
     private Integer   positionId;
+    private Integer   type;
     private Timestamp referralTime;
+    private Byte      claim;
+    private Timestamp claimTime;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   type;
 
     public ReferralLog() {}
 
@@ -41,10 +43,12 @@ public class ReferralLog implements Serializable {
         this.employeeId = value.employeeId;
         this.referenceId = value.referenceId;
         this.positionId = value.positionId;
+        this.type = value.type;
         this.referralTime = value.referralTime;
+        this.claim = value.claim;
+        this.claimTime = value.claimTime;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.type = value.type;
     }
 
     public ReferralLog(
@@ -52,19 +56,23 @@ public class ReferralLog implements Serializable {
         Integer   employeeId,
         Integer   referenceId,
         Integer   positionId,
+        Integer   type,
         Timestamp referralTime,
+        Byte      claim,
+        Timestamp claimTime,
         Timestamp createTime,
-        Timestamp updateTime,
-        Integer   type
+        Timestamp updateTime
     ) {
         this.id = id;
         this.employeeId = employeeId;
         this.referenceId = referenceId;
         this.positionId = positionId;
+        this.type = type;
         this.referralTime = referralTime;
+        this.claim = claim;
+        this.claimTime = claimTime;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.type = type;
     }
 
     public Integer getId() {
@@ -99,12 +107,36 @@ public class ReferralLog implements Serializable {
         this.positionId = positionId;
     }
 
+    public Integer getType() {
+        return this.type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Timestamp getReferralTime() {
         return this.referralTime;
     }
 
     public void setReferralTime(Timestamp referralTime) {
         this.referralTime = referralTime;
+    }
+
+    public Byte getClaim() {
+        return this.claim;
+    }
+
+    public void setClaim(Byte claim) {
+        this.claim = claim;
+    }
+
+    public Timestamp getClaimTime() {
+        return this.claimTime;
+    }
+
+    public void setClaimTime(Timestamp claimTime) {
+        this.claimTime = claimTime;
     }
 
     public Timestamp getCreateTime() {
@@ -123,14 +155,6 @@ public class ReferralLog implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getType() {
-        return this.type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralLog (");
@@ -139,10 +163,12 @@ public class ReferralLog implements Serializable {
         sb.append(", ").append(employeeId);
         sb.append(", ").append(referenceId);
         sb.append(", ").append(positionId);
+        sb.append(", ").append(type);
         sb.append(", ").append(referralTime);
+        sb.append(", ").append(claim);
+        sb.append(", ").append(claimTime);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(type);
 
         sb.append(")");
         return sb.toString();

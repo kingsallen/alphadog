@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralCompanyConfRecord extends UpdatableRecordImpl<ReferralCompanyConfRecord> implements Record5<Integer, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1421376100;
+    private static final long serialVersionUID = -498582716;
 
     /**
      * Setter for <code>referraldb.referral_company_conf.id</code>. 序列ID
@@ -61,14 +61,14 @@ public class ReferralCompanyConfRecord extends UpdatableRecordImpl<ReferralCompa
     }
 
     /**
-     * Setter for <code>referraldb.referral_company_conf.position_points_flag</code>. 内推职位是否开启积分奖励  1 开启 0关闭
+     * Setter for <code>referraldb.referral_company_conf.position_points_flag</code>. 是否只针对内推职位开启积分奖励  1 是0否
      */
     public void setPositionPointsFlag(Byte value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_company_conf.position_points_flag</code>. 内推职位是否开启积分奖励  1 开启 0关闭
+     * Getter for <code>referraldb.referral_company_conf.position_points_flag</code>. 是否只针对内推职位开启积分奖励  1 是0否
      */
     public Byte getPositionPointsFlag() {
         return (Byte) get(2);

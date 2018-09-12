@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 员工主动推荐记录
+ * 内推记录
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog extends TableImpl<ReferralLogRecord> {
 
-    private static final long serialVersionUID = -1488421464;
+    private static final long serialVersionUID = 962900889;
 
     /**
      * The reference instance of <code>referraldb.referral_log</code>
@@ -62,9 +62,9 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
     public final TableField<ReferralLogRecord, Integer> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.INTEGER, this, "员工编号");
 
     /**
-     * The column <code>referraldb.referral_log.reference_id</code>. 推荐人编号
+     * The column <code>referraldb.referral_log.reference_id</code>. 被推荐人编号
      */
-    public final TableField<ReferralLogRecord, Integer> REFERENCE_ID = createField("reference_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "推荐人编号");
+    public final TableField<ReferralLogRecord, Integer> REFERENCE_ID = createField("reference_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "被推荐人编号");
 
     /**
      * The column <code>referraldb.referral_log.position_id</code>. 职位编号
@@ -72,9 +72,24 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
     public final TableField<ReferralLogRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职位编号");
 
     /**
+     * The column <code>referraldb.referral_log.type</code>. 推荐方式 1 手机文件上传，2 电脑扫码上传简历 3 推荐人才关键信息
+     */
+    public final TableField<ReferralLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "推荐方式 1 手机文件上传，2 电脑扫码上传简历 3 推荐人才关键信息");
+
+    /**
      * The column <code>referraldb.referral_log.referral_time</code>. 推荐时间
      */
     public final TableField<ReferralLogRecord, Timestamp> REFERRAL_TIME = createField("referral_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "推荐时间");
+
+    /**
+     * The column <code>referraldb.referral_log.claim</code>. 是否认领。0 未认领， 1 已经认领
+     */
+    public final TableField<ReferralLogRecord, Byte> CLAIM = createField("claim", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否认领。0 未认领， 1 已经认领");
+
+    /**
+     * The column <code>referraldb.referral_log.claim_time</code>. 认领时间
+     */
+    public final TableField<ReferralLogRecord, Timestamp> CLAIM_TIME = createField("claim_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "认领时间");
 
     /**
      * The column <code>referraldb.referral_log.create_time</code>. 创建时间
@@ -85,11 +100,6 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
      * The column <code>referraldb.referral_log.update_time</code>. 更新时间
      */
     public final TableField<ReferralLogRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>referraldb.referral_log.type</code>. 推荐方式 1 手机文件上传，2 电脑扫码上传简历 3 推荐人才关键信息
-     */
-    public final TableField<ReferralLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "推荐方式 1 手机文件上传，2 电脑扫码上传简历 3 推荐人才关键信息");
 
     /**
      * Create a <code>referraldb.referral_log</code> table reference
@@ -110,7 +120,7 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
     }
 
     private ReferralLog(String alias, Table<ReferralLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "员工主动推荐记录");
+        super(alias, null, aliased, parameters, "内推记录");
     }
 
     /**

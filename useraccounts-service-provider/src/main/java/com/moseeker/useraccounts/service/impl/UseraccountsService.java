@@ -1197,6 +1197,9 @@ public class UseraccountsService {
         if (referralLog == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
+        if (referralLog.getClaim() == 1) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_ALREADY_CLAIMED;
+        }
         UserUserDO userUserDO = userdao.getUser(claimForm.getUserId());
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;

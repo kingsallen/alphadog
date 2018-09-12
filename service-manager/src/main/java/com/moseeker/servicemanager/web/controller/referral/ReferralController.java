@@ -61,6 +61,7 @@ public class ReferralController {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
         validateUtil.addIntTypeValidate("员工", employeeId, 1, null);
+        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
@@ -99,7 +100,7 @@ public class ReferralController {
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
         validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
-        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
@@ -158,7 +159,7 @@ public class ReferralController {
     public String setReferralType(@PathVariable int id, @RequestBody PCUploadProfileTypeForm form) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("职位", form.getPosition(), 1, null);
-        validateUtil.addIntTypeValidate("appid", form.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
@@ -216,12 +217,12 @@ public class ReferralController {
     public String claimReferralCard(@RequestBody ClaimForm claimForm) throws Exception {
 
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 0, null);
         validateUtil.addIntTypeValidate("推荐卡片", claimForm.getReferralRecordId(), 1, null);
         validateUtil.addIntTypeValidate("用户", claimForm.getUser(), 1, null);
         validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
         String validateResult = validateUtil.validate();
-        if (StringUtils.isNotBlank(validateResult)) {
+        if (StringUtils.isBlank(validateResult)) {
             ClaimReferralCardForm form = new ClaimReferralCardForm();
             form.setName(claimForm.getName());
             form.setMobile(claimForm.getMobile());
@@ -229,9 +230,9 @@ public class ReferralController {
             form.setUserId(claimForm.getUser());
             form.setVerifyCode(claimForm.getVcode());
             userService.claimReferralCard(form);
-            return Result.validateFailed(validateResult).toJson();
-        } else {
             return Result.success(true).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
         }
     }
 
