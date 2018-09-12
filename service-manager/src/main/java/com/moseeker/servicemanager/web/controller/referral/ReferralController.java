@@ -8,7 +8,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
-import com.moseeker.servicemanager.web.controller.referral.form.ClainForm;
+import com.moseeker.servicemanager.web.controller.referral.form.ClaimForm;
 import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
 import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.tools.ProfileDocCheckTool;
@@ -213,7 +213,7 @@ public class ReferralController {
 
     @RequestMapping(value = "/v1/referral/claim", method = RequestMethod.POST)
     @ResponseBody
-    public String claimReferralCard(@RequestBody ClainForm clainForm) throws Exception {
+    public String claimReferralCard(@RequestBody ClaimForm clainForm) throws Exception {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("appid", clainForm.getAppid(), 1, null);

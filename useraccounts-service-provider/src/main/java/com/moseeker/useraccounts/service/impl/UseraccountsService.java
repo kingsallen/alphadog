@@ -1202,8 +1202,12 @@ public class UseraccountsService {
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+        UserUserDO referralUser = userdao.getUser(referralLog.getReferenceId());
+        if (referralUser == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
 
-        if (!claimForm.getName().equals(userUserDO.getName())) {
+        if (!claimForm.getName().equals(referralUser.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
 
