@@ -34,7 +34,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1798845048;
+    private static final long serialVersionUID = 381466825;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -57,7 +57,7 @@ public class Referraldb extends SchemaImpl {
     public final ReferralCompanyConf REFERRAL_COMPANY_CONF = com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf.REFERRAL_COMPANY_CONF;
 
     /**
-     * 员工主动推荐记录
+     * 内推记录
      */
     public final ReferralLog REFERRAL_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralLog.REFERRAL_LOG;
 

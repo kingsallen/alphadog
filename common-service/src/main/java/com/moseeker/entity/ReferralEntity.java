@@ -152,7 +152,8 @@ public class ReferralEntity {
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
     }
 
-    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType) throws EmployeeException {
+    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType)
+            throws EmployeeException {
 
         int referralId = referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
         if (referralId == 0) {
@@ -165,7 +166,12 @@ public class ReferralEntity {
         return referralLogDao.fetchOneById(referralLogId);
     }
 
-    public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) {
+    public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
+
+        if (!referralLogDao.claim(referralLog.getId(), userUserDO.getId())) {
+            throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
+        }
+
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
         if (application != null) {
@@ -201,8 +207,5 @@ public class ReferralEntity {
         if (postUserId > 0) {
             candidateRecomRecordDao.changePostUserId(postUserId, referralLog.getReferenceId(), userUserDO.getId());
         }
-
-        referralLog.setReferenceId(userUserDO.getId());
-        referralLogDao.update(referralLog);
     }
 }
