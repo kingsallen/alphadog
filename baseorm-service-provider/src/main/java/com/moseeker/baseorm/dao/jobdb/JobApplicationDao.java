@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
+import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.select;
 
 /**
  * 封装申请表基本操作
@@ -217,4 +219,29 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 			return record.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
 		}
     }
+
+	public List<JobApplicationRecord> getByApplierIdAndCompanyId(int userId, int companyId) {
+
+		Condition condition = null;
+		if (companyId > 0) {
+			condition = JobApplication.JOB_APPLICATION.POSITION_ID
+					.in(select(JobPosition.JOB_POSITION.ID)
+							.from(JobPosition.JOB_POSITION)
+							.where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+					);
+		}
+		SelectConditionStep<JobApplicationRecord> selectConditionStep = create
+				.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(userId))
+				.and(JobApplication.JOB_APPLICATION.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
+				.and(JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(AbleFlag.OLDENABLE.getValue()));
+
+		if (condition!= null) {
+			selectConditionStep = selectConditionStep.and(condition);
+		}
+
+		return selectConditionStep
+				.orderBy(JobApplication.JOB_APPLICATION.SUBMIT_TIME.desc())
+				.fetch();
+	}
 }
