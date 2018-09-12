@@ -147,6 +147,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         List<MvHouseVO>  mvHouseVOs = handleRequestParams(userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate);
         for(MvHouseVO mvHouseVO : mvHouseVOs){
             sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_REQUEST, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
+            Thread.sleep(10000);
         }
         return ResponseUtils.success(new HashMap<>(1 >> 4));
     }
