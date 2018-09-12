@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.referraldb;
 
+import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -60,5 +61,23 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         } else {
             return 0;
         }
+    }
+
+    /**
+     * 认领推荐记录
+     * @param id 认领记录编号
+     * @param userId 认领人
+     * @return true 认领成功 false 认领失败
+     */
+    public boolean claim(int id, int userId) {
+        int execute = using(configuration())
+                .update(ReferralLog.REFERRAL_LOG)
+                .set(ReferralLog.REFERRAL_LOG.REFERENCE_ID, userId)
+                .set(ReferralLog.REFERRAL_LOG.CLAIM, ClaimType.Claimed.getValue())
+                .set(ReferralLog.REFERRAL_LOG.CLAIM_TIME, new Timestamp(System.currentTimeMillis()))
+                .where(ReferralLog.REFERRAL_LOG.ID.eq(id))
+                .and(ReferralLog.REFERRAL_LOG.CLAIM.eq(ClaimType.UnClaim.getValue()))
+                .execute();
+        return execute == 1;
     }
 }

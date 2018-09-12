@@ -113,6 +113,11 @@ struct WechatPositionListData {
     25: optional string employment_type_name;
     26: optional string publisher_name;
     27: optional string update_time;
+    28: optional i32 degree_above;
+    29: optional i32 degree;
+    30: optional i32 experience_above;
+    31: optional string experience;
+
 }
 
 // 微信端职位列表的附加红包信息

@@ -31,7 +31,7 @@ dependencies {
     compile deps["httpclient"]
     compile deps["commons-io"]
     compile deps["commons-fileupload"]
-    compile files('lib/*.jar')
+    //compile files('lib/*.jar')
 
     runtime deps['jstl']
 
