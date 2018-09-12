@@ -376,7 +376,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();
             operationInfoVO.setStart_date(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
             operationInfoVO.setEnd_date(new SimpleDateFormat("yyyy-MM-dd").format(endDate));
-            operationInfoVO.setCrawl_type(record.getCrawlType());
             operationInfoVO.setCompany_name(companyNames.get(record.getThirdpartyCompanyId()));
             MvHouseVO mvHouseVO = new MvHouseVO();
             mvHouseVO.setAccount_id(userHrAccountDO.getId());
@@ -396,11 +395,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords = new ArrayList<>();
         // 暂时无法批量插入时获取返回的主键id，所以使用单条插入，这里for循环里只有四个数据，连接4次数据库
         for (ThirdpartyAccountCompanyDO companyDO : thirdpartyAccountCompanyDOS) {
-//            for(int i=0;i<CrawlTypeEnum.values().length;i++){
                 TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = new TalentpoolProfileMoveRecordRecord();
                 profileMoveRecordRecord.setProfileMoveId(profileMoveId);
                 profileMoveRecordRecord.setThirdpartyCompanyId(companyDO.getId());
-//                profileMoveRecordRecord.setCrawlType(CrawlTypeEnum.values()[i].getStatus());
                 profileMoveRecordRecord = profileMoveRecordDao.addRecord(profileMoveRecordRecord);
                 profileMoveRecordRecords.add(profileMoveRecordRecord);
 //            }
