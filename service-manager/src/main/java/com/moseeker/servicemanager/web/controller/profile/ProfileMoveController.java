@@ -145,8 +145,6 @@ public class ProfileMoveController {
 
             logger.info("service-manager-----params:{}", params);
             logger.info("service-manager-----profile:{}", profile);
-            logger.info("operation_id:{}", params.get("operation_id"));
-            logger.info("current_email_num:{}", params.get("current_email_num"));
             Integer operationId = Integer.parseInt(String.valueOf(params.get("operation_id")));
             Integer currentEmailNum = Integer.parseInt(String.valueOf(params.get("current_email_num")));
             ValidateUtil validateUtil = new ValidateUtil();
