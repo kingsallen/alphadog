@@ -3,7 +3,6 @@
 */
 package com.moseeker.baseorm.db.talentpooldb;
 
-
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
@@ -171,6 +170,7 @@ public class Talentpooldb extends SchemaImpl {
             TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE,
             TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL,
             TalentpoolTag.TALENTPOOL_TAG,
+            TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE,
             TalentpoolTalent.TALENTPOOL_TALENT,
             TalentpoolUpload.TALENTPOOL_UPLOAD,
             TalentpoolUserTag.TALENTPOOL_USER_TAG);

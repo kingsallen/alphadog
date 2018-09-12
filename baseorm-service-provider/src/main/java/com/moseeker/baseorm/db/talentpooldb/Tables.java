@@ -3,23 +3,7 @@
 */
 package com.moseeker.baseorm.db.talentpooldb;
 
-
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMove;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveDetail;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.*;
 
 import javax.annotation.Generated;
 
@@ -107,6 +91,11 @@ public class Tables {
      * 人才库人才表
      */
     public static final TalentpoolTalent TALENTPOOL_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent.TALENTPOOL_TALENT;
+
+    /**
+     * 简历搬家操作记录表
+     */
+    public static final TalentpoolProfileMoveRecord TALENTPOOL_PROFILE_MOVE_RECORD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD;
 
     /**
      * 人才库简历上传记录表

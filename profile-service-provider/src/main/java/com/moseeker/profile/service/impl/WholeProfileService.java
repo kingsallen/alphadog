@@ -1187,7 +1187,7 @@ public class WholeProfileService {
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue(),1);
         if(userRecord==null){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
@@ -1259,14 +1259,14 @@ public class WholeProfileService {
     }
 
     /*
-     保存上传的简历
+     保存上传的简历 upload 表示是否上传的，目前简历搬家传来的upload为0 ，非上传
      */
-    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId) throws TException {
+    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId,int source, int upload) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
         Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
-        map=this.handlerBasicAndUser(basic,map);
+        map=this.handlerBasicAndUser(basic,map,source);
         this.handleWorkExps(resume);
         String mobile = String.valueOf(map.get("mobile")) ;
         if(StringUtils.isNullOrEmpty(mobile)){
@@ -1278,13 +1278,13 @@ public class WholeProfileService {
 //        if(mobile.length()!=11){
 //            return ResponseUtils.fail(1,"手机号必须为11位");
 //        }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source,upload);
         int newUerId=0;
         if(userRecord!=null){
             newUerId=userRecord.getId();
         }
         if(userId==0&&newUerId==0){
-            newUerId=this.saveNewProfile(resume,map);
+            newUerId=this.saveNewProfile(resume,map,source);
         }else{
             userRecord=userAccountEntity.combineAccount(userId,newUerId);
             if(userRecord==null){
@@ -1306,7 +1306,7 @@ public class WholeProfileService {
         }
 
         //此处应该考虑账号合并导致的问题
-        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName);
+        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName,upload);
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
@@ -1352,7 +1352,7 @@ public class WholeProfileService {
     /*
      将上传的basic的内容组合到user当中
      */
-    private Map<String,Object> handlerBasicAndUser(Map<String,Object> basicMap,Map<String,Object> userMap){
+    private Map<String,Object> handlerBasicAndUser(Map<String,Object> basicMap,Map<String,Object> userMap,int source){
         if(userMap==null||userMap.isEmpty()){
             userMap=new HashMap<>();
         }
@@ -1376,18 +1376,18 @@ public class WholeProfileService {
         }else{
             userMap.put("country_code","86");
         }
-        userMap.put("source",UserSource.TALENT_UPLOAD.getValue());
+        userMap.put("source", source);
         return userMap;
     }
 
     /*
       保存上传简历
       */
-    @Transactional
-    private int saveNewProfile(Map<String, Object> resume,Map<String, Object> map) throws TException {
+    @Transactional(rollbackFor = Exception.class)
+    protected int saveNewProfile(Map<String, Object> resume,Map<String, Object> map,int source) throws TException {
         UserUserDO user1 = BeanUtils.MapToRecord(map, UserUserDO.class);
         logger.info("talentpool upload new  user:{}", user1);
-        user1.setSource((byte) UserSource.TALENT_UPLOAD.getValue());
+        user1.setSource((byte) source);
         int userId = useraccountsServices.createRetrieveProfileUser(user1);
         logger.info("talentpool userId:{}", userId);
         if (userId > 0) {
@@ -1410,8 +1410,8 @@ public class WholeProfileService {
     /*
      更新上传简历
      */
-    @Transactional
-    private Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
+    @Transactional(rollbackFor = Exception.class)
+    protected Response upsertProfile(Map<String, Object> resume,UserUserRecord userRecord,int userId,int newUserId){
 
         ProfileProfileRecord profileRecord = profileUtils.mapToProfileRecord((Map<String, Object>) resume.get("profile"));
         if (profileRecord == null) {

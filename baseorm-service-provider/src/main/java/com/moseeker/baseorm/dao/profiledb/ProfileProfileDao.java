@@ -1888,4 +1888,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             return new ArrayList<>();
         }
     }
+
+    public List<ProfileProfileDO> getProfileByUidList(Set<Integer> userIdList) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.in(userIdList))
+                .fetchInto(ProfileProfileDO.class);
+    }
 }

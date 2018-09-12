@@ -2,6 +2,7 @@ package com.moseeker.profile.thrift;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -208,7 +209,7 @@ public class WholeProfileServicesImpl implements Iface {
     public Response preserveProfile(String params, int hrId, int companyId, String fileName,int userId) throws BIZException, TException {
         try {
             logger.info("preserveProfile parameter{}：", params);
-            return service.preserveProfile(params,fileName,hrId,companyId,userId);
+            return service.preserveProfile(params,fileName,hrId,companyId,userId, UserSource.TALENT_UPLOAD.getValue(), 1);
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {

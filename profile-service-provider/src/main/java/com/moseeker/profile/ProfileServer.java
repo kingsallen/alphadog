@@ -53,7 +53,8 @@ public class ProfileServer {
 					acac.getBean(ProfileWorksServicesImpl.class),
 					acac.getBean(WholeProfileServicesImpl.class),
 					acac.getBean(ProfileAttachmentServicesImpl.class),
-					acac.getBean(ProfileOtherThriftServiceImpl.class));
+					acac.getBean(ProfileOtherThriftServiceImpl.class),
+					acac.getBean(ProfileMoveThriftServiceImpl.class));
 			// 启动服务，非阻塞
 			try {
 				server.startServer();

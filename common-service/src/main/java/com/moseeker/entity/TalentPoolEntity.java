@@ -1429,14 +1429,14 @@ public class TalentPoolEntity {
      上传简历成为收藏人才
      */
     @Transactional
-    public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
+    public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName,int flag){
         if(userId!=0&&newuserId!=0&&userId!=newuserId){
             this.updateTalentRelationShip(userId,newuserId);
         }
         if(this.isHrtalent(newuserId,hrId)==0){
             Set<Integer> userSet=new HashSet<>();
             userSet.add(newuserId);
-            this.addTalentsItems(userSet,hrId,companyId,1);
+            this.addTalentsItems(userSet,hrId,companyId,flag);
             if(StringUtils.isNotNullOrEmpty(fileName)){
                 this.saveUploadProfileName(fileName,hrId,companyId);
             }
@@ -1631,6 +1631,10 @@ public class TalentPoolEntity {
                 TalentpoolHrTalentRecord record=new TalentpoolHrTalentRecord();
                 record.setHrId(hrId);
                 record.setUserId(id);
+                if(flag == 0){
+                    // 表示简历搬家搬过来的人才
+                    record.setPublic((byte)1);
+                }
                 recordList.add(record);
             }
             talentpoolHrTalentDao.addAllRecord(recordList);
@@ -1773,19 +1777,19 @@ public class TalentPoolEntity {
     /*
      获取上传简历的user_id
      */
-    public UserUserRecord getTalentUploadUser(String phone,int companyId){
+    public UserUserRecord getTalentUploadUser(String phone,int companyId, int source, int upload){
         String countryCode="86";
         if(phone.contains("-")){
             String [] phoneArray=phone.split("-");
             countryCode=phoneArray[0];
             phone=phoneArray[1];
         }
-        List<UserUserRecord> list=getTalentUploadUserUser(phone,countryCode);
+        List<UserUserRecord> list=getUploadUserUser(phone,countryCode, source);
         if(StringUtils.isEmptyList(list)){
             return null;
         }
         List<Integer> userIdList=this.getUserIdByRecord(list);
-        List<TalentpoolTalentRecord> record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
+        List<TalentpoolTalentRecord> record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId,upload);
         if(StringUtils.isEmptyList(record)){
             return null;
         }
@@ -1800,7 +1804,7 @@ public class TalentPoolEntity {
     public int ValidateUploadProfileIsHr(int userId,int companyId,int hrId){
         List<Integer> userIdList=new ArrayList<>();
         userIdList.add(userId);
-        List<TalentpoolTalentRecord> record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId);
+        List<TalentpoolTalentRecord> record=this.getTalentByUserIdAndCompanyUpload(userIdList,companyId,1);
         if(record==null){
             return 0;
         }
@@ -1810,9 +1814,9 @@ public class TalentPoolEntity {
     /*
      获取所有的手机号相同的人才库上传的简历
      */
-    public List<UserUserRecord> getTalentUploadUserUser(String phone,String countryCode){
+    public List<UserUserRecord> getUploadUserUser(String phone,String countryCode, int source){
         Query query=new Query.QueryBuilder().where("mobile",phone).and("country_code",countryCode)
-                .and("source", UserSource.TALENT_UPLOAD.getValue()).and("is_disable",0)
+                .and("source", source).and("is_disable",0)
                 .buildQuery();
         List<UserUserRecord> list=userUserDao.getRecords(query);
         return list;
@@ -1835,8 +1839,8 @@ public class TalentPoolEntity {
     /*
      在人才库中获取这个公司下所有hr关于这份上传的简历的user_id
      */
-    public List<TalentpoolTalentRecord> getTalentByUserIdAndCompanyUpload(List<Integer> userIdList,int companyId){
-        Query query=new Query.QueryBuilder().where("upload",1).and(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
+    public List<TalentpoolTalentRecord> getTalentByUserIdAndCompanyUpload(List<Integer> userIdList,int companyId,int upload){
+        Query query=new Query.QueryBuilder().where("upload",upload).and(new Condition("user_id",userIdList.toArray(),ValueOp.IN))
                 .and("company_id",companyId).buildQuery();
         List<TalentpoolTalentRecord> record=talentpoolTalentDao.getRecords(query);
         return record;
