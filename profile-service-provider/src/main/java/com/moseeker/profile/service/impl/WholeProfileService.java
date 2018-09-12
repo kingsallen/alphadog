@@ -1187,7 +1187,7 @@ public class WholeProfileService {
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue(),1);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue());
         if(userRecord==null){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
@@ -1261,7 +1261,7 @@ public class WholeProfileService {
     /*
      保存上传的简历 upload 表示是否上传的，目前简历搬家传来的upload为0 ，非上传
      */
-    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId,int source, int upload) throws TException {
+    public Response preserveProfile(String params,String fileName,int hrId,int companyId,int userId,int source) throws TException {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
@@ -1278,7 +1278,7 @@ public class WholeProfileService {
 //        if(mobile.length()!=11){
 //            return ResponseUtils.fail(1,"手机号必须为11位");
 //        }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source,upload);
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source);
         int newUerId=0;
         if(userRecord!=null){
             newUerId=userRecord.getId();
@@ -1306,7 +1306,7 @@ public class WholeProfileService {
         }
 
         //此处应该考虑账号合并导致的问题
-        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName,upload);
+        talentPoolEntity.addUploadTalent(userId,newUerId,hrId,companyId,fileName,source);
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
@@ -1489,6 +1489,14 @@ public class WholeProfileService {
             type=25;
         }else if(origin1.length()==28){
             type=28;
+        }else if(origin1.length()==31){
+            type=31;
+        }else if(origin1.length()==32){
+            type=32;
+        }else if(origin1.length()==33){
+            type=33;
+        }else if(origin1.length()==34){
+            type=34;
         }
         if(type==0){
             return origin;

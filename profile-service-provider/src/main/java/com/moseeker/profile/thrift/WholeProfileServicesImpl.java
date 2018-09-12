@@ -209,7 +209,7 @@ public class WholeProfileServicesImpl implements Iface {
     public Response preserveProfile(String params, int hrId, int companyId, String fileName,int userId) throws BIZException, TException {
         try {
             logger.info("preserveProfile parameter{}：", params);
-            return service.preserveProfile(params,fileName,hrId,companyId,userId, UserSource.TALENT_UPLOAD.getValue(), 1);
+            return service.preserveProfile(params,fileName,hrId,companyId,userId, UserSource.TALENT_UPLOAD.getValue());
         } catch (CommonException e) {
             throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
