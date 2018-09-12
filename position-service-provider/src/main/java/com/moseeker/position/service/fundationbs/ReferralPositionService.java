@@ -1,6 +1,6 @@
 package com.moseeker.position.service.fundationbs;
 
-import com.moseeker.baseorm.db.referraldb.tables.daos.ReferralCompanyConfJooqDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
