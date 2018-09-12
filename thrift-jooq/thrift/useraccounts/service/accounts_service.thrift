@@ -77,8 +77,8 @@ service UseraccountsServices {
     common_struct.Response getUserSearchPositionHistory(1: i32 userId)throws (1: common_struct.BIZException e);
 
     common_struct.Response deleteUserSearchPositionHistory(1: i32 userId)throws (1: common_struct.BIZException e);
-
-
+    //认领内推卡片
+    void claimReferralCard(1: useraccounts_struct.ClaimReferralCardForm form) throws (1: common_struct.BIZException e);
 }
 
 /**

@@ -249,3 +249,22 @@ struct UserProfile {
     1: optional i32 userId;             //用户编号
     2: optional bool haveProfile;       //是否拥有简历
 }
+
+//简历解析结果
+struct ProfileParseResult {
+    1: optional string file,
+    2: optional string name,
+    3: optional string mobile
+}
+
+//候选人关键信息
+struct CandidateInfo {
+    1: optional i32 positionId,
+    2: optional string name,
+    3: optional i8 gender,
+    4: optional string mobile,
+    5: optional string email,
+    6: optional string company,
+    7: optional string job,
+    8: optional list<string> reasons
+}

@@ -1,7 +1,6 @@
 package com.moseeker.baseorm.dao.jobdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
@@ -12,19 +11,19 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.jooq.impl.DSL.count;
 
@@ -127,7 +126,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	}
 
     /**
-     * insert 判断是否已存在
+     * insertIfNotExist 判断是否已存在
      * @param record
      * @return
      */
@@ -220,4 +219,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
 				.fetch();
 	}
+
+    public com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication getByUserIdAndPositionId(Integer referenceId, Integer positionId) {
+		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(referenceId))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+				.fetchOne();
+		if (record == null) {
+			return null;
+		} else {
+			return record.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
+		}
+    }
 }

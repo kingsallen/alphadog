@@ -26,7 +26,6 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.position.struct.Position;
 import com.moseeker.thrift.gen.position.struct.PositionDetails;
-
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -629,7 +628,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     public JobPositionRecord getUniquePositionIgnoreDelete(int companyId, int source, int sourceId, String jobnumber) {
         return create.selectFrom(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
-                .and(JobPosition.JOB_POSITION.SOURCE.eq((short)source))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
                 .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(sourceId))
                 .and(JobPosition.JOB_POSITION.JOBNUMBER.eq(jobnumber))
                 .and(JobPosition.JOB_POSITION.STATUS.ne((byte)PositionStatus.DELETED.getValue()))
@@ -706,7 +705,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 , JobPosition.JOB_POSITION.COMPANY_ID)
                 .from(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
-                .and(JobPosition.JOB_POSITION.SOURCE.eq((short) source))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
                 .fetchInto(JobPositionRecord.class);
     }
 

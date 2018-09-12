@@ -71,6 +71,12 @@ service ProfileServices {
     list<profile_struct.UserProfile> fetchUserProfile(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileTokenDecrypt(1:string token);
     i32 parseText(1: string profile, 2: i32 reference) throws (1: common_struct.BIZException e);
+    //简历解析
+    profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+    //员工推荐简历
+    i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 referralType)throws (1: common_struct.BIZException e)
+    //员工提交被推荐人关键信息
+    i32 postCandidateInfo(1:i32 employeeId, 2: profile_struct.CandidateInfo candidateInfo)throws (1: common_struct.BIZException e)
 }
 
 service AttachmentServices {

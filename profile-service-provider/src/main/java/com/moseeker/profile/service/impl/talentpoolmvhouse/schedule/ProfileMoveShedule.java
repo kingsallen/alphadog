@@ -3,7 +3,7 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.schedule;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDetailDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveRecordDao;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
-import com.moseeker.profile.utils.ProfileMailUtil;
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveRecordDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

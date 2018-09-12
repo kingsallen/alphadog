@@ -99,4 +99,11 @@ public class UserReferralRecordDao extends DAOImpl<UserReferralRecordRecord, com
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserReferralRecord> fetchByUpdateTime(Timestamp... values) {
         return fetch(UserReferralRecord.USER_REFERRAL_RECORD.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>scene IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserReferralRecord> fetchByScene(Byte... values) {
+        return fetch(UserReferralRecord.USER_REFERRAL_RECORD.SCENE, values);
+    }
 }

@@ -1,7 +1,5 @@
 package com.moseeker.useraccounts.domain;
 
-import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.constant.UpVoteState;
 import com.moseeker.baseorm.dao.historydb.CustomHistoryUpVoteDao;
 import com.moseeker.baseorm.dao.userdb.CustomUpVoteDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeUpvoteRecord;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -70,12 +67,15 @@ public class UpVoteEntity {
      */
     public int upVote(UserEmployeeDO receiver, UserEmployeeDO sender) throws UserAccountException {
 
-        UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getCompanyId(), receiver.getId(), sender.getId());
+        IntervalTime intervalTime = IntervalTime.buildIntervalTime();
+        UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getId(), sender.getId(), intervalTime.getEndTime(),
+                intervalTime.getEndTime());
         if (upVote != null) {
             throw UserAccountException.EMPLOYEE_ALREADY_UP_VOTE;
         }
 
-        int id = upVoteDao.insert(receiver.getCompanyId(), receiver.getId(), sender.getId());
+        int id = upVoteDao.insert(receiver.getCompanyId(), receiver.getId(), sender.getId(),
+                intervalTime.getStartTime(), intervalTime.getEndTime());
 
         return id;
     }
@@ -87,12 +87,12 @@ public class UpVoteEntity {
      */
     public void cancelUpVote(UserEmployeeDO receiver, UserEmployeeDO sender) throws UserAccountException {
 
-        UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getCompanyId(), receiver.getId(), sender.getId());
+        IntervalTime intervalTime = IntervalTime.buildIntervalTime();
+        UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getId(), sender.getId(), intervalTime.getStartTime(),
+                intervalTime.getEndTime());
         if (upVote == null) {
             throw UserAccountException.EMPLOYEE_NOT_UP_VOTE;
         }
-        upVote.setCancelTime(new Timestamp(System.currentTimeMillis()));
-        upVote.setCancel((byte) UpVoteState.UnUpVote.getValue());
         upVoteDao.cancelUpVote(upVote.getId());
     }
 
@@ -106,7 +106,8 @@ public class UpVoteEntity {
 
         IntervalTime intervalTime = IntervalTime.buildIntervalTime();
 
-        UserEmployeeUpvoteRecord record = upVoteDao.fetchBySenderAndReceiver(sender, receiver, intervalTime.getStartTime(), intervalTime.getEndTime());
+        UserEmployeeUpvoteRecord record = upVoteDao.fetchBySenderAndReceiver(sender, receiver,
+                intervalTime.getStartTime(), intervalTime.getEndTime());
         return record != null;
     }
 

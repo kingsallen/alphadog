@@ -3,6 +3,9 @@ package com.moseeker.profile.config;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.AcknowledgeMode;
+import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -104,8 +107,14 @@ public class AppConfig {
     }
     @Bean
     public List<Binding> bindingMvHouseQueue() {
-        return new ArrayList<Binding>(){{
+        return new ArrayList<Binding>() {{
             add(BindingBuilder.bind(mvHouseQueue()).to(exchange()).with(ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_RESPONSE));
         }};
+    }
+
+    @Bean
+    public TopicExchange topicExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
+        return topicExchange;
     }
 }

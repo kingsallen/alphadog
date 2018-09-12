@@ -9,7 +9,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
-import com.moseeker.profile.utils.ProfileMailUtil;
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

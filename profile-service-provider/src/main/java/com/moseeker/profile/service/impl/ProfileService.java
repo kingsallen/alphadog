@@ -41,7 +41,6 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
-import com.moseeker.profile.utils.ProfileMailUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -119,9 +118,6 @@ public class ProfileService {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
-
-    @Autowired
-    private ProfileMailUtil profileMailUtil;
 
     @Autowired
     private ResumeEntity resumeEntity;
@@ -537,8 +533,6 @@ public class ProfileService {
         try {
             // 调用SDK得到结果
             ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, file);
-            // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
-            validateParseLimit(resumeObj);
             logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
             // 调用成功,开始转换对象,我把它单独独立出来
             profileObj=resumeEntity.handlerParseData(resumeObj,uid,fileName);
@@ -548,19 +542,6 @@ public class ProfileService {
         }
         logger.info("profileParser:{}", JSON.toJSONString(profileObj));
         return profileObj;
-    }
-
-    /**
-     * 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
-     * @param
-     * @author  cjm
-     * @date  2018/6/26
-     * @return
-     */
-    private void validateParseLimit(ResumeObj resumeObj) {
-        if(resumeObj != null && resumeObj.getAccount() != null && resumeObj.getAccount().getUsage_remaining() < 1000){
-            profileMailUtil.sendProfileParseWarnMail(resumeObj.getAccount());
-        }
     }
 
     /**
@@ -877,8 +858,6 @@ public class ProfileService {
     public Response talentpoolUploadParse(String fileName,String fileData,int companyId) throws TException, IOException {
         Map<String, Object> result = new HashMap<>();
         ResumeObj resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
-        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
-        validateParseLimit(resumeObj);
         logger.info(JSON.toJSONString(resumeObj));
         result.put("resumeObj", resumeObj);
         if (resumeObj.getStatus().getCode() == 200) {
@@ -942,8 +921,6 @@ public class ProfileService {
         } catch (TException | IOException e) {
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
-        // 验证ResumeSDK解析剩余调用量是否大于1000，如果小于1000则发送预警邮件
-        validateParseLimit(resumeObj);
         logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
 
         ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
@@ -959,7 +936,7 @@ public class ProfileService {
 
         profileObj.setResumeObj(null);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
-        JSONObject profileProfile = createProfileData();
+        JSONObject profileProfile = createChatBotProfileData();
         jsonObject.put("profile", profileProfile);
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
@@ -980,7 +957,7 @@ public class ProfileService {
             logger.info("profileParser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
                     profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
             resumeEntity.fillDefault(profilePojo);
-            userRecord = profileEntity.storeUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL);
+            userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
         }
@@ -993,7 +970,7 @@ public class ProfileService {
      * 生成简历来源的数据
      * @return
      */
-    private JSONObject createProfileData() {
+    private JSONObject createChatBotProfileData() {
         JSONObject profileProfile = new JSONObject();
         profileProfile.put("source", 221);                                      //员工主动上传
         profileProfile.put("origin", "10000000000000000000000000000");          //员工主动上传
@@ -1001,6 +978,4 @@ public class ProfileService {
         profileProfile.put("user_id", 0);
         return profileProfile;
     }
-
-
 }
