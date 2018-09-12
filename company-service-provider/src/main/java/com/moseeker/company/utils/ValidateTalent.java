@@ -56,6 +56,9 @@ public class ValidateTalent {
      * @return  过滤后的userIdList
      */
     private Set<Integer> filterMvHouseApplierId(Set<Integer> userIdList){
+        if(userIdList == null || userIdList.isEmpty()){
+            return userIdList;
+        }
         List<ProfileProfileDO> profileProfileDOS = profileProfileDao.getProfileByUidList(userIdList);
         userIdList = profileProfileDOS.stream().filter(profileProfileDO ->
                 (!ChannelType.MVHOUSEJOB51DOWNLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
