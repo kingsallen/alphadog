@@ -352,12 +352,16 @@ public class PositionEntity {
                 historyReferralPositionRelDao.insert(historyReferralPositionRel);
 
                 //更新ES中职位is_referal字段为1
-                searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
+                try {
+                    searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),1);
+                }catch (Exception e) {
+                    //主动捕获异常，避免事务回滚
+                    logger.error(e.getClass().getName(),e);
+                }
             });
         }
 
         logger.info("records {}", JSON.toJSON(records));
-        System.out.println(JSON.toJSON(records));
     }
 
     /**
@@ -377,7 +381,12 @@ public class PositionEntity {
                 historyReferralPositionRelDao.insert(historyReferralPositionRel);
 
                 //更新ES中职位is_referal字段为0
-                searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+                try {
+                    searchengineEntity.updateReferralPostionStatus(rel.getPositionId(),0);
+                } catch (Exception e) {
+                    //主动捕获异常，避免事务回滚
+                    logger.error(e.getClass().getName(),e);
+                }
 
             });
 
