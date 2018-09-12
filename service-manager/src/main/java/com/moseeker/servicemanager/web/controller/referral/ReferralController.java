@@ -230,7 +230,7 @@ public class ReferralController {
             form.setUserId(claimForm.getUser());
             form.setVerifyCode(claimForm.getVcode());
             userService.claimReferralCard(form);
-            return Result.validateFailed(validateResult).toJson();
+            return Result.success(true).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }
