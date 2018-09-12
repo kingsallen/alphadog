@@ -10,6 +10,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Condition;
@@ -91,6 +92,16 @@ public class UserCenterBizTools {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 查找用户的申请记录
+     * @param userId 用户信息
+     * @param companyId 公司信息
+     * @return 申请记录
+     */
+    public List<JobApplicationRecord> getAppsForUserAndCompany(int userId, int companyId) {
+        return applicationDao.getByApplierIdAndCompanyId(userId, companyId);
     }
 
     /**
