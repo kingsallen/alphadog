@@ -213,21 +213,21 @@ public class ReferralController {
 
     @RequestMapping(value = "/v1/referral/claim", method = RequestMethod.POST)
     @ResponseBody
-    public String claimReferralCard(@RequestBody ClaimForm clainForm) throws Exception {
+    public String claimReferralCard(@RequestBody ClaimForm claimForm) throws Exception {
 
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addIntTypeValidate("appid", clainForm.getAppid(), 1, null);
-        validateUtil.addIntTypeValidate("推荐卡片", clainForm.getReferralRecordId(), 1, null);
-        validateUtil.addIntTypeValidate("用户", clainForm.getUser(), 1, null);
-        validateUtil.addRequiredStringValidate("用户姓名", clainForm.getName());
+        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 1, null);
+        validateUtil.addIntTypeValidate("推荐卡片", claimForm.getReferralRecordId(), 1, null);
+        validateUtil.addIntTypeValidate("用户", claimForm.getUser(), 1, null);
+        validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
         String validateResult = validateUtil.validate();
         if (StringUtils.isNotBlank(validateResult)) {
             ClaimReferralCardForm form = new ClaimReferralCardForm();
-            form.setName(clainForm.getName());
-            form.setMobile(clainForm.getMobile());
-            form.setReferralRecordId(clainForm.getReferralRecordId());
-            form.setUserId(clainForm.getUser());
-            form.setVerifyCode(clainForm.getVcode());
+            form.setName(claimForm.getName());
+            form.setMobile(claimForm.getMobile());
+            form.setReferralRecordId(claimForm.getReferralRecordId());
+            form.setUserId(claimForm.getUser());
+            form.setVerifyCode(claimForm.getVcode());
             userService.claimReferralCard(form);
             return Result.validateFailed(validateResult).toJson();
         } else {
