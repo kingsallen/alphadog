@@ -1889,6 +1889,14 @@ public class PositionService {
                     e.setIs_referral(jr.getIsReferral());
                     e.setEmployment_type(jr.getEmploymentType());
                     e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
+<<<<<<< HEAD
+=======
+                    e.setUpdate_time(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                    e.setDegree(jr.getDegree());
+                    e.setDegree_above(jr.getDegreeAbove());
+                    e.setExperience(jr.getExperience());
+                    e.setExperience_above(jr.getExperienceAbove());
+>>>>>>> 添加experience degree字段
                     dataList.add(e);
                     break;
                 }
