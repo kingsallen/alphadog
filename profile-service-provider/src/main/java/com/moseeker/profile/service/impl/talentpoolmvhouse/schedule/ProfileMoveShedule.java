@@ -61,9 +61,10 @@ public class ProfileMoveShedule {
             List<Integer> successIdList = new ArrayList<>();
             List<Integer> failedIdList = new ArrayList<>();
             for (TalentPoolProfileMoveRecordDO profileMoveDO : profileMoveDOS) {
-                // 当验证码错误时会创建一条总邮件为0，当前邮件为0的数据，这条数据认为搬家失败
+                // 当验证码错误时会创建一条总邮件为0，当前邮件为0的数据，这条数据认为搬家成功
                 if (profileMoveDO.getCurrentEmailNum() == 0 && profileMoveDO.getTotalEmailNum() == 0) {
-                    failedIdList.add(profileMoveDO.getId());
+                    // todo 如果都为0，成功
+                    successIdList.add(profileMoveDO.getId());
                 } else {
                     // 当前email数等于总email数更新为简历搬家操作成功，否则认为失败
                     if (profileMoveDO.getTotalEmailNum() == profileMoveDO.getCurrentEmailNum()) {
