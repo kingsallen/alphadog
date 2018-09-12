@@ -18,11 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
-<<<<<<< HEAD
  * 凡是记录在该表的手机号对应的简历都是已成功入库的简历搬家简历，
-=======
- * 凡是记录在该表的手机号对应的简历都是已成功入库的简历搬家简历，
->>>>>>> feature/profile_move
  * 但是如果简历搬家失败时根据status字段标记出哪些简历是搬家失败的，下次搬家时不会因为重新合并一次导致数据不准确
  */
 @Generated(
