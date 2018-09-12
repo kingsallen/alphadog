@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 员工主动推荐记录
+ * 内推记录
  */
 @Generated(
     value = {
@@ -87,10 +87,31 @@ public class ReferralLogDao extends DAOImpl<ReferralLogRecord, com.moseeker.base
     }
 
     /**
+     * Fetch records that have <code>type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByType(Integer... values) {
+        return fetch(ReferralLog.REFERRAL_LOG.TYPE, values);
+    }
+
+    /**
      * Fetch records that have <code>referral_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByReferralTime(Timestamp... values) {
         return fetch(ReferralLog.REFERRAL_LOG.REFERRAL_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>claim IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByClaim(Byte... values) {
+        return fetch(ReferralLog.REFERRAL_LOG.CLAIM, values);
+    }
+
+    /**
+     * Fetch records that have <code>claim_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByClaimTime(Timestamp... values) {
+        return fetch(ReferralLog.REFERRAL_LOG.CLAIM_TIME, values);
     }
 
     /**
@@ -105,12 +126,5 @@ public class ReferralLogDao extends DAOImpl<ReferralLogRecord, com.moseeker.base
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByUpdateTime(Timestamp... values) {
         return fetch(ReferralLog.REFERRAL_LOG.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByType(Integer... values) {
-        return fetch(ReferralLog.REFERRAL_LOG.TYPE, values);
     }
 }
