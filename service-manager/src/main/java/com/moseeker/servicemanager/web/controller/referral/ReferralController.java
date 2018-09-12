@@ -222,7 +222,7 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("用户", claimForm.getUser(), 1, null);
         validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
         String validateResult = validateUtil.validate();
-        if (StringUtils.isNotBlank(validateResult)) {
+        if (StringUtils.isBlank(validateResult)) {
             ClaimReferralCardForm form = new ClaimReferralCardForm();
             form.setName(claimForm.getName());
             form.setMobile(claimForm.getMobile());
