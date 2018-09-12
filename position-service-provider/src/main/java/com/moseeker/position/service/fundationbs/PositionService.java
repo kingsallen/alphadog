@@ -1891,6 +1891,10 @@ public class PositionService {
                     e.setEmployment_type(jr.getEmploymentType());
                     e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
                     e.setUpdate_time(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
+                    e.setDegree(jr.getDegree());
+                    e.setDegree_above(jr.getDegreeAbove());
+                    e.setExperience(jr.getExperience());
+                    e.setExperience_above(jr.getExperienceAbove());
                     dataList.add(e);
                     break;
                 }
