@@ -232,7 +232,7 @@ public class ReferralController {
             userService.claimReferralCard(form);
             return Result.validateFailed(validateResult).toJson();
         } else {
-            return Result.success(true).toJson();
+            return Result.validateFailed(validateResult).toJson();
         }
     }
 
