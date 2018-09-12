@@ -4,7 +4,7 @@ package com.moseeker.servicemanager.web.controller.referral.form;
  * @Author: jack
  * @Date: 2018/9/7
  */
-public class ClainForm {
+public class ClaimForm {
 
     private int appid;
     private int user;
