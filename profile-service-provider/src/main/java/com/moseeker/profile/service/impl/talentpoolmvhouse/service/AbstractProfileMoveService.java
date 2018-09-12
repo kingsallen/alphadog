@@ -233,7 +233,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         int companyId = hrCompanyDO.getId();
         // 简历入库
         Future<Response> preserveFuture =
-                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, hrId, companyId, 0, UserSource.MV_HOUSE.getValue(), 0));
+                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, hrId, companyId, 0, UserSource.MV_HOUSE.getValue()));
         Response preserveResponse = preserveFuture.get(120, TimeUnit.SECONDS);
 //        Response preserveResponse = new Response(0, "");
         logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);

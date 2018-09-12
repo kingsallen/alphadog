@@ -169,7 +169,7 @@ public class ValidateTalentTag {
         Set<Integer> userIdList=new HashSet<>();
         Set<Integer> unUserIdList=new HashSet<>();
         if(count>0){
-            List<TalentpoolTalentRecord> list=talentPoolEntity.getTalentByUserIdAndCompanyUpload(unUseList,companyId,1);
+            List<TalentpoolTalentRecord> list=talentPoolEntity.getTalentByUserIdAndCompanyUpload(unUseList,companyId);
             if(StringUtils.isEmptyList(list)){
                 bean.setUnuseId(talentPoolEntity.converListToSet(unUseList));
             }else{

@@ -885,7 +885,7 @@ public class ProfileService {
             String phone = resumeObj.getResult().getPhone();
             int userId = 0;
             if (StringUtils.isNotNullOrEmpty(phone)) {
-                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue(),1);
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue());
                 if (userRecord != null) {
                     userId = userRecord.getId();
                 }
