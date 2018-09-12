@@ -500,7 +500,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
      */
     public void changePostUserId(int postUserId, Integer referenceId, int id) {
         create.update(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                .set(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID, id)
+                .set(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID, id)
                 .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(postUserId))
                 .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(referenceId))
                 .execute();
