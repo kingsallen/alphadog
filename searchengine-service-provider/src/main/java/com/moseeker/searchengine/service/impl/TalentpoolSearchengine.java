@@ -709,6 +709,7 @@ public class TalentpoolSearchengine {
                     continue;
                 }
                 QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(keyword);
+                fullf.phraseSlop(0);
 //                        .field("title")
 //                        .field("city")
 //                        .field("city_ename")
