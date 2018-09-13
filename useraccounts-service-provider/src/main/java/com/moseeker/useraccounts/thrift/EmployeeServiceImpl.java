@@ -14,6 +14,7 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
 import com.moseeker.thrift.gen.employee.struct.*;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralPositionInfo;
@@ -21,6 +22,7 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -385,10 +387,14 @@ public class EmployeeServiceImpl implements Iface {
 
 	@Override
 	public ReferralCard getReferralCard(int referralLogId) throws BIZException, TException {
-		com.moseeker.useraccounts.service.impl.pojos.ReferralCard card = service.getReferralCard(referralLogId);
-		ReferralCard referralCard = new ReferralCard();
-		BeanUtils.copyProperties(card, referralCard);
-		return referralCard;
+		try {
+			com.moseeker.useraccounts.service.impl.pojos.ReferralCard card = service.getReferralCard(referralLogId);
+			ReferralCard referralCard = new ReferralCard();
+			BeanUtils.copyProperties(card, referralCard);
+			return referralCard;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
 	}
 
 	private ReferralPosition convertReferralPosition(ReferralPositionInfo referralPositionInfo) {
