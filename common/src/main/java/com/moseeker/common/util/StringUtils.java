@@ -516,20 +516,4 @@ public class StringUtils {
         return false;
     }
 
-    public static String listToString(List<String> list, String splitTag){
-        if(!StringUtils.isEmptyList(list)){
-            String keyword = org.apache.commons.lang.StringUtils.join(list,splitTag);
-            return keyword;
-        }
-        return "";
-    }
-
-    public static List<String> stringToList(String str, String splitTag){
-        if(!StringUtils.isNullOrEmpty(str)){
-            String[] keyword = str.split(splitTag);
-            return Arrays.asList(keyword);
-        }
-        return new ArrayList<>();
-    }
-
 }
