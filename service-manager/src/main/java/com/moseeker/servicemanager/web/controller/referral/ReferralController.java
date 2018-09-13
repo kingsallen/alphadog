@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -112,6 +113,23 @@ public class ReferralController {
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
+    }
+
+    /**
+     * 员工删除上传的推荐简历
+     * @param id 员工编号
+     * @return 推荐结果
+     * @throws Exception 业务异常
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String referralProfile(@PathVariable int id, HttpServletRequest request) throws Exception {
+
+        if (StringUtils.isBlank(request.getParameter("appid"))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        profileService.employeeDeleteReferralProfile(id);
+        return Result.success(true).toJson();
     }
 
     /**

@@ -75,6 +75,8 @@ service ProfileServices {
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
     //员工推荐简历
     i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 referralType)throws (1: common_struct.BIZException e)
+    //删除上传的简历数据
+    void employeeDeleteReferralProfile(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //员工提交被推荐人关键信息
     i32 postCandidateInfo(1:i32 employeeId, 2: profile_struct.CandidateInfo candidateInfo)throws (1: common_struct.BIZException e)
 }
