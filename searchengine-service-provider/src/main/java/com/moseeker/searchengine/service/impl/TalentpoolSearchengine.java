@@ -719,7 +719,7 @@ public class TalentpoolSearchengine {
                 if(!StringUtils.isEmptyList(colums)){
                     for(String colum :colums){
                         if(StringUtils.isNotNullOrEmpty(colum)) {
-                            fullf.field("user.profiles.profile." + colum);
+                            fullf.field("user.profiles." + colum);
                         }
                     }
                 }
