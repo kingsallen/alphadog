@@ -305,6 +305,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 }
                 updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordRecord.getId(), ProfileMoveStateEnum.SUCCESS.getValue(), 1);
             }
+            logger.info("currentCrawlNum:{}", currentCrawlNum);
             profileMoveRecordRecord.setCurrentEmailNum(currentEmailNum);
             updateProfileMove(profileMoveRecordRecord, currentCrawlNum, 1);
             profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
@@ -546,7 +547,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         record.setProfileMoveStatus(ProfileMoveStateEnum.SUCCESS.getValue());
         int row = poolProfileMoveDetailDao.addWhereExistStatus(record, ProfileMoveStateEnum.MOVING.getValue());
         if (row == 0) {
+            logger.info("profileMoveRecordId:{}", profileMoveRecordId);
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
+            logger.info("recordRecord:{}", recordRecord);
             poolProfileMoveDetailDao.addWhereExistStatus(record, recordRecord.getStatus());
         }
     }
