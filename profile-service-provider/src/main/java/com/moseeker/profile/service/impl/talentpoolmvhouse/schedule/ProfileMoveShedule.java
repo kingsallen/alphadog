@@ -49,7 +49,7 @@ public class ProfileMoveShedule {
      * @author cjm
      * @date 2018/7/9
      */
-//    @Scheduled(cron = "0 * 0/2 * * ?")
+    @Scheduled(cron = "0 0/10 * * * ?")
     public void refreshEmailNum() {
         try {
             Date date = new Date();
