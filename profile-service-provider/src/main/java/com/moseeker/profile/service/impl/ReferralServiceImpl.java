@@ -135,6 +135,12 @@ public class ReferralServiceImpl implements ReferralService {
         return profileDocParseResult;
     }
 
+    @Override
+    public void employeeDeleteReferralProfile(int employeeId) throws ProfileException {
+        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
+                "");
+    }
+
     /**
      * 员工推荐
      * 产生虚拟用户、简历、申请记录
@@ -298,6 +304,7 @@ public class ReferralServiceImpl implements ReferralService {
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
         if (userRecord != null) {
+            logger.info("recommend userRecord.id:{}", userRecord.getId());
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (StringUtils.isBlank(userRecord.getUsername())) {

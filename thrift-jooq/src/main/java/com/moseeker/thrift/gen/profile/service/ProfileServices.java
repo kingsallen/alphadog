@@ -56,6 +56,8 @@ public class ProfileServices {
 
     public int employeeReferralProfile(int employeeId, java.lang.String name, java.lang.String mobile, java.util.List<java.lang.String> referralReasons, int position, byte referralType) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
+    public void employeeDeleteReferralProfile(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+
     public int postCandidateInfo(int employeeId, com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
   }
@@ -105,6 +107,8 @@ public class ProfileServices {
     public void parseFileProfile(int employeeId, java.lang.String fileName, java.nio.ByteBuffer fileData, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.profile.struct.ProfileParseResult> resultHandler) throws org.apache.thrift.TException;
 
     public void employeeReferralProfile(int employeeId, java.lang.String name, java.lang.String mobile, java.util.List<java.lang.String> referralReasons, int position, byte referralType, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
+
+    public void employeeDeleteReferralProfile(int employeeId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
     public void postCandidateInfo(int employeeId, com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfo, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
@@ -690,6 +694,29 @@ public class ProfileServices {
         throw result.e;
       }
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeReferralProfile failed: unknown result");
+    }
+
+    public void employeeDeleteReferralProfile(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      send_employeeDeleteReferralProfile(employeeId);
+      recv_employeeDeleteReferralProfile();
+    }
+
+    public void send_employeeDeleteReferralProfile(int employeeId) throws org.apache.thrift.TException
+    {
+      employeeDeleteReferralProfile_args args = new employeeDeleteReferralProfile_args();
+      args.setEmployeeId(employeeId);
+      sendBase("employeeDeleteReferralProfile", args);
+    }
+
+    public void recv_employeeDeleteReferralProfile() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    {
+      employeeDeleteReferralProfile_result result = new employeeDeleteReferralProfile_result();
+      receiveBase(result, "employeeDeleteReferralProfile");
+      if (result.e != null) {
+        throw result.e;
+      }
+      return;
     }
 
     public int postCandidateInfo(int employeeId, com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfo) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
@@ -1492,6 +1519,38 @@ public class ProfileServices {
       }
     }
 
+    public void employeeDeleteReferralProfile(int employeeId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      employeeDeleteReferralProfile_call method_call = new employeeDeleteReferralProfile_call(employeeId, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class employeeDeleteReferralProfile_call extends org.apache.thrift.async.TAsyncMethodCall<Void> {
+      private int employeeId;
+      public employeeDeleteReferralProfile_call(int employeeId, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, false);
+        this.employeeId = employeeId;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("employeeDeleteReferralProfile", org.apache.thrift.protocol.TMessageType.CALL, 0));
+        employeeDeleteReferralProfile_args args = new employeeDeleteReferralProfile_args();
+        args.setEmployeeId(employeeId);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public Void getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
+        return null;
+      }
+    }
+
     public void postCandidateInfo(int employeeId, com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfo, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postCandidateInfo_call method_call = new postCandidateInfo_call(employeeId, candidateInfo, resultHandler, this, ___protocolFactory, ___transport);
@@ -1562,6 +1621,7 @@ public class ProfileServices {
       processMap.put("parseText", new parseText());
       processMap.put("parseFileProfile", new parseFileProfile());
       processMap.put("employeeReferralProfile", new employeeReferralProfile());
+      processMap.put("employeeDeleteReferralProfile", new employeeDeleteReferralProfile());
       processMap.put("postCandidateInfo", new postCandidateInfo());
       return processMap;
     }
@@ -2061,6 +2121,30 @@ public class ProfileServices {
       }
     }
 
+    public static class employeeDeleteReferralProfile<I extends Iface> extends org.apache.thrift.ProcessFunction<I, employeeDeleteReferralProfile_args> {
+      public employeeDeleteReferralProfile() {
+        super("employeeDeleteReferralProfile");
+      }
+
+      public employeeDeleteReferralProfile_args getEmptyArgsInstance() {
+        return new employeeDeleteReferralProfile_args();
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public employeeDeleteReferralProfile_result getResult(I iface, employeeDeleteReferralProfile_args args) throws org.apache.thrift.TException {
+        employeeDeleteReferralProfile_result result = new employeeDeleteReferralProfile_result();
+        try {
+          iface.employeeDeleteReferralProfile(args.employeeId);
+        } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
+          result.e = e;
+        }
+        return result;
+      }
+    }
+
     public static class postCandidateInfo<I extends Iface> extends org.apache.thrift.ProcessFunction<I, postCandidateInfo_args> {
       public postCandidateInfo() {
         super("postCandidateInfo");
@@ -2121,6 +2205,7 @@ public class ProfileServices {
       processMap.put("parseText", new parseText());
       processMap.put("parseFileProfile", new parseFileProfile());
       processMap.put("employeeReferralProfile", new employeeReferralProfile());
+      processMap.put("employeeDeleteReferralProfile", new employeeDeleteReferralProfile());
       processMap.put("postCandidateInfo", new postCandidateInfo());
       return processMap;
     }
@@ -3519,6 +3604,70 @@ public class ProfileServices {
 
       public void start(I iface, employeeReferralProfile_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
         iface.employeeReferralProfile(args.employeeId, args.name, args.mobile, args.referralReasons, args.position, args.referralType,resultHandler);
+      }
+    }
+
+    public static class employeeDeleteReferralProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, employeeDeleteReferralProfile_args, Void> {
+      public employeeDeleteReferralProfile() {
+        super("employeeDeleteReferralProfile");
+      }
+
+      public employeeDeleteReferralProfile_args getEmptyArgsInstance() {
+        return new employeeDeleteReferralProfile_args();
+      }
+
+      public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
+          public void onComplete(Void o) {
+            employeeDeleteReferralProfile_result result = new employeeDeleteReferralProfile_result();
+            try {
+              fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
+            } catch (org.apache.thrift.transport.TTransportException e) {
+              _LOGGER.error("TTransportException writing to internal frame buffer", e);
+              fb.close();
+            } catch (java.lang.Exception e) {
+              _LOGGER.error("Exception writing to internal frame buffer", e);
+              onError(e);
+            }
+          }
+          public void onError(java.lang.Exception e) {
+            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
+            org.apache.thrift.TSerializable msg;
+            employeeDeleteReferralProfile_result result = new employeeDeleteReferralProfile_result();
+            if (e instanceof com.moseeker.thrift.gen.common.struct.BIZException) {
+              result.e = (com.moseeker.thrift.gen.common.struct.BIZException) e;
+              result.setEIsSet(true);
+              msg = result;
+            } else if (e instanceof org.apache.thrift.transport.TTransportException) {
+              _LOGGER.error("TTransportException inside handler", e);
+              fb.close();
+              return;
+            } else if (e instanceof org.apache.thrift.TApplicationException) {
+              _LOGGER.error("TApplicationException inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = (org.apache.thrift.TApplicationException)e;
+            } else {
+              _LOGGER.error("Exception inside handler", e);
+              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
+              msg = new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
+            }
+            try {
+              fcall.sendResponse(fb,msg,msgType,seqid);
+            } catch (java.lang.Exception ex) {
+              _LOGGER.error("Exception writing to internal frame buffer", ex);
+              fb.close();
+            }
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return false;
+      }
+
+      public void start(I iface, employeeDeleteReferralProfile_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+        iface.employeeDeleteReferralProfile(args.employeeId,resultHandler);
       }
     }
 
@@ -23039,6 +23188,728 @@ public class ProfileServices {
           struct.setSuccessIsSet(true);
         }
         if (incoming.get(1)) {
+          struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+          struct.e.read(iprot);
+          struct.setEIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class employeeDeleteReferralProfile_args implements org.apache.thrift.TBase<employeeDeleteReferralProfile_args, employeeDeleteReferralProfile_args._Fields>, java.io.Serializable, Cloneable, Comparable<employeeDeleteReferralProfile_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("employeeDeleteReferralProfile_args");
+
+    private static final org.apache.thrift.protocol.TField EMPLOYEE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("employeeId", org.apache.thrift.protocol.TType.I32, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new employeeDeleteReferralProfile_argsStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new employeeDeleteReferralProfile_argsTupleSchemeFactory();
+
+    public int employeeId; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      EMPLOYEE_ID((short)1, "employeeId");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // EMPLOYEE_ID
+            return EMPLOYEE_ID;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    private static final int __EMPLOYEEID_ISSET_ID = 0;
+    private byte __isset_bitfield = 0;
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.EMPLOYEE_ID, new org.apache.thrift.meta_data.FieldMetaData("employeeId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(employeeDeleteReferralProfile_args.class, metaDataMap);
+    }
+
+    public employeeDeleteReferralProfile_args() {
+    }
+
+    public employeeDeleteReferralProfile_args(
+      int employeeId)
+    {
+      this();
+      this.employeeId = employeeId;
+      setEmployeeIdIsSet(true);
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public employeeDeleteReferralProfile_args(employeeDeleteReferralProfile_args other) {
+      __isset_bitfield = other.__isset_bitfield;
+      this.employeeId = other.employeeId;
+    }
+
+    public employeeDeleteReferralProfile_args deepCopy() {
+      return new employeeDeleteReferralProfile_args(this);
+    }
+
+    @Override
+    public void clear() {
+      setEmployeeIdIsSet(false);
+      this.employeeId = 0;
+    }
+
+    public int getEmployeeId() {
+      return this.employeeId;
+    }
+
+    public employeeDeleteReferralProfile_args setEmployeeId(int employeeId) {
+      this.employeeId = employeeId;
+      setEmployeeIdIsSet(true);
+      return this;
+    }
+
+    public void unsetEmployeeId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID);
+    }
+
+    /** Returns true if field employeeId is set (has been assigned a value) and false otherwise */
+    public boolean isSetEmployeeId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID);
+    }
+
+    public void setEmployeeIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID, value);
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case EMPLOYEE_ID:
+        if (value == null) {
+          unsetEmployeeId();
+        } else {
+          setEmployeeId((java.lang.Integer)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case EMPLOYEE_ID:
+        return getEmployeeId();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case EMPLOYEE_ID:
+        return isSetEmployeeId();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof employeeDeleteReferralProfile_args)
+        return this.equals((employeeDeleteReferralProfile_args)that);
+      return false;
+    }
+
+    public boolean equals(employeeDeleteReferralProfile_args that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_employeeId = true;
+      boolean that_present_employeeId = true;
+      if (this_present_employeeId || that_present_employeeId) {
+        if (!(this_present_employeeId && that_present_employeeId))
+          return false;
+        if (this.employeeId != that.employeeId)
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + employeeId;
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(employeeDeleteReferralProfile_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetEmployeeId()).compareTo(other.isSetEmployeeId());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetEmployeeId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.employeeId, other.employeeId);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+    }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("employeeDeleteReferralProfile_args(");
+      boolean first = true;
+
+      sb.append("employeeId:");
+      sb.append(this.employeeId);
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
+        __isset_bitfield = 0;
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class employeeDeleteReferralProfile_argsStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeDeleteReferralProfile_argsStandardScheme getScheme() {
+        return new employeeDeleteReferralProfile_argsStandardScheme();
+      }
+    }
+
+    private static class employeeDeleteReferralProfile_argsStandardScheme extends org.apache.thrift.scheme.StandardScheme<employeeDeleteReferralProfile_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, employeeDeleteReferralProfile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // EMPLOYEE_ID
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.employeeId = iprot.readI32();
+                struct.setEmployeeIdIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, employeeDeleteReferralProfile_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        oprot.writeFieldBegin(EMPLOYEE_ID_FIELD_DESC);
+        oprot.writeI32(struct.employeeId);
+        oprot.writeFieldEnd();
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class employeeDeleteReferralProfile_argsTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeDeleteReferralProfile_argsTupleScheme getScheme() {
+        return new employeeDeleteReferralProfile_argsTupleScheme();
+      }
+    }
+
+    private static class employeeDeleteReferralProfile_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeDeleteReferralProfile_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, employeeDeleteReferralProfile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetEmployeeId()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetEmployeeId()) {
+          oprot.writeI32(struct.employeeId);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, employeeDeleteReferralProfile_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          struct.employeeId = iprot.readI32();
+          struct.setEmployeeIdIsSet(true);
+        }
+      }
+    }
+
+    private static <S extends org.apache.thrift.scheme.IScheme> S scheme(org.apache.thrift.protocol.TProtocol proto) {
+      return (org.apache.thrift.scheme.StandardScheme.class.equals(proto.getScheme()) ? STANDARD_SCHEME_FACTORY : TUPLE_SCHEME_FACTORY).getScheme();
+    }
+  }
+
+  public static class employeeDeleteReferralProfile_result implements org.apache.thrift.TBase<employeeDeleteReferralProfile_result, employeeDeleteReferralProfile_result._Fields>, java.io.Serializable, Cloneable, Comparable<employeeDeleteReferralProfile_result>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("employeeDeleteReferralProfile_result");
+
+    private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
+
+    private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new employeeDeleteReferralProfile_resultStandardSchemeFactory();
+    private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new employeeDeleteReferralProfile_resultTupleSchemeFactory();
+
+    public com.moseeker.thrift.gen.common.struct.BIZException e; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      E((short)1, "e");
+
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+
+      static {
+        for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // E
+            return E;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(java.lang.String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final java.lang.String _fieldName;
+
+      _Fields(short thriftId, java.lang.String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public java.lang.String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
+      metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(employeeDeleteReferralProfile_result.class, metaDataMap);
+    }
+
+    public employeeDeleteReferralProfile_result() {
+    }
+
+    public employeeDeleteReferralProfile_result(
+      com.moseeker.thrift.gen.common.struct.BIZException e)
+    {
+      this();
+      this.e = e;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public employeeDeleteReferralProfile_result(employeeDeleteReferralProfile_result other) {
+      if (other.isSetE()) {
+        this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
+      }
+    }
+
+    public employeeDeleteReferralProfile_result deepCopy() {
+      return new employeeDeleteReferralProfile_result(this);
+    }
+
+    @Override
+    public void clear() {
+      this.e = null;
+    }
+
+    public com.moseeker.thrift.gen.common.struct.BIZException getE() {
+      return this.e;
+    }
+
+    public employeeDeleteReferralProfile_result setE(com.moseeker.thrift.gen.common.struct.BIZException e) {
+      this.e = e;
+      return this;
+    }
+
+    public void unsetE() {
+      this.e = null;
+    }
+
+    /** Returns true if field e is set (has been assigned a value) and false otherwise */
+    public boolean isSetE() {
+      return this.e != null;
+    }
+
+    public void setEIsSet(boolean value) {
+      if (!value) {
+        this.e = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, java.lang.Object value) {
+      switch (field) {
+      case E:
+        if (value == null) {
+          unsetE();
+        } else {
+          setE((com.moseeker.thrift.gen.common.struct.BIZException)value);
+        }
+        break;
+
+      }
+    }
+
+    public java.lang.Object getFieldValue(_Fields field) {
+      switch (field) {
+      case E:
+        return getE();
+
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new java.lang.IllegalArgumentException();
+      }
+
+      switch (field) {
+      case E:
+        return isSetE();
+      }
+      throw new java.lang.IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(java.lang.Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof employeeDeleteReferralProfile_result)
+        return this.equals((employeeDeleteReferralProfile_result)that);
+      return false;
+    }
+
+    public boolean equals(employeeDeleteReferralProfile_result that) {
+      if (that == null)
+        return false;
+      if (this == that)
+        return true;
+
+      boolean this_present_e = true && this.isSetE();
+      boolean that_present_e = true && that.isSetE();
+      if (this_present_e || that_present_e) {
+        if (!(this_present_e && that_present_e))
+          return false;
+        if (!this.e.equals(that.e))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      int hashCode = 1;
+
+      hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
+      if (isSetE())
+        hashCode = hashCode * 8191 + e.hashCode();
+
+      return hashCode;
+    }
+
+    @Override
+    public int compareTo(employeeDeleteReferralProfile_result other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetE()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.e, other.e);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      scheme(iprot).read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      scheme(oprot).write(oprot, this);
+      }
+
+    @Override
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("employeeDeleteReferralProfile_result(");
+      boolean first = true;
+
+      sb.append("e:");
+      if (this.e == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.e);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class employeeDeleteReferralProfile_resultStandardSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeDeleteReferralProfile_resultStandardScheme getScheme() {
+        return new employeeDeleteReferralProfile_resultStandardScheme();
+      }
+    }
+
+    private static class employeeDeleteReferralProfile_resultStandardScheme extends org.apache.thrift.scheme.StandardScheme<employeeDeleteReferralProfile_result> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, employeeDeleteReferralProfile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // E
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
+                struct.e.read(iprot);
+                struct.setEIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, employeeDeleteReferralProfile_result struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.e != null) {
+          oprot.writeFieldBegin(E_FIELD_DESC);
+          struct.e.write(oprot);
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class employeeDeleteReferralProfile_resultTupleSchemeFactory implements org.apache.thrift.scheme.SchemeFactory {
+      public employeeDeleteReferralProfile_resultTupleScheme getScheme() {
+        return new employeeDeleteReferralProfile_resultTupleScheme();
+      }
+    }
+
+    private static class employeeDeleteReferralProfile_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeDeleteReferralProfile_result> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, employeeDeleteReferralProfile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet optionals = new java.util.BitSet();
+        if (struct.isSetE()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          struct.e.write(oprot);
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, employeeDeleteReferralProfile_result struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
+        java.util.BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
           struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
           struct.e.read(iprot);
           struct.setEIsSet(true);

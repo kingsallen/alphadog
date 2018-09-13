@@ -3,12 +3,8 @@ package com.moseeker.position.service.fundationbs;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
-<<<<<<< HEAD
-=======
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
->>>>>>> 校验更新职位不能超过500条
 import com.moseeker.entity.PositionEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

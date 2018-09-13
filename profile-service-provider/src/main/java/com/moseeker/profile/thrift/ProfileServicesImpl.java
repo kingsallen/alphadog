@@ -149,6 +149,15 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public void employeeDeleteReferralProfile(int employeeId) throws BIZException, TException {
+        try {
+            referralService.employeeDeleteReferralProfile(employeeId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
     public int postCandidateInfo(int employeeId, CandidateInfo candidateInfo) throws BIZException, TException {
         try {
             com.moseeker.profile.service.impl.vo.CandidateInfo candidate = new com.moseeker.profile.service.impl.vo.CandidateInfo();
