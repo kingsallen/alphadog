@@ -277,7 +277,7 @@ public final class Constant {
             "projectexps.company_name;projectexps.role;projectexps.achievement;projectexps.description;recent_job.job_name;" +
             "recent_job.company_scale_name;recent_job.company_name;recent_job.department_name;recent_job.company_new_name;" +
             "recent_job.job;recent_job.company_property_name;recent_job.position_name;recent_job.achievement;recent_job.description;" +
-            "eduacations.degree_name;eduacations.description;eduacations.major_name;eduacations.college_name;intentions.salary_code_name;" +
+            "educations.degree_name;educations.description;educations.major_name;educations.college_name;intentions.salary_code_name;" +
             "intentions.industries.industry_name;intentions.worktype_name;intentions.workstate_name;intentions.tag;intentions.positions.position_name;" +
             "intentions.cities.city_name;intentions.consider_venture_company_opportunities_name;basic.icon_class;basic.position_name;basic.constellation;" +
             "basic.company_name;basic.email;basic.current_job;basic.weixin;basic.nationality_name;basic.city_name;basic.motto;basic.industry_name;basic.qq;" +
