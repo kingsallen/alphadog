@@ -75,9 +75,6 @@ public class CompanyTagService {
                      */
                     if(type == 1){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
-                    }
-                    if(totalPage == 0){
-                        this.refrushCompantTag(tagIdList,type,new ArrayList<>());
                     }else {
                         for (int i = 1; i <= totalPage; i++) {
                             logger.info("执行第" + i + "页");
