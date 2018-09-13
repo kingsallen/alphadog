@@ -111,6 +111,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         if (userHrAccountDO == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_NOT_EXISTS);
         }
+        if(userHrAccountDO.getAccountType() != 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVING_MAIN_ACCOUNT);
+        }
         // 获取用户名密码
         int channel = form.getChannel();
         HrThirdPartyAccountDO hrThirdPartyAccountDO = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, channel);
