@@ -66,12 +66,23 @@ public class CompanyTagService {
                     }
                     params.put("size","0");
                     int total=service.queryCompanyTagUserIdListCount(params);
-                    int totalPage=(int)Math.ceil((double)total/100.0);
+                    logger.info("总条数为"+total+"=============================");
+                    //测试时为100，注意线上为1000
+                    int totalPage=(int)Math.ceil((double)total/500.0);
+                    logger.info("总页数为"+totalPage+"=============================");
+                    /*
+                     type==1是更新状态，需要把库中的关心先删除，然后把新的标签和人才关系入库
+                     */
                     if(type == 1){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
-                    for(int i=1;i<=totalPage;i++){
-                        this.handlerUserIdList(tagIdList,type,map,i,100);
+                    if(totalPage == 0){
+                        this.refrushCompantTag(tagIdList,type,new ArrayList<>());
+                    }else {
+                        for (int i = 1; i <= totalPage; i++) {
+                            logger.info("执行第" + i + "页");
+                            this.handlerUserIdList(tagIdList, type, map, i, 500);
+                        }
                     }
                 }
             }
@@ -101,7 +112,7 @@ public class CompanyTagService {
                     record.setUserId(userId);
                     list.add(record);
                 }
-                talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
+                talentpoolCompanyTagUserDao.addTagAndUser(list);
             }
         } else if (type == 1) {//修改标签需要把表中原有的数据全部删除，
             if (!StringUtils.isEmptyList(userIdList)) {
@@ -112,7 +123,7 @@ public class CompanyTagService {
                     record.setUserId(userId);
                     list.add(record);
                 }
-                talentpoolCompanyTagUserDao.batchAddTagAndUser(list);
+                talentpoolCompanyTagUserDao.addTagAndUser(list);
             }
 
         }
@@ -144,12 +155,9 @@ public class CompanyTagService {
 
         }
     }
-
-
-
-
-
-
+    /*
+     根据user_user.id列表和公司id处理公司的标签
+     */
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
@@ -189,6 +197,9 @@ public class CompanyTagService {
                 }
             }
             talentpoolCompanyTagUserDao.deleteByUserIdAndTagId(deleList);
+            /*
+
+             */
             if (!StringUtils.isEmptyList(list)) {
                 talentpoolCompanyTagUserDao.addAllRecord(list);
                 for (Integer userId : idList) {
