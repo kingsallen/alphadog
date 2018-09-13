@@ -26,22 +26,22 @@ public class TalentpoolCompanyTagDao extends JooqCrudImpl<com.moseeker.baseorm.d
         super(table, talentpoolCompanyTagClass);
     }
 
-    public List<Map<String, Object>> getCompanyTagByCompanyId(int companyId, int pageNum, int pageSize ){
-        List<Map<String, Object>> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> getCompanyTagByCompanyId(int companyId, int pageNum, int pageSize ){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
                 .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.eq(companyId))
                 .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.eq(1))
                 .orderBy(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.UPDATE_TIME.desc())
                 .limit(pageSize).offset(pageNum)
-                .fetchMaps();
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag.class);
         return result;
     }
 
-    public Map<String, Object> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
-        Map<String, Object> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag> result=create.selectFrom(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG)
                 .where(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.COMPANY_ID.eq(companyId))
                 .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.eq(company_tag_id))
                 .and(TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.DISABLE.eq(1))
-                .fetchAnyMap();
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag.class);
         return result;
     }
 
