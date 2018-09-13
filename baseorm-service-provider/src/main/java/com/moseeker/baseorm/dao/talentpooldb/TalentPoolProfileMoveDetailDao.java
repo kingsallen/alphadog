@@ -62,12 +62,11 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
                 .execute();
     }
 
-    public int updateRecordWithPositiveLock(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int operationId, byte status) {
+    public int updateRecordWithPositiveLock(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
         return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL)
                 .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS, status)
-                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_ID, operationId)
+                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_ID, profileMoveRecordId)
                 .where(TALENTPOOL_PROFILE_MOVE_DETAIL.ID.eq(profileMoveDetailRecord.getId()))
-                .and(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_ID.eq(profileMoveDetailRecord.getProfileMoveId()))
                 .execute();
     }
 
