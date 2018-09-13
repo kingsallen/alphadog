@@ -50,7 +50,7 @@ public class ReferralPositionController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/v1/referral/position/", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v1/referral/position/del/", method = RequestMethod.POST)
     @ResponseBody
     public String delReferralPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
