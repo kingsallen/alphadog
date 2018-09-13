@@ -305,7 +305,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 }
                 updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordRecord.getId(), ProfileMoveStateEnum.SUCCESS.getValue(), 1);
             }
-            logger.info("currentCrawlNum:{}", currentCrawlNum);
             profileMoveRecordRecord.setCurrentEmailNum(currentEmailNum);
             updateProfileMove(profileMoveRecordRecord, currentCrawlNum, 1);
             profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
