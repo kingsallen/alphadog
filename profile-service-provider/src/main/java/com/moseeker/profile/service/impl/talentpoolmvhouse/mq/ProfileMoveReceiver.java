@@ -7,6 +7,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMove
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecordRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.CrawlTypeEnum;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.entity.biz.ProfileMailUtil;
@@ -18,6 +19,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * 简历搬家mq消费者
@@ -55,14 +58,21 @@ public class ProfileMoveReceiver {
             }
             JSONObject params = JSONObject.parseObject(response.getData());
             int operationId = params.getIntValue("operation_id");
-            TalentpoolProfileMoveRecordRecord record = profileMoveRecordDao.getProfileMoveRecordById(operationId);
-            int totalEmailNum = params.getIntValue("success_email_num");
-            if(record == null){
+            List<TalentpoolProfileMoveRecordRecord> records = profileMoveRecordDao.getProfileMoveRecordById(operationId);
+            int applySuccessNum = params.getIntValue("apply_success_num");
+            int downloadSuccessNum = params.getIntValue("download_success_num");
+            if(records == null || records.size() == 0){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_NOT_EXIST);
             }
-            record.setTotalEmailNum(totalEmailNum);
-            record.setUpdateTime(null);
-            profileMoveRecordDao.updateRecord(record);
+            for(TalentpoolProfileMoveRecordRecord recordRecord : records){
+                if(recordRecord.getCrawlType() == CrawlTypeEnum.DOWNLOAD_CRAWL.getStatus()){
+                    recordRecord.setTotalEmailNum(downloadSuccessNum);
+                }else if(recordRecord.getCrawlType() == CrawlTypeEnum.APPLY_CRAWL.getStatus()){
+                    recordRecord.setTotalEmailNum(applySuccessNum);
+                }
+                recordRecord.setUpdateTime(null);
+            }
+            profileMoveRecordDao.updateRecords(records);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "rabbitmq接收邮件总数时发生异常" + json);
             logger.error("handle profile move email num Error : {}, message :{}",e.getMessage(),json);
