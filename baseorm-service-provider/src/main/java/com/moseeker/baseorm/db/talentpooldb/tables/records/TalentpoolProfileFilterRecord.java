@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilterRecord extends UpdatableRecordImpl<TalentpoolProfileFilterRecord> implements Record22<Integer, Integer, String, String, String, String, String, String, String, Integer, Integer, Integer, String, String, String, Integer, Integer, String, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = 2107925924;
+    private static final long serialVersionUID = 298506732;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_filter.id</code>.
@@ -327,14 +327,14 @@ public class TalentpoolProfileFilterRecord extends UpdatableRecordImpl<Talentpoo
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0无效，2关闭
+     * Setter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0删除，2关闭
      */
     public void setDisable(Integer value) {
         set(21, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0无效，2关闭
+     * Getter for <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0删除，2关闭
      */
     public Integer getDisable() {
         return (Integer) get(21);

@@ -23,7 +23,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 人才标签表
+ * 人才库人人才与标签的关系
  */
 @Generated(
     value = {
@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
 
-    private static final long serialVersionUID = -1513563528;
+    private static final long serialVersionUID = -1387778272;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_user_tag</code>
@@ -89,7 +89,7 @@ public class TalentpoolUserTag extends TableImpl<TalentpoolUserTagRecord> {
     }
 
     private TalentpoolUserTag(String alias, Table<TalentpoolUserTagRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "人才标签表");
+        super(alias, null, aliased, parameters, "人才库人人才与标签的关系");
     }
 
     /**

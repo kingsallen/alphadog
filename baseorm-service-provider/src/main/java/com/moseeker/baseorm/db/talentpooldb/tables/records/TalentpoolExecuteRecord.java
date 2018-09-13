@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolExecuteRecord extends UpdatableRecordImpl<TalentpoolExecuteRecord> implements Record5<Integer, String, Integer, Integer, Timestamp> {
 
-    private static final long serialVersionUID = 1957132801;
+    private static final long serialVersionUID = -103015039;
 
     /**
      * Setter for <code>talentpooldb.talentpool_execute.id</code>.
@@ -75,14 +75,14 @@ public class TalentpoolExecuteRecord extends UpdatableRecordImpl<TalentpoolExecu
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_execute.value</code>.  type=0时7 通过 13不通过 type=1时 0 私密 1代表公开
+     * Setter for <code>talentpooldb.talentpool_execute.value</code>.  type=1时7 通过 13不通过 type=0时 0 私密 1代表公开
      */
     public void setValue(Integer value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_execute.value</code>.  type=0时7 通过 13不通过 type=1时 0 私密 1代表公开
+     * Getter for <code>talentpooldb.talentpool_execute.value</code>.  type=1时7 通过 13不通过 type=0时 0 私密 1代表公开
      */
     public Integer getValue() {
         return (Integer) get(3);

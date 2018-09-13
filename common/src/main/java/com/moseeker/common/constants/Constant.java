@@ -267,6 +267,8 @@ public final class Constant {
 
     public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
 
+    public static final String COMPANY_LOGO_DEFAULT = "http://o6yey4xgg.bkt.clouddn.com/common/images/default-company-logo.jpg";
+
     public static final String PROFILE_SEARCH_KEYWORD_COLUMS="projectexps.name;projectexps.member;projectexps.responsibility;" +
             "projectexps.company_name;projectexps.role;projectexps.achievement;projectexps.description;recent_job.job_name;" +
             "recent_job.company_scale_name;recent_job.company_name;recent_job.department_name;recent_job.company_new_name;" +

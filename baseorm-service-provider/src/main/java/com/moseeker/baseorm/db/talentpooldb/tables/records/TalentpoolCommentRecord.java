@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolCommentRecord extends UpdatableRecordImpl<TalentpoolCommentRecord> implements Record7<Integer, String, Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 370033994;
+    private static final long serialVersionUID = 931364820;
 
     /**
      * Setter for <code>talentpooldb.talentpool_comment.id</code>. 主 key
@@ -89,14 +89,14 @@ public class TalentpoolCommentRecord extends UpdatableRecordImpl<TalentpoolComme
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_comment.company_id</code>.
+     * Setter for <code>talentpooldb.talentpool_comment.company_id</code>. 公司id
      */
     public void setCompanyId(Integer value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_comment.company_id</code>.
+     * Getter for <code>talentpooldb.talentpool_comment.company_id</code>. 公司id
      */
     public Integer getCompanyId() {
         return (Integer) get(4);

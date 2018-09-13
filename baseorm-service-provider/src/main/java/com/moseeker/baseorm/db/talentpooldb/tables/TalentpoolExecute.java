@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolExecute extends TableImpl<TalentpoolExecuteRecord> {
 
-    private static final long serialVersionUID = -1370305729;
+    private static final long serialVersionUID = -1718499393;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_execute</code>
@@ -67,9 +67,9 @@ public class TalentpoolExecute extends TableImpl<TalentpoolExecuteRecord> {
     public final TableField<TalentpoolExecuteRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0 收藏到人才库 1改变申请状态");
 
     /**
-     * The column <code>talentpooldb.talentpool_execute.value</code>.  type=0时7 通过 13不通过 type=1时 0 私密 1代表公开
+     * The column <code>talentpooldb.talentpool_execute.value</code>.  type=1时7 通过 13不通过 type=0时 0 私密 1代表公开
      */
-    public final TableField<TalentpoolExecuteRecord, Integer> VALUE = createField("value", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, " type=0时7 通过 13不通过 type=1时 0 私密 1代表公开");
+    public final TableField<TalentpoolExecuteRecord, Integer> VALUE = createField("value", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, " type=1时7 通过 13不通过 type=0时 0 私密 1代表公开");
 
     /**
      * The column <code>talentpooldb.talentpool_execute.create_time</code>. 创建时间

@@ -18,7 +18,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 人才标签表
+ * 人才库人人才与标签的关系
  */
 @Generated(
     value = {
