@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -33,11 +30,13 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -105,6 +104,9 @@ public class UseraccountsService {
 
     @Autowired
     private ReferralEntity referralEntity;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -1217,6 +1219,11 @@ public class UseraccountsService {
         UserUserDO referralUser = userdao.getUser(referralLog.getReferenceId());
         if (referralUser == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(referralLog.getEmployeeId());
+        if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
 
         if (!claimForm.getName().equals(referralUser.getName())) {
