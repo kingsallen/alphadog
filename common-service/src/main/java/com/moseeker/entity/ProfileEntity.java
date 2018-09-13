@@ -103,7 +103,7 @@ public class ProfileEntity {
      */
     public void mergeProfile(ProfilePojo profilePojo, int userId) {
 
-        ProfileProfileRecord profileDB = profileDao.getProfileByIdOrUserIdOrUUID(userId, 0, null);
+        ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
         if (profileDB != null) {
             improveProfile(profilePojo.getProfileRecord(), profileDB);
             improveBasic(profilePojo.getBasicRecord(), profileDB.getId());

@@ -44,4 +44,11 @@ public interface ReferralService {
      * @return 推荐记录编号
      */
     int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException;
+
+    /**
+     * 删除上传的简历数据
+     * @param employeeId 员工编号
+     * @throws ProfileException 异常信息
+     */
+    void employeeDeleteReferralProfile(int employeeId) throws ProfileException;
 }

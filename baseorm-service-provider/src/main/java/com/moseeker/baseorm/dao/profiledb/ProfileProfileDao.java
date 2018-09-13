@@ -1865,6 +1865,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
+                .limit(1)
                 .fetchAny();
     }
 
@@ -1903,5 +1904,18 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                         .from(ProfileProfile.PROFILE_PROFILE)
                         .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(newUserId))
                 ).execute();
+    }
+
+    /**
+     * 根据用户编号获取简历。优先获取可用的简历
+     * @param userId 用户编号
+     * @return 简历
+     */
+    public ProfileProfileRecord getProfileOrderByActiveByUserId(int userId) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
+                .orderBy(ProfileProfile.PROFILE_PROFILE.DISABLE.desc())
+                .limit(1)
+                .fetchAny();
     }
 }
