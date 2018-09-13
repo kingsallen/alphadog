@@ -111,6 +111,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         if (userHrAccountDO == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_NOT_EXISTS);
         }
+        if(userHrAccountDO.getAccountType() != 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVING_MAIN_ACCOUNT);
+        }
         // 获取用户名密码
         int channel = form.getChannel();
         HrThirdPartyAccountDO hrThirdPartyAccountDO = hrThirdPartyAccountDao.getThirdPartyAccountByUserId(hrId, channel);
@@ -128,12 +131,17 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         try {
             if (profileMoveRecordDOS.size() != 0) {
                 int successMoveId = getSuccessMoveId(profileMoveRecordDOS);
-                for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
-                    if (profileMoveDO.getId() == successMoveId) {
-                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
-                        break;
+                if(successMoveId == 0){
+                    startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
+                } else {
+                    for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
+                        if (profileMoveDO.getId() == successMoveId) {
+                            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
+                            break;
+                        }
                     }
                 }
+
             } else {
                 // 当前时间减去六个月
                 startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
@@ -173,7 +181,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 return moveId;
             }
         }
-        return moveIds.get(moveIds.size() - 1);
+        return 0;
 
     }
 
@@ -546,9 +554,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         record.setProfileMoveStatus(ProfileMoveStateEnum.SUCCESS.getValue());
         int row = poolProfileMoveDetailDao.addWhereExistStatus(record, ProfileMoveStateEnum.MOVING.getValue());
         if (row == 0) {
-            logger.info("profileMoveRecordId:{}", profileMoveRecordId);
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
-            logger.info("recordRecord:{}", recordRecord);
             poolProfileMoveDetailDao.addWhereExistStatus(record, recordRecord.getStatus());
         }
     }
