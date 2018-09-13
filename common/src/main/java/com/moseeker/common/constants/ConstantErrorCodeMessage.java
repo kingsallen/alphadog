@@ -61,6 +61,8 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_ALLREADY_NOT_EXIST = "{'status':31023,'message':'个人profile不存在!'}";
     public static final String PROFILE_MOVE_DATA_NOT_EXIST = "{'status':31024,'message':'简历搬家数据不存在!'}";
     public static final String PROFILE_MOVE_DATA_UPDATE_FAILED = "{'status':31025,'message':'简历搬家数据修改失败!'}";
+    public static final String PROFILE_ORIGIN_NULL = "{'status':31026,'message':'简历来源不能为空!'}";
+    public static final String PROFILE_MOVING = "{'status':31027,'message':'简历搬家正在进行中，请不要重复提交!'}";
 
     public static final String PROFILE_CALL_RESUMESDK_RESULT_ERROR = "{'status':31024,'message':'调用ResumeSDK返回结果错误,log id:{}'}";
 
