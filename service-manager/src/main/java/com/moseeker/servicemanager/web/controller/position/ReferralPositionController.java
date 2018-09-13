@@ -148,6 +148,10 @@ public class ReferralPositionController {
             if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
                 queryMapString.put("page_from",page_num);
             }
+
+            //该接口只看在招职位,固定传flag=0
+            queryMapString.put("flag","0");
+
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
@@ -182,8 +186,10 @@ public class ReferralPositionController {
                 queryMapString.put("page_from",page_num);
             }
 
-            //HR后台接口只看内推职位,固定传is_referral=1
+            //该接口只看内推职位,固定传is_referral=1
             queryMapString.put("is_referral","1");
+            //该接口只看在招职位,固定传flag=0
+            queryMapString.put("flag","0");
             String accountType = queryMapString.get("account_type");
             String accountId  =queryMapString.get("account_id");
 

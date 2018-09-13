@@ -160,7 +160,11 @@ public class SearchMethodUtil {
         }
         if(Integer.parseInt(flag)==0){
             searchUtil.handleMatch(0,query,"status");
-        }else if(Integer.parseInt(flag)==-1){
+        } else if(Integer.parseInt(flag ) ==1) {
+            //flag=1 查询在招的并且是内推的职位
+            searchUtil.handleMatch(0,query,"status");
+            isReferral = "1";
+        } else if(Integer.parseInt(flag)==-1){
 
         }else{
             this.handlerStatusQuery(query);
