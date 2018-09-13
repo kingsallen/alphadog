@@ -708,8 +708,8 @@ public class TalentpoolSearchengine {
                 if(org.apache.commons.lang.StringUtils.isBlank(keyword)){
                     continue;
                 }
-                QueryStringQueryBuilder fullf = QueryBuilders.queryStringQuery(keyword);
-                fullf.phraseSlop(0);
+                MultiMatchQueryBuilder fullf = QueryBuilders.multiMatchQuery(keyword);
+                fullf.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
 //                        .field("title")
 //                        .field("city")
 //                        .field("city_ename")
