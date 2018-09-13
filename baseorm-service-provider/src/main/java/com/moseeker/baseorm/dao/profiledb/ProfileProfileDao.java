@@ -1865,6 +1865,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
+                .limit(1)
                 .fetchAny();
     }
 
