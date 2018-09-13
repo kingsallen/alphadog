@@ -30,9 +30,15 @@ public class TalentPoolProfileMoveRecordDao extends JooqCrudImpl<TalentPoolProfi
     }
 
 
-    public TalentpoolProfileMoveRecordRecord getProfileMoveRecordById(int operationId) {
+    public List<TalentpoolProfileMoveRecordRecord> getProfileMoveRecordById(int operationId) {
         return create.selectFrom(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD)
-                .where(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.ID.eq(operationId))
+                .where(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.PROFILE_MOVE_ID.eq(operationId))
+                .fetchInto(TalentpoolProfileMoveRecordRecord.class);
+    }
+
+    public TalentpoolProfileMoveRecordRecord getOneProfileMoveRecordById(int id) {
+        return create.selectFrom(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD)
+                .where(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.ID.eq(id))
                 .fetchOne();
     }
 
