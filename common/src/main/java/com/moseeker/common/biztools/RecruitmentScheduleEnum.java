@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public enum RecruitmentScheduleEnum {
     APPLY(Constant.RECRUIT_STATUS_APPLY),
+    EMPLOYEE_REFERRAL(Constant.RECRUIT_STATUS_UPLOAD_PROFILE),
     INTERVIEW(Constant.RECRUIT_STATUS_INTERVIEW),
     HIRED(Constant.RECRUIT_STATUS_HIRED),
     REJECT(Constant.RECRUIT_STATUS_REJECT),
@@ -53,6 +54,7 @@ public enum RecruitmentScheduleEnum {
         switch (this.id) {
             case 1:
             case 7 :
+            case 15:
             case 13 : value =  1;break;
             case 6: value = 2; break;
             case 8:
@@ -70,6 +72,7 @@ public enum RecruitmentScheduleEnum {
                     switch (lastID) {
                         case 1:
                         case 7 :
+                        case 15:
                         case 13 : value = 6; break;
                         case 6:  value = 7; break;
                         case 8:
@@ -97,6 +100,7 @@ public enum RecruitmentScheduleEnum {
         int value;
         switch (this.id) {
             case 1:
+            case 15:
             case 6: value = 1;break;
             case 8:
             case 9:
@@ -119,6 +123,7 @@ public enum RecruitmentScheduleEnum {
                     case 10:
                     case 2:
                     case 5:
+                    case 15:
                         value = 2;
                         break;
                     case 12:
@@ -158,6 +163,7 @@ public enum RecruitmentScheduleEnum {
             case 12 :
             case 11 :
             case 3:
+            case 15:
                 if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
                 } else {
@@ -193,6 +199,16 @@ public enum RecruitmentScheduleEnum {
                 this.priority = 3;
                 this.recuritOrder = 3;
                 this.applierView = "简历提交成功";
+                break;
+            case 15:
+                this.id = value;
+                this.status = "员工上传人才简历";
+                this.award = 10;
+                this.description = "员工上传人才简历积分奖励";
+                this.disable = true;
+                this.priority = 4;
+                this.recuritOrder = 3;
+                this.applierView = "员工上传人才简历";
                 break;
             case 2:
                 this.id = value;
