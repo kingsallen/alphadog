@@ -76,9 +76,13 @@ public class CompanyTagService {
                     if(type == 1){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
-                    for(int i=1;i<=totalPage;i++){
-                        logger.info("执行第"+i+"页");
-                        this.handlerUserIdList(tagIdList,type,map,i,500);
+                    if(totalPage == 0){
+                        this.refrushCompantTag(tagIdList,type,new ArrayList<>());
+                    }else {
+                        for (int i = 1; i <= totalPage; i++) {
+                            logger.info("执行第" + i + "页");
+                            this.handlerUserIdList(tagIdList, type, map, i, 500);
+                        }
                     }
                 }
             }
@@ -136,7 +140,7 @@ public class CompanyTagService {
                 Map<String, Object> result = new HashMap<>();
                 result.put("tag_id", tagId);
                 result.put("type", type);
-                if(type!=2){
+                if(type!=2&&!StringUtils.isEmptyList(userIdList)){
                     result.put("user_ids",userIdList );
                 }
                 client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
