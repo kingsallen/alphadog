@@ -131,15 +131,17 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         try {
             if (profileMoveRecordDOS.size() != 0) {
                 int successMoveId = getSuccessMoveId(profileMoveRecordDOS);
-                logger.info("==========================successMoveId:{}", successMoveId);
-                for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
-                    logger.info("====================profileMoveDO:{}", profileMoveDO);
-                    if (profileMoveDO.getId() == successMoveId) {
-                        logger.info("====================profileMoveDOSuccess:{}", profileMoveDO);
-                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
-                        break;
+                if(successMoveId == 0){
+                    startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
+                } else {
+                    for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
+                        if (profileMoveDO.getId() == successMoveId) {
+                            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
+                            break;
+                        }
                     }
                 }
+
             } else {
                 // 当前时间减去六个月
                 startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
@@ -165,14 +167,11 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     private int getSuccessMoveId(List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS) {
         List<Integer> moveIds = profileMoveRecordDOS.stream().map(TalentPoolProfileMoveRecordDO::getProfileMoveId).collect(Collectors.toList());
-        logger.info("=================moveIds:{}", moveIds);
         for (Integer moveId : moveIds) {
             boolean flag = true;
             for (TalentPoolProfileMoveRecordDO recordDO : profileMoveRecordDOS) {
                 if (moveId == recordDO.getProfileMoveId()) {
-                    logger.info("==============moveId:{}", moveId);
                     if (recordDO.getStatus() != 1) {
-                        logger.info("==================recordDO:{}=", recordDO);
                         flag = false;
                         break;
                     }
@@ -182,7 +181,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 return moveId;
             }
         }
-        return moveIds.get(moveIds.size() - 1);
+        return 0;
 
     }
 
@@ -555,9 +554,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         record.setProfileMoveStatus(ProfileMoveStateEnum.SUCCESS.getValue());
         int row = poolProfileMoveDetailDao.addWhereExistStatus(record, ProfileMoveStateEnum.MOVING.getValue());
         if (row == 0) {
-            logger.info("profileMoveRecordId:{}", profileMoveRecordId);
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
-            logger.info("recordRecord:{}", recordRecord);
             poolProfileMoveDetailDao.addWhereExistStatus(record, recordRecord.getStatus());
         }
     }
