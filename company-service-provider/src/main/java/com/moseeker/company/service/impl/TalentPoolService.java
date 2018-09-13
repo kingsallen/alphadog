@@ -1224,15 +1224,15 @@ public class TalentPoolService {
             info.setPageSize(page_size);
         }
         Map<String, Object> tagListInfo = new HashMap<>();
-        List<TalentpoolCompanyTag> tagList = talentPoolEntity.handlerCompanyTagBycompanyId(companyId, info.getLimit(), info.getPageSize());
+        List<Map<String, Object>> tagList = talentPoolEntity.handlerCompanyTagBycompanyId(companyId, info.getLimit(), info.getPageSize());
         int count = talentPoolEntity.handlerCompanyTagCountBycompanyId(companyId);
         if(tagList != null && tagList.size()>0){
             List<Map<String, Object>> tagProfileList = talentPoolEntity.handlerTagCountByTagIdList(tagList);
 
             if(!StringUtils.isEmptyList(tagProfileList)){
                 for(Map<String, Object> map:tagProfileList){
-                    TalentpoolCompanyTag companyTag= (TalentpoolCompanyTag) map.get("company_tag");
-                    int id=companyTag.getId();
+                    Map<String, Object> companyTag= (Map<String, Object>) map.get("company_tag");
+                    int id=(Integer)companyTag.get("id");
                     //获取企业标签下人数
                     int totalNum=tagService.getTagtalentNum(hrId,companyId,id);
                     map.put("person_num",totalNum);
@@ -1371,6 +1371,10 @@ public class TalentPoolService {
                         try {
                             tp.startTast(() -> {
                                 Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
+                                if(companyTagDO.isSetKeyword_list()){
+                                    String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+                                    map.put("keywords", keyword);
+                                }
                                 tagService.handlerCompanyTag(idList, 0, map);
                                 return 0;
                             });
@@ -1495,6 +1499,10 @@ public class TalentPoolService {
         }
         if(companyTagDO.isSetIn_last_job_search_company()){
             map.put("in_last_job_search_company",companyTagDO.getIn_last_job_search_company());
+        }
+        if(companyTagDO.isSetKeyword_list()){
+            String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+            map.put("keywords", keyword);
         }
     }
     /*

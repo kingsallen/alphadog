@@ -268,4 +268,19 @@ public final class Constant {
     public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
 
     public static final String COMPANY_LOGO_DEFAULT = "http://o6yey4xgg.bkt.clouddn.com/common/images/default-company-logo.jpg";
+
+    public static final String PROFILE_SEARCH_KEYWORD_COLUMS="projectexps.name;projectexps.member;projectexps.responsibility;" +
+            "projectexps.company_name;projectexps.role;projectexps.achievement;projectexps.description;recent_job.job_name;" +
+            "recent_job.company_scale_name;recent_job.company_name;recent_job.department_name;recent_job.company_new_name;" +
+            "recent_job.job;recent_job.company_property_name;recent_job.position_name;recent_job.achievement;recent_job.description;" +
+            "educations.degree_name;educations.description;educations.major_name;educations.college_name;intentions.salary_code_name;" +
+            "intentions.industries.industry_name;intentions.worktype_name;intentions.workstate_name;intentions.tag;intentions.positions.position_name;" +
+            "intentions.cities.city_name;intentions.consider_venture_company_opportunities_name;basic.icon_class;basic.position_name;basic.constellation;" +
+            "basic.company_name;basic.email;basic.current_job;basic.weixin;basic.nationality_name;basic.city_name;basic.motto;basic.industry_name;basic.qq;" +
+            "basic.name;basic.self_introduction;basic.gender_name;basic.birth_date;others.other;credentials.code;other_workexps.job_name;other_workexps.company_scale_name;" +
+            "other_workexps.company_name;other_workexps.department_name;other_workexps.company_new_name;other_workexps.job;other_workexps.company_property_name;" +
+            "other_workexps.position_name;other_workexps.achievement;other_workexps.description;credentials.name;credentials.organization;credentials.url;" +
+            "attachments.name;attachment.description;skills.name;imports.user_name;imports.data;imports.account_id;awards.name;languages.name;works.name;works.url;" +
+            "works.description";
+
 }
