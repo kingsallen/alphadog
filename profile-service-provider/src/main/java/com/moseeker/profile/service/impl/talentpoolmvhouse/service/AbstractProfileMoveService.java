@@ -131,8 +131,11 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         try {
             if (profileMoveRecordDOS.size() != 0) {
                 int successMoveId = getSuccessMoveId(profileMoveRecordDOS);
+                logger.info("==========================successMoveId:{}", successMoveId);
                 for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
+                    logger.info("====================profileMoveDO:{}", profileMoveDO);
                     if (profileMoveDO.getId() == successMoveId) {
+                        logger.info("====================profileMoveDOSuccess:{}", profileMoveDO);
                         startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
                         break;
                     }
@@ -162,11 +165,14 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     private int getSuccessMoveId(List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS) {
         List<Integer> moveIds = profileMoveRecordDOS.stream().map(TalentPoolProfileMoveRecordDO::getProfileMoveId).collect(Collectors.toList());
+        logger.info("=================moveIds:{}", moveIds);
         for (Integer moveId : moveIds) {
             boolean flag = true;
             for (TalentPoolProfileMoveRecordDO recordDO : profileMoveRecordDOS) {
                 if (moveId == recordDO.getProfileMoveId()) {
+                    logger.info("==============moveId:{}", moveId);
                     if (recordDO.getStatus() != 1) {
+                        logger.info("==================recordDO:{}=", recordDO);
                         flag = false;
                         break;
                     }
