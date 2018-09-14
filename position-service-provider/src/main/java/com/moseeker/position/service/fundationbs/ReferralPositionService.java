@@ -166,7 +166,7 @@ public class ReferralPositionService {
             query.put("publisher",account_id);
         }
 
-        logger.info("positionIdsHandler {}",JSON.toJSONString(dataDO));
+        logger.info("getPositionIdFromEs query{}",JSON.toJSONString(query));
 
         Response res =  searchengineServices.searchPositionSuggest(query);
 
@@ -183,10 +183,14 @@ public class ReferralPositionService {
                     jdIdList.add(pid);
                 }
             }
+            logger.info("getPositionIdFromEs jdIdList {}",JSON.toJSONString(jdIdList));
+
             return jdIdList;
         } else {
             return new ArrayList<>();
         }
+
+
     }
 
 
