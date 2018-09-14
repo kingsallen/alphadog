@@ -784,4 +784,17 @@ public class SearchengineEntity {
                 .get();
         return ResponseUtils.success(true);
     }
+
+
+    public Response getPostionIds(){
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+//        SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
+//                .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
+//        SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+        return ResponseUtils.success(true);
+    }
 }

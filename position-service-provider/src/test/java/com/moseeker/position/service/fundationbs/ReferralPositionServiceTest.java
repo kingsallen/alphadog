@@ -46,4 +46,6 @@ public class ReferralPositionServiceTest {
         referralPositionService.updatePointsConfig(companyId,flag);
     }
 
+
+
 }
