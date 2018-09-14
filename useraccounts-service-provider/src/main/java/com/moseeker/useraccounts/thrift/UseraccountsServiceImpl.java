@@ -561,7 +561,7 @@ public class UseraccountsServiceImpl implements Iface {
         }
     }
 
-	@Override
+    @Override
 	public void claimReferralCard(ClaimReferralCardForm form) throws BIZException, TException {
 		try {
 			ClaimForm claimForm = new ClaimForm();
