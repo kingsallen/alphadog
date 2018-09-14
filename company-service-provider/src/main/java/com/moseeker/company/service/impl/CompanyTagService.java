@@ -259,6 +259,7 @@ public class CompanyTagService {
     public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
         try {
             for (Integer companyId : companyIdSet) {
+
                 this.handlerCompanyTagTalent(userIdset, companyId);
             }
         }catch(Exception e){

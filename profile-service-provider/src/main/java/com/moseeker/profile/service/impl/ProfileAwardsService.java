@@ -44,6 +44,10 @@ public class ProfileAwardsService {
     @Autowired
     private ProfileEntity profileEntity;
 
+
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     public Awards getResource(Query query) throws TException {
         return dao.getData(query, Awards.class);
     }
@@ -86,6 +90,7 @@ public class ProfileAwardsService {
 
                 profileIds.forEach(profileId -> {
                     profileEntity.reCalculateProfileAward(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
             }
         }
@@ -133,6 +138,7 @@ public class ProfileAwardsService {
 
                 updatedList.forEach(struct -> {
                     profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                    profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                 });
 
                 return updateResult;
@@ -164,6 +170,7 @@ public class ProfileAwardsService {
             profileDao.updateUpdateTime(profileIds);
 
             profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
         }
         return data;
     }
@@ -188,6 +195,7 @@ public class ProfileAwardsService {
                     if (updateResult > 0) {
                         updateUpdateTime(struct);
                         profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                        profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                     }
                 }
             }

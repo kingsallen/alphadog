@@ -67,6 +67,7 @@ public class ProfileAttachmentService {
                 }
             }
             profileDao.updateUpdateTime(profileIds);
+
         }
         return datas;
     }
