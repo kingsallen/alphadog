@@ -3,26 +3,9 @@ package com.moseeker.company.thrift;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
-import com.alibaba.fastjson.serializer.SerializerFeature;
-<<<<<<< HEAD
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.company.bean.TalentTagPOJO;
-=======
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
-import com.moseeker.baseorm.exception.ExceptionConvertUtil;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.Category;
-import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.company.bean.TalentTagPOJO;
-import com.moseeker.company.exception.ExceptionFactory;
-import com.moseeker.company.service.impl.CompanyPcService;
-import com.moseeker.company.service.impl.CompanyService;
->>>>>>> remotes/origin/feature/1000661
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
