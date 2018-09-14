@@ -48,6 +48,9 @@ public class ProfileSkillService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    ProfileCompanyTagService tagService;
+
     @Transactional
     public Response postResources(List<Skill> structs) throws TException {
         if (structs != null && structs.size() > 0) {
@@ -69,10 +72,12 @@ public class ProfileSkillService {
         structs.forEach(struct -> {
             profileIds.add(struct.getProfile_id());
         });
+
+        profileDao.updateUpdateTime(profileIds);
         profileIds.forEach(profileId -> {
             profileEntity.reCalculateProfileSkill(profileId, 0);
+            tagService.handlerCompanyTag(profileId);
         });
-        profileDao.updateUpdateTime(profileIds);
         return ResponseUtils.success("1");
     }
 
@@ -102,9 +107,13 @@ public class ProfileSkillService {
                 }
             }
             dao.updateRecords(descSkillRecordList);
-            descSkillRecordList
-                    .forEach(profileSkillRecord ->
-                            profileEntity.reCalculateProfileSkill(profileSkillRecord.getProfileId(), profileSkillRecord.getId()));
+            Set<Integer> profileIds = descSkillRecordList.stream().map(m -> m.getProfileId()).collect(Collectors.toSet());
+            profileDao.updateUpdateTime(profileIds);
+            descSkillRecordList.forEach(profileSkillRecord ->{
+                                profileEntity.reCalculateProfileSkill(profileSkillRecord.getProfileId(), profileSkillRecord.getId());
+                                tagService.handlerCompanyTag(profileSkillRecord.getProfileId());
+                            }
+                            );
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -134,8 +143,10 @@ public class ProfileSkillService {
         if (skillRecords != null && skillRecords.size() > 0) {
             int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileSkillRecord.class));
             if (ArrayUtils.contains(result, 1)) {
+                profileDao.updateUpdateTime(profileIds);
                 profileIds.forEach(profileId -> {
                     profileEntity.reCalculateProfileSkill(profileId, 0);
+                    tagService.handlerCompanyTag(profileId);
                 });
                 return ResponseUtils.success("1");
             }
@@ -154,6 +165,7 @@ public class ProfileSkillService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
         profileEntity.reCalculateProfileSkill(struct.getProfile_id(), struct.getId());
+        tagService.handlerCompanyTag(struct.getProfile_id());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -174,6 +186,7 @@ public class ProfileSkillService {
             if (result > 0) {
                 updateProfileUpdateTime(descProfileSkillRecord);
                 profileEntity.reCalculateProfileSkill(descProfileSkillRecord.getProfileId(), descProfileSkillRecord.getId());
+                tagService.handlerCompanyTag(descProfileSkillRecord.getProfileId());
                 return ResponseUtils.success("1");
             }
         }
@@ -192,6 +205,7 @@ public class ProfileSkillService {
                 updateUpdateTime(struct);
                 profileEntity.reCalculateProfileSkill(skillRecord.getProfileId().intValue(),
                         skillRecord.getId().intValue());
+                tagService.handlerCompanyTag(skillRecord.getProfileId());
                 return ResponseUtils.success("1");
             }
         }

@@ -27,7 +27,7 @@ public class Sender {
     public void  send(String message) {
         MessageProperties msp = new MessageProperties();
         // 延迟5s发送
-        msp.setDelay(5000);
+        msp.setDelay(30000);
         amqpTemplate.send("profile_company_tag_recom_exchange", "profilecompanytagrecom.#", MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
         System.out.println("send success...");
     }

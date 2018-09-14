@@ -44,6 +44,10 @@ public class ProfileCredentialsService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
+
     public Credentials getResource(Query query) throws TException {
         return dao.getData(query, Credentials.class);
     }
@@ -86,6 +90,7 @@ public class ProfileCredentialsService {
 
             profileIds.forEach(profileId -> {
                 profileEntity.recalculateProfileCredential(profileId, 0);
+                profileCompanyTagService.handlerCompanyTag(profileId);
             });
         }
         return resultDatas;
@@ -132,6 +137,9 @@ public class ProfileCredentialsService {
                 }
             }
             updateUpdateTime(updatedDatas);
+            profileIds.forEach(profileId ->{
+                profileCompanyTagService.handlerCompanyTag(profileId);
+            });
             updatedDatas.forEach(data -> {
                 profileEntity.recalculateProfileCredential(data.getProfile_id(), data.getId());
             });
@@ -159,10 +167,13 @@ public class ProfileCredentialsService {
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
                 //更新对应的profile更新时间
-                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
-                for (ProfileCredentialsDO data : deleteDatas) {
-                    profileEntity.recalculateProfileCredential(data.getProfileId(), 0);
-                }
+                Set<Integer> profileIds = deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet());
+                profileDao.updateUpdateTime(profileIds);
+                profileIds.forEach(profileId ->{
+                    profileEntity.recalculateProfileCredential(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
+                });
+
             }
             return result;
         } else {
@@ -183,7 +194,7 @@ public class ProfileCredentialsService {
             Set<Integer> profileIds = new HashSet<>();
             profileIds.add(result.getProfile_id());
             profileDao.updateUpdateTime(profileIds);
-
+            profileCompanyTagService.handlerCompanyTag(result.getProfile_id());
             profileEntity.recalculateProfileCredential(result.getProfile_id(), result.getId());
         }
         return result;
@@ -213,6 +224,7 @@ public class ProfileCredentialsService {
         /* 计算profile完整度 */
             if (result > 0) {
                 updateUpdateTime(struct);
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             }
         }
         return result;
@@ -234,6 +246,7 @@ public class ProfileCredentialsService {
                     profileDao.updateUpdateTime(new HashSet<Integer>() {{
                         add(deleteData.getProfileId());
                     }});
+                    profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                     profileEntity.recalculateProfileCredential(deleteData.getProfileId(), 0);
                 }
             }

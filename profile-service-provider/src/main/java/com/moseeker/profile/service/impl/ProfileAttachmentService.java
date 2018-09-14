@@ -10,6 +10,7 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.commonservice.annotation.iface.CompanyTagUpate;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
@@ -40,6 +41,9 @@ public class ProfileAttachmentService {
     @Autowired
     ProfileProfileDao profileDao;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     public Attachment getResource(Query query) throws TException {
         return dao.getData(query, Attachment.class);
     }
@@ -63,10 +67,14 @@ public class ProfileAttachmentService {
             Set<Integer> profileIds = new HashSet<>();
             for (Attachment attachement : structs) {
                 if (attachement.getProfile_id() > 0) {
-                    profileIds.add(attachement.getProfile_id());
+                    boolean bool = profileIds.add(attachement.getProfile_id());
+                    if(bool){
+                        this.handlerCompanyTag(attachement.getProfile_id());
+                    }
                 }
             }
             profileDao.updateUpdateTime(profileIds);
+
         }
         return datas;
     }
@@ -110,6 +118,7 @@ public class ProfileAttachmentService {
                     profileDao.updateUpdateTime(new HashSet<Integer>() {{
                         add(deleteData.getProfileId());
                     }});
+                    this.handlerCompanyTag(deleteData.getProfileId());
                 }
             }
         }
@@ -133,8 +142,13 @@ public class ProfileAttachmentService {
             int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileAttachmentRecord.class));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
+                Set<Integer> set = deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet());
                 //更新对应的profile更新时间
-                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+                profileDao.updateUpdateTime(set);
+                set.forEach(profile_id -> {
+                    this.handlerCompanyTag(profile_id);
+                });
+
             }
 
             return result;
@@ -143,6 +157,7 @@ public class ProfileAttachmentService {
         }
     }
 
+
     @Transactional
     public Attachment postResource(Attachment struct) throws TException {
         if (struct != null) {
@@ -150,11 +165,13 @@ public class ProfileAttachmentService {
             Set<Integer> profileIds = new HashSet<>();
             profileIds.add(data.getProfileId());
             profileDao.updateUpdateTime(profileIds);
+            this.handlerCompanyTag(data.getProfileId());
             return data.into(Attachment.class);
         } else {
             return null;
         }
     }
+
 
     @Transactional
     public int putResource(Attachment struct) throws TException {
@@ -164,6 +181,7 @@ public class ProfileAttachmentService {
             i = dao.updateRecord(BeanUtils.structToDB(struct, ProfileAttachmentRecord.class));
             if (i > 0) {
                 updateUpdateTime(struct);
+                this.handlerCompanyTag(struct.getProfile_id());
             }
         }
         return i;
@@ -179,6 +197,9 @@ public class ProfileAttachmentService {
             attachmentIds.add(attachment.getId());
         });
         dao.updateProfileUpdateTime(attachmentIds);
+        attachmentIds.forEach(profileId -> {
+            this.handlerCompanyTag(profileId);
+        });
     }
 
     private void updateUpdateTime(Attachment attachment) {
@@ -220,5 +241,9 @@ public class ProfileAttachmentService {
             return ResponseUtils.fail(1,"简历附件删除失败");
         }
         return ResponseUtils.success(result);
+    }
+
+    private void  handlerCompanyTag(int profileId){
+        profileCompanyTagService.handlerProfileCompanyTag(profileId,0);
     }
 }

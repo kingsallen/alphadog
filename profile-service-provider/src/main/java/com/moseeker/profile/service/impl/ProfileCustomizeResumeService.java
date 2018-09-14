@@ -49,6 +49,9 @@ public class ProfileCustomizeResumeService {
     @Autowired
     ProfileParseUtil profileParseUtil;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
 
 
     public CustomizeResume getResource(Query query) throws TException {
@@ -87,7 +90,11 @@ public class ProfileCustomizeResumeService {
             List<ProfileOtherRecord> records = BeanUtils.structToDB(structs, ProfileOtherRecord.class);
 
             records = dao.addAllRecord(records);
-
+            Set<Integer> profileIds = records.stream().map(m -> m.getProfileId()).collect(Collectors.toSet());
+            profileDao.updateUpdateTime(profileIds);
+            profileIds.forEach(profileId -> {
+                profileCompanyTagService.handlerCompanyTag(profileId);
+            });
             return BeanUtils.DBToStruct(CustomizeResume.class, records);
         } else {
             return new ArrayList<>();
@@ -146,8 +153,12 @@ public class ProfileCustomizeResumeService {
             int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileOtherRecord.class));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
+                Set<Integer> profileIds = deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet());
                 //更新对应的profile更新时间
-                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+                profileDao.updateUpdateTime(profileIds);
+                profileIds.forEach(profileId ->{
+                    profileCompanyTagService.handlerCompanyTag(profileId);
+                });
             }
             return result;
         } else {
@@ -219,6 +230,7 @@ public class ProfileCustomizeResumeService {
 
         customizeResumes.add(customizeResume);
         updateUpdateTime(customizeResumes);
+        profileCompanyTagService.handlerCompanyTag(customizeResume.getProfile_id());
     }
 
     private void updateUpdateTime(List<CustomizeResume> customizeResumes) {
@@ -241,6 +253,9 @@ public class ProfileCustomizeResumeService {
                 .stream()
                 .map(profileOtherRecord -> profileOtherRecord.getProfileId())
                 .collect(Collectors.toSet());
+        profileIdSet.forEach(profileId ->{
+            profileCompanyTagService.handlerCompanyTag(profileId);
+        });
         profileDao.updateUpdateTime(profileIdSet);
     }
 }

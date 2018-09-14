@@ -54,6 +54,7 @@ public class CompanyTagService {
     public void handlerCompanyTag(List<Integer> tagIdList, int type,Map<String,Object> map){
         try {
             if (type == 2) {//删除标签只需要执行删除操作即可
+
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                 this.refrushCompantTag(tagIdList,type,null);
             } else {
@@ -155,30 +156,39 @@ public class CompanyTagService {
      根据user_user.id列表和公司id处理公司的标签
      */
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
+
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTagUser> deleList=new ArrayList<>();
-            List<TalentpoolCompanyTag> tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
+            List<Map<String, Object>>  tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
                     Response res = profileService.getResource(userId, 0, null);
                     if (res.getStatus() == 0 && StringUtils.isNotNullOrEmpty(res.getData())) {
                         Map<String, Object> profiles = JSON.parseObject(res.getData());
-                        for (TalentpoolCompanyTag tag : tagList) {
+                        for (Map<String, Object> tag : tagList) {
                             TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
                             delRecord.setUserId(userId);
-                            delRecord.setTagId(tag.getId());
+                            delRecord.setTagId((Integer) tag.get("id"));
                             deleList.add(delRecord);
                             String tagStr = JSON.toJSONString(tag);
                             Map<String, Object> tagMap = JSON.parseObject(tagStr);
-                            boolean isflag = companyFilterTagValidation.validateProfileAndComapnyTag(profiles, userId, companyId, tagMap);
-                            if (isflag) {
-                                TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                                record.setUserId(userId);
-                                record.setTagId(tag.getId());
-                                tagIdList.add(tag.getId());
-                                list.add(record);
+                            if (tagMap != null && !tagMap.isEmpty()) {
+                                Map<String, String> params = new HashMap<>();
+                                for (String key : tagMap.keySet()) {
+                                    params.put(key, String.valueOf(tagMap.get(key)));
+                                }
+                                params.put("size", "0");
+                                params.put("user_id", String.valueOf(userId));
+                                int total = service.queryCompanyTagUserIdListCount(params);
+                                if(total>0){
+                                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                                    record.setUserId(userId);
+                                    record.setTagId((Integer) tag.get("id"));
+                                    tagIdList.add((Integer) tag.get("id"));
+                                    list.add(record);
+                                }
                             }
                         }
                     }
@@ -247,6 +257,7 @@ public class CompanyTagService {
     public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
         try {
             for (Integer companyId : companyIdSet) {
+
                 this.handlerCompanyTagTalent(userIdset, companyId);
             }
         }catch(Exception e){
