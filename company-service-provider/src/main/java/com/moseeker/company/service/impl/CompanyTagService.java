@@ -54,6 +54,7 @@ public class CompanyTagService {
     public void handlerCompanyTag(List<Integer> tagIdList, int type,Map<String,Object> map){
         try {
             if (type == 2) {//删除标签只需要执行删除操作即可
+
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                 this.refrushCompantTag(tagIdList,type,null);
             } else {
