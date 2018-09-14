@@ -149,6 +149,8 @@ public class ReferralPositionController {
                 queryMapString.put("page_from",page_num);
             }
 
+            //只看内推职位固定传is_referral=1
+            queryMapString.put("is_referral","1");
             //该接口只看在招职位,固定传flag=0
             queryMapString.put("flag","0");
 
