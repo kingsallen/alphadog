@@ -11,7 +11,7 @@ package com.moseeker.thrift.gen.position.struct;
 public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<ReferralPositionUpdateDataDO, ReferralPositionUpdateDataDO._Fields>, java.io.Serializable, Cloneable, Comparable<ReferralPositionUpdateDataDO> {
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ReferralPositionUpdateDataDO");
 
-  private static final org.apache.thrift.protocol.TField PIDS_FIELD_DESC = new org.apache.thrift.protocol.TField("pids", org.apache.thrift.protocol.TType.LIST, (short)1);
+  private static final org.apache.thrift.protocol.TField POSITION_IDS_FIELD_DESC = new org.apache.thrift.protocol.TField("position_ids", org.apache.thrift.protocol.TType.LIST, (short)1);
   private static final org.apache.thrift.protocol.TField ALL_SELECTED_FIELD_DESC = new org.apache.thrift.protocol.TField("all_selected", org.apache.thrift.protocol.TType.I32, (short)2);
   private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)3);
   private static final org.apache.thrift.protocol.TField ACCOUNT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("account_id", org.apache.thrift.protocol.TType.I32, (short)4);
@@ -24,7 +24,7 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ReferralPositionUpdateDataDOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ReferralPositionUpdateDataDOTupleSchemeFactory();
 
-  public java.util.List<Integer> pids; // optional
+  public java.util.List<Integer> position_ids; // optional
   public int all_selected; // optional
   public int company_id; // optional
   public int account_id; // optional
@@ -36,7 +36,7 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-    PIDS((short)1, "pids"),
+    POSITION_IDS((short)1, "position_ids"),
     ALL_SELECTED((short)2, "all_selected"),
     COMPANY_ID((short)3, "company_id"),
     ACCOUNT_ID((short)4, "account_id"),
@@ -59,8 +59,8 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
      */
     public static _Fields findByThriftId(int fieldId) {
       switch(fieldId) {
-        case 1: // PIDS
-          return PIDS;
+        case 1: // POSITION_IDS
+          return POSITION_IDS;
         case 2: // ALL_SELECTED
           return ALL_SELECTED;
         case 3: // COMPANY_ID
@@ -124,11 +124,11 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
   private static final int __CANDIDATE_SOURCE_ISSET_ID = 4;
   private static final int __EMPLOYMENT_TYPE_ISSET_ID = 5;
   private byte __isset_bitfield = 0;
-  private static final _Fields optionals[] = {_Fields.PIDS,_Fields.ALL_SELECTED,_Fields.COMPANY_ID,_Fields.ACCOUNT_ID,_Fields.ACCOUNT_TYPE,_Fields.CITY,_Fields.CANDIDATE_SOURCE,_Fields.EMPLOYMENT_TYPE,_Fields.KEY_WORD};
+  private static final _Fields optionals[] = {_Fields.POSITION_IDS,_Fields.ALL_SELECTED,_Fields.COMPANY_ID,_Fields.ACCOUNT_ID,_Fields.ACCOUNT_TYPE,_Fields.CITY,_Fields.CANDIDATE_SOURCE,_Fields.EMPLOYMENT_TYPE,_Fields.KEY_WORD};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.PIDS, new org.apache.thrift.meta_data.FieldMetaData("pids", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.POSITION_IDS, new org.apache.thrift.meta_data.FieldMetaData("position_ids", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
     tmpMap.put(_Fields.ALL_SELECTED, new org.apache.thrift.meta_data.FieldMetaData("all_selected", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -159,9 +159,9 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
    */
   public ReferralPositionUpdateDataDO(ReferralPositionUpdateDataDO other) {
     __isset_bitfield = other.__isset_bitfield;
-    if (other.isSetPids()) {
-      java.util.List<Integer> __this__pids = new java.util.ArrayList<Integer>(other.pids);
-      this.pids = __this__pids;
+    if (other.isSetPosition_ids()) {
+      java.util.List<Integer> __this__position_ids = new java.util.ArrayList<Integer>(other.position_ids);
+      this.position_ids = __this__position_ids;
     }
     this.all_selected = other.all_selected;
     this.company_id = other.company_id;
@@ -183,7 +183,7 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
 
   @Override
   public void clear() {
-    this.pids = null;
+    this.position_ids = null;
     setAll_selectedIsSet(false);
     this.all_selected = 0;
     setCompany_idIsSet(false);
@@ -200,42 +200,42 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
     this.keyWord = null;
   }
 
-  public int getPidsSize() {
-    return (this.pids == null) ? 0 : this.pids.size();
+  public int getPosition_idsSize() {
+    return (this.position_ids == null) ? 0 : this.position_ids.size();
   }
 
-  public java.util.Iterator<Integer> getPidsIterator() {
-    return (this.pids == null) ? null : this.pids.iterator();
+  public java.util.Iterator<Integer> getPosition_idsIterator() {
+    return (this.position_ids == null) ? null : this.position_ids.iterator();
   }
 
-  public void addToPids(int elem) {
-    if (this.pids == null) {
-      this.pids = new java.util.ArrayList<Integer>();
+  public void addToPosition_ids(int elem) {
+    if (this.position_ids == null) {
+      this.position_ids = new java.util.ArrayList<Integer>();
     }
-    this.pids.add(elem);
+    this.position_ids.add(elem);
   }
 
-  public java.util.List<Integer> getPids() {
-    return this.pids;
+  public java.util.List<Integer> getPosition_ids() {
+    return this.position_ids;
   }
 
-  public ReferralPositionUpdateDataDO setPids(java.util.List<Integer> pids) {
-    this.pids = pids;
+  public ReferralPositionUpdateDataDO setPosition_ids(java.util.List<Integer> position_ids) {
+    this.position_ids = position_ids;
     return this;
   }
 
-  public void unsetPids() {
-    this.pids = null;
+  public void unsetPosition_ids() {
+    this.position_ids = null;
   }
 
-  /** Returns true if field pids is set (has been assigned a value) and false otherwise */
-  public boolean isSetPids() {
-    return this.pids != null;
+  /** Returns true if field position_ids is set (has been assigned a value) and false otherwise */
+  public boolean isSetPosition_ids() {
+    return this.position_ids != null;
   }
 
-  public void setPidsIsSet(boolean value) {
+  public void setPosition_idsIsSet(boolean value) {
     if (!value) {
-      this.pids = null;
+      this.position_ids = null;
     }
   }
 
@@ -427,11 +427,11 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
 
   public void setFieldValue(_Fields field, Object value) {
     switch (field) {
-    case PIDS:
+    case POSITION_IDS:
       if (value == null) {
-        unsetPids();
+        unsetPosition_ids();
       } else {
-        setPids((java.util.List<Integer>)value);
+        setPosition_ids((java.util.List<Integer>)value);
       }
       break;
 
@@ -504,8 +504,8 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
 
   public Object getFieldValue(_Fields field) {
     switch (field) {
-    case PIDS:
-      return getPids();
+    case POSITION_IDS:
+      return getPosition_ids();
 
     case ALL_SELECTED:
       return getAll_selected();
@@ -542,8 +542,8 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
     }
 
     switch (field) {
-    case PIDS:
-      return isSetPids();
+    case POSITION_IDS:
+      return isSetPosition_ids();
     case ALL_SELECTED:
       return isSetAll_selected();
     case COMPANY_ID:
@@ -579,12 +579,12 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
     if (this == that)
       return true;
 
-    boolean this_present_pids = true && this.isSetPids();
-    boolean that_present_pids = true && that.isSetPids();
-    if (this_present_pids || that_present_pids) {
-      if (!(this_present_pids && that_present_pids))
+    boolean this_present_position_ids = true && this.isSetPosition_ids();
+    boolean that_present_position_ids = true && that.isSetPosition_ids();
+    if (this_present_position_ids || that_present_position_ids) {
+      if (!(this_present_position_ids && that_present_position_ids))
         return false;
-      if (!this.pids.equals(that.pids))
+      if (!this.position_ids.equals(that.position_ids))
         return false;
     }
 
@@ -667,9 +667,9 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
   public int hashCode() {
     int hashCode = 1;
 
-    hashCode = hashCode * 8191 + ((isSetPids()) ? 131071 : 524287);
-    if (isSetPids())
-      hashCode = hashCode * 8191 + pids.hashCode();
+    hashCode = hashCode * 8191 + ((isSetPosition_ids()) ? 131071 : 524287);
+    if (isSetPosition_ids())
+      hashCode = hashCode * 8191 + position_ids.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetAll_selected()) ? 131071 : 524287);
     if (isSetAll_selected())
@@ -714,12 +714,12 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
 
     int lastComparison = 0;
 
-    lastComparison = Boolean.valueOf(isSetPids()).compareTo(other.isSetPids());
+    lastComparison = Boolean.valueOf(isSetPosition_ids()).compareTo(other.isSetPosition_ids());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetPids()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pids, other.pids);
+    if (isSetPosition_ids()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.position_ids, other.position_ids);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -824,12 +824,12 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
     StringBuilder sb = new StringBuilder("ReferralPositionUpdateDataDO(");
     boolean first = true;
 
-    if (isSetPids()) {
-      sb.append("pids:");
-      if (this.pids == null) {
+    if (isSetPosition_ids()) {
+      sb.append("position_ids:");
+      if (this.position_ids == null) {
         sb.append("null");
       } else {
-        sb.append(this.pids);
+        sb.append(this.position_ids);
       }
       first = false;
     }
@@ -934,20 +934,20 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
           break;
         }
         switch (schemeField.id) {
-          case 1: // PIDS
+          case 1: // POSITION_IDS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list74 = iprot.readListBegin();
-                struct.pids = new java.util.ArrayList<Integer>(_list74.size);
+                struct.position_ids = new java.util.ArrayList<Integer>(_list74.size);
                 int _elem75;
                 for (int _i76 = 0; _i76 < _list74.size; ++_i76)
                 {
                   _elem75 = iprot.readI32();
-                  struct.pids.add(_elem75);
+                  struct.position_ids.add(_elem75);
                 }
                 iprot.readListEnd();
               }
-              struct.setPidsIsSet(true);
+              struct.setPosition_idsIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -1031,12 +1031,12 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
       struct.validate();
 
       oprot.writeStructBegin(STRUCT_DESC);
-      if (struct.pids != null) {
-        if (struct.isSetPids()) {
-          oprot.writeFieldBegin(PIDS_FIELD_DESC);
+      if (struct.position_ids != null) {
+        if (struct.isSetPosition_ids()) {
+          oprot.writeFieldBegin(POSITION_IDS_FIELD_DESC);
           {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.pids.size()));
-            for (int _iter77 : struct.pids)
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.position_ids.size()));
+            for (int _iter77 : struct.position_ids)
             {
               oprot.writeI32(_iter77);
             }
@@ -1107,7 +1107,7 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
     public void write(org.apache.thrift.protocol.TProtocol prot, ReferralPositionUpdateDataDO struct) throws org.apache.thrift.TException {
       org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
       java.util.BitSet optionals = new java.util.BitSet();
-      if (struct.isSetPids()) {
+      if (struct.isSetPosition_ids()) {
         optionals.set(0);
       }
       if (struct.isSetAll_selected()) {
@@ -1135,10 +1135,10 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
         optionals.set(8);
       }
       oprot.writeBitSet(optionals, 9);
-      if (struct.isSetPids()) {
+      if (struct.isSetPosition_ids()) {
         {
-          oprot.writeI32(struct.pids.size());
-          for (int _iter78 : struct.pids)
+          oprot.writeI32(struct.position_ids.size());
+          for (int _iter78 : struct.position_ids)
           {
             oprot.writeI32(_iter78);
           }
@@ -1177,15 +1177,15 @@ public class ReferralPositionUpdateDataDO implements org.apache.thrift.TBase<Ref
       if (incoming.get(0)) {
         {
           org.apache.thrift.protocol.TList _list79 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-          struct.pids = new java.util.ArrayList<Integer>(_list79.size);
+          struct.position_ids = new java.util.ArrayList<Integer>(_list79.size);
           int _elem80;
           for (int _i81 = 0; _i81 < _list79.size; ++_i81)
           {
             _elem80 = iprot.readI32();
-            struct.pids.add(_elem80);
+            struct.position_ids.add(_elem80);
           }
         }
-        struct.setPidsIsSet(true);
+        struct.setPosition_idsIsSet(true);
       }
       if (incoming.get(1)) {
         struct.all_selected = iprot.readI32();

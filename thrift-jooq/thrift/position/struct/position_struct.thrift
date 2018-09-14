@@ -431,7 +431,7 @@ struct JobPositionHrCompanyFeatureDO{
 }
 
 struct ReferralPositionUpdateDataDO{
-    1:optional list<i32> pids,
+    1:optional list<i32> position_ids,
     2:optional i32 all_selected,
     3:optional i32 company_id,
     4:optional i32 account_id,
