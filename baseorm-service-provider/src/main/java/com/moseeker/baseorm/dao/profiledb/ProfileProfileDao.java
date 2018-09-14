@@ -1890,12 +1890,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         }
     }
 
-    public List<ProfileProfileDO> getProfileByUidList(Set<Integer> userIdList) {
-        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
-                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.in(userIdList))
-                .fetchInto(ProfileProfileDO.class);
-    }
-
     /**
      * 迁移简历的所有人
      * @param record 简历数据
@@ -1924,5 +1918,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .orderBy(ProfileProfile.PROFILE_PROFILE.DISABLE.desc())
                 .limit(1)
                 .fetchAny();
+    }
+
+    public List<ProfileProfileDO> getProfileByUidList(Set<Integer> userIdList) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.in(userIdList))
+                .fetchInto(ProfileProfileDO.class);
     }
 }

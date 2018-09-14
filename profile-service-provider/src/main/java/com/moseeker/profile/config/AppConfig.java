@@ -111,10 +111,4 @@ public class AppConfig {
             add(BindingBuilder.bind(mvHouseQueue()).to(exchange()).with(ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_RESPONSE));
         }};
     }
-
-    @Bean
-    public TopicExchange topicExchange() {
-        TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
-        return topicExchange;
-    }
 }

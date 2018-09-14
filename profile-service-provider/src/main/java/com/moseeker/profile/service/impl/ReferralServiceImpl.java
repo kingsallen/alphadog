@@ -14,6 +14,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.*;
 import com.moseeker.entity.biz.ProfileParseUtil;
@@ -100,6 +101,10 @@ public class ReferralServiceImpl implements ReferralService {
      */
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
+
+        if (!ProfileDocCheckTool.checkFileName(fileName)) {
+            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
+        }
 
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
         if (employeeDO == null || employeeDO.getId() <= 0) {
