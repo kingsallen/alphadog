@@ -1,8 +1,8 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.exception.CommonException;
@@ -21,14 +21,11 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.constant.WechatAuthorized;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import org.apache.commons.lang.math.NumberUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,15 +66,10 @@ public class UserCenterService {
         logger.info("UserCenterService getApplication userId:{}", userId);
         List<ApplicationRecordsForm> applications = new ArrayList<>();
 
-        int companyId = 0;
-        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
-        if (userEmployeeDO != null) {
-            companyId = userEmployeeDO.getCompanyId();
-        }
         //参数有效性校验
         if (userId > 0) {
             //查询申请记录
-            List<JobApplicationRecord> apps = bizTools.getAppsForUserAndCompany(userId, companyId);
+            List<JobApplicationDO> apps = bizTools.getAppsForUser(userId);
             if (apps != null && apps.size() > 0) {
                 //查询申请记录对应的职位数据
                 List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
@@ -107,7 +99,7 @@ public class UserCenterService {
                     ar.setId(app.getId());
                     RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
                     ar.setStatus_name(recruitmentScheduleEnum.getStatus());
-                    ar.setTime(new DateTime(app.getSubmitTime().getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                    ar.setTime(app.getSubmitTime());
                     if (positions != null) {
                         Optional<JobPositionDO> op = positions.stream().filter(position -> position.getId() == app.getPositionId()).findFirst();
                         if (op.isPresent()) {
@@ -134,7 +126,7 @@ public class UserCenterService {
                         ar.setSignature(signatureMap.get(app.getCompanyId()));
                     }
                     logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
-                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType().byteValue(), app.getEmailStatus().byteValue(), preID));
+                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
                     return ar;
                 }).collect(Collectors.toList());
             }

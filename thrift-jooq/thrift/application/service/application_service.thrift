@@ -48,4 +48,6 @@ service JobApplicationServices {
     
     //员工代理投递
    list<i32> employeeProxyApply(1:i32 referenceId, 2: i32 applierId, 3: list<i32> positionIdList) throws (1: common_struct.BIZException e);
+   //查找申请记录
+   list<application_struct.ApplicationRecordsForm> getApplications(1: i32 userId, 2: i32 companyId);
 }

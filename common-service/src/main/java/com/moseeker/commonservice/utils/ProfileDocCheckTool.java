@@ -1,4 +1,4 @@
-package com.moseeker.servicemanager.web.controller.referral.tools;
+package com.moseeker.commonservice.utils;
 
 import java.util.ArrayList;
 import java.util.List;
