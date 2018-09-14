@@ -168,10 +168,6 @@ service TalentpoolServices {
 
     common_struct.Response getCompanyCommentByUserIdList( 1:i32 companyId,2: list<i32> userIdList) throws (1: common_struct.BIZException e)
 
-}
-
-service TalentpoolNewServices {
-
     common_struct.Response getCompanyTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
 
     common_struct.Response deleteCompanyTagByIds(1:i32 hr_id,2:i32 company_id,3:list<i32> company_tag_ids) throws (1: common_struct.BIZException e)
@@ -183,6 +179,10 @@ service TalentpoolNewServices {
     common_struct.Response updateCompanyTag(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
 
     common_struct.Response getTalentTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
+
+}
+
+service TalentpoolNewServices {
 
 
     common_struct.Response addProfileContent(1:i32 userId,2:i32 accountId, 3:string content)throws (1: common_struct.BIZException e)
