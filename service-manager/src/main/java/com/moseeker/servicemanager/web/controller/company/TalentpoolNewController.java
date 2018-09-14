@@ -218,6 +218,7 @@ public class TalentpoolNewController {
     public String addProfileContent(HttpServletRequest request,
                                     HttpServletResponse response) {
         try {
+
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String content = params.getString("content", "");
             int userId = params.getInt("user_id", 0);

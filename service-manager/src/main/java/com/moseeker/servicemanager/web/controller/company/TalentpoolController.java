@@ -110,6 +110,7 @@ public class TalentpoolController {
     @ResponseBody
     public String addTag(HttpServletRequest request, HttpServletResponse response) {
         try {
+
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
