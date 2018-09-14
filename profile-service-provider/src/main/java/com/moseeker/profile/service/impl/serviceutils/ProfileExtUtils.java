@@ -60,7 +60,7 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 	 */
 	public static JSONObject createReferralProfileData() {
 		JSONObject profileProfile = new JSONObject();
-		profileProfile.put("source", com.moseeker.profile.constants.ProfileSource.EmployeeReferral.getValue());                                      //内推
+		profileProfile.put("source", com.moseeker.profile.constants.ProfileSource.EmployeeReferral.getValue()); //内推
 		profileProfile.put("origin", "100000000000000000000000000000");         //内推
 		profileProfile.put("uuid", UUID.randomUUID().toString());               //内推
 		profileProfile.put("user_id", 0);

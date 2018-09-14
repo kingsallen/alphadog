@@ -50,7 +50,7 @@ public class ReferralPositionController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/v1/referral/position/", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/v1/referral/position/del/", method = RequestMethod.POST)
     @ResponseBody
     public String delReferralPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -186,10 +186,11 @@ public class ReferralPositionController {
                 queryMapString.put("page_from",page_num);
             }
 
-            //该接口只看内推职位,固定传is_referral=1
-            queryMapString.put("is_referral","1");
-            //该接口只看在招职位,固定传flag=0
-            queryMapString.put("flag","0");
+            //该接口给flag默认值0
+            String flag = queryMapString.get("flag");
+            if(StringUtils.isNotNullOrEmpty(flag)) {
+                queryMapString.put("flag","0");
+            }
             String accountType = queryMapString.get("account_type");
             String accountId  =queryMapString.get("account_id");
 

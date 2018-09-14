@@ -9,6 +9,7 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
+import com.moseeker.profile.service.ReferralService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -122,19 +123,6 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
-                                       int position, byte referralType)
-            throws BIZException, TException {
-        try {
-
-            return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
-                    referralType);
-        } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
     public ProfileParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData)
             throws BIZException, TException {
         try {
@@ -143,6 +131,17 @@ public class ProfileServicesImpl implements Iface {
             ProfileParseResult profileParseResult = new ProfileParseResult();
             BeanUtils.copyProperties(result, profileParseResult);
             return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType) throws BIZException, TException {
+        try {
+
+            return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
+                    referralType);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

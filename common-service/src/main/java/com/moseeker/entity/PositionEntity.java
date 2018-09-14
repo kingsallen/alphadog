@@ -71,13 +71,13 @@ public class PositionEntity {
     @Autowired
     private SearchengineEntity searchengineEntity;
 
-    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     private HrTeamDao teamDao;
 
     @Autowired
     private HrCompanyDao companyDao;
+
+    private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 查找职位信息

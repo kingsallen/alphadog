@@ -288,7 +288,7 @@ public class PositionService {
             if (jobPositionExtRecord.getJobOccupationId() > 0) {
                 JobOccupationRecord jobOccupationRecord =
                         jobOccupationDao.getRecord(new Query.QueryBuilder().where("id", jobPositionExtRecord.getJobOccupationId()).buildQuery());
-                if (jobOccupationRecord != null && StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
+                if (jobOccupationRecord != null && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(jobOccupationRecord.getName())) {
                     jobPositionPojo.occupation = jobOccupationRecord.getName();
 
                 }
@@ -425,7 +425,7 @@ public class PositionService {
         // 取的该公司下的所有部门信息
         List<HrTeamRecord> hrTeamRecordList = hrTeamDao.getRecords(queryUtilDepartment);
         // 当更新或者新增jobPosition数据时，如果公司部门信息为空，提示无法更新或者新增jobposition
-        if (!StringUtils.isEmptyList(hrTeamRecordList)) {
+        if (!com.moseeker.common.util.StringUtils.isEmptyList(hrTeamRecordList)) {
             for (HrTeamRecord hrTeamRecord : hrTeamRecordList) {
                 hashMapHrTeam.put(replaceBlank(hrTeamRecord.getName()), hrTeamRecord);
             }
@@ -601,7 +601,7 @@ public class PositionService {
         }
 
         // 当职位要求为空时候，设置空串
-        if (StringUtils.isNullOrEmpty(record.getRequirement())) {
+        if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getRequirement())) {
             record.setRequirement("");
         }
 
@@ -641,7 +641,7 @@ public class PositionService {
     public JobPostionResponse batchHandlerJobPostion(BatchHandlerJobPostion batchHandlerJobPosition, CountDownLatch batchHandlerCountDown) throws TException {
         logger.info("------开始批量修改职位--------");
         // 提交的数据为空
-        if (batchHandlerJobPosition == null || StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
+        if (batchHandlerJobPosition == null || com.moseeker.common.util.StringUtils.isEmptyList(batchHandlerJobPosition.getData())) {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, ConstantErrorCodeMessage.POSITION_DATA_BLANK);
         }
         // 提交的数据
@@ -671,7 +671,7 @@ public class PositionService {
         // 删除操作,删除除了data以外的数据库中的数据
         // 如果为true, 数据不能删除. 否则,允许删除, data中的数据根据fields_nohash中以外的字段, 判断data中的记录和数据库中已有记录的关系, 进行添加, 修改,删除
         if (!batchHandlerJobPosition.nodelete) {
-            if (!StringUtils.isEmptyList(dbOnlineList)) {
+            if (!com.moseeker.common.util.StringUtils.isEmptyList(dbOnlineList)) {
                 // 不需要删除的数据
                 List<JobPositionRecord> noDeleJobPostionRecords = new ArrayList<>();
                 // 提交的数据处理
@@ -790,7 +790,7 @@ public class PositionService {
             // todo 猎聘新增
             jobPositionOldRecordList.add(jobPositionRecord);
             // 更新或者新增数据
-            if (jobPositionHandlerDate.getId() != 0 || !StringUtils.isEmptyObject(jobPositionRecord)) {
+            if (jobPositionHandlerDate.getId() != 0 || !com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                 dbOperation = DBOperation.UPDATE;
             } else {
                 dbOperation = DBOperation.INSERT;
@@ -820,7 +820,7 @@ public class PositionService {
             }
 
             int team_id = 0;
-            if (!StringUtils.isNullOrEmpty(record.getDepartment())) {
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getDepartment())) {
                 logger.info(record.getDepartment().trim());
                 String department = replaceBlank(record.getDepartment());
                 HrTeamRecord hrTeamRecord = (HrTeamRecord) hashMapHrTeam.get(department);
@@ -858,7 +858,7 @@ public class PositionService {
             }
             int jobOccupationId = 0;
             // 验证职能信息是否正确
-            if (!StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getOccupation())) {
                 JobOccupationDO jobOccupationDO = jobOccupationMap.get(jobPositionHandlerDate.getOccupation().trim());
                 if (jobOccupationDO != null) {
                     jobOccupationId = jobOccupationDO.getId();
@@ -876,7 +876,7 @@ public class PositionService {
             }
             // 验证职位自定义字段
             int customId = 0;
-            if (!StringUtils.isNullOrEmpty(jobPositionHandlerDate.getCustom())) {
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getCustom())) {
                 JobCustomRecord jobCustomRecord = (JobCustomRecord) jobCustomMap.get(jobPositionHandlerDate.getCustom());
                 if (jobCustomRecord != null) {
                     customId = jobCustomRecord.getId();
@@ -898,7 +898,7 @@ public class PositionService {
             // 更新或者新增数据
             if (dbOperation == DBOperation.UPDATE) {  // 数据更新
                 // 按company_id + .source_id + .jobnumber + source=9取得数据为空时，按Id进行更新
-                if (!StringUtils.isEmptyObject(jobPositionRecord)) {
+                if (!com.moseeker.common.util.StringUtils.isEmptyObject(jobPositionRecord)) {
                     record.setId(jobPositionRecord.getId());
                     // 把ID存入方法参数中，配合batchHandlerJobPostionAdapter方法
                     jobPositionHandlerDate.setId(jobPositionRecord.getId());
@@ -919,7 +919,7 @@ public class PositionService {
 
                         record.setSourceId(jobPositionRecordTemp.getSourceId());
                         record.setCompanyId(companyId);
-                        if (StringUtils.isNullOrEmpty(record.getJobnumber())) {
+                        if (com.moseeker.common.util.StringUtils.isNullOrEmpty(record.getJobnumber())) {
                             record.setJobnumber(jobPositionRecordTemp.getJobnumber());
                         }
                         // 当城市无法转换时，入库为提交的数据
@@ -1019,7 +1019,7 @@ public class PositionService {
                     handleCcmail(jobPositionHandlerDate, record, jobPositionCcmailRecordsAddlist);
                 }
 
-                if (!StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
                     // 新增jobPostion_ext数据
                     JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
@@ -1129,7 +1129,7 @@ public class PositionService {
         if (jobPositionIds.size() > 0) {
             logger.info("插入和新增的jobPositionIds为:" + jobPositionIds.toString());
             // 更新ES Search Engine
-            UpdateES updataESThread = new UpdateES(jobPositionIds);
+            PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
             Thread thread = new Thread(updataESThread);
             thread.start();
             return jobPostionResponse;
@@ -1240,7 +1240,7 @@ public class PositionService {
             jobPositionDao.updateRecord(jobPositionRecord);
             // 更新ES Search Engine
             list.add(jobPositionRecord.getId());
-            UpdateES updataESThread = new UpdateES(list);
+            PositionService.UpdateES updataESThread = new PositionService.UpdateES(list);
             Thread thread = new Thread(updataESThread);
             thread.start();
 
@@ -1277,12 +1277,12 @@ public class PositionService {
             // 判断JobPosion字段
             for (Field field : jobPositionRecord.fields()) {
                 String str = (String) hashMap.get(field.getName());
-                if (!StringUtils.isNullOrEmpty(str)) {
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(str)) {
                     stringBuffer.append(jobPositionRecord.get(field.getName()));
                 }
             }
             String str = (String) hashMap.get("extra");
-            if (!StringUtils.isNullOrEmpty(str)) {
+            if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(str)) {
                 stringBuffer.append(extra);
             }
             md5 = MD5Util.md5(stringBuffer.toString());
@@ -1484,7 +1484,7 @@ public class PositionService {
                             cityCodeQuery.where("postcode", city.getValue());
                             cityPostcodeRecord = dictCityPostcodeDao.getRecord(cityCodeQuery.buildQuery());
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (StringUtils.isNullOrEmpty(cityPostcodeRecord.getCity())) {
+                                if (com.moseeker.common.util.StringUtils.isNullOrEmpty(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getProvince());
                                 } else {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
@@ -1521,7 +1521,7 @@ public class PositionService {
                         } else {
                             cityPostcodeRecord = dictCityPostcodeDao.fuzzyGetCityPostCode(postCodeTemp);
                             if (cityPostcodeRecord != null && cityPostcodeRecord.getCity() != null) {
-                                if (!StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
+                                if (!com.moseeker.common.util.StringUtils.isEmptyObject(cityPostcodeRecord.getCity())) {
                                     stringBuffer.append(cityPostcodeRecord.getCity());
                                 } else {
                                     stringBuffer.append(cityPostcodeRecord.getProvince());
@@ -1534,7 +1534,7 @@ public class PositionService {
                     }
                 }
                 i = i + 1;
-                if (i != list.size() && StringUtils.isNotNullOrEmpty(stringBuffer.toString()) && !stringBuffer.toString().endsWith(",")) {
+                if (i != list.size() && com.moseeker.common.util.StringUtils.isNotNullOrEmpty(stringBuffer.toString()) && !stringBuffer.toString().endsWith(",")) {
                     stringBuffer.append("，");
                 }
             }
@@ -2078,7 +2078,7 @@ public class PositionService {
      * @param department_name 部门名称
      */
     public Response getTeamIdbyDepartmentName(Integer company_id, String department_name) {
-        if (StringUtils.isNullOrEmpty(department_name)) {
+        if (com.moseeker.common.util.StringUtils.isNullOrEmpty(department_name)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSTION_COMPANY_DEPARTMENTI_PARAMETER_BLANK);
         }
         Query queryUtilDepartment = new Query.QueryBuilder()
@@ -2088,7 +2088,7 @@ public class PositionService {
                 .buildQuery();
 
         HrTeamRecord hrTeamRecord = hrTeamDao.getRecord(queryUtilDepartment);
-        if (StringUtils.isEmptyObject(hrTeamRecord)) {
+        if (com.moseeker.common.util.StringUtils.isEmptyObject(hrTeamRecord)) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.POSITION_DATA_DEPARTMENT_ERROR);
         }
         HashMap hashMap = new HashMap();
