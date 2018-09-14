@@ -23,7 +23,6 @@ public class ReferralPositionService {
     @Autowired
     PositionEntity positionEntity;
 
-
     @Autowired
     ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
 

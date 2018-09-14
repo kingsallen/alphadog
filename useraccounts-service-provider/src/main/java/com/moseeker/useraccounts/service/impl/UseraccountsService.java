@@ -352,9 +352,9 @@ public class UseraccountsService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         }
 
-        String validateMobile=String.valueOf(user.mobile);
+        String validateMobile=user.username;
         if(StringUtils.isNotNullOrEmpty(user.getCountryCode()) && !"86".equals(user.getCountryCode())){
-            validateMobile=user.getCountryCode()+user.mobile;
+            validateMobile=user.getCountryCode()+user.username;
         }
 
         if (!StringUtils.isNullOrEmpty(code) && !validateCode(validateMobile, code, 1)) {
@@ -1186,6 +1186,7 @@ public class UseraccountsService {
         redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         return ResponseUtils.success("");
     }
+
     /**
      * 认领员工推荐卡片
      * @param claimForm 参数

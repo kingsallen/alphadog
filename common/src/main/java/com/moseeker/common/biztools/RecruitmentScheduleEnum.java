@@ -238,7 +238,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 13;
                 this.recuritOrder = 13;
-                this.applierView = "暂不匹配，纳入人才库";
+                this.applierView = "暂不合适，纳入人才库";
                 break;
             case 5:
                 this.id = value;
@@ -272,9 +272,9 @@ public enum RecruitmentScheduleEnum {
                 break;
             case 8:
                 this.id = value;
-                this.status = "HR将简历转给MGR评审";
+                this.status = "HR将简历转给MGR初筛";
                 this.award = 0;
-                this.description = "CVForwarded HR将简历转给MGR评审";
+                this.description = "CVForwarded HR将简历转给MGR初筛";
                 this.disable = true;
                 this.priority = 5;
                 this.recuritOrder = 5;
@@ -282,9 +282,9 @@ public enum RecruitmentScheduleEnum {
                 break;
             case 9:
                 this.id = value;
-                this.status = "MGR评审后表示先等待";
+                this.status = "MGR初筛后表示先等待";
                 this.award = 0;
-                this.description = "CVPending MGR评审后表示先等待";
+                this.description = "CVPending MGR初筛后表示先等待";
                 this.disable = true;
                 this.priority = 6;
                 this.recuritOrder = 6;
@@ -292,13 +292,13 @@ public enum RecruitmentScheduleEnum {
                 break;
             case 10:
                 this.id = value;
-                this.status = "简历评审合格";
+                this.status = "简历初筛合格";
                 this.award = 50;
-                this.description = "CVPassed MGR评审通过要求面试";
+                this.description = "CVPassed MGR初筛通过要求面试";
                 this.disable = true;
                 this.priority = 7;
                 this.recuritOrder = 7;
-                this.applierView = "您的简历已通过评审";
+                this.applierView = "您的简历已通过初筛";
                 break;
             case 11:
                 this.id = value;
@@ -401,7 +401,7 @@ public enum RecruitmentScheduleEnum {
             return  "HR将您的状态改为待重新面试";
         }
         if(id == RecruitmentScheduleEnum.CV_CHECKED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
-            return  "HR将您的状态改为待重新评审";
+            return  "HR将您的状态改为待重新筛选";
         }
         String eventDescription = applierView;
         /** 如果投递时邮件投递，并且投递状态是成功投递 */
