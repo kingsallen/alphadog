@@ -168,6 +168,8 @@ public class ProfileUtils {
 								hrCompany.setScale(BeanUtils.converToByte(company.get("scale")));
 							} else if ((company.get("companyScale") != null)) {
 								hrCompany.setScale(BeanUtils.converToByte(company.get("companyScale")));
+							} else if((company.get("company_scale") != null)){
+								hrCompany.setScale(BeanUtils.converToByte(company.get("company_scale")));
 							}
 							if (company.get("company_property") != null) {
 								hrCompany.setProperty(BeanUtils.converToByte(company.get("company_property")));

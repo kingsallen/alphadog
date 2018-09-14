@@ -643,11 +643,11 @@ public class TalentPoolEntity {
     /*
        处理talentpool_talent
      */
-    public void handlerTalentpoolTalent(int userId,int companyId,int upload,int publicNum,int collectNum){
+    public void handlerTalentpoolTalent(int userId,int companyId,int upload,int publicNum,int collectNum, boolean isMoveHouse){
         TalentpoolTalentRecord record=this.getTalentpoolTalentRecord(companyId,userId);
         if(record==null){
             if(publicNum>0 || collectNum>0) {
-                addTalentpoolTalent(userId, companyId, upload);
+                addTalentpoolTalent(userId, companyId, upload, isMoveHouse);
             }
         }else{
             int originCollection=record.getCollectNum();
@@ -1171,11 +1171,14 @@ public class TalentPoolEntity {
     /*
      添加talentpool_talent记录
      */
-    public void addTalentpoolTalent(int userId,int companyId,int upload){
+    public void addTalentpoolTalent(int userId,int companyId,int upload, boolean isMvHouse){
         TalentpoolTalentRecord talentpoolTalentRecord=new TalentpoolTalentRecord();
         talentpoolTalentRecord.setCompanyId(companyId);
         talentpoolTalentRecord.setUserId(userId);
         talentpoolTalentRecord.setCollectNum(1);
+        if(isMvHouse){
+            talentpoolTalentRecord.setPublicNum(1);
+        }
         talentpoolTalentRecord.setUpload((byte)upload);
         talentpoolTalentDao.addRecord(talentpoolTalentRecord);
 
@@ -1411,14 +1414,18 @@ public class TalentPoolEntity {
      上传简历成为收藏人才
      */
     @Transactional
-    public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName){
+    public void addUploadTalent(int userId,int newuserId,int hrId,int companyId,String fileName, int source){
         if(userId!=0&&newuserId!=0&&userId!=newuserId){
             this.updateTalentRelationShip(userId,newuserId);
         }
         if(this.isHrtalent(newuserId,hrId)==0){
             Set<Integer> userSet=new HashSet<>();
             userSet.add(newuserId);
-            this.addTalentsItems(userSet,hrId,companyId,1);
+            if(source == UserSource.MV_HOUSE.getValue()){
+                this.addTalentsItems(userSet,hrId,companyId,1, true);
+            }else {
+                this.addTalentsItems(userSet,hrId,companyId,1);
+            }
             if(StringUtils.isNotNullOrEmpty(fileName)){
                 this.saveUploadProfileName(fileName,hrId,companyId);
             }
@@ -1606,20 +1613,36 @@ public class TalentPoolEntity {
     /*
      继续分离添加人才库的入库操作和实时更新操作
      */
-    private void addTalentsItems(Set<Integer> idList,int hrId,int companyId,int flag){
+    private void addTalentsItems(Set<Integer> idList,int hrId,int companyId,int flag, boolean isMvHouse){
         if(!StringUtils.isEmptySet(idList)){
             List<TalentpoolHrTalentRecord> recordList=new ArrayList<>();
             for(Integer id:idList){
                 TalentpoolHrTalentRecord record=new TalentpoolHrTalentRecord();
                 record.setHrId(hrId);
                 record.setUserId(id);
+                if(isMvHouse){
+                    // 表示简历搬家搬过来的人才
+                    record.setPublic((byte)1);
+                }
                 recordList.add(record);
             }
             talentpoolHrTalentDao.addAllRecord(recordList);
             for(Integer id:idList){
-                this.handlerTalentpoolTalent(id,companyId,flag,0,1);
+                this.handlerTalentpoolTalent(id,companyId,flag,0,1, isMvHouse);
+                if(isMvHouse){
+                    // 如果是简历搬家的，需要将人才设为公开
+                    updateTalentpoolHrTalentPublic(id, hrId);
+                }
             }
         }
+    }
+
+    private void updateTalentpoolHrTalentPublic(Integer userId, int hrId) {
+        talentpoolHrTalentDao.updateTalentpoolHrTalentPublic(userId, hrId);
+    }
+
+    private void addTalentsItems(Set<Integer> idList,int hrId,int companyId,int flag){
+        addTalentsItems(idList, hrId, companyId, flag, false);
     }
     /*
     实时更新
@@ -1664,9 +1687,9 @@ public class TalentPoolEntity {
                 }
             }
             if(isPublic==0){
-                this.handlerTalentpoolTalent(id,companyId,0,0,-1);
+                this.handlerTalentpoolTalent(id,companyId,0,0,-1,false);
             }else{
-                this.handlerTalentpoolTalent(id,companyId,0,-1,-1);
+                this.handlerTalentpoolTalent(id,companyId,0,-1,-1, false);
             }
 
         }
@@ -1754,14 +1777,14 @@ public class TalentPoolEntity {
     /*
      获取上传简历的user_id
      */
-    public UserUserRecord getTalentUploadUser(String phone,int companyId){
+    public UserUserRecord getTalentUploadUser(String phone,int companyId, int source){
         String countryCode="86";
         if(phone.contains("-")){
             String [] phoneArray=phone.split("-");
             countryCode=phoneArray[0];
             phone=phoneArray[1];
         }
-        List<UserUserRecord> list=getTalentUploadUserUser(phone,countryCode);
+        List<UserUserRecord> list=getUploadUserUser(phone,countryCode, source);
         if(StringUtils.isEmptyList(list)){
             return null;
         }
@@ -1791,9 +1814,9 @@ public class TalentPoolEntity {
     /*
      获取所有的手机号相同的人才库上传的简历
      */
-    public List<UserUserRecord> getTalentUploadUserUser(String phone,String countryCode){
+    public List<UserUserRecord> getUploadUserUser(String phone,String countryCode, int source){
         Query query=new Query.QueryBuilder().where("mobile",phone).and("country_code",countryCode)
-                .and("source", UserSource.TALENT_UPLOAD.getValue()).and("is_disable",0)
+                .and("source", source).and("is_disable",0)
                 .buildQuery();
         List<UserUserRecord> list=userUserDao.getRecords(query);
         return list;

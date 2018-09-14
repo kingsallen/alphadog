@@ -1,8 +1,8 @@
 package com.moseeker.profile.config;
 
+import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
 import com.rabbitmq.client.ConnectionFactory;
-import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -14,6 +14,9 @@ import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jack on 17/05/2017.
@@ -86,5 +89,23 @@ public class AppConfig {
         SimpleRabbitListenerContainerFactory listenerContainerFactory = new SimpleRabbitListenerContainerFactory();
         listenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
         return listenerContainerFactory;
+    }
+
+    @Bean
+    public TopicExchange exchange() {
+        // 简历搬家交换机
+        return new TopicExchange(ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME, true, false);
+    }
+
+    @Bean
+    public Queue mvHouseQueue() {
+        // 简历搬家队列
+        return new Queue(ProfileMoveConstant.PROFILE_MOVE_QUEUE, true, false, false);
+    }
+    @Bean
+    public List<Binding> bindingMvHouseQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(mvHouseQueue()).to(exchange()).with(ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_RESPONSE));
+        }};
     }
 }
