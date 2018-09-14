@@ -4,10 +4,25 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
+<<<<<<< HEAD
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
+=======
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.bean.TalentTagPOJO;
+import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.company.service.impl.CompanyPcService;
+import com.moseeker.company.service.impl.CompanyService;
+>>>>>>> remotes/origin/feature/1000661
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -43,21 +58,6 @@ public class TalentpoolNewThriftServiceImpl implements Iface {
             return service.getCompanyTagList(hr_id,company_id,page_number, page_size);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
-            throw ExceptionUtils.convertException(e);
-        }
-    }
-
-    @Override
-    public Response getTalentTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
-        try{
-            TalentTagPOJO pojo=service.getTalentTagByPage(hr_id,company_id,page_number,page_size);
-            if(pojo.getFlag()==1){
-                return ResponseUtils.fail(1,"该hr不属于该company_id");
-            }
-            String res= JSON.toJSONString(pojo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
-            return ResponseUtils.successWithoutStringify(res);
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
     }

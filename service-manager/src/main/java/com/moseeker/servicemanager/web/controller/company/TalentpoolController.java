@@ -110,6 +110,7 @@ public class TalentpoolController {
     @ResponseBody
     public String addTag(HttpServletRequest request, HttpServletResponse response) {
         try {
+
             Map<String, Object> data = ParamUtils.parseRequestParam(request);
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
@@ -614,6 +615,36 @@ public class TalentpoolController {
     }
 
 
+<<<<<<< HEAD
+=======
+    /*
+       获取人才标签列表
+    */
+    @RequestMapping(value = "/api/talentpool/talenttag", method = RequestMethod.GET)
+    @ResponseBody
+    public String getTalentTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            int page_number = params.getInt("page_number", 1);
+            int page_size = params.getInt("page_size",0);
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.getTalentTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+>>>>>>> remotes/origin/feature/1000661
 
     /*
        获取企业筛选规则列表

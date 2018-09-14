@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecordRecord extends UpdatableRecordImpl<TalentpoolProfileMoveRecordRecord> implements Record10<Integer, Integer, Integer, Byte, Integer, Byte, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1872886134;
+    private static final long serialVersionUID = -330743926;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_move_record.id</code>.
@@ -117,14 +117,14 @@ public class TalentpoolProfileMoveRecordRecord extends UpdatableRecordImpl<Talen
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_move_record.current_email_num</code>. 当前执行的简历搬家的第n封邮件
+     * Setter for <code>talentpooldb.talentpool_profile_move_record.current_email_num</code>. 当前执行的简历搬家的第n封邮件1111
      */
     public void setCurrentEmailNum(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_move_record.current_email_num</code>. 当前执行的简历搬家的第n封邮件
+     * Getter for <code>talentpooldb.talentpool_profile_move_record.current_email_num</code>. 当前执行的简历搬家的第n封邮件1111
      */
     public Integer getCurrentEmailNum() {
         return (Integer) get(6);
