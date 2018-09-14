@@ -254,7 +254,7 @@ public class ProcessUtils {
 	
 	public static final String LETTERS_RECRUITMENT_APPLY = "被推荐人投递简历";
 	public static final String LETTERS_RECRUITMENT_CVCHECKED = "简历被查看/简历被下载";
-	public static final String LETTERS_RECRUITMENT_CVPASSED = "简历评审合格";
+	public static final String LETTERS_RECRUITMENT_CVPASSED = "简历初筛合格";
 	public static final String LETTERS_RECRUITMENT_OFFERED = "面试通过";
 	public static final String LETTERS_RECRUITMENT_HIRED = "入职";
 	public static final String LETTERS_RECRUITMENT_APPLYREJECT = "提交简历后被拒绝";
@@ -264,7 +264,7 @@ public class ProcessUtils {
 	public static final String LETTERS_RECRUITMENT_BATCHREJECT = "批量职位不合适";
 	public static final String LETTERS_RECRUITMENT_CANCELILLEGAL = "取消不合适";
 	public static final String LETTERS_RECRUITMENT_REOFFERED = "重新面试";
-	public static final String LETTERS_RECRUITMENT_RECVPASSED = "重新评审";
+	public static final String LETTERS_RECRUITMENT_RECVPASSED = "重新初筛";
 	public static final String LETTERS_RECRUITMENT_RECVCHECKED = "重新浏览";
 
 	// Success flags.
