@@ -117,7 +117,6 @@ struct WechatPositionListData {
     29: optional i32 degree;
     30: optional i32 experience_above;
     31: optional string experience;
-
 }
 
 // 微信端职位列表的附加红包信息

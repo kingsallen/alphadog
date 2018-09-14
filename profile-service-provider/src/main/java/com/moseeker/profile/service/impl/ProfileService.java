@@ -38,6 +38,7 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.profile.constants.ProfileSource;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
@@ -972,7 +973,7 @@ public class ProfileService {
      */
     private JSONObject createChatBotProfileData() {
         JSONObject profileProfile = new JSONObject();
-        profileProfile.put("source", 221);                                      //员工主动上传
+        profileProfile.put("source", ProfileSource.ChatBotReferral.getValue()); //员工主动上传
         profileProfile.put("origin", "10000000000000000000000000000");          //员工主动上传
         profileProfile.put("uuid", UUID.randomUUID().toString());               //员工主动上传
         profileProfile.put("user_id", 0);

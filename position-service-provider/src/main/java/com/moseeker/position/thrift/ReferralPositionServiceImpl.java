@@ -51,5 +51,4 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     public Response getPointsConfig(int companyId) throws TException {
         return referralPositionService.getPointsConfig(companyId);
     }
-
 }
