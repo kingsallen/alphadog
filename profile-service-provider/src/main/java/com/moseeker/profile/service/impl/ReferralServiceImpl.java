@@ -318,6 +318,9 @@ public class ReferralServiceImpl implements ReferralService {
 
         int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
                 referralType);
+        if (referralId == 0) {
+            throw ProfileException.REFERRAL_REPEATE_REFERRAL;
+        }
 
         Future<Response> responseFeature = tp.startTast(() -> {
             try {
