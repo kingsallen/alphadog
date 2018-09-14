@@ -150,17 +150,17 @@ public class ReferralPositionService {
 
         Map<String,String> query = new HashMap<String,String>() ;
 
-        query.put("city",dataDO.getCity());
-        query.put("keyWord",dataDO.getKeyWord());
-        query.put("company_id",String.valueOf(dataDO.getCompany_id()));
-        query.put("candidate_source",String.valueOf(dataDO.getCandidate_source()));
-        query.put("employment_type",String.valueOf(dataDO.getEmployment_type()));
+        query.put("city",dataDO.getCity()+"");
+        query.put("keyWord",dataDO.getKeyWord()+"");
+        query.put("company_id",String.valueOf(dataDO.getCompany_id())+"");
+        query.put("candidate_source",String.valueOf(dataDO.getCandidate_source())+"");
+        query.put("employment_type",String.valueOf(dataDO.getEmployment_type())+"");
         query.put("page_size","10000");//查询全部所有记录 理论上不会超过10000条的
         query.put("page_from","1");
 
         //对HR子账号的特殊处理
         int account_type = dataDO.getAccount_type();
-        String account_id = String.valueOf(dataDO.getAccount_id());
+        String account_id = String.valueOf(dataDO.getAccount_id())+"";
         if(dataDO.isSetAccount_type() && account_type == HRAccountType.SubAccount.getType()) {
             query.put("company_id","");//将comapny_id传空，按publisher=account_id查询
             query.put("publisher",account_id);
