@@ -2,6 +2,7 @@ package com.moseeker.position.thrift;
 
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.position.service.fundationbs.ReferralPositionService;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,5 +47,8 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
         referralPositionService.updatePointsConfig(companyId,flag);
     }
 
-
+    @Override
+    public Response getPointsConfig(int companyId) throws TException {
+        return referralPositionService.getPointsConfig(companyId);
+    }
 }
