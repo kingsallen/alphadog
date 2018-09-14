@@ -69,7 +69,6 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.profileMove(profile, operationId, currentEmailNum);
         } catch (BIZException e) {
-            mailUtil.sendMvHouseFailedEmail(e, "简历搬家简历合并入库时发生异常profile:"+ profile + ",operationId:"+ operationId + ",currentEmailNum:" + currentEmailNum);
             logger.info(e.getMessage(), e);
             throw e;
         } catch (Exception e){
