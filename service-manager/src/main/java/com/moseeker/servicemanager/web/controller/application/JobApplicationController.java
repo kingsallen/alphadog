@@ -7,7 +7,6 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.Result;
-import com.moseeker.servicemanager.web.controller.application.form.ApplicationForm;
 import com.moseeker.servicemanager.web.controller.application.form.EmployeeProxyApplyForm;
 import com.moseeker.servicemanager.web.controller.application.vo.ApplicationRecord;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -290,20 +289,19 @@ public class JobApplicationController {
 
 	@RequestMapping(value = "/v1/applications", method = RequestMethod.GET)
 	@ResponseBody
-	public String applications(@RequestParam ApplicationForm form) throws Exception {
+	public String applications(@RequestParam(value = "user_id") Integer userId,
+							   @RequestParam(value = "appid") Integer appid,
+							   @RequestParam(value = "company_id", defaultValue = "0") Integer companyId) throws Exception {
 
 		ValidateUtil validateUtil = new ValidateUtil();
-		validateUtil.addRequiredValidate("appid", form.getAppid());
-		validateUtil.addRequiredValidate("用户信息", form.getUserId());
-		validateUtil.addIntTypeValidate("用户信息", form.getUserId(), 1, null);
+		validateUtil.addRequiredValidate("appid", appid);
+		validateUtil.addRequiredValidate("用户信息", userId);
+		validateUtil.addIntTypeValidate("用户信息", userId, 1, null);
 
 		String validateResult = validateUtil.validate();
 		if (StringUtils.isBlank(validateResult)) {
-			if (form.getCompanyId() == null) {
-				form.setCompanyId(0);
-			}
 			List<ApplicationRecord> data = new ArrayList<>();
-			List<ApplicationRecordsForm> forms = applicationService.getApplications(form.getUserId(), form.getCompanyId());
+			List<ApplicationRecordsForm> forms = applicationService.getApplications(userId, companyId);
 			if (forms != null) {
 				data = forms
 						.stream()
