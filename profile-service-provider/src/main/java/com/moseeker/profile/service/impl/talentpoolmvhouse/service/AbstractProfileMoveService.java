@@ -3,7 +3,6 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
@@ -38,10 +37,10 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveRecordDO;
-import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.talentpool.struct.ProfileMoveForm;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,9 +88,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     protected Logger logger = LoggerFactory.getLogger(AbstractProfileMoveService.class);
 
-    protected ThreadPool pool = ThreadPool.Instance;
+    private ThreadPool pool = ThreadPool.Instance;
 
-    protected static final int TRY_TIMES = 3;
+    private static final int TRY_TIMES = 3;
 
     private static final long SIX_MONTH = 6L * 30 * 24 * 60 * 60 * 1000;
 
@@ -243,6 +242,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @author cjm
      * @date 2018/7/18
      */
+    @Transactional(rollbackFor = Exception.class)
     public Response profileMove(String profile, int operationId, int currentEmailNum) throws TException, InterruptedException, ExecutionException, TimeoutException {
 
         logger.info("profile:{}, operationId:{}, currentEmailNum:{}", profile, operationId, currentEmailNum);
@@ -335,7 +335,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     }
 
-    public Response getMoveOperationState(int hrId) throws BIZException {
+    public Response getMoveOperationState(int hrId) {
         long timeout = 4 * 60 * 60 * 1000;
         Timestamp timestamp = new Timestamp(System.currentTimeMillis() - timeout);
         List<Map<String, Byte>> resultList = new ArrayList<>();
@@ -387,7 +387,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     }
 
     private void updateMoveDetailWithPositiveLock(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status, int retryTimes) throws BIZException {
-        if (retryTimes > 3) {
+        if (retryTimes > TRY_TIMES) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_UPDATE_FAILED);
         }
         int row = poolProfileMoveDetailDao.updateRecordWithPositiveLock(profileMoveDetailRecord, profileMoveRecordId, status);
@@ -427,7 +427,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         // 插入简历搬家TalentpoolProfileMove表
         TalentpoolProfileMoveRecord profileMoveRecord = insertProfileMoveRecord(userHrAccountDO.getId(), hrThirdPartyAccountDO.getChannel(), startDate, endDate);
         int profileMoveId = profileMoveRecord.getId();
-        int thirdPartAccountId = hrDO.getThirdPartyAccountId();
         // 通过第三方账号获取第三方公司名称
 //        List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(thirdPartAccountId);
         // 插入简历搬家操作TalentpoolProfileMoveRecord表
@@ -458,6 +457,10 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = new TalentpoolProfileMoveRecordRecord();
             profileMoveRecordRecord.setProfileMoveId(profileMoveId);
             profileMoveRecordRecord.setCrawlType(CrawlTypeEnum.values()[i].getStatus());
+            // 这里将创建时间和更新时间保持一致，由于chaos失败时会返回邮件数为0，并且修改更新时间，所以定时任务刷新时会根据这两个字段是否相等判断是搬家成功还是失败
+            long currentTime = DateTime.now().getMillis();
+            profileMoveRecordRecord.setCreateTime(new Timestamp(currentTime));
+            profileMoveRecordRecord.setUpdateTime(new Timestamp(currentTime));
             profileMoveRecordRecord = profileMoveRecordDao.addRecord(profileMoveRecordRecord);
             profileMoveRecordRecords.add(profileMoveRecordRecord);
         }
