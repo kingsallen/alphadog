@@ -42,6 +42,9 @@ public class ProfileWorksService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    ProfileCompanyTagService profileCompanyTagService;
+
     public Response getResource(Query query) throws TException {
         Works data = dao.getData(query, Works.class);
         if (data != null) {
@@ -81,8 +84,10 @@ public class ProfileWorksService {
         });
         profileIds.forEach(profileId -> {
             profileEntity.reCalculateProfileWorks(profileId, 0);
+            profileCompanyTagService.handlerCompanyTag(profileId);
         });
         profileDao.updateUpdateTime(profileIds);
+
         return ResponseUtils.success("1");
     }
 
@@ -94,6 +99,7 @@ public class ProfileWorksService {
             updateUpdateTime(structs);
             structs.forEach(struct -> {
                 profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             });
             return ResponseUtils.success("1");
         }
@@ -127,6 +133,7 @@ public class ProfileWorksService {
                 updateUpdateTime(structs);
                 profileIds.forEach(profileId -> {
                     profileEntity.reCalculateProfileWorks(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
                 return ResponseUtils.success("1");
             }
@@ -142,6 +149,7 @@ public class ProfileWorksService {
         profileIds.add(struct.getProfile_id());
         profileDao.updateUpdateTime(profileIds);
         profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+        profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -152,6 +160,7 @@ public class ProfileWorksService {
         if (result > 0) {
             updateUpdateTime(struct);
             profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PUT_FAILED);
@@ -164,6 +173,7 @@ public class ProfileWorksService {
         if (result > 0) {
             updateUpdateTime(struct);
             profileEntity.reCalculateProfileWorks(struct.getProfile_id(), struct.getId());
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
             return ResponseUtils.success("1");
         }
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);

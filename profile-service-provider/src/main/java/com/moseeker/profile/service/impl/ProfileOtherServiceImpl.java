@@ -1,27 +1,34 @@
 package com.moseeker.profile.service.impl;
 
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.ProfileOtherService;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by jack on 02/01/2018.
  */
 @Service
-public class ProfileOtherServiceImpl implements ProfileOtherService {
+public class
+
+ProfileOtherServiceImpl implements ProfileOtherService {
 
     @Autowired
     private ProfileOtherDao dao;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
 
     @Transactional
     @Override
@@ -29,8 +36,15 @@ public class ProfileOtherServiceImpl implements ProfileOtherService {
         if (others != null) {
             validateOthers(others);
             if (others.size() > 0) {
-                return dao.addAllData(others);
+                List<ProfileOtherDO> otherDOS = dao.addAllData(others);
+                Set<Integer> ProfileIds = otherDOS.stream().map(m -> m.getProfileId()).collect(Collectors.toSet());
+                profileDao.updateUpdateTime(ProfileIds);
+                ProfileIds.forEach( profileId -> {
+                    profileCompanyTagService.handlerCompanyTag(profileId);
+                });
+                return otherDOS;
             }
+
         }
         return new ArrayList<>();
     }
@@ -39,7 +53,12 @@ public class ProfileOtherServiceImpl implements ProfileOtherService {
     public ProfileOtherDO addOther(ProfileOtherDO other) throws CommonException {
         ValidationMessage<ProfileOtherDO> validationMessage =  ProfileValidation.verifyOther(other);
         if (validationMessage.isPass()) {
-            return dao.addData(other);
+            ProfileOtherDO otherDO = dao.addData(other);
+            Set<Integer> set = new HashSet<>();
+            set.add(other.getProfileId());
+            profileDao.updateUpdateTime(set);
+            profileCompanyTagService.handlerCompanyTag(other.getProfileId());
+            return otherDO;
         }
         return new ProfileOtherDO();
     }
@@ -49,7 +68,13 @@ public class ProfileOtherServiceImpl implements ProfileOtherService {
         if (others != null) {
             validateOthers(others);
             if (others.size() > 0) {
-                return dao.updateDatas(others);
+                int[] ids =  dao.updateDatas(others);
+                Set<Integer> ProfileIds = others.stream().map(m -> m.getProfileId()).collect(Collectors.toSet());
+                profileDao.updateUpdateTime(ProfileIds);
+                ProfileIds.forEach( profileId -> {
+                    profileCompanyTagService.handlerCompanyTag(profileId);
+                });
+                return ids;
             }
         }
         return new int[0];
@@ -59,7 +84,12 @@ public class ProfileOtherServiceImpl implements ProfileOtherService {
     public int putOther(ProfileOtherDO other) throws CommonException {
         ValidationMessage<ProfileOtherDO> validationMessage =  ProfileValidation.verifyOther(other);
         if (validationMessage.isPass()) {
-            return dao.updateData(other);
+            int id = dao.updateData(other);
+            Set<Integer> set = new HashSet<>();
+            set.add(other.getProfileId());
+            profileDao.updateUpdateTime(set);
+            profileCompanyTagService.handlerCompanyTag(other.getProfileId());
+            return id;
         }
         return 0;
     }
