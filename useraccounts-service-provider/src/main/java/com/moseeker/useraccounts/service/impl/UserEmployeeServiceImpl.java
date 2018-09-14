@@ -29,6 +29,7 @@ import com.moseeker.useraccounts.domain.AwardEntity;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
+import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
@@ -80,6 +81,9 @@ public class UserEmployeeServiceImpl {
     @Autowired
     PositionEntity positionEntity;
 
+    @Autowired
+    private EmployeeBatchHandler employeeBatchHandler;
+
     private ThreadPool threadPool = ThreadPool.Instance;
 
     @Resource(name = "cacheClient")
@@ -102,7 +106,7 @@ public class UserEmployeeServiceImpl {
             if (batchForm.as_task) {
                 new Thread(() -> {
                     try {
-                        employeeEntity.postPutUserEmployeeBatch(batchForm);
+                        employeeBatchHandler.postPutUserEmployeeBatch(batchForm);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -113,7 +117,7 @@ public class UserEmployeeServiceImpl {
                 response.setData(JSON.toJSONString(new int[0]));
                 return response;
             } else {
-                return ResponseUtils.success(employeeEntity.postPutUserEmployeeBatch(batchForm));
+                return ResponseUtils.success(employeeBatchHandler.postPutUserEmployeeBatch(batchForm));
             }
         } catch (Exception e) {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);

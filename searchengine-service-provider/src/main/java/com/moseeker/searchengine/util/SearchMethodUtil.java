@@ -120,6 +120,8 @@ public class SearchMethodUtil {
             responseBuilder.addSort(builder);
             responseBuilder.addSort("id",SortOrder.DESC);
         }
+        //默认按更新时间排序
+        responseBuilder.addSort("update_time",SortOrder.DESC);
     }
     /*
      根据script排序
