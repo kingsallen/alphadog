@@ -150,11 +150,21 @@ public class ReferralPositionService {
 
         Map<String,String> query = new HashMap<String,String>() ;
 
-        query.put("city",dataDO.getCity()+"");
-        query.put("keyWord",dataDO.getKeyWord()+"");
-        query.put("company_id",String.valueOf(dataDO.getCompany_id())+"");
-        query.put("candidate_source",String.valueOf(dataDO.getCandidate_source())+"");
-        query.put("employment_type",String.valueOf(dataDO.getEmployment_type())+"");
+        if(dataDO.isSetCity()) {
+            query.put("city",dataDO.getCity());
+        }
+        if(dataDO.isSetKeyWord()) {
+            query.put("keyWord",dataDO.getKeyWord());
+        }
+        if(dataDO.isSetCompany_id()) {
+            query.put("company_id",String.valueOf(dataDO.getCompany_id()));
+        }
+        if(dataDO.isSetCandidate_source()) {
+            query.put("candidate_source",String.valueOf(dataDO.getCandidate_source()));
+        }
+        if(dataDO.isSetEmployment_type()) {
+            query.put("employment_type",String.valueOf(dataDO.getEmployment_type()));
+        }
         query.put("page_size","10000");//查询全部所有记录 理论上不会超过10000条的
         query.put("page_from","1");
 
