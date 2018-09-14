@@ -1195,13 +1195,19 @@ public class JobApplicataionService {
                 ar.setStatusName(recruitmentScheduleEnum.getStatus());
                 ar.setTime(new DateTime(app.getSubmitTime().getTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 if (positions != null) {
-                    Optional<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> op = positions.stream().filter(position -> position.getId() == app.getPositionId()).findFirst();
+                    Optional<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> op = positions
+                            .stream()
+                            .filter(position -> position.getId().equals(app.getPositionId()))
+                            .findFirst();
                     if (op.isPresent()) {
                         ar.setPositionTitle(op.get().getTitle());
                     }
                 }
                 if (companies != null) {
-                    Optional<HrCompanyRecord> op = companies.stream().filter(company -> company.getId() == app.getCompanyId()).findFirst();
+                    Optional<HrCompanyRecord> op = companies
+                            .stream()
+                            .filter(company -> company.getId().equals(app.getCompanyId()))
+                            .findFirst();
                     if (op.isPresent()) {
                         ar.setCompanyName(op.get().getAbbreviation());
                     }
