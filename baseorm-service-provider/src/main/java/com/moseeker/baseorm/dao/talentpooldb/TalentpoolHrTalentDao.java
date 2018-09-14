@@ -69,4 +69,12 @@ public class TalentpoolHrTalentDao extends JooqCrudImpl<com.moseeker.baseorm.db.
 
         return records;
     }
+
+    public void updateTalentpoolHrTalentPublic(Integer userId, int hrId) {
+        create.update(TalentpoolHrTalent.TALENTPOOL_HR_TALENT)
+                .set(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.PUBLIC, (byte)1)
+                .where(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.HR_ID.eq(hrId))
+                .and(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.USER_ID.eq(userId))
+                .execute();
+    }
 }

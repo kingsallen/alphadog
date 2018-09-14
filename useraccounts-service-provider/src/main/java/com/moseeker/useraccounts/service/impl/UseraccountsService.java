@@ -1145,7 +1145,11 @@ public class UseraccountsService {
             logger.info("UseraccountsService createRetrieveProfileUser mobile not exist");
             return 0;
         }
-        user.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+        // 如果不是简历搬家来源，按之前逻辑
+        if(user.getSource() != UserSource.MV_HOUSE.getValue()){
+            user.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+        }
+
         try {
             if (user.getPassword() == null) {
                 user.setPassword("");
