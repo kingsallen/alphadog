@@ -631,10 +631,6 @@ public class TalentpoolSearchengine {
         String isRecommend=params.get("is_recommend");
         String companyName=params.get("company_name");
         String exists=params.get("exists");
-<<<<<<< HEAD
-
-=======
->>>>>>> remotes/origin/feature/1000661
         String keywords = params.get("keywords");
         String containAnykey = params.get("contain_any_key");
         String userId = params.get("user_id");
@@ -714,15 +710,6 @@ public class TalentpoolSearchengine {
                 }
                 MultiMatchQueryBuilder fullf = QueryBuilders.multiMatchQuery(keyword);
                 fullf.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
-<<<<<<< HEAD
-//                        .field("title")
-//                        .field("city")
-//                        .field("city_ename")
-//                        .field("team_name")
-//                        .field("custom")
-//                        .field("occupation");
-=======
->>>>>>> remotes/origin/feature/1000661
                 List<String> colums = StringUtils.stringToList(Constant.PROFILE_SEARCH_KEYWORD_COLUMS,";");
                 if(!StringUtils.isEmptyList(colums)){
                     for(String colum :colums){
