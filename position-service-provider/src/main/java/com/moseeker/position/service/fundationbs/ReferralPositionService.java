@@ -122,8 +122,8 @@ public class ReferralPositionService {
         //全选
         if(all_selected == 1 ) {
             //全量新增 要根据筛选条件查询所有positionIds
-            List<Integer> esPositionIds = getPostionIdFromEs(dataDO);
-            if(opType.equals("add") && !CollectionUtils.isEmpty(esPositionIds) ) {i
+            List<Integer> esPositionIds = getPositionIdFromEs(dataDO);
+            if(opType.equals("add") && !CollectionUtils.isEmpty(esPositionIds) ) {
                 positionEntity.putReferralPositions(esPositionIds);
                 return;
             }
