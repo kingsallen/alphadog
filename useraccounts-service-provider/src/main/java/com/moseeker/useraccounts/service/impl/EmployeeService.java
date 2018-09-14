@@ -741,18 +741,18 @@ public class EmployeeService {
 
     /**
      * 查找电脑端上传配置的职位信息
-     * @param employeeId 员工编号
+     * @param userId 员工编号
      * @return 配置的职位信息
      */
-    public ReferralPositionInfo getUploadType(int employeeId) throws UserAccountException {
+    public ReferralPositionInfo getUploadType(int userId) throws UserAccountException {
 
-        UserEmployeeDO userEmployeeDO = employeeEntity.getEmployeeByID(employeeId);
+        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
         if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
 
         String referralTypeInfoString = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE_TYPE.toString(),
-                String.valueOf(employeeId), (String) null);
+                String.valueOf(userEmployeeDO.getId()), (String) null);
         if (org.apache.commons.lang.StringUtils.isBlank(referralTypeInfoString)) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_TYPE_NOT_EXIST;
         }
