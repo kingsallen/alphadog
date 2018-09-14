@@ -631,6 +631,7 @@ public class TalentpoolSearchengine {
         String isRecommend=params.get("is_recommend");
         String companyName=params.get("company_name");
         String exists=params.get("exists");
+
         String keywords = params.get("keywords");
         String containAnykey = params.get("contain_any_key");
         String userId = params.get("user_id");

@@ -39,6 +39,7 @@ public class TalentpoolNewThriftServiceImpl implements Iface {
     @Override
     public Response getCompanyTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
         try{
+
             return service.getCompanyTagList(hr_id,company_id,page_number, page_size);
         }catch(Exception e){
             logger.error(e.getMessage(),e);

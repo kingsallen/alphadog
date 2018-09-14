@@ -67,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TalentPoolService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public TalentPoolService(){
