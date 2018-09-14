@@ -15,6 +15,7 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +57,15 @@ public class ReferralPositionController {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+
             List<Integer> pids = (List<Integer>)params.get("position_ids");
             if (CollectionUtils.isEmpty(pids)) {
                 return ResponseLogNotification.fail(request, "position_ids不能为空");
             }
 
-            referralPositionService.delReferralPositions(pids);
+            ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
+
+            referralPositionService.delReferralPositions(dataDO);
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
@@ -80,15 +84,10 @@ public class ReferralPositionController {
     public String putReferralPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> pids = (List<Integer>)params.get("position_ids");
-            Boolean all_selected = params.getBoolean("all_selected",false);
-            Integer companyId = params.getInt("company_id",0);
-            if (CollectionUtils.isEmpty(pids)) {
-                return ResponseLogNotification.fail(request, "position_ids不能为空");
-            }
 
+            ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
-            referralPositionService.putReferralPositions(pids,all_selected,companyId);
+            referralPositionService.putReferralPositions(dataDO);
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {

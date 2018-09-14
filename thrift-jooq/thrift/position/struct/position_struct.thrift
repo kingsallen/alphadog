@@ -430,3 +430,15 @@ struct JobPositionHrCompanyFeatureDO{
   1: optional i32 pid,
   2: optional i32 fid
 }
+
+struct ReferralPositionUpdateDataDO{
+    1:optional list<i32> pids,
+    2:optional i32 all_selected,
+    3:optional i32 company_id,
+    4:optional i32 account_id,
+    5:optional i32 account_type,
+    6:optional string city,
+    7:optional i32 candidate_source,
+    8:optional i32 employment_type,
+    9:optional string keyWord
+}

@@ -178,9 +178,11 @@ public class SearchMethodUtil {
         if(StringUtils.isNotBlank(candidateSource)){
             searchUtil.handleMatchParse(candidateSource,query,"candidate_source_name");
         }
+
         if(StringUtils.isNotBlank(city)){
-            searchUtil.handleMatchParse(city,query,"city");
+            searchUtil.handleTerms(city,query,"city");
         }
+
         if(StringUtils.isNotBlank(occupation)){
             searchUtil.handleTerm(occupation,query,"search_data.occupation");
         }
@@ -219,4 +221,17 @@ public class SearchMethodUtil {
         params.put("status",statusList);
         searchUtil.handleShouldMatchFilter(params,query);
     }
+
+
+//    public void handleCityQuery(QueryBuilder query,String city){
+//        List<String> cityNames = new ArrayList<String>();
+//        String[] city_list = city.split(",");
+//        for(String name :city_list){
+//            cityNames.add(city);
+//        }
+//        Map<String,List<String>> params=new HashMap<>();
+//        params.put("city",cityNames);
+//
+//        searchUtil.handleShouldMatchFilter(params,query);
+//    }
 }
