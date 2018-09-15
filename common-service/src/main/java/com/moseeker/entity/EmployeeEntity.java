@@ -225,7 +225,7 @@ public class EmployeeEntity {
     public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
         // 获取积分点数
         if (companyId == 0 || templateId == 0) {
-            throw new Exception("参数不完整");
+            throw EmployeeException.PROGRAM_PARAM_NOTEXIST;
         } else {
             int award;
             int awardConfigId = 0;
@@ -247,7 +247,7 @@ public class EmployeeEntity {
                     award = confTplDO.getAward();
                     reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
                 } else {
-                    throw new Exception("添加积分点数不能为0");
+                    throw EmployeeException.EMPLOYEE_AWARD_ZERO;
                 }
             }
             UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
