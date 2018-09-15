@@ -33,7 +33,7 @@ struct TalentpoolCompanyTagDO {
    23: optional i32 disable=1,
    24: optional string origins="",
    25: optional list<string> keyword_list,
-   26: optional i32 contain_any_key
+   26: optional i8 contain_any_key
 }
 
  struct ActionForm {
