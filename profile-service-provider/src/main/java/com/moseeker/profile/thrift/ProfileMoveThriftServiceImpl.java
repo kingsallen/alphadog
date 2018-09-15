@@ -2,6 +2,7 @@ package com.moseeker.profile.thrift;
 
 
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.service.AbstractProfileMoveService;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.service.ProfileMoveServiceFactory;
 import com.moseeker.entity.biz.ProfileMailUtil;
