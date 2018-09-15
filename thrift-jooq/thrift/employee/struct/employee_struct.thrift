@@ -220,3 +220,14 @@ struct ReferralCard {
     6: optional string mobile,
     7: optional i32 applyId,
 }
+
+//员工与所在公司的基本信息
+struct EmployeeInfo {
+    1 : optional i32 id,
+    2 : optional i32 companyId,
+    3 : optional string name,
+    4 : optional string companyName,
+    5 : optional string companyAbbreviation,
+    6 : optional string signature,
+    7 : optional i32 userId,
+}
