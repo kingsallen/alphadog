@@ -374,7 +374,7 @@ public class ReferralServiceImpl implements ReferralService {
             jsonObject.put("employeeId", employeeDO.getId());
             jsonObject.put("companyId", employeeDO.getCompanyId());
             jsonObject.put("positionId", 0);
-            jsonObject.put("templateId", 16);
+            jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
             jsonObject.put("berecomUserId", userId);
             jsonObject.put("applicationId", applicationId);
             jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
@@ -384,7 +384,7 @@ public class ReferralServiceImpl implements ReferralService {
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
             jsonObject.put("positionId", positionRecord.getId());
-            jsonObject.put("templateId", 13);
+            jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
         } catch (Exception e) {
