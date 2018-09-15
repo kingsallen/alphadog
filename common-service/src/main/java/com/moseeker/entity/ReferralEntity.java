@@ -159,7 +159,7 @@ public class ReferralEntity {
         if (referralId == 0) {
             throw EmployeeException.EMPLOYEE_REPEAT_RECOMMEND;
         }
-        return referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
+        return referralId;
     }
 
     public ReferralLog fetchReferralLog(int referralLogId) {
