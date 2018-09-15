@@ -107,7 +107,7 @@ public class ReferralPositionService {
 
     public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
-        logger.info("positionUpdateHandler {}",JSON.toJSONString(dataDO));
+        logger.info("positionUpdateHandler {} {}",JSON.toJSONString(dataDO),opType);
 
         //如果companyId为空，直接返回
         if(!dataDO.isSetCompany_id()  ){
