@@ -1,7 +1,6 @@
 package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
-import com.google.common.collect.Lists;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
@@ -407,15 +406,4 @@ public class PositionEntity {
     }
 
 
-    public static void main(String[] args) {
-        List<Integer> intList = Lists.newArrayList(1, 2, 3, 4, 5, 6, 7, 8);
-
-        Map<Integer, List<Integer>> groups =
-                intList.stream().collect(Collectors.groupingBy(s -> (s - 1) / 3));
-        List<List<Integer>> subSets = new ArrayList<List<Integer>>(groups.values());
-
-        List<Integer> lastPartition = subSets.get(2);
-        List<Integer> expectedLastPartition = Lists.<Integer> newArrayList(7, 8);
-        System.out.println(subSets);
-    }
 }

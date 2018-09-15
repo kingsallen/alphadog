@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @Date: 2018/9/4
@@ -211,26 +212,36 @@ public class ReferralPositionService {
 
     }
 
-    public void processUpdateData(List<Integer> pids ,String optType){
+    public void processUpdateData(List<Integer> pids ,String optType) throws Exception{
+
+        if(CollectionUtils.isEmpty(pids)) {
+            return;
+        }
+
         List<List<Integer>> splitLists = splitList(pids,500);
-
-            for(List<Integer> list: splitLists) {
-
-                if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
-                    tp.startTast(() -> {
-                        positionEntity.putReferralPositions(list);
-                        return 0;
-                    });
-                }else if(optType.equals("del") && !CollectionUtils.isEmpty(list)) {
-                    tp.startTast(() -> {
-                        positionEntity.delReferralPositions(list);
-                        return 0;
-                    });
-                }
+        Integer taskNum = splitLists.size();
+        Integer countTaskNum = 0;
 
 
-
+        for(List<Integer> list: splitLists) {
+            if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
+                Future<Integer> future = tp.startTast(() -> { positionEntity.putReferralPositions(list);return 1; });
+                future.get();
+                countTaskNum++;
+            }else if(optType.equals("del") && !CollectionUtils.isEmpty(list)) {
+                Future<Integer> future = tp.startTast(() -> {
+                    positionEntity.delReferralPositions(list);
+                    return 1;
+                });
+                future.get();
+                countTaskNum++;
             }
+        }
+
+
+        while (countTaskNum >= taskNum ) {
+            return;
+        }
 
     }
 

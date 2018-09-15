@@ -786,6 +786,7 @@ public class SearchengineEntity {
     }
 
 
+
     public Response getPostionIds(){
         TransportClient client = getTransportClient();
         if (client == null) {
