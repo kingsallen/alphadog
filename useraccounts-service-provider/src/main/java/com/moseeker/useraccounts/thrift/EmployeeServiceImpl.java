@@ -376,9 +376,9 @@ public class EmployeeServiceImpl implements Iface {
 	}
 
 	@Override
-	public ReferralPosition getUploadType(int userId) throws BIZException, TException {
+	public ReferralPosition getUploadType(int employeeId) throws BIZException, TException {
 		try {
-			ReferralPositionInfo referralPositionInfo = service.getUploadType(userId);
+			ReferralPositionInfo referralPositionInfo = service.getUploadType(employeeId);
 			ReferralPosition referralPosition = convertReferralPosition(referralPositionInfo);
 			return referralPosition;
 		} catch (Exception e) {

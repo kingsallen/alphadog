@@ -200,7 +200,7 @@ public class ReferralController {
      * @return 职位信息
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/user/{id}/referral-type", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/employee/{id}/referral-type", method = RequestMethod.GET)
     @ResponseBody
     public String getReferralType(@PathVariable int id, HttpServletRequest request) throws Exception {
         if (request.getParameter("appid") == null) {

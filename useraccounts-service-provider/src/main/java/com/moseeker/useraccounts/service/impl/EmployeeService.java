@@ -746,12 +746,12 @@ public class EmployeeService {
 
     /**
      * 查找电脑端上传配置的职位信息
-     * @param userId 员工编号
+     * @param employeeId 员工编号
      * @return 配置的职位信息
      */
-    public ReferralPositionInfo getUploadType(int userId) throws UserAccountException {
+    public ReferralPositionInfo getUploadType(int employeeId) throws UserAccountException {
 
-        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        UserEmployeeDO userEmployeeDO = employeeEntity.getEmployeeByID(employeeId);
         if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }

@@ -64,7 +64,7 @@ public class EmployeeService {
 
     public void setUploadType(int employeeId, int positionId, byte type) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.employee.struct.ReferralPosition getUploadType(int userId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.employee.struct.ReferralPosition getUploadType(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.employee.struct.ReferralCard getReferralCard(int referralLogId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -126,7 +126,7 @@ public class EmployeeService {
 
     public void setUploadType(int employeeId, int positionId, byte type, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
-    public void getUploadType(int userId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler) throws org.apache.thrift.TException;
+    public void getUploadType(int employeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler) throws org.apache.thrift.TException;
 
     public void getReferralCard(int referralLogId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralCard> resultHandler) throws org.apache.thrift.TException;
 
@@ -802,16 +802,16 @@ public class EmployeeService {
       return;
     }
 
-    public com.moseeker.thrift.gen.employee.struct.ReferralPosition getUploadType(int userId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.employee.struct.ReferralPosition getUploadType(int employeeId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_getUploadType(userId);
+      send_getUploadType(employeeId);
       return recv_getUploadType();
     }
 
-    public void send_getUploadType(int userId) throws org.apache.thrift.TException
+    public void send_getUploadType(int employeeId) throws org.apache.thrift.TException
     {
       getUploadType_args args = new getUploadType_args();
-      args.setUserId(userId);
+      args.setEmployeeId(employeeId);
       sendBase("getUploadType", args);
     }
 
@@ -1790,24 +1790,24 @@ public class EmployeeService {
       }
     }
 
-    public void getUploadType(int userId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler) throws org.apache.thrift.TException {
+    public void getUploadType(int employeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getUploadType_call method_call = new getUploadType_call(userId, resultHandler, this, ___protocolFactory, ___transport);
+      getUploadType_call method_call = new getUploadType_call(employeeId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class getUploadType_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.employee.struct.ReferralPosition> {
-      private int userId;
-      public getUploadType_call(int userId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int employeeId;
+      public getUploadType_call(int employeeId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.userId = userId;
+        this.employeeId = employeeId;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("getUploadType", org.apache.thrift.protocol.TMessageType.CALL, 0));
         getUploadType_args args = new getUploadType_args();
-        args.setUserId(userId);
+        args.setEmployeeId(employeeId);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -2535,7 +2535,7 @@ public class EmployeeService {
       public getUploadType_result getResult(I iface, getUploadType_args args) throws org.apache.thrift.TException {
         getUploadType_result result = new getUploadType_result();
         try {
-          result.success = iface.getUploadType(args.userId);
+          result.success = iface.getUploadType(args.employeeId);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -4345,7 +4345,7 @@ public class EmployeeService {
       }
 
       public void start(I iface, getUploadType_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.employee.struct.ReferralPosition> resultHandler) throws org.apache.thrift.TException {
-        iface.getUploadType(args.userId,resultHandler);
+        iface.getUploadType(args.employeeId,resultHandler);
       }
     }
 
@@ -26416,16 +26416,16 @@ public class EmployeeService {
   public static class getUploadType_args implements org.apache.thrift.TBase<getUploadType_args, getUploadType_args._Fields>, java.io.Serializable, Cloneable, Comparable<getUploadType_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("getUploadType_args");
 
-    private static final org.apache.thrift.protocol.TField USER_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("userId", org.apache.thrift.protocol.TType.I32, (short)1);
+    private static final org.apache.thrift.protocol.TField EMPLOYEE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("employeeId", org.apache.thrift.protocol.TType.I32, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getUploadType_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getUploadType_argsTupleSchemeFactory();
 
-    public int userId; // required
+    public int employeeId; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      USER_ID((short)1, "userId");
+      EMPLOYEE_ID((short)1, "employeeId");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -26440,8 +26440,8 @@ public class EmployeeService {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // USER_ID
-            return USER_ID;
+          case 1: // EMPLOYEE_ID
+            return EMPLOYEE_ID;
           default:
             return null;
         }
@@ -26482,12 +26482,12 @@ public class EmployeeService {
     }
 
     // isset id assignments
-    private static final int __USERID_ISSET_ID = 0;
+    private static final int __EMPLOYEEID_ISSET_ID = 0;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.USER_ID, new org.apache.thrift.meta_data.FieldMetaData("userId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.EMPLOYEE_ID, new org.apache.thrift.meta_data.FieldMetaData("employeeId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getUploadType_args.class, metaDataMap);
@@ -26497,11 +26497,11 @@ public class EmployeeService {
     }
 
     public getUploadType_args(
-      int userId)
+      int employeeId)
     {
       this();
-      this.userId = userId;
-      setUserIdIsSet(true);
+      this.employeeId = employeeId;
+      setEmployeeIdIsSet(true);
     }
 
     /**
@@ -26509,7 +26509,7 @@ public class EmployeeService {
      */
     public getUploadType_args(getUploadType_args other) {
       __isset_bitfield = other.__isset_bitfield;
-      this.userId = other.userId;
+      this.employeeId = other.employeeId;
     }
 
     public getUploadType_args deepCopy() {
@@ -26518,40 +26518,40 @@ public class EmployeeService {
 
     @Override
     public void clear() {
-      setUserIdIsSet(false);
-      this.userId = 0;
+      setEmployeeIdIsSet(false);
+      this.employeeId = 0;
     }
 
-    public int getUserId() {
-      return this.userId;
+    public int getEmployeeId() {
+      return this.employeeId;
     }
 
-    public getUploadType_args setUserId(int userId) {
-      this.userId = userId;
-      setUserIdIsSet(true);
+    public getUploadType_args setEmployeeId(int employeeId) {
+      this.employeeId = employeeId;
+      setEmployeeIdIsSet(true);
       return this;
     }
 
-    public void unsetUserId() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __USERID_ISSET_ID);
+    public void unsetEmployeeId() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID);
     }
 
-    /** Returns true if field userId is set (has been assigned a value) and false otherwise */
-    public boolean isSetUserId() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __USERID_ISSET_ID);
+    /** Returns true if field employeeId is set (has been assigned a value) and false otherwise */
+    public boolean isSetEmployeeId() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID);
     }
 
-    public void setUserIdIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
+    public void setEmployeeIdIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __EMPLOYEEID_ISSET_ID, value);
     }
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
-      case USER_ID:
+      case EMPLOYEE_ID:
         if (value == null) {
-          unsetUserId();
+          unsetEmployeeId();
         } else {
-          setUserId((java.lang.Integer)value);
+          setEmployeeId((java.lang.Integer)value);
         }
         break;
 
@@ -26560,8 +26560,8 @@ public class EmployeeService {
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
-      case USER_ID:
-        return getUserId();
+      case EMPLOYEE_ID:
+        return getEmployeeId();
 
       }
       throw new java.lang.IllegalStateException();
@@ -26574,8 +26574,8 @@ public class EmployeeService {
       }
 
       switch (field) {
-      case USER_ID:
-        return isSetUserId();
+      case EMPLOYEE_ID:
+        return isSetEmployeeId();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -26595,12 +26595,12 @@ public class EmployeeService {
       if (this == that)
         return true;
 
-      boolean this_present_userId = true;
-      boolean that_present_userId = true;
-      if (this_present_userId || that_present_userId) {
-        if (!(this_present_userId && that_present_userId))
+      boolean this_present_employeeId = true;
+      boolean that_present_employeeId = true;
+      if (this_present_employeeId || that_present_employeeId) {
+        if (!(this_present_employeeId && that_present_employeeId))
           return false;
-        if (this.userId != that.userId)
+        if (this.employeeId != that.employeeId)
           return false;
       }
 
@@ -26611,7 +26611,7 @@ public class EmployeeService {
     public int hashCode() {
       int hashCode = 1;
 
-      hashCode = hashCode * 8191 + userId;
+      hashCode = hashCode * 8191 + employeeId;
 
       return hashCode;
     }
@@ -26624,12 +26624,12 @@ public class EmployeeService {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetEmployeeId()).compareTo(other.isSetEmployeeId());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetUserId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.userId, other.userId);
+      if (isSetEmployeeId()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.employeeId, other.employeeId);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -26654,8 +26654,8 @@ public class EmployeeService {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("getUploadType_args(");
       boolean first = true;
 
-      sb.append("userId:");
-      sb.append(this.userId);
+      sb.append("employeeId:");
+      sb.append(this.employeeId);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -26702,10 +26702,10 @@ public class EmployeeService {
             break;
           }
           switch (schemeField.id) {
-            case 1: // USER_ID
+            case 1: // EMPLOYEE_ID
               if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.userId = iprot.readI32();
-                struct.setUserIdIsSet(true);
+                struct.employeeId = iprot.readI32();
+                struct.setEmployeeIdIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -26725,8 +26725,8 @@ public class EmployeeService {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        oprot.writeFieldBegin(USER_ID_FIELD_DESC);
-        oprot.writeI32(struct.userId);
+        oprot.writeFieldBegin(EMPLOYEE_ID_FIELD_DESC);
+        oprot.writeI32(struct.employeeId);
         oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
@@ -26746,12 +26746,12 @@ public class EmployeeService {
       public void write(org.apache.thrift.protocol.TProtocol prot, getUploadType_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetUserId()) {
+        if (struct.isSetEmployeeId()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetUserId()) {
-          oprot.writeI32(struct.userId);
+        if (struct.isSetEmployeeId()) {
+          oprot.writeI32(struct.employeeId);
         }
       }
 
@@ -26760,8 +26760,8 @@ public class EmployeeService {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.userId = iprot.readI32();
-          struct.setUserIdIsSet(true);
+          struct.employeeId = iprot.readI32();
+          struct.setEmployeeIdIsSet(true);
         }
       }
     }
