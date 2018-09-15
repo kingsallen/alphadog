@@ -204,7 +204,7 @@ public class ReferralPositionService {
                     jdIdList.add(pid);
                 }
             }
-            logger.info("getPositionIdFromEs jdIdList {}",JSON.toJSONString(jdIdList));
+            logger.info("getPositionIdFromEs jdIdList {}",JSON.toJSONString(jdIdList.size()));
 
             return jdIdList;
         } else {
