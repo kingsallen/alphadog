@@ -14,10 +14,12 @@ import com.moseeker.servicemanager.web.controller.referral.form.ClaimForm;
 import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
 import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.vo.City;
+import com.moseeker.servicemanager.web.controller.referral.vo.EmployeeInfoVO;
 import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
 import com.moseeker.servicemanager.web.controller.referral.vo.ReferralPositionInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
+import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralCard;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
@@ -249,6 +251,25 @@ public class ReferralController {
             form.setVerifyCode(claimForm.getVcode());
             userService.claimReferralCard(form);
             return Result.success(true).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    @RequestMapping(value = "/v1/referral/users/{id}/employee-info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmployeeInfo(@PathVariable Integer id, @RequestParam(value = "appid") Integer appid) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("用户编号", id);
+
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+
+            EmployeeInfo employeeInfo = employeeService.getEmployeeInfo(id);
+            EmployeeInfoVO employeeInfoVO = new EmployeeInfoVO();
+            BeanUtils.copyProperties(employeeInfo, employeeInfoVO);
+            return Result.success(employeeInfoVO).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }
