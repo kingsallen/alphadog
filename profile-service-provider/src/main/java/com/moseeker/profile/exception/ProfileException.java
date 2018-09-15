@@ -36,6 +36,7 @@ public class ProfileException extends CommonException {
     public static final ProfileException PROFILE_FILE_SAVE_FAILED = new ProfileException(30035,"简历文件保存失败！");
     public static final ProfileException REFERRAL_PROFILE_NOT_EXIST = new ProfileException(30036,"简历数据不存在！");
     public static final ProfileException REFERRAL_REPEATE_REFERRAL = new ProfileException(30037,"重复推荐！");
+    public static final ProfileException REFERRAL_FILE_TYPE_NOT_SUPPORT = new ProfileException(30038,"文件格式不支持！");
 
     protected ProfileException(int code, String message) {
         super(code, message);

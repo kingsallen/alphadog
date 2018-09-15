@@ -1145,7 +1145,11 @@ public class UseraccountsService {
             logger.info("UseraccountsService createRetrieveProfileUser mobile not exist");
             return 0;
         }
-        user.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+        // 如果不是简历搬家来源，按之前逻辑
+        if(user.getSource() != UserSource.MV_HOUSE.getValue()){
+            user.setSource((byte) UserSource.RETRIEVE_PROFILE.getValue());
+        }
+
         try {
             if (user.getPassword() == null) {
                 user.setPassword("");
@@ -1222,7 +1226,7 @@ public class UseraccountsService {
         }
 
         //修改手机号码
-        if (userUserDO.getUsername() == null || !FormCheck.isMobile(userUserDO.getUsername().trim())) {
+        if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredStringValidate("手机号码", claimForm.getMobile());
             validateUtil.addRequiredStringValidate("验证码", claimForm.getVerifyCode());

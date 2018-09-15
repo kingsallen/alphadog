@@ -14,6 +14,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.*;
 import com.moseeker.entity.biz.ProfileParseUtil;
@@ -101,6 +102,10 @@ public class ReferralServiceImpl implements ReferralService {
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
 
+        if (!ProfileDocCheckTool.checkFileName(fileName)) {
+            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
+        }
+
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
         if (employeeDO == null || employeeDO.getId() <= 0) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
@@ -131,7 +136,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", JSONObject.toJSONString(profilePojo), 24*60*60);
+                "", profilePojo.toJson(), 24*60*60);
         return profileDocParseResult;
     }
 
@@ -318,10 +323,6 @@ public class ReferralServiceImpl implements ReferralService {
 
         int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
                 referralType);
-        if (referralId == 0) {
-            throw ProfileException.REFERRAL_REPEATE_REFERRAL;
-        }
-
         Future<Response> responseFeature = tp.startTast(() -> {
             try {
                 JobApplication jobApplication = new JobApplication();

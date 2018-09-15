@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.constant;
+package com.moseeker.baseorm.constant;
 
 /**
  * 微信公众号 授权状态

@@ -74,7 +74,9 @@ service EmployeeService {
     //设置 
     void setUploadType(1:i32 employeeId, 2: i32 positionId, 3: i8 type)throws (1: common_struct.BIZException e)
     //获取设置电脑端上传配置的信息
-    employee_struct.ReferralPosition getUploadType(1:i32 userId)throws (1: common_struct.BIZException e)
+    employee_struct.ReferralPosition getUploadType(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //获取推荐名片
     employee_struct.ReferralCard getReferralCard(1: i32 referralLogId)throws (1: common_struct.BIZException e)
+    //获取员工信息
+    employee_struct.EmployeeInfo getEmployeeInfo(1: i32 userId)throws (1: common_struct.BIZException e)
 }

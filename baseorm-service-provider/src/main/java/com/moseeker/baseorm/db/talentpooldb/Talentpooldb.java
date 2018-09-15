@@ -4,20 +4,7 @@
 package com.moseeker.baseorm.db.talentpooldb;
 
 
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload;
-import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,6 +93,23 @@ public class Talentpooldb extends SchemaImpl {
     public final TalentpoolTag TALENTPOOL_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTag.TALENTPOOL_TAG;
 
     /**
+     * 简历搬家操作记录表
+     */
+    public final TalentpoolProfileMove TALENTPOOL_PROFILE_MOVE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE;
+
+    /**
+     * 凡是记录在该表的手机号对应的简历都是已成功入库的简历搬家简历，
+     但是如果简历搬家失败时根据status字段标记出哪些简历是搬家失败的，下次搬家时不会因为重新合并一次导致数据不准确
+     */
+    public final TalentpoolProfileMoveDetail TALENTPOOL_PROFILE_MOVE_DETAIL = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL;
+
+    /**
+     * 简历搬家操作记录表
+     */
+    public final TalentpoolProfileMoveRecord TALENTPOOL_PROFILE_MOVE_RECORD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD;
+
+
+    /**
      * 人才库人才表
      */
     public final TalentpoolTalent TALENTPOOL_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolTalent.TALENTPOOL_TALENT;
@@ -156,6 +160,9 @@ public class Talentpooldb extends SchemaImpl {
             TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER,
             TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE,
             TalentpoolTag.TALENTPOOL_TAG,
+            TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE,
+            TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL,
+            TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD,
             TalentpoolTalent.TALENTPOOL_TALENT,
             TalentpoolUpload.TALENTPOOL_UPLOAD,
             TalentpoolUserTag.TALENTPOOL_USER_TAG);

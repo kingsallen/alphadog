@@ -59,6 +59,11 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_DICT_MAJOR_NOTEXIST = "{'status':31021,'message':'专业字典不存在!'}";
     public static final String PROFILE_OUTPUT_FAILED = "{'status':31022,'message':'导出失败!'}";
     public static final String PROFILE_ALLREADY_NOT_EXIST = "{'status':31023,'message':'个人profile不存在!'}";
+    public static final String PROFILE_MOVE_DATA_NOT_EXIST = "{'status':31024,'message':'简历搬家数据不存在!'}";
+    public static final String PROFILE_MOVE_DATA_UPDATE_FAILED = "{'status':31025,'message':'简历搬家数据修改失败!'}";
+    public static final String PROFILE_ORIGIN_NULL = "{'status':31026,'message':'简历来源不能为空!'}";
+    public static final String PROFILE_MOVING = "{'status':31027,'message':'简历搬家正在进行中，请不要重复提交!'}";
+    public static final String PROFILE_MOVING_MAIN_ACCOUNT = "{'status':31028,'message':'简历搬家只能主账号操作!'}";
 
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
@@ -127,6 +132,8 @@ public final class ConstantErrorCodeMessage {
     public static final String DEL_NO_AUTHORIZED ="{'status':42022,'message':'删除第三方账号失败，这个HR没有操作这个账号权限!'}";
     public static final String THIRD_PARTY_ACCOUNT_NOT_EXIST="{'status':43001,'message':'第三方账号不存在！'}";
     public static final String THIRD_PARTY_ACCOUNT_PWD_ERROR="{'status':43002,'message':'会员名、用户名或密码错误，请重新绑定账号！'}";
+    public static final String HRACCOUNT_NOT_EXISTS="{'status':43003,'message':'沒有符合条件的hr账号！'}";
+    public static final String HRACCOUNT_INFO_ERROR="{'status':43003,'message':'用戶信息错误！'}";
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";

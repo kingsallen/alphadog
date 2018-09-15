@@ -9,11 +9,10 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
+import com.moseeker.application.service.impl.vo.ApplicationRecord;
+import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
@@ -23,6 +22,8 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
@@ -34,6 +35,7 @@ import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -56,17 +58,22 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +134,9 @@ public class JobApplicataionService {
 
     @Autowired
     private  JobApplicationFilterService filterService;
+
+    @Autowired
+    private HrWxWechatDao wechatDao;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -1134,6 +1144,100 @@ public class JobApplicataionService {
         if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
             throw ApplicationException.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK;
         }
+    }
+
+    public List<ApplicationRecord> getApplications(int userId, int companyId) {
+        List<ApplicationRecord> applications = new ArrayList<>();
+
+        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if (userEmployeeDO != null) {
+            companyId = userEmployeeDO.getCompanyId();
+        } else {
+            companyId = 0;
+        }
+
+        UserUserDO userUserDO = userUserDao.getUser(userId);
+        if (userUserDO == null) {
+            throw ApplicationException.APPLICATION_EMPLOYEE_NOT_EXIST;
+        }
+        List<JobApplicationRecord> apps = jobApplicationDao.getByApplierIdAndCompanyId(userId, companyId);
+
+        if (apps != null && apps.size() > 0) {
+            //查询申请记录对应的职位数据
+            //List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+            List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positions = positionEntity.getPositionInfoByIdList(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+            logger.info("UserCenterService getApplication positions:{}", positions);
+            List<Integer> companyIdList = apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList());
+            List<HrCompanyRecord> companies = hrCompanyDao.getCompaniesByIds(companyIdList);
+            logger.info("UserCenterService getApplication companies:{}", companies);
+            List<HrOperationRecordDO> operationRecordDOList = hrOperationRecordDao.listLatestOperationRecordByAppIdSet(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
+
+            logger.info("UserCenterService getApplication operationRecordDOList:{}", operationRecordDOList);
+
+            //查找signature
+            Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
+            findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName())
+                    .select(HrWxWechat.HR_WX_WECHAT.ID.getName())
+                    .select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
+                    .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                    .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
+            Map<Integer, String> signatureMap = wechatDao.getDatas(
+                    findWechatQuery.buildQuery())
+                    .stream()
+                    .collect(Collectors.toMap(k->k.getCompanyId(), v->v.getSignature(),
+                            (companyId1, companyId2) -> companyId1));
+            //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
+
+            applications = apps.stream().map(app -> {
+                ApplicationRecord ar = new ApplicationRecord();
+                ar.setId(app.getId());
+                RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
+                ar.setStatusName(recruitmentScheduleEnum.getStatus());
+                ar.setTime(new DateTime(app.getSubmitTime().getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                if (positions != null) {
+                    Optional<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> op = positions
+                            .stream()
+                            .filter(position -> position.getId().equals(app.getPositionId()))
+                            .findFirst();
+                    if (op.isPresent()) {
+                        ar.setPositionTitle(op.get().getTitle());
+                    }
+                }
+                if (companies != null) {
+                    Optional<HrCompanyRecord> op = companies
+                            .stream()
+                            .filter(company -> company.getId().equals(app.getCompanyId()))
+                            .findFirst();
+                    if (op.isPresent()) {
+                        ar.setCompanyName(op.get().getAbbreviation());
+                    }
+                }
+                //设置最后一个非拒绝申请记录
+                int preID = 0;
+                if(operationRecordDOList != null) {
+                    Optional<HrOperationRecordDO> operationRecordDOOptional = operationRecordDOList.stream()
+                            .filter(operation -> operation.getOperateTplId() == app.getAppTplId()).findFirst();
+                    if(operationRecordDOOptional.isPresent() && operationRecordDOOptional.get().getOperateTplId() != recruitmentScheduleEnum.getId()) {
+                        recruitmentScheduleEnum.setLastStep(operationRecordDOOptional.get().getOperateTplId());
+                        preID = operationRecordDOOptional.get().getOperateTplId();
+                    }
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(signatureMap.get(app.getCompanyId()))) {
+                    ar.setSignature(signatureMap.get(app.getCompanyId()));
+                }
+                logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
+                ar.setStatusName(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType().byteValue(), app.getEmailStatus().byteValue(), preID));
+                return ar;
+            }).collect(Collectors.toList());
+        }
+        if(applications.size() > 0) {
+            applications.forEach(application -> {
+                logger.info("ApplicationRecordsForm getApplication application:{}", application);
+            });
+        } else {
+            logger.info("ApplicationRecordsForm getApplication have no application");
+        }
+        return applications;
     }
 }
 
