@@ -157,7 +157,7 @@ public class EmployeeEntity {
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
             JobPositionPojo positionPojo = positionDao.getPosition(positionId);
-            if (positionPojo.is_referral == 0) {
+            if (positionPojo != null && positionPojo.is_referral == 0) {
                 logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
                 return;
             }
