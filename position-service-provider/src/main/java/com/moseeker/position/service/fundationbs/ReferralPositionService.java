@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Date: 2018/9/4
@@ -212,7 +213,7 @@ public class ReferralPositionService {
 
     }
 
-    public void processUpdateData(List<Integer> pids ,String optType) throws Exception{
+    public void processUpdateData(List<Integer> pids ,String optType){
 
         if(CollectionUtils.isEmpty(pids)) {
             return;
@@ -226,22 +227,26 @@ public class ReferralPositionService {
         for(List<Integer> list: splitLists) {
             if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
                 Future<Integer> future = tp.startTast(() -> { positionEntity.putReferralPositions(list);return 1; });
-                future.get();
-                countTaskNum++;
+                try {
+                    future.get(2, TimeUnit.SECONDS);
+                    countTaskNum++;
+                }catch (Exception e) {
+
+                }
+
             }else if(optType.equals("del") && !CollectionUtils.isEmpty(list)) {
-                Future<Integer> future = tp.startTast(() -> {
-                    positionEntity.delReferralPositions(list);
-                    return 1;
-                });
-                future.get();
-                countTaskNum++;
+                Future<Integer> future = tp.startTast(() -> { positionEntity.delReferralPositions(list);return 1; });
+                try {
+                    future.get(2, TimeUnit.SECONDS);
+                    countTaskNum++;
+                }catch (Exception e) {
+
+                }
             }
         }
+        logger.info("processUpdateData taskNum - countTaskNum {} {} ",taskNum, countTaskNum);
 
 
-        while (countTaskNum >= taskNum ) {
-            return;
-        }
 
     }
 
