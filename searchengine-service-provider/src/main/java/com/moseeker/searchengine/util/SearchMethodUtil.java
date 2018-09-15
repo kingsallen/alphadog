@@ -154,6 +154,7 @@ public class SearchMethodUtil {
         String publisher=params.get("publisher");
         String publisherCompanyId=params.get("did");
         String isReferral=params.get("is_referral");
+        String department = params.get("department");
         searchUtil.handleTerms(companyIds,query,"company_id");
         String flag=params.get("flag");
         if(StringUtils.isBlank(flag)){
@@ -179,10 +180,15 @@ public class SearchMethodUtil {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            searchUtil.handleTerm(publisher,query,"candidate_source");
+            searchUtil.handleTerm(candidateSource,query,"candidate_source");
         }
+
         if(StringUtils.isNotBlank(candidateSourceName)){
             searchUtil.handleMatchParse(candidateSourceName,query,"candidate_source_name");
+        }
+
+        if(StringUtils.isNotBlank(department)){
+            searchUtil.handleTerm(department,query,"department");
         }
 
         if(StringUtils.isNotBlank(city)){

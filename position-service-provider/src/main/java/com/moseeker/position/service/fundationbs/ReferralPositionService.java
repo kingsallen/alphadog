@@ -50,6 +50,7 @@ public class ReferralPositionService {
 
     private ThreadPool tp = ThreadPool.Instance;
 
+    private static  final int RECORDNUM = 1000;
 
     @CounterIface
     @Transactional
@@ -219,10 +220,9 @@ public class ReferralPositionService {
             return;
         }
 
-        List<List<Integer>> splitLists = splitList(pids,1000);
+        List<List<Integer>> splitLists = splitList(pids,RECORDNUM);
         Integer taskNum = splitLists.size();
         Integer countTaskNum = 0;
-
 
         for(List<Integer> list: splitLists) {
             if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
@@ -231,7 +231,7 @@ public class ReferralPositionService {
                     future.get(2, TimeUnit.SECONDS);
                     countTaskNum++;
                 }catch (Exception e) {
-
+                    logger.info(e.getClass().getName(),e);
                 }
 
             }else if(optType.equals("del") && !CollectionUtils.isEmpty(list)) {
@@ -240,7 +240,7 @@ public class ReferralPositionService {
                     future.get(2, TimeUnit.SECONDS);
                     countTaskNum++;
                 }catch (Exception e) {
-
+                    logger.info(e.getClass().getName(),e);
                 }
             }
         }
