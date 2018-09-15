@@ -219,6 +219,7 @@ struct ReferralCard {
     5: optional string position,
     6: optional string mobile,
     7: optional i32 applyId,
+    8: optional bool claim,
 }
 
 //员工与所在公司的基本信息

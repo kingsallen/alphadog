@@ -550,7 +550,9 @@ public class UserCenterService {
         UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
         if (employeeDO != null) {
             info.setEmployeeId(employeeDO.getId());
-            info.setName(employeeDO.getCname());
+            if (org.apache.commons.lang.StringUtils.isNotBlank(employeeDO.getCname())) {
+                info.setName(employeeDO.getCname());
+            }
         }
         if (org.apache.commons.lang.StringUtils.isBlank(info.getName())
                 || org.apache.commons.lang.StringUtils.isBlank(info.getHeadimg())) {
