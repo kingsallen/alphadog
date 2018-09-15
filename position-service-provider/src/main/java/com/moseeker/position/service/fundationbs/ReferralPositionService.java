@@ -50,7 +50,7 @@ public class ReferralPositionService {
 
     private ThreadPool tp = ThreadPool.Instance;
 
-    private static  final int RECORDNUM = 1000;
+    private static  final int RECORDNUM = 2000;
 
     @CounterIface
     @Transactional
