@@ -80,7 +80,7 @@ public class ReceiverHandler {
             logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
             logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
             logDeadLetterDao.addData(logDeadLetterDO);
-            if(e.getMessage().contains("重复的加积分操作")){
+            if(StringUtils.isNotBlank(e.getMessage()) && e.getMessage().contains("重复的加积分操作")){
                 log.warn(e.getMessage(), e);
             }else{
                 log.error(e.getMessage(), e);
