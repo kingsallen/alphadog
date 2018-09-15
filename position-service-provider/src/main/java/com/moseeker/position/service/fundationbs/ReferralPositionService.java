@@ -105,6 +105,11 @@ public class ReferralPositionService {
     public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
         logger.info("positionUpdateHandler {}",JSON.toJSONString(dataDO));
+
+        //如果companyId或者accountId未空，直接返回
+        if(!dataDO.isSetCompany_id()|| (dataDO.isSetAccount_type()&&dataDO.isSetAccount_id()) ){
+            return ;
+        }
         int all_selected = dataDO.isSetAll_selected()?dataDO.getAll_selected():0;
 
         List<Integer> pids = dataDO.getPosition_ids();
@@ -226,7 +231,7 @@ public class ReferralPositionService {
             }
 
     }
-    
+
     private  <T> List<List<T>> splitList(List<T> resList,int count){
 
         if(resList==null ||count<1)
