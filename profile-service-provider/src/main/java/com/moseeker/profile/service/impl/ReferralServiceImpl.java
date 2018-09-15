@@ -136,7 +136,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", JSONObject.toJSONString(profilePojo), 24*60*60);
+                "", profilePojo.toJson(), 24*60*60);
         return profileDocParseResult;
     }
 
