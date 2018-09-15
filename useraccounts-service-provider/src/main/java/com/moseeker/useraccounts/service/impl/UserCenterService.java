@@ -2,7 +2,10 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.exception.CommonException;
@@ -21,10 +24,12 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import com.moseeker.useraccounts.service.impl.vo.UserCenterInfoVO;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +60,12 @@ public class UserCenterService {
 
     @Autowired
     EmployeeEntity employeeEntity;
+
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
     /**
      * 查询申请记录
      *
@@ -524,5 +535,35 @@ public class UserCenterService {
         boolean flag = false;
 
         return flag;
+    }
+
+    public UserCenterInfoVO getCenterUserInfo(int userId, int companyId) throws UserAccountException {
+        UserUserDO userUserDO = userUserDao.getUser(userId);
+        if (userUserDO == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+        }
+        UserCenterInfoVO info = new UserCenterInfoVO();
+        info.setUserId(userId);
+        info.setHeadimg(userUserDO.getHeadimg());
+        info.setName(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                ? userUserDO.getName():userUserDO.getNickname());
+        UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
+        if (employeeDO != null) {
+            info.setEmployeeId(employeeDO.getId());
+            info.setName(employeeDO.getCname());
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(info.getName())
+                || org.apache.commons.lang.StringUtils.isBlank(info.getHeadimg())) {
+            UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+            if (record != null) {
+                if (org.apache.commons.lang.StringUtils.isBlank(info.getHeadimg())) {
+                    info.setHeadimg(record.getHeadimgurl());
+                }
+                if (org.apache.commons.lang.StringUtils.isBlank(info.getName())) {
+                    info.setName(record.getNickname());
+                }
+            }
+        }
+        return info;
     }
 }
