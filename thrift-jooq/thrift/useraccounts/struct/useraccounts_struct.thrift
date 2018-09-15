@@ -526,3 +526,10 @@ struct ClaimReferralCardForm {
     4 : optional string mobile,
     5 : optional string verifyCode,
 }
+
+struct CenterUserInfo {
+    1 : optional i32 userId,
+    2 : optional i32 employeeId,
+    3 : optional string name,
+    4 : optional string headimg
+}
