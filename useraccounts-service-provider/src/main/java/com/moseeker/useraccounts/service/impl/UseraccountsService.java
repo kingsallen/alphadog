@@ -1226,7 +1226,7 @@ public class UseraccountsService {
         }
 
         //修改手机号码
-        if (userUserDO.getUsername() == null || !FormCheck.isMobile(userUserDO.getUsername().trim())) {
+        if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredStringValidate("手机号码", claimForm.getMobile());
             validateUtil.addRequiredStringValidate("验证码", claimForm.getVerifyCode());
