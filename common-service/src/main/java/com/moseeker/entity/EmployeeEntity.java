@@ -154,6 +154,7 @@ public class EmployeeEntity {
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
                                int applicationId) throws Exception {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
+        logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
@@ -164,6 +165,7 @@ public class EmployeeEntity {
             }
         }
         employeeDao.getUserEmployeeForUpdate(employeeId);
+        logger.info("addAwardHandler 锁表");
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
@@ -172,10 +174,12 @@ public class EmployeeEntity {
         query.clear();
         query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", awardConfigId).and("berecom_user_id", berecomUserId);
         UserEmployeePointsRecordDO userEmployeePointsRecordDO = ueprDao.getData(query.buildQuery());
+        logger.info("addAwardHandler 查找记录");
         if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
             logger.warn("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
             throw EmployeeException.EMPLOYEE_AWARD_REPEAT_PLUS;
         }
+        logger.info("addAwardHandler 添加积分");
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
