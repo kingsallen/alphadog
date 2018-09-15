@@ -347,7 +347,7 @@ public class SearchengineController {
                 params.put(key,String.valueOf(reqParams.get(key)));
             }
             String position_status =  params.get("position_status");
-            if(position_status.equals("2")) {
+            if(position_status.equals("1")) {
                 params.put("flag","1");
             }
             Response res=searchengineServices.userQuery(params);
