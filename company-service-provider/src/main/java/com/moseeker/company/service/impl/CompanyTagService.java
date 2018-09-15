@@ -161,7 +161,7 @@ public class CompanyTagService {
      根据user_user.id列表和公司id处理公司的标签
      */
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
-
+        logger.info("handlerCompanyTagTalent idList:{}, companyId:{}",idList, companyId);
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
@@ -169,6 +169,7 @@ public class CompanyTagService {
             List<Map<String, Object>>  tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
+                    logger.info("handlerCompanyTagTalent userId:{}",userId);
                     Response res = profileService.getResource(userId, 0, null);
                     if (res.getStatus() == 0 && StringUtils.isNotNullOrEmpty(res.getData())) {
                         Map<String, Object> profiles = JSON.parseObject(res.getData());

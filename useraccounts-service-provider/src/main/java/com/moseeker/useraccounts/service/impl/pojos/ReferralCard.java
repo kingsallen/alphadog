@@ -14,6 +14,7 @@ public class ReferralCard {
     private String position;
     private String mobile;
     private int applyId;
+    private boolean claim;
 
     public String getUserName() {
         return userName;
@@ -69,5 +70,13 @@ public class ReferralCard {
 
     public void setApplyId(int applyId) {
         this.applyId = applyId;
+    }
+
+    public boolean isClaim() {
+        return claim;
+    }
+
+    public void setClaim(boolean claim) {
+        this.claim = claim;
     }
 }

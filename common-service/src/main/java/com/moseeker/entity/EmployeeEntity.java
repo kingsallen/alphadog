@@ -156,10 +156,12 @@ public class EmployeeEntity {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
+        logger.info("addAwardHandler companyConf:{}", companyConf.toString());
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
+            logger.info("addAwardHandler 有配置信息");
             JobPositionPojo positionPojo = positionDao.getPosition(positionId);
-            if (positionPojo.is_referral == 0) {
+            if (positionPojo != null && positionPojo.is_referral == 0) {
                 logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
                 return;
             }
@@ -238,7 +240,7 @@ public class EmployeeEntity {
     public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
         // 获取积分点数
         if (companyId == 0 || templateId == 0) {
-            throw new Exception("参数不完整");
+            throw EmployeeException.PROGRAM_PARAM_NOTEXIST;
         } else {
             int award;
             int awardConfigId = 0;
@@ -260,7 +262,7 @@ public class EmployeeEntity {
                     award = confTplDO.getAward();
                     reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
                 } else {
-                    throw new Exception("添加积分点数不能为0");
+                    throw EmployeeException.EMPLOYEE_AWARD_ZERO;
                 }
             }
             UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
