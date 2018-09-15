@@ -834,6 +834,7 @@ public class EmployeeService {
         referralCard.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
         referralCard.setPosition(positionInfo.getTitle());
         referralCard.setMobile(String.valueOf(userUserDO.getMobile()));
+        referralCard.setClaim(referralLog.getClaim() == 1);
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(), referralLog.getPositionId());
         if (application != null) {
             referralCard.setApplyId(application.getId());
