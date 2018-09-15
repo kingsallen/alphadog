@@ -106,10 +106,12 @@ public class ReferralPositionService {
 
         logger.info("positionUpdateHandler {}",JSON.toJSONString(dataDO));
 
-        //如果companyId或者accountId未空，直接返回
-        if(!dataDO.isSetCompany_id()|| (dataDO.isSetAccount_type()&&dataDO.isSetAccount_id()) ){
+        //如果companyId为空，直接返回
+        if(!dataDO.isSetCompany_id()  ){
             return ;
         }
+
+
         int all_selected = dataDO.isSetAll_selected()?dataDO.getAll_selected():0;
 
         List<Integer> pids = dataDO.getPosition_ids();
