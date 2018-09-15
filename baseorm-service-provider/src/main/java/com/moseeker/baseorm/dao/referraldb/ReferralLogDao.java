@@ -34,7 +34,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         Param<Timestamp> referralTime = param(ReferralLog.REFERRAL_LOG.REFERRAL_TIME.getName(), new Timestamp(System.currentTimeMillis()));
         Param<Integer> referralTypeParam = param(ReferralLog.REFERRAL_LOG.TYPE.getName(), referralType);
 
-        ReferralLogRecord referralLogRecord = using(configuration()).insertInto(
+        int execute = using(configuration()).insertInto(
                 ReferralLog.REFERRAL_LOG,
                 ReferralLog.REFERRAL_LOG.EMPLOYEE_ID,
                 ReferralLog.REFERRAL_LOG.REFERENCE_ID,
@@ -55,12 +55,20 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                         .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
                         .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(position))
                 )
-        ).returning().fetchOne();
-        if (referralLogRecord != null) {
-            return referralLogRecord.getId();
-        } else {
-            return 0;
+        ).execute();
+
+        if (execute > 0) {
+            ReferralLogRecord referralLogRecord = using(configuration())
+                    .selectFrom(ReferralLog.REFERRAL_LOG)
+                    .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
+                    .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                    .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(position))
+                    .fetchOne();
+            if (referralLogRecord != null) {
+                return referralLogRecord.getId();
+            }
         }
+        return 0;
     }
 
     /**
