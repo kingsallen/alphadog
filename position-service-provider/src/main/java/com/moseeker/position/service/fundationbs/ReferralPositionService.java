@@ -160,6 +160,8 @@ public class ReferralPositionService {
 
     public List<Integer> getPositionIdFromEs(ReferralPositionUpdateDataDO dataDO) throws Exception{
 
+        logger.info("getPositionIdFromEs {} ",JSON.toJSONString(dataDO) );
+        
         Map<String,String> query = new HashMap<String,String>() ;
 
         if(dataDO.isSetCity()) {
