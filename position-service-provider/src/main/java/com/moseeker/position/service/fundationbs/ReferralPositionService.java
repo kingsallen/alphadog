@@ -219,7 +219,7 @@ public class ReferralPositionService {
             return;
         }
 
-        List<List<Integer>> splitLists = splitList(pids,500);
+        List<List<Integer>> splitLists = splitList(pids,1000);
         Integer taskNum = splitLists.size();
         Integer countTaskNum = 0;
 
