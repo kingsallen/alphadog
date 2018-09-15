@@ -4,11 +4,10 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.position.service.fundationbs.ReferralPositionService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @Date: 2018/9/4
@@ -23,9 +22,9 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
 
 
     @Override
-    public void putReferralPositions(List<Integer> pids, boolean all_selected, int company_id) throws TException {
+    public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws TException {
         try {
-            referralPositionService.putReferralPositions(pids,all_selected,company_id);
+            referralPositionService.putReferralPositions(dataDO);
         } catch (Exception e) {
             e.printStackTrace();
             throw ExceptionUtils.convertException(e);
@@ -33,9 +32,9 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     }
 
     @Override
-    public void delReferralPositions(List<Integer> pids) throws TException {
+    public void delReferralPositions(ReferralPositionUpdateDataDO dataDO) throws TException {
         try {
-            referralPositionService.delReferralPositions(pids);
+            referralPositionService.delReferralPositions(dataDO);
         } catch (Exception e) {
             e.printStackTrace();
             throw ExceptionUtils.convertException(e);

@@ -1,11 +1,12 @@
 package com.moseeker.servicemanager.web.controller.referral.tools;
 
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @Author: jack

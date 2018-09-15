@@ -12,9 +12,9 @@ public class ReferralPositionServices {
 
   public interface Iface {
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id) throws org.apache.thrift.TException;
+    public void putReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) throws org.apache.thrift.TException;
 
-    public void delReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException;
+    public void delReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) throws org.apache.thrift.TException;
 
     public void updatePointsConfig(int companyId, int flag) throws org.apache.thrift.TException;
 
@@ -24,9 +24,9 @@ public class ReferralPositionServices {
 
   public interface AsyncIface {
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
+    public void putReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
-    public void delReferralPositions(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
+    public void delReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
     public void updatePointsConfig(int companyId, int flag, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
@@ -54,18 +54,16 @@ public class ReferralPositionServices {
       super(iprot, oprot);
     }
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id) throws org.apache.thrift.TException
+    public void putReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) throws org.apache.thrift.TException
     {
-      send_putReferralPositions(pids, all_selected, company_id);
+      send_putReferralPositions(dataDo);
       recv_putReferralPositions();
     }
 
-    public void send_putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id) throws org.apache.thrift.TException
+    public void send_putReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) throws org.apache.thrift.TException
     {
       putReferralPositions_args args = new putReferralPositions_args();
-      args.setPids(pids);
-      args.setAll_selected(all_selected);
-      args.setCompany_id(company_id);
+      args.setDataDo(dataDo);
       sendBase("putReferralPositions", args);
     }
 
@@ -76,16 +74,16 @@ public class ReferralPositionServices {
       return;
     }
 
-    public void delReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException
+    public void delReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) throws org.apache.thrift.TException
     {
-      send_delReferralPositions(pids);
+      send_delReferralPositions(dataDo);
       recv_delReferralPositions();
     }
 
-    public void send_delReferralPositions(java.util.List<java.lang.Integer> pids) throws org.apache.thrift.TException
+    public void send_delReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) throws org.apache.thrift.TException
     {
       delReferralPositions_args args = new delReferralPositions_args();
-      args.setPids(pids);
+      args.setDataDo(dataDo);
       sendBase("delReferralPositions", args);
     }
 
@@ -158,37 +156,31 @@ public class ReferralPositionServices {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void putReferralPositions(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+    public void putReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      putReferralPositions_call method_call = new putReferralPositions_call(pids, all_selected, company_id, resultHandler, this, ___protocolFactory, ___transport);
+      putReferralPositions_call method_call = new putReferralPositions_call(dataDo, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class putReferralPositions_call extends org.apache.thrift.async.TAsyncMethodCall<Void> {
-      private java.util.List<java.lang.Integer> pids;
-      private boolean all_selected;
-      private int company_id;
-      public putReferralPositions_call(java.util.List<java.lang.Integer> pids, boolean all_selected, int company_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo;
+      public putReferralPositions_call(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.pids = pids;
-        this.all_selected = all_selected;
-        this.company_id = company_id;
+        this.dataDo = dataDo;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("putReferralPositions", org.apache.thrift.protocol.TMessageType.CALL, 0));
         putReferralPositions_args args = new putReferralPositions_args();
-        args.setPids(pids);
-        args.setAll_selected(all_selected);
-        args.setCompany_id(company_id);
+        args.setDataDo(dataDo);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
       public Void getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -196,31 +188,31 @@ public class ReferralPositionServices {
       }
     }
 
-    public void delReferralPositions(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+    public void delReferralPositions(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      delReferralPositions_call method_call = new delReferralPositions_call(pids, resultHandler, this, ___protocolFactory, ___transport);
+      delReferralPositions_call method_call = new delReferralPositions_call(dataDo, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
     public static class delReferralPositions_call extends org.apache.thrift.async.TAsyncMethodCall<Void> {
-      private java.util.List<java.lang.Integer> pids;
-      public delReferralPositions_call(java.util.List<java.lang.Integer> pids, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo;
+      public delReferralPositions_call(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
-        this.pids = pids;
+        this.dataDo = dataDo;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
         prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("delReferralPositions", org.apache.thrift.protocol.TMessageType.CALL, 0));
         delReferralPositions_args args = new delReferralPositions_args();
-        args.setPids(pids);
+        args.setDataDo(dataDo);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
       public Void getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -254,8 +246,8 @@ public class ReferralPositionServices {
       }
 
       public Void getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -286,8 +278,8 @@ public class ReferralPositionServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
-          throw new java.lang.IllegalStateException("Method call not finished!");
+        if (getState() != State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -300,14 +292,14 @@ public class ReferralPositionServices {
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(Processor.class.getName());
     public Processor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
+      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
     }
 
-    protected Processor(I iface, java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
+    protected Processor(I iface, java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends Iface> java.util.Map<java.lang.String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+    private static <I extends Iface> java.util.Map<String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("putReferralPositions", new putReferralPositions());
       processMap.put("delReferralPositions", new delReferralPositions());
       processMap.put("updatePointsConfig", new updatePointsConfig());
@@ -330,7 +322,7 @@ public class ReferralPositionServices {
 
       public putReferralPositions_result getResult(I iface, putReferralPositions_args args) throws org.apache.thrift.TException {
         putReferralPositions_result result = new putReferralPositions_result();
-        iface.putReferralPositions(args.pids, args.all_selected, args.company_id);
+        iface.putReferralPositions(args.dataDo);
         return result;
       }
     }
@@ -350,7 +342,7 @@ public class ReferralPositionServices {
 
       public delReferralPositions_result getResult(I iface, delReferralPositions_args args) throws org.apache.thrift.TException {
         delReferralPositions_result result = new delReferralPositions_result();
-        iface.delReferralPositions(args.pids);
+        iface.delReferralPositions(args.dataDo);
         return result;
       }
     }
@@ -400,14 +392,14 @@ public class ReferralPositionServices {
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(AsyncProcessor.class.getName());
     public AsyncProcessor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
+      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
     }
 
-    protected AsyncProcessor(I iface, java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    protected AsyncProcessor(I iface, java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends AsyncIface> java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    private static <I extends AsyncIface> java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("putReferralPositions", new putReferralPositions());
       processMap.put("delReferralPositions", new delReferralPositions());
       processMap.put("updatePointsConfig", new updatePointsConfig());
@@ -434,12 +426,12 @@ public class ReferralPositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             putReferralPositions_result result = new putReferralPositions_result();
@@ -458,7 +450,7 @@ public class ReferralPositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -471,7 +463,7 @@ public class ReferralPositionServices {
       }
 
       public void start(I iface, putReferralPositions_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
-        iface.putReferralPositions(args.pids, args.all_selected, args.company_id,resultHandler);
+        iface.putReferralPositions(args.dataDo,resultHandler);
       }
     }
 
@@ -494,12 +486,12 @@ public class ReferralPositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             delReferralPositions_result result = new delReferralPositions_result();
@@ -518,7 +510,7 @@ public class ReferralPositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -531,7 +523,7 @@ public class ReferralPositionServices {
       }
 
       public void start(I iface, delReferralPositions_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
-        iface.delReferralPositions(args.pids,resultHandler);
+        iface.delReferralPositions(args.dataDo,resultHandler);
       }
     }
 
@@ -554,12 +546,12 @@ public class ReferralPositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             updatePointsConfig_result result = new updatePointsConfig_result();
@@ -578,7 +570,7 @@ public class ReferralPositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -615,12 +607,12 @@ public class ReferralPositionServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (java.lang.Exception e) {
+            } catch (Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(java.lang.Exception e) {
+          public void onError(Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getPointsConfig_result result = new getPointsConfig_result();
@@ -639,7 +631,7 @@ public class ReferralPositionServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (java.lang.Exception ex) {
+            } catch (Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -661,24 +653,18 @@ public class ReferralPositionServices {
   public static class putReferralPositions_args implements org.apache.thrift.TBase<putReferralPositions_args, putReferralPositions_args._Fields>, java.io.Serializable, Cloneable, Comparable<putReferralPositions_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("putReferralPositions_args");
 
-    private static final org.apache.thrift.protocol.TField PIDS_FIELD_DESC = new org.apache.thrift.protocol.TField("pids", org.apache.thrift.protocol.TType.LIST, (short)1);
-    private static final org.apache.thrift.protocol.TField ALL_SELECTED_FIELD_DESC = new org.apache.thrift.protocol.TField("all_selected", org.apache.thrift.protocol.TType.BOOL, (short)2);
-    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)3);
+    private static final org.apache.thrift.protocol.TField DATA_DO_FIELD_DESC = new org.apache.thrift.protocol.TField("dataDo", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new putReferralPositions_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new putReferralPositions_argsTupleSchemeFactory();
 
-    public java.util.List<java.lang.Integer> pids; // required
-    public boolean all_selected; // required
-    public int company_id; // required
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      PIDS((short)1, "pids"),
-      ALL_SELECTED((short)2, "all_selected"),
-      COMPANY_ID((short)3, "company_id");
+      DATA_DO((short)1, "dataDo");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -691,12 +677,8 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // PIDS
-            return PIDS;
-          case 2: // ALL_SELECTED
-            return ALL_SELECTED;
-          case 3: // COMPANY_ID
-            return COMPANY_ID;
+          case 1: // DATA_DO
+            return DATA_DO;
           default:
             return null;
         }
@@ -708,21 +690,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -731,25 +713,17 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
 
     // isset id assignments
-    private static final int __ALL_SELECTED_ISSET_ID = 0;
-    private static final int __COMPANY_ID_ISSET_ID = 1;
-    private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PIDS, new org.apache.thrift.meta_data.FieldMetaData("pids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
-      tmpMap.put(_Fields.ALL_SELECTED, new org.apache.thrift.meta_data.FieldMetaData("all_selected", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-      tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+      tmpMap.put(_Fields.DATA_DO, new org.apache.thrift.meta_data.FieldMetaData("dataDo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(putReferralPositions_args.class, metaDataMap);
     }
@@ -758,29 +732,19 @@ public class ReferralPositionServices {
     }
 
     public putReferralPositions_args(
-      java.util.List<java.lang.Integer> pids,
-      boolean all_selected,
-      int company_id)
+      com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo)
     {
       this();
-      this.pids = pids;
-      this.all_selected = all_selected;
-      setAll_selectedIsSet(true);
-      this.company_id = company_id;
-      setCompany_idIsSet(true);
+      this.dataDo = dataDo;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public putReferralPositions_args(putReferralPositions_args other) {
-      __isset_bitfield = other.__isset_bitfield;
-      if (other.isSetPids()) {
-        java.util.List<java.lang.Integer> __this__pids = new java.util.ArrayList<java.lang.Integer>(other.pids);
-        this.pids = __this__pids;
+      if (other.isSetDataDo()) {
+        this.dataDo = new com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO(other.dataDo);
       }
-      this.all_selected = other.all_selected;
-      this.company_id = other.company_id;
     }
 
     public putReferralPositions_args deepCopy() {
@@ -789,161 +753,70 @@ public class ReferralPositionServices {
 
     @Override
     public void clear() {
-      this.pids = null;
-      setAll_selectedIsSet(false);
-      this.all_selected = false;
-      setCompany_idIsSet(false);
-      this.company_id = 0;
+      this.dataDo = null;
     }
 
-    public int getPidsSize() {
-      return (this.pids == null) ? 0 : this.pids.size();
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO getDataDo() {
+      return this.dataDo;
     }
 
-    public java.util.Iterator<java.lang.Integer> getPidsIterator() {
-      return (this.pids == null) ? null : this.pids.iterator();
-    }
-
-    public void addToPids(int elem) {
-      if (this.pids == null) {
-        this.pids = new java.util.ArrayList<java.lang.Integer>();
-      }
-      this.pids.add(elem);
-    }
-
-    public java.util.List<java.lang.Integer> getPids() {
-      return this.pids;
-    }
-
-    public putReferralPositions_args setPids(java.util.List<java.lang.Integer> pids) {
-      this.pids = pids;
+    public putReferralPositions_args setDataDo(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) {
+      this.dataDo = dataDo;
       return this;
     }
 
-    public void unsetPids() {
-      this.pids = null;
+    public void unsetDataDo() {
+      this.dataDo = null;
     }
 
-    /** Returns true if field pids is set (has been assigned a value) and false otherwise */
-    public boolean isSetPids() {
-      return this.pids != null;
+    /** Returns true if field dataDo is set (has been assigned a value) and false otherwise */
+    public boolean isSetDataDo() {
+      return this.dataDo != null;
     }
 
-    public void setPidsIsSet(boolean value) {
+    public void setDataDoIsSet(boolean value) {
       if (!value) {
-        this.pids = null;
+        this.dataDo = null;
       }
     }
 
-    public boolean isAll_selected() {
-      return this.all_selected;
-    }
-
-    public putReferralPositions_args setAll_selected(boolean all_selected) {
-      this.all_selected = all_selected;
-      setAll_selectedIsSet(true);
-      return this;
-    }
-
-    public void unsetAll_selected() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __ALL_SELECTED_ISSET_ID);
-    }
-
-    /** Returns true if field all_selected is set (has been assigned a value) and false otherwise */
-    public boolean isSetAll_selected() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __ALL_SELECTED_ISSET_ID);
-    }
-
-    public void setAll_selectedIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ALL_SELECTED_ISSET_ID, value);
-    }
-
-    public int getCompany_id() {
-      return this.company_id;
-    }
-
-    public putReferralPositions_args setCompany_id(int company_id) {
-      this.company_id = company_id;
-      setCompany_idIsSet(true);
-      return this;
-    }
-
-    public void unsetCompany_id() {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
-    }
-
-    /** Returns true if field company_id is set (has been assigned a value) and false otherwise */
-    public boolean isSetCompany_id() {
-      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
-    }
-
-    public void setCompany_idIsSet(boolean value) {
-      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANY_ID_ISSET_ID, value);
-    }
-
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case PIDS:
+      case DATA_DO:
         if (value == null) {
-          unsetPids();
+          unsetDataDo();
         } else {
-          setPids((java.util.List<java.lang.Integer>)value);
-        }
-        break;
-
-      case ALL_SELECTED:
-        if (value == null) {
-          unsetAll_selected();
-        } else {
-          setAll_selected((java.lang.Boolean)value);
-        }
-        break;
-
-      case COMPANY_ID:
-        if (value == null) {
-          unsetCompany_id();
-        } else {
-          setCompany_id((java.lang.Integer)value);
+          setDataDo((com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
-      case PIDS:
-        return getPids();
-
-      case ALL_SELECTED:
-        return isAll_selected();
-
-      case COMPANY_ID:
-        return getCompany_id();
+      case DATA_DO:
+        return getDataDo();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
-      case PIDS:
-        return isSetPids();
-      case ALL_SELECTED:
-        return isSetAll_selected();
-      case COMPANY_ID:
-        return isSetCompany_id();
+      case DATA_DO:
+        return isSetDataDo();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof putReferralPositions_args)
@@ -957,30 +830,12 @@ public class ReferralPositionServices {
       if (this == that)
         return true;
 
-      boolean this_present_pids = true && this.isSetPids();
-      boolean that_present_pids = true && that.isSetPids();
-      if (this_present_pids || that_present_pids) {
-        if (!(this_present_pids && that_present_pids))
+      boolean this_present_dataDo = true && this.isSetDataDo();
+      boolean that_present_dataDo = true && that.isSetDataDo();
+      if (this_present_dataDo || that_present_dataDo) {
+        if (!(this_present_dataDo && that_present_dataDo))
           return false;
-        if (!this.pids.equals(that.pids))
-          return false;
-      }
-
-      boolean this_present_all_selected = true;
-      boolean that_present_all_selected = true;
-      if (this_present_all_selected || that_present_all_selected) {
-        if (!(this_present_all_selected && that_present_all_selected))
-          return false;
-        if (this.all_selected != that.all_selected)
-          return false;
-      }
-
-      boolean this_present_company_id = true;
-      boolean that_present_company_id = true;
-      if (this_present_company_id || that_present_company_id) {
-        if (!(this_present_company_id && that_present_company_id))
-          return false;
-        if (this.company_id != that.company_id)
+        if (!this.dataDo.equals(that.dataDo))
           return false;
       }
 
@@ -991,13 +846,9 @@ public class ReferralPositionServices {
     public int hashCode() {
       int hashCode = 1;
 
-      hashCode = hashCode * 8191 + ((isSetPids()) ? 131071 : 524287);
-      if (isSetPids())
-        hashCode = hashCode * 8191 + pids.hashCode();
-
-      hashCode = hashCode * 8191 + ((all_selected) ? 131071 : 524287);
-
-      hashCode = hashCode * 8191 + company_id;
+      hashCode = hashCode * 8191 + ((isSetDataDo()) ? 131071 : 524287);
+      if (isSetDataDo())
+        hashCode = hashCode * 8191 + dataDo.hashCode();
 
       return hashCode;
     }
@@ -1010,32 +861,12 @@ public class ReferralPositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPids()).compareTo(other.isSetPids());
+      lastComparison = Boolean.valueOf(isSetDataDo()).compareTo(other.isSetDataDo());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetPids()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pids, other.pids);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = java.lang.Boolean.valueOf(isSetAll_selected()).compareTo(other.isSetAll_selected());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetAll_selected()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.all_selected, other.all_selected);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = java.lang.Boolean.valueOf(isSetCompany_id()).compareTo(other.isSetCompany_id());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetCompany_id()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.company_id, other.company_id);
+      if (isSetDataDo()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.dataDo, other.dataDo);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1056,24 +887,16 @@ public class ReferralPositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("putReferralPositions_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("putReferralPositions_args(");
       boolean first = true;
 
-      sb.append("pids:");
-      if (this.pids == null) {
+      sb.append("dataDo:");
+      if (this.dataDo == null) {
         sb.append("null");
       } else {
-        sb.append(this.pids);
+        sb.append(this.dataDo);
       }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("all_selected:");
-      sb.append(this.all_selected);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("company_id:");
-      sb.append(this.company_id);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -1082,6 +905,9 @@ public class ReferralPositionServices {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
+      if (dataDo != null) {
+        dataDo.validate();
+      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -1092,10 +918,8 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
         throw new java.io.IOException(te);
@@ -1120,36 +944,11 @@ public class ReferralPositionServices {
             break;
           }
           switch (schemeField.id) {
-            case 1: // PIDS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list118 = iprot.readListBegin();
-                  struct.pids = new java.util.ArrayList<java.lang.Integer>(_list118.size);
-                  int _elem119;
-                  for (int _i120 = 0; _i120 < _list118.size; ++_i120)
-                  {
-                    _elem119 = iprot.readI32();
-                    struct.pids.add(_elem119);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setPidsIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // ALL_SELECTED
-              if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
-                struct.all_selected = iprot.readBool();
-                struct.setAll_selectedIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // COMPANY_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.company_id = iprot.readI32();
-                struct.setCompany_idIsSet(true);
+            case 1: // DATA_DO
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.dataDo = new com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO();
+                struct.dataDo.read(iprot);
+                struct.setDataDoIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -1169,24 +968,11 @@ public class ReferralPositionServices {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.pids != null) {
-          oprot.writeFieldBegin(PIDS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.pids.size()));
-            for (int _iter121 : struct.pids)
-            {
-              oprot.writeI32(_iter121);
-            }
-            oprot.writeListEnd();
-          }
+        if (struct.dataDo != null) {
+          oprot.writeFieldBegin(DATA_DO_FIELD_DESC);
+          struct.dataDo.write(oprot);
           oprot.writeFieldEnd();
         }
-        oprot.writeFieldBegin(ALL_SELECTED_FIELD_DESC);
-        oprot.writeBool(struct.all_selected);
-        oprot.writeFieldEnd();
-        oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
-        oprot.writeI32(struct.company_id);
-        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -1205,57 +991,23 @@ public class ReferralPositionServices {
       public void write(org.apache.thrift.protocol.TProtocol prot, putReferralPositions_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetPids()) {
+        if (struct.isSetDataDo()) {
           optionals.set(0);
         }
-        if (struct.isSetAll_selected()) {
-          optionals.set(1);
-        }
-        if (struct.isSetCompany_id()) {
-          optionals.set(2);
-        }
-        oprot.writeBitSet(optionals, 3);
-        if (struct.isSetPids()) {
-          {
-            oprot.writeI32(struct.pids.size());
-            for (int _iter122 : struct.pids)
-            {
-              oprot.writeI32(_iter122);
-            }
-          }
-        }
-        if (struct.isSetAll_selected()) {
-          oprot.writeBool(struct.all_selected);
-        }
-        if (struct.isSetCompany_id()) {
-          oprot.writeI32(struct.company_id);
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetDataDo()) {
+          struct.dataDo.write(oprot);
         }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, putReferralPositions_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(3);
+        java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list123 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.pids = new java.util.ArrayList<java.lang.Integer>(_list123.size);
-            int _elem124;
-            for (int _i125 = 0; _i125 < _list123.size; ++_i125)
-            {
-              _elem124 = iprot.readI32();
-              struct.pids.add(_elem124);
-            }
-          }
-          struct.setPidsIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.all_selected = iprot.readBool();
-          struct.setAll_selectedIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.company_id = iprot.readI32();
-          struct.setCompany_idIsSet(true);
+          struct.dataDo = new com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO();
+          struct.dataDo.read(iprot);
+          struct.setDataDoIsSet(true);
         }
       }
     }
@@ -1277,7 +1029,7 @@ public class ReferralPositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
 ;
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -1301,21 +1053,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -1324,7 +1076,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -1352,30 +1104,30 @@ public class ReferralPositionServices {
     public void clear() {
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof putReferralPositions_result)
@@ -1423,8 +1175,8 @@ public class ReferralPositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("putReferralPositions_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("putReferralPositions_result(");
       boolean first = true;
 
       sb.append(")");
@@ -1444,7 +1196,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -1518,18 +1270,18 @@ public class ReferralPositionServices {
   public static class delReferralPositions_args implements org.apache.thrift.TBase<delReferralPositions_args, delReferralPositions_args._Fields>, java.io.Serializable, Cloneable, Comparable<delReferralPositions_args>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("delReferralPositions_args");
 
-    private static final org.apache.thrift.protocol.TField PIDS_FIELD_DESC = new org.apache.thrift.protocol.TField("pids", org.apache.thrift.protocol.TType.LIST, (short)1);
+    private static final org.apache.thrift.protocol.TField DATA_DO_FIELD_DESC = new org.apache.thrift.protocol.TField("dataDo", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new delReferralPositions_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new delReferralPositions_argsTupleSchemeFactory();
 
-    public java.util.List<java.lang.Integer> pids; // required
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      PIDS((short)1, "pids");
+      DATA_DO((short)1, "dataDo");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -1542,8 +1294,8 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // PIDS
-            return PIDS;
+          case 1: // DATA_DO
+            return DATA_DO;
           default:
             return null;
         }
@@ -1555,21 +1307,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -1578,7 +1330,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -1587,9 +1339,8 @@ public class ReferralPositionServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.PIDS, new org.apache.thrift.meta_data.FieldMetaData("pids", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+      tmpMap.put(_Fields.DATA_DO, new org.apache.thrift.meta_data.FieldMetaData("dataDo", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(delReferralPositions_args.class, metaDataMap);
     }
@@ -1598,19 +1349,18 @@ public class ReferralPositionServices {
     }
 
     public delReferralPositions_args(
-      java.util.List<java.lang.Integer> pids)
+      com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo)
     {
       this();
-      this.pids = pids;
+      this.dataDo = dataDo;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
     public delReferralPositions_args(delReferralPositions_args other) {
-      if (other.isSetPids()) {
-        java.util.List<java.lang.Integer> __this__pids = new java.util.ArrayList<java.lang.Integer>(other.pids);
-        this.pids = __this__pids;
+      if (other.isSetDataDo()) {
+        this.dataDo = new com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO(other.dataDo);
       }
     }
 
@@ -1620,85 +1370,70 @@ public class ReferralPositionServices {
 
     @Override
     public void clear() {
-      this.pids = null;
+      this.dataDo = null;
     }
 
-    public int getPidsSize() {
-      return (this.pids == null) ? 0 : this.pids.size();
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO getDataDo() {
+      return this.dataDo;
     }
 
-    public java.util.Iterator<java.lang.Integer> getPidsIterator() {
-      return (this.pids == null) ? null : this.pids.iterator();
-    }
-
-    public void addToPids(int elem) {
-      if (this.pids == null) {
-        this.pids = new java.util.ArrayList<java.lang.Integer>();
-      }
-      this.pids.add(elem);
-    }
-
-    public java.util.List<java.lang.Integer> getPids() {
-      return this.pids;
-    }
-
-    public delReferralPositions_args setPids(java.util.List<java.lang.Integer> pids) {
-      this.pids = pids;
+    public delReferralPositions_args setDataDo(com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO dataDo) {
+      this.dataDo = dataDo;
       return this;
     }
 
-    public void unsetPids() {
-      this.pids = null;
+    public void unsetDataDo() {
+      this.dataDo = null;
     }
 
-    /** Returns true if field pids is set (has been assigned a value) and false otherwise */
-    public boolean isSetPids() {
-      return this.pids != null;
+    /** Returns true if field dataDo is set (has been assigned a value) and false otherwise */
+    public boolean isSetDataDo() {
+      return this.dataDo != null;
     }
 
-    public void setPidsIsSet(boolean value) {
+    public void setDataDoIsSet(boolean value) {
       if (!value) {
-        this.pids = null;
+        this.dataDo = null;
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case PIDS:
+      case DATA_DO:
         if (value == null) {
-          unsetPids();
+          unsetDataDo();
         } else {
-          setPids((java.util.List<java.lang.Integer>)value);
+          setDataDo((com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
-      case PIDS:
-        return getPids();
+      case DATA_DO:
+        return getDataDo();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
-      case PIDS:
-        return isSetPids();
+      case DATA_DO:
+        return isSetDataDo();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof delReferralPositions_args)
@@ -1712,12 +1447,12 @@ public class ReferralPositionServices {
       if (this == that)
         return true;
 
-      boolean this_present_pids = true && this.isSetPids();
-      boolean that_present_pids = true && that.isSetPids();
-      if (this_present_pids || that_present_pids) {
-        if (!(this_present_pids && that_present_pids))
+      boolean this_present_dataDo = true && this.isSetDataDo();
+      boolean that_present_dataDo = true && that.isSetDataDo();
+      if (this_present_dataDo || that_present_dataDo) {
+        if (!(this_present_dataDo && that_present_dataDo))
           return false;
-        if (!this.pids.equals(that.pids))
+        if (!this.dataDo.equals(that.dataDo))
           return false;
       }
 
@@ -1728,9 +1463,9 @@ public class ReferralPositionServices {
     public int hashCode() {
       int hashCode = 1;
 
-      hashCode = hashCode * 8191 + ((isSetPids()) ? 131071 : 524287);
-      if (isSetPids())
-        hashCode = hashCode * 8191 + pids.hashCode();
+      hashCode = hashCode * 8191 + ((isSetDataDo()) ? 131071 : 524287);
+      if (isSetDataDo())
+        hashCode = hashCode * 8191 + dataDo.hashCode();
 
       return hashCode;
     }
@@ -1743,12 +1478,12 @@ public class ReferralPositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetPids()).compareTo(other.isSetPids());
+      lastComparison = Boolean.valueOf(isSetDataDo()).compareTo(other.isSetDataDo());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetPids()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.pids, other.pids);
+      if (isSetDataDo()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.dataDo, other.dataDo);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1769,15 +1504,15 @@ public class ReferralPositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("delReferralPositions_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("delReferralPositions_args(");
       boolean first = true;
 
-      sb.append("pids:");
-      if (this.pids == null) {
+      sb.append("dataDo:");
+      if (this.dataDo == null) {
         sb.append("null");
       } else {
-        sb.append(this.pids);
+        sb.append(this.dataDo);
       }
       first = false;
       sb.append(")");
@@ -1787,6 +1522,9 @@ public class ReferralPositionServices {
     public void validate() throws org.apache.thrift.TException {
       // check for required fields
       // check for sub-struct validity
+      if (dataDo != null) {
+        dataDo.validate();
+      }
     }
 
     private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
@@ -1797,7 +1535,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -1823,20 +1561,11 @@ public class ReferralPositionServices {
             break;
           }
           switch (schemeField.id) {
-            case 1: // PIDS
-              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
-                {
-                  org.apache.thrift.protocol.TList _list126 = iprot.readListBegin();
-                  struct.pids = new java.util.ArrayList<java.lang.Integer>(_list126.size);
-                  int _elem127;
-                  for (int _i128 = 0; _i128 < _list126.size; ++_i128)
-                  {
-                    _elem127 = iprot.readI32();
-                    struct.pids.add(_elem127);
-                  }
-                  iprot.readListEnd();
-                }
-                struct.setPidsIsSet(true);
+            case 1: // DATA_DO
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.dataDo = new com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO();
+                struct.dataDo.read(iprot);
+                struct.setDataDoIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -1856,16 +1585,9 @@ public class ReferralPositionServices {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.pids != null) {
-          oprot.writeFieldBegin(PIDS_FIELD_DESC);
-          {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.pids.size()));
-            for (int _iter129 : struct.pids)
-            {
-              oprot.writeI32(_iter129);
-            }
-            oprot.writeListEnd();
-          }
+        if (struct.dataDo != null) {
+          oprot.writeFieldBegin(DATA_DO_FIELD_DESC);
+          struct.dataDo.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -1886,18 +1608,12 @@ public class ReferralPositionServices {
       public void write(org.apache.thrift.protocol.TProtocol prot, delReferralPositions_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetPids()) {
+        if (struct.isSetDataDo()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetPids()) {
-          {
-            oprot.writeI32(struct.pids.size());
-            for (int _iter130 : struct.pids)
-            {
-              oprot.writeI32(_iter130);
-            }
-          }
+        if (struct.isSetDataDo()) {
+          struct.dataDo.write(oprot);
         }
       }
 
@@ -1906,17 +1622,9 @@ public class ReferralPositionServices {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          {
-            org.apache.thrift.protocol.TList _list131 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.pids = new java.util.ArrayList<java.lang.Integer>(_list131.size);
-            int _elem132;
-            for (int _i133 = 0; _i133 < _list131.size; ++_i133)
-            {
-              _elem132 = iprot.readI32();
-              struct.pids.add(_elem132);
-            }
-          }
-          struct.setPidsIsSet(true);
+          struct.dataDo = new com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO();
+          struct.dataDo.read(iprot);
+          struct.setDataDoIsSet(true);
         }
       }
     }
@@ -1938,7 +1646,7 @@ public class ReferralPositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
 ;
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -1962,21 +1670,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -1985,7 +1693,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -2013,30 +1721,30 @@ public class ReferralPositionServices {
     public void clear() {
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof delReferralPositions_result)
@@ -2084,8 +1792,8 @@ public class ReferralPositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("delReferralPositions_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("delReferralPositions_result(");
       boolean first = true;
 
       sb.append(")");
@@ -2105,7 +1813,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -2193,7 +1901,7 @@ public class ReferralPositionServices {
       COMPANY_ID((short)1, "companyId"),
       FLAG((short)2, "flag");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -2221,21 +1929,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -2244,7 +1952,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -2345,13 +2053,13 @@ public class ReferralPositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __FLAG_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case COMPANY_ID:
         if (value == null) {
           unsetCompanyId();
         } else {
-          setCompanyId((java.lang.Integer)value);
+          setCompanyId((Integer)value);
         }
         break;
 
@@ -2359,14 +2067,14 @@ public class ReferralPositionServices {
         if (value == null) {
           unsetFlag();
         } else {
-          setFlag((java.lang.Integer)value);
+          setFlag((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case COMPANY_ID:
         return getCompanyId();
@@ -2375,13 +2083,13 @@ public class ReferralPositionServices {
         return getFlag();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
@@ -2390,11 +2098,11 @@ public class ReferralPositionServices {
       case FLAG:
         return isSetFlag();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof updatePointsConfig_args)
@@ -2448,7 +2156,7 @@ public class ReferralPositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      lastComparison = Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2458,7 +2166,7 @@ public class ReferralPositionServices {
           return lastComparison;
         }
       }
-      lastComparison = java.lang.Boolean.valueOf(isSetFlag()).compareTo(other.isSetFlag());
+      lastComparison = Boolean.valueOf(isSetFlag()).compareTo(other.isSetFlag());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -2484,8 +2192,8 @@ public class ReferralPositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("updatePointsConfig_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("updatePointsConfig_args(");
       boolean first = true;
 
       sb.append("companyId:");
@@ -2512,7 +2220,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -2642,7 +2350,7 @@ public class ReferralPositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
 ;
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -2666,21 +2374,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -2689,7 +2397,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -2717,30 +2425,30 @@ public class ReferralPositionServices {
     public void clear() {
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof updatePointsConfig_result)
@@ -2788,8 +2496,8 @@ public class ReferralPositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("updatePointsConfig_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("updatePointsConfig_result(");
       boolean first = true;
 
       sb.append(")");
@@ -2809,7 +2517,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -2894,7 +2602,7 @@ public class ReferralPositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COMPANY_ID((short)1, "companyId");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -2920,21 +2628,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -2943,7 +2651,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -3012,43 +2720,43 @@ public class ReferralPositionServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANYID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case COMPANY_ID:
         if (value == null) {
           unsetCompanyId();
         } else {
-          setCompanyId((java.lang.Integer)value);
+          setCompanyId((Integer)value);
         }
         break;
 
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case COMPANY_ID:
         return getCompanyId();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case COMPANY_ID:
         return isSetCompanyId();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPointsConfig_args)
@@ -3091,7 +2799,7 @@ public class ReferralPositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
+      lastComparison = Boolean.valueOf(isSetCompanyId()).compareTo(other.isSetCompanyId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -3117,8 +2825,8 @@ public class ReferralPositionServices {
     }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPointsConfig_args(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPointsConfig_args(");
       boolean first = true;
 
       sb.append("companyId:");
@@ -3141,7 +2849,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -3252,7 +2960,7 @@ public class ReferralPositionServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
+      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -3278,21 +2986,21 @@ public class ReferralPositionServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(java.lang.String name) {
+      public static _Fields findByName(String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final java.lang.String _fieldName;
+      private final String _fieldName;
 
-      _Fields(short thriftId, java.lang.String fieldName) {
+      _Fields(short thriftId, String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -3301,7 +3009,7 @@ public class ReferralPositionServices {
         return _thriftId;
       }
 
-      public java.lang.String getFieldName() {
+      public String getFieldName() {
         return _fieldName;
       }
     }
@@ -3368,7 +3076,7 @@ public class ReferralPositionServices {
       }
     }
 
-    public void setFieldValue(_Fields field, java.lang.Object value) {
+    public void setFieldValue(_Fields field, Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -3381,30 +3089,30 @@ public class ReferralPositionServices {
       }
     }
 
-    public java.lang.Object getFieldValue(_Fields field) {
+    public Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new java.lang.IllegalArgumentException();
+        throw new IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new java.lang.IllegalStateException();
+      throw new IllegalStateException();
     }
 
     @Override
-    public boolean equals(java.lang.Object that) {
+    public boolean equals(Object that) {
       if (that == null)
         return false;
       if (that instanceof getPointsConfig_result)
@@ -3449,7 +3157,7 @@ public class ReferralPositionServices {
 
       int lastComparison = 0;
 
-      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -3475,8 +3183,8 @@ public class ReferralPositionServices {
       }
 
     @Override
-    public java.lang.String toString() {
-      java.lang.StringBuilder sb = new java.lang.StringBuilder("getPointsConfig_result(");
+    public String toString() {
+      StringBuilder sb = new StringBuilder("getPointsConfig_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -3506,7 +3214,7 @@ public class ReferralPositionServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
