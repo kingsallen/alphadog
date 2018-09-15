@@ -26,7 +26,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 /**
@@ -69,20 +68,24 @@ public class ReceiverHandler {
                     jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"),
                     jsonObject.getIntValue("applicationId"));
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
-            // 错误日志记录到数据库 的 log_dead_letter 表中
-            LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
-            logDeadLetterDO.setAppid(Integer.valueOf(message.getMessageProperties().getAppId()));
-            logDeadLetterDO.setErrorLog(e.getMessage());
-            logDeadLetterDO.setMsg(msgBody);
-            logDeadLetterDO.setExchangeName(message.getMessageProperties().getReceivedExchange());
-            logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
-            logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
-            logDeadLetterDao.addData(logDeadLetterDO);
-            if(StringUtils.isNotBlank(e.getMessage()) && e.getMessage().contains("重复的加积分操作")){
-                log.warn(e.getMessage(), e);
-            }else{
-                log.error(e.getMessage(), e);
+            try {
+                log.info("addAwardHandler exception e.message:{}", e.getMessage());
+                // 错误日志记录到数据库 的 log_dead_letter 表中
+                LogDeadLetterDO logDeadLetterDO = new LogDeadLetterDO();
+                logDeadLetterDO.setAppid(Integer.valueOf(message.getMessageProperties().getAppId()));
+                logDeadLetterDO.setErrorLog(e.getMessage());
+                logDeadLetterDO.setMsg(msgBody);
+                logDeadLetterDO.setExchangeName(message.getMessageProperties().getReceivedExchange());
+                logDeadLetterDO.setRoutingKey(message.getMessageProperties().getReceivedRoutingKey());
+                logDeadLetterDO.setQueueName(message.getMessageProperties().getConsumerQueue());
+                logDeadLetterDao.addData(logDeadLetterDO);
+                if(StringUtils.isNotBlank(e.getMessage()) && e.getMessage().contains("重复的加积分操作")){
+                    log.warn(e.getMessage(), e);
+                }else{
+                    log.error(e.getMessage(), e);
+                }
+            } catch (Exception e1) {
+                log.error(e1.getMessage(), e1);
             }
 
         }
