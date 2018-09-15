@@ -38,6 +38,8 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -776,12 +778,47 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        JSONObject jsonObject = new JSONObject();
-
-        logger.info(JSONObject.toJSONString(jsonObject));
         UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
+        return ResponseUtils.success(true);
+    }
+
+
+
+    public Response getPostionIds(){
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+//        SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
+//                .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
+//        SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+        return ResponseUtils.success(true);
+    }
+
+
+
+    public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
+
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        for(Integer pid: positionIds) {
+            String idx = "" + pid;
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("is_referral", isReferral)
+                    .endObject();
+
+            bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
+
+        }
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+
         return ResponseUtils.success(true);
     }
 }
