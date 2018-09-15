@@ -853,6 +853,7 @@ public class EmployeeService {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         EmployeeInfoVO employeeInfoVO = new EmployeeInfoVO();
+        employeeInfoVO.setId(userEmployeeDO.getId());
         employeeInfoVO.setName(userEmployeeDO.getCname());
         employeeInfoVO.setUserId(userId);
         employeeInfoVO.setCompanyId(userEmployeeDO.getCompanyId());
