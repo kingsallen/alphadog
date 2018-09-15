@@ -20,7 +20,6 @@ import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -57,11 +56,6 @@ public class ReferralPositionController {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-
-            List<Integer> pids = (List<Integer>)params.get("position_ids");
-            if (CollectionUtils.isEmpty(pids)) {
-                return ResponseLogNotification.fail(request, "position_ids不能为空");
-            }
 
             ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
