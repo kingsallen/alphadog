@@ -53,13 +53,13 @@ public class ReferralPositionService {
     @Transactional
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception{
 
-        this.positionIdsHandler(dataDO,"add");
+        this.positionUpdateHandler(dataDO,"add");
 
     }
     @CounterIface
     @Transactional
     public void delReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception {
-        this.positionIdsHandler(dataDO,"del");
+        this.positionUpdateHandler(dataDO,"del");
 
     }
 
@@ -102,9 +102,9 @@ public class ReferralPositionService {
     }
 
 
-    public void positionIdsHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
+    public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
-        logger.info("positionIdsHandler {}",JSON.toJSONString(dataDO));
+        logger.info("positionUpdateHandler {}",JSON.toJSONString(dataDO));
         int all_selected = dataDO.isSetAll_selected()?dataDO.getAll_selected():0;
 
         List<Integer> pids = dataDO.getPosition_ids();
@@ -113,9 +113,10 @@ public class ReferralPositionService {
         //非全加或者全取消
         if(all_selected == 0) {
             if(opType.equals("add") && !CollectionUtils.isEmpty(pids)) {
-                positionEntity.putReferralPositions(pids);
+                processUpdateData(pids,"add");
+
             } else if(opType.equals("del") && !CollectionUtils.isEmpty(pids)) {
-                positionEntity.delReferralPositions(pids);
+                processUpdateData(pids,"del");
             }
             return;
         }
@@ -124,7 +125,7 @@ public class ReferralPositionService {
             //全量新增 要根据筛选条件查询所有positionIds
             List<Integer> esPositionIds = getPositionIdFromEs(dataDO);
             if(opType.equals("add") && !CollectionUtils.isEmpty(esPositionIds) ) {
-                positionEntity.putReferralPositions(esPositionIds);
+                processUpdateData(esPositionIds,"add");
                 return;
             }
         }
@@ -133,11 +134,12 @@ public class ReferralPositionService {
         if(all_selected == 2) {
             List<Integer> esPositionIds = getPositionIdFromEs(dataDO);
             if(opType.equals("del") && !CollectionUtils.isEmpty(esPositionIds)){
-                positionEntity.delReferralPositions(esPositionIds);
+                processUpdateData(esPositionIds,"del");
             }
             //处理全取消时又加上某几个职位
             if(opType.equals("del")&& !CollectionUtils.isEmpty(pids)) {
-                positionEntity.putReferralPositions(pids);
+                processUpdateData(pids,"add");
+
             }
             return;
         }
@@ -199,6 +201,61 @@ public class ReferralPositionService {
         } else {
             return new ArrayList<>();
         }
+
+    }
+
+    public void processUpdateData(List<Integer> pids ,String optType){
+        List<List<Integer>> splitLists = splitList(pids,500);
+
+            for(List<Integer> list: splitLists) {
+
+                if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
+                    tp.startTast(() -> {
+                        positionEntity.putReferralPositions(list);
+                        return 0;
+                    });
+                }else if(optType.equals("del") && !CollectionUtils.isEmpty(list)) {
+                    tp.startTast(() -> {
+                        positionEntity.delReferralPositions(list);
+                        return 0;
+                    });
+                }
+
+
+
+            }
+
+    }
+    
+    private  <T> List<List<T>> splitList(List<T> resList,int count){
+
+        if(resList==null ||count<1)
+            return  null ;
+        List<List<T>> ret=new ArrayList<List<T>>();
+        int size=resList.size();
+        if(size<=count){ //数据量不足count指定的大小
+            ret.add(resList);
+        }else{
+            int pre=size/count;
+            int last=size%count;
+            //前面pre个集合，每个大小都是count个元素
+            for(int i=0;i<pre;i++){
+                List<T> itemList=new ArrayList<T>();
+                for(int j=0;j<count;j++){
+                    itemList.add(resList.get(i*count+j));
+                }
+                ret.add(itemList);
+            }
+            //last的进行处理
+            if(last>0){
+                List<T> itemList=new ArrayList<T>();
+                for(int i=0;i<last;i++){
+                    itemList.add(resList.get(pre*count+i));
+                }
+                ret.add(itemList);
+            }
+        }
+        return ret;
 
     }
 
