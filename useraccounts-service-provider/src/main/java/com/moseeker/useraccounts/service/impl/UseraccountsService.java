@@ -1206,6 +1206,7 @@ public class UseraccountsService {
         if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
+        logger.info("claimReferralCard claim form:{}", JSON.toJSONString(claimForm));
         ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
         if (referralLog == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
@@ -1230,7 +1231,7 @@ public class UseraccountsService {
         if (!claimForm.getName().equals(referralUser.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
-
+        logger.info("claimReferralCard userUserDO:{}", userUserDO);
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isMobile(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
