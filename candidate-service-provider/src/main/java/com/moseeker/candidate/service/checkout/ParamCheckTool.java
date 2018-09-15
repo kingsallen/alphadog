@@ -1,7 +1,9 @@
 package com.moseeker.candidate.service.checkout;
 
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
+import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.thrift.gen.candidate.struct.CandidateListParam;
 import com.moseeker.thrift.gen.candidate.struct.RecommmendParam;
 
@@ -41,9 +43,21 @@ public class ParamCheckTool {
         vu.addIntTypeValidate("推荐记录编号", param.getId(), null, null, 1, Integer.MAX_VALUE);
         vu.addRequiredValidate("公司编号", param.getCompanyId(), null, null);
         vu.addIntTypeValidate("公司编号", param.getCompanyId(), null, "缺少必要参数“部门编号”", 1, Integer.MAX_VALUE);
-        vu.addRequiredStringValidate("被推荐者目前就职公司", param.getCompany(), null, null);
-        vu.addRequiredStringValidate("被推荐者的职位", param.getPosition(), null, null);
-        vu.addRequiredStringValidate("推荐理由", param.getRecomReason(), null, null);
+
+        vu.addRequiredStringValidate("被推荐人姓名", param.getRealName());
+        vu.addStringLengthValidate("被推荐人姓名", param.getRealName(), 0, 100);
+        vu.addRequiredStringValidate("被推荐人手机号码", param.getMobile());
+        vu.addRegExpressValidate("被推荐人手机号码", param.getMobile(), FormCheck.getMobileExp());
+        vu.addRequiredStringValidate("被推荐人邮箱", param.getEmail());
+        vu.addRegExpressValidate("被推荐人邮箱", param.getEmail(), FormCheck.getEmailExp());
+        vu.addStringLengthValidate("被推荐人邮箱", param.getEmail(), null, 50);
+
+        vu.addRequiredStringValidate("被推荐者目前就职公司", param.getCompany());
+        vu.addStringLengthValidate("就职公司", param.getCompany(), null, 200);
+        vu.addRequiredStringValidate("被推荐者的职位", param.getPosition());
+        vu.addStringLengthValidate("就职职位", param.getPosition(), null, 200);
+        vu.addRequiredStringValidate("推荐理由", param.getRecomReason());
+        vu.addStringLengthValidate("推荐理由", param.getRecomReason(), 0, 512);
         return vu;
     }
 
