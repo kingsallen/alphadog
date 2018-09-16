@@ -58,7 +58,6 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
@@ -71,7 +70,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -1146,20 +1144,19 @@ public class JobApplicataionService {
         }
     }
 
-    public List<ApplicationRecord> getApplications(int userId, int companyId) {
+    public List<ApplicationRecord> getApplications(int userId, int companyId) throws ApplicationException {
         List<ApplicationRecord> applications = new ArrayList<>();
-
-        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
-        if (userEmployeeDO != null) {
-            companyId = userEmployeeDO.getCompanyId();
-        } else {
-            companyId = 0;
-        }
 
         UserUserDO userUserDO = userUserDao.getUser(userId);
         if (userUserDO == null) {
-            throw ApplicationException.APPLICATION_EMPLOYEE_NOT_EXIST;
+            throw ApplicationException.APPLICATION_USER_NOT_EXIST;
         }
+
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
+        if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
+            companyId = 0;
+        }
+
         List<JobApplicationRecord> apps = jobApplicationDao.getByApplierIdAndCompanyId(userId, companyId);
 
         if (apps != null && apps.size() > 0) {
