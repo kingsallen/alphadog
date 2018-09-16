@@ -1876,7 +1876,7 @@ public class PositionService {
                         e.setSalary_bottom(jr.getSalaryBottom());
                     }
                     e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
-                    //e.setDepartment(jr.getDepartment()); //job_position的department字段作废，改用hrteam.name
+                    e.setDepartment(jr.getDepartment());
                     e.setVisitnum(jr.getVisitnum());
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
@@ -1961,8 +1961,12 @@ public class PositionService {
             s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
             //添加发布人姓名
             s.setPublisher_name(publisherUserHrAccountMap.get(s.getPublisher()) == null ? "" : publisherUserHrAccountMap.get(s.getPublisher()).getUsername());
-            //添加部门信息
-            s.setDepartment(hrTeamMap.get(s.getTeam_id()) == null ? "" : hrTeamMap.get(s.getTeam_id()).getName());
+
+            //添加部门信息 如果department为空，用hrteam name
+            if(StringUtils.isNullOrEmpty(s.getDepartment())) {
+                s.setDepartment(hrTeamMap.get(s.getTeam_id()) == null ? "" : hrTeamMap.get(s.getTeam_id()).getName());
+            }
+
 
             return s;
         }).collect(Collectors.toList());
