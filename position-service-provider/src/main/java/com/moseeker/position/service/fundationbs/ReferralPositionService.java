@@ -55,6 +55,7 @@ public class ReferralPositionService {
     @CounterIface
     @Transactional
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception{
+        logger.info("putReferralPositions {}",JSON.toJSONString(dataDO) );
 
         this.positionUpdateHandler(dataDO,"add");
 
@@ -62,6 +63,7 @@ public class ReferralPositionService {
     @CounterIface
     @Transactional
     public void delReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception {
+        logger.info("delReferralPositions {}",JSON.toJSONString(dataDO) );
         this.positionUpdateHandler(dataDO,"del");
 
     }
@@ -105,7 +107,7 @@ public class ReferralPositionService {
     }
 
 
-    public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
+    private void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
         logger.info("positionUpdateHandler {} {}",JSON.toJSONString(dataDO),opType);
 
@@ -160,6 +162,8 @@ public class ReferralPositionService {
 
     public List<Integer> getPositionIdFromEs(ReferralPositionUpdateDataDO dataDO) throws Exception{
 
+        logger.info("getPositionIdFromEs {} ",JSON.toJSONString(dataDO) );
+        
         Map<String,String> query = new HashMap<String,String>() ;
 
         if(dataDO.isSetCity()) {
@@ -172,10 +176,14 @@ public class ReferralPositionService {
             query.put("company_id",String.valueOf(dataDO.getCompany_id()));
         }
         if(dataDO.isSetCandidate_source()) {
-            query.put("candidate_source",String.valueOf(dataDO.getCandidate_source()));
+            if(dataDO.getCandidate_source() != 0) {
+                query.put("candidate_source",String.valueOf(dataDO.getCandidate_source()));
+            }
         }
         if(dataDO.isSetEmployment_type()) {
-            query.put("employment_type",String.valueOf(dataDO.getEmployment_type()));
+            if(dataDO.getEmployment_type() != 0) {
+                query.put("employment_type",String.valueOf(dataDO.getEmployment_type()));
+            }
         }
         query.put("page_size","10000");//查询全部所有记录 理论上不会超过10000条的
         query.put("page_from","1");
