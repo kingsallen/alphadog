@@ -55,6 +55,7 @@ public class ReferralPositionService {
     @CounterIface
     @Transactional
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception{
+        logger.info("putReferralPositions {}",JSON.toJSONString(dataDO) );
 
         this.positionUpdateHandler(dataDO,"add");
 
@@ -62,6 +63,7 @@ public class ReferralPositionService {
     @CounterIface
     @Transactional
     public void delReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception {
+        logger.info("delReferralPositions {}",JSON.toJSONString(dataDO) );
         this.positionUpdateHandler(dataDO,"del");
 
     }
@@ -105,7 +107,7 @@ public class ReferralPositionService {
     }
 
 
-    public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
+    private void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
         logger.info("positionUpdateHandler {} {}",JSON.toJSONString(dataDO),opType);
 
