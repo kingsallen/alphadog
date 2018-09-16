@@ -81,6 +81,8 @@ public class ReferralPositionController {
 
             ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
+            logger.info("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
+
             referralPositionService.putReferralPositions(dataDO);
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
@@ -100,6 +102,7 @@ public class ReferralPositionController {
     public String positionQrCode(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+
             ValidateUtil validateUtil = new ValidateUtil();
             String url = params.getString("url");
             String logo = params.getString("logo");
@@ -129,11 +132,10 @@ public class ReferralPositionController {
     public String wechatPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
 
-            Params<String, Object> map = ParamUtils.parseRequestParam(request);
-            logger.info("map: " + map.toString());
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Map<String,String> queryMapString = new HashMap<>();
-            for(String key :map.keySet()) {
-                queryMapString.put(key,map.get(key).toString());
+            for(String key :params.keySet()) {
+                queryMapString.put(key,params.get(key).toString());
             }
 
             //特殊处理，将page_from用page_num代替
@@ -169,12 +171,11 @@ public class ReferralPositionController {
     @ResponseBody
     public String hrPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> map = ParamUtils.parseRequestParam(request);
-            logger.info("map: " + map.toString());
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
 
             Map<String,String> queryMapString = new HashMap<>();
-            for(String key :map.keySet()) {
-                queryMapString.put(key,map.get(key).toString());
+            for(String key :params.keySet()) {
+                queryMapString.put(key,params.get(key).toString());
             }
 
             //特殊处理，将page_from用page_num代替
