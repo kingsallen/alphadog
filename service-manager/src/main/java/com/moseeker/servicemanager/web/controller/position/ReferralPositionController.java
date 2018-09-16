@@ -58,7 +58,7 @@ public class ReferralPositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
 
             ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
-            
+
             logger.info("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
 
             referralPositionService.delReferralPositions(dataDO);
