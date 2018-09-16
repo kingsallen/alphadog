@@ -6,6 +6,8 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +22,14 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     @Autowired
     ReferralPositionService referralPositionService;
 
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws TException {
         try {
             referralPositionService.putReferralPositions(dataDO);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }
@@ -36,7 +39,7 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
         try {
             referralPositionService.delReferralPositions(dataDO);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
         }
     }
