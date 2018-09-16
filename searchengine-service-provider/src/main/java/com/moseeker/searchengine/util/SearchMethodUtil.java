@@ -180,7 +180,9 @@ public class SearchMethodUtil {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            searchUtil.handleTerm(candidateSource,query,"candidate_source");
+            if(Integer.valueOf(candidateSource) !=0) {
+                searchUtil.handleTerm(candidateSource,query,"candidate_source");
+            }
         }
 
         if(StringUtils.isNotBlank(candidateSourceName)){
@@ -202,7 +204,9 @@ public class SearchMethodUtil {
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
         }
         if(StringUtils.isNotBlank(employmentType)){
-            searchUtil.handleTerm(employmentType,query,"employment_type");
+            if(Integer.valueOf(employmentType) != 0) {
+                searchUtil.handleTerm(employmentType,query,"employment_type");
+            }
         }
         if(StringUtils.isNotBlank(employmentTypeName)){
             searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
