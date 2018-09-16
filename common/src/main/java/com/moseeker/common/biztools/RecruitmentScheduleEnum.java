@@ -394,6 +394,9 @@ public enum RecruitmentScheduleEnum {
                 && preID == RecruitmentScheduleEnum.REJECT.getId()) {
             return  "HR将您纳入候选名单";
         }
+        if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
+            return "恭喜您已被内部员工推荐";
+        }
         if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
             return  "HR将您的状态改为待重新入职";
         }
