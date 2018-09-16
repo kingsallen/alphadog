@@ -1147,17 +1147,16 @@ public class JobApplicataionService {
     public List<ApplicationRecord> getApplications(int userId, int companyId) throws ApplicationException {
         List<ApplicationRecord> applications = new ArrayList<>();
 
-        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
-        if (userEmployeeDO != null) {
-            companyId = userEmployeeDO.getCompanyId();
-        } else {
-            companyId = 0;
-        }
-
         UserUserDO userUserDO = userUserDao.getUser(userId);
         if (userUserDO == null) {
             throw ApplicationException.APPLICATION_USER_NOT_EXIST;
         }
+
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
+        if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
+            companyId = 0;
+        }
+
         List<JobApplicationRecord> apps = jobApplicationDao.getByApplierIdAndCompanyId(userId, companyId);
 
         if (apps != null && apps.size() > 0) {
