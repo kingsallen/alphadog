@@ -1945,9 +1945,12 @@ public class PositionService {
 
         // 获取hrteam，填入职位的部门字段
         Map<Integer /* team id */, HrTeamDO> hrTeamMap = new HashMap<>();
-        //  根据publishSet 查询 user_hr_account
-        List<HrTeamDO> hrTeamDOS = hrTeamDao.getTeamList(new ArrayList<>(teamIdList));
-        logger.info(hrTeamDOS.toString());
+        Condition condition3 = new Condition("id", teamIdList.toArray(), ValueOp.IN);
+        Query.QueryBuilder hrm3 = new Query.QueryBuilder();
+        hrm3.where(condition3);
+
+        List<HrTeamDO> hrTeamDOS = hrTeamDao.getDatas(hrm3.buildQuery(),HrTeamDO.class);
+        logger.info("handerPositionWx hrTeamDOS hrTeamDOS {}  teamIdList {}", JSON.toJSONString(hrTeamDOS),JSON.toJSONString(teamIdList));
         for (HrTeamDO hrTeamDO : hrTeamDOS) {
             hrTeamMap.put(hrTeamDO.getId(), hrTeamDO);
         }
