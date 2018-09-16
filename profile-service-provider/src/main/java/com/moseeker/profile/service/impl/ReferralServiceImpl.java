@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralType;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -74,6 +75,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private HrOperationRecordDao operationRecordDao;
 
     @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
@@ -387,6 +391,9 @@ public class ReferralServiceImpl implements ReferralService {
             jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+
+            operationRecordDao.addRecord(applicationId, Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
