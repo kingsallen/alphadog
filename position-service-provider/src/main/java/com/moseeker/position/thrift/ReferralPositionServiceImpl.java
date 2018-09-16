@@ -1,7 +1,7 @@
 package com.moseeker.position.thrift;
 
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.position.service.fundationbs.ReferralPositionService;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
@@ -28,9 +28,11 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws TException {
         try {
             referralPositionService.putReferralPositions(dataDO);
+        } catch (BIZException e) {
+            throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
-            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -38,9 +40,11 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     public void delReferralPositions(ReferralPositionUpdateDataDO dataDO) throws TException {
         try {
             referralPositionService.delReferralPositions(dataDO);
+        } catch (BIZException e) {
+            throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error(e.getMessage(), e);
-            throw ExceptionUtils.convertException(e);
         }
     }
 
