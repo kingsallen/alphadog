@@ -435,6 +435,10 @@ public class EmployeeEntity {
                         reward.setType(12);
                     } else if (reason.indexOf("完善被推荐人信息") > -1) {
                         reward.setType(13);
+                    } else if (reason.indexOf("完成员工认证") > -1) {
+                        reward.setType(14);
+                    } else if (reason.indexOf("员工上传人才简历") > -1) {
+                        reward.setType(15);
                     } else {
                         reward.setType(0); // 未知
                     }
