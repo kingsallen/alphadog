@@ -1149,7 +1149,7 @@ public class JobApplicataionService {
     public List<ApplicationRecord> getApplications(int userId, int companyId) {
         List<ApplicationRecord> applications = new ArrayList<>();
 
-        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
         if (userEmployeeDO != null) {
             companyId = userEmployeeDO.getCompanyId();
         } else {
