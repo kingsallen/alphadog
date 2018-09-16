@@ -180,7 +180,7 @@ public class SearchMethodUtil {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            if(Integer.valueOf(candidateSource) !=0) {
+            if(Integer.valueOf(candidateSource) >=0) {
                 searchUtil.handleTerm(candidateSource,query,"candidate_source");
             }
         }
@@ -204,7 +204,7 @@ public class SearchMethodUtil {
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
         }
         if(StringUtils.isNotBlank(employmentType)){
-            if(Integer.valueOf(employmentType) != 0) {
+            if(Integer.valueOf(employmentType) >= 0) {
                 searchUtil.handleTerm(employmentType,query,"employment_type");
             }
         }

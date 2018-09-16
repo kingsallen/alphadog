@@ -176,12 +176,12 @@ public class ReferralPositionService {
             query.put("company_id",String.valueOf(dataDO.getCompany_id()));
         }
         if(dataDO.isSetCandidate_source()) {
-            if(dataDO.getCandidate_source() != 0) {
+            if(dataDO.getCandidate_source() >= 0) {
                 query.put("candidate_source",String.valueOf(dataDO.getCandidate_source()));
             }
         }
         if(dataDO.isSetEmployment_type()) {
-            if(dataDO.getEmployment_type() != 0) {
+            if(dataDO.getEmployment_type() >= 0) {
                 query.put("employment_type",String.valueOf(dataDO.getEmployment_type()));
             }
         }
