@@ -323,7 +323,8 @@ public class ReferralServiceImpl implements ReferralService {
      * @throws ProfileException 业务异常
      */
     private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
-                          String name, String mobile, List<String> referralReasons, GenderType gender, String email, ReferralType referralType)
+                          String name, String mobile, List<String> referralReasons, GenderType gender, String email,
+                          ReferralType referralType)
             throws ProfileException {
 
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
@@ -385,7 +386,7 @@ public class ReferralServiceImpl implements ReferralService {
                 referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
                         mobile, employeeDO, userId, (byte) gender.getValue(), email);
 
-                addRecommandReward(employeeDO, userId, applicationId, positionRecord);
+                addRecommandReward(employeeDO, userId, applicationId, positionRecord, referralType);
 
                 return response;
             } catch (Exception e) {
@@ -408,7 +409,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
-                                    JobPositionRecord positionRecord) throws ApplicationException {
+                                    JobPositionRecord positionRecord, ReferralType referralType) throws ApplicationException {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("employeeId", employeeDO.getId());
@@ -421,12 +422,15 @@ public class ReferralServiceImpl implements ReferralService {
             MessageProperties mp = new MessageProperties();
             mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
             mp.setReceivedExchange("user_action_topic_exchange");
-            amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-            jsonObject.put("positionId", positionRecord.getId());
-            jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
-            amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+            if (referralType.equals(ReferralType.PostInfo)) {
+                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+            } else {
+                jsonObject.put("positionId", positionRecord.getId());
+                jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
+                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+            }
 
             operationRecordDao.addRecord(applicationId, Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
 
