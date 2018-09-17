@@ -30,6 +30,7 @@ import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
@@ -79,6 +80,8 @@ public class WholeProfileService {
     ProfileExtUtils profileUtils = new ProfileExtUtils();
 
     ThreadPool pool = ThreadPool.Instance;
+
+    ScheduledThread thread=ScheduledThread.Instance;
     @Autowired
     ProfileEntity profileEntity;
 
@@ -1310,10 +1313,16 @@ public class WholeProfileService {
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
-        pool.startTast(() -> {
-            talentpoolService.handlerCompanyTagAndProfile(userIdList,companyId);
-            return 0;
-        });
+        thread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    talentpoolService.handlerCompanyTagAndProfile(userIdList, companyId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },80000);
         return ResponseUtils.success("success");
     }
     /*
