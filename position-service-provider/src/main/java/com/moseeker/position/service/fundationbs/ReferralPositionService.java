@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Date: 2018/9/4
@@ -232,13 +233,13 @@ public class ReferralPositionService {
         List<List<Integer>> splitLists = splitList(pids,RECORDNUM);
         Integer taskNum = splitLists.size();
         Integer countTaskNum = 0;
-
+        List<Future> taskFeatures = new ArrayList<>();
         for(List<Integer> list: splitLists) {
             if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
                 Future<Integer> future = tp.startTast(() -> { positionEntity.putReferralPositions(list);return 1; });
                 try {
                     //future.get(10, TimeUnit.SECONDS);
-                    countTaskNum++;
+                    taskFeatures.add(future);
                 }catch (Exception e) {
                     logger.info(e.getClass().getName(),e);
                 }
@@ -247,12 +248,22 @@ public class ReferralPositionService {
                 Future<Integer> future = tp.startTast(() -> { positionEntity.delReferralPositions(list);return 1; });
                 try {
                     //future.get(10, TimeUnit.SECONDS);
-                    countTaskNum++;
+                    taskFeatures.add(future);
                 }catch (Exception e) {
                     logger.info(e.getClass().getName(),e);
                 }
             }
         }
+
+        try{
+            for(Future future:taskFeatures) {
+                future.get(2, TimeUnit.SECONDS);
+                countTaskNum++;
+            }
+        }catch (Exception e){
+            logger.info(e.getClass().getName(),e);
+        }
+
         logger.info("processUpdateData taskNum - countTaskNum {} {} ",taskNum, countTaskNum);
 
 
