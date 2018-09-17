@@ -311,6 +311,7 @@ public class ReferralServiceImpl implements ReferralService {
             if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
                 userRecord.setMobile(Long.valueOf(mobile));
             }
+            logger.info("recommend id:{}, name:{}, mobile:{}", userRecord.getId(), name, mobile);
             userAccountEntity.updateUserRecord(userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
