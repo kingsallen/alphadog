@@ -700,6 +700,7 @@ public class TalentpoolSearchengine {
                 this.queryTermByCompanyTag(companyName, query);
             }
         }
+        logger.info("keywords:========"+ keywords);
         if(StringUtils.isNotNullOrEmpty(keywords)){
             String[] keyword_list = keywords.split(";");
             QueryBuilder keyand = QueryBuilders.boolQuery();
