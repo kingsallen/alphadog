@@ -138,10 +138,12 @@ public class ReferralEntity {
 
     public void logReferralOperation(int position, int applicationId, int depth, List<String> referralReasons,
                                      String mobile, UserEmployeeDO employeeDO, int presenteeUserId, byte gender, String email) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         CandidateRecomRecordRecord recomRecordRecord = new CandidateRecomRecordRecord();
         recomRecordRecord.setPositionId(position);
         recomRecordRecord.setAppId(applicationId);
-        recomRecordRecord.setRecomTime(new Timestamp(System.currentTimeMillis()));
+        recomRecordRecord.setRecomTime(now);
+        recomRecordRecord.setClickTime(now);
         recomRecordRecord.setDepth(depth);
         recomRecordRecord.setRecomReason(referralReasons.stream().collect(Collectors.joining(",")));
         recomRecordRecord.setMobile(mobile);
