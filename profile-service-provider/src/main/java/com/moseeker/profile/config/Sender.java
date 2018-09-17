@@ -25,6 +25,7 @@ public class Sender {
     private Random random = new Random();
 
     public void  send(String message) {
+        logger.info("handlerCompanyTagTalent send message:{}",message);
         MessageProperties msp = new MessageProperties();
         // 延迟5s发送
         msp.setDelay(30000);
