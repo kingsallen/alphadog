@@ -105,7 +105,8 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileStreamProfile(form.getEmployeeId(), form.getFileOriginName(), form.getFileName(), form.getFileAbsoluteName(), form.getFileData());
+                    profileService.parseFileStreamProfile(form.getEmployeeId(), form.getFileOriginName(),
+                            form.getFileName(), form.getFileAbsoluteName(), form.getFileData());
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
