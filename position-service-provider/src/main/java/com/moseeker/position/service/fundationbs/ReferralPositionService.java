@@ -106,8 +106,8 @@ public class ReferralPositionService {
 
     }
 
-
-    private void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
+    @Transactional
+    public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
         logger.info("positionUpdateHandler {} {}",JSON.toJSONString(dataDO),opType);
 
@@ -160,6 +160,7 @@ public class ReferralPositionService {
 
     }
 
+    @Transactional
     public List<Integer> getPositionIdFromEs(ReferralPositionUpdateDataDO dataDO) throws Exception{
 
         logger.info("getPositionIdFromEs {} ",JSON.toJSONString(dataDO) );
@@ -222,6 +223,7 @@ public class ReferralPositionService {
 
     }
 
+    @Transactional
     public void processUpdateData(List<Integer> pids ,String optType){
 
         if(CollectionUtils.isEmpty(pids)) {

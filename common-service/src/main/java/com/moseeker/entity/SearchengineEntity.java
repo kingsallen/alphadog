@@ -52,6 +52,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -768,7 +769,7 @@ public class SearchengineEntity {
         return new JSONObject();
     }
 
-
+    @Transactional
     public Response updateReferralPostionStatus(Integer positionId,Integer isReferral){
         logger.info("updateReferralPostionStatus {} {}",positionId,isReferral);
         String idx = "" + positionId;
@@ -787,7 +788,7 @@ public class SearchengineEntity {
     }
 
 
-
+    @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
 
         TransportClient client = getTransportClient();
@@ -806,6 +807,7 @@ public class SearchengineEntity {
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
 
         if(bulkResponse.hasFailures()) {
             return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
