@@ -48,6 +48,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -795,12 +796,14 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
+        DateTime nowDate = new DateTime();
         BulkRequestBuilder bulkRequest = client.prepareBulk();
         for(Integer pid: positionIds) {
             String idx = "" + pid;
             XContentBuilder builder = XContentFactory.jsonBuilder()
                     .startObject()
                     .field("is_referral", isReferral)
+                    .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
             bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
