@@ -257,7 +257,7 @@ public class ReferralPositionService {
 
         try{
             for(Future future:taskFeatures) {
-                future.get(2, TimeUnit.SECONDS);
+                future.get(5, TimeUnit.SECONDS);
                 countTaskNum++;
             }
         }catch (Exception e){
