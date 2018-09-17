@@ -183,7 +183,6 @@ public class TalentPoolService {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                return;
             }
         },80000);
 
