@@ -787,6 +787,7 @@ public class SearchengineEntity {
     }
 
 
+
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
 
         TransportClient client = getTransportClient();
@@ -805,10 +806,13 @@ public class SearchengineEntity {
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+
         if(bulkResponse.hasFailures()) {
             return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
         } else {
             return ResponseUtils.success(bulkResponse);
+
         }
     }
+
 }
