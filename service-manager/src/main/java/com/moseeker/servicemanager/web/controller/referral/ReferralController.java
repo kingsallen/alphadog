@@ -317,7 +317,7 @@ public class ReferralController {
         referralPositionInfo.setId(referralPosition.getId());
         referralPositionInfo.setLogo(referralPosition.getLogo());
         referralPositionInfo.setSalaryBottom(referralPosition.getSalaryBottom());
-        referralPositionInfo.setSalaryTop(referralPosition.getSReferralServiceImplalaryTop());
+        referralPositionInfo.setSalaryTop(referralPosition.getSalaryTop());
         referralPositionInfo.setTeam(referralPosition.getTeam());
         referralPositionInfo.setTitle(referralPosition.getTitle());
         if (referralPosition.getCities() != null && referralPosition.getCities().size() > 0) {
