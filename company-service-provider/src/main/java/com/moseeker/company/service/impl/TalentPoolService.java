@@ -1373,9 +1373,16 @@ public class TalentPoolService {
                         //ES更新
                         try {
                             tp.startTast(() -> {
-                                Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
-                                tagService.handlerCompanyTag(idList, 0, map);
-                                return 0;
+                                tp.startTast(() -> {
+                                    Map<String, Object> map = JSON.parseObject(JSON.toJSONString(companyTagDO));
+                                    if(companyTagDO.isSetKeyword_list()){
+                                        String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+                                        map.put("keywords", keyword);
+                                    }
+                                    tagService.handlerCompanyTag(idList, 0, map);
+                                    return 0;
+                                });
+
                             });
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);
