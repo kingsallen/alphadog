@@ -50,7 +50,7 @@ public enum SMSScene {
      */
     public void saveVerifyCode(String countryCode, String mobile, String verifyCode, RedisClient redisClient) {
         String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
-        logger.info("SMSScene keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);
+        logger.info("SMSScene saveVerifyCode keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);
         redisClient.set(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern, verifyCode);
     }
 
@@ -67,11 +67,14 @@ public enum SMSScene {
             return false;
         }
         String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
+        logger.info("SMSScene validateVerifyCode keyIdentifier:{}, pattern:{}, verifyCode:{}", keyIdentifier, pattern, verifyCode);
         String codeInRedis = redisClient.get(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
         if (verifyCode.equals(codeInRedis)) {
+            logger.info("SMSScene validateVerifyCode code equals!");
             redisClient.del(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
             return true;
         } else {
+            logger.info("SMSScene validateVerifyCode code not equals!");
             return false;
         }
     }

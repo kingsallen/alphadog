@@ -1243,6 +1243,7 @@ public class UseraccountsService {
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
             boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
+            logger.info("claimReferralCard validateVerifyResult:{}", validateVerifyResult);
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }
