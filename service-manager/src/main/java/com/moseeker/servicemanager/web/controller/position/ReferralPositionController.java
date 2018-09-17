@@ -63,6 +63,9 @@ public class ReferralPositionController {
 
             referralPositionService.delReferralPositions(dataDO);
 
+            logger.info("ReferralPositionController delReferralPosition  response Finished" );
+
+
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -86,6 +89,8 @@ public class ReferralPositionController {
             logger.info("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
 
             referralPositionService.putReferralPositions(dataDO);
+
+            logger.info("ReferralPositionController putReferralPosition  response Finished" );
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
@@ -154,6 +159,8 @@ public class ReferralPositionController {
             queryMapString.put("flag","0");
 
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
+            
+            logger.info("ReferralPositionController wechatPositionList  listData.size : {} queryMMapString : {} ",JSON.toJSONString(listData.size()),JSON.toJSONString(queryMapString) );
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
@@ -202,6 +209,8 @@ public class ReferralPositionController {
                 queryMapString.put("publisher",accountId);
             }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
+
+            logger.info("ReferralPositionController hrPositionList  listData.size : {} queryMMapString : {} ",JSON.toJSONString(listData.size()),JSON.toJSONString(queryMapString) );
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
