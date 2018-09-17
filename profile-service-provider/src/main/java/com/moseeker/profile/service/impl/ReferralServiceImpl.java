@@ -308,6 +308,9 @@ public class ReferralServiceImpl implements ReferralService {
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (StringUtils.isBlank(userRecord.getUsername())) {
+                if (profilePojo.getProfileRecord() != null) {
+                    profilePojo.getProfileRecord().setUserId(userRecord.getId());
+                }
                 profileEntity.mergeProfile(profilePojo, userRecord.getId());
             }
         } else {

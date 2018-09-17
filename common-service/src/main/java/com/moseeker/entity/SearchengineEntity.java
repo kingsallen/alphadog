@@ -48,6 +48,7 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -790,7 +791,9 @@ public class SearchengineEntity {
 
     @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
+        DateTime nowDate = new DateTime();
 
+        logger.info("updateBulkReferralPostionStatus {} 条 计时开始时间 {}" ,positionIds.size(), nowDate.toString("yyyy-MM-dd HH:mm:ss"));
         TransportClient client = getTransportClient();
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
@@ -801,6 +804,7 @@ public class SearchengineEntity {
             XContentBuilder builder = XContentFactory.jsonBuilder()
                     .startObject()
                     .field("is_referral", isReferral)
+                    .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
             bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
@@ -810,8 +814,13 @@ public class SearchengineEntity {
         logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
 
         if(bulkResponse.hasFailures()) {
+            DateTime endDate = new DateTime();
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
             return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
         } else {
+            DateTime endDate = new DateTime();
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
+
             return ResponseUtils.success(bulkResponse);
 
         }
