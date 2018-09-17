@@ -66,9 +66,10 @@ public enum SMSScene {
         if (StringUtils.isBlank(verifyCode)) {
             return false;
         }
-        String codeInRedis = redisClient.get(0, "SMS_SIGNUP", mobile);
+        String pattern = StringUtils.defaultIfBlank(countryCode, "")+StringUtils.defaultIfBlank(mobile, "");
+        String codeInRedis = redisClient.get(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
         if (verifyCode.equals(codeInRedis)) {
-            redisClient.del(0, "SMS_SIGNUP", mobile);
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), keyIdentifier.toString(), pattern);
             return true;
         } else {
             return false;
