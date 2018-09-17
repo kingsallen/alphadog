@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<TalentpoolProfileMoveDetailRecord> implements Record6<Integer, Long, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1106609756;
+    private static final long serialVersionUID = 1107314020;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_move_detail.id</code>.
@@ -62,16 +62,16 @@ public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<Talen
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_move_detail.profile_move_id</code>. talentpool_profile_move.id，对应的是上一次搬家失败的操作id
+     * Setter for <code>talentpooldb.talentpool_profile_move_detail.profile_move_record_id</code>. talentpool_profile_move_record.id，对应的是上一次搬家的操作id
      */
-    public void setProfileMoveId(Integer value) {
+    public void setProfileMoveRecordId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_move_detail.profile_move_id</code>. talentpool_profile_move.id，对应的是上一次搬家失败的操作id
+     * Getter for <code>talentpooldb.talentpool_profile_move_detail.profile_move_record_id</code>. talentpool_profile_move_record.id，对应的是上一次搬家的操作id
      */
-    public Integer getProfileMoveId() {
+    public Integer getProfileMoveRecordId() {
         return (Integer) get(2);
     }
 
@@ -170,7 +170,7 @@ public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<Talen
      */
     @Override
     public Field<Integer> field3() {
-        return TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_ID;
+        return TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID;
     }
 
     /**
@@ -218,7 +218,7 @@ public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<Talen
      */
     @Override
     public Integer value3() {
-        return getProfileMoveId();
+        return getProfileMoveRecordId();
     }
 
     /**
@@ -268,7 +268,7 @@ public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<Talen
      */
     @Override
     public TalentpoolProfileMoveDetailRecord value3(Integer value) {
-        setProfileMoveId(value);
+        setProfileMoveRecordId(value);
         return this;
     }
 
@@ -327,12 +327,12 @@ public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<Talen
     /**
      * Create a detached, initialised TalentpoolProfileMoveDetailRecord
      */
-    public TalentpoolProfileMoveDetailRecord(Integer id, Long mobile, Integer profileMoveId, Byte profileMoveStatus, Timestamp createTime, Timestamp updateTime) {
+    public TalentpoolProfileMoveDetailRecord(Integer id, Long mobile, Integer profileMoveRecordId, Byte profileMoveStatus, Timestamp createTime, Timestamp updateTime) {
         super(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL);
 
         set(0, id);
         set(1, mobile);
-        set(2, profileMoveId);
+        set(2, profileMoveRecordId);
         set(3, profileMoveStatus);
         set(4, createTime);
         set(5, updateTime);
