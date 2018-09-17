@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * 
+ *
  * 人才库接口
- * <p>Company: MoSeeker</P>  
- * <p>date: Nov 2, 2016</p>  
+ * <p>Company: MoSeeker</P>
+ * <p>date: Nov 2, 2016</p>
  * <p>Email: wjf2255@gmail.com</p>
  * @author wjf
  * @version
@@ -98,31 +98,7 @@ public class TalentpoolNewController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    /*
-       获取人才标签列表
-    */
-    @RequestMapping(value = "/api/talentpool/talenttag", method = RequestMethod.GET)
-    @ResponseBody
-    public String getTalentTag(HttpServletRequest request) throws Exception {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String hrId=String.valueOf(params.get("hr_id"));
-            String companyId=String.valueOf(params.get("company_id"));
-            int page_number = params.getInt("page_number", 1);
-            int page_size = params.getInt("page_size",0);
-            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
-            }
-            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
-                ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
-            }
-            Response result = service.getTalentTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
-            return ResponseLogNotification.success(request, result);
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
+
 
     /*
    获取企业标签信息
@@ -234,5 +210,4 @@ public class TalentpoolNewController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
 }

@@ -311,7 +311,31 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         }
     }
 
+    @Override
+    public Response getTalentTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            TalentTagPOJO pojo=talentPoolService.getTalentTagByPage(hr_id,company_id,page_number,page_size);
+            if(pojo.getFlag()==1){
+                return ResponseUtils.fail(1,"该hr不属于该company_id");
+            }
+            String res= JSON.toJSONString(pojo,serializeConfig, SerializerFeature.DisableCircularReferenceDetect);
+            return ResponseUtils.successWithoutStringify(res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
 
+    }
+
+    @Override
+    public void handlerCompanyTagAndProfile(Set<Integer> userid_list, int company_id) throws BIZException, TException {
+        try{
+            talentPoolService.handlerProfileCompanyTag(userid_list,company_id);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     @Override
     public Response getTalentCountByPositionFilter(int hr_id, int company_id, int position_id) throws BIZException, TException {
@@ -599,18 +623,6 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
-
-    @Override
-    public void handlerCompanyTagAndProfile(Set<Integer> userid_list, int company_id) throws BIZException, TException {
-        try{
-            talentPoolService.handlerProfileCompanyTag(userid_list,company_id);
-        }catch(Exception e){
-            logger.info(e.getMessage(),e);
-            throw ExceptionUtils.convertException(e);
-        }
-
-    }
-
 
     private Set<Integer> ConvertListToSet(List<Integer> list){
         Set<Integer> param=new HashSet<>();

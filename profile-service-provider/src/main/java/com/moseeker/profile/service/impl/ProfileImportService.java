@@ -15,6 +15,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileImportDO;
 import com.moseeker.thrift.gen.profile.struct.ProfileImport;
+import java.util.Set;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,9 @@ public class ProfileImportService {
 
     @Autowired
     private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
 
     public ProfileImport getResource(Query query) throws TException {
         return dao.getData(query, ProfileImport.class);
@@ -107,8 +111,12 @@ public class ProfileImportService {
             int[] result = dao.deleteRecords(BeanUtils.structToDB(structs, ProfileImportRecord.class));
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
+                Set<Integer> ProfileIds = deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet());
                 //更新对应的profile更新时间
-                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+                profileDao.updateUpdateTime(ProfileIds);
+                ProfileIds.forEach(profileId -> {
+                    profileCompanyTagService.handlerCompanyTag(profileId);
+                });
             }
             return result;
         } else {
@@ -187,5 +195,8 @@ public class ProfileImportService {
         });
 
         profileDao.updateUpdateTime(profileIds);
+        profileIds.forEach(profileId ->{
+            profileCompanyTagService.handlerCompanyTag(profileId);
+        });
     }
 }

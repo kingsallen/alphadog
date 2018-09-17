@@ -709,13 +709,8 @@ public class TalentpoolSearchengine {
                     continue;
                 }
                 MultiMatchQueryBuilder fullf = QueryBuilders.multiMatchQuery(keyword);
-                fullf.type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
-//                        .field("title")
-//                        .field("city")
-//                        .field("city_ename")
-//                        .field("team_name")
-//                        .field("custom")
-//                        .field("occupation");
+                fullf.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
+                fullf.minimumShouldMatch("98%");
                 List<String> colums = StringUtils.stringToList(Constant.PROFILE_SEARCH_KEYWORD_COLUMS,";");
                 if(!StringUtils.isEmptyList(colums)){
                     for(String colum :colums){

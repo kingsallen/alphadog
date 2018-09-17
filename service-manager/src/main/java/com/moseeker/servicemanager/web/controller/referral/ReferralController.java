@@ -4,20 +4,19 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
-import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
-import com.moseeker.servicemanager.web.controller.referral.form.ClaimForm;
-import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
-import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
-import com.moseeker.servicemanager.web.controller.referral.tools.ProfileDocCheckTool;
+import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.City;
+import com.moseeker.servicemanager.web.controller.referral.vo.EmployeeInfoVO;
 import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
 import com.moseeker.servicemanager.web.controller.referral.vo.ReferralPositionInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
+import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralCard;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
@@ -77,6 +76,37 @@ public class ReferralController {
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     profileService.parseFileProfile(employeeId, file.getOriginalFilename(), byteBuffer);
+            ProfileDocParseResult parseResult = new ProfileDocParseResult();
+            BeanUtils.copyProperties(result1, parseResult);
+            return Result.success(parseResult).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工上传简历
+     * 由于文件格式有问题，新开一个处理文件字符串解析的接口。
+     * @param form 简历文件
+     * @return 解析结果
+     * @throws Exception 异常信息
+     */
+    @RequestMapping(value = "/v1/referral/file-binary-parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String parseFileStreamProfile(@RequestBody ProfileBinaryParserForm form) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("简历数据", form.getFileData());
+        validateUtil.addRequiredValidate("文件名称", form.getFileName());
+        validateUtil.addRequiredValidate("原始文件名称", form.getFileOriginName());
+        validateUtil.addRequiredValidate("文件绝对路径", form.getFileAbsoluteName());
+        validateUtil.addIntTypeValidate("员工", form.getEmployeeId(), 1, null);
+        validateUtil.addRequiredValidate("appid", form.getAppid());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
+                    profileService.parseFileStreamProfile(form.getEmployeeId(), form.getFileOriginName(),
+                            form.getFileName(), form.getFileAbsoluteName(), form.getFileData());
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
@@ -249,6 +279,25 @@ public class ReferralController {
             form.setVerifyCode(claimForm.getVcode());
             userService.claimReferralCard(form);
             return Result.success(true).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    @RequestMapping(value = "/v1/referral/users/{id}/employee-info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmployeeInfo(@PathVariable Integer id, @RequestParam(value = "appid") Integer appid) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("用户编号", id);
+
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+
+            EmployeeInfo employeeInfo = employeeService.getEmployeeInfo(id);
+            EmployeeInfoVO employeeInfoVO = new EmployeeInfoVO();
+            BeanUtils.copyProperties(employeeInfo, employeeInfoVO);
+            return Result.success(employeeInfoVO).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }

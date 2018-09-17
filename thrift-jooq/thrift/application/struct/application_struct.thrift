@@ -75,3 +75,12 @@ struct ApplicationResponse{
      1:i32 company_id,
      2:i32 account_id
 }
+
+struct ApplicationRecordsForm {
+    1: optional i32 id,
+    2: optional string positionTitle,
+    3: optional string companyName,
+    4: optional string statusName,
+    5: optional string time,
+    6: optional string signature
+}

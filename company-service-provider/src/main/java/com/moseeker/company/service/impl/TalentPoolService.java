@@ -67,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TalentPoolService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public TalentPoolService(){
@@ -1252,6 +1253,8 @@ public class TalentPoolService {
         tagListInfo.put("page_size", info.getPageSize());
         String result=JSON.toJSONString(tagListInfo,serializeConfig);
         return ResponseUtils.successWithoutStringify(result);
+
+
     }
 
     /**
@@ -1501,10 +1504,6 @@ public class TalentPoolService {
         }
         if(companyTagDO.isSetIn_last_job_search_company()){
             map.put("in_last_job_search_company",companyTagDO.getIn_last_job_search_company());
-        }
-        if(companyTagDO.isSetKeyword_list()){
-            String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
-            map.put("keywords", keyword);
         }
     }
     /*

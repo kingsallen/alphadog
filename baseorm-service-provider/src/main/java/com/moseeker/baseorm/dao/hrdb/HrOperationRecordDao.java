@@ -12,6 +12,7 @@ import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -91,4 +92,18 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 
 		return operationrecordDOList;
 	}
+
+    public int addRecord(int applicationId, int appTplId, int companyId, int hrId) {
+		HrOperationRecordRecord recordRecord = create.insertInto(HrOperationRecord.HR_OPERATION_RECORD)
+				.columns(HrOperationRecord.HR_OPERATION_RECORD.APP_ID,
+						HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID,
+						HrOperationRecord.HR_OPERATION_RECORD.ADMIN_ID,
+						HrOperationRecord.HR_OPERATION_RECORD.COMPANY_ID,
+						HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME)
+				.values((long)applicationId, appTplId, (long)hrId, (long)companyId,
+						new Timestamp(System.currentTimeMillis()))
+				.returning()
+				.fetchOne();
+		return recordRecord != null ? recordRecord.getId():0;
+    }
 }

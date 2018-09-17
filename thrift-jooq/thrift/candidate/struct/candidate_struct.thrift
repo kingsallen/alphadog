@@ -50,7 +50,9 @@ struct RecommmendParam {
     6: optional string recomReason,         //推荐理由
     7: optional i32 companyId,              //公司编号
     8: optional i32 postUserId,             //推荐人编号
-    9: optional string clickTime            //推荐时间
+    9: optional string clickTime,           //推荐时间
+    10:optional i8 gender,                  //性别 1 男 2 女 3 保密
+    11:optional string email,                   //邮箱
 }
 
 struct RecomRecordResult {

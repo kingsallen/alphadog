@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyEmailInfoDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
-import com.moseeker.baseorm.dao.logdb.LogTalentpoolEmailDailyLogDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -40,17 +38,15 @@ import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.moseeker.common.util.query.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.annotation.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -224,13 +220,14 @@ public class TalentPoolEntity {
      */
     public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
 
+
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
                 || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
                 || !StringUtils.isEmptyList(companyTagDO.getKeyword_list())
-                ){
+        ){
             String result = "";
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("名称", companyTagDO.getName());
@@ -282,6 +279,7 @@ public class TalentPoolEntity {
             return result;
         }
         return "标签全为默认值;";
+
     }
 
 
@@ -444,6 +442,7 @@ public class TalentPoolEntity {
         return params;
     }
 
+
     /**
      * 插入标签信息
      * @param companyTagDO
@@ -456,6 +455,7 @@ public class TalentPoolEntity {
         tagRecord.setKeywords(keyword);
         talentpoolCompanyTagDao.addRecord(tagRecord);
         return tagRecord.getId();
+
     }
 
 
@@ -573,9 +573,8 @@ public class TalentPoolEntity {
         tagRecord.setKeywords(keyword);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
         return tagRecord.getId();
+
     }
-
-
 
     /*
      通过TalentpoolHrTalentRecord 的集合获取User_id的list
@@ -801,9 +800,10 @@ public class TalentPoolEntity {
     /*
      通过CompanyId获取企业标签
      */
-    public List<Map<String, Object>> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
+    public  List<Map<String, Object>> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
         List<Map<String, Object>> tagRecordList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, pageNum, pageSize);
         return tagRecordList;
+
     }
 
     /*
@@ -914,6 +914,7 @@ public class TalentPoolEntity {
         }
         return companyTagMapList;
     }
+
     /*
      通过userIdList获取所有的公开人和收藏人
      */
@@ -2335,6 +2336,7 @@ public class TalentPoolEntity {
         Map<String, Object> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
         return list;
     }
+
 
 
     public String convertToString(Set<Integer> list){

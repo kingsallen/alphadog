@@ -15,11 +15,11 @@ import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -56,12 +56,15 @@ public class ReferralPositionController {
         try {
 
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> pids = (List<Integer>)params.get("position_ids");
-            if (CollectionUtils.isEmpty(pids)) {
-                return ResponseLogNotification.fail(request, "position_ids不能为空");
-            }
 
-            referralPositionService.delReferralPositions(pids);
+            ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
+
+            logger.info("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
+
+            referralPositionService.delReferralPositions(dataDO);
+
+            logger.info("ReferralPositionController delReferralPosition  response Finished" );
+
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
@@ -80,15 +83,14 @@ public class ReferralPositionController {
     public String putReferralPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            List<Integer> pids = (List<Integer>)params.get("position_ids");
-            Boolean all_selected = params.getBoolean("all_selected",false);
-            Integer companyId = params.getInt("company_id",0);
-            if (CollectionUtils.isEmpty(pids)) {
-                return ResponseLogNotification.fail(request, "position_ids不能为空");
-            }
 
+            ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
-            referralPositionService.putReferralPositions(pids,all_selected,companyId);
+            logger.info("ReferralPositionController1 putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
+
+            referralPositionService.putReferralPositions(dataDO);
+
+            logger.info("ReferralPositionController1 putReferralPosition  response Finished" );
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
@@ -107,6 +109,7 @@ public class ReferralPositionController {
     public String positionQrCode(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
+
             ValidateUtil validateUtil = new ValidateUtil();
             String url = params.getString("url");
             String logo = params.getString("logo");
@@ -136,23 +139,28 @@ public class ReferralPositionController {
     public String wechatPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
 
-            Params<String, Object> map = ParamUtils.parseRequestParam(request);
-            logger.info("map: " + map.toString());
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Map<String,String> queryMapString = new HashMap<>();
-            for(String key :map.keySet()) {
-                queryMapString.put(key,map.get(key).toString());
+            for(String key :params.keySet()) {
+                queryMapString.put(key,params.get(key).toString());
             }
 
             //特殊处理，将page_from用page_num代替
             String page_num  =queryMapString.get("page_num");
             if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
                 queryMapString.put("page_from",page_num);
+            } else {
+                queryMapString.put("page_from","1");
             }
 
+            //只看内推职位固定传is_referral=1
+            queryMapString.put("is_referral","1");
             //该接口只看在招职位,固定传flag=0
             queryMapString.put("flag","0");
 
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
+            
+            logger.info("ReferralPositionController wechatPositionList  listData.size : {} queryMMapString : {} ",JSON.toJSONString(listData.size()),JSON.toJSONString(queryMapString) );
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
@@ -172,23 +180,24 @@ public class ReferralPositionController {
     @ResponseBody
     public String hrPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> map = ParamUtils.parseRequestParam(request);
-            logger.info("map: " + map.toString());
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
 
             Map<String,String> queryMapString = new HashMap<>();
-            for(String key :map.keySet()) {
-                queryMapString.put(key,map.get(key).toString());
+            for(String key :params.keySet()) {
+                queryMapString.put(key,params.get(key).toString());
             }
 
             //特殊处理，将page_from用page_num代替
             String page_num  =queryMapString.get("page_num");
             if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
                 queryMapString.put("page_from",page_num);
+            }else{
+                queryMapString.put("page_from","1");
             }
 
             //该接口给flag默认值0
             String flag = queryMapString.get("flag");
-            if(StringUtils.isNotNullOrEmpty(flag)) {
+            if(StringUtils.isNullOrEmpty(flag)) {
                 queryMapString.put("flag","0");
             }
             String accountType = queryMapString.get("account_type");
@@ -200,6 +209,8 @@ public class ReferralPositionController {
                 queryMapString.put("publisher",accountId);
             }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
+
+            logger.info("ReferralPositionController hrPositionList  listData.size : {} queryMMapString : {} ",JSON.toJSONString(listData.size()),JSON.toJSONString(queryMapString) );
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 

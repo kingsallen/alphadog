@@ -2,8 +2,8 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.schedule;
 
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDetailDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveRecordDao;
-import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.entity.biz.ProfileMailUtil;
+import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveRecordDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,22 +50,25 @@ public class ProfileMoveShedule {
      * @author cjm
      * @date 2018/7/9
      */
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 0 0/3 * * ?")
     public void refreshEmailNum() {
+        List<Integer> successIdList = new ArrayList<>();
+        List<Integer> failedIdList = new ArrayList<>();
         try {
             Date date = new Date();
-            long timeout = 2 * 60 * 60 * 1000;
+            long timeout = 6 * 60 * 60 * 1000;
             Timestamp timestamp = new Timestamp(date.getTime() - timeout);
             // 获取距当前时间超过两个小时并且status为正在进行搬家的数据
             List<TalentPoolProfileMoveRecordDO> profileMoveDOS = profileMoveRecordDao.getProfileMoveByStatusAndDate(ProfileMoveStateEnum.MOVING.getValue(), timestamp);
             logger.info("=====================刷新简历搬家状态开始");
-            List<Integer> successIdList = new ArrayList<>();
-            List<Integer> failedIdList = new ArrayList<>();
             for (TalentPoolProfileMoveRecordDO profileMoveDO : profileMoveDOS) {
                 // 当验证码错误时会创建一条总邮件为0，当前邮件为0的数据，这条数据认为搬家成功
                 if (profileMoveDO.getCurrentEmailNum() == 0 && profileMoveDO.getTotalEmailNum() == 0) {
-                    // todo 如果都为0，成功
-                    successIdList.add(profileMoveDO.getId());
+                    if(profileMoveDO.getCreateTime().equals(profileMoveDO.getUpdateTime())){
+                        failedIdList.add(profileMoveDO.getId());
+                    }else {
+                        successIdList.add(profileMoveDO.getId());
+                    }
                 } else {
                     // 当前email数等于总email数更新为简历搬家操作成功，否则认为失败
                     if (profileMoveDO.getTotalEmailNum() == profileMoveDO.getCurrentEmailNum()) {
@@ -80,7 +83,6 @@ public class ProfileMoveShedule {
                 profileMoveRecordDao.batchUpdateStatus(successIdList, ProfileMoveStateEnum.SUCCESS.getValue());
             }
             if (failedIdList.size() > 0) {
-                logger.info("========================简历搬家状态刷新failedIdList:{}", failedIdList);
                 // 刷新时将detail表的状态一并刷新
                 profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
                 List<TalentPoolProfileMoveRecordDO> recordDOS = profileMoveRecordDao.getListByMoveIds(failedIdList);
@@ -88,7 +90,7 @@ public class ProfileMoveShedule {
                 poolProfileMoveDetailDao.batchUpdateStatus(detailFailIds, ProfileMoveStateEnum.FAILED.getValue());
             }
         } catch (Exception e) {
-            mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常");
+            mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常successIdList:" + successIdList.toString() + ",failedIdList:{}" + failedIdList.toString());
             logger.error(e.getMessage(), e);
         }
     }

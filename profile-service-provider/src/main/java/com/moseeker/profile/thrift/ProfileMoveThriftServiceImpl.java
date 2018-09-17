@@ -2,9 +2,9 @@ package com.moseeker.profile.thrift;
 
 
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.service.AbstractProfileMoveService;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.service.ProfileMoveServiceFactory;
-import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.talentpool.service.ProfileMoveThriftService.Iface;
@@ -43,7 +43,7 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.moveHouseLogin(form);
         } catch (Exception e) {
-            mailUtil.sendMvHouseFailedEmail(e, "简历搬家用户登录时发生异常");
+            mailUtil.sendMvHouseFailedEmail(e, "简历搬家用户登录时发生异常" + form.toString());
             logger.info(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -56,7 +56,7 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.getMoveOperationList(hrId, pageNumber, pageSize);
         } catch (Exception e){
-            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家操作记录时发生异常");
+            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家操作记录时发生异常hrId:"+ hrId + ",pageNumber:"+ pageNumber + ",pageSize:" + pageSize);
             logger.info(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
@@ -69,28 +69,23 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.profileMove(profile, operationId, currentEmailNum);
         } catch (BIZException e) {
-            mailUtil.sendMvHouseFailedEmail(e, "简历搬家简历合并入库时发生异常");
             logger.info(e.getMessage(), e);
             throw e;
         } catch (Exception e){
-            mailUtil.sendMvHouseFailedEmail(e, "简历搬家简历合并入库时发生异常");
+            mailUtil.sendMvHouseFailedEmail(e, "简历搬家简历合并入库时发生异常profile:"+ profile + ",operationId:"+ operationId + ",currentEmailNum:" + currentEmailNum);
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
 
     @Override
-    public Response getMoveOperationState(int hrId) throws BIZException, TException {
+    public Response getMoveOperationState(int hrId) throws TException {
         try {
             int channel = 0;
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.getMoveOperationState(hrId);
-        } catch (BIZException e) {
-            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家状态异常");
-            logger.info(e.getMessage(), e);
-            throw e;
         } catch (Exception e){
-            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家状态异常");
+            mailUtil.sendMvHouseFailedEmail(e, "获取简历搬家状态异常hrId:" + hrId);
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }

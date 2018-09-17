@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
@@ -46,6 +47,7 @@ import com.moseeker.useraccounts.service.EmployeeBinder;
 import com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralCard;
 import com.moseeker.useraccounts.service.impl.pojos.*;
+import com.moseeker.useraccounts.service.impl.vo.EmployeeInfoVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -130,6 +132,9 @@ public class EmployeeService {
 
     @Autowired
     private JobApplicationDao applicationDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
 
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
@@ -752,7 +757,7 @@ public class EmployeeService {
         }
 
         String referralTypeInfoString = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE_TYPE.toString(),
-                String.valueOf(employeeId), (String) null);
+                String.valueOf(userEmployeeDO.getId()), (String) null);
         if (org.apache.commons.lang.StringUtils.isBlank(referralTypeInfoString)) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_TYPE_NOT_EXIST;
         }
@@ -771,7 +776,7 @@ public class EmployeeService {
         referralPositionInfo.setId(positionInfo.getId());
         referralPositionInfo.setTitle(positionInfo.getTitle());
         referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
-        referralPositionInfo.setSalaryTop(positionInfo.getSalaryBottom());
+        referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
         try {
             int experience = Integer.valueOf(positionInfo.getExperience());
             referralPositionInfo.setExperience(experience);
@@ -829,10 +834,57 @@ public class EmployeeService {
         referralCard.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
         referralCard.setPosition(positionInfo.getTitle());
         referralCard.setMobile(String.valueOf(userUserDO.getMobile()));
+        referralCard.setClaim(referralLog.getClaim() == 1);
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(), referralLog.getPositionId());
         if (application != null) {
             referralCard.setApplyId(application.getId());
         }
         return referralCard;
+    }
+
+    /**
+     * 根据用户编号查找员工以及所在公司的信息
+     * @param userId 用户编号
+     * @return 员工信息
+     * @throws UserAccountException 业务异常
+     */
+    public EmployeeInfoVO getEmployeeInfo(int userId) throws UserAccountException{
+        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if (userEmployeeDO == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        EmployeeInfoVO employeeInfoVO = new EmployeeInfoVO();
+        employeeInfoVO.setId(userEmployeeDO.getId());
+        employeeInfoVO.setName(userEmployeeDO.getCname());
+        employeeInfoVO.setUserId(userId);
+        employeeInfoVO.setCompanyId(userEmployeeDO.getCompanyId());
+
+        HrCompanyDO companyDO = companyDao.getCompanyById(employeeInfoVO.getCompanyId());
+        if (companyDO != null) {
+            employeeInfoVO.setCompanyAbbreviation(companyDO.getAbbreviation());
+            employeeInfoVO.setCompanyName(companyDO.getName());
+        }
+
+        HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeInfoVO.getCompanyId());
+        if (hrWxWechatDO != null) {
+            employeeInfoVO.setSignature(hrWxWechatDO.getSignature());
+        }
+
+        if (org.apache.commons.lang.StringUtils.isBlank(employeeInfoVO.getName())) {
+            UserUserDO userUserDO = userDao.getUser(employeeInfoVO.getUserId());
+            if (userUserDO != null) {
+                employeeInfoVO.setName(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                        ? userUserDO.getName() : userUserDO.getNickname());
+            }
+            if (org.apache.commons.lang.StringUtils.isBlank(employeeInfoVO.getName())) {
+                UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+                if (record != null) {
+                    employeeInfoVO.setName(record.getNickname());
+                }
+            }
+        }
+
+
+        return employeeInfoVO;
     }
 }

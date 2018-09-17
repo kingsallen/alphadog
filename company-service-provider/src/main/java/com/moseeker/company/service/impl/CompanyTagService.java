@@ -75,6 +75,9 @@ public class CompanyTagService {
                      */
                     if(type == 1){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
+                    }
+                    if(totalPage == 0){
+                        this.refrushCompantTag(tagIdList,type,new ArrayList<>());
                     }else {
                         for (int i = 1; i <= totalPage; i++) {
                             logger.info("执行第" + i + "页");
@@ -87,6 +90,7 @@ public class CompanyTagService {
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
+
     }
 
     private void handlerUserIdList(List<Integer> tagIdList,int type,Map<String,Object> map,int page,int pageSize) throws TException {
@@ -137,7 +141,7 @@ public class CompanyTagService {
                 Map<String, Object> result = new HashMap<>();
                 result.put("tag_id", tagId);
                 result.put("type", type);
-                if(type!=2){
+                if(type!=2&&!StringUtils.isEmptyList(userIdList)){
                     result.put("user_ids",userIdList );
                 }
                 client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
@@ -151,11 +155,13 @@ public class CompanyTagService {
             }
 
         }
+
     }
     /*
      根据user_user.id列表和公司id处理公司的标签
      */
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
+        logger.info("handlerCompanyTagTalent idList:{}, companyId:{}",idList, companyId);
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
@@ -163,30 +169,34 @@ public class CompanyTagService {
             List<Map<String, Object>>  tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
-                        for (Map<String, Object> tag : tagList) {
-                            TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
-                            delRecord.setUserId(userId);
-                            delRecord.setTagId((Integer) tag.get("id"));
-                            deleList.add(delRecord);
-                            String tagStr = JSON.toJSONString(tag);
-                            Map<String, Object> tagMap = JSON.parseObject(tagStr);
-                            if (tagMap != null && !tagMap.isEmpty()) {
-                                Map<String, String> params = new HashMap<>();
-                                for (String key : tagMap.keySet()) {
-                                    params.put(key, String.valueOf(tagMap.get(key)));
-                                }
-                                params.put("size", "0");
-                                params.put("user_id", String.valueOf(userId));
-                                int total = service.queryCompanyTagUserIdListCount(params);
-                                if(total>0){
-                                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                                    record.setUserId(userId);
-                                    record.setTagId((Integer) tag.get("id"));
-                                    tagIdList.add((Integer) tag.get("id"));
-                                    list.add(record);
-                                }
+                    logger.info("handlerCompanyTagTalent userId:{}",userId);
+                    for (Map<String, Object> tag : tagList) {
+                        logger.info("handlerCompanyTagTalent tagId:"+tag.get("id"));
+                        TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
+                        delRecord.setUserId(userId);
+                        delRecord.setTagId((Integer) tag.get("id"));
+                        deleList.add(delRecord);
+                        String tagStr = JSON.toJSONString(tag);
+                        Map<String, Object> tagMap = JSON.parseObject(tagStr);
+                        if (tagMap != null && !tagMap.isEmpty()) {
+                            Map<String, String> params = new HashMap<>();
+                            for (String key : tagMap.keySet()) {
+                                params.put(key, String.valueOf(tagMap.get(key)));
+                            }
+                            params.put("size", "0");
+                            params.put("user_id", String.valueOf(userId));
+                            int total = service.queryCompanyTagUserIdListCount(params);
+                            logger.info("handlerCompanyTagTalent total:"+total);
+                            if(total>0){
+                                TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                                record.setUserId(userId);
+                                record.setTagId((Integer) tag.get("id"));
+                                tagIdList.add((Integer) tag.get("id"));
+                                list.add(record);
                             }
                         }
+
+                    }
                 }
             }
             talentpoolCompanyTagUserDao.deleteByUserIdAndTagId(deleList);
@@ -201,6 +211,7 @@ public class CompanyTagService {
                     result.put("tag_ids",tagIdList);
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
+                    logger.info("handlerCompanyTagTalent redis result:{}", result);
                 }
             }
         }catch(Exception e){
@@ -252,6 +263,7 @@ public class CompanyTagService {
     public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
         try {
             for (Integer companyId : companyIdSet) {
+
                 this.handlerCompanyTagTalent(userIdset, companyId);
             }
         }catch(Exception e){

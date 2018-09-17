@@ -38,6 +38,8 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -46,16 +48,15 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -768,7 +769,7 @@ public class SearchengineEntity {
         return new JSONObject();
     }
 
-
+    @Transactional
     public Response updateReferralPostionStatus(Integer positionId,Integer isReferral){
         logger.info("updateReferralPostionStatus {} {}",positionId,isReferral);
         String idx = "" + positionId;
@@ -776,12 +777,44 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        JSONObject jsonObject = new JSONObject();
-
-        logger.info(JSONObject.toJSONString(jsonObject));
         UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
-        return ResponseUtils.success(true);
+        if(response.getGetResult() == null) {
+            return  ResponseUtils.fail(9999,"ES操作失败");
+        } else {
+            return ResponseUtils.success(response);
+        }
     }
+
+
+    @Transactional
+    public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
+
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        for(Integer pid: positionIds) {
+            String idx = "" + pid;
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("is_referral", isReferral)
+                    .endObject();
+
+            bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
+
+        }
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
+
+        if(bulkResponse.hasFailures()) {
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
+            return ResponseUtils.success(bulkResponse);
+
+        }
+    }
+
 }

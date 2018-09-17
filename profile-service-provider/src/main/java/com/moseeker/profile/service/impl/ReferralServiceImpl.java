@@ -2,6 +2,7 @@ package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralType;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -14,6 +15,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.*;
 import com.moseeker.entity.biz.ProfileParseUtil;
@@ -21,7 +23,7 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.profile.constants.GenderType;
+import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
@@ -75,6 +77,9 @@ public class ReferralServiceImpl implements ReferralService {
     private AmqpTemplate amqpTemplate;
 
     @Autowired
+    private HrOperationRecordDao operationRecordDao;
+
+    @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
                                UserAccountEntity userAccountEntity, ProfileParseUtil profileParseUtil,
                                PositionEntity positionEntity, ReferralEntity referralEntity,
@@ -101,6 +106,10 @@ public class ReferralServiceImpl implements ReferralService {
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
 
+        if (!ProfileDocCheckTool.checkFileName(fileName)) {
+            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
+        }
+
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
         if (employeeDO == null || employeeDO.getId() <= 0) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
@@ -112,28 +121,18 @@ public class ReferralServiceImpl implements ReferralService {
         profileDocParseResult.setFile(fileNameData.getFileName());
         fileNameData.setOriginName(fileName);
 
-        // 调用SDK得到结果
-        ResumeObj resumeObj;
-        try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, StreamUtils.byteArrayToBase64String(dataArray));
-        } catch (TException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
-        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
-        profileDocParseResult.setName(profileObj.getUser().getName());
-        profileObj.setResumeObj(null);
-        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
-        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
-        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
+        return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
+    }
 
-        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", profilePojo.toJson(), 24*60*60);
-
-        return profileDocParseResult;
+    @Override
+    public ProfileDocParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
+                                                        String fileAbsoluteName, String fileData) throws ProfileException {
+        FileNameData fileNameData = new FileNameData();
+        fileNameData.setOriginName(fileOriginName);
+        fileNameData.setFileAbsoluteName(fileAbsoluteName);
+        fileNameData.setFileName(fileName);
+        fileData = StreamUtils.convertASCToUTF8(fileData);
+        return parseResult(employeeId, fileAbsoluteName, fileData, fileNameData);
     }
 
     @Override
@@ -319,7 +318,6 @@ public class ReferralServiceImpl implements ReferralService {
 
         int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
                 referralType);
-
         Future<Response> responseFeature = tp.startTast(() -> {
             try {
                 JobApplication jobApplication = new JobApplication();
@@ -371,7 +369,7 @@ public class ReferralServiceImpl implements ReferralService {
             jsonObject.put("employeeId", employeeDO.getId());
             jsonObject.put("companyId", employeeDO.getCompanyId());
             jsonObject.put("positionId", 0);
-            jsonObject.put("templateId", 16);
+            jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
             jsonObject.put("berecomUserId", userId);
             jsonObject.put("applicationId", applicationId);
             jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
@@ -381,14 +379,43 @@ public class ReferralServiceImpl implements ReferralService {
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
             jsonObject.put("positionId", positionRecord.getId());
-            jsonObject.put("templateId", 13);
+            jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+
+            operationRecordDao.addRecord(applicationId, Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
         }
 
+    }
+
+    private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
+                                              FileNameData fileNameData) throws ProfileException {
+        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
+        // 调用SDK得到结果
+        ResumeObj resumeObj;
+        try {
+            resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
+        } catch (TException | IOException e) {
+            logger.error(e.getMessage(), e);
+            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
+        }
+        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
+        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
+        profileDocParseResult.setName(profileObj.getUser().getName());
+        profileObj.setResumeObj(null);
+        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
+        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
+        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
+
+        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+
+        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
+                "", profilePojo.toJson(), 24*60*60);
+        return profileDocParseResult;
     }
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER

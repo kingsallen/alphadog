@@ -18,6 +18,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralPositionInfo;
+import com.moseeker.useraccounts.service.impl.vo.EmployeeInfoVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -392,6 +393,18 @@ public class EmployeeServiceImpl implements Iface {
 			ReferralCard referralCard = new ReferralCard();
 			BeanUtils.copyProperties(card, referralCard);
 			return referralCard;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public EmployeeInfo getEmployeeInfo(int userId) throws BIZException, TException {
+		try {
+			EmployeeInfoVO employeeInfoVO = service.getEmployeeInfo(userId);
+			EmployeeInfo employeeInfo = new EmployeeInfo();
+			BeanUtils.copyProperties(employeeInfoVO, employeeInfo);
+			return employeeInfo;
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}
