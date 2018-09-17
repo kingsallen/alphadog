@@ -171,7 +171,7 @@ public class ReferralPositionController {
     }
 
     /**
-     * HR端获取内推职位列表
+     * HR端获职位列表
      * @param request
      * @param response
      * @return
