@@ -24,6 +24,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
 import com.moseeker.entity.pojos.PositionInfo;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
@@ -323,16 +324,17 @@ public class PositionEntity {
             jobPositionDO.setIs_referral(1);
             jobPositionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         }
-        positionDao.updateDatas(jobPositionDOS);
+        //更新数据库及ES中职位is_referal字段为1
+        try {
+            int[] res =  positionDao.updateDatas(jobPositionDOS);
+            Response response =  searchengineEntity.updateBulkReferralPostionStatus(pids,1);
 
-                //更新ES中职位is_referal字段为1
-                try {
-                    searchengineEntity.updateBulkReferralPostionStatus(pids,1);
-                }catch (Exception e) {
-                    //主动捕获异常，避免事务回滚
-                    logger.error(e.getClass().getName(),e);
-                }
-        logger.info("records {}", JSON.toJSON(records));
+            logger.info("PositionEntity putReferralPositions response {} {}", JSON.toJSON(res),JSON.toJSON(response));
+
+        }catch (Exception e) {
+            //主动捕获异常，避免事务回滚
+            logger.error(e.getClass().getName(),e);
+        }
     }
 
     /**
@@ -341,14 +343,6 @@ public class PositionEntity {
      */
     public void delReferralPositions(List<Integer> pids){
 
-            //更新ES中职位is_referal字段为0
-            try {
-                searchengineEntity.updateBulkReferralPostionStatus(pids,0);
-            }catch (Exception e) {
-                //主动捕获异常，避免事务回滚
-                logger.error(e.getClass().getName(),e);
-            }
-
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
             Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
 
@@ -356,8 +350,19 @@ public class PositionEntity {
             for(JobPositionDO jobPositionDO: jobPositionDOS) {
                 //更新内推标示
                 jobPositionDO.setIs_referral(0);
+                jobPositionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
             }
-            positionDao.updateDatas(jobPositionDOS);
+            //更新数据库及ES职位is_referal字段为0
+            try {
+               int[] res = positionDao.updateDatas(jobPositionDOS);
+               Response response = searchengineEntity.updateBulkReferralPostionStatus(pids,0);
+
+               logger.info("PositionEntity delReferralPositions response {} {}", JSON.toJSON(res),JSON.toJSON(response));
+
+            }catch (Exception e) {
+                //主动捕获异常，避免事务回滚
+                logger.error(e.getClass().getName(),e);
+            }
         }
 
 
