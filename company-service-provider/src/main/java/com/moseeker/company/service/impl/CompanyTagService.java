@@ -163,9 +163,6 @@ public class CompanyTagService {
             List<Map<String, Object>>  tagList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, 0, Integer.MAX_VALUE);
             if (!StringUtils.isEmptyList(tagList)) {
                 for (Integer userId : idList) {
-                    Response res = profileService.getResource(userId, 0, null);
-                    if (res.getStatus() == 0 && StringUtils.isNotNullOrEmpty(res.getData())) {
-                        Map<String, Object> profiles = JSON.parseObject(res.getData());
                         for (Map<String, Object> tag : tagList) {
                             TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
                             delRecord.setUserId(userId);
@@ -190,7 +187,6 @@ public class CompanyTagService {
                                 }
                             }
                         }
-                    }
                 }
             }
             talentpoolCompanyTagUserDao.deleteByUserIdAndTagId(deleList);
