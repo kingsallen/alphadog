@@ -305,11 +305,22 @@ public class ReferralServiceImpl implements ReferralService {
         int userId;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
+            UserUserRecord userUserRecord = new UserUserRecord();
+            userUserRecord.setId(userRecord.getId());
+            boolean flag = false;
             if (StringUtils.isBlank(userRecord.getName()) || userRecord.getName().equals(name)) {
                 userRecord.setName(name);
+                userUserRecord.setName(name);
+                flag = true;
             }
             if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
                 userRecord.setMobile(Long.valueOf(mobile));
+                userUserRecord.setMobile(Long.valueOf(mobile));
+                flag = true;
+            }
+            logger.info("recommend flag:{}", flag);
+            if (flag) {
+                userAccountEntity.updateUserRecord(userUserRecord);
             }
             logger.info("recommend id:{}, name:{}, mobile:{}", userRecord.getId(), name, mobile);
             userAccountEntity.updateUserRecord(userRecord);
