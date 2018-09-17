@@ -23,10 +23,6 @@ import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -34,6 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by zztaiwll on 17/12/7.
