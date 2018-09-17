@@ -815,11 +815,11 @@ public class SearchengineEntity {
 
         if(bulkResponse.hasFailures()) {
             DateTime endDate = new DateTime();
-            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
             return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
         } else {
             DateTime endDate = new DateTime();
-            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
 
             return ResponseUtils.success(bulkResponse);
         }
