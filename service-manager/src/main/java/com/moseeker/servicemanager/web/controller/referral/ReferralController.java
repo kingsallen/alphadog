@@ -86,6 +86,7 @@ public class ReferralController {
 
     /**
      * 员工上传简历
+     * 文件内容是ASCII编码
      * 由于文件格式有问题，新开一个处理文件字符串解析的接口。
      * @param form 简历文件
      * @return 解析结果
@@ -97,8 +98,8 @@ public class ReferralController {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历数据", form.getFileData());
         validateUtil.addRequiredValidate("文件名称", form.getFileName());
-        validateUtil.addRequiredValidate("原始文件名称", form.getFileOriginName());
-        validateUtil.addRequiredValidate("文件绝对路径", form.getFileAbsoluteName());
+        //validateUtil.addRequiredValidate("原始文件名称", form.getFileOriginName());
+        //validateUtil.addRequiredValidate("文件绝对路径", form.getFileAbsoluteName());
         validateUtil.addIntTypeValidate("员工", form.getEmployeeId(), 1, null);
         validateUtil.addRequiredValidate("appid", form.getAppid());
         String result = validateUtil.validate();
