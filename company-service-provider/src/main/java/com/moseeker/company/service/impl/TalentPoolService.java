@@ -29,6 +29,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -74,6 +75,8 @@ public class TalentPoolService {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
     private ThreadPool tp = ThreadPool.Instance;
+
+    ScheduledThread thread=ScheduledThread.Instance;
     @Autowired
     private CompanyTagService tagService;
     @Autowired
@@ -171,10 +174,23 @@ public class TalentPoolService {
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
-        tp.startTast(() -> {
-            tagService.handlerCompanyTagTalent(idList, companyId);
-            return 0;
-        });
+
+        thread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    tagService.handlerCompanyTagTalent(idList, companyId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
+        },80000);
+
+//        tp.startTast(() -> {
+//            tagService.handlerCompanyTagTalent(idList, companyId);
+//            return 0;
+//        });
         return ResponseUtils.success(result);
     }
     /*
