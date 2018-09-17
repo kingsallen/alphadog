@@ -28,7 +28,8 @@ public class Sender {
         logger.info("handlerCompanyTagTalent send message:{}",message);
         MessageProperties msp = new MessageProperties();
         // 延迟5s发送
-        msp.setDelay(30000);
+        msp.setDelay(80000);
+        msp.setExpiration("80000");
         amqpTemplate.send("profile_company_tag_recom_exchange", "profilecompanytagrecom.#", MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
         System.out.println("send success...");
     }
