@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
@@ -44,6 +45,7 @@ import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import com.moseeker.useraccounts.service.impl.pojos.City;
 import com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralCard;
 import com.moseeker.useraccounts.service.impl.pojos.*;
@@ -51,6 +53,7 @@ import com.moseeker.useraccounts.service.impl.vo.EmployeeInfoVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StopWatch;
@@ -787,6 +790,14 @@ public class EmployeeService {
         referralPositionInfo.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
         referralPositionInfo.setCompanyName(positionInfo.getCompanyName());
         referralPositionInfo.setLogo(positionInfo.getLogo());
+        referralPositionInfo.setTeam(positionInfo.getTeamName());
+        if (positionInfo.getCities() != null && positionInfo.getCities().size() > 0) {
+            referralPositionInfo.setCities(positionInfo.getCities().stream().map(dictCity -> {
+                City city = new City();
+                BeanUtils.copyProperties(dictCity, city);
+                return city;
+            }).collect(Collectors.toList()));
+        }
 
         return referralPositionInfo;
     }

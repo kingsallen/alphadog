@@ -38,6 +38,7 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Consts;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,18 +127,21 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public ProfileDocParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
-                                                        String fileAbsoluteName, String fileData) throws ProfileException {
-        FileNameData fileNameData = new FileNameData();
-        fileNameData.setOriginName(fileOriginName);
-        fileNameData.setFileAbsoluteName(fileAbsoluteName);
-        fileNameData.setFileName(fileName);
-        fileData = StreamUtils.convertASCToUTF8(fileData);
-        return parseResult(employeeId, fileAbsoluteName, fileData, fileNameData);
+                                                        String fileAbsoluteName, String fileData)
+            throws ProfileException {
+
+        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+        byte[] fileDataArray = fileData.getBytes(Consts.ASCII);
+        FileNameData fileNameData = StreamUtils.persistFile(fileDataArray, env.getProperty("profile.persist.url"), suffix);
+        fileNameData.setOriginName(fileName);
+
+        return parseResult(employeeId, fileAbsoluteName, StreamUtils.byteArrayToBase64String(fileDataArray), fileNameData);
     }
 
     @Override
     public void employeeDeleteReferralProfile(int employeeId) throws ProfileException {
-        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
+        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),
+                String.valueOf(employeeId),
                 "");
     }
 
@@ -417,6 +421,7 @@ public class ReferralServiceImpl implements ReferralService {
     private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
                                               FileNameData fileNameData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
+        profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
         ResumeObj resumeObj;
         try {
