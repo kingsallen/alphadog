@@ -48,16 +48,15 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -770,7 +769,7 @@ public class SearchengineEntity {
         return new JSONObject();
     }
 
-
+    @Transactional
     public Response updateReferralPostionStatus(Integer positionId,Integer isReferral){
         logger.info("updateReferralPostionStatus {} {}",positionId,isReferral);
         String idx = "" + positionId;
@@ -781,25 +780,15 @@ public class SearchengineEntity {
         UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
-        return ResponseUtils.success(true);
-    }
-
-
-
-    public Response getPostionIds(){
-        TransportClient client = getTransportClient();
-        if (client == null) {
-            return ResponseUtils.fail(9999, "ES连接失败！");
+        if(response.getGetResult() == null) {
+            return  ResponseUtils.fail(9999,"ES操作失败");
+        } else {
+            return ResponseUtils.success(response);
         }
-//        SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
-//                .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
-//        SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-        return ResponseUtils.success(true);
     }
 
 
-
+    @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
 
         TransportClient client = getTransportClient();
@@ -818,7 +807,14 @@ public class SearchengineEntity {
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
 
-        return ResponseUtils.success(true);
+        if(bulkResponse.hasFailures()) {
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
+            return ResponseUtils.success(bulkResponse);
+
+        }
     }
+
 }

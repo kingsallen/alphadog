@@ -106,8 +106,8 @@ public class ReferralPositionService {
 
     }
 
-
-    private void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
+    @Transactional
+    public void positionUpdateHandler(ReferralPositionUpdateDataDO dataDO,String opType) throws Exception {
 
         logger.info("positionUpdateHandler {} {}",JSON.toJSONString(dataDO),opType);
 
@@ -160,6 +160,7 @@ public class ReferralPositionService {
 
     }
 
+    @Transactional
     public List<Integer> getPositionIdFromEs(ReferralPositionUpdateDataDO dataDO) throws Exception{
 
         logger.info("getPositionIdFromEs {} ",JSON.toJSONString(dataDO) );
@@ -222,6 +223,7 @@ public class ReferralPositionService {
 
     }
 
+    @Transactional
     public void processUpdateData(List<Integer> pids ,String optType){
 
         if(CollectionUtils.isEmpty(pids)) {
@@ -236,7 +238,7 @@ public class ReferralPositionService {
             if(optType.equals("add") && !CollectionUtils.isEmpty(list)) {
                 Future<Integer> future = tp.startTast(() -> { positionEntity.putReferralPositions(list);return 1; });
                 try {
-                    future.get(2, TimeUnit.SECONDS);
+                    future.get(10, TimeUnit.SECONDS);
                     countTaskNum++;
                 }catch (Exception e) {
                     logger.info(e.getClass().getName(),e);
@@ -245,7 +247,7 @@ public class ReferralPositionService {
             }else if(optType.equals("del") && !CollectionUtils.isEmpty(list)) {
                 Future<Integer> future = tp.startTast(() -> { positionEntity.delReferralPositions(list);return 1; });
                 try {
-                    future.get(2, TimeUnit.SECONDS);
+                    future.get(10, TimeUnit.SECONDS);
                     countTaskNum++;
                 }catch (Exception e) {
                     logger.info(e.getClass().getName(),e);
