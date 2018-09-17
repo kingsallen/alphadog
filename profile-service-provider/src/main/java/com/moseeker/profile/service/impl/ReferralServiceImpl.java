@@ -403,7 +403,8 @@ public class ReferralServiceImpl implements ReferralService {
             MessageProperties mp = new MessageProperties();
             mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
             mp.setReceivedExchange("user_action_topic_exchange");
-            if (referralType.equals(ReferralType.PostInfo)) {
+            logger.info("");
+            if (!referralType.equals(ReferralType.PostInfo)) {
                 amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                         MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
             } else {
