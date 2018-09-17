@@ -87,6 +87,9 @@ public class ReferralPositionController {
 
             referralPositionService.putReferralPositions(dataDO);
 
+
+            logger.info("ReferralPositionController putReferralPosition  response Finished" );
+
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
