@@ -91,4 +91,8 @@ public class StreamUtils {
     public static String byteArrayToBase64String(byte[] dataArray) {
         return new String(org.apache.commons.codec.binary.Base64.encodeBase64(dataArray), Consts.UTF_8);
     }
+
+    public static String convertASCToUTF8(String fileData) {
+        return new String(fileData.getBytes(Consts.ASCII), Consts.UTF_8);
+    }
 }
