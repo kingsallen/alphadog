@@ -308,7 +308,7 @@ public class ReferralServiceImpl implements ReferralService {
             UserUserRecord userUserRecord = new UserUserRecord();
             userUserRecord.setId(userRecord.getId());
             boolean flag = false;
-            if (StringUtils.isBlank(userRecord.getName()) || userRecord.getName().equals(name)) {
+            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(name)) {
                 userRecord.setName(name);
                 userUserRecord.setName(name);
                 flag = true;
