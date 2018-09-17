@@ -1,6 +1,7 @@
 package com.moseeker.profile.config;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.thread.ScheduledThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.MessageBuilder;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by zztaiwll on 18/4/23.
@@ -18,16 +20,28 @@ import java.util.Random;
 public class Sender {
 
     Logger logger = LoggerFactory.getLogger(Sender.class);
+    ScheduledThread thread=ScheduledThread.Instance;
 
     @Autowired
     private RabbitTemplate amqpTemplate;
 
     private Random random = new Random();
 
+    public void send(String message,int time){
+        thread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                send( message);
+            }
+        },time);
+    }
+
     public void  send(String message) {
+        logger.info("handlerCompanyTagTalent send message:{}",message);
         MessageProperties msp = new MessageProperties();
         // 延迟5s发送
-        msp.setDelay(30000);
+        msp.setDelay(80000);
+        msp.setReceivedDelay(80000);
         amqpTemplate.send("profile_company_tag_recom_exchange", "profilecompanytagrecom.#", MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
         System.out.println("send success...");
     }
