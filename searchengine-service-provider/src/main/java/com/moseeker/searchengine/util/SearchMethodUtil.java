@@ -113,6 +113,11 @@ public class SearchMethodUtil {
         处理排序
      */
     private void handlerSort(Map<String,String> params,SearchRequestBuilder responseBuilder){
+
+        //默认按先置顶和更新时间排序
+        responseBuilder.addSort("priority",SortOrder.DESC);
+        responseBuilder.addSort("update_time",SortOrder.DESC);
+
         String flag=params.get("flag");
         if("-1".equals(flag)){
             SortBuilder builder = new ScriptSortBuilder(this.buildScriptSort(), "number");
@@ -120,8 +125,7 @@ public class SearchMethodUtil {
             responseBuilder.addSort(builder);
             responseBuilder.addSort("id",SortOrder.DESC);
         }
-        //默认按更新时间排序
-        responseBuilder.addSort("update_time",SortOrder.DESC);
+
     }
     /*
      根据script排序
