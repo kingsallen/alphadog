@@ -86,11 +86,11 @@ public class ReferralPositionController {
 
             ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
-            logger.info("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
+            logger.info("ReferralPositionController1 putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
 
             referralPositionService.putReferralPositions(dataDO);
 
-            logger.info("ReferralPositionController putReferralPosition  response Finished" );
+            logger.info("ReferralPositionController1 putReferralPosition  response Finished" );
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
