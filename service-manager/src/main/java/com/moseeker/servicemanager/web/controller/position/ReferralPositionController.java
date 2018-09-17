@@ -154,6 +154,8 @@ public class ReferralPositionController {
             queryMapString.put("flag","0");
 
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
+            
+            logger.info("ReferralPositionController wechatPositionList  listData.size : {} queryMMapString : {} ",JSON.toJSONString(listData.size()),JSON.toJSONString(queryMapString) );
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
@@ -202,6 +204,8 @@ public class ReferralPositionController {
                 queryMapString.put("publisher",accountId);
             }
             List<WechatPositionListData> listData = positonServices.getReferralPositionList(queryMapString);
+
+            logger.info("ReferralPositionController hrPositionList  listData.size : {} queryMMapString : {} ",JSON.toJSONString(listData.size()),JSON.toJSONString(queryMapString) );
 
             return  com.moseeker.servicemanager.web.controller.Result.success(listData).toJson();
 
