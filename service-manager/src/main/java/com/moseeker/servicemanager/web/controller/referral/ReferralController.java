@@ -105,8 +105,13 @@ public class ReferralController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
+            if (!ProfileDocCheckTool.checkFileName(form.getFileName())) {
+                return Result.fail("文件格式不支持！").toJson();
+            }
+
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileStreamProfile(form.getEmployeeId(), form.getFileOriginName(), form.getFileName(), form.getFileAbsoluteName(), form.getFileData());
+                    profileService.parseFileStreamProfile(form.getEmployeeId(), form.getFileOriginName(),
+                            form.getFileName(), form.getFileAbsoluteName(), form.getFileData());
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
