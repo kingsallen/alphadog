@@ -346,9 +346,13 @@ public class SearchengineController {
             for(String key:reqParams.keySet()){
                 params.put(key,String.valueOf(reqParams.get(key)));
             }
+
+            //选中内推职位的特殊处理，前端position_status传1，必须将它改回成-1,flag设置成1（flag=1表示在招的内推职位）
+            //TODO 重构整改
             String position_status =  params.get("position_status");
             if(position_status.equals("1")) {
                 params.put("flag","1");
+                params.put("position_status","-1");
             }
 //            logger.info("+++++++++++++++++++");
 //            logger.info(JSON.toJSONString(params));
