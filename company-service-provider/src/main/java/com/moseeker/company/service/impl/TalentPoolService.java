@@ -67,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TalentPoolService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public TalentPoolService(){
@@ -1224,15 +1225,15 @@ public class TalentPoolService {
             info.setPageSize(page_size);
         }
         Map<String, Object> tagListInfo = new HashMap<>();
-        List<TalentpoolCompanyTag> tagList = talentPoolEntity.handlerCompanyTagBycompanyId(companyId, info.getLimit(), info.getPageSize());
+        List<Map<String, Object>> tagList = talentPoolEntity.handlerCompanyTagBycompanyId(companyId, info.getLimit(), info.getPageSize());
         int count = talentPoolEntity.handlerCompanyTagCountBycompanyId(companyId);
         if(tagList != null && tagList.size()>0){
             List<Map<String, Object>> tagProfileList = talentPoolEntity.handlerTagCountByTagIdList(tagList);
 
             if(!StringUtils.isEmptyList(tagProfileList)){
                 for(Map<String, Object> map:tagProfileList){
-                    TalentpoolCompanyTag companyTag= (TalentpoolCompanyTag) map.get("company_tag");
-                    int id=companyTag.getId();
+                    Map<String, Object> companyTag= (Map<String, Object>) map.get("company_tag");
+                    int id=(Integer)companyTag.get("id");
                     //获取企业标签下人数
                     int totalNum=tagService.getTagtalentNum(hrId,companyId,id);
                     map.put("person_num",totalNum);
@@ -1252,6 +1253,8 @@ public class TalentPoolService {
         tagListInfo.put("page_size", info.getPageSize());
         String result=JSON.toJSONString(tagListInfo,serializeConfig);
         return ResponseUtils.successWithoutStringify(result);
+
+
     }
 
     /**

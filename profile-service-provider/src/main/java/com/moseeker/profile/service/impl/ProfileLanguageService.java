@@ -49,6 +49,8 @@ public class ProfileLanguageService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
     @Transactional
     public Response postResources(List<Language> structs) throws TException {
         if (structs != null && structs.size() > 0) {
@@ -69,12 +71,14 @@ public class ProfileLanguageService {
             profileIds.add(struct.getProfile_id());
         });
 
+
+
+        profileDao.updateUpdateTime(profileIds);
         profileIds.forEach(profileId -> {
             //计算profile完整度
             profileEntity.recalculateprofileLanguage(profileId, 0);
+            profileCompanyTagService.handlerCompanyTag(profileId);
         });
-
-        profileDao.updateUpdateTime(profileIds);
         return ResponseUtils.success("1");
     }
 
@@ -170,6 +174,7 @@ public class ProfileLanguageService {
         profileDao.updateUpdateTime(profileIds);
 
         profileEntity.recalculateprofileLanguage(struct.getProfile_id(), struct.getId());
+        profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -246,6 +251,9 @@ public class ProfileLanguageService {
                 .map(profileLanguageRecord -> profileLanguageRecord.getId())
                 .collect(Collectors.toSet());
         dao.updateProfileUpdateTime(languageIds);
+        languageIds.forEach(profileId ->{
+            profileCompanyTagService.handlerCompanyTag(profileId);
+        });
     }
 
     public Response getResource(Query query) throws TException {
