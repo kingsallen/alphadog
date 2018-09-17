@@ -944,6 +944,7 @@ public class ProfileService {
         if (userRecord != null) {
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            profilePojo.getProfileRecord().setUserId(userRecord.getId());
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
             resumeEntity.fillDefault(profilePojo);
