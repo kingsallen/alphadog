@@ -781,23 +781,11 @@ public class SearchengineEntity {
         UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
-        return ResponseUtils.success(true);
-    }
-
-
-
-    public Response getPostionIds(){
-        TransportClient client = getTransportClient();
-        if (client == null) {
-            return ResponseUtils.fail(9999, "ES连接失败！");
-        }
-//        SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
-//                .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
-//        SearchResponse response = searchRequestBuilder.execute().actionGet();
-
-        return ResponseUtils.success(true);
-    }
-
+        if(response.getGetResult() == null) {
+            return  ResponseUtils.fail(9999,"ES操作失败");
+        } else {
+            return ResponseUtils.success(response);
+        }    }
 
 
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
@@ -819,6 +807,9 @@ public class SearchengineEntity {
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 
-        return ResponseUtils.success(true);
-    }
+        if(bulkResponse.hasFailures()) {
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
+            return ResponseUtils.success(bulkResponse);
+        }    }
 }
