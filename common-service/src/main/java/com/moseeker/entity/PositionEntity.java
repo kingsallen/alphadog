@@ -28,6 +28,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.joda.time.DateTime;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.slf4j.LoggerFactory;
@@ -320,6 +321,7 @@ public class PositionEntity {
         for(JobPositionDO jobPositionDO: jobPositionDOS) {
             //更新职位is_referral字段
             jobPositionDO.setIs_referral(1);
+            jobPositionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
         }
         positionDao.updateDatas(jobPositionDOS);
 

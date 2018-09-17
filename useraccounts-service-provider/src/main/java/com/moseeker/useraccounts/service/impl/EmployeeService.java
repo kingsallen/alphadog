@@ -776,7 +776,7 @@ public class EmployeeService {
         referralPositionInfo.setId(positionInfo.getId());
         referralPositionInfo.setTitle(positionInfo.getTitle());
         referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
-        referralPositionInfo.setSalaryTop(positionInfo.getSalaryBottom());
+        referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
         try {
             int experience = Integer.valueOf(positionInfo.getExperience());
             referralPositionInfo.setExperience(experience);
