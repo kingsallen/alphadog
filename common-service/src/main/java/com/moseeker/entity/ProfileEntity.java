@@ -607,6 +607,7 @@ public class ProfileEntity {
 
         logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
                 profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
+        logger.info("ProfileEntity storeProfile userId:{}", profilePojo.getUserRecord().getId());
         return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
