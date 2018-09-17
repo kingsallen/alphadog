@@ -239,6 +239,7 @@ public class CompanyTagService {
         params.put("company_id",companyId+"");
         params.put("hr_account_id",hrId+"");
         params.put("company_tag",tagId+"");
+        logger.info("handlerCompanyTagTalent service:{}",service);
         int totalNum=service.talentSearchNum(params);
         return totalNum;
     }
