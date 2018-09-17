@@ -121,7 +121,9 @@ public class ReferralServiceImpl implements ReferralService {
         profileDocParseResult.setFile(fileNameData.getFileName());
         fileNameData.setOriginName(fileName);
 
-        // 调用SDK得到结果
+        return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
+
+        /*// 调用SDK得到结果
         ResumeObj resumeObj;
         try {
             resumeObj = profileEntity.profileParserAdaptor(fileName, StreamUtils.byteArrayToBase64String(dataArray));
@@ -141,7 +143,17 @@ public class ReferralServiceImpl implements ReferralService {
 
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", profilePojo.toJson(), 24*60*60);
-        return profileDocParseResult;
+        return profileDocParseResult;*/
+    }
+
+    @Override
+    public ProfileDocParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
+                                                        String fileAbsoluteName, String fileData) throws ProfileException {
+        FileNameData fileNameData = new FileNameData();
+        fileNameData.setOriginName(fileOriginName);
+        fileNameData.setFileAbsoluteName(fileAbsoluteName);
+        fileNameData.setFileName(fileName);
+        return parseResult(employeeId, fileAbsoluteName, fileData, fileNameData);
     }
 
     @Override
@@ -399,6 +411,32 @@ public class ReferralServiceImpl implements ReferralService {
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
         }
 
+    }
+
+    private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
+                                              FileNameData fileNameData) throws ProfileException {
+        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
+        // 调用SDK得到结果
+        ResumeObj resumeObj;
+        try {
+            resumeObj = profileEntity.profileParserAdaptor(fileName, fileData);
+        } catch (TException | IOException e) {
+            logger.error(e.getMessage(), e);
+            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
+        }
+        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
+        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
+        profileDocParseResult.setName(profileObj.getUser().getName());
+        profileObj.setResumeObj(null);
+        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
+        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
+        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
+
+        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+
+        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
+                "", profilePojo.toJson(), 24*60*60);
+        return profileDocParseResult;
     }
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
