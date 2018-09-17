@@ -791,12 +791,13 @@ public class SearchengineEntity {
 
     @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
+        DateTime nowDate = new DateTime();
 
+        logger.info("updateBulkReferralPostionStatus {} 条 计时开始时间 {}" ,positionIds.size(), nowDate.toString("yyyy-MM-dd HH:mm:ss"));
         TransportClient client = getTransportClient();
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        DateTime nowDate = new DateTime();
         BulkRequestBuilder bulkRequest = client.prepareBulk();
         for(Integer pid: positionIds) {
             String idx = "" + pid;
@@ -813,8 +814,13 @@ public class SearchengineEntity {
         logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
 
         if(bulkResponse.hasFailures()) {
+            DateTime endDate = new DateTime();
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 秒" ,,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
             return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
         } else {
+            DateTime endDate = new DateTime();
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 秒" ,,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
+
             return ResponseUtils.success(bulkResponse);
         }
     }
