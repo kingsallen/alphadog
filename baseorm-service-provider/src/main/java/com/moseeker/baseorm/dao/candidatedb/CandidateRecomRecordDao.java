@@ -8,6 +8,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
+import com.sun.tools.corba.se.idl.constExpr.Times;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -431,9 +432,10 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
 
     public int insertIfNotExist(CandidateRecomRecordRecord recomRecordRecord) {
 
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         Param<Integer> positionIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.getName(), recomRecordRecord.getPositionId());
         Param<Integer> applicationIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.getName(), recomRecordRecord.getAppId());
-        Param<Timestamp> recomTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), new Timestamp(System.currentTimeMillis()));
+        Param<Timestamp> recomTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), now);
         Param<Integer> depthParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.DEPTH.getName(), recomRecordRecord.getDepth());
         Param<String> reasonParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON.getName(), recomRecordRecord.getRecomReason());
         Param<String> mobileParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE.getName(), recomRecordRecord.getMobile());
@@ -442,6 +444,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         Param<Byte> genderParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER.getName(), recomRecordRecord.getGender());
         Param<String> emailParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL.getName(), recomRecordRecord.getEmail());
         Param<Integer> recomStateParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.getName(), 0);
+        Param<Timestamp> clickTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), now);
 
         create.insertInto(CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
@@ -454,7 +457,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME
         ).select(
                 select(
                         positionIdParam,
@@ -467,7 +471,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                         postUserIdParam,
                         genderParam,
                         emailParam,
-                        recomStateParam
+                        recomStateParam,
+                        clickTimeParam
                 )
                 .whereNotExists(
                         selectOne()
