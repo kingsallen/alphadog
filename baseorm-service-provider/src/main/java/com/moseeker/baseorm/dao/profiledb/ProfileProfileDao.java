@@ -1900,9 +1900,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(record.getUserId()))
                 .and(ProfileProfile.PROFILE_PROFILE.ID.eq(record.getId()))
                 .andNotExists(
-                        create.selectOne()
-                        .from(ProfileProfile.PROFILE_PROFILE)
-                        .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(newUserId))
+                        create.selectOne().from(
+                                create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                                        .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(newUserId))
+                        )
                 ).execute();
     }
 
