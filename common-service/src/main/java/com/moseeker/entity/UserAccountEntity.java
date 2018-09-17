@@ -256,6 +256,7 @@ public class UserAccountEntity {
     }
 
     public void updateUserRecord(UserUserRecord userRecord) {
-        userDao.updateRecord(userRecord);
+        int  execute = userDao.updateRecord(userRecord);
+        log.info("updateUserRecord execute:{}", execute);
     }
 }
