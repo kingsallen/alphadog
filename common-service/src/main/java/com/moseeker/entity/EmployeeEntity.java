@@ -156,7 +156,6 @@ public class EmployeeEntity {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
-        logger.info("addAwardHandler companyConf:{}", companyConf.toString());
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
             logger.info("addAwardHandler 有配置信息");
