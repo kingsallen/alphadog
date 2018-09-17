@@ -122,28 +122,6 @@ public class ReferralServiceImpl implements ReferralService {
         fileNameData.setOriginName(fileName);
 
         return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
-
-        /*// 调用SDK得到结果
-        ResumeObj resumeObj;
-        try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, StreamUtils.byteArrayToBase64String(dataArray));
-        } catch (TException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
-        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
-        profileDocParseResult.setName(profileObj.getUser().getName());
-        profileObj.setResumeObj(null);
-        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
-        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
-        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
-
-        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", profilePojo.toJson(), 24*60*60);
-        return profileDocParseResult;*/
     }
 
     @Override
@@ -153,6 +131,7 @@ public class ReferralServiceImpl implements ReferralService {
         fileNameData.setOriginName(fileOriginName);
         fileNameData.setFileAbsoluteName(fileAbsoluteName);
         fileNameData.setFileName(fileName);
+        fileData = StreamUtils.convertASCToUTF8(fileData);
         return parseResult(employeeId, fileAbsoluteName, fileData, fileNameData);
     }
 
@@ -326,9 +305,20 @@ public class ReferralServiceImpl implements ReferralService {
         int userId;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
+            if (StringUtils.isBlank(userRecord.getName()) || userRecord.getName().equals(name)) {
+                userRecord.setName(name);
+            }
+            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
+                userRecord.setMobile(Long.valueOf(mobile));
+            }
+            logger.info("recommend id:{}, name:{}, mobile:{}", userRecord.getId(), name, mobile);
+            userAccountEntity.updateUserRecord(userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (StringUtils.isBlank(userRecord.getUsername())) {
+                if (profilePojo.getProfileRecord() != null) {
+                    profilePojo.getProfileRecord().setUserId(userRecord.getId());
+                }
                 profileEntity.mergeProfile(profilePojo, userRecord.getId());
             }
         } else {

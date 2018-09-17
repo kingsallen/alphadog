@@ -60,7 +60,7 @@ public class ProfileCompanyTagService {
                     message.put("user_ids",userIdSet);
                     message.put("company_ids",companyIdSet);
                     logger.debug("handlerCompanyTagTalent handlerCompanyTag message:{}",message);
-                    sender.send(JSON.toJSONString(message));
+                    sender.send(JSON.toJSONString(message),80000);
                 }
             }
         }

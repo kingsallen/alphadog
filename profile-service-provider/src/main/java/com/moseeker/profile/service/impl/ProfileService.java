@@ -951,6 +951,9 @@ public class ProfileService {
             logger.info("profileParser user not null! userRecord:{}", userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            if (profilePojo.getProfileRecord() != null) {
+                profilePojo.getProfileRecord().setUserId(userRecord.getId());
+            }
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
         } else {
             logger.info("profileParser user is null");

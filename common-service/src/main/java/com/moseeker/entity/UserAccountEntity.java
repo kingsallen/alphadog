@@ -254,4 +254,8 @@ public class UserAccountEntity {
         }
         return userUserRecord;
     }
+
+    public void updateUserRecord(UserUserRecord userRecord) {
+        userDao.updateRecord(userRecord);
+    }
 }
