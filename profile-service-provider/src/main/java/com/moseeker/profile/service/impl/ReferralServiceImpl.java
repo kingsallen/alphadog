@@ -309,6 +309,7 @@ public class ReferralServiceImpl implements ReferralService {
 
         ProfilePojo profilePojo = new ProfilePojo();
         ProfileExtUtils.createReferralProfileData(profilePojo);
+        ProfileExtUtils.createProfileBasic(profilePojo, genderType);
         ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
 
         return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(),

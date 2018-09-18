@@ -1018,6 +1018,13 @@ public class UseraccountsService {
     }
 
     public Response sendVerifyCode(String mobile, int type,String countryCode) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("手机号码", mobile);
+        validateUtil.addIntTypeValidate("场景", type, 1, 6);
+        String validateResult = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(validateResult)) {
+            return ResponseUtils.fail(validateResult);
+        }
         boolean result=false;
         result = smsSender.sendSMS(mobile, type,countryCode);
         if (result) {
