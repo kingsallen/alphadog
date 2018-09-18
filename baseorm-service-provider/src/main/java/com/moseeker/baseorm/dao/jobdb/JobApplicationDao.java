@@ -269,4 +269,12 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 			return null;
 		}
     }
+
+	public void deleteById(Integer id) {
+		if (id != null) {
+			create.deleteFrom(JobApplication.JOB_APPLICATION)
+					.where(JobApplication.JOB_APPLICATION.ID.eq(id))
+					.execute();
+		}
+	}
 }
