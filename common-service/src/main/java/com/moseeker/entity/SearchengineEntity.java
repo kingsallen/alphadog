@@ -539,9 +539,10 @@ public class SearchengineEntity {
                 if (mapTemp != null) {
                     logger.info("removeApplication mapTemp:{}", JSON.toJSONString(mapTemp));
                     mapTemp.put("id", userId);
-                    if (mapTemp.get("applications") != null) {
-                        logger.info("removeApplication applications:{}", JSON.toJSONString(mapTemp.get("applications")));
-                        List<Map<String, Object>> applications = (List<Map<String, Object>>) mapTemp.get("applications");
+                    Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
+                    if (userMap != null && userMap.get("applications") != null) {
+                        logger.info("removeApplication applications:{}", JSON.toJSONString(userMap.get("applications")));
+                        List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
                             if (applicationOptional.isPresent()) {
@@ -551,7 +552,8 @@ public class SearchengineEntity {
                                     client.prepareDelete("users", "users", id + "").execute().actionGet();
                                 } else {
                                     logger.info("removeApplication 更新索引 apps:{}", apps);
-                                    mapTemp.put("applications", apps);
+                                    userMap.put("applications", apps);
+                                    mapTemp.put("user", userMap);
                                     client.prepareUpdate("users", "users", id + "")
                                             .setDoc(mapTemp).get();
                                 }
