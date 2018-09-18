@@ -28,6 +28,7 @@ public class ApplicationException extends CommonException {
     public static final ApplicationException APPLICATION_POSITIONS_NOT_LEGAL = new ApplicationException(41018,  "职位信息错误!" );
     public static final ApplicationException APPLICATION_CUSTOM_POSITION_VALIDATE_FAILED= new ApplicationException(41019,  "自定义职位校验失败!" );
     public static final ApplicationException APPLICATION_CREATE_FAILED= new ApplicationException(41020,  "申请创建失败!" );
+    public static final ApplicationException APPLICATION_USER_NOT_EXIST= new ApplicationException(41021,  "用户信息不存在!" );
 
     public ApplicationException(int code, String message) {
         super(code, message);

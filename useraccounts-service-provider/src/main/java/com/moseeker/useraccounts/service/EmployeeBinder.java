@@ -90,8 +90,10 @@ public abstract class EmployeeBinder {
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         try {
-            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(), bindingParams.getCompanyId()));
-            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0 && userEmployeeDOThreadLocal.get().getActivation() == 0) {
+            userEmployeeDOThreadLocal.set(employeeEntity.getCompanyEmployee(bindingParams.getUserId(),
+                    bindingParams.getCompanyId()));
+            if (userEmployeeDOThreadLocal.get() != null && userEmployeeDOThreadLocal.get().getId() > 0
+                    && userEmployeeDOThreadLocal.get().getActivation() == 0) {
                 throw new RuntimeException("该员工已绑定");
             }
             query.where("company_id", String.valueOf(bindingParams.getCompanyId())).and("disable", String.valueOf(0));
@@ -183,40 +185,46 @@ public abstract class EmployeeBinder {
             log.info("doneBind persist employee:{}", useremployee);
 
 
-            UserEmployeeRecord userEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
+            UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                     useremployee.getCompanyId());
-            if (userEmployee != null) {
-                log.info("userEmployee.bindingTime:{}", userEmployee.getBindingTime());
-                log.info("userEmployee != null  userEmployee:{}", userEmployee);
-                employeeId = userEmployee.getId();
-                log.info("userEmployee active:{}", userEmployee.getActivation());
-                if (userEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+            if (unActiveEmployee != null) {
+                log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
+                log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
+                employeeId = unActiveEmployee.getId();
+                log.info("userEmployee active:{}", unActiveEmployee.getActivation());
+                if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
                     log.info("userEmployee not active");
-                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getEmail())) {
-                        userEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
+                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getEmail())) {
+                        unActiveEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
                     }
-                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getMobile())) {
-                        userEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
+                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getMobile())) {
+                        unActiveEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
                     }
-                    if (org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCname())) {
-                        userEmployee.setCname(useremployee.getCname());
+                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getCname())) {
+                        unActiveEmployee.setCname(useremployee.getCname());
                     }
-                    if ((org.apache.commons.lang.StringUtils.isBlank(userEmployee.getCustomFieldValues())
-                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(userEmployee.getCustomFieldValues()))
+                    if ((org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getCustomFieldValues())
+                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(unActiveEmployee.getCustomFieldValues()))
                             && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
-                        userEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+                        unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
                     }
-                    userEmployee.setActivation(EmployeeActiveState.Actived.getState());
-                    log.info("userEmployee update record");
-                    log.info("useremployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), userEmployee.getBindingTime());
-                    if (useremployee.getAuthMethod() == 1 && userEmployee.getBindingTime() == null) {
-                        userEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                    unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                    log.info("unActiveEmployee update record");
+                    log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
+                    if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
+                        unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
                                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                                 .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
                         employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
                     }
-                    useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
-                    employeeDao.updateRecord(userEmployee);
+                    if (unActiveEmployee.getBindingTime() != null) {
+                        useremployee.setBindingTime(new DateTime(unActiveEmployee.getBindingTime().getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                    } else {
+                        useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+                    }
+
+                    unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+                    employeeDao.updateRecord(unActiveEmployee);
 
                 }
             } else {

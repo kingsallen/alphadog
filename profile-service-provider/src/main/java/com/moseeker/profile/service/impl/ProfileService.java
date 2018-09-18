@@ -951,7 +951,11 @@ public class ProfileService {
             logger.info("profileParser user not null! userRecord:{}", userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
+            if (profilePojo.getProfileRecord() != null) {
+                profilePojo.getProfileRecord().setUserId(userRecord.getId());
+            }
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
+            profileCompanyTagService.handlerCompanyTagByUserId(userRecord.getId());
         } else {
             logger.info("profileParser user is null");
 
@@ -961,6 +965,7 @@ public class ProfileService {
             userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
+            profileCompanyTagService.handlerCompanyTagByUserId(userId);
         }
 
         logger.info("profileParser userRecord :{}", userRecord);

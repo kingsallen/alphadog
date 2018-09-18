@@ -73,6 +73,8 @@ service ProfileServices {
     i32 parseText(1: string profile, 2: i32 reference) throws (1: common_struct.BIZException e);
     //简历解析
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+    //简历解析
+    profile_struct.ProfileParseResult parseFileStreamProfile(1:i32 employeeId, 2: string fileOriginName, 3: string fileName, 4: string absoluteName, 5: string fileData)throws (1: common_struct.BIZException e)
     //员工推荐简历
     i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 referralType)throws (1: common_struct.BIZException e)
     //删除上传的简历数据

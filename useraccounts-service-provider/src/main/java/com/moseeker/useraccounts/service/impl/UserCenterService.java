@@ -1,8 +1,11 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.exception.CommonException;
@@ -13,6 +16,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
@@ -24,11 +28,10 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.useraccounts.constant.WechatAuthorized;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
+import com.moseeker.useraccounts.service.impl.vo.UserCenterInfoVO;
 import org.apache.commons.lang.math.NumberUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +61,15 @@ public class UserCenterService {
 
     @Autowired
     EmployeeEntity employeeEntity;
+
+    @Autowired
+    private UserUserDao userUserDao;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private ReferralEntity referralEntity;
     /**
      * 查询申请记录
      *
@@ -69,15 +81,10 @@ public class UserCenterService {
         logger.info("UserCenterService getApplication userId:{}", userId);
         List<ApplicationRecordsForm> applications = new ArrayList<>();
 
-        int companyId = 0;
-        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
-        if (userEmployeeDO != null) {
-            companyId = userEmployeeDO.getCompanyId();
-        }
         //参数有效性校验
         if (userId > 0) {
             //查询申请记录
-            List<JobApplicationRecord> apps = bizTools.getAppsForUserAndCompany(userId, companyId);
+            List<JobApplicationDO> apps = bizTools.getAppsForUser(userId);
             if (apps != null && apps.size() > 0) {
                 //查询申请记录对应的职位数据
                 List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
@@ -107,7 +114,7 @@ public class UserCenterService {
                     ar.setId(app.getId());
                     RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
                     ar.setStatus_name(recruitmentScheduleEnum.getStatus());
-                    ar.setTime(new DateTime(app.getSubmitTime().getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                    ar.setTime(app.getSubmitTime());
                     if (positions != null) {
                         Optional<JobPositionDO> op = positions.stream().filter(position -> position.getId() == app.getPositionId()).findFirst();
                         if (op.isPresent()) {
@@ -134,7 +141,7 @@ public class UserCenterService {
                         ar.setSignature(signatureMap.get(app.getCompanyId()));
                     }
                     logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
-                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType().byteValue(), app.getEmailStatus().byteValue(), preID));
+                    ar.setStatus_name(recruitmentScheduleEnum.getAppStatusDescription((byte)app.getApplyType(), (byte)app.getEmailStatus(), preID));
                     return ar;
                 }).collect(Collectors.toList());
             }
@@ -229,7 +236,9 @@ public class UserCenterService {
                 return recommendationForm;
             }
 
-            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList));
+            List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
+
+            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList, presenteeUserIdList));
             Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId, positionIdList));
             Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId, positionIdList));
             totalCount = totalCountFuture.get();
@@ -242,7 +251,7 @@ public class UserCenterService {
             recommendationForm.setScore(scoreVO);
 
             /** 分页查找相关职位转发记录 */
-            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, pageNo, pageSize);
+            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
             if (recomRecordDOList.size() > 0) {
                 recommendationForm.setHasRecommends(true);
 
@@ -406,6 +415,28 @@ public class UserCenterService {
                             }
                         }));
                     }
+
+                    Future<UserEmployeeDO> employeeDOFuture = tp.startTast(() -> employeeEntity.getActiveEmployeeDOByUserId(applicationDO.getRecommenderUserId()));
+                    UserEmployeeDO employeeDO = null;
+                    try {
+                        employeeDO = employeeDOFuture.get();
+                        if (employeeDO != null && org.apache.commons.lang.StringUtils.isBlank(employeeDOFuture.get().getCname())) {
+                            UserUserDO userUserDO = userUserDao.getUser(employeeDO.getSysuserId());
+                            if (userUserDO != null) {
+                                employeeDO.setCname(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                                        ? userUserDO.getName() : userUserDO.getNickname());
+                            }
+                            if (org.apache.commons.lang.StringUtils.isBlank(employeeDO.getCname())) {
+                                UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+                                if (record != null) {
+                                    employeeDO.setCname(record.getNickname());
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+
                     /** 查找HR操作记录 */
                     Future timeLineListFuture = tp.startTast(() -> bizTools.listHrOperationRecord(appId));
                     try {
@@ -466,7 +497,7 @@ public class UserCenterService {
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
                                 logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {
-                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID));
+                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID, employeeDO != null? employeeDO.getCname():""));
                                 }
                                 /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
                                 if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()
@@ -532,5 +563,37 @@ public class UserCenterService {
         boolean flag = false;
 
         return flag;
+    }
+
+    public UserCenterInfoVO getCenterUserInfo(int userId, int companyId) throws UserAccountException {
+        UserUserDO userUserDO = userUserDao.getUser(userId);
+        if (userUserDO == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+        }
+        UserCenterInfoVO info = new UserCenterInfoVO();
+        info.setUserId(userId);
+        info.setHeadimg(userUserDO.getHeadimg());
+        info.setName(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                ? userUserDO.getName():userUserDO.getNickname());
+        UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
+        if (employeeDO != null) {
+            info.setEmployeeId(employeeDO.getId());
+            if (org.apache.commons.lang.StringUtils.isNotBlank(employeeDO.getCname())) {
+                info.setName(employeeDO.getCname());
+            }
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(info.getName())
+                || org.apache.commons.lang.StringUtils.isBlank(info.getHeadimg())) {
+            UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+            if (record != null) {
+                if (org.apache.commons.lang.StringUtils.isBlank(info.getHeadimg())) {
+                    info.setHeadimg(record.getHeadimgurl());
+                }
+                if (org.apache.commons.lang.StringUtils.isBlank(info.getName())) {
+                    info.setName(record.getNickname());
+                }
+            }
+        }
+        return info;
     }
 }

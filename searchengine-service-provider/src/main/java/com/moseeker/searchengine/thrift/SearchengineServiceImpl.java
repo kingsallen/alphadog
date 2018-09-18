@@ -169,8 +169,6 @@ public class SearchengineServiceImpl implements Iface {
 
 			logger.info("SearchengineServiceImpl params {}", JSON.toJSONString(params));
 
-			logger.info("SearchengineServiceImpl searchPositionSuggest {}", JSON.toJSONString(res));
-
 			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");
 			}

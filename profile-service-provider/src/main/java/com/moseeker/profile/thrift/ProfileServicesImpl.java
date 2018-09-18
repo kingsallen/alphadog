@@ -137,7 +137,24 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType) throws BIZException, TException {
+    public ProfileParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
+                                                     String fileAbsoluteName, String fileData)
+            throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    referralService.parseFileStreamProfile(employeeId, fileOriginName, fileName, fileAbsoluteName,
+                            fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
+                                       int position, byte referralType) throws BIZException, TException {
         try {
 
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,

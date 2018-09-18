@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
@@ -30,8 +31,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +142,6 @@ public class ReferralEntity {
         CandidateRecomRecordRecord recomRecordRecord = new CandidateRecomRecordRecord();
         recomRecordRecord.setPositionId(position);
         recomRecordRecord.setAppId(applicationId);
-        recomRecordRecord.setRecomTime(new Timestamp(System.currentTimeMillis()));
         recomRecordRecord.setDepth(depth);
         recomRecordRecord.setRecomReason(referralReasons.stream().collect(Collectors.joining(",")));
         recomRecordRecord.setMobile(mobile);
@@ -159,7 +159,7 @@ public class ReferralEntity {
         if (referralId == 0) {
             throw EmployeeException.EMPLOYEE_REPEAT_RECOMMEND;
         }
-        return referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
+        return referralId;
     }
 
     public ReferralLog fetchReferralLog(int referralLogId) {
@@ -168,9 +168,10 @@ public class ReferralEntity {
 
     public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
 
-        if (!referralLogDao.claim(referralLog.getId(), userUserDO.getId())) {
+        if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
         }
+
 
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
@@ -207,5 +208,17 @@ public class ReferralEntity {
         if (postUserId > 0) {
             candidateRecomRecordDao.changePostUserId(postUserId, referralLog.getReferenceId(), userUserDO.getId());
         }
+    }
+
+    public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
+        return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
+    }
+
+    public List<Integer> fetchReferenceIdList(int userId) {
+        UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
+        if (employeeRecord != null) {
+            return referralLogDao.fetchReferenceIdByEmployeeId(employeeRecord.getId());
+        }
+        return new ArrayList<>();
     }
 }

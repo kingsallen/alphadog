@@ -129,6 +129,7 @@ public class EmployeeBatchHandler {
 
         for (int i = 0; i < dataStatus.length; i++) {
             if (dataStatus[i] == NEED_ADD) {
+                batchForm.getData().get(i).setAuth_method((byte)batchForm.auth_method);
                 addDatas.add(batchForm.getData().get(i));
             } else if (dataStatus[i] == NEED_UPDATE) {
                 updateDatas.add(batchForm.getData().get(i));

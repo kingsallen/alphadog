@@ -4,18 +4,18 @@ import java.util.List;
 
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationDetailVO;
-import com.moseeker.thrift.gen.useraccounts.struct.RecommendationVO;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.service.impl.vo.UserCenterInfoVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.moseeker.thrift.gen.useraccounts.service.UserCenterService.Iface;
-import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
-import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
 import com.moseeker.useraccounts.service.impl.UserCenterService;
 
 @Service
@@ -72,5 +72,13 @@ public class UserCenterThriftService implements Iface {
 			logger.error(e.getMessage(), e);
 			throw new SysBIZException();
 		}
+	}
+
+	@Override
+	public CenterUserInfo getCenterUserInfo(int userId, int companyId) throws BIZException, TException {
+		UserCenterInfoVO infoVO = userCenterService.getCenterUserInfo(userId, companyId);
+		CenterUserInfo info = new CenterUserInfo();
+		BeanUtils.copyProperties(infoVO, info);
+		return info;
 	}
 }

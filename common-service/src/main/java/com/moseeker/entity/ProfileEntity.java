@@ -77,6 +77,7 @@ public class ProfileEntity {
 
     @Autowired
     private ProfileMailUtil profileMailUtil;
+
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
      * @param profileParameter 简历信息
@@ -108,7 +109,7 @@ public class ProfileEntity {
      * @param profilePojo 简历数据
      * @param userId 用户编号
      */
-    public void mergeProfile(ProfilePojo profilePojo, int userId) {
+    public int mergeProfile(ProfilePojo profilePojo, int userId) {
 
         ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
         if (profileDB != null) {
@@ -126,8 +127,9 @@ public class ProfileEntity {
             improveWorkexp(profilePojo.getWorkexpRecords(), profileDB.getId());
             improveWorks(profilePojo.getWorksRecords(), profileDB.getId());
             completenessImpl.reCalculateProfileBasic(profileDB.getId());
+            return profileDB.getId();
         } else {
-            storeProfile(profilePojo);
+            return storeProfile(profilePojo);
         }
     }
 
@@ -607,6 +609,7 @@ public class ProfileEntity {
 
         logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
                 profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
+        logger.info("ProfileEntity storeProfile userId:{}", profilePojo.getUserRecord().getId());
         return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),

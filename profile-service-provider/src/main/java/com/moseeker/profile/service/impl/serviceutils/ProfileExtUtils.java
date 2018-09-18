@@ -64,6 +64,7 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 		profileProfile.put("origin", "100000000000000000000000000000");         //内推
 		profileProfile.put("uuid", UUID.randomUUID().toString());               //内推
 		profileProfile.put("user_id", 0);
+		profileProfile.put("disable", 1);
 		return profileProfile;
 	}
 
@@ -77,6 +78,7 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 		profileProfileRecord.setOrigin("100000000000000000000000000000");
 		profileProfileRecord.setUuid(UUID.randomUUID().toString());
 		profileProfileRecord.setUserId(0);
+		profileProfileRecord.setDisable((byte)1);
 		profilePojo.setProfileRecord(profileProfileRecord);
 	}
 

@@ -8,20 +8,25 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.application.form.EmployeeProxyApplyForm;
+import com.moseeker.servicemanager.web.controller.application.vo.ApplicationRecord;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 申请服务
@@ -279,6 +284,37 @@ public class JobApplicationController {
 		} else {
 			List<Integer> applyIdList = applicationService.employeeProxyApply(form.getReferenceId(), form.getApplierId(), form.getPositionIds());
 			return Result.success(applyIdList).toJson();
+		}
+	}
+
+	@RequestMapping(value = "/v1/applications", method = RequestMethod.GET)
+	@ResponseBody
+	public String applications(@RequestParam(value = "user_id") Integer userId,
+							   @RequestParam(value = "appid") Integer appid,
+							   @RequestParam(value = "company_id", defaultValue = "0") Integer companyId) throws Exception {
+
+		ValidateUtil validateUtil = new ValidateUtil();
+		validateUtil.addRequiredValidate("appid", appid);
+		validateUtil.addRequiredValidate("用户信息", userId);
+		validateUtil.addIntTypeValidate("用户信息", userId, 1, null);
+
+		String validateResult = validateUtil.validate();
+		if (StringUtils.isBlank(validateResult)) {
+			List<ApplicationRecord> data = new ArrayList<>();
+			List<ApplicationRecordsForm> forms = applicationService.getApplications(userId, companyId);
+			if (forms != null) {
+				data = forms
+						.stream()
+						.map(applicationRecordsForm -> {
+							ApplicationRecord record = new ApplicationRecord();
+							BeanUtils.copyProperties(applicationRecordsForm, record);
+							return record;
+						})
+						.collect(Collectors.toList());
+			}
+			return Result.success(data).toJson();
+		} else {
+			return Result.validateFailed(validateResult).toJson();
 		}
 	}
 }

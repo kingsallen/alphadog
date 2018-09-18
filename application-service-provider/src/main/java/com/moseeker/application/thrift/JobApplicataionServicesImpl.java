@@ -3,14 +3,15 @@ package com.moseeker.application.thrift;
 
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.impl.JobApplicataionService;
+import com.moseeker.application.service.impl.vo.ApplicationRecord;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices.Iface;
+import com.moseeker.thrift.gen.application.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.JobResumeOther;
@@ -20,10 +21,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 申请服务实现类
@@ -208,6 +212,27 @@ public class JobApplicataionServicesImpl implements Iface {
 
         try {
             return service.employeeProxyApply(referenceId, applierId, positionIdList);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public List<ApplicationRecordsForm> getApplications(int userId, int companyId) throws TException {
+        try {
+            List<ApplicationRecordsForm> data = new ArrayList<>();
+            List<ApplicationRecord> list = service.getApplications(userId, companyId);
+            if (list != null && list.size() > 0) {
+                data = list
+                        .stream()
+                        .map(applicationRecord -> {
+                            ApplicationRecordsForm form = new ApplicationRecordsForm();
+                            BeanUtils.copyProperties(applicationRecord, form);
+                            return form;
+                        })
+                        .collect(Collectors.toList());
+            }
+            return data;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

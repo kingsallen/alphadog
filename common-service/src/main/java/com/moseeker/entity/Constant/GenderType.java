@@ -1,4 +1,4 @@
-package com.moseeker.profile.constants;
+package com.moseeker.entity.Constant;
 
 import java.util.HashMap;
 import java.util.Map;

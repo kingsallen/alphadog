@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -1206,13 +1207,23 @@ public class UseraccountsService {
         if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
+        logger.info("claimReferralCard claim form:{}", JSON.toJSONString(claimForm));
         ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
         if (referralLog == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
+
         if (referralLog.getClaim() == 1) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_ALREADY_CLAIMED;
         }
+
+        ReferralLog repeatReferralLog = referralEntity.fetchReferralLog(referralLog.getEmployeeId(),
+                referralLog.getPositionId(), claimForm.getUserId());
+        if (repeatReferralLog != null && repeatReferralLog.getClaim() != null
+                && repeatReferralLog.getClaim() == ClaimType.Claimed.getValue()) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
+        }
+
         UserUserDO userUserDO = userdao.getUser(claimForm.getUserId());
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
@@ -1230,9 +1241,9 @@ public class UseraccountsService {
         if (!claimForm.getName().equals(referralUser.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
-
+        logger.info("claimReferralCard userUserDO:{}", userUserDO);
         //修改手机号码
-        if (userUserDO.getUsername() == null || !FormCheck.isMobile(userUserDO.getUsername().trim())) {
+        if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
             validateUtil.addRequiredStringValidate("手机号码", claimForm.getMobile());
             validateUtil.addRequiredStringValidate("验证码", claimForm.getVerifyCode());
@@ -1242,6 +1253,7 @@ public class UseraccountsService {
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
             boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
+            logger.info("claimReferralCard validateVerifyResult:{}", validateVerifyResult);
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }

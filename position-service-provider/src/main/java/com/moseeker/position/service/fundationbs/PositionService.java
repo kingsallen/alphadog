@@ -1845,7 +1845,7 @@ public class PositionService {
         // 通过 pid 列表查询 position 信息
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
-        Query q = new Query.QueryBuilder().where(con).and("status", 0).orderBy("update_time",Order.DESC).buildQuery();
+        Query q = new Query.QueryBuilder().where(con).and("status", 0).orderBy("priority",Order.ASC).orderBy("update_time",Order.DESC).orderBy("id",Order.DESC).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
         List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
         return dataList;
@@ -1853,6 +1853,8 @@ public class PositionService {
 
     private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList,List<JobPositionRecordWithCityName> jobRecords,int count){
         List<WechatPositionListData> dataList = new ArrayList<>();
+        Set<Integer> teamIdList = new HashSet<Integer>();
+
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
             for (JobPositionRecordWithCityName jr : jobRecords) {
@@ -1894,7 +1896,9 @@ public class PositionService {
                     e.setDegree_above(jr.getDegreeAbove());
                     e.setExperience(jr.getExperience());
                     e.setExperience_above(jr.getExperienceAbove());
+                    e.setTeam_id(jr.getTeamId());
                     dataList.add(e);
+                    teamIdList.add(jr.getTeamId());
                     break;
                 }
             }
@@ -1938,6 +1942,18 @@ public class PositionService {
             publisherUserHrAccountMap.put(userHrAccountDO.getId(), userHrAccountDO);
         }
 
+        // 获取hrteam，填入职位的部门字段
+        Map<Integer /* team id */, HrTeamDO> hrTeamMap = new HashMap<>();
+        Condition condition3 = new Condition("id", teamIdList.toArray(), ValueOp.IN);
+        Query.QueryBuilder hrm3 = new Query.QueryBuilder();
+        hrm3.where(condition3);
+
+        List<HrTeamDO> hrTeamDOS = hrTeamDao.getDatas(hrm3.buildQuery(),HrTeamDO.class);
+        logger.info("handerPositionWx hrTeamDOS hrTeamDOS {}  teamIdList {}", JSON.toJSONString(hrTeamDOS),JSON.toJSONString(teamIdList));
+        for (HrTeamDO hrTeamDO : hrTeamDOS) {
+            hrTeamMap.put(hrTeamDO.getId(), hrTeamDO);
+        }
+
         //拼装 company 和 publisher 相关内容
         dataList = dataList.stream().map(s -> {
             s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
@@ -1945,6 +1961,13 @@ public class PositionService {
             s.setCompany_name(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getName());
             //添加发布人姓名
             s.setPublisher_name(publisherUserHrAccountMap.get(s.getPublisher()) == null ? "" : publisherUserHrAccountMap.get(s.getPublisher()).getUsername());
+
+            //添加部门信息 如果department为空，用hrteam name
+            if(StringUtils.isNullOrEmpty(s.getDepartment())) {
+                s.setDepartment(hrTeamMap.get(s.getTeam_id()) == null ? "" : hrTeamMap.get(s.getTeam_id()).getName());
+            }
+
+
             return s;
         }).collect(Collectors.toList());
 

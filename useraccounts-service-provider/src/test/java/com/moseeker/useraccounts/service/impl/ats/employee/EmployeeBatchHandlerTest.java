@@ -33,21 +33,12 @@ public class EmployeeBatchHandlerTest {
                 "  \"as_task\": true,\n" +
                 "  \"auth_method\": 0,\n" +
                 "  \"cancel_auth\": false,\n" +
-                "  \"company_id\": 3,\n" +
+                "  \"company_id\": 44555,\n" +
                 "  \"data\": [\n" +
-                "    {\n" +
-                "      \"custom_field_values\": \"string\",\n" +
-                "      \"company_id\": 3,\n" +
-                "      \"departmentname\": \"&&LHOO\",\n" +
-                "      \"custom_field\": \"fff\",\n" +
-                "      \"email\":\"abc@moseeker.com\",\n" +
-                "      \"cfname\": \"柴2\",\n" +
-                "      \"cname\": \"柴2\",\n" +
-                "      \"ename\": \"ddd\"\n" +
-                "    }\n" +
+                "    {\"departmentname\": \"\", \"custom_field_values\": \"[{\\\"31\\\": [\\\"CN FGM Development\\\"]}]\", \"email\": \"regan.shen@cn.mcd.com\", \"custom_field\": \"10259256\", \"company_id\": 44555, \"cname\": \"\\u6c88\\u8363\\u521a\"}"+
                 "\n" +
                 "  ],\n" +
-                "  \"del_not_include\": true\n" +
+                "  \"del_not_include\": false\n" +
                 "}";
 
         UserEmployeeBatchForm form = JSON.parseObject(json,UserEmployeeBatchForm.class);

@@ -117,6 +117,7 @@ struct WechatPositionListData {
     29: optional i32 degree;
     30: optional i32 experience_above;
     31: optional string experience;
+    32: optional i32 team_id;
 }
 
 // 微信端职位列表的附加红包信息
@@ -428,4 +429,16 @@ struct PositionDetailsForAlipayCampus{
 struct JobPositionHrCompanyFeatureDO{
   1: optional i32 pid,
   2: optional i32 fid
+}
+
+struct ReferralPositionUpdateDataDO{
+    1:optional list<i32> position_ids,
+    2:optional i32 all_selected,
+    3:optional i32 company_id,
+    4:optional i32 account_id,
+    5:optional i32 account_type,
+    6:optional string city,
+    7:optional i32 candidate_source,
+    8:optional i32 employment_type,
+    9:optional string keyWord
 }
