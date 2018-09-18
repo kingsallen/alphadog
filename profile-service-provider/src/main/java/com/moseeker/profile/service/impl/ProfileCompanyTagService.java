@@ -59,7 +59,7 @@ public class ProfileCompanyTagService {
                     Map<String,Object> message=new HashMap<>();
                     message.put("user_ids",userIdSet);
                     message.put("company_ids",companyIdSet);
-                    sender.send(JSON.toJSONString(message));
+                    sender.send(JSON.toJSONString(message),80000);
                 }
             }
         }

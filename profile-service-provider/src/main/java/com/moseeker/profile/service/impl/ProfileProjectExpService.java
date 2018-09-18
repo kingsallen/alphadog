@@ -45,6 +45,9 @@ public class ProfileProjectExpService {
     @Autowired
     private ProfileEntity profileEntity;
 
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
+
     public Response getResource(Query query) throws TException {
         ProfileProjectexpRecord record = dao.getRecord(query);
         if (record != null) {
@@ -112,6 +115,7 @@ public class ProfileProjectExpService {
             profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
                 profileEntity.reCalculateProfileProjectExpByProfileId(profileId);
+                profileCompanyTagService.handlerCompanyTag(profileId);
             });
             return ResponseUtils.success("1");
         } else {
@@ -149,6 +153,7 @@ public class ProfileProjectExpService {
             updateProfileUpdateTime(descProfileProjectList);
             descProfileProjectList.forEach(profileProjectexpRecord -> {
                 profileEntity.reCalculateProfileProjectExpByProjectExpId(profileProjectexpRecord.getId());
+                profileCompanyTagService.handlerCompanyTag(profileProjectexpRecord.getProfileId());
             });
         }
         return ResponseUtils.success("1");
@@ -183,6 +188,7 @@ public class ProfileProjectExpService {
                 profileIds.forEach(profileId -> {
                 /* 计算profile完成度 */
                     profileEntity.reCalculateProfileProjectExp(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
                 return ResponseUtils.success("1");
             }
@@ -202,6 +208,7 @@ public class ProfileProjectExpService {
         profileDao.updateUpdateTime(profileIds);
             /* 计算profile完成度 */
         profileEntity.reCalculateProfileProjectExpByProfileId(struct.getProfile_id());
+        profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 
@@ -223,6 +230,7 @@ public class ProfileProjectExpService {
                 updateUpdateTime(struct);
             /* 计算profile完成度 */
                 profileEntity.reCalculateProfileProjectExpByProjectExpId(struct.getId());
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                 return ResponseUtils.success("1");
             }
         }
@@ -242,6 +250,7 @@ public class ProfileProjectExpService {
             /* 计算profile完成度 */
                 profileEntity.reCalculateProfileProjectExp(projectExpRecord.getProfileId().intValue(),
                         projectExpRecord.getId().intValue());
+                profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                 return ResponseUtils.success("1");
             }
         }

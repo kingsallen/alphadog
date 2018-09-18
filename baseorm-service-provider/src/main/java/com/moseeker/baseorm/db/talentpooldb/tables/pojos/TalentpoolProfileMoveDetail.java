@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetail implements Serializable {
 
-    private static final long serialVersionUID = 427828927;
+    private static final long serialVersionUID = -1123148094;
 
     private Integer   id;
     private Long      mobile;
