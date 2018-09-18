@@ -185,7 +185,7 @@ public class ReferralEntity {
             record.setApplierName(userUserDO.getName());
             record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             applicationDao.updateRecord(record);
-            searchengineEntity.updateApplication(application.getApplierId(), application.getId(), record.getApplierId(), record.getApplierName(), record.getUpdateTime());
+            searchengineEntity.removeApplication(application.getApplierId(), application.getId(), record.getApplierId(), record.getApplierName(), record.getUpdateTime());
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());

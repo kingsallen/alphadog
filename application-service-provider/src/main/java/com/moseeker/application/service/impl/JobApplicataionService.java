@@ -416,7 +416,7 @@ public class JobApplicataionService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
             }
         } catch (Exception e) {
-            logger.error("updateApplication JobApplicationRecord error: ", e);
+            logger.error("removeApplication JobApplicationRecord error: ", e);
             throw new TException();
         } finally {
             //do nothing
