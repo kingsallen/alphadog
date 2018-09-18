@@ -47,21 +47,29 @@ public class ProfileCompanyTagService {
         if(userId==0){
             userId=this.getUserIdFromProfile(profileId);
         }
+        handlerCompanyTagByUserId(userId);
+    }
+
+    public void  handlerCompanyTagByUserId(int userId){
         if(userId>0){
             boolean flag=this.validateUsertalent(userId);
+            logger.debug("handlerCompanyTagTalent handlerCompanyTag flag:{}",flag);
             if(flag){
                 Set<Integer> userIdSet=new HashSet<>();
                 userIdSet.add(userId);
                 Set<Integer> companyIdSet=this.getCompanySetByApplierId(userId);
+                logger.debug("handlerCompanyTagTalent handlerCompanyTag companyIdSet:{}",companyIdSet);
                 if(!StringUtils.isEmptySet(companyIdSet)){
                     Map<String,Object> message=new HashMap<>();
                     message.put("user_ids",userIdSet);
                     message.put("company_ids",companyIdSet);
+                    logger.debug("handlerCompanyTagTalent handlerCompanyTag message:{}",message);
                     sender.send(JSON.toJSONString(message),80000);
                 }
             }
         }
     }
+
     /*
      获取该人投递的公司
      */
