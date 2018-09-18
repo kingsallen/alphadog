@@ -181,6 +181,8 @@ public class ReferralEntity {
             JobApplicationRecord record = new JobApplicationRecord();
             BeanUtils.copyProperties(application, record);
             record.setId(null);
+            record.setApplierId(userUserDO.getId());
+            record.setApplierName(userUserDO.getName());
             record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             applicationDao.addRecord(record);
         }
