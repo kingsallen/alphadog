@@ -440,5 +440,6 @@ struct ReferralPositionUpdateDataDO{
     6:optional string city,
     7:optional i32 candidate_source,
     8:optional i32 employment_type,
-    9:optional string keyWord
+    9:optional string keyWord,
+    10:optional string is_referral
 }
