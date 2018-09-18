@@ -544,8 +544,11 @@ public class SearchengineEntity {
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            logger.info("removeApplication applications :{}", JSON.toJSONString(applications));
                             if (applicationOptional.isPresent()) {
-                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.equals(applicationId)).collect(Collectors.toList());
+                                logger.info("removeApplication exists ");
+                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());
+                                logger.info("removeApplication apps :{}", apps);
                                 if (apps == null || apps.size() == 0) {
                                     logger.info("removeApplication 删除索引 users id:{}", id);
                                     client.prepareDelete("users", "users", id + "").execute().actionGet();
