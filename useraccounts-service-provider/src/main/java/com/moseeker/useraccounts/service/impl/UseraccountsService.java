@@ -38,8 +38,6 @@ import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.thrift.gen.application.service.JobApplicationServices;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -1277,28 +1275,5 @@ public class UseraccountsService {
         }
 
         referralEntity.claimReferralCard(userUserDO, referralLog);
-
-        changeApplication(userUserDO, referralLog);
     }
-
-    private void changeApplication(UserUserDO userUserDO, ReferralLog referralLog) {
-        com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                referralLog.getPositionId());
-        if (application != null) {
-
-            JobApplication jobApplication = new JobApplication();
-            jobApplication.setId(application.getId());
-            jobApplication.setApplier_id(userUserDO.getId());
-            jobApplication.setApplier_name(userUserDO.getName());
-
-            try {
-                applicationService.putApplication(jobApplication);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-    }
-
-    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
-            .getService(JobApplicationServices.Iface.class);
 }

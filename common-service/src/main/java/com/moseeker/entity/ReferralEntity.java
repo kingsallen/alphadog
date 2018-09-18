@@ -5,11 +5,14 @@ import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -24,10 +27,12 @@ import org.jooq.Record2;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -69,6 +74,9 @@ public class ReferralEntity {
 
     @Autowired
     private HrPointsConfDao pointsConfDao;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -164,6 +172,17 @@ public class ReferralEntity {
 
         if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
+        }
+
+        JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
+                referralLog.getPositionId());
+        if (application != null) {
+            applicationDao.deleteById(application.getId());
+            JobApplicationRecord record = new JobApplicationRecord();
+            BeanUtils.copyProperties(application, record);
+            record.setId(null);
+            record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            applicationDao.addRecord(record);
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());
