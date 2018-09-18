@@ -404,6 +404,28 @@ public class UserCenterService {
                             }
                         }));
                     }
+
+                    Future<UserEmployeeDO> employeeDOFuture = tp.startTast(() -> employeeEntity.getActiveEmployeeDOByUserId(applicationDO.getRecommenderUserId()));
+                    UserEmployeeDO employeeDO = null;
+                    try {
+                        employeeDO = employeeDOFuture.get();
+                        if (employeeDO != null && org.apache.commons.lang.StringUtils.isBlank(employeeDOFuture.get().getCname())) {
+                            UserUserDO userUserDO = userUserDao.getUser(employeeDO.getSysuserId());
+                            if (userUserDO != null) {
+                                employeeDO.setCname(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                                        ? userUserDO.getName() : userUserDO.getNickname());
+                            }
+                            if (org.apache.commons.lang.StringUtils.isBlank(employeeDO.getCname())) {
+                                UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+                                if (record != null) {
+                                    employeeDO.setCname(record.getNickname());
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+
                     /** 查找HR操作记录 */
                     Future timeLineListFuture = tp.startTast(() -> bizTools.listHrOperationRecord(appId));
                     try {
@@ -464,7 +486,7 @@ public class UserCenterService {
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
                                 logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {
-                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID));
+                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID, employeeDO != null? employeeDO.getCname():"");
                                 }
                                 /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
                                 if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()

@@ -413,7 +413,7 @@ public class UserCenterBizTools {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.select("id").select("applier_id").select("email_status")
                 .select("apply_type").select("app_tpl_id").select("position_id")
-                .select("company_id");
+                .select("company_id").select("recommender_user_id");
         qu.where("id", appId).and("disable", AbleFlag.OLDENABLE.getValueStr());
 
         return applicationDao.getData(qu.buildQuery());
