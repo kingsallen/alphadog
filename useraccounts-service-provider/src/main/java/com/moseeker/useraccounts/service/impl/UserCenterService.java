@@ -16,6 +16,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
@@ -66,6 +67,9 @@ public class UserCenterService {
 
     @Autowired
     private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private ReferralEntity referralEntity;
     /**
      * 查询申请记录
      *
@@ -232,7 +236,9 @@ public class UserCenterService {
                 return recommendationForm;
             }
 
-            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList));
+            List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
+
+            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList, presenteeUserIdList));
             Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId, positionIdList));
             Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId, positionIdList));
             totalCount = totalCountFuture.get();
@@ -245,7 +251,7 @@ public class UserCenterService {
             recommendationForm.setScore(scoreVO);
 
             /** 分页查找相关职位转发记录 */
-            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, pageNo, pageSize);
+            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
             if (recomRecordDOList.size() > 0) {
                 recommendationForm.setHasRecommends(true);
 

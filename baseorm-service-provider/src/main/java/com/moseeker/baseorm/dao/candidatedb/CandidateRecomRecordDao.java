@@ -337,14 +337,18 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList) {
+    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList,
+                                                                  List<Integer> referenceIdList) {
         int count = 0;
         SelectConditionStep selectConditionStep = create
                 .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                         CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId))
-                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)));
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId)))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList));
+        if (referenceIdList != null && referenceIdList.size() > 0) {
+            selectConditionStep = selectConditionStep.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.notIn(referenceIdList));
+        }
 
         Result<Record1<Integer>> result = selectConditionStep.fetch();
         if (result != null && result.size() > 0) {
