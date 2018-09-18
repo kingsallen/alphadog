@@ -81,6 +81,9 @@ public class ReferralEntity {
     @Autowired
     EmployeeEntity employeeEntity;
 
+    @Autowired
+    SearchengineEntity searchengineEntity;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -178,9 +181,12 @@ public class ReferralEntity {
                 referralLog.getPositionId());
         if (application != null) {
             applicationDao.deleteById(application.getId());
+            searchengineEntity.deleteApplication(application.getApplierId());
             JobApplicationRecord record = new JobApplicationRecord();
             BeanUtils.copyProperties(application, record);
             record.setId(null);
+            record.setApplierId(userUserDO.getId());
+            record.setApplierName(userUserDO.getName());
             record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             applicationDao.addRecord(record);
         }

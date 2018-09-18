@@ -511,6 +511,36 @@ public class SearchengineEntity {
         logger.info("----删除员工积分索引信息结束-------");
         return ResponseUtils.success("");
     }
+
+    /**
+     * 删除员工积分索引
+     *
+     * @param userId
+     * @return
+     * @throws TException
+     */
+    public Response deleteApplication(Integer userId) throws CommonException {
+        logger.info("----删除招聘，员工ID:{}-------", userId);
+        // 连接ES
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES 连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = null;
+        BulkResponse bulkResponse = null;
+        try {
+            bulkRequest = client.prepareBulk();
+            if (userId != null && userId > 0) {
+                    bulkRequest.add(client.prepareDelete("users", "users", userId + ""));
+            }
+            bulkRequest.execute().actionGet();
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        logger.info("----删除招聘管理索引-------");
+        return ResponseUtils.success("");
+    }
+
     /*
      单独删除雇员es的数据
      */
