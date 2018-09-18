@@ -523,9 +523,9 @@ public class SearchengineEntity {
      *@param updateTime @return
      * @throws TException
      */
-    public Response updateApplication(Integer id, Integer applicationId, Integer userId, String applierName, Timestamp updateTime) throws CommonException {
+    public Response removeApplication(Integer id, Integer applicationId, Integer userId, String applierName, Timestamp updateTime) throws CommonException {
         logger.info("----删除招聘，员工ID:{}-------", userId);
-        logger.info("updateApplication id:{}, applicationId:{}, userId:{}, applierName:{}, updateTime:{}-------", id, applicationId, userId, applierName, updateTime.getTime());
+        logger.info("removeApplication id:{}, applicationId:{}, userId:{}, applierName:{}, updateTime:{}-------", id, applicationId, userId, applierName, updateTime.getTime());
         // 连接ES
         TransportClient client =this.getTransportClient();
         if (client == null) {
@@ -537,25 +537,34 @@ public class SearchengineEntity {
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
                 if (mapTemp != null) {
-                    logger.info("updateApplication mapTemp:{}", mapTemp);
+                    logger.info("removeApplication mapTemp:{}", mapTemp);
                     mapTemp.put("id", userId);
                     if (mapTemp.get("applications") != null) {
+                        logger.info("removeApplication applications:{}", mapTemp);
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) mapTemp.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
                             if (applicationOptional.isPresent()) {
-                                applicationOptional.get().put("applier_id", userId);
-                                applicationOptional.get().put("applier_name", applierName);
-                                applicationOptional.get().put("update_time", new DateTime(updateTime.getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.equals(applicationId)).collect(Collectors.toList());
+                                if (apps == null || apps.size() == 0) {
+                                    logger.info("removeApplication 删除索引 users id:{}", id);
+                                    client.prepareDelete("users", "users", id + "").execute().actionGet();
+                                } else {
+                                    logger.info("removeApplication 更新索引 apps:{}", apps);
+                                    mapTemp.put("applications", apps);
+                                    client.prepareUpdate("users", "users", id + "")
+                                            .setDoc(mapTemp).get();
+                                }
                                 // 更新ES
-                                client.prepareUpdate("users", "users", id + "")
-                                        .setDoc(mapTemp).get();
+
                                 logger.info("update users id:{}", id);
                             }
                         }
+                    } else {
+                        logger.info("removeApplication applications is null");
                     }
-
-
+                } else {
+                    logger.info("removeApplication mapTemp is null");
                 }
             }
         } catch (Exception e) {
