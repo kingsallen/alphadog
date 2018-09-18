@@ -66,7 +66,7 @@ public class ReferralController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(file.getOriginalFilename())) {
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
                 return Result.fail("文件格式不支持！").toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
