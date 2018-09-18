@@ -27,7 +27,6 @@ import org.jooq.Record2;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -180,15 +179,13 @@ public class ReferralEntity {
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
         if (application != null) {
-            applicationDao.deleteById(application.getId());
-            searchengineEntity.deleteApplication(application.getApplierId());
             JobApplicationRecord record = new JobApplicationRecord();
-            BeanUtils.copyProperties(application, record);
-            record.setId(null);
+            record.setId(application.getId());
             record.setApplierId(userUserDO.getId());
             record.setApplierName(userUserDO.getName());
             record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            applicationDao.addRecord(record);
+            applicationDao.updateRecord(record);
+            searchengineEntity.updateApplication(application.getApplierId(), application.getId(), record.getApplierId(), record.getApplierName(), record.getUpdateTime());
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());
