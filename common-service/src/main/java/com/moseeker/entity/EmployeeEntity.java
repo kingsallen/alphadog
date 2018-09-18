@@ -25,6 +25,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -497,10 +498,12 @@ public class EmployeeEntity {
      */
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
+            String now = DateUtils.dateToShortTime(new Date());
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
+                e.setUpdateTime(now);
             });
             for(UserEmployeeDO DO:employees){
                 int userId=DO.getSysuserId();
