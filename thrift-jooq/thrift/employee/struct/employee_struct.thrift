@@ -220,6 +220,7 @@ struct ReferralCard {
     6: optional string mobile,
     7: optional i32 applyId,
     8: optional bool claim,
+    9: optional i32 employeeId,
 }
 
 //员工与所在公司的基本信息

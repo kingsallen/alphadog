@@ -8,6 +8,7 @@ package com.moseeker.servicemanager.web.controller.referral.vo;
 public class ReferralCard {
 
     private String userName;
+    private int employeeId;
     private String employeeName;
     private String companyName;
     private String companyAbbreviation;
@@ -78,5 +79,13 @@ public class ReferralCard {
 
     public void setClaim(boolean claim) {
         this.claim = claim;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 }

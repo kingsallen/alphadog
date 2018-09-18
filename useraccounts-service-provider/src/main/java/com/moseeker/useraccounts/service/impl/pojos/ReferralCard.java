@@ -8,6 +8,7 @@ package com.moseeker.useraccounts.service.impl.pojos;
 public class ReferralCard {
 
     private String userName;
+    private int employeeId;
     private String employeeName;
     private String companyName;
     private String companyAbbreviation;
@@ -22,6 +23,14 @@ public class ReferralCard {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public int getEmployeeId() {
+        return employeeId;
+    }
+
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getEmployeeName() {
