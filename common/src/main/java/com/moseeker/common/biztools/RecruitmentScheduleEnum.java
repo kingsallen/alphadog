@@ -183,7 +183,7 @@ public enum RecruitmentScheduleEnum {
      * @throws RecruitmentScheduleLastStepNotExistException
      */
     public void setLastStep(int lastStep) throws RecruitmentScheduleLastStepNotExistException {
-        if(lastStep == 0 || lastStep > 13) {
+        if(lastStep == 0 || lastStep > 15) {
             throw new RecruitmentScheduleLastStepNotExistException();
         }
         this.lastID = lastStep;
