@@ -880,12 +880,14 @@ public class TalentPoolEntity {
     /*
     通过标签编号获取每个标签下面的人才数量
     */
-    public List<Map<String, Object>> handlerTagCountByTagIdList(List<TalentpoolCompanyTag> companyTagList){
-        List<Integer> tagIds = companyTagList.stream().map(m -> m.getId()).collect(Collectors.toList());
+    public List<Map<String, Object>> handlerTagCountByTagIdList(List<Map<String, Object>> companyTagList){
+        List<Integer> tagIds = companyTagList.stream().map(m -> (Integer)m.get("id")).collect(Collectors.toList());
         Map<Integer, Integer> tagRecordList = talentpoolCompanyTagUserDao.getTagCountByTagIdList(tagIds);
         List<Map<String, Object>> companyTagMapList = new ArrayList<>();
-        for(TalentpoolCompanyTag companyTag : companyTagList){
+        for(Map<String, Object> companyTag : companyTagList){
             Map<String, Object> tagMap = new HashMap<>();
+            List<String> result = StringUtils.stringToList((String)companyTag.get("keywords"), ";");
+            companyTag.put("keyword_list", result);
             tagMap.put("company_tag", companyTag);
 
 //            tagMap.put("person_num", 0);
