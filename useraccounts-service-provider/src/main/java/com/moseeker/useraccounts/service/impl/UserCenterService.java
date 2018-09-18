@@ -16,6 +16,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
@@ -66,6 +67,9 @@ public class UserCenterService {
 
     @Autowired
     private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private ReferralEntity referralEntity;
     /**
      * 查询申请记录
      *
@@ -230,7 +234,9 @@ public class UserCenterService {
                 return recommendationForm;
             }
 
-            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList));
+            List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
+
+            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList, presenteeUserIdList));
             Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countInterestedCandidateRecomRecord(userId, positionIdList));
             Future<Integer> applyCountFuture = tp.startTast(() -> bizTools.countAppliedCandidateRecomRecord(userId, positionIdList));
             totalCount = totalCountFuture.get();
@@ -243,7 +249,7 @@ public class UserCenterService {
             recommendationForm.setScore(scoreVO);
 
             /** 分页查找相关职位转发记录 */
-            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, pageNo, pageSize);
+            List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
             if (recomRecordDOList.size() > 0) {
                 recommendationForm.setHasRecommends(true);
 
@@ -404,6 +410,28 @@ public class UserCenterService {
                             }
                         }));
                     }
+
+                    Future<UserEmployeeDO> employeeDOFuture = tp.startTast(() -> employeeEntity.getActiveEmployeeDOByUserId(applicationDO.getRecommenderUserId()));
+                    UserEmployeeDO employeeDO = null;
+                    try {
+                        employeeDO = employeeDOFuture.get();
+                        if (employeeDO != null && org.apache.commons.lang.StringUtils.isBlank(employeeDOFuture.get().getCname())) {
+                            UserUserDO userUserDO = userUserDao.getUser(employeeDO.getSysuserId());
+                            if (userUserDO != null) {
+                                employeeDO.setCname(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                                        ? userUserDO.getName() : userUserDO.getNickname());
+                            }
+                            if (org.apache.commons.lang.StringUtils.isBlank(employeeDO.getCname())) {
+                                UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+                                if (record != null) {
+                                    employeeDO.setCname(record.getNickname());
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+
                     /** 查找HR操作记录 */
                     Future timeLineListFuture = tp.startTast(() -> bizTools.listHrOperationRecord(appId));
                     try {
@@ -464,7 +492,7 @@ public class UserCenterService {
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
                                 logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {
-                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID));
+                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID, employeeDO != null? employeeDO.getCname():""));
                                 }
                                 /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
                                 if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()

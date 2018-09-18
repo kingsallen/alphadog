@@ -158,11 +158,14 @@ public class UserCenterBizTools {
      * @param userId 用户编号
      * @param type 类型 1：表示所有相关的浏览记录，2：表示被推荐的浏览用户，3：表示提交申请的浏览记录
      * @param positionIdList 职位编号
-     *@param pageNo 页码
+     * @param referenceIdList 被推荐人
+     * @param pageNo 页码
      * @param pageSize 每页显示的数量   @return 转发浏览记录集合
      * @throws CommonException
      */
-    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList, int pageNo, int pageSize) throws CommonException {
+    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, int type, List<Integer> positionIdList,
+                                                                  List<Integer> referenceIdList, int pageNo,
+                                                                  int pageSize) throws CommonException {
         List<CandidateRecomRecordDO> recomRecordDOList = new ArrayList<>();
         switch (type) {
             case 1:			//查找所有相关的职位转发记录
@@ -173,6 +176,9 @@ public class UserCenterBizTools {
                         .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.getName())
                         .select("presentee_user_id").select("position_id");
                 qu.where("post_user_id", userId).and(new Condition("position_id", positionIdList, ValueOp.IN));
+                if (referenceIdList != null && referenceIdList.size() > 0) {
+                    qu.and(new Condition(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), referenceIdList, ValueOp.NIN));
+                }
                 qu.groupBy("presentee_user_id").groupBy("position_id");
                 qu.orderBy("id", Order.DESC);
                 qu.setPageNum(pageNo);
@@ -201,13 +207,14 @@ public class UserCenterBizTools {
     /**
      * 根据转发者查找转发记录
      * @param userId 用户编号
-     * @param positionIdList 公司下的职位编号
-     * @return
+     * @param referenceIdList
+     *@param positionIdList 公司下的职位编号  @return
      */
-    public int countCandidateRecomRecord(int userId, List<Integer> positionIdList) {
+    public int countCandidateRecomRecord(int userId, List<Integer> positionIdList, List<Integer> referenceIdList) {
         int count = 0;
         try {
-            count = candidateRecomRecordDao.countCandidateRecomRecordDistinctPresenteePosition(userId, positionIdList);
+            count = candidateRecomRecordDao.countCandidateRecomRecordDistinctPresenteePosition(userId, positionIdList,
+                    referenceIdList);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -413,7 +420,7 @@ public class UserCenterBizTools {
         Query.QueryBuilder qu = new Query.QueryBuilder();
         qu.select("id").select("applier_id").select("email_status")
                 .select("apply_type").select("app_tpl_id").select("position_id")
-                .select("company_id");
+                .select("company_id").select("recommender_user_id");
         qu.where("id", appId).and("disable", AbleFlag.OLDENABLE.getValueStr());
 
         return applicationDao.getData(qu.buildQuery());

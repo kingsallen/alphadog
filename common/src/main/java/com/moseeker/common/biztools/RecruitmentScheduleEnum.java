@@ -2,6 +2,7 @@ package com.moseeker.common.biztools;
 
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -395,6 +396,46 @@ public enum RecruitmentScheduleEnum {
             return  "HR将您纳入候选名单";
         }
         if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
+            return "恭喜您已被内部员工推荐";
+        }
+        if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
+            return  "HR将您的状态改为待重新入职";
+        }
+        if(id == RecruitmentScheduleEnum.CV_PASSED.getId() && preID == RecruitmentScheduleEnum.OFFERED.getId()) {
+            return  "HR将您的状态改为待重新面试";
+        }
+        if(id == RecruitmentScheduleEnum.CV_CHECKED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
+            return  "HR将您的状态改为待重新筛选";
+        }
+        String eventDescription = applierView;
+        /** 如果投递时邮件投递，并且投递状态是成功投递 */
+        if (applyType == ApplyType.EMAIL.getValue()){
+            if(id == RecruitmentScheduleEnum.APPLY.getId()) {
+                switch (emailStatus) {
+                    case 1: eventDescription = EmailStatus.NOT_ANSWER_EMAIL.getMessage();break;
+                    case 2: eventDescription = EmailStatus.ATTACHMENT_NOT_SUPPORT.getMessage();break;
+                    case 3: eventDescription = EmailStatus.ATTACHMENT_MORE_THEN_MAXIMUN.getMessage();break;
+                    case 8: eventDescription = EmailStatus.MAIL_NOT_FOUND.getMessage();break;
+                    case 9: eventDescription = EmailStatus.MAIL_PARSING_FAILED.getMessage();break;
+                }
+            }
+        }
+        logger.info("getAppStatusDescription -- eventDescription : {}", eventDescription);
+        return eventDescription;
+    }
+
+    public String getAppStatusDescription(byte applyType, byte emailStatus, int preID, String name) {
+        logger.info("getAppStatusDescription -- id:{}, applyType : {},  emailStatus : {}, preID : {}", id, applyType, emailStatus, preID);
+
+        /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
+        if(id != RecruitmentScheduleEnum.REJECT.getId()
+                && preID == RecruitmentScheduleEnum.REJECT.getId()) {
+            return  "HR将您纳入候选名单";
+        }
+        if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
+            if (StringUtils.isNotBlank(name)) {
+                return name+"推荐了您的简历";
+            }
             return "恭喜您已被内部员工推荐";
         }
         if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
