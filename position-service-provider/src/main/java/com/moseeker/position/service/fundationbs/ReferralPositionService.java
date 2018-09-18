@@ -176,6 +176,9 @@ public class ReferralPositionService {
         if(dataDO.isSetCompany_id()) {
             query.put("company_id",String.valueOf(dataDO.getCompany_id()));
         }
+        if(dataDO.isSetIs_referral()) {
+            query.put("is_referral",String.valueOf(dataDO.getIs_referral()));
+        }
         if(dataDO.isSetCandidate_source()) {
             if(dataDO.getCandidate_source() >= 0) {
                 query.put("candidate_source",String.valueOf(dataDO.getCandidate_source()));
