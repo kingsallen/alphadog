@@ -339,7 +339,7 @@ public class PositionEntity {
             logger.info("putReferralPositions filteredPids  {}",filteredPids);
 
             int[] res =  positionDao.updateDatas(filteredJobPostions);
-            Response response =  searchengineEntity.updateBulkReferralPostionStatus(pids,1);
+            Response response =  searchengineEntity.updateBulkReferralPostionStatus(filteredPids,1);
 
             logger.info("PositionEntity putReferralPositions response {} {}", JSON.toJSON(res),JSON.toJSON(response));
 
