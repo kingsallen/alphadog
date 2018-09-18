@@ -141,7 +141,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return otherService.putOther(Other);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 throw (BIZException) e;
@@ -156,7 +155,6 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             return Arrays.asList(ArrayUtils.toObject(dao.deleteDatas(Others)));
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {
                 throw (BIZException) e;
@@ -224,17 +222,44 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
 
     @Override
     public Response checkProfileOther(int userId, int positionId) throws TException {
-        return profileService.checkProfileOther(userId, positionId);
+        try {
+            return profileService.checkProfileOther(userId, positionId);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
+        }
     }
 
     @Override
     public Response getProfileOther(String params) throws BIZException, TException {
-        return profileService.getProfileOther(params);
+        try {
+            return profileService.getProfileOther(params);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
+        }
     }
 
     @Override
     public Response otherFieldsCheck(int positionId, String fields) throws BIZException, TException {
-        return profileService.otherFieldsCheck(positionId, fields);
+        try {
+            return profileService.otherFieldsCheck(positionId, fields);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
+        }
     }
 
     @Override
@@ -251,8 +276,13 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
             return ResponseUtils.success(profilrCamle);
-        }catch (CommonException e){
-            return ResponseUtils.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
         }
     }
 
@@ -268,8 +298,13 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
             return ResponseUtils.success(profilrCamle);
-        }catch (CommonException e){
-            return ResponseUtils.fail(e.getCode(),e.getMessage());
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
         }
     }
 
