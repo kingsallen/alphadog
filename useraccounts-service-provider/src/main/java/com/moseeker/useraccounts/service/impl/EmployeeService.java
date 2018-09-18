@@ -826,6 +826,7 @@ public class EmployeeService {
         ReferralCard referralCard = new ReferralCard();
         referralCard.setUserName(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName()) ?
                 userUserDO.getName():userUserDO.getNickname());
+        referralCard.setEmployeeId(userEmployeeDO.getId());
         referralCard.setEmployeeName(userEmployeeDO.getCname());
         referralCard.setCompanyName(positionInfo.getCompanyName());
         referralCard.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
