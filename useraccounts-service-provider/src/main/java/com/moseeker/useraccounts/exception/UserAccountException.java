@@ -37,6 +37,16 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException EMPLOYEE_ALREADY_UP_VOTE = new UserAccountException(42028, "已经点过赞!");
     public static final UserAccountException EMPLOYEE_NOT_UP_VOTE = new UserAccountException(42029, "未点过赞!");
     public static final UserAccountException EMPLOYEE_LEADERBOARDER_NOT_EXISTS = new UserAccountException(42030, "榜单类型错误!");
+    public static final UserAccountException PROFILE_PARSE_TEXT_FAILED = new UserAccountException(42031, "简历解析失败!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_TYPE_NOT_EXIST = new UserAccountException(42032, "职位信息不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_LOG_NOT_EXIST = new UserAccountException(42033, "推荐记录不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_USER_NOT_EXIST = new UserAccountException(42034, "用户信息不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_USER_NOT_WRITE = new UserAccountException(42035, "姓名和推荐候选人不一致!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_ALREADY_CLAIMED = new UserAccountException(42036, "已经被认领!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED = new UserAccountException(42037, "推荐人无法自己认领!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM = new UserAccountException(42038, "重复认领!");
+
+    public static final UserAccountException INVALID_SMS_CODE = new UserAccountException(10011, "无效验证码！");
 
     private final int code;
 

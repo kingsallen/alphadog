@@ -2,7 +2,10 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.ClaimType;
+import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
@@ -11,6 +14,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -20,9 +24,10 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
-import com.moseeker.common.exception.RedisException;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -30,10 +35,13 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.weixin.AccountMng;
 import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
+import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
@@ -42,18 +50,23 @@ import com.moseeker.thrift.gen.useraccounts.struct.BindType;
 import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
-import java.util.*;
+import com.moseeker.useraccounts.service.impl.pojos.ClaimForm;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -85,7 +98,6 @@ public class UseraccountsService {
     @Autowired
     protected UserFavPositionDao userFavoritePositionDao;
 
-
     @Autowired
     protected SmsSender smsSender;
 
@@ -94,6 +106,15 @@ public class UseraccountsService {
 
     @Autowired
     protected Map<String, BindOnAccountService> bindOnAccount;
+
+    @Autowired
+    private ReferralEntity referralEntity;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -211,7 +232,7 @@ public class UseraccountsService {
                     resp.put("name", user.getName());
                     resp.put("headimg", user.getHeadimg());
 
-                    user.setLastLoginTime(new Timestamp(new Date().getTime()));
+                    user.setLastLoginTime(new Timestamp(System.currentTimeMillis()));
                     user.setLoginCount(user.getLoginCount() + 1);
 
                     userdao.updateRecord(user);
@@ -974,44 +995,13 @@ public class UseraccountsService {
      * @param code   验证码
      * @param type   1:注册 2:忘记密码
      */
-    private boolean validateCode(String mobile, String code, int type) {
-        String codeinRedis = null;
-        try {
-            switch (type) {
-                case 1:
-                    codeinRedis = redisClient.get(0, "SMS_SIGNUP", mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_SIGNUP", mobile);
-                        return true;
-                    }
-                    break;
-                case 2:
-                    codeinRedis = redisClient.get(0, "SMS_PWD_FORGOT", mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_PWD_FORGOT", mobile);
-                        return true;
-                    }
-                case 3:
-                    codeinRedis = redisClient.get(0, "SMS_CHANGEMOBILE_CODE",
-                            mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_CHANGEMOBILE_CODE", mobile);
-                        return true;
-                    }
-                case 4:
-                    codeinRedis = redisClient
-                            .get(0, "SMS_RESETMOBILE_CODE", mobile);
-                    if (code.equals(codeinRedis)) {
-                        redisClient.del(0, "SMS_RESETMOBILE_CODE", mobile);
-                        return true;
-                    }
-                    break;
-                default:
-            }
-        } catch (RedisException e) {
-            WarnService.notify(e);
+    private boolean validateCode(String mobile, String code, int type) throws CommonException {
+
+        SMSScene smsScene = SMSScene.instanceFromValue(type);
+        if (smsScene == null) {
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
-        return false;
+        return smsScene.validateVerifyCode("", mobile, code, redisClient);
     }
 
     public Response validateVerifyCode(String mobile, String code, int type,String countryCode) throws TException {
@@ -1035,6 +1025,13 @@ public class UseraccountsService {
     }
 
     public Response sendVerifyCode(String mobile, int type,String countryCode) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredStringValidate("手机号码", mobile);
+        validateUtil.addIntTypeValidate("场景", type, 1, 6);
+        String validateResult = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(validateResult)) {
+            return ResponseUtils.fail(validateResult);
+        }
         boolean result=false;
         result = smsSender.sendSMS(mobile, type,countryCode);
         if (result) {
@@ -1209,4 +1206,74 @@ public class UseraccountsService {
         return ResponseUtils.success("");
     }
 
+    /**
+     * 认领员工推荐卡片
+     * @param claimForm 参数
+     */
+    @Transactional
+    public void claimReferralCard(ClaimForm claimForm) throws UserAccountException {
+        if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
+            throw UserAccountException.validateFailed("缺少用户姓名!");
+        }
+        ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
+        if (referralLog == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
+        }
+
+        if (referralLog.getClaim() == 1) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_ALREADY_CLAIMED;
+        }
+
+        ReferralLog repeatReferralLog = referralEntity.fetchReferralLog(referralLog.getEmployeeId(),
+                referralLog.getPositionId(), claimForm.getUserId());
+        if (repeatReferralLog != null && repeatReferralLog.getClaim() != null
+                && repeatReferralLog.getClaim() == ClaimType.Claimed.getValue()) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
+        }
+
+        UserUserDO userUserDO = userdao.getUser(claimForm.getUserId());
+        if (userUserDO == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        UserUserDO referralUser = userdao.getUser(referralLog.getReferenceId());
+        if (referralUser == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
+        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(referralLog.getEmployeeId());
+        if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
+        }
+
+        if (!claimForm.getName().equals(referralUser.getName())) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
+        }
+
+        //修改手机号码
+        if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredStringValidate("手机号码", claimForm.getMobile());
+            validateUtil.addRequiredStringValidate("验证码", claimForm.getVerifyCode());
+            String validateResult = validateUtil.validate();
+            if (org.apache.commons.lang.StringUtils.isNotBlank(validateResult)) {
+                throw UserAccountException.validateFailed(validateResult);
+            }
+            SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
+            boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
+            if (!validateVerifyResult) {
+                throw UserAccountException.INVALID_SMS_CODE;
+            }
+            userUserDO.setUsername(claimForm.getMobile());
+            UserUserRecord userUserRecord = new UserUserRecord();
+            userUserRecord.setId(userUserDO.getId());
+            if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getName())) {
+                userUserRecord.setName(claimForm.getName());
+            }
+            userUserRecord.setUsername(claimForm.getMobile().trim());
+            userUserRecord.setMobile(Long.valueOf(claimForm.getMobile().trim()));
+            userdao.updateRecord(userUserRecord);
+        }
+
+        referralEntity.claimReferralCard(userUserDO, referralLog);
+    }
 }

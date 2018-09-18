@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
@@ -10,6 +11,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import javafx.scene.Scene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,8 +175,30 @@ public class UserAccountEntity {
 
             userUserRecord = findTalent(list, companyId);
             if (userUserRecord == null) {
-                userUserRecord = findEmployeeReferral(list, companyId);
+                userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.ChatBot);
             }
+        }
+        return userUserRecord;
+    }
+
+    /**
+     * 根据手机号码查找内推用户
+     * @param phone 手机号码
+     * @param companyId 公司编号
+     * @return 用户信息
+     */
+    public UserUserRecord getReferralUser(String phone, int companyId) {
+
+        UserUserRecord userUserRecord = null;
+        String countryCode="86";
+        if(phone.contains("-")){
+            String [] phoneArray=phone.split("-");
+            countryCode=phoneArray[0];
+            phone=phoneArray[1];
+        }
+        List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode);
+        if (list != null && list.size() > 0) {
+            userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.Referral);
         }
         return userUserRecord;
     }
@@ -185,10 +209,10 @@ public class UserAccountEntity {
      * @param companyId 公司编号
      * @return 用户信息
      */
-    private UserUserRecord findEmployeeReferral(List<UserUserRecord> list, int companyId) {
+    private UserUserRecord findEmployeeReferral(List<UserUserRecord> list, int companyId, ReferralScene referralScene) {
         UserUserRecord userUserRecord = null;
         List<Integer> userIdList = list.stream().map(UserUserRecord::getId).collect(Collectors.toList());
-        List<UserReferralRecordRecord> referralRecords = referralRecordDao.getRecordsByUserIdListCompanyId(userIdList, companyId);
+        List<UserReferralRecordRecord> referralRecords = referralRecordDao.getRecordsByUserIdListCompanyId(userIdList, companyId, referralScene);
         if (referralRecords != null && referralRecords.size() > 0) {
 
             for (UserUserRecord userRecord : list) {
@@ -229,5 +253,9 @@ public class UserAccountEntity {
             }
         }
         return userUserRecord;
+    }
+
+    public void updateUserRecord(UserUserRecord userRecord) {
+        userDao.updateRecord(userRecord);
     }
 }

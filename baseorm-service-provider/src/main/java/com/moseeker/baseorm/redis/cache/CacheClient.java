@@ -41,7 +41,7 @@ public class CacheClient extends RedisClient {
         redisConfigTimeOut = propertiesUtils.get("redis.cache.config_timeout", Integer.class);
         redisConfigType = Constant.cacheConfigType;
         redisCluster = initRedisCluster();
-        //reloadRedisKey();
+        reloadRedisKey();
     }
 
 	protected JedisCluster initRedisCluster() throws RedisException {

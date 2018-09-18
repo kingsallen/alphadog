@@ -296,7 +296,9 @@ public class ProfileProcessBS {
                             reward.setPoints_conf_id(result1.getPointsConfId());
                             reward.setPosition_id(record.getPosition_id());
                             reward.setApplier_id(record.getApplier_id());
-                            if (progressStatus == 13 && record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID) {
+                            if (progressStatus == 13 &&
+                                    (record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_APPLY_ID
+                                            || record.getTemplate_id() == ProcessUtils.RECRUIT_STATUS_EMPLOYEE_REFERRAL)) {
                                 turnToCVChecked = new HrOperationRecordDO();
                                 turnToCVChecked.setAdminId(accountId);
                                 turnToCVChecked.setCompanyId(companyId);

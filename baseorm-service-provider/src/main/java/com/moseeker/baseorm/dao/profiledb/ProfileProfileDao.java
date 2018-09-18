@@ -1865,6 +1865,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
     public ProfileProfileRecord getProfileByUserId(int userId) {
         return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
+                .limit(1)
                 .fetchAny();
     }
 
@@ -1886,6 +1887,37 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * 迁移简历的所有人
+     * @param record 简历数据
+     * @param newUserId 简历的新的所有人
+     */
+    public int changUserId(ProfileProfileRecord record, int newUserId) {
+        return create.update(ProfileProfile.PROFILE_PROFILE)
+                .set(ProfileProfile.PROFILE_PROFILE.USER_ID, newUserId)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(record.getUserId()))
+                .and(ProfileProfile.PROFILE_PROFILE.ID.eq(record.getId()))
+                .andNotExists(
+                        create.selectOne().from(
+                                create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                                        .where(ProfileProfile.PROFILE_PROFILE.USER_ID.eq(newUserId))
+                        )
+                ).execute();
+    }
+
+    /**
+     * 根据用户编号获取简历。优先获取可用的简历
+     * @param userId 用户编号
+     * @return 简历
+     */
+    public ProfileProfileRecord getProfileOrderByActiveByUserId(int userId) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.USER_ID.equal(userId))
+                .orderBy(ProfileProfile.PROFILE_PROFILE.DISABLE.desc())
+                .limit(1)
+                .fetchAny();
     }
 
     public List<ProfileProfileDO> getProfileByUidList(Set<Integer> userIdList) {

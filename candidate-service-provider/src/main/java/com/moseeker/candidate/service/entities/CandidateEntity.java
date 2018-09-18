@@ -45,6 +45,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -368,6 +369,11 @@ public class CandidateEntity implements Candidate {
             throw CandidateExceptionFactory.buildCheckFailedException(message);
         }
 
+        GenderType genderType = GenderType.instanceFromValue(param.getGender());
+        if (genderType == null) {
+            genderType = GenderType.Secret;
+        }
+
         /** 是否开启被动求职者 */
         /*boolean passiveSeeker = candidateDBDao.isStartPassiveSeeker(param.getCompanyId());
         if (!passiveSeeker) {
@@ -389,7 +395,7 @@ public class CandidateEntity implements Candidate {
 
         try {
             //添加推荐信息
-            updateRecomRecord(candidateRecomRecordDO, param);
+            updateRecomRecord(candidateRecomRecordDO, param, genderType);
             //修改候选人推荐标记
             updateCandidateCompany(candidateRecomRecordDO);
         } catch (TException e) {
@@ -698,10 +704,11 @@ public class CandidateEntity implements Candidate {
      *
      * @param candidateRecomRecordDO 职位转发浏览记录
      * @param param                  推荐数据
+     * @param genderType
      * @throws TException 业务异常
      */
     private void updateRecomRecord(CandidateRecomRecordDO
-                                           candidateRecomRecordDO, RecommmendParam param) throws TException {
+                                           candidateRecomRecordDO, RecommmendParam param, GenderType genderType) throws TException {
         DateTime now = new DateTime();
         String nowStr = now.toString("yyyy-MM-dd HH:mm:ss");
         candidateRecomRecordDO.setRecomReason(param.getRecomReason());
@@ -712,6 +719,8 @@ public class CandidateEntity implements Candidate {
         candidateRecomRecordDO.setRecomTime(nowStr);
         candidateRecomRecordDO.setIsRecom((byte) 0);
         candidateRecomRecordDO.setUpdateTime(nowStr);
+        candidateRecomRecordDO.setGender((byte) genderType.getValue());
+        candidateRecomRecordDO.setEmail(param.getEmail());
         candidateDBDao.updateCandidateRecomRecord(candidateRecomRecordDO);
 
         List<CandidateRecomRecordDO> candidateRecomRecordList = candidateDBDao.listFiltredCandidateRecomRecord(candidateRecomRecordDO);
@@ -725,6 +734,8 @@ public class CandidateEntity implements Candidate {
                 candidate.setRecomTime(nowStr);
                 candidate.setIsRecom((byte) 0);
                 candidate.setUpdateTime(nowStr);
+                candidate.setEmail(param.getEmail());
+                candidate.setGender((byte)genderType.getValue());
             });
             candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
         }

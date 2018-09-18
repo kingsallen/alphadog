@@ -68,5 +68,6 @@ struct JobPositionDO {
 	62: optional i8 currentStatus,	//0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
 	63: optional i32 positionCode,	//职能字典code, dict_position.code
 	64: optional i32 teamId,	//职位所属团队
-    65: optional i8 profile_cc_mail_enabled //简历申请是否抄送邮箱，0 否；1 是
+    65: optional i8 profile_cc_mail_enabled, //简历申请是否抄送邮箱，0 否；1 是
+    66: optional i32 is_referral	//是否是内推职位，1:是 0:否
 }

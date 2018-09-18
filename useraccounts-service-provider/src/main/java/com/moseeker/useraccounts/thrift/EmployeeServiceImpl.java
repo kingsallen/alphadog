@@ -14,17 +14,23 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
 import com.moseeker.thrift.gen.employee.struct.*;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
+import com.moseeker.useraccounts.service.impl.pojos.ReferralPositionInfo;
+import com.moseeker.useraccounts.service.impl.vo.EmployeeInfoVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author ltf
@@ -358,5 +364,77 @@ public class EmployeeServiceImpl implements Iface {
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}
+	}
+
+	@Override
+	public void setUploadType(int employeeId, int positionId, byte type) throws BIZException, TException {
+		try {
+			service.setUploadType(employeeId, positionId, type);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public ReferralPosition getUploadType(int employeeId) throws BIZException, TException {
+		try {
+			ReferralPositionInfo referralPositionInfo = service.getUploadType(employeeId);
+			ReferralPosition referralPosition = convertReferralPosition(referralPositionInfo);
+			return referralPosition;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public ReferralCard getReferralCard(int referralLogId) throws BIZException, TException {
+		try {
+			com.moseeker.useraccounts.service.impl.pojos.ReferralCard card = service.getReferralCard(referralLogId);
+			ReferralCard referralCard = new ReferralCard();
+			BeanUtils.copyProperties(card, referralCard);
+			return referralCard;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public EmployeeInfo getEmployeeInfo(int userId) throws BIZException, TException {
+		try {
+			EmployeeInfoVO employeeInfoVO = service.getEmployeeInfo(userId);
+			EmployeeInfo employeeInfo = new EmployeeInfo();
+			BeanUtils.copyProperties(employeeInfoVO, employeeInfo);
+			return employeeInfo;
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	private ReferralPosition convertReferralPosition(ReferralPositionInfo referralPositionInfo) {
+		ReferralPosition referralPosition = new ReferralPosition();
+
+		referralPosition.setLogo(referralPositionInfo.getLogo());
+		referralPosition.setCompanyAbbreviation(referralPositionInfo.getCompanyAbbreviation());
+		referralPosition.setCompanyName(referralPositionInfo.getCompanyName());
+		referralPosition.setExperience(referralPositionInfo.getExperience());
+		referralPosition.setExperienceAbove(referralPositionInfo.isExperienceAbove());
+		referralPosition.setId(referralPositionInfo.getId());
+		referralPosition.setSalaryBottom(referralPositionInfo.getSalaryBottom());
+		referralPosition.setSalaryTop(referralPositionInfo.getSalaryTop());
+		referralPosition.setTeam(referralPositionInfo.getTeam());
+		referralPosition.setTitle(referralPositionInfo.getTitle());
+
+		if (referralPositionInfo.getCities() != null && referralPositionInfo.getCities().size() > 0) {
+			List<City> cities = referralPositionInfo.getCities().stream().map(city -> {
+				City city1 = new City();
+				city1.setName(city.getName());
+				city1.setCode(city.getCode());
+				city1.setEname(city.getEname());
+				return city1;
+			}).collect(Collectors.toList());
+			referralPosition.setCities(cities);
+		}
+
+		return referralPosition;
 	}
 }

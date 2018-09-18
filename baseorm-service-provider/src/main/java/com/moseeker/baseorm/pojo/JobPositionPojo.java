@@ -1,6 +1,5 @@
 package com.moseeker.baseorm.pojo;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.common.util.DateUtils;
 
 import java.sql.Date;
@@ -77,6 +76,7 @@ public class JobPositionPojo {
     public Date publish_date; // 'Default: now, set by js',
     public Date stop_date; // '截止日期',
     public Timestamp update_time;
+    public byte is_referral; //是否是内推职位
 
     // 派生字段 非表中字段
     public int publisher_company_id; //'hr_child_company.id'

@@ -166,6 +166,9 @@ public class SearchengineServiceImpl implements Iface {
 	public Response searchPositionSuggest(Map<String, String> params) throws BIZException,TException {
 		try{
 			Map<String,Object> res=service.getPositionSuggest(params);
+
+			logger.info("SearchengineServiceImpl params {}", JSON.toJSONString(params));
+
 			if(res==null||res.isEmpty()){
 				return ResponseUtils.success("");
 			}

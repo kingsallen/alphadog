@@ -23,6 +23,7 @@ struct CandidateRecomRecordDO {
 	17: optional string mobile,	//被推荐者的手机号
 	18: optional i32 presenteeUserId,	//userdb.user_user.id 被推荐者的C端账号编号
 	19: optional i32 repostUserId,	//userdb.user_user.id 第2度人脉推荐人C 端账号编号，用来标记谁的朋友
-	20: optional i32 postUserId	//userdb.user_user.id 推荐者的C端账号编号
-
+	20: optional i32 postUserId,	//userdb.user_user.id 推荐者的C端账号编号
+	21: optional i8 gender,       //性别  
+	22: optional string email,      //邮箱
 }

@@ -7,7 +7,7 @@ import com.moseeker.common.exception.CommonException;
  */
 public class ApplicationException extends CommonException {
 
-    public static final ApplicationException APPLICATION_POSITION_NOTEXIST = new ApplicationException(41008,"职位信息不正确！");
+    public static final ApplicationException APPLICATION_POSITION_NOTEXIST = new ApplicationException(41021,"职位信息不正确！");
     public static final ApplicationException APPLICATION_VALIDATE_COUNT_CHECK = new ApplicationException(41001, "本月您已达到投递次数上限!");
     public static final ApplicationException APPLICATION_POSITION_DUPLICATE = new ApplicationException(41002,"该职位已经申请过!");
     public static final ApplicationException APPLICATION_ARCHIVE_FAILED = new ApplicationException(41003,  "申请归档失败!" );
@@ -28,6 +28,7 @@ public class ApplicationException extends CommonException {
     public static final ApplicationException APPLICATION_POSITIONS_NOT_LEGAL = new ApplicationException(41018,  "职位信息错误!" );
     public static final ApplicationException APPLICATION_CUSTOM_POSITION_VALIDATE_FAILED= new ApplicationException(41019,  "自定义职位校验失败!" );
     public static final ApplicationException APPLICATION_CREATE_FAILED= new ApplicationException(41020,  "申请创建失败!" );
+    public static final ApplicationException APPLICATION_USER_NOT_EXIST= new ApplicationException(41021,  "用户信息不存在!" );
 
     public ApplicationException(int code, String message) {
         super(code, message);

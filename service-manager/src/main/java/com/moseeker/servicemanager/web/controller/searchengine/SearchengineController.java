@@ -2,10 +2,10 @@ package com.moseeker.servicemanager.web.controller.searchengine;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -15,19 +15,19 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @CounterIface
@@ -345,6 +345,14 @@ public class SearchengineController {
             }
             for(String key:reqParams.keySet()){
                 params.put(key,String.valueOf(reqParams.get(key)));
+            }
+
+            //选中内推职位的特殊处理，前端position_status传1，必须将它改回成0,设置is_referral=1
+            //TODO 重构整改
+            String position_status =  params.get("position_status");
+            if(position_status.equals("1")) {
+                params.put("is_referral","1");
+                params.put("position_status","0");
             }
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
