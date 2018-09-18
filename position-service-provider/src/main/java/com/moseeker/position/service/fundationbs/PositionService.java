@@ -1860,7 +1860,7 @@ public class PositionService {
             int positionId = jdIdList.get(i);
             for (JobPositionRecordWithCityName jr : jobRecords) {
                 if (positionId == jr.getId()) {
-                    logger.info("pid: " + String.valueOf(jr.getId()));
+                    //logger.info("pid: " + String.valueOf(jr.getId()));
                     WechatPositionListData e = new WechatPositionListData();
                     e.setTitle(jr.getTitle());
                     e.setId(jr.getId());
@@ -1904,7 +1904,7 @@ public class PositionService {
                 }
             }
         }
-        logger.info(dataList.toString());
+        //logger.info(dataList.toString());
         // 获取公司信息，拼装 company abbr, logo 等信息
         Map<Integer /* publisher id */, HrCompanyDO> publisherCompanyMap = new HashMap<>();
         //QueryUtil hrm = new QueryUtil();
