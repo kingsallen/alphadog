@@ -537,10 +537,10 @@ public class SearchengineEntity {
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
                 if (mapTemp != null) {
-                    logger.info("removeApplication mapTemp:{}", mapTemp);
+                    logger.info("removeApplication mapTemp:{}", JSON.toJSONString(mapTemp));
                     mapTemp.put("id", userId);
                     if (mapTemp.get("applications") != null) {
-                        logger.info("removeApplication applications:{}", mapTemp);
+                        logger.info("removeApplication applications:{}", JSON.toJSONString(mapTemp.get("applications")));
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) mapTemp.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
