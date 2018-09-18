@@ -30,7 +30,6 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1147,6 +1146,7 @@ public class TalentpoolSearchengine {
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
+        String is_referral=params.get("is_referral");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
@@ -1177,6 +1177,9 @@ public class TalentpoolSearchengine {
             }
             if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
                 this.queryByPositionIdStatus(positionStatus,query);
+            }
+            if (StringUtils.isNotNullOrEmpty(is_referral)) {
+                this.queryByIsReferral(is_referral, query);
             }
         }
 
@@ -1673,6 +1676,12 @@ public class TalentpoolSearchengine {
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
         String dataTime=this.getLongTime(submitTime);
         searchUtil.hanleRangeFilter(dataTime,queryBuilder,"user.applications.submit_time");
+    }
+    /*
+       构建是否内推查询语句
+     */
+    private void queryByIsReferral(String is_referral,QueryBuilder queryBuilder){
+        searchUtil.handleTerm(is_referral,queryBuilder,"user.applications.is_referral");
     }
 
     private String getLongTime(String submitTime){

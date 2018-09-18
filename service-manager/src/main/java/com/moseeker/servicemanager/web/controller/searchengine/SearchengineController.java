@@ -352,6 +352,7 @@ public class SearchengineController {
             String position_status =  params.get("position_status");
             if(position_status.equals("1")) {
                 params.put("flag","1");
+                params.put("is_referral","1");
                 params.put("position_status","-1");
             }
             Response res=searchengineServices.userQuery(params);
