@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -179,6 +180,8 @@ public class ReferralEntity {
             applicationDao.deleteById(application.getId());
             JobApplicationRecord record = new JobApplicationRecord();
             BeanUtils.copyProperties(application, record);
+            record.setId(null);
+            record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             applicationDao.addRecord(record);
         }
 
