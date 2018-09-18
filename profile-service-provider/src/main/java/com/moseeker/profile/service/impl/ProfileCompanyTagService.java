@@ -26,7 +26,7 @@ import java.util.*;
 @Service
 public class ProfileCompanyTagService {
 
-    Logger logger = LoggerFactory.getLogger(Sender.class);
+    Logger logger = LoggerFactory.getLogger(ProfileCompanyTagService.class);
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
