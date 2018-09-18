@@ -55,6 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -515,29 +516,51 @@ public class SearchengineEntity {
     /**
      * 删除员工积分索引
      *
+     *
+     * @param id
      * @param userId
-     * @return
+     * @param applierName
+     *@param updateTime @return
      * @throws TException
      */
-    public Response deleteApplication(Integer userId) throws CommonException {
+    public Response updateApplication(Integer id, Integer applicationId, Integer userId, String applierName, Timestamp updateTime) throws CommonException {
         logger.info("----删除招聘，员工ID:{}-------", userId);
+        logger.info("updateApplication id:{}, applicationId:{}, userId:{}, applierName:{}, updateTime:{}-------", id, applicationId, userId, applierName, updateTime.getTime());
         // 连接ES
         TransportClient client =this.getTransportClient();
         if (client == null) {
             return ResponseUtils.fail(9999, "ES 连接失败！");
         }
-        BulkRequestBuilder bulkRequest = null;
-        BulkResponse bulkResponse = null;
         try {
-            bulkRequest = client.prepareBulk();
-            if (userId != null && userId > 0) {
-                    bulkRequest.add(client.prepareDelete("users", "users", userId + ""));
+            if (id != null && id > 0) {
+                GetResponse response = client.prepareGet("users", "users", id + "").execute().actionGet();
+                // ES中的积分数据
+                Map<String, Object> mapTemp = response.getSource();
+                if (mapTemp != null) {
+                    logger.info("updateApplication mapTemp:{}", mapTemp);
+                    mapTemp.put("id", userId);
+                    if (mapTemp.get("applications") != null) {
+                        List<Map<String, Object>> applications = (List<Map<String, Object>>) mapTemp.get("applications");
+                        if (applications != null && applications.size() > 0) {
+                            Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            if (applicationOptional.isPresent()) {
+                                applicationOptional.get().put("applier_id", userId);
+                                applicationOptional.get().put("applier_name", applierName);
+                                applicationOptional.get().put("update_time", new DateTime(updateTime.getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                                // 更新ES
+                                client.prepareUpdate("users", "users", id + "")
+                                        .setDoc(mapTemp).get();
+                                logger.info("update users id:{}", id);
+                            }
+                        }
+                    }
+
+
+                }
             }
-            bulkRequest.execute().actionGet();
         } catch (Exception e) {
             logger.error(e.getMessage(),e);
         }
-        logger.info("----删除招聘管理索引-------");
         return ResponseUtils.success("");
     }
 
