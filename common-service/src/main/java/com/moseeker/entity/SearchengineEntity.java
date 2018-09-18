@@ -515,12 +515,12 @@ public class SearchengineEntity {
     /**
      * 删除员工积分索引
      *
-     * @param applicationId
+     * @param userId
      * @return
      * @throws TException
      */
-    public Response deleteApplication(Integer applicationId) throws CommonException {
-        logger.info("----删除招聘，员工ID:{}-------", applicationId);
+    public Response deleteApplication(Integer userId) throws CommonException {
+        logger.info("----删除招聘，员工ID:{}-------", userId);
         // 连接ES
         TransportClient client =this.getTransportClient();
         if (client == null) {
@@ -530,8 +530,8 @@ public class SearchengineEntity {
         BulkResponse bulkResponse = null;
         try {
             bulkRequest = client.prepareBulk();
-            if (applicationId != null && applicationId > 0) {
-                    bulkRequest.add(client.prepareDelete("index", "fulltext", applicationId + ""));
+            if (userId != null && userId > 0) {
+                    bulkRequest.add(client.prepareDelete("users", "users", userId + ""));
             }
             bulkRequest.execute().actionGet();
         } catch (Exception e) {
