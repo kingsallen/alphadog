@@ -85,9 +85,6 @@ public class ReferralServiceImpl implements ReferralService {
     private ProfileCompanyTagService companyTagService;
 
     @Autowired
-    private ProfileProfileDao profileDao;
-
-    @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
                                UserAccountEntity userAccountEntity, ProfileParseUtil profileParseUtil,
                                PositionEntity positionEntity, ReferralEntity referralEntity,
@@ -361,14 +358,20 @@ public class ReferralServiceImpl implements ReferralService {
                 if (profilePojo.getProfileRecord() != null) {
                     profilePojo.getProfileRecord().setUserId(userRecord.getId());
                 }
-                int profileId = profileEntity.mergeProfile(profilePojo, userRecord.getId());
-                handleCompanyTag(userId, profileId);
+                profileEntity.mergeProfile(profilePojo, userRecord.getId());
+                tp.startTast(() -> {
+                    companyTagService.handlerCompanyTagByUserId(userId);
+                    return true;
+                });
             }
         } else {
             userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId());
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
-            handleCompanyTag(userId);
+            tp.startTast(() -> {
+                companyTagService.handlerCompanyTagByUserId(userId);
+                return true;
+            });
         }
 
         int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
@@ -415,14 +418,6 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROGRAM_EXCEPTION;
         }
-    }
-
-    private void handleCompanyTag(int userId) {
-
-    }
-
-    private void handleCompanyTag(int userId, int profileId) {
-
     }
 
     private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
