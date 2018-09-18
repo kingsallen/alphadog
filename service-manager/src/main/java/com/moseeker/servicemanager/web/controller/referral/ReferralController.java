@@ -60,6 +60,7 @@ public class ReferralController {
         int employeeId = params.getInt("employee", 0);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("简历", file);
+        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
         validateUtil.addIntTypeValidate("员工", employeeId, 1, null);
         validateUtil.addRequiredValidate("appid", params.getInt("appid"));
         String result = validateUtil.validate();
@@ -75,43 +76,7 @@ public class ReferralController {
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileProfile(employeeId, file.getOriginalFilename(), byteBuffer);
-            ProfileDocParseResult parseResult = new ProfileDocParseResult();
-            BeanUtils.copyProperties(result1, parseResult);
-            return Result.success(parseResult).toJson();
-        } else {
-            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
-        }
-    }
-
-    /**
-     * 员工上传简历
-     * 文件内容是ASCII编码
-     * 由于文件格式有问题，新开一个处理文件字符串解析的接口。
-     * @param form 简历文件
-     * @return 解析结果
-     * @throws Exception 异常信息
-     */
-    @RequestMapping(value = "/v1/referral/file-binary-parser", method = RequestMethod.POST)
-    @ResponseBody
-    public String parseFileStreamProfile(@RequestBody ProfileBinaryParserForm form) throws Exception {
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("简历数据", form.getFileData());
-        validateUtil.addRequiredValidate("文件名称", form.getFileName());
-        //validateUtil.addRequiredValidate("原始文件名称", form.getFileOriginName());
-        //validateUtil.addRequiredValidate("文件绝对路径", form.getFileAbsoluteName());
-        validateUtil.addIntTypeValidate("员工", form.getEmployeeId(), 1, null);
-        validateUtil.addRequiredValidate("appid", form.getAppid());
-        String result = validateUtil.validate();
-        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-
-            if (!ProfileDocCheckTool.checkFileName(form.getFileName())) {
-                return Result.fail("文件格式不支持！").toJson();
-            }
-
-            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    profileService.parseFileStreamProfile(form.getEmployeeId(), form.getFileOriginName(),
-                            form.getFileName(), form.getFileAbsoluteName(), form.getFileData());
+                    profileService.parseFileProfile(employeeId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();

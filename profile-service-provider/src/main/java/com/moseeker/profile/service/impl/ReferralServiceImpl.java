@@ -3,7 +3,6 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
-import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
