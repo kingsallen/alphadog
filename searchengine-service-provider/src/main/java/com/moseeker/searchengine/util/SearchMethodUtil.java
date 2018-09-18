@@ -117,6 +117,7 @@ public class SearchMethodUtil {
         //默认按先置顶和更新时间排序
         responseBuilder.addSort("priority",SortOrder.ASC);
         responseBuilder.addSort("update_time",SortOrder.DESC);
+        responseBuilder.addSort("id",SortOrder.DESC);
 
         String flag=params.get("flag");
         if("-1".equals(flag)){
