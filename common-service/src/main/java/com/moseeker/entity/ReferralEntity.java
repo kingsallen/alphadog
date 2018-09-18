@@ -181,6 +181,7 @@ public class ReferralEntity {
                 referralLog.getPositionId());
         if (application != null) {
             applicationDao.deleteById(application.getId());
+            searchengineEntity.deleteApplication(application.getApplierId());
             JobApplicationRecord record = new JobApplicationRecord();
             BeanUtils.copyProperties(application, record);
             record.setId(null);
@@ -188,7 +189,6 @@ public class ReferralEntity {
             record.setApplierName(userUserDO.getName());
             record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             applicationDao.addRecord(record);
-            searchengineEntity.deleteApplication(application.getId());
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());
