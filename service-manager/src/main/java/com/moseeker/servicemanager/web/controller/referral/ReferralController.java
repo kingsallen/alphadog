@@ -67,10 +67,10 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail("文件格式不支持！").toJson();
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
             }
             if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail("文件过大！").toJson();
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
