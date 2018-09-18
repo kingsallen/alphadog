@@ -54,7 +54,6 @@ public class ProfileCompanyTagService {
     }
 
     public void  handlerCompanyTagByUserId(int userId){
-        logger.debug("handlerCompanyTagTalent handlerCompanyTag userId:{}",userId);
         if(userId>0){
             boolean flag=this.validateUsertalent(userId);
             logger.debug("handlerCompanyTagTalent handlerCompanyTag flag:{}",flag);
