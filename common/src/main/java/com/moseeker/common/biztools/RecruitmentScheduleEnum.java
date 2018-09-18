@@ -67,7 +67,7 @@ public enum RecruitmentScheduleEnum {
             case 3:
             case 11: value = 5; break;
             case 4:
-                if(lastID == 0 || lastID > 13) {
+                if(lastID == 0 || lastID > 15) {
                     throw new RecruitmentScheduleLastStepNotExistException();
                 } else {
                     switch (lastID) {
@@ -113,7 +113,7 @@ public enum RecruitmentScheduleEnum {
             case 11 :
             case 3: value = 3; break;
             case 4:
-                if(this.getLastID() < 0 || this.getLastID() > 13) {
+                if(this.getLastID() < 0 || this.getLastID() > 15) {
                     throw new RecruitmentScheduleLastStepNotExistException();
                 }
                 switch (lastID) {
@@ -183,7 +183,7 @@ public enum RecruitmentScheduleEnum {
      * @throws RecruitmentScheduleLastStepNotExistException
      */
     public void setLastStep(int lastStep) throws RecruitmentScheduleLastStepNotExistException {
-        if(lastStep == 0 || lastStep > 13) {
+        if(lastStep == 0 || lastStep > 15) {
             throw new RecruitmentScheduleLastStepNotExistException();
         }
         this.lastID = lastStep;
