@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -17,13 +18,13 @@ import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
+import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.*;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
@@ -79,6 +80,12 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private HrOperationRecordDao operationRecordDao;
+
+    @Autowired
+    private ProfileCompanyTagService companyTagService;
+
+    @Autowired
+    private ProfileProfileDao profileDao;
 
     @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
@@ -354,12 +361,14 @@ public class ReferralServiceImpl implements ReferralService {
                 if (profilePojo.getProfileRecord() != null) {
                     profilePojo.getProfileRecord().setUserId(userRecord.getId());
                 }
-                profileEntity.mergeProfile(profilePojo, userRecord.getId());
+                int profileId = profileEntity.mergeProfile(profilePojo, userRecord.getId());
+                handleCompanyTag(userId, profileId);
             }
         } else {
             userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId());
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
+            handleCompanyTag(userId);
         }
 
         int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
@@ -406,6 +415,14 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROGRAM_EXCEPTION;
         }
+    }
+
+    private void handleCompanyTag(int userId) {
+
+    }
+
+    private void handleCompanyTag(int userId, int profileId) {
+
     }
 
     private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
