@@ -81,6 +81,9 @@ public class ReferralEntity {
     @Autowired
     EmployeeEntity employeeEntity;
 
+    @Autowired
+    SearchengineEntity searchengineEntity;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -185,6 +188,7 @@ public class ReferralEntity {
             record.setApplierName(userUserDO.getName());
             record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             applicationDao.addRecord(record);
+            searchengineEntity.deleteApplication(application.getId());
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());
