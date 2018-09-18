@@ -3,12 +3,14 @@ package com.moseeker.profile.service.impl.serviceutils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.profile.constants.EmailVerifyState;
@@ -131,5 +133,24 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 		userUserRecord.setEmail(email);
 		userUserRecord.setEmailVerified(EmailVerifyState.UnVerified.getValue());
 		profilePojo.setUserRecord(userUserRecord);
+	}
+
+	/**
+	 * 添加profile_basic性别的设置
+	 * @param profilePojo 简历数据
+	 * @param genderType 性别
+	 */
+	public static void createProfileBasic(ProfilePojo profilePojo, GenderType genderType) {
+		if (profilePojo != null && genderType != null) {
+			if (profilePojo.getBasicRecord() != null) {
+				if (profilePojo.getBasicRecord().getGender() == null || profilePojo.getBasicRecord().getGender() == 0) {
+					profilePojo.getBasicRecord().setGender((byte) genderType.getValue());
+				}
+			} else {
+				ProfileBasicRecord basicRecord = new ProfileBasicRecord();
+				basicRecord.setGender((byte) genderType.getValue());
+				profilePojo.setBasicRecord(basicRecord);
+			}
+		}
 	}
 }
