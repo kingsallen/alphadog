@@ -423,14 +423,19 @@ public class TalentPoolEntity {
      */
     public Map<String, Object> getCompanyTagInfo(int companyId, int company_tag_id){
 
-        List<TalentpoolCompanyTag> tagRecordList = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
-        if(tagRecordList == null || tagRecordList.size()==0 ){
+        Map<String, Object> tagRecord = getCompanyTagByTagIdAndCompanyId(companyId, company_tag_id);
+        if(tagRecord == null){
             return null;
         }
         Map<String, Object> params = new HashMap<>();
-        params.put("company_tag", tagRecordList.get(0));
+        if(tagRecord.get("keywords")!= null && !"".equals((String)tagRecord.get("keywords"))){
+            List<String> keywords = StringUtils.stringToList((String)tagRecord.get("keywords"), ";");
+            tagRecord.put("keyword_list", keywords);
+        }
+        params.put("company_tag", tagRecord);
         return params;
     }
+
 
     /**
      * 插入标签信息
@@ -785,8 +790,8 @@ public class TalentPoolEntity {
     /*
      通过CompanyId获取企业标签
      */
-    public List<TalentpoolCompanyTag> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
-        List<TalentpoolCompanyTag> tagRecordList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, pageNum, pageSize);
+    public List<Map<String, Object>> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
+        List<Map<String, Object>> tagRecordList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, pageNum, pageSize);
         return tagRecordList;
     }
 
@@ -2313,8 +2318,8 @@ public class TalentPoolEntity {
         return talentpoolCompanyTagUserDao.getRecords(query);
     }
 
-    public List<TalentpoolCompanyTag> getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
-        List<TalentpoolCompanyTag> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
+    public Map<String, Object>getCompanyTagByTagIdAndCompanyId(int companyId, int company_tag_id){
+        Map<String, Object> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
         return list;
     }
 
