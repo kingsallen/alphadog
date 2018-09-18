@@ -537,11 +537,9 @@ public class SearchengineEntity {
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
                 if (mapTemp != null) {
-                    logger.info("removeApplication mapTemp:{}", JSON.toJSONString(mapTemp));
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
-                        logger.info("removeApplication applications:{}", JSON.toJSONString(userMap.get("applications")));
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
@@ -558,15 +556,9 @@ public class SearchengineEntity {
                                             .setDoc(mapTemp).get();
                                 }
                                 // 更新ES
-
-                                logger.info("update users id:{}", id);
                             }
                         }
-                    } else {
-                        logger.info("removeApplication applications is null");
                     }
-                } else {
-                    logger.info("removeApplication mapTemp is null");
                 }
             }
         } catch (Exception e) {
