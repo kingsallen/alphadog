@@ -30,7 +30,6 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1185,10 +1184,9 @@ public class TalentpoolSearchengine {
      处理职位id,这里改变了参数
      */
     private void handlerPositionId(Map<String,String> params){
-        String positionWord=params.get("position_key_word");
         String positionIdList=params.get("position_id");
-        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
-            String positionIds=this.PositionIdQuery(params,positionWord);
+        if(StringUtils.isNullOrEmpty(positionIdList)){
+            String positionIds=this.PositionIdQuery(params);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);
             }
@@ -1197,16 +1195,15 @@ public class TalentpoolSearchengine {
     /*
      处理职位
      */
-    private String PositionIdQuery(Map<String,String> params,String positionWord){
-        if(StringUtils.isNotNullOrEmpty(positionWord)){
+    private String PositionIdQuery(Map<String,String> params){
             Map<String,String> suggetParams=this.convertParams(params);
             Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
             List<Integer> positionIdList=this.getSuggestPositionId(result);
             String positionIds=searchUtil.listConvertString(positionIdList);
             return positionIds;
-        }
-        return null;
     }
+
+
     /*
      获取positionId的列表
      */
@@ -1234,6 +1231,7 @@ public class TalentpoolSearchengine {
         suggetParams.put("page_from","1");
         suggetParams.put("page_size","1000000");
         suggetParams.put("return_params","title,id");
+        suggetParams.put("is_referral",params.get("is_referral"));
         String status=params.get("position_status");
         if(StringUtils.isNotNullOrEmpty(status)){
             suggetParams.put("flag",status);
