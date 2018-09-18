@@ -29,6 +29,7 @@ public class ProfileAwardsServicesImpl implements Iface {
     @Autowired
     private ProfileAwardsService service;
 
+
     @Override
     public Response getResources(CommonQuery query) throws TException {
         try {

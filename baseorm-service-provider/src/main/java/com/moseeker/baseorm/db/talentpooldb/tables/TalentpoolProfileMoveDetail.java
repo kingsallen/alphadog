@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetail extends TableImpl<TalentpoolProfileMoveDetailRecord> {
 
-    private static final long serialVersionUID = -939255850;
+    private static final long serialVersionUID = -1717071540;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move_detail</code>
@@ -63,9 +63,9 @@ public class TalentpoolProfileMoveDetail extends TableImpl<TalentpoolProfileMove
     public final TableField<TalentpoolProfileMoveDetailRecord, Long> MOBILE = createField("mobile", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "手机号");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_move_detail.profile_move_id</code>. talentpool_profile_move.id，对应的是上一次搬家失败的操作id
+     * The column <code>talentpooldb.talentpool_profile_move_detail.profile_move_id</code>. talentpool_profile_move_record.id，对应的是上一次搬家的操作id
      */
-    public final TableField<TalentpoolProfileMoveDetailRecord, Integer> PROFILE_MOVE_ID = createField("profile_move_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "talentpool_profile_move.id，对应的是上一次搬家失败的操作id");
+    public final TableField<TalentpoolProfileMoveDetailRecord, Integer> PROFILE_MOVE_ID = createField("profile_move_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "talentpool_profile_move_record.id，对应的是上一次搬家的操作id");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_move_detail.profile_move_status</code>. 该手机号对应的简历搬家成功状态 0 失败 1 成功

@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
- * 简历搬家操作记录表
+ * 简历搬家chaos请求操作记录表
  */
 @Generated(
     value = {
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecordRecord extends UpdatableRecordImpl<TalentpoolProfileMoveRecordRecord> implements Record10<Integer, Integer, Integer, Byte, Integer, Byte, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -345517328;
+    private static final long serialVersionUID = 1279798535;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_move_record.id</code>.
@@ -47,14 +47,14 @@ public class TalentpoolProfileMoveRecordRecord extends UpdatableRecordImpl<Talen
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_move_record.profile_move_id</code>. hr.id
+     * Setter for <code>talentpooldb.talentpool_profile_move_record.profile_move_id</code>. profile_move.id
      */
     public void setProfileMoveId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_move_record.profile_move_id</code>. hr.id
+     * Getter for <code>talentpooldb.talentpool_profile_move_record.profile_move_id</code>. profile_move.id
      */
     public Integer getProfileMoveId() {
         return (Integer) get(1);
@@ -75,14 +75,14 @@ public class TalentpoolProfileMoveRecordRecord extends UpdatableRecordImpl<Talen
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_move_record.crawl_type</code>. 简历类型 1.主动投递简历  2.已下载简历
+     * Setter for <code>talentpooldb.talentpool_profile_move_record.crawl_type</code>. 简历类型 0.主动投递简历  1.已下载简历
      */
     public void setCrawlType(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_move_record.crawl_type</code>. 简历类型 1.主动投递简历  2.已下载简历
+     * Getter for <code>talentpooldb.talentpool_profile_move_record.crawl_type</code>. 简历类型 0.主动投递简历  1.已下载简历
      */
     public Byte getCrawlType() {
         return (Byte) get(3);
@@ -103,14 +103,14 @@ public class TalentpoolProfileMoveRecordRecord extends UpdatableRecordImpl<Talen
     }
 
     /**
-     * Setter for <code>talentpooldb.talentpool_profile_move_record.status</code>. 0.获取中 1.已完成 2.获取失败
+     * Setter for <code>talentpooldb.talentpool_profile_move_record.status</code>. 0.获取失败 1.已完成 2.获取中
      */
     public void setStatus(Byte value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>talentpooldb.talentpool_profile_move_record.status</code>. 0.获取中 1.已完成 2.获取失败
+     * Getter for <code>talentpooldb.talentpool_profile_move_record.status</code>. 0.获取失败 1.已完成 2.获取中
      */
     public Byte getStatus() {
         return (Byte) get(5);

@@ -11,6 +11,7 @@ import com.moseeker.common.util.Pagination;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.commonservice.annotation.iface.CompanyTagUpate;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
@@ -43,6 +44,10 @@ public class ProfileAwardsService {
 
     @Autowired
     private ProfileEntity profileEntity;
+
+
+    @Autowired
+    private ProfileCompanyTagService profileCompanyTagService;
 
     public Awards getResource(Query query) throws TException {
         return dao.getData(query, Awards.class);
@@ -86,6 +91,7 @@ public class ProfileAwardsService {
 
                 profileIds.forEach(profileId -> {
                     profileEntity.reCalculateProfileAward(profileId, 0);
+                    profileCompanyTagService.handlerCompanyTag(profileId);
                 });
             }
         }
@@ -133,6 +139,7 @@ public class ProfileAwardsService {
 
                 updatedList.forEach(struct -> {
                     profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                    profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                 });
 
                 return updateResult;
@@ -164,6 +171,7 @@ public class ProfileAwardsService {
             profileDao.updateUpdateTime(profileIds);
 
             profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+            profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
         }
         return data;
     }
@@ -188,12 +196,14 @@ public class ProfileAwardsService {
                     if (updateResult > 0) {
                         updateUpdateTime(struct);
                         profileEntity.reCalculateProfileAward(struct.getProfile_id(), struct.getId());
+                        profileCompanyTagService.handlerCompanyTag(struct.getProfile_id());
                     }
                 }
             }
         }
         return updateResult;
     }
+
 
     @Transactional
     public int delResource(Awards struct) throws TException {
@@ -214,6 +224,7 @@ public class ProfileAwardsService {
                     }});
             /* 计算profile完成度 */
                     profileEntity.reCalculateProfileAward(deleteData.getProfileId(), struct.getId());
+                    profileCompanyTagService.handlerCompanyTag(deleteData.getProfileId());
                 }
             }
         }
@@ -239,12 +250,14 @@ public class ProfileAwardsService {
 
 
             if (deleteDatas != null && deleteDatas.size() > 0) {
+                Set<Integer> set = deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet());
                 //更新对应的profile更新时间
-                profileDao.updateUpdateTime(deleteDatas.stream().map(data -> data.getProfileId()).collect(Collectors.toSet()));
+                profileDao.updateUpdateTime(set);
 
-                for (ProfileAwardsDO data : deleteDatas) {
-                    profileEntity.reCalculateProfileAward(data.getProfileId(), 0);
-                }
+                set.forEach(profile_id -> {
+                    profileEntity.reCalculateProfileAward(profile_id, 0);
+                    profileCompanyTagService.handlerCompanyTag(profile_id);
+                });
 
             }
 

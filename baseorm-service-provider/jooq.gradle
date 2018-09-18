@@ -39,7 +39,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
     }
     generator() {
         database() {
-            inputSchema("referraldb")
+            inputSchema("talentpooldb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
 

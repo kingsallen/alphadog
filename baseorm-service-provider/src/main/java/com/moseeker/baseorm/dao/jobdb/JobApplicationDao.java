@@ -244,4 +244,15 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.orderBy(JobApplication.JOB_APPLICATION.SUBMIT_TIME.desc())
 				.fetch();
 	}
+
+    public com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication fetchOneById(int applicationId) {
+		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.ID.eq(applicationId))
+				.fetchOne();
+		if (record != null) {
+			return record.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
+		} else {
+			return null;
+		}
+    }
 }
