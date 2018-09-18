@@ -313,7 +313,7 @@ public class PositionEntity {
      */
     public void putReferralPositions(List<Integer> pids){
         List<ReferralPositionRel> records = new ArrayList<>();
-        logger.info("putReferralPositions pids {}",pids);
+        logger.info("putReferralPositions pids.size {}",pids.size());
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
 
