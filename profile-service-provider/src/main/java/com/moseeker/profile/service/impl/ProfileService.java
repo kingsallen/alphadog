@@ -948,11 +948,13 @@ public class ProfileService {
                 profilePojo.getProfileRecord().setUserId(userRecord.getId());
             }
             profileEntity.mergeProfile(profilePojo, userRecord.getId());
+            profileCompanyTagService.handlerCompanyTagByUserId(userRecord.getId());
         } else {
             resumeEntity.fillDefault(profilePojo);
             userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT);
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
+            profileCompanyTagService.handlerCompanyTagByUserId(userId);
         }
 
         return userId;
