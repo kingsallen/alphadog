@@ -3,14 +3,17 @@ package com.moseeker.baseorm.dao.referraldb;
 import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import org.jooq.Configuration;
 import org.jooq.Param;
+import org.jooq.Record1;
+import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -102,6 +105,19 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
             return referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
         } else {
             return null;
+        }
+    }
+
+    public List<Integer> fetchReferenceIdByEmployeeId(int employeeId) {
+        Result<Record1<Integer>> result = using(configuration())
+                .select(ReferralLog.REFERRAL_LOG.REFERENCE_ID)
+                .from(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
+                .fetch();
+        if (result != null) {
+            return result.stream().map(record1 -> record1.value1()).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
         }
     }
 }

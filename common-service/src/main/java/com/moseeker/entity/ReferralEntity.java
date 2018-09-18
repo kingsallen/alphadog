@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,5 +212,13 @@ public class ReferralEntity {
 
     public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
         return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
+    }
+
+    public List<Integer> fetchReferenceIdList(int userId) {
+        UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
+        if (employeeRecord != null) {
+            return referralLogDao.fetchReferenceIdByEmployeeId(employeeRecord.getId());
+        }
+        return new ArrayList<>();
     }
 }
