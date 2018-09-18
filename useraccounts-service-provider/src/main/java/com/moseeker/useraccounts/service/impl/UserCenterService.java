@@ -491,7 +491,7 @@ public class UserCenterService {
                                 RecruitmentScheduleEnum recruitmentScheduleEnum1 = RecruitmentScheduleEnum.createFromID(oprationRecord.getOperateTplId());
                                 logger.info("UserCenterService getApplicationDetail recruitmentScheduleEnum1: {}", recruitmentScheduleEnum1);
                                 if (recruitmentScheduleEnum1 != null) {
-                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID, employeeDO != null? employeeDO.getCname():"");
+                                    applicationOprationRecordVO.setEvent(recruitmentScheduleEnum1.getAppStatusDescription((byte) applicationDO.getApplyType(), (byte) applicationDO.getEmailStatus(), preID, employeeDO != null? employeeDO.getCname():""));
                                 }
                                 /** 如果前一条操作记录也是拒绝的操作记录，那么这一条操作记录隐藏 */
                                 if(recruitmentScheduleEnum.getId() == RecruitmentScheduleEnum.REJECT.getId()
