@@ -1,10 +1,12 @@
 package com.moseeker.searchengine.util;
 
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.FormCheck;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
@@ -152,6 +154,7 @@ public class SearchMethodUtil {
         String employmentType=params.get("employment_type");
         String employmentTypeName=params.get("employment_type_name");
         String degreeName=params.get("degree_name");
+        String degree = params.get("degree");
         String custom=params.get("custom");
         String salaryTop=params.get("salary_top");
         String salaryBottom=params.get("salary_bottom");
@@ -160,6 +163,9 @@ public class SearchMethodUtil {
         String publisherCompanyId=params.get("did");
         String isReferral=params.get("is_referral");
         String department = params.get("department");
+        String salary=params.get("salary");
+
+
         searchUtil.handleTerms(companyIds,query,"company_id");
         String flag=params.get("flag");
         if(StringUtils.isBlank(flag)){
@@ -185,7 +191,10 @@ public class SearchMethodUtil {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            if(Integer.valueOf(candidateSource) >=0) {
+            if(!FormCheck.isNumber(candidateSource)) {
+                //如果candidateSource传的是汉字不是数字1或0
+                searchUtil.handleTerm(candidateSource,query,"candidate_source_name");
+            }else if(Integer.valueOf(candidateSource) >=0) {
                 searchUtil.handleTerm(candidateSource,query,"candidate_source");
             }
         }
@@ -209,21 +218,36 @@ public class SearchMethodUtil {
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
         }
         if(StringUtils.isNotBlank(employmentType)){
-            if(Integer.valueOf(employmentType) >= 0) {
+            if(!FormCheck.isNumber(employmentType)) {
+                    //如果employmentType传的是汉字不是数字1或0
+                searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
+            }else if(Integer.valueOf(employmentType) >= 0) {
                 searchUtil.handleTerm(employmentType,query,"employment_type");
             }
         }
         if(StringUtils.isNotBlank(employmentTypeName)){
-            searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
+            searchUtil.handleMatchParse(employmentTypeName,query,"employment_type_name");
         }
         if(StringUtils.isNotBlank(degreeName)){
             searchUtil.handleTerm(degreeName,query,"search_data.degree_name");
+        }else if(StringUtils.isNotBlank(degree)){
+            searchUtil.handleTerm(degree,query,"search_data.degree_name");
         }
+
         if(StringUtils.isNotBlank(custom)){
             searchUtil.handleTerm(custom,query,"search_data.custom");
         }
         if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
+        }
+
+        if(StringUtils.isNotBlank(salary)&&salary.contains(",")) {
+            salaryBottom = salary.split(",")[0];
+            salaryTop =salary.split(",")[1];
+            QueryBuilder topQB = QueryBuilders.rangeQuery("salary_top").lte(salaryTop);
+            ((BoolQueryBuilder) query).must(topQB);
+            QueryBuilder bottomQB = QueryBuilders.rangeQuery("salary_bottom").gte(salaryBottom);
+            ((BoolQueryBuilder) query).must(bottomQB);
         }
 
     }
