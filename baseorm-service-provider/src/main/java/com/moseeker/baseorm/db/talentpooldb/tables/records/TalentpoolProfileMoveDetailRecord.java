@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetailRecord extends UpdatableRecordImpl<TalentpoolProfileMoveDetailRecord> implements Record6<Integer, Long, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1107314020;
+    private static final long serialVersionUID = 1106609756;
 
     /**
      * Setter for <code>talentpooldb.talentpool_profile_move_detail.id</code>.

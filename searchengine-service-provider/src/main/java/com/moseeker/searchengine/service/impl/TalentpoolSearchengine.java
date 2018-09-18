@@ -19,10 +19,7 @@ import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.ScriptQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -634,6 +631,9 @@ public class TalentpoolSearchengine {
         String isRecommend=params.get("is_recommend");
         String companyName=params.get("company_name");
         String exists=params.get("exists");
+        String keywords = params.get("keywords");
+        String containAnykey = params.get("contain_any_key");
+        String userId = params.get("user_id");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         if(StringUtils.isNotNullOrEmpty(exists)){
@@ -644,6 +644,9 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
             this.queryBySubmitTime(submitTime, query);
+        }
+        if(StringUtils.isNotNullOrEmpty(userId)){
+            searchUtil.handleTerm(userId, query, "user.profiles.profile.user_id");
         }
         if(StringUtils.isNotNullOrEmpty(cityCode)){
             if(!cityCode.contains("111111")){
@@ -696,6 +699,35 @@ public class TalentpoolSearchengine {
             }else {
                 this.queryTermByCompanyTag(companyName, query);
             }
+        }
+        logger.info("keywords:========"+ keywords);
+        if(StringUtils.isNotNullOrEmpty(keywords)){
+            String[] keyword_list = keywords.split(";");
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (int i = 0; i < keyword_list.length; i++) {
+                String keyword = keyword_list[i];
+                if(org.apache.commons.lang.StringUtils.isBlank(keyword)){
+                    continue;
+                }
+                MultiMatchQueryBuilder fullf = QueryBuilders.multiMatchQuery(keyword);
+                fullf.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
+                fullf.minimumShouldMatch("98%");
+                List<String> colums = StringUtils.stringToList(Constant.PROFILE_SEARCH_KEYWORD_COLUMS,";");
+                if(!StringUtils.isEmptyList(colums)){
+                    for(String colum :colums){
+                        if(StringUtils.isNotNullOrEmpty(colum)) {
+                            fullf.field("user.profiles." + colum);
+                        }
+                    }
+                }
+
+                if(StringUtils.isNotNullOrEmpty(containAnykey) && Integer.parseInt(containAnykey) == 1){
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }else{
+                    ((BoolQueryBuilder) keyand).must(fullf);
+                }
+            }
+            ((BoolQueryBuilder) query).must(keyand);
         }
         if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||Integer.parseInt(isRecommend)>0){
             //这里是处理groovy语法的位置

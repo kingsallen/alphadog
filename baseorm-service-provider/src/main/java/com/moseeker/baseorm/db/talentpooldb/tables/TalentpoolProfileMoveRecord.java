@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 简历搬家操作记录表
+ * 简历搬家chaos请求操作记录表
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMoveRecordRecord> {
 
-    private static final long serialVersionUID = 339225168;
+    private static final long serialVersionUID = -678794509;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move_record</code>
@@ -115,7 +115,7 @@ public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMove
     }
 
     private TalentpoolProfileMoveRecord(String alias, Table<TalentpoolProfileMoveRecordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "简历搬家操作记录表");
+        super(alias, null, aliased, parameters, "简历搬家chaos请求操作记录表");
     }
 
     /**

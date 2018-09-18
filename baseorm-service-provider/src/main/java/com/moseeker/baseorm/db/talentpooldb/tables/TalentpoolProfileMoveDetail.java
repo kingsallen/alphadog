@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetail extends TableImpl<TalentpoolProfileMoveDetailRecord> {
 
-    private static final long serialVersionUID = 1128057226;
+    private static final long serialVersionUID = -939255850;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move_detail</code>
