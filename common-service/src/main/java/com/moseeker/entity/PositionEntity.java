@@ -319,14 +319,26 @@ public class PositionEntity {
 
         List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
 
+        LinkedList<JobPositionDO> filteredJobPostions = new LinkedList<>();
+        LinkedList<Integer> filteredPids = new LinkedList<>();
+
         for(JobPositionDO jobPositionDO: jobPositionDOS) {
-            //更新职位is_referral字段
-            jobPositionDO.setIs_referral(1);
-            jobPositionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            //找出需要更新状态的记录
+            if(jobPositionDO.getIs_referral()== 0) {
+                //更新职位is_referral=1
+                jobPositionDO.setIs_referral(1);
+                jobPositionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                filteredJobPostions.add(jobPositionDO);
+                filteredPids.add(jobPositionDO.getId());
+            }
+
         }
         //更新数据库及ES中职位is_referal字段为1
         try {
-            int[] res =  positionDao.updateDatas(jobPositionDOS);
+
+            logger.info("putReferralPositions filteredPids  {}",filteredPids);
+
+            int[] res =  positionDao.updateDatas(filteredJobPostions);
             Response response =  searchengineEntity.updateBulkReferralPostionStatus(pids,1);
 
             logger.info("PositionEntity putReferralPositions response {} {}", JSON.toJSON(res),JSON.toJSON(response));
@@ -343,27 +355,38 @@ public class PositionEntity {
      */
     public void delReferralPositions(List<Integer> pids){
 
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();
 
-            List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
-            for(JobPositionDO jobPositionDO: jobPositionDOS) {
+        List<JobPositionDO> jobPositionDOS  = positionDao.getDatas(query);
+
+        LinkedList<JobPositionDO> filteredJobPostions = new LinkedList<>();
+        LinkedList<Integer> filteredPids = new LinkedList<>();
+
+        for(JobPositionDO jobPositionDO: jobPositionDOS) {
+
+            if(jobPositionDO.getIs_referral() == 1) {
                 //更新内推标示
                 jobPositionDO.setIs_referral(0);
                 jobPositionDO.setUpdateTime((new DateTime()).toString("yyyy-MM-dd HH:mm:ss"));
-            }
-            //更新数据库及ES职位is_referal字段为0
-            try {
-               int[] res = positionDao.updateDatas(jobPositionDOS);
-               Response response = searchengineEntity.updateBulkReferralPostionStatus(pids,0);
 
-               logger.info("PositionEntity delReferralPositions response {} {}", JSON.toJSON(res),JSON.toJSON(response));
-
-            }catch (Exception e) {
-                //主动捕获异常，避免事务回滚
-                logger.error(e.getClass().getName(),e);
+                filteredJobPostions.add(jobPositionDO);
+                filteredPids.add(jobPositionDO.getId());
             }
+
         }
+        //更新数据库及ES职位is_referal字段为0
+        try {
+            int[] res = positionDao.updateDatas(filteredJobPostions);
+            Response response = searchengineEntity.updateBulkReferralPostionStatus(filteredPids,0);
+
+            logger.info("PositionEntity delReferralPositions response {} {}", JSON.toJSON(res),JSON.toJSON(response));
+
+        }catch (Exception e) {
+            //主动捕获异常，避免事务回滚
+            logger.error(e.getClass().getName(),e);
+        }
+    }
 
 
 
