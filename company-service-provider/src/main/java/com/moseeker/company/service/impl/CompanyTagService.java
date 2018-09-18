@@ -161,7 +161,7 @@ public class CompanyTagService {
      根据user_user.id列表和公司id处理公司的标签
      */
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
-        logger.info("handlerCompanyTagTalent idList:{}, companyId:{}",idList, companyId);
+
         try {
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
@@ -195,7 +195,6 @@ public class CompanyTagService {
                                 list.add(record);
                             }
                         }
-
                     }
                 }
             }

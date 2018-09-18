@@ -210,4 +210,5 @@ public class TalentpoolNewController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
 }

@@ -1845,7 +1845,7 @@ public class PositionService {
         // 通过 pid 列表查询 position 信息
         logger.info("jdIdList: " + jdIdList);
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
-        Query q = new Query.QueryBuilder().where(con).and("status", 0).orderBy("update_time",Order.DESC).buildQuery();
+        Query q = new Query.QueryBuilder().where(con).and("status", 0).orderBy("priority",Order.ASC).orderBy("update_time",Order.DESC).orderBy("id",Order.DESC).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
         List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
         return dataList;

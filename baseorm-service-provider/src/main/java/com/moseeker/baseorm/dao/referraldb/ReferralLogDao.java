@@ -3,16 +3,19 @@ package com.moseeker.baseorm.dao.referraldb;
 import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import org.jooq.Configuration;
 import org.jooq.Param;
+import org.jooq.Record1;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -69,19 +72,56 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
 
     /**
      * 认领推荐记录
-     * @param id 认领记录编号
+     * @param referralLog 认领记录
      * @param userId 认领人
      * @return true 认领成功 false 认领失败
      */
-    public boolean claim(int id, int userId) {
+    public boolean claim(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog referralLog, int userId) {
         int execute = using(configuration())
                 .update(ReferralLog.REFERRAL_LOG)
                 .set(ReferralLog.REFERRAL_LOG.REFERENCE_ID, userId)
                 .set(ReferralLog.REFERRAL_LOG.CLAIM, ClaimType.Claimed.getValue())
                 .set(ReferralLog.REFERRAL_LOG.CLAIM_TIME, new Timestamp(System.currentTimeMillis()))
-                .where(ReferralLog.REFERRAL_LOG.ID.eq(id))
+                .where(ReferralLog.REFERRAL_LOG.ID.eq(referralLog.getId()))
                 .and(ReferralLog.REFERRAL_LOG.CLAIM.eq(ClaimType.UnClaim.getValue()))
+                .andNotExists(
+                        selectOne()
+                        .from(
+                                selectFrom(ReferralLog.REFERRAL_LOG)
+                                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(referralLog.getEmployeeId()))
+                                .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(referralLog.getPositionId()))
+                                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(userId))
+                        )
+                )
                 .execute();
         return execute == 1;
+    }
+
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog
+    fetchByEmployeeIdReferenceIdUserId(Integer employeeId, Integer referenceId, int positionId) {
+        ReferralLogRecord referralLogRecord = using(configuration())
+                .selectFrom(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
+                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(positionId))
+                .fetchOne();
+        if (referralLogRecord != null) {
+            return referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
+        } else {
+            return null;
+        }
+    }
+
+    public List<Integer> fetchReferenceIdByEmployeeId(int employeeId) {
+        Result<Record1<Integer>> result = using(configuration())
+                .select(ReferralLog.REFERRAL_LOG.REFERENCE_ID)
+                .from(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
+                .fetch();
+        if (result != null) {
+            return result.stream().map(record1 -> record1.value1()).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

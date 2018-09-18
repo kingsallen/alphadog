@@ -50,13 +50,13 @@ public class ProfileMoveShedule {
      * @author cjm
      * @date 2018/7/9
      */
-    @Scheduled(cron = "0 0 0/3 * * ?")
+    @Scheduled(cron = "0 0 0/2 * * ?")
     public void refreshEmailNum() {
         List<Integer> successIdList = new ArrayList<>();
         List<Integer> failedIdList = new ArrayList<>();
         try {
             Date date = new Date();
-            long timeout = 6 * 60 * 60 * 1000;
+            long timeout = 2 * 60 * 60 * 1000;
             Timestamp timestamp = new Timestamp(date.getTime() - timeout);
             // 获取距当前时间超过两个小时并且status为正在进行搬家的数据
             List<TalentPoolProfileMoveRecordDO> profileMoveDOS = profileMoveRecordDao.getProfileMoveByStatusAndDate(ProfileMoveStateEnum.MOVING.getValue(), timestamp);

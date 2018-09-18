@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrTalentDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.config.Sender;
@@ -25,7 +26,7 @@ import java.util.*;
 @Service
 public class ProfileCompanyTagService {
 
-    Logger logger = LoggerFactory.getLogger(Sender.class);
+    Logger logger = LoggerFactory.getLogger(ProfileCompanyTagService.class);
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
@@ -46,20 +47,16 @@ public class ProfileCompanyTagService {
         if(userId==0){
             userId=this.getUserIdFromProfile(profileId);
         }
-        logger.debug("handlerCompanyTagTalent handlerCompanyTag userId:{}",userId);
         if(userId>0){
             boolean flag=this.validateUsertalent(userId);
-            logger.debug("handlerCompanyTagTalent handlerCompanyTag flag:{}",flag);
             if(flag){
                 Set<Integer> userIdSet=new HashSet<>();
                 userIdSet.add(userId);
                 Set<Integer> companyIdSet=this.getCompanySetByApplierId(userId);
-                logger.debug("handlerCompanyTagTalent handlerCompanyTag companyIdSet:{}",companyIdSet);
                 if(!StringUtils.isEmptySet(companyIdSet)){
                     Map<String,Object> message=new HashMap<>();
                     message.put("user_ids",userIdSet);
                     message.put("company_ids",companyIdSet);
-                    logger.debug("handlerCompanyTagTalent handlerCompanyTag message:{}",message);
                     sender.send(JSON.toJSONString(message),80000);
                 }
             }

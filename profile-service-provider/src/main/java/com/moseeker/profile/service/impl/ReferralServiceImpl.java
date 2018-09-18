@@ -3,6 +3,7 @@ package com.moseeker.profile.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -17,13 +18,13 @@ import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
+import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.*;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
-import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
@@ -38,6 +39,7 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.Consts;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +80,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private HrOperationRecordDao operationRecordDao;
+
+    @Autowired
+    private ProfileCompanyTagService companyTagService;
 
     @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
@@ -126,18 +131,21 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public ProfileDocParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
-                                                        String fileAbsoluteName, String fileData) throws ProfileException {
-        FileNameData fileNameData = new FileNameData();
-        fileNameData.setOriginName(fileOriginName);
-        fileNameData.setFileAbsoluteName(fileAbsoluteName);
-        fileNameData.setFileName(fileName);
-        fileData = StreamUtils.convertASCToUTF8(fileData);
-        return parseResult(employeeId, fileAbsoluteName, fileData, fileNameData);
+                                                        String fileAbsoluteName, String fileData)
+            throws ProfileException {
+
+        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+        byte[] fileDataArray = fileData.getBytes(Consts.ASCII);
+        FileNameData fileNameData = StreamUtils.persistFile(fileDataArray, env.getProperty("profile.persist.url"), suffix);
+        fileNameData.setOriginName(fileName);
+
+        return parseResult(employeeId, fileAbsoluteName, StreamUtils.byteArrayToBase64String(fileDataArray), fileNameData);
     }
 
     @Override
     public void employeeDeleteReferralProfile(int employeeId) throws ProfileException {
-        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
+        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),
+                String.valueOf(employeeId),
                 "");
     }
 
@@ -297,7 +305,8 @@ public class ReferralServiceImpl implements ReferralService {
      * @throws ProfileException 业务异常
      */
     private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
-                          String name, String mobile, List<String> referralReasons, GenderType gender, String email, ReferralType referralType)
+                          String name, String mobile, List<String> referralReasons, GenderType gender, String email,
+                          ReferralType referralType)
             throws ProfileException {
 
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
@@ -305,6 +314,25 @@ public class ReferralServiceImpl implements ReferralService {
         int userId;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
+            UserUserRecord userUserRecord = new UserUserRecord();
+            userUserRecord.setId(userRecord.getId());
+            boolean flag = false;
+            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(name)) {
+                userRecord.setName(name);
+                userUserRecord.setName(name);
+                flag = true;
+            }
+            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
+                userRecord.setMobile(Long.valueOf(mobile));
+                userUserRecord.setMobile(Long.valueOf(mobile));
+                flag = true;
+            }
+            logger.info("recommend flag:{}", flag);
+            if (flag) {
+                userAccountEntity.updateUserRecord(userUserRecord);
+            }
+            logger.info("recommend id:{}, name:{}, mobile:{}", userRecord.getId(), name, mobile);
+            userAccountEntity.updateUserRecord(userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (StringUtils.isBlank(userRecord.getUsername())) {
@@ -312,11 +340,19 @@ public class ReferralServiceImpl implements ReferralService {
                     profilePojo.getProfileRecord().setUserId(userRecord.getId());
                 }
                 profileEntity.mergeProfile(profilePojo, userRecord.getId());
+                tp.startTast(() -> {
+                    companyTagService.handlerCompanyTagByUserId(userId);
+                    return true;
+                });
             }
         } else {
             userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId());
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
+            tp.startTast(() -> {
+                companyTagService.handlerCompanyTagByUserId(userId);
+                return true;
+            });
         }
 
         int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
@@ -343,7 +379,7 @@ public class ReferralServiceImpl implements ReferralService {
                 referralEntity.logReferralOperation(positionRecord.getId(), applicationId, 1, referralReasons,
                         mobile, employeeDO, userId, (byte) gender.getValue(), email);
 
-                addRecommandReward(employeeDO, userId, applicationId, positionRecord);
+                addRecommandReward(employeeDO, userId, applicationId, positionRecord, referralType);
 
                 return response;
             } catch (Exception e) {
@@ -366,25 +402,28 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
-                                    JobPositionRecord positionRecord) throws ApplicationException {
+                                    JobPositionRecord positionRecord, ReferralType referralType) throws ApplicationException {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("employeeId", employeeDO.getId());
             jsonObject.put("companyId", employeeDO.getCompanyId());
-            jsonObject.put("positionId", 0);
-            jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+            jsonObject.put("positionId", positionRecord.getId());
             jsonObject.put("berecomUserId", userId);
             jsonObject.put("applicationId", applicationId);
             jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
             MessageProperties mp = new MessageProperties();
             mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
             mp.setReceivedExchange("user_action_topic_exchange");
-            amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-            jsonObject.put("positionId", positionRecord.getId());
-            jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
-            amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                    MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+            logger.info("");
+            if (!referralType.equals(ReferralType.PostInfo)) {
+                jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+            } else {
+                jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
+                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+            }
 
             operationRecordDao.addRecord(applicationId, Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
 
@@ -398,6 +437,7 @@ public class ReferralServiceImpl implements ReferralService {
     private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
                                               FileNameData fileNameData) throws ProfileException {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
+        profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
         ResumeObj resumeObj;
         try {

@@ -19,7 +19,10 @@ import org.apache.thrift.TException;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.index.query.*;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -27,7 +30,6 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -631,9 +633,6 @@ public class TalentpoolSearchengine {
         String isRecommend=params.get("is_recommend");
         String companyName=params.get("company_name");
         String exists=params.get("exists");
-        String keywords = params.get("keywords");
-        String containAnykey = params.get("contain_any_key");
-        String userId = params.get("user_id");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         if(StringUtils.isNotNullOrEmpty(exists)){
@@ -644,9 +643,6 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(submitTime)){
             this.queryBySubmitTime(submitTime, query);
-        }
-        if(StringUtils.isNotNullOrEmpty(userId)){
-            searchUtil.handleTerm(userId, query, "user.profiles.profile.user_id");
         }
         if(StringUtils.isNotNullOrEmpty(cityCode)){
             if(!cityCode.contains("111111")){
@@ -699,34 +695,6 @@ public class TalentpoolSearchengine {
             }else {
                 this.queryTermByCompanyTag(companyName, query);
             }
-        }
-        if(StringUtils.isNotNullOrEmpty(keywords)){
-            String[] keyword_list = keywords.split(";");
-            QueryBuilder keyand = QueryBuilders.boolQuery();
-            for (int i = 0; i < keyword_list.length; i++) {
-                String keyword = keyword_list[i];
-                if(org.apache.commons.lang.StringUtils.isBlank(keyword)){
-                    continue;
-                }
-                MultiMatchQueryBuilder fullf = QueryBuilders.multiMatchQuery(keyword);
-                fullf.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
-                fullf.minimumShouldMatch("98%");
-                List<String> colums = StringUtils.stringToList(Constant.PROFILE_SEARCH_KEYWORD_COLUMS,";");
-                if(!StringUtils.isEmptyList(colums)){
-                    for(String colum :colums){
-                        if(StringUtils.isNotNullOrEmpty(colum)) {
-                            fullf.field("user.profiles." + colum);
-                        }
-                    }
-                }
-
-                if(StringUtils.isNotNullOrEmpty(containAnykey) && Integer.parseInt(containAnykey) == 1){
-                    ((BoolQueryBuilder) keyand).should(fullf);
-                }else{
-                    ((BoolQueryBuilder) keyand).must(fullf);
-                }
-            }
-            ((BoolQueryBuilder) query).must(keyand);
         }
         if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||Integer.parseInt(isRecommend)>0){
             //这里是处理groovy语法的位置
@@ -1216,10 +1184,9 @@ public class TalentpoolSearchengine {
      处理职位id,这里改变了参数
      */
     private void handlerPositionId(Map<String,String> params){
-        String positionWord=params.get("position_key_word");
         String positionIdList=params.get("position_id");
-        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
-            String positionIds=this.PositionIdQuery(params,positionWord);
+        if(StringUtils.isNullOrEmpty(positionIdList)){
+            String positionIds=this.PositionIdQuery(params);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);
             }
@@ -1228,16 +1195,15 @@ public class TalentpoolSearchengine {
     /*
      处理职位
      */
-    private String PositionIdQuery(Map<String,String> params,String positionWord){
-        if(StringUtils.isNotNullOrEmpty(positionWord)){
+    private String PositionIdQuery(Map<String,String> params){
             Map<String,String> suggetParams=this.convertParams(params);
             Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
             List<Integer> positionIdList=this.getSuggestPositionId(result);
             String positionIds=searchUtil.listConvertString(positionIdList);
             return positionIds;
-        }
-        return null;
     }
+
+
     /*
      获取positionId的列表
      */
@@ -1265,6 +1231,7 @@ public class TalentpoolSearchengine {
         suggetParams.put("page_from","1");
         suggetParams.put("page_size","1000000");
         suggetParams.put("return_params","title,id");
+        suggetParams.put("is_referral",params.get("is_referral"));
         String status=params.get("position_status");
         if(StringUtils.isNotNullOrEmpty(status)){
             suggetParams.put("flag",status);

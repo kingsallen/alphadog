@@ -27,6 +27,7 @@ import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -156,11 +157,15 @@ public class EmployeeEntity {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
-        logger.info("addAwardHandler companyConf:{}", companyConf.toString());
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
             logger.info("addAwardHandler 有配置信息");
             JobPositionPojo positionPojo = positionDao.getPosition(positionId);
+            if (positionPojo != null) {
+                logger.info("addAwardBefore positionPojo is_referral:{}", positionPojo.is_referral);
+            } else {
+                logger.info("addAwardBefore positionPojo is null!");
+            }
             if (positionPojo != null && positionPojo.is_referral == 0) {
                 logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
                 return;

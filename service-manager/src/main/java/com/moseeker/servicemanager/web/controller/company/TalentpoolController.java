@@ -615,7 +615,6 @@ public class TalentpoolController {
     }
 
 
-
     /*
        获取人才标签列表
     */
@@ -641,6 +640,8 @@ public class TalentpoolController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+
 
     /*
        获取企业筛选规则列表

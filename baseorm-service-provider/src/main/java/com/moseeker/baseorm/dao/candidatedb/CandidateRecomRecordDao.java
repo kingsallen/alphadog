@@ -15,12 +15,10 @@ import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.*;
 
@@ -339,14 +337,18 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList) {
+    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList,
+                                                                  List<Integer> referenceIdList) {
         int count = 0;
         SelectConditionStep selectConditionStep = create
                 .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                         CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId))
-                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)));
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId)))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList));
+        if (referenceIdList != null && referenceIdList.size() > 0) {
+            selectConditionStep = selectConditionStep.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.notIn(referenceIdList));
+        }
 
         Result<Record1<Integer>> result = selectConditionStep.fetch();
         if (result != null && result.size() > 0) {
@@ -431,9 +433,10 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
 
     public int insertIfNotExist(CandidateRecomRecordRecord recomRecordRecord) {
 
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         Param<Integer> positionIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.getName(), recomRecordRecord.getPositionId());
         Param<Integer> applicationIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.getName(), recomRecordRecord.getAppId());
-        Param<Timestamp> recomTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), new Timestamp(System.currentTimeMillis()));
+        Param<Timestamp> recomTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), now);
         Param<Integer> depthParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.DEPTH.getName(), recomRecordRecord.getDepth());
         Param<String> reasonParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON.getName(), recomRecordRecord.getRecomReason());
         Param<String> mobileParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE.getName(), recomRecordRecord.getMobile());
@@ -442,6 +445,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         Param<Byte> genderParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER.getName(), recomRecordRecord.getGender());
         Param<String> emailParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL.getName(), recomRecordRecord.getEmail());
         Param<Integer> recomStateParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.getName(), 0);
+        Param<Timestamp> clickTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), now);
 
         create.insertInto(CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
@@ -454,7 +458,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME
         ).select(
                 select(
                         positionIdParam,
@@ -467,7 +472,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                         postUserIdParam,
                         genderParam,
                         emailParam,
-                        recomStateParam
+                        recomStateParam,
+                        clickTimeParam
                 )
                 .whereNotExists(
                         selectOne()
