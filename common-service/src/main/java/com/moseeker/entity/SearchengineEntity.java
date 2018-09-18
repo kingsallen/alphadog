@@ -540,6 +540,7 @@ public class SearchengineEntity {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
+                        logger.info("removeApplication applications:{}", JSON.toJSONString(userMap.get("applications")));
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
@@ -549,7 +550,7 @@ public class SearchengineEntity {
                                     logger.info("removeApplication 删除索引 users id:{}", id);
                                     client.prepareDelete("users", "users", id + "").execute().actionGet();
                                 } else {
-                                    logger.info("removeApplication 更新索引 apps:{}", apps);
+                                    logger.info("removeApplication 更新索引 apps:{}", JSON.toJSONString(apps));
                                     userMap.put("applications", apps);
                                     mapTemp.put("user", userMap);
                                     client.prepareUpdate("users", "users", id + "")
@@ -558,6 +559,8 @@ public class SearchengineEntity {
                                 // 更新ES
                             }
                         }
+                    } else {
+                        logger.info("removeApplication applications is null");
                     }
                 }
             }
