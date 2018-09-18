@@ -1276,6 +1276,9 @@ public class UseraccountsService {
             userUserDO.setUsername(claimForm.getMobile());
             UserUserRecord userUserRecord = new UserUserRecord();
             userUserRecord.setId(userUserDO.getId());
+            if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getName())) {
+                userUserRecord.setName(claimForm.getName());
+            }
             userUserRecord.setUsername(claimForm.getMobile().trim());
             userUserRecord.setMobile(Long.valueOf(claimForm.getMobile().trim()));
             userdao.updateRecord(userUserRecord);
