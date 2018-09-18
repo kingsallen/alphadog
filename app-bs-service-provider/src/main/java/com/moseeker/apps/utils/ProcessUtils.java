@@ -82,6 +82,7 @@ public class ProcessUtils {
 	public static final String RECRUIT_STATUS_FULL_RECOM_INFO_MESSAGE = "完善被推荐人信息"; //完善被推荐人
 	
 	public static final int RECRUIT_STATUS_APPLY_ID = 1;//提交简历成功
+	public static final int RECRUIT_STATUS_EMPLOYEE_REFERRAL = 15;//内推
 	public static final int RECRUIT_FULL_RECOM_ID = 13;//完善被推荐人信息
 	public static final int RECRUIT_STATUS_CVCHECKED_ID = 6;//简历被查看
 	public static final int RECRUIT_STATUS_REJECT_ID = 4;//简历被查看
