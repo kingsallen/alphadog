@@ -69,19 +69,43 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
 
     /**
      * 认领推荐记录
-     * @param id 认领记录编号
+     * @param referralLog 认领记录
      * @param userId 认领人
      * @return true 认领成功 false 认领失败
      */
-    public boolean claim(int id, int userId) {
+    public boolean claim(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog referralLog, int userId) {
         int execute = using(configuration())
                 .update(ReferralLog.REFERRAL_LOG)
                 .set(ReferralLog.REFERRAL_LOG.REFERENCE_ID, userId)
                 .set(ReferralLog.REFERRAL_LOG.CLAIM, ClaimType.Claimed.getValue())
                 .set(ReferralLog.REFERRAL_LOG.CLAIM_TIME, new Timestamp(System.currentTimeMillis()))
-                .where(ReferralLog.REFERRAL_LOG.ID.eq(id))
+                .where(ReferralLog.REFERRAL_LOG.ID.eq(referralLog.getId()))
                 .and(ReferralLog.REFERRAL_LOG.CLAIM.eq(ClaimType.UnClaim.getValue()))
+                .andNotExists(
+                        selectOne()
+                        .from(
+                                selectFrom(ReferralLog.REFERRAL_LOG)
+                                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(referralLog.getEmployeeId()))
+                                .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(referralLog.getPositionId()))
+                                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(userId))
+                        )
+                )
                 .execute();
         return execute == 1;
+    }
+
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog
+    fetchByEmployeeIdReferenceIdUserId(Integer employeeId, Integer referenceId, int positionId) {
+        ReferralLogRecord referralLogRecord = using(configuration())
+                .selectFrom(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
+                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                .and(ReferralLog.REFERRAL_LOG.POSITION_ID.eq(positionId))
+                .fetchOne();
+        if (referralLogRecord != null) {
+            return referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
+        } else {
+            return null;
+        }
     }
 }

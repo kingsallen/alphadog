@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -167,9 +166,10 @@ public class ReferralEntity {
 
     public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
 
-        if (!referralLogDao.claim(referralLog.getId(), userUserDO.getId())) {
+        if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
         }
+
 
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
@@ -206,5 +206,9 @@ public class ReferralEntity {
         if (postUserId > 0) {
             candidateRecomRecordDao.changePostUserId(postUserId, referralLog.getReferenceId(), userUserDO.getId());
         }
+    }
+
+    public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
+        return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
     }
 }

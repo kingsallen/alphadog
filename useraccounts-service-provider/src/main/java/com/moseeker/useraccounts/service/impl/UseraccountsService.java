@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -1211,9 +1212,18 @@ public class UseraccountsService {
         if (referralLog == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
+
         if (referralLog.getClaim() == 1) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_ALREADY_CLAIMED;
         }
+
+        ReferralLog repeatReferralLog = referralEntity.fetchReferralLog(referralLog.getEmployeeId(),
+                referralLog.getPositionId(), claimForm.getUserId());
+        if (repeatReferralLog != null && repeatReferralLog.getClaim() != null
+                && repeatReferralLog.getClaim() == ClaimType.Claimed.getValue()) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
+        }
+
         UserUserDO userUserDO = userdao.getUser(claimForm.getUserId());
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
