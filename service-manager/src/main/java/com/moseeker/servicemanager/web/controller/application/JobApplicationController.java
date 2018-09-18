@@ -69,7 +69,8 @@ public class JobApplicationController {
 	 * <p>
 	 *
 	 */
-	@RequestMapping(value = "/application", method = RequestMethod.PUT)
+	@RequestMapping(value = "" +
+			"", method = RequestMethod.PUT)
 	@ResponseBody
 	public String put(HttpServletRequest request, HttpServletResponse response) {
 		try {

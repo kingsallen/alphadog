@@ -258,10 +258,13 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 查找职位转发浏览记录 */
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList =
-                candidateDBDao.listCandidateRecomRecordDONew(param.getPostUserId(), param.getClickTime(),
-                        param.getRecoms(), positionIdList);
+//        List<CandidateRecomRecordDO> candidateRecomRecordDOList =
+//                candidateDBDao.listCandidateRecomRecordDONew(param.getPostUserId(), param.getClickTime(),
+//                        param.getRecoms(), positionIdList);
 
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList =
+                candidateDBDao.listCandidateRecomRecordDO(param.getPostUserId(), param.getClickTime(),
+                        param.getRecoms(), positionIdList);
         if (candidateRecomRecordDOList != null && candidateRecomRecordDOList.size() > 0) {
 
             /** 并行查找职位信息，被动求职者信息，推荐人信息 */
