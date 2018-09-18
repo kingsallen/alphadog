@@ -1146,7 +1146,6 @@ public class TalentpoolSearchengine {
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
-        String is_referral=params.get("is_referral");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
@@ -1178,9 +1177,6 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
                 this.queryByPositionIdStatus(positionStatus,query);
             }
-            if (StringUtils.isNotNullOrEmpty(is_referral)) {
-                this.queryByIsReferral(is_referral, query);
-            }
         }
 
     }
@@ -1188,10 +1184,9 @@ public class TalentpoolSearchengine {
      处理职位id,这里改变了参数
      */
     private void handlerPositionId(Map<String,String> params){
-        String positionWord=params.get("position_key_word");
         String positionIdList=params.get("position_id");
-        if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
-            String positionIds=this.PositionIdQuery(params,positionWord);
+        if(StringUtils.isNullOrEmpty(positionIdList)){
+            String positionIds=this.PositionIdQuery(params);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);
             }
@@ -1200,16 +1195,15 @@ public class TalentpoolSearchengine {
     /*
      处理职位
      */
-    private String PositionIdQuery(Map<String,String> params,String positionWord){
-        if(StringUtils.isNotNullOrEmpty(positionWord)){
+    private String PositionIdQuery(Map<String,String> params){
             Map<String,String> suggetParams=this.convertParams(params);
             Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
             List<Integer> positionIdList=this.getSuggestPositionId(result);
             String positionIds=searchUtil.listConvertString(positionIdList);
             return positionIds;
-        }
-        return null;
     }
+
+
     /*
      获取positionId的列表
      */
@@ -1237,6 +1231,7 @@ public class TalentpoolSearchengine {
         suggetParams.put("page_from","1");
         suggetParams.put("page_size","1000000");
         suggetParams.put("return_params","title,id");
+        suggetParams.put("is_referral",params.get("is_referral"));
         String status=params.get("position_status");
         if(StringUtils.isNotNullOrEmpty(status)){
             suggetParams.put("flag",status);
@@ -1676,12 +1671,6 @@ public class TalentpoolSearchengine {
     private void queryBySubmitTime(String submitTime,QueryBuilder queryBuilder){
         String dataTime=this.getLongTime(submitTime);
         searchUtil.hanleRangeFilter(dataTime,queryBuilder,"user.applications.submit_time");
-    }
-    /*
-       构建是否内推查询语句
-     */
-    private void queryByIsReferral(String is_referral,QueryBuilder queryBuilder){
-        searchUtil.handleTerm(is_referral,queryBuilder,"user.applications.is_referral");
     }
 
     private String getLongTime(String submitTime){
