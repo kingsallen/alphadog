@@ -5,14 +5,11 @@ import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
@@ -57,9 +54,6 @@ public class ReferralEntity {
 
     @Autowired
     private CandidateRecomRecordDao candidateRecomRecordDao;
-
-    @Autowired
-    private JobApplicationDao applicationDao;
 
     @Autowired
     private ProfileProfileDao profileDao;
@@ -170,17 +164,6 @@ public class ReferralEntity {
 
         if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
-        }
-
-
-        JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                referralLog.getPositionId());
-        if (application != null) {
-            JobApplicationRecord record = new JobApplicationRecord();
-            record.setId(application.getId());
-            record.setApplierId(userUserDO.getId());
-            record.setApplierName(userUserDO.getName());
-            applicationDao.updateRecord(record);
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());

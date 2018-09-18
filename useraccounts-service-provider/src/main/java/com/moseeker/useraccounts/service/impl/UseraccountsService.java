@@ -5,8 +5,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
-import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -34,6 +38,8 @@ import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -108,6 +114,9 @@ public class UseraccountsService {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -1273,5 +1282,28 @@ public class UseraccountsService {
         }
 
         referralEntity.claimReferralCard(userUserDO, referralLog);
+
+        changeApplication(userUserDO, referralLog);
     }
+
+    private void changeApplication(UserUserDO userUserDO, ReferralLog referralLog) {
+        com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
+                referralLog.getPositionId());
+        if (application != null) {
+
+            JobApplication jobApplication = new JobApplication();
+            jobApplication.setId(application.getId());
+            jobApplication.setApplier_id(userUserDO.getId());
+            jobApplication.setApplier_name(userUserDO.getName());
+
+            try {
+                applicationService.putApplication(jobApplication);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
 }
