@@ -112,7 +112,7 @@ public class EmployeeBatchHandler {
 
         }
 
-        logger.info("postPutUserEmployeeBatch {},不在集合中的数据:{}条", batchForm.getCompany_id(), delIds.size());
+        logger.info("postPutUserEmployeeBatch {},del_not_include:{},不在集合中的数据:{}条", batchForm.getCompany_id(), batchForm.isDel_not_include(), delIds.size());
 
         if (batchForm.isDel_not_include() && delIds.size() > 0) {
             delEmployees(delIds, batchForm);
