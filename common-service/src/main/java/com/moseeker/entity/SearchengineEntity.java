@@ -540,11 +540,9 @@ public class SearchengineEntity {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
-                        logger.info("removeApplication applications:{}", JSON.toJSONString(userMap.get("applications")));
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
-                            logger.info("removeApplication applications :{}", JSON.toJSONString(applications));
                             if (applicationOptional.isPresent()) {
                                 logger.info("removeApplication exists ");
                                 List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());
@@ -553,7 +551,7 @@ public class SearchengineEntity {
                                     logger.info("removeApplication 删除索引 users id:{}", id);
                                     client.prepareDelete("users", "users", id + "").execute().actionGet();
                                 } else {
-                                    logger.info("removeApplication 更新索引 apps:{}", JSON.toJSONString(apps));
+                                    logger.info("removeApplication 更新索引 apps:{}", apps);
                                     userMap.put("applications", apps);
                                     mapTemp.put("user", userMap);
                                     client.prepareUpdate("users", "users", id + "")
@@ -562,8 +560,6 @@ public class SearchengineEntity {
                                 // 更新ES
                             }
                         }
-                    } else {
-                        logger.info("removeApplication applications is null");
                     }
                 }
             }
@@ -751,6 +747,14 @@ public class SearchengineEntity {
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
 
             ((BoolQueryBuilder) queryGTAward).must(activeEmployeeCondition);
+            logger.info("getSort activeEmployeeCondition:{}", queryGTAward);
+
+            logger.info("ex sql :{}", client.prepareSearch("awards").setTypes("award")
+                    .setQuery(queryGTAward)
+                    .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
+                    .setSize(0).toString());
 
             QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
@@ -765,8 +769,8 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
-            logger.info("getSort queryGTAward:{}", queryGTAward);
-            logger.info("getSort query:{}", query);
+
+            logger.info("getSort activeEmployeeCondition:{}", query);
 
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
@@ -847,9 +851,7 @@ public class SearchengineEntity {
             return  ResponseUtils.fail(9999,"ES操作失败");
         } else {
             return ResponseUtils.success(response);
-        }
-    }
-
+        }    }
 
     @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
@@ -884,8 +886,6 @@ public class SearchengineEntity {
             logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
 
             return ResponseUtils.success(bulkResponse);
-
         }
     }
-
 }

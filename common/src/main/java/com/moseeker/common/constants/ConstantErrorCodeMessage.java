@@ -137,7 +137,7 @@ public final class ConstantErrorCodeMessage {
     public static final String THIRD_PARTY_ACCOUNT_PWD_ERROR="{'status':43002,'message':'会员名、用户名或密码错误，请重新绑定账号！'}";
     public static final String HRACCOUNT_NOT_EXISTS="{'status':43003,'message':'沒有符合条件的hr账号！'}";
     public static final String HRACCOUNT_INFO_ERROR="{'status':43003,'message':'用戶信息错误！'}";
-    public static final String NO_MATCH_AUTH_METHOD="{'status':43004,'message':'没有匹配的员工认证方式！'}";
+    public static final String NO_MATCH_AUTH_METHOD="{'status':43005,'message':'没有匹配的员工认证方式！'}";
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";

@@ -30,15 +30,23 @@ public class EmployeeBatchHandlerTest {
     public void postPutUserEmployeeBatch() throws Exception {
 
         String json = "{\n" +
-                "  \"as_task\": true,\n" +
-                "  \"auth_method\": 0,\n" +
-                "  \"cancel_auth\": false,\n" +
-                "  \"company_id\": 44555,\n" +
-                "  \"data\": [\n" +
-                "    {\"departmentname\": \"\", \"custom_field_values\": \"[{\\\"31\\\": [\\\"CN FGM Development\\\"]}]\", \"email\": \"regan.shen@cn.mcd.com\", \"custom_field\": \"10259256\", \"company_id\": 44555, \"cname\": \"\\u6c88\\u8363\\u521a\"}"+
-                "\n" +
+                "  'company_id': 133445,\n" +
+                "  'del_not_include': false,\n" +
+                "  'appid': 1,\n" +
+                "  'cancel_auth': true,\n" +
+                "  'data': [\n" +
+                "    \n" +
+                "    {\n" +
+                "      'company_id': 133445,\n" +
+                "      'custom_field_values': '[{\"82\": [\"CN MCCL Data Enabling Enterprise\"]},{\"98\": [\"Staff\"]}]',\n" +
+                "      'cname': '王晨',\n" +
+                "      'custom_field': '14119043',\n" +
+                "      'departmentname': '',\n" +
+                "      'email': 'steven.wang@cn.mcd.com'\n" +
+                "    }\n" +
                 "  ],\n" +
-                "  \"del_not_include\": false\n" +
+                "  'auth_method': 0,\n" +
+                "  'as_task': true\n" +
                 "}";
 
         UserEmployeeBatchForm form = JSON.parseObject(json,UserEmployeeBatchForm.class);
