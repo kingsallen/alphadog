@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 简历搬家操作记录表
+ * 简历搬家chaos请求操作记录表
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMoveRecordRecord> {
 
-    private static final long serialVersionUID = -923185493;
+    private static final long serialVersionUID = 509086647;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move_record</code>
@@ -62,14 +62,9 @@ public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMove
     public final TableField<TalentpoolProfileMoveRecordRecord, Integer> PROFILE_MOVE_ID = createField("profile_move_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "profile_move.id");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_move_record.thirdparty_company_id</code>. thirdparty_account_company.id
-     */
-    public final TableField<TalentpoolProfileMoveRecordRecord, Integer> THIRDPARTY_COMPANY_ID = createField("thirdparty_company_id", org.jooq.impl.SQLDataType.INTEGER, this, "thirdparty_account_company.id");
-
-    /**
      * The column <code>talentpooldb.talentpool_profile_move_record.crawl_type</code>. 简历类型 0.主动投递简历  1.已下载简历
      */
-    public final TableField<TalentpoolProfileMoveRecordRecord, Byte> CRAWL_TYPE = createField("crawl_type", org.jooq.impl.SQLDataType.TINYINT, this, "简历类型 0.主动投递简历  1.已下载简历");
+    public final TableField<TalentpoolProfileMoveRecordRecord, Byte> CRAWL_TYPE = createField("crawl_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "简历类型 0.主动投递简历  1.已下载简历");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_move_record.crawl_num</code>. 本次简历搬家获取简历数

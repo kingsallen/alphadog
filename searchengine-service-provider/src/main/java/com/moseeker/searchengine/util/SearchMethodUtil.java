@@ -1,10 +1,13 @@
 package com.moseeker.searchengine.util;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.FormCheck;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.script.Script;
@@ -75,6 +78,7 @@ public class SearchMethodUtil {
         list.add("title");
         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
+        logger.info("searchPrefix   query : {}", query);
         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
@@ -147,11 +151,13 @@ public class SearchMethodUtil {
         String candidateSource=params.get("candidate_source");
         String candidateSourceName=params.get("candidate_source_name");
         String city=params.get("city");
+        String cities=params.get("cities");
         String occupation=params.get("occupation");
         String teamName=params.get("team_name");
         String employmentType=params.get("employment_type");
         String employmentTypeName=params.get("employment_type_name");
         String degreeName=params.get("degree_name");
+        String degree = params.get("degree");
         String custom=params.get("custom");
         String salaryTop=params.get("salary_top");
         String salaryBottom=params.get("salary_bottom");
@@ -160,6 +166,9 @@ public class SearchMethodUtil {
         String publisherCompanyId=params.get("did");
         String isReferral=params.get("is_referral");
         String department = params.get("department");
+        String salary=params.get("salary");
+
+        logger.info("handlerCommonSuggest params  {}", JSON.toJSONString(params));
         searchUtil.handleTerms(companyIds,query,"company_id");
         String flag=params.get("flag");
         if(StringUtils.isBlank(flag)){
@@ -185,8 +194,11 @@ public class SearchMethodUtil {
             searchUtil.handleTerms(publisher,query,"publisher");
         }
         if(StringUtils.isNotBlank(candidateSource)){
-            if(Integer.valueOf(candidateSource) >=0) {
-                searchUtil.handleTerm(candidateSource,query,"candidate_source");
+            if(!FormCheck.isNumber(candidateSource)) {
+                //如果candidateSource传的是汉字不是数字1或0
+                searchUtil.handleMatchParse(candidateSource,query,"candidate_source_name");
+            }else if(Integer.valueOf(candidateSource) >=0) {
+                searchUtil.handleMatchParse(candidateSource,query,"candidate_source");
             }
         }
 
@@ -200,6 +212,8 @@ public class SearchMethodUtil {
 
         if(StringUtils.isNotBlank(city)){
             searchUtil.handleTerms(city,query,"city");
+        } else if(StringUtils.isNotBlank(cities) ) {
+            searchUtil.handleTerms(cities,query,"city");
         }
 
         if(StringUtils.isNotBlank(occupation)){
@@ -209,21 +223,40 @@ public class SearchMethodUtil {
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
         }
         if(StringUtils.isNotBlank(employmentType)){
-            if(Integer.valueOf(employmentType) >= 0) {
-                searchUtil.handleTerm(employmentType,query,"employment_type");
+            if(!FormCheck.isNumber(employmentType)) {
+                    //如果employmentType传的是汉字不是数字1或0
+                searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
+            }else if(Integer.valueOf(employmentType) >= 0) {
+                searchUtil.handleMatchParse(employmentType,query,"employment_type");
             }
         }
         if(StringUtils.isNotBlank(employmentTypeName)){
-            searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
+            searchUtil.handleMatchParse(employmentTypeName,query,"employment_type_name");
         }
         if(StringUtils.isNotBlank(degreeName)){
             searchUtil.handleTerm(degreeName,query,"search_data.degree_name");
+        }else if(StringUtils.isNotBlank(degree)){
+            searchUtil.handleTerm(degree,query,"search_data.degree_name");
         }
+
         if(StringUtils.isNotBlank(custom)){
             searchUtil.handleTerm(custom,query,"search_data.custom");
         }
         if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
+        }
+
+        if(StringUtils.isNotBlank(salary)&&salary.contains(",")) {
+            String[] salary_list = salary.split(",");
+            String salary_from = salary_list[0];
+            String salary_to = salary_list[1];
+            QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom").from(salary_from).to(salary_to);
+            QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top").from(salary_from).to(salary_to);
+            QueryBuilder salaryor = QueryBuilders.boolQuery();
+
+            ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
+            ((BoolQueryBuilder) salaryor).should(salary_top_filter);
+            ((BoolQueryBuilder) query).must(salaryor);
         }
 
     }

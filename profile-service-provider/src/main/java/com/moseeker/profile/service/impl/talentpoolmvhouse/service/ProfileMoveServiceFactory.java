@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl.talentpoolmvhouse.service;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,12 +20,12 @@ public class ProfileMoveServiceFactory {
         this.services = services;
     }
 
-    public AbstractProfileMoveService getSerivce(int channel){
+    public AbstractProfileMoveService getSerivce(int channel) throws BIZException {
         for(AbstractProfileMoveService profileMoveService : services){
             if (profileMoveService.getChannelType().getValue() == channel) {
                 return profileMoveService;
             }
         }
-        return null;
+        throw new BIZException(99999, "该渠道不支持简历搬家");
     }
 }

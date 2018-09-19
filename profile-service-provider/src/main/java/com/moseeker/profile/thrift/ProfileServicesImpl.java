@@ -9,7 +9,6 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
-import com.moseeker.profile.service.ReferralService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;

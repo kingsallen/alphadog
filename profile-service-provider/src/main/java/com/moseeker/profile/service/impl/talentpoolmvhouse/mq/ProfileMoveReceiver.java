@@ -9,6 +9,7 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.CrawlTypeEnum;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,15 +31,12 @@ public class ProfileMoveReceiver {
 
     private Logger logger = LoggerFactory.getLogger(ProfileMoveReceiver.class);
 
-    private final TalentPoolProfileMoveDao profileMoveDao;
-
     private final TalentPoolProfileMoveRecordDao profileMoveRecordDao;
 
     private final ProfileMailUtil mailUtil;
 
     @Autowired
-    public ProfileMoveReceiver(TalentPoolProfileMoveDao profileMoveDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveRecordDao profileMoveRecordDao) {
-        this.profileMoveDao = profileMoveDao;
+    public ProfileMoveReceiver(ProfileMailUtil mailUtil, TalentPoolProfileMoveRecordDao profileMoveRecordDao) {
         this.mailUtil = mailUtil;
         this.profileMoveRecordDao = profileMoveRecordDao;
     }
@@ -52,6 +50,10 @@ public class ProfileMoveReceiver {
             json=new String(message.getBody(), "UTF-8");
             Response response = JSONObject.parseObject(json, Response.class);
             if(response == null){
+                return;
+            }
+            if(response.getStatus() != 0){
+                logger.info("=====================简历搬家失败:{}", json);
                 return;
             }
             JSONObject params = JSONObject.parseObject(response.getData());
@@ -71,6 +73,8 @@ public class ProfileMoveReceiver {
                 recordRecord.setUpdateTime(null);
             }
             profileMoveRecordDao.updateRecords(records);
+        } catch (BIZException e){
+            logger.info("handle profile move email num Error : {}, message :{}",e.getMessage(),json);
         } catch (Exception e){
             mailUtil.sendMvHouseFailedEmail(e, "rabbitmq接收邮件总数时发生异常" + json);
             logger.error("handle profile move email num Error : {}, message :{}",e.getMessage(),json);
