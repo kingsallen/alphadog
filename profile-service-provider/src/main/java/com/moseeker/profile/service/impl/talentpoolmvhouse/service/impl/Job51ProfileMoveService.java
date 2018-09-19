@@ -5,11 +5,13 @@ import com.moseeker.profile.service.impl.talentpoolmvhouse.service.AbstractProfi
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseVO;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.ProfileMoveOperationInfoVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 51简历搬家service
@@ -39,7 +41,7 @@ public class Job51ProfileMoveService extends AbstractProfileMoveService {
      * @date 2018/9/9
      */
     @Override
-    public MvHouseVO handleRequestParams(UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate,
+    public MvHouseVO handleRequestParams(List<ThirdpartyAccountCompanyDO> companyDOS, UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate,
                                          int profileMoveId, boolean isFirstMove) {
         String password = hrThirdPartyAccountDO.getPassword();
         ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();

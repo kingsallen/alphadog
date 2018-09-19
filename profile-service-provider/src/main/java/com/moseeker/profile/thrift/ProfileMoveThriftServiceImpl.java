@@ -42,6 +42,9 @@ public class ProfileMoveThriftServiceImpl implements Iface {
             int channel = form.getChannel();
             AbstractProfileMoveService profileMoveService = profileMoveServiceFactory.getSerivce(channel);
             return profileMoveService.moveHouseLogin(form);
+        }catch (BIZException e){
+            logger.info(e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "简历搬家用户登录时发生异常" + form.toString());
             logger.info(e.getMessage(), e);

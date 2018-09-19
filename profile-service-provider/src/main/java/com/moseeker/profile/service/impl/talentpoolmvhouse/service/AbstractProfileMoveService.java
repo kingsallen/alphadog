@@ -33,8 +33,10 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveRecordDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.talentpool.struct.ProfileMoveForm;
 import org.apache.thrift.TException;
@@ -118,6 +120,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         if (hrThirdPartyAccountDO == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
         }
+        HrThirdPartyAccountHrDO hrDO = hrThirdPartyAccountHrDao.getHrAccountInfo(hrId, channel);
+//             通过第三方账号获取第三方公司名称
+        List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(hrDO.getHrAccountId());
         // 查询下之前有没有搬家过，如果搬过家并且成功状态，起止时间为上次的结束时间
         List<TalentPoolProfileMoveDO> profileMoveDOS = profileMoveDao.getListByHrIdAndChannel(hrId, channel);
         List<Integer> moveIds = profileMoveDOS.stream().map(TalentPoolProfileMoveDO::getId).collect(Collectors.toList());
@@ -144,7 +149,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         // 插入talentpool_profile_move_record表
         insertProfileMoveRecordRecord(profileMoveId);
         // 映射简历搬家参数
-        MvHouseVO mvHouseVO = handleRequestParams(userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate, profileMoveId, isFirstMove);
+        MvHouseVO mvHouseVO = handleRequestParams(thirdpartyAccountCompanyDOS, userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate, profileMoveId, isFirstMove);
         sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_REQUEST, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
         return ResponseUtils.success(new HashMap<>(1 >> 4));
     }
@@ -451,8 +456,8 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @author cjm
      * @date 2018/9/9
      */
-    public abstract MvHouseVO handleRequestParams(UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate,
-                                                  int profileMoveId, boolean isFirstMove) throws BIZException;
+    public abstract MvHouseVO handleRequestParams(List<ThirdpartyAccountCompanyDO> companyDOS, UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO,
+                                                  Date startDate, Date endDate, int profileMoveId, boolean isFirstMove) throws BIZException;
 
     /**
      * 插入简历搬家详细操作记录表 talentpool_profile_move_record
