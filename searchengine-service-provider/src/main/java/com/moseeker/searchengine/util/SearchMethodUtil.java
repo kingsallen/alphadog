@@ -78,6 +78,7 @@ public class SearchMethodUtil {
         list.add("title");
         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
+        logger.info("searchPrefix   query : {}", query);
         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
@@ -238,9 +239,9 @@ public class SearchMethodUtil {
         if(StringUtils.isNotBlank(custom)){
             searchUtil.handleTerm(custom,query,"search_data.custom");
         }
-        if(StringUtils.isNotBlank(isReferral)){
+        /*if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
-        }
+        }*/
 
         if(StringUtils.isNotBlank(salary)&&salary.contains(",")) {
             String[] salary_list = salary.split(",");
