@@ -68,7 +68,6 @@ public class ProfileMoveReceiver {
                 }else if(recordRecord.getCrawlType() == CrawlTypeEnum.APPLY_CRAWL.getStatus()){
                     recordRecord.setTotalEmailNum(applySuccessNum);
                 }
-                recordRecord.setUpdateTime(null);
             }
             profileMoveRecordDao.updateRecords(records);
         } catch (Exception e){

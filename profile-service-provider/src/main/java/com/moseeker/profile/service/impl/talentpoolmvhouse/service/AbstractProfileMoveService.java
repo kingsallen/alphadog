@@ -122,7 +122,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         }
         HrThirdPartyAccountHrDO hrDO = hrThirdPartyAccountHrDao.getHrAccountInfo(hrId, channel);
 //             通过第三方账号获取第三方公司名称
-        List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(hrDO.getHrAccountId());
+        List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(hrDO.getThirdPartyAccountId());
         // 查询下之前有没有搬家过，如果搬过家并且成功状态，起止时间为上次的结束时间
         List<TalentPoolProfileMoveDO> profileMoveDOS = profileMoveDao.getListByHrIdAndChannel(hrId, channel);
         List<Integer> moveIds = profileMoveDOS.stream().map(TalentPoolProfileMoveDO::getId).collect(Collectors.toList());
