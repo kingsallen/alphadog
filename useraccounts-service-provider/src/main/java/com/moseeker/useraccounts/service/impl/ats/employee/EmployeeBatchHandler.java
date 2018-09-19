@@ -46,17 +46,14 @@ public class EmployeeBatchHandler {
             return new int[0];
         }
 
-        // 默认自定义认证
-        if (!batchForm.isSetAuth_method()) {
-            batchForm.setAuth_method(EmployeeAuthMethod.CUSTOM_AUTH.getCode());
-        }
-
         // 默认物理删除
         if (!batchForm.isSetCancel_auth()) {
             batchForm.setCancel_auth(false);
         }
 
-        logger.info("postPutUserEmployeeBatch {},auth_method:{},总数据:{}条", batchForm.getCompany_id(), batchForm.getAuth_method(), batchForm.getData().size());
+        logger.info("postPutUserEmployeeBatch {},del_not_include:{},as_task:{},cancel_auth:{},auth_method:{},总数据:{}条",
+                batchForm.getCompany_id(), batchForm.isDel_not_include(),batchForm.isAs_task() ,
+                batchForm.isCancel_auth(), batchForm.getAuth_method(), batchForm.getData().size());
 
         //这批数据的特征值集合
         List<String> uniqueFlags = new ArrayList<>();
