@@ -546,6 +546,8 @@ public class CompanyFilterTagValidation {
                     list.add(256);
                     list.add(512);
                     list.add(1024);
+                    list.add(32768);
+                    list.add(65536);
                     if(list.contains(origin)){
                         return true;
                     }

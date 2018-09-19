@@ -2,6 +2,7 @@ package com.moseeker.common.biztools;
 
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.RecruitmentScheduleLastStepNotExistException;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import java.util.Map;
  */
 public enum RecruitmentScheduleEnum {
     APPLY(Constant.RECRUIT_STATUS_APPLY),
+    EMPLOYEE_REFERRAL(Constant.RECRUIT_STATUS_UPLOAD_PROFILE),
     INTERVIEW(Constant.RECRUIT_STATUS_INTERVIEW),
     HIRED(Constant.RECRUIT_STATUS_HIRED),
     REJECT(Constant.RECRUIT_STATUS_REJECT),
@@ -53,6 +55,7 @@ public enum RecruitmentScheduleEnum {
         switch (this.id) {
             case 1:
             case 7 :
+            case 15:
             case 13 : value =  1;break;
             case 6: value = 2; break;
             case 8:
@@ -64,12 +67,13 @@ public enum RecruitmentScheduleEnum {
             case 3:
             case 11: value = 5; break;
             case 4:
-                if(lastID == 0 || lastID > 13) {
+                if(lastID == 0 || lastID > 15) {
                     throw new RecruitmentScheduleLastStepNotExistException();
                 } else {
                     switch (lastID) {
                         case 1:
                         case 7 :
+                        case 15:
                         case 13 : value = 6; break;
                         case 6:  value = 7; break;
                         case 8:
@@ -97,6 +101,7 @@ public enum RecruitmentScheduleEnum {
         int value;
         switch (this.id) {
             case 1:
+            case 15:
             case 6: value = 1;break;
             case 8:
             case 9:
@@ -108,7 +113,7 @@ public enum RecruitmentScheduleEnum {
             case 11 :
             case 3: value = 3; break;
             case 4:
-                if(this.getLastID() < 0 || this.getLastID() > 13) {
+                if(this.getLastID() < 0 || this.getLastID() > 15) {
                     throw new RecruitmentScheduleLastStepNotExistException();
                 }
                 switch (lastID) {
@@ -119,6 +124,7 @@ public enum RecruitmentScheduleEnum {
                     case 10:
                     case 2:
                     case 5:
+                    case 15:
                         value = 2;
                         break;
                     case 12:
@@ -158,6 +164,7 @@ public enum RecruitmentScheduleEnum {
             case 12 :
             case 11 :
             case 3:
+            case 15:
                 if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
                 } else {
@@ -176,7 +183,7 @@ public enum RecruitmentScheduleEnum {
      * @throws RecruitmentScheduleLastStepNotExistException
      */
     public void setLastStep(int lastStep) throws RecruitmentScheduleLastStepNotExistException {
-        if(lastStep == 0 || lastStep > 13) {
+        if(lastStep == 0 || lastStep > 15) {
             throw new RecruitmentScheduleLastStepNotExistException();
         }
         this.lastID = lastStep;
@@ -193,6 +200,16 @@ public enum RecruitmentScheduleEnum {
                 this.priority = 3;
                 this.recuritOrder = 3;
                 this.applierView = "简历提交成功";
+                break;
+            case 15:
+                this.id = value;
+                this.status = "员工上传人才简历";
+                this.award = 10;
+                this.description = "员工上传人才简历积分奖励";
+                this.disable = true;
+                this.priority = 4;
+                this.recuritOrder = 3;
+                this.applierView = "员工上传人才简历";
                 break;
             case 2:
                 this.id = value;
@@ -377,6 +394,49 @@ public enum RecruitmentScheduleEnum {
         if(id != RecruitmentScheduleEnum.REJECT.getId()
                 && preID == RecruitmentScheduleEnum.REJECT.getId()) {
             return  "HR将您纳入候选名单";
+        }
+        if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
+            return "恭喜您已被内部员工推荐";
+        }
+        if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
+            return  "HR将您的状态改为待重新入职";
+        }
+        if(id == RecruitmentScheduleEnum.CV_PASSED.getId() && preID == RecruitmentScheduleEnum.OFFERED.getId()) {
+            return  "HR将您的状态改为待重新面试";
+        }
+        if(id == RecruitmentScheduleEnum.CV_CHECKED.getId() && preID == RecruitmentScheduleEnum.CV_PASSED.getId()) {
+            return  "HR将您的状态改为待重新筛选";
+        }
+        String eventDescription = applierView;
+        /** 如果投递时邮件投递，并且投递状态是成功投递 */
+        if (applyType == ApplyType.EMAIL.getValue()){
+            if(id == RecruitmentScheduleEnum.APPLY.getId()) {
+                switch (emailStatus) {
+                    case 1: eventDescription = EmailStatus.NOT_ANSWER_EMAIL.getMessage();break;
+                    case 2: eventDescription = EmailStatus.ATTACHMENT_NOT_SUPPORT.getMessage();break;
+                    case 3: eventDescription = EmailStatus.ATTACHMENT_MORE_THEN_MAXIMUN.getMessage();break;
+                    case 8: eventDescription = EmailStatus.MAIL_NOT_FOUND.getMessage();break;
+                    case 9: eventDescription = EmailStatus.MAIL_PARSING_FAILED.getMessage();break;
+                }
+            }
+        }
+        logger.info("getAppStatusDescription -- eventDescription : {}", eventDescription);
+        return eventDescription;
+    }
+
+    public String getAppStatusDescription(byte applyType, byte emailStatus, int preID, String name) {
+        logger.info("getAppStatusDescription -- id:{}, applyType : {},  emailStatus : {}, preID : {}", id, applyType, emailStatus, preID);
+
+        /** 如果上一条是拒绝，这一条是其他操作记录，那么现实"HR将您纳入候选名单" */
+        if(id != RecruitmentScheduleEnum.REJECT.getId()
+                && preID == RecruitmentScheduleEnum.REJECT.getId()) {
+            return  "HR将您纳入候选名单";
+        }
+        if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
+            if (StringUtils.isNotBlank(name)) {
+                return name+"推荐了您的简历";
+            }
+            return "恭喜您已被内部员工推荐";
         }
         if(id == RecruitmentScheduleEnum.OFFERED.getId() && preID == RecruitmentScheduleEnum.HIRED.getId()) {
             return  "HR将您的状态改为待重新入职";

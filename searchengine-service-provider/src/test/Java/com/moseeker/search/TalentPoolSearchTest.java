@@ -53,7 +53,7 @@ public class TalentPoolSearchTest {
     }
 
     @Test
-    public void testQuery(){
+    public void testQuery() throws Exception{
         Map<String,String> map=new HashMap<>();
         map.put("publisher","1,2,3,4");
         map.put("hr_account_id","82752");

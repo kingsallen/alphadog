@@ -5,17 +5,14 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.util.BeanUtils;
-
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
-
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-import org.jooq.types.UInteger;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -340,14 +337,18 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList) {
+    public int countCandidateRecomRecordDistinctPresenteePosition(int postUserId, List<Integer> positionIdList,
+                                                                  List<Integer> referenceIdList) {
         int count = 0;
         SelectConditionStep selectConditionStep = create
                 .select(countDistinct(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                         CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID))
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId))
-                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList)));
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(Integer.valueOf(postUserId)))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdList));
+        if (referenceIdList != null && referenceIdList.size() > 0) {
+            selectConditionStep = selectConditionStep.and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.notIn(referenceIdList));
+        }
 
         Result<Record1<Integer>> result = selectConditionStep.fetch();
         if (result != null && result.size() > 0) {
@@ -427,5 +428,84 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
             candidateRecomRecordDOList = BeanUtils.DBToStruct(com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO.class, result);
         }
         return candidateRecomRecordDOList;
+    }
+
+
+    public int insertIfNotExist(CandidateRecomRecordRecord recomRecordRecord) {
+
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        Param<Integer> positionIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.getName(), recomRecordRecord.getPositionId());
+        Param<Integer> applicationIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.getName(), recomRecordRecord.getAppId());
+        Param<Timestamp> recomTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), now);
+        Param<Integer> depthParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.DEPTH.getName(), recomRecordRecord.getDepth());
+        Param<String> reasonParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON.getName(), recomRecordRecord.getRecomReason());
+        Param<String> mobileParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE.getName(), recomRecordRecord.getMobile());
+        Param<Integer> presenteeUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPresenteeUserId());
+        Param<Integer> postUserIdParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
+        Param<Byte> genderParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER.getName(), recomRecordRecord.getGender());
+        Param<String> emailParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL.getName(), recomRecordRecord.getEmail());
+        Param<Integer> recomStateParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM.getName(), 0);
+        Param<Timestamp> clickTimeParam = param(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME.getName(), now);
+
+        create.insertInto(CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.DEPTH,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_REASON,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.MOBILE,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.GENDER,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.EMAIL,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
+                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME
+        ).select(
+                select(
+                        positionIdParam,
+                        applicationIdParam,
+                        recomTimeParam,
+                        depthParam,
+                        reasonParam,
+                        mobileParam,
+                        presenteeUserIdParam,
+                        postUserIdParam,
+                        genderParam,
+                        emailParam,
+                        recomStateParam,
+                        clickTimeParam
+                )
+                .whereNotExists(
+                        selectOne()
+                        .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                        .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                )
+        ).execute();
+
+        CandidateRecomRecordRecord recomRecordRecord1 = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc())
+                .limit(1)
+                .fetchOne();
+
+        return recomRecordRecord1.getId();
+    }
+
+    /**
+     * 修改推荐人
+     * @param postUserId 历史推荐人
+     * @param referenceId 被推荐人
+     * @param id 新推荐人
+     */
+    public void changePostUserId(int postUserId, Integer referenceId, int id) {
+        create.update(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                .set(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID, id)
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.eq(postUserId))
+                .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.eq(referenceId))
+                .execute();
     }
 }

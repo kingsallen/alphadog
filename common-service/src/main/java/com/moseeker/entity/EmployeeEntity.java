@@ -11,19 +11,23 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.userdb.tables.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -114,6 +118,9 @@ public class EmployeeEntity {
     @Autowired
     private HrWxWechatDao wechatDao;
 
+    @Autowired
+    private ReferralCompanyConfDao referralCompanyConfDao;
+
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
@@ -144,19 +151,31 @@ public class EmployeeEntity {
 
     // 转发点击操作 前置
     @Transactional
-    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId, int applicationId) throws Exception {
+    public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
+                               int applicationId) throws Exception {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
+        ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
+        if (companyConf != null && companyConf.getPositionPointsFlag() != null
+                && companyConf.getPositionPointsFlag() == 1) {
+            JobPositionPojo positionPojo = positionDao.getPosition(positionId);
+            if (positionPojo != null && positionPojo.is_referral == 0) {
+                logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
+                return;
+            }
+        }
         employeeDao.getUserEmployeeForUpdate(employeeId);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
+
         int awardConfigId = hrPointsConfDO == null ? 0 : hrPointsConfDO.getId();
         query.clear();
         query.where("employee_id", employeeId).and("position_id", positionId).and("award_config_id", awardConfigId).and("berecom_user_id", berecomUserId);
         UserEmployeePointsRecordDO userEmployeePointsRecordDO = ueprDao.getData(query.buildQuery());
+        logger.info("addAwardHandler 查找记录");
         if (userEmployeePointsRecordDO != null && userEmployeePointsRecordDO.getId() > 0) {
             logger.warn("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
-            throw new Exception("重复的加积分操作");
+            throw EmployeeException.EMPLOYEE_AWARD_REPEAT_PLUS;
         }
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
@@ -208,7 +227,7 @@ public class EmployeeEntity {
     public boolean addReward(int employeeId, int companyId, String reason, int applicationId, int positionId, int templateId, int berecomUserId) throws Exception {
         // 获取积分点数
         if (companyId == 0 || templateId == 0) {
-            throw new Exception("参数不完整");
+            throw EmployeeException.PROGRAM_PARAM_NOTEXIST;
         } else {
             int award;
             int awardConfigId = 0;
@@ -230,7 +249,7 @@ public class EmployeeEntity {
                     award = confTplDO.getAward();
                     reason = org.apache.commons.lang.StringUtils.defaultIfBlank(reason, confTplDO.getStatus());
                 } else {
-                    throw new Exception("添加积分点数不能为0");
+                    throw EmployeeException.EMPLOYEE_AWARD_ZERO;
                 }
             }
             UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
@@ -418,6 +437,10 @@ public class EmployeeEntity {
                         reward.setType(12);
                     } else if (reason.indexOf("完善被推荐人信息") > -1) {
                         reward.setType(13);
+                    } else if (reason.indexOf("完成员工认证") > -1) {
+                        reward.setType(14);
+                    } else if (reason.indexOf("员工上传人才简历") > -1) {
+                        reward.setType(15);
                     } else {
                         reward.setType(0); // 未知
                     }

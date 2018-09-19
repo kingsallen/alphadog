@@ -27,4 +27,12 @@ public class HrPointsConfDao extends JooqCrudImpl<HrPointsConfDO, HrPointsConfRe
                 .limit(1)
                 .fetchOne();
     }
+
+    public HrPointsConfRecord getRefineAward(int companyId) {
+        return create.selectFrom(HrPointsConf.HR_POINTS_CONF)
+                .where(HrPointsConf.HR_POINTS_CONF.STATUS_NAME.eq(Constant.POINTS_CONF_EMPLOYEE_VERIFIED))
+                .and(HrPointsConf.HR_POINTS_CONF.COMPANY_ID.eq(companyId))
+                .limit(1)
+                .fetchOne();
+    }
 }

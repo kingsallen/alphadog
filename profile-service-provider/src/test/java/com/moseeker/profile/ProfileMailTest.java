@@ -1,10 +1,8 @@
 package com.moseeker.profile;
 
+import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.entity.pojo.resume.Account;
-import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.config.AppConfig;
-import com.moseeker.profile.service.impl.ProfileService;
-import com.moseeker.profile.utils.ProfileMailUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

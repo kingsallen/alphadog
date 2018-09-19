@@ -9,11 +9,10 @@ import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
 import com.moseeker.application.service.application.alipay_campus.AlipaycampusStatus;
 import com.moseeker.application.service.application.qianxun.Status;
+import com.moseeker.application.service.impl.vo.ApplicationRecord;
+import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.historydb.HistoryJobApplicationDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
@@ -23,7 +22,8 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
@@ -35,6 +35,7 @@ import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.biztools.RecruitmentScheduleEnum;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -42,12 +43,15 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.ApplicationEntity;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
+import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -56,30 +60,21 @@ import com.moseeker.thrift.gen.chat.service.ChatService;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-import com.moseeker.thrift.gen.profile.service.ProfileServices;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.thrift.TException;
-import org.jooq.impl.DSL;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,6 +82,7 @@ import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 
@@ -136,6 +132,9 @@ public class JobApplicataionService {
 
     @Autowired
     private  JobApplicationFilterService filterService;
+
+    @Autowired
+    private HrWxWechatDao wechatDao;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -417,7 +416,7 @@ public class JobApplicataionService {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_ARCHIVE_FAILED);
             }
         } catch (Exception e) {
-            logger.error("deleteApplication JobApplicationRecord error: ", e);
+            logger.error("removeApplication JobApplicationRecord error: ", e);
             throw new TException();
         } finally {
             //do nothing
@@ -571,7 +570,7 @@ public class JobApplicataionService {
                     String.valueOf(userId), String.valueOf(companyId));
 
             UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
-            UserApplyCount conf = getApplicationCountLimit((int) companyId);
+            UserApplyCount conf = applicationEntity.getApplicationCountLimit((int) companyId);
             if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
                 params.put("socialApply", false);
             }else{
@@ -687,31 +686,6 @@ public class JobApplicataionService {
             logger.error("deleteRedisKeyApplicationCheckCount error:", e);
             throw new TException();
         }
-    }
-
-    /**
-     * 获取申请限制次数 默认3次 企业有自己的配置,使用企业的配置
-     *
-     * @param companyId 公司ID
-     */
-    private UserApplyCount getApplicationCountLimit(int companyId) {
-        UserApplyCount userApplyCount = new UserApplyCount();
-
-        userApplyCount.setSocialApplyCount(APPLICATION_COUNT_LIMIT);
-        userApplyCount.setSchoolApplyCount(APPLICATION_COUNT_LIMIT);
-
-        Query query = new QueryBuilder().where("company_id", companyId).buildQuery();
-        HrCompanyConfRecord hrCompanyConfRecord = hrCompanyConfDao.getRecord(query);
-        if (hrCompanyConfRecord != null) {
-            if (hrCompanyConfRecord.getApplicationCountLimit()  > 0) {
-                userApplyCount.setSocialApplyCount(hrCompanyConfRecord.getApplicationCountLimit());
-            }
-            if (hrCompanyConfRecord.getSchoolApplicationCountLimit() > 0) {
-                userApplyCount.setSchoolApplyCount(hrCompanyConfRecord.getSchoolApplicationCountLimit());
-            }
-        }
-        logger.info("JobApplicataionService getApplicationCountLimit applicaitonCountLimit:{}", userApplyCount);
-        return userApplyCount;
     }
 
     /**
@@ -924,7 +898,7 @@ public class JobApplicataionService {
 
         ApplicationSaveResultVO resultVO = jobApplicationDao.addIfNotExists(jobApplicationRecord);
         if (!resultVO.isCreate()) {
-            HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, jobPositionRecord);
+            HrOperationRecordRecord hrOperationRecord = applicationEntity.getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, jobPositionRecord);
             hrOperationRecordDao.addRecord(hrOperationRecord);
         }
         try {
@@ -937,18 +911,6 @@ public class JobApplicataionService {
             logger.error(e.getMessage(), e);
         }
         return resultVO;
-    }
-
-    //构建hr操作记录record
-    private HrOperationRecordRecord getHrOperationRecordRecord(long appId,
-                                                               JobApplicationRecord jobApplicationRecord,
-                                                               JobPositionRecord JobPositonrecord) {
-        HrOperationRecordRecord hrOperationRecordRecord = new HrOperationRecordRecord();
-        hrOperationRecordRecord.setAdminId(JobPositonrecord.getPublisher().longValue());
-        hrOperationRecordRecord.setCompanyId(jobApplicationRecord.getCompanyId().longValue());
-        hrOperationRecordRecord.setAppId(appId);
-        hrOperationRecordRecord.setOperateTplId(jobApplicationRecord.getAppTplId().intValue());
-        return hrOperationRecordRecord;
     }
 
     public Response getHrApplicationNum(int user_id) {
@@ -1061,7 +1023,7 @@ public class JobApplicataionService {
         }
 
         //校验投递限制
-        UserApplyCount userApplyCount = getApplyCount(applierId, employeeDO.getCompanyId());
+        UserApplyCount userApplyCount = applicationEntity.getApplyCount(applierId, employeeDO.getCompanyId());
         for (com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position : positionList) {
             if (position.getCandidateSource() == 0) {
                 userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount() + 1);
@@ -1097,7 +1059,7 @@ public class JobApplicataionService {
                     if (resultVO.isCreate()) {
                         sendMessageAndEmailThread(resultVO.getApplicationId(), resultVO.getPositionId(), 0,
                                 0, referenceId, resultVO.getApplierId(),
-                                ApplicationSource.EMPLOYEE_REFERRAL.getValue());
+                                ApplicationSource.EMPLOYEE_CHATBOT.getValue());
                     }
                     return 0;
                 });
@@ -1111,42 +1073,12 @@ public class JobApplicataionService {
     }
 
     /**
-     * 获取用户当前申请数据
-     * @param userId 用户编号
-     * @param companyId 公司编号
-     * @return 用户申请数据
-     */
-    private UserApplyCount getApplyCount(long userId, long companyId) {
-        String applicationCountCheck = redisClient.get(
-                Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
-                String.valueOf(userId), String.valueOf(companyId));
-        return UserApplyCount.initFromRedis(applicationCountCheck);
-    }
-
-    /**
      * 添加该人该公司的申请次数
      */
     private void addApplicationCountAtCompany(JobApplication jobApplication, byte candidateSource) {
 
         try {
-            String applicationCountCheck = redisClient.get(Constant.APPID_ALPHADOG,
-                    REDIS_KEY_APPLICATION_COUNT_CHECK,
-                    String.valueOf(jobApplication.applier_id),
-                    String.valueOf(jobApplication.company_id));
-            // 获取当前申请次数 +1
-
-            UserApplyCount userApplyCount = UserApplyCount.initFromRedis(applicationCountCheck);
-            if (candidateSource == 0) {
-                userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount()+1);
-            } else {
-                userApplyCount.setSchoolApplyCount(userApplyCount.getSchoolApplyCount()+1);
-            }
-            redisClient.set(Constant.APPID_ALPHADOG,
-                    REDIS_KEY_APPLICATION_COUNT_CHECK,
-                    String.valueOf(jobApplication.applier_id),
-                    String.valueOf(jobApplication.company_id),
-                    JSON.toJSONString(userApplyCount),
-                    (int) DateUtils.calcCurrMonthSurplusSeconds());
+            applicationEntity.addApplicationCountAtCompany(jobApplication.getAppid(), (int)jobApplication.getCompany_id(), candidateSource);
 
         } catch (RedisException e) {
             WarnService.notify(e);
@@ -1183,19 +1115,10 @@ public class JobApplicataionService {
     private Response checkApplicationCountAtCompany(long userId, long companyId, byte candidateSource) {
 
         try {
-            UserApplyCount userApplyCount = getApplyCount(userId, companyId);
-            logger.info("userApplyCount使用校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
-            UserApplyCount conf = getApplicationCountLimit((int) companyId);
-            logger.info("userApplyCount参数校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
-            if (candidateSource == 0) {
-                if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK);
-                }
-            } else {
-                if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
-                    return ResponseUtils.fail(ConstantErrorCodeMessage.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK);
-                }
-            }
+
+            applicationEntity.checkApplicationCountAtCompany(userId, companyId, candidateSource);
+        } catch (com.moseeker.entity.exception.ApplicationException e) {
+            return ResponseUtils.fail(e.getCode(), e.getMessage());
         } catch (RedisException e) {
             WarnService.notify(e);
         }
@@ -1211,7 +1134,7 @@ public class JobApplicataionService {
     private void checkApplicationCountAtCompany(long companyId, UserApplyCount userApplyCount) throws ApplicationException {
 
         logger.info("userApplyCount使用校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
-        UserApplyCount conf = getApplicationCountLimit((int) companyId);
+        UserApplyCount conf = applicationEntity.getApplicationCountLimit((int) companyId);
         logger.info("userApplyCount参数校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
         if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
             throw ApplicationException.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK;
@@ -1219,6 +1142,99 @@ public class JobApplicataionService {
         if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
             throw ApplicationException.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK;
         }
+    }
+
+    public List<ApplicationRecord> getApplications(int userId, int companyId) throws ApplicationException {
+        List<ApplicationRecord> applications = new ArrayList<>();
+
+        UserUserDO userUserDO = userUserDao.getUser(userId);
+        if (userUserDO == null) {
+            throw ApplicationException.APPLICATION_USER_NOT_EXIST;
+        }
+
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId, companyId);
+        if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
+            companyId = 0;
+        }
+
+        List<JobApplicationRecord> apps = jobApplicationDao.getByApplierIdAndCompanyId(userId, companyId);
+
+        if (apps != null && apps.size() > 0) {
+            //查询申请记录对应的职位数据
+            //List<JobPositionDO> positions = bizTools.getPositions(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+            List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positions = positionEntity.getPositionInfoByIdList(apps.stream().map(app -> Integer.valueOf(app.getPositionId())).collect(Collectors.toList()));
+            logger.info("UserCenterService getApplication positions:{}", positions);
+            List<Integer> companyIdList = apps.stream().map(app -> Integer.valueOf(app.getCompanyId())).collect(Collectors.toList());
+            List<HrCompanyRecord> companies = hrCompanyDao.getCompaniesByIds(companyIdList);
+            logger.info("UserCenterService getApplication companies:{}", companies);
+            List<HrOperationRecordDO> operationRecordDOList = hrOperationRecordDao.listLatestOperationRecordByAppIdSet(apps.stream().map(app -> app.getAppTplId()).collect(Collectors.toSet()));
+
+            logger.info("UserCenterService getApplication operationRecordDOList:{}", operationRecordDOList);
+
+            //查找signature
+            Query.QueryBuilder findWechatQuery = new Query.QueryBuilder();
+            findWechatQuery.select(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName())
+                    .select(HrWxWechat.HR_WX_WECHAT.ID.getName())
+                    .select(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName())
+                    .where(new Condition(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                    .and(HrWxWechat.HR_WX_WECHAT.AUTHORIZED.getName(), WechatAuthorized.AUTHORIZED.getValue());
+            Map<Integer, String> signatureMap = wechatDao.getDatas(
+                    findWechatQuery.buildQuery())
+                    .stream()
+                    .collect(Collectors.toMap(k->k.getCompanyId(), v->v.getSignature(),
+                            (companyId1, companyId2) -> companyId1));
+            //List<ConfigSysPointConfTplDO> tpls = bizTools.getAwardConfigTpls();
+
+            applications = apps.stream().map(app -> {
+                ApplicationRecord ar = new ApplicationRecord();
+                ar.setId(app.getId());
+                RecruitmentScheduleEnum recruitmentScheduleEnum = RecruitmentScheduleEnum.createFromID(app.getAppTplId());
+                ar.setStatusName(recruitmentScheduleEnum.getStatus());
+                ar.setTime(new DateTime(app.getSubmitTime().getTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                if (positions != null) {
+                    Optional<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> op = positions
+                            .stream()
+                            .filter(position -> position.getId().equals(app.getPositionId()))
+                            .findFirst();
+                    if (op.isPresent()) {
+                        ar.setPositionTitle(op.get().getTitle());
+                    }
+                }
+                if (companies != null) {
+                    Optional<HrCompanyRecord> op = companies
+                            .stream()
+                            .filter(company -> company.getId().equals(app.getCompanyId()))
+                            .findFirst();
+                    if (op.isPresent()) {
+                        ar.setCompanyName(op.get().getAbbreviation());
+                    }
+                }
+                //设置最后一个非拒绝申请记录
+                int preID = 0;
+                if(operationRecordDOList != null) {
+                    Optional<HrOperationRecordDO> operationRecordDOOptional = operationRecordDOList.stream()
+                            .filter(operation -> operation.getOperateTplId() == app.getAppTplId()).findFirst();
+                    if(operationRecordDOOptional.isPresent() && operationRecordDOOptional.get().getOperateTplId() != recruitmentScheduleEnum.getId()) {
+                        recruitmentScheduleEnum.setLastStep(operationRecordDOOptional.get().getOperateTplId());
+                        preID = operationRecordDOOptional.get().getOperateTplId();
+                    }
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(signatureMap.get(app.getCompanyId()))) {
+                    ar.setSignature(signatureMap.get(app.getCompanyId()));
+                }
+                logger.info("UserCenterService getApplication recruitmentScheduleEnum:{}", recruitmentScheduleEnum);
+                ar.setStatusName(recruitmentScheduleEnum.getAppStatusDescription(app.getApplyType().byteValue(), app.getEmailStatus().byteValue(), preID));
+                return ar;
+            }).collect(Collectors.toList());
+        }
+        if(applications.size() > 0) {
+            applications.forEach(application -> {
+                logger.info("ApplicationRecordsForm getApplication application:{}", application);
+            });
+        } else {
+            logger.info("ApplicationRecordsForm getApplication have no application");
+        }
+        return applications;
     }
 }
 

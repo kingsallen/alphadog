@@ -332,7 +332,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return create.selectFrom(UserEmployee.USER_EMPLOYEE)
                 .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(sysuserId))
                 .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                .orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc())
+                .orderBy(UserEmployee.USER_EMPLOYEE.BINDING_TIME.desc())
                 .limit(1)
                 .fetchOne();
     }

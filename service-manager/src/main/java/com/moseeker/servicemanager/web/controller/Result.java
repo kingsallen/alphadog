@@ -66,9 +66,18 @@ public class Result {
     public static Result PROGRAM_EXCEPTION = new Result(CommonException.PROGRAM_EXCEPTION.getCode(), CommonException.PROGRAM_EXCEPTION.getMessage());
 
     public static Result fail(String message) {
+
+        return fail(message, null);
+    }
+
+    public static Result fail(String message, Integer code) {
         try {
             Result result = new Result();
-            result.status = CommonException.PROGRAM_EXCEPTION.getCode();
+            if (code != null) {
+                result.status = CommonException.PROGRAM_EXCEPTION.getCode();
+            } else {
+                result.status = CommonException.PROGRAM_EXCEPTION.getCode();
+            }
             result.message = message;
             return result;
         } catch (Exception e) {
@@ -101,6 +110,11 @@ public class Result {
 
     public static Result fail(int code, String message) {
         Result result = new Result(code, message);
+        return result;
+    }
+
+    public static Result validateFailed(String message) {
+        Result result = new Result(MessageType.PROGRAM_PARAM_NOTEXIST.getCode(), message);
         return result;
     }
 

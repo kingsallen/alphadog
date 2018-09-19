@@ -27,7 +27,6 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -375,33 +374,33 @@ public class TalentpoolSearchengine {
         }
         return null;
     }
-     /*
-       根据条件搜索曾任公司
-     */
-     @CounterIface
-     public PastPOJO searchPastCompany(SearchPast searchPast){
-         try{
-             TransportClient client=searchUtil.getEsClient();
-             String pageNum=searchPast.getPageNumber();
-             String pageSize=searchPast.getPageSize();
-             QueryBuilder query = this.handlerProfilePastCompany(searchPast);
-             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
-             String[] returnParams={"user.profiles.recent_job.company_name","user.profiles.other_workexps.company_name"};
-             builder.setFetchSource(returnParams,null);
-             builder.setSize(this.handlePageSize(pageSize));
-             builder.setFrom(this.handlePageFrom(pageNum,pageSize));
-             logger.info("============================================");
-             logger.info(builder.toString());
-             logger.info("============================================");
-             SearchResponse response = builder.execute().actionGet();
-             Map<String,Object> map=searchUtil.handleData(response,"users");
-             PastPOJO result=this.handlerResultPast(map,this.handlePageNum(pageNum),this.handlePageSize(pageSize),1);
-             return result;
-         }catch(Exception e){
-             logger.info(e.getMessage(),e);
-         }
-         return null;
-     }
+    /*
+      根据条件搜索曾任公司
+    */
+    @CounterIface
+    public PastPOJO searchPastCompany(SearchPast searchPast){
+        try{
+            TransportClient client=searchUtil.getEsClient();
+            String pageNum=searchPast.getPageNumber();
+            String pageSize=searchPast.getPageSize();
+            QueryBuilder query = this.handlerProfilePastCompany(searchPast);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+            String[] returnParams={"user.profiles.recent_job.company_name","user.profiles.other_workexps.company_name"};
+            builder.setFetchSource(returnParams,null);
+            builder.setSize(this.handlePageSize(pageSize));
+            builder.setFrom(this.handlePageFrom(pageNum,pageSize));
+            logger.info("============================================");
+            logger.info(builder.toString());
+            logger.info("============================================");
+            SearchResponse response = builder.execute().actionGet();
+            Map<String,Object> map=searchUtil.handleData(response,"users");
+            PastPOJO result=this.handlerResultPast(map,this.handlePageNum(pageNum),this.handlePageSize(pageSize),1);
+            return result;
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+        }
+        return null;
+    }
     /*
      处理页数
      */
@@ -1219,8 +1218,14 @@ public class TalentpoolSearchengine {
     private void handlerPositionId(Map<String,String> params){
         String positionWord=params.get("position_key_word");
         String positionIdList=params.get("position_id");
+        String is_referral = params.get("is_referral");
         if(StringUtils.isNotNullOrEmpty(positionWord)&&StringUtils.isNullOrEmpty(positionIdList)){
             String positionIds=this.PositionIdQuery(params,positionWord);
+            if(StringUtils.isNotNullOrEmpty(positionIds)){
+                params.put("position_id",positionIds);
+            }
+        }else if(StringUtils.isNotNullOrEmpty(is_referral)) {
+            String positionIds=this.PositionIdQueryReferral(params,is_referral);
             if(StringUtils.isNotNullOrEmpty(positionIds)){
                 params.put("position_id",positionIds);
             }
@@ -1234,11 +1239,34 @@ public class TalentpoolSearchengine {
             Map<String,String> suggetParams=this.convertParams(params);
             Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
             List<Integer> positionIdList=this.getSuggestPositionId(result);
+
             String positionIds=searchUtil.listConvertString(positionIdList);
             return positionIds;
         }
         return null;
     }
+
+    /*
+     处理职位(选中内推时)
+     */
+    private String PositionIdQueryReferral(Map<String,String> params, String isReferral){
+        if(StringUtils.isNotNullOrEmpty(isReferral)){
+            Map<String,String> suggetParams=this.convertParams(params);
+            Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
+            List<Integer> positionIdList=this.getSuggestPositionId(result);
+            List<Integer> filterList = new ArrayList<>();
+            if(positionIdList.size()>1024){
+                filterList = positionIdList.subList(0,1024);
+            } else {
+                filterList = positionIdList;
+            }
+            String positionIds=searchUtil.listConvertString(filterList);
+            return positionIds;
+        }
+        return null;
+    }
+
+
     /*
      获取positionId的列表
      */
@@ -1264,8 +1292,9 @@ public class TalentpoolSearchengine {
         suggetParams.put("company_id",params.get("company_id"));
         suggetParams.put("publisher",params.get("publisher"));
         suggetParams.put("page_from","1");
-        suggetParams.put("page_size","1000000");
+        suggetParams.put("page_size",params.get("page_size"));
         suggetParams.put("return_params","title,id");
+        suggetParams.put("is_referral",params.get("is_referral"));
         String status=params.get("position_status");
         if(StringUtils.isNotNullOrEmpty(status)){
             suggetParams.put("flag",status);
