@@ -540,20 +540,16 @@ public class SearchengineEntity {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
                     if (userMap != null && userMap.get("applications") != null) {
-                        logger.info("removeApplication applications:{}", JSON.toJSONString(userMap.get("applications")));
                         List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
-                            logger.info("removeApplication applications :{}", JSON.toJSONString(applications));
                             if (applicationOptional.isPresent()) {
-                                logger.info("removeApplication exists ");
-                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());
-                                logger.info("removeApplication apps :{}", apps);
+                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !(stringObjectMap.get("id")).equals(applicationId)).collect(Collectors.toList());
                                 if (apps == null || apps.size() == 0) {
                                     logger.info("removeApplication 删除索引 users id:{}", id);
                                     client.prepareDelete("users", "users", id + "").execute().actionGet();
                                 } else {
-                                    logger.info("removeApplication 更新索引 apps:{}", JSON.toJSONString(apps));
+                                    logger.info("removeApplication 更新索引 apps:{}", apps);
                                     userMap.put("applications", apps);
                                     mapTemp.put("user", userMap);
                                     client.prepareUpdate("users", "users", id + "")
@@ -562,8 +558,6 @@ public class SearchengineEntity {
                                 // 更新ES
                             }
                         }
-                    } else {
-                        logger.info("removeApplication applications is null");
                     }
                 }
             }
@@ -624,7 +618,6 @@ public class SearchengineEntity {
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
-            logger.info("getCurrentMonthList searchRequestBuilder:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
 
             LocalDateTime localDateTime = LocalDateTime.now();
@@ -632,14 +625,12 @@ public class SearchengineEntity {
                     (localDateTime.getMonthValue() < 10 ?
                             ("0"+localDateTime.getMonthValue()) : localDateTime.getMonthValue());
 
-            logger.info("getCurrentMonthList response:{}", response);
             List<EmployeeAwards> employeeAwardsList = new ArrayList<>();
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
 
                 EmployeeAwards employeeAwards = new EmployeeAwards();
                 employeeAwards.setId(jsonObject.getInteger("id"));
-                logger.info("id:{},  awards:{}, timespan:{}", jsonObject.get("id"), jsonObject.get("awards"), timeSpan);
                 if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
                     JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject(timeSpan);
                     employeeAwards.setAward(timeSpanAward.getInteger("award"));
@@ -649,7 +640,6 @@ public class SearchengineEntity {
                                     .getString("last_update_time"))
                                     .atZone(ZoneId.systemDefault()).toInstant()
                                     .toEpochMilli());
-                    logger.info("getCurrentMonthList - employeeAwards:{}", employeeAwards);
                     employeeAwardsList.add(employeeAwards);
                 }
             }
@@ -684,7 +674,6 @@ public class SearchengineEntity {
             logger.error("无法获取ES客户端！！！！");
             throw CommonException.PROGRAM_EXCEPTION;
         }
-        logger.info("getSort id:{}, award:{}, lastUpdateTime:{}, timeSpan:{}, companyIdList:{}", id, award, lastUpdateTime, timeSpan, companyIdList);
         QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
         return getSort(client, id, award, lastUpdateTime, timeSpan, companyIdListQueryBuild);
     }
@@ -719,7 +708,6 @@ public class SearchengineEntity {
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
-            logger.info("getEmployeeInfo id:{},  response:{}", id, response);
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
@@ -732,9 +720,10 @@ public class SearchengineEntity {
 
     private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime,  String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
-        logger.info("getSort award:{}", award);
         if (award > 0) {
+
             LocalDateTime lastUpdateDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
+
             QueryBuilder defaultQueryGTAward = QueryBuilders.matchAllQuery();
             QueryBuilder queryGTAward = QueryBuilders.boolQuery().must(defaultQueryGTAward);
 
@@ -751,6 +740,14 @@ public class SearchengineEntity {
             QueryBuilder activeEmployeeCondition = QueryBuilders.termQuery("activation", "0");
 
             ((BoolQueryBuilder) queryGTAward).must(activeEmployeeCondition);
+            logger.info("getSort activeEmployeeCondition:{}", queryGTAward);
+
+            logger.info("ex sql :{}", client.prepareSearch("awards").setTypes("award")
+                    .setQuery(queryGTAward)
+                    .addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
+                    .setSize(0).toString());
 
             QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultQuery);
@@ -765,8 +762,8 @@ public class SearchengineEntity {
             ((BoolQueryBuilder) query).must(companyIdListQueryBuild);
             ((BoolQueryBuilder) query).mustNot(exceptCurrentEmployeeQuery);
             ((BoolQueryBuilder) query).must(activeEmployeeCondition);
-            logger.info("getSort queryGTAward:{}", queryGTAward);
-            logger.info("getSort query:{}", query);
+
+            logger.info("getSort activeEmployeeCondition:{}", query);
 
             try {
                 SearchResponse sortResponse = client.prepareSearch("awards").setTypes("award")
@@ -819,7 +816,6 @@ public class SearchengineEntity {
                     .setQuery(query)
                     .addSort(buildSortScript(timeSpan, "award", SortOrder.ASC))
                     .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.DESC))
-                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
                     .setSize(1).execute().get();
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
@@ -847,9 +843,7 @@ public class SearchengineEntity {
             return  ResponseUtils.fail(9999,"ES操作失败");
         } else {
             return ResponseUtils.success(response);
-        }
-    }
-
+        }    }
 
     @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
@@ -884,8 +878,6 @@ public class SearchengineEntity {
             logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
 
             return ResponseUtils.success(bulkResponse);
-
         }
     }
-
 }

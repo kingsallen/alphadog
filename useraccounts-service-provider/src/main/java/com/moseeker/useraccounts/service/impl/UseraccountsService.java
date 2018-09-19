@@ -1034,7 +1034,7 @@ public class UseraccountsService {
         validateUtil.addIntTypeValidate("场景", type, 1, 6);
         String validateResult = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(validateResult)) {
-            return ResponseUtils.fail(validateResult);
+            return ResponseUtils.fail(CommonException.PROGRAM_PARAM_NOTEXIST.getCode(), validateResult);
         }
         boolean result=false;
         result = smsSender.sendSMS(mobile, type,countryCode);
