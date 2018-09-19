@@ -28,6 +28,10 @@ task copyJars(type: Copy) {
   into 'lib' // 目标位置
 }
 
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
 subprojects {
     apply plugin: 'java'
     sourceCompatibility = 1.8

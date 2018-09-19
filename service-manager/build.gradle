@@ -39,7 +39,9 @@ dependencies {
     testCompile deps["spring-test"]
 }
 
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 jar {
 
     // build one flat jar
