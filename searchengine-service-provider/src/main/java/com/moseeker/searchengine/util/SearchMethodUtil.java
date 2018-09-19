@@ -194,9 +194,9 @@ public class SearchMethodUtil {
         if(StringUtils.isNotBlank(candidateSource)){
             if(!FormCheck.isNumber(candidateSource)) {
                 //如果candidateSource传的是汉字不是数字1或0
-                searchUtil.handleTerm(candidateSource,query,"candidate_source_name");
+                searchUtil.handleMatchParse(candidateSource,query,"candidate_source_name");
             }else if(Integer.valueOf(candidateSource) >=0) {
-                searchUtil.handleTerm(candidateSource,query,"candidate_source");
+                searchUtil.handleMatchParse(candidateSource,query,"candidate_source");
             }
         }
 
@@ -243,12 +243,16 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(salary)&&salary.contains(",")) {
-            salaryBottom = salary.split(",")[0];
-            salaryTop =salary.split(",")[1];
-            QueryBuilder topQB = QueryBuilders.rangeQuery("salary_top").lte(salaryTop);
-            ((BoolQueryBuilder) query).must(topQB);
-            QueryBuilder bottomQB = QueryBuilders.rangeQuery("salary_bottom").gte(salaryBottom);
-            ((BoolQueryBuilder) query).must(bottomQB);
+            String[] salary_list = salary.split(",");
+            String salary_from = salary_list[0];
+            String salary_to = salary_list[1];
+            QueryBuilder salary_bottom_filter = QueryBuilders.rangeQuery("salary_bottom").from(salary_from).to(salary_to);
+            QueryBuilder salary_top_filter = QueryBuilders.rangeQuery("salary_top").from(salary_from).to(salary_to);
+            QueryBuilder salaryor = QueryBuilders.boolQuery();
+
+            ((BoolQueryBuilder) salaryor).should(salary_bottom_filter);
+            ((BoolQueryBuilder) salaryor).should(salary_top_filter);
+            ((BoolQueryBuilder) query).must(salaryor);
         }
 
     }
