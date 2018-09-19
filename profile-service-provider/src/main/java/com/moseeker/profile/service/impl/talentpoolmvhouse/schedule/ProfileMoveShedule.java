@@ -84,6 +84,7 @@ public class ProfileMoveShedule {
             }
             if (failedIdList.size() > 0) {
                 // 刷新时将detail表的状态一并刷新
+                logger.info("========================简历搬家状态刷新failedIdList:{}", failedIdList);
                 profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
                 List<TalentPoolProfileMoveRecordDO> recordDOS = profileMoveRecordDao.getListByMoveIds(failedIdList);
                 List<Integer> detailFailIds = recordDOS.stream().map(TalentPoolProfileMoveRecordDO::getId).collect(Collectors.toList());
