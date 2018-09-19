@@ -77,6 +77,7 @@ public class SearchMethodUtil {
         list.add("title");
         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
+        logger.info("searchPrefix   query : {}", query);
         SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
