@@ -452,7 +452,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @date 2018/9/9
      */
     public abstract MvHouseVO handleRequestParams(UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate,
-                                                  int profileMoveId, boolean isFirstMove);
+                                                  int profileMoveId, boolean isFirstMove) throws BIZException;
 
     /**
      * 插入简历搬家详细操作记录表 talentpool_profile_move_record
