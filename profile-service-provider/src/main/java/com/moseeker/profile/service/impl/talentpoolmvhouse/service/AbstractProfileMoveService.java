@@ -29,7 +29,6 @@ import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseOperationVO;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseVO;
 
-import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.ProfileMoveOperationInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -91,7 +90,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     private static final int TRY_TIMES = 3;
 
-    private static final long SIX_MONTH = 6L * 30 * 24 * 60 * 60 * 1000;
+    protected long firstTime;
 
     /**
      * 简历搬家用户登录
@@ -124,8 +123,20 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         List<Integer> moveIds = profileMoveDOS.stream().map(TalentPoolProfileMoveDO::getId).collect(Collectors.toList());
         List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS = profileMoveRecordDao.getListByMoveIds(moveIds);
         checkIsMoving(profileMoveRecordDOS);
-        // 计算简历搬家起始时间
-        Date startDate = getProfileMoveStartDate(profileMoveRecordDOS, profileMoveDOS);
+        // 判断是否是第一次搬家
+        int successMoveId = 0;
+        boolean isFirstMove = false;
+        if (profileMoveRecordDOS.size() != 0) {
+            successMoveId = getSuccessMoveId(profileMoveRecordDOS);
+            if(successMoveId == 0){
+                isFirstMove = true;
+            }
+        }else{
+            isFirstMove = true;
+        }
+
+        Date startDate = getProfileMoveStartDate(successMoveId, profileMoveDOS);
+
         Date endDate = new Date();
         // 插入简历搬家talentpool_profile_move表
         TalentpoolProfileMoveRecord profileMoveRecord = insertProfileMoveRecord(hrId, channel, startDate, endDate);
@@ -133,7 +144,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         // 插入talentpool_profile_move_record表
         insertProfileMoveRecordRecord(profileMoveId);
         // 映射简历搬家参数
-        MvHouseVO mvHouseVO = handleRequestParams(userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate, profileMoveId);
+        MvHouseVO mvHouseVO = handleRequestParams(userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate, profileMoveId, isFirstMove);
         sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_REQUEST, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
         return ResponseUtils.success(new HashMap<>(1 >> 4));
     }
@@ -314,34 +325,30 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     /**
      * 计算简历搬家起始时间
-     * @param   profileMoveRecordDOS 简历搬家详细记录DOs
+     * @param   successMoveId 最近一次简历搬家成功的id
      * @param   profileMoveDOS 简历搬家操作记录DOs
      * @author  cjm
      * @date  2018/9/16
      * @return 返回简历搬家起始时间
      */
-    private Date getProfileMoveStartDate(List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS, List<TalentPoolProfileMoveDO> profileMoveDOS) {
+    private Date getProfileMoveStartDate(int successMoveId, List<TalentPoolProfileMoveDO> profileMoveDOS){
         // 过滤出搬家成功的list，去除第一个的创建时间为本次搬家的起始时间，如果list为空，则减去6个月为起始时间
         Date startDate = new Date();
         try {
-            if (profileMoveRecordDOS.size() != 0) {
-                int successMoveId = getSuccessMoveId(profileMoveRecordDOS);
-                if(successMoveId == 0){
-                    startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
-                } else {
-                    for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
-                        if (profileMoveDO.getId() == successMoveId) {
-                            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
-                            break;
-                        }
+            if(successMoveId == 0){
+                logger.info("firstTime:{}", firstTime);
+                startDate = new Date(System.currentTimeMillis() - firstTime);
+            } else {
+                for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
+                    if (profileMoveDO.getId() == successMoveId) {
+                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
+                        break;
                     }
                 }
-            } else {
-                // 当前时间减去六个月
-                startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
             }
+
         } catch (Exception e) {
-            startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
+            startDate = new Date(System.currentTimeMillis() - firstTime);
         }
         return startDate;
     }
@@ -433,31 +440,19 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     }
 
     /**
+     * 处理请求参数
      * @param userHrAccountDO       hr账号do
      * @param hrThirdPartyAccountDO hr第三方账号do
      * @param startDate             简历搬家起始时间
      * @param endDate               简历搬家结束时间
+     * @param profileMoveId         简历搬家操作id
+     * @param isFirstMove           是否是第一次搬家
      * @return 简历搬家请求vo
      * @author cjm
      * @date 2018/9/9
      */
-    private MvHouseVO handleRequestParams(UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate, int profileMoveId) {
-        // 插入简历搬家操作TalentpoolProfileMoveRecord表
-        String password = hrThirdPartyAccountDO.getPassword();
-        ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();
-        operationInfoVO.setStart_date(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
-        operationInfoVO.setEnd_date(new SimpleDateFormat("yyyy-MM-dd").format(endDate));
-        MvHouseVO mvHouseVO = new MvHouseVO();
-        mvHouseVO.setAccount_id(userHrAccountDO.getId());
-        mvHouseVO.setChannel(hrThirdPartyAccountDO.getChannel());
-        mvHouseVO.setMember_name(hrThirdPartyAccountDO.getExt());
-        mvHouseVO.setMobile(userHrAccountDO.getMobile());
-        mvHouseVO.setOperation_id(profileMoveId);
-        mvHouseVO.setUser_name(hrThirdPartyAccountDO.getUsername());
-        mvHouseVO.setPassword(password);
-        mvHouseVO.setOperation_info(operationInfoVO);
-        return mvHouseVO;
-    }
+    public abstract MvHouseVO handleRequestParams(UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate,
+                                                  int profileMoveId, boolean isFirstMove);
 
     /**
      * 插入简历搬家详细操作记录表 talentpool_profile_move_record
