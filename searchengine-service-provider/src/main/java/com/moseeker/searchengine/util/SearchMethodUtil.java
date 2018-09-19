@@ -224,7 +224,7 @@ public class SearchMethodUtil {
                     //如果employmentType传的是汉字不是数字1或0
                 searchUtil.handleMatchParse(employmentType,query,"employment_type_name");
             }else if(Integer.valueOf(employmentType) >= 0) {
-                searchUtil.handleTerm(employmentType,query,"employment_type");
+                searchUtil.handleMatchParse(employmentType,query,"employment_type");
             }
         }
         if(StringUtils.isNotBlank(employmentTypeName)){
@@ -239,9 +239,9 @@ public class SearchMethodUtil {
         if(StringUtils.isNotBlank(custom)){
             searchUtil.handleTerm(custom,query,"search_data.custom");
         }
-        /*if(StringUtils.isNotBlank(isReferral)){
+        if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
-        }*/
+        }
 
         if(StringUtils.isNotBlank(salary)&&salary.contains(",")) {
             String[] salary_list = salary.split(",");
