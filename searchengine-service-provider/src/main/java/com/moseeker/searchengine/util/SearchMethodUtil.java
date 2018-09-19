@@ -239,9 +239,9 @@ public class SearchMethodUtil {
         if(StringUtils.isNotBlank(custom)){
             searchUtil.handleTerm(custom,query,"search_data.custom");
         }
-        if(StringUtils.isNotBlank(isReferral)){
+        /*if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
-        }
+        }*/
 
         if(StringUtils.isNotBlank(salary)&&salary.contains(",")) {
             salaryBottom = salary.split(",")[0];
