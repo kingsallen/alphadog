@@ -1,5 +1,6 @@
 package com.moseeker.searchengine.util;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.FormCheck;
 import org.apache.commons.lang.StringUtils;
@@ -166,7 +167,7 @@ public class SearchMethodUtil {
         String department = params.get("department");
         String salary=params.get("salary");
 
-
+        logger.info("handlerCommonSuggest params  {}", JSON.toJSONString(params));
         searchUtil.handleTerms(companyIds,query,"company_id");
         String flag=params.get("flag");
         if(StringUtils.isBlank(flag)){
