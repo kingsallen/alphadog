@@ -36,7 +36,10 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -45,11 +48,14 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -506,6 +512,61 @@ public class SearchengineEntity {
         logger.info("----删除员工积分索引信息结束-------");
         return ResponseUtils.success("");
     }
+
+    /**
+     * 删除员工积分索引
+     *
+     *
+     * @param id
+     * @param userId
+     * @param applierName
+     *@param updateTime @return
+     * @throws TException
+     */
+    public Response removeApplication(Integer id, Integer applicationId, Integer userId, String applierName, Timestamp updateTime) throws CommonException {
+        logger.info("----删除招聘，员工ID:{}-------", userId);
+        logger.info("removeApplication id:{}, applicationId:{}, userId:{}, applierName:{}, updateTime:{}-------", id, applicationId, userId, applierName, updateTime.getTime());
+        // 连接ES
+        TransportClient client =this.getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES 连接失败！");
+        }
+        try {
+            if (id != null && id > 0) {
+                GetResponse response = client.prepareGet("users", "users", id + "").execute().actionGet();
+                // ES中的积分数据
+                Map<String, Object> mapTemp = response.getSource();
+                if (mapTemp != null) {
+                    mapTemp.put("id", userId);
+                    Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
+                    if (userMap != null && userMap.get("applications") != null) {
+                        List<Map<String, Object>> applications = (List<Map<String, Object>>) userMap.get("applications");
+                        if (applications != null && applications.size() > 0) {
+                            Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
+                            if (applicationOptional.isPresent()) {
+                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !(stringObjectMap.get("id")).equals(applicationId)).collect(Collectors.toList());
+                                if (apps == null || apps.size() == 0) {
+                                    logger.info("removeApplication 删除索引 users id:{}", id);
+                                    client.prepareDelete("users", "users", id + "").execute().actionGet();
+                                } else {
+                                    logger.info("removeApplication 更新索引 apps:{}", apps);
+                                    userMap.put("applications", apps);
+                                    mapTemp.put("user", userMap);
+                                    client.prepareUpdate("users", "users", id + "")
+                                            .setDoc(mapTemp).get();
+                                }
+                                // 更新ES
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(),e);
+        }
+        return ResponseUtils.success("");
+    }
+
     /*
      单独删除雇员es的数据
      */
@@ -765,5 +826,58 @@ public class SearchengineEntity {
             logger.error(e.getMessage(), e);
         }
         return new JSONObject();
+    }
+
+    @Transactional
+    public Response updateReferralPostionStatus(Integer positionId,Integer isReferral){
+        logger.info("updateReferralPostionStatus {} {}",positionId,isReferral);
+        String idx = "" + positionId;
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
+                .setScript(new Script("ctx._source.is_referral = " + isReferral))
+                .get();
+        if(response.getGetResult() == null) {
+            return  ResponseUtils.fail(9999,"ES操作失败");
+        } else {
+            return ResponseUtils.success(response);
+        }    }
+
+    @Transactional
+    public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
+        DateTime nowDate = new DateTime();
+
+        logger.info("updateBulkReferralPostionStatus {} 条 计时开始时间 {}" ,positionIds.size(), nowDate.toString("yyyy-MM-dd HH:mm:ss"));
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        for(Integer pid: positionIds) {
+            String idx = "" + pid;
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("is_referral", isReferral)
+                    .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
+                    .endObject();
+
+            bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
+
+        }
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        //logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
+
+        if(bulkResponse.hasFailures()) {
+            DateTime endDate = new DateTime();
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
+            DateTime endDate = new DateTime();
+            logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
+
+            return ResponseUtils.success(bulkResponse);
+        }
     }
 }

@@ -233,24 +233,6 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
         return hrThirdPartyAccountDOS == null ? new ArrayList<>() : hrThirdPartyAccountDOS;
     }
 
-    /**
-     * 通过hrid获取猎聘的第三方账号token和账号id, 该方法目前只有一个获取猎聘职位信息接口用到
-     * @param
-     * @author  cjm
-     * @date  2018/6/1
-     * @return
-     */
-    @SuppressWarnings("unchecked")
-    public Result getThirdPartyAccountTokenByHrId(int hrId, int channel){
-        return create.select(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2, HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT,HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID)
-                .from(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
-                .join(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
-                .on(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.ID.eq(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID))
-                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.HR_ACCOUNT_ID.eq(hrId))
-                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
-                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte)1))
-                .fetch();
-    }
     private FastDateFormat sdf = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
 
     /**

@@ -3,30 +3,33 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.*;
+import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.CompanyConfigEntity;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.UserWxEntity;
+import com.moseeker.entity.*;
 import com.moseeker.entity.pojos.EmployeeInfo;
+import com.moseeker.entity.pojos.PositionInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCustomFieldsDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeReferralPolicyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -42,11 +45,15 @@ import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import com.moseeker.useraccounts.service.impl.pojos.City;
 import com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo;
-import com.moseeker.useraccounts.service.impl.pojos.UpVoteData;
+import com.moseeker.useraccounts.service.impl.pojos.ReferralCard;
+import com.moseeker.useraccounts.service.impl.pojos.*;
+import com.moseeker.useraccounts.service.impl.vo.EmployeeInfoVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -118,6 +125,19 @@ public class EmployeeService {
 
     @Autowired
     private LeaderBoardEntity leaderBoardEntity;
+
+    @Autowired
+    private PositionEntity positionEntity;
+
+    @Autowired
+    private ReferralEntity referralEntity;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
 
     public EmployeeResponse getEmployee(int userId, int companyId) throws TException {
         log.info("getEmployee param: userId={} , companyId={}", userId, companyId);
@@ -560,7 +580,7 @@ public class EmployeeService {
         if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
             throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
         }
-        return upvoteDao.countUpVote(employeeId, userEmployeeDO.getCompanyId());
+        return upvoteDao.countUpVote(employeeId);
     }
 
     /**
@@ -670,11 +690,199 @@ public class EmployeeService {
         return employeeEntity.countActiveEmployeeByCompanyIds(companyIdList);
     }
 
+    /**
+     * 计算最近点赞数。最近点赞数是指上次看榜单的时间距现在的点赞数
+     * @param employeeId 员工编号
+     * @return 点赞数
+     */
     public int countRecentUpVote(int employeeId) {
         return upVoteEntity.countRecentUpVote(employeeId);
     }
 
+    /**
+     * 清空点赞数
+     */
     public void clearUpVoteWeekly() {
         upVoteEntity.clearUpVoteWeekly();
+    }
+
+    /**
+     * 设置员工推荐简历的方式
+     * 目前主要于电脑端扫码上传，需要标记员工上传的是哪个职位。
+     * @param employeeId 员工编号
+     * @param positionId 职位编号
+     * @param type 1 手机文件上传 2 电脑扫码上传 3 推荐
+     */
+    public void setUploadType(int employeeId, int positionId, byte type) {
+
+        if (employeeEntity.getEmployeeByID(employeeId) == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
+        JobPositionRecord record = positionEntity.getPositionByID(positionId);
+        if (record == null || record.getStatus() > 0) {
+            throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
+        }
+
+        ReferralType referralType = new ReferralType();
+        referralType.setEmployeeId(employeeId);
+        referralType.setPositionId(positionId);
+        referralType.setType(type);
+
+        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE_TYPE.toString(),
+                String.valueOf(employeeId), null, JSON.toJSONString(referralType), 24*60*60);
+    }
+
+    /**
+     * 查找电脑端上传配置的职位信息
+     * @param employeeId 员工编号
+     * @return 配置的职位信息
+     */
+    public ReferralPositionInfo getUploadType(int employeeId) throws UserAccountException {
+
+        UserEmployeeDO userEmployeeDO = employeeEntity.getEmployeeByID(employeeId);
+        if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
+        String referralTypeInfoString = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE_TYPE.toString(),
+                String.valueOf(userEmployeeDO.getId()), (String) null);
+        if (org.apache.commons.lang.StringUtils.isBlank(referralTypeInfoString)) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_TYPE_NOT_EXIST;
+        }
+        ReferralType referralType = JSONObject.parseObject(referralTypeInfoString, ReferralType.class);
+
+        PositionInfo positionInfo = positionEntity.getPositionInfo(referralType.getPositionId());
+        if (positionInfo == null) {
+            throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
+        }
+        List<Integer> companyIdList = employeeEntity.getCompanyIds(userEmployeeDO.getCompanyId());
+        if (!companyIdList.contains(positionInfo.getCompanyId())) {
+            throw UserAccountException.NO_PERMISSION_EXCEPTION;
+        }
+
+        ReferralPositionInfo referralPositionInfo = new ReferralPositionInfo();
+        referralPositionInfo.setId(positionInfo.getId());
+        referralPositionInfo.setTitle(positionInfo.getTitle());
+        referralPositionInfo.setSalaryBottom(positionInfo.getSalaryBottom());
+        referralPositionInfo.setSalaryTop(positionInfo.getSalaryTop());
+        try {
+            int experience = Integer.valueOf(positionInfo.getExperience());
+            referralPositionInfo.setExperience(experience);
+        } catch (NumberFormatException e) {
+            log.info("getUploadType positioniId:{} 工作经验不是数值类型。experience:{}", positionInfo.getId(), positionInfo.getExperience());
+        }
+        referralPositionInfo.setExperienceAbove(positionInfo.getExperienceAbove() != null && positionInfo.getExperienceAbove() == 1);
+        referralPositionInfo.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
+        referralPositionInfo.setCompanyName(positionInfo.getCompanyName());
+        referralPositionInfo.setLogo(positionInfo.getLogo());
+        referralPositionInfo.setTeam(positionInfo.getTeamName());
+        if (positionInfo.getCities() != null && positionInfo.getCities().size() > 0) {
+            referralPositionInfo.setCities(positionInfo.getCities().stream().map(dictCity -> {
+                City city = new City();
+                BeanUtils.copyProperties(dictCity, city);
+                return city;
+            }).collect(Collectors.toList()));
+        }
+
+        return referralPositionInfo;
+    }
+
+    /**
+     * 获取推荐名片信息
+     * @param referralLogId 推荐记录编号
+     * @return 推荐名片
+     */
+    public ReferralCard getReferralCard(int referralLogId) throws UserAccountException {
+        ReferralLog referralLog = referralEntity.fetchReferralLog(referralLogId);
+        if (referralLog == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
+        }
+
+        UserEmployeeDO userEmployeeDO = employeeEntity.getEmployeeByID(referralLog.getEmployeeId());
+        if (userEmployeeDO == null || userEmployeeDO.getId() == 0) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(userEmployeeDO.getCname())) {
+            UserUserDO employeeUser = userDao.getUser(userEmployeeDO.getSysuserId());
+            if (employeeUser != null) {
+                userEmployeeDO.setCname(
+                        org.apache.commons.lang.StringUtils.isNotBlank(employeeUser.getName()) ?
+                                employeeUser.getName():employeeUser.getNickname());
+            }
+        }
+
+
+        PositionInfo positionInfo = positionEntity.getPositionInfo(referralLog.getPositionId());
+        if (positionInfo == null) {
+            throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
+        }
+
+        UserUserDO userUserDO = userDao.getUser(referralLog.getReferenceId());
+        if (userUserDO == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+        }
+
+        ReferralCard referralCard = new ReferralCard();
+        referralCard.setUserName(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName()) ?
+                userUserDO.getName():userUserDO.getNickname());
+        referralCard.setEmployeeId(userEmployeeDO.getId());
+        referralCard.setEmployeeName(userEmployeeDO.getCname());
+        referralCard.setCompanyName(positionInfo.getCompanyName());
+        referralCard.setCompanyAbbreviation(positionInfo.getCompanyAbbreviation());
+        referralCard.setPosition(positionInfo.getTitle());
+        referralCard.setMobile(String.valueOf(userUserDO.getMobile()));
+        referralCard.setClaim(referralLog.getClaim() == 1);
+        JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(), referralLog.getPositionId());
+        if (application != null) {
+            referralCard.setApplyId(application.getId());
+        }
+        return referralCard;
+    }
+
+    /**
+     * 根据用户编号查找员工以及所在公司的信息
+     * @param userId 用户编号
+     * @return 员工信息
+     * @throws UserAccountException 业务异常
+     */
+    public EmployeeInfoVO getEmployeeInfo(int userId) throws UserAccountException{
+        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if (userEmployeeDO == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        EmployeeInfoVO employeeInfoVO = new EmployeeInfoVO();
+        employeeInfoVO.setId(userEmployeeDO.getId());
+        employeeInfoVO.setName(userEmployeeDO.getCname());
+        employeeInfoVO.setUserId(userId);
+        employeeInfoVO.setCompanyId(userEmployeeDO.getCompanyId());
+
+        HrCompanyDO companyDO = companyDao.getCompanyById(employeeInfoVO.getCompanyId());
+        if (companyDO != null) {
+            employeeInfoVO.setCompanyAbbreviation(companyDO.getAbbreviation());
+            employeeInfoVO.setCompanyName(companyDO.getName());
+        }
+
+        HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeInfoVO.getCompanyId());
+        if (hrWxWechatDO != null) {
+            employeeInfoVO.setSignature(hrWxWechatDO.getSignature());
+        }
+
+        if (org.apache.commons.lang.StringUtils.isBlank(employeeInfoVO.getName())) {
+            UserUserDO userUserDO = userDao.getUser(employeeInfoVO.getUserId());
+            if (userUserDO != null) {
+                employeeInfoVO.setName(org.apache.commons.lang.StringUtils.isNotBlank(userUserDO.getName())
+                        ? userUserDO.getName() : userUserDO.getNickname());
+            }
+            if (org.apache.commons.lang.StringUtils.isBlank(employeeInfoVO.getName())) {
+                UserWxUserRecord record = wxUserDao.getWXUserByUserId(userId);
+                if (record != null) {
+                    employeeInfoVO.setName(record.getNickname());
+                }
+            }
+        }
+
+
+        return employeeInfoVO;
     }
 }

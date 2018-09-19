@@ -31,7 +31,9 @@ struct TalentpoolCompanyTagDO {
    21: optional Timestamp create_time,
    22: optional Timestamp update_time,
    23: optional i32 disable=1,
-   24: optional string origins=""
+   24: optional string origins="",
+   25: optional list<string> keyword_list,
+   26: optional i8 contain_any_key
 }
 
  struct ActionForm {

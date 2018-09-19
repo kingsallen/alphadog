@@ -14,6 +14,8 @@ public final class Constant {
 
     public static final int BONUS = 2;  //默认红包金额
     public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
+    public static final String POINTS_CONF_REFINE_CANDIDATE= "完善被推荐人信息";
+    public static final String EMPLOYEE_PARSE_PROFILE_DOCUMENT = "员工简历简历数据";
 
     private Constant() throws AssertionError {
         throw new AssertionError();
@@ -79,6 +81,8 @@ public final class Constant {
     public static final int RECRUIT_STATUS_OFFERACCEPTED    = 11;      // 接受录取通知
     public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
+    public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
+    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;    // 工上传人才简历
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,
@@ -266,4 +270,22 @@ public final class Constant {
     public static final int UPPER_LIMIT = 500;  //接口处理的数据量的上限
 
     public static final String LEADER_BOARD_UPVOTE_COUNT = "LEADER_BOARD_UPVOTE_COUNT";
+
+    public static final String COMPANY_LOGO_DEFAULT = "http://o6yey4xgg.bkt.clouddn.com/common/images/default-company-logo.jpg";
+
+
+    public static final String PROFILE_SEARCH_KEYWORD_COLUMS="projectexps.name;projectexps.member;projectexps.responsibility;" +
+            "projectexps.company_name;projectexps.role;projectexps.achievement;projectexps.description;recent_job.job_name;" +
+            "recent_job.company_scale_name;recent_job.company_name;recent_job.department_name;recent_job.company_new_name;" +
+            "recent_job.job;recent_job.company_property_name;recent_job.position_name;recent_job.achievement;recent_job.description;" +
+            "educations.degree_name;educations.description;educations.major_name;educations.college_name;intentions.salary_code_name;" +
+            "intentions.industries.industry_name;intentions.worktype_name;intentions.workstate_name;intentions.tag;intentions.positions.position_name;" +
+            "intentions.cities.city_name;intentions.consider_venture_company_opportunities_name;basic.icon_class;basic.position_name;basic.constellation;" +
+            "basic.company_name;basic.email;basic.current_job;basic.weixin;basic.nationality_name;basic.city_name;basic.motto;basic.industry_name;basic.qq;" +
+            "basic.name;basic.self_introduction;basic.gender_name;basic.birth_date;others.other;credentials.code;other_workexps.job_name;other_workexps.company_scale_name;" +
+            "other_workexps.company_name;other_workexps.department_name;other_workexps.company_new_name;other_workexps.job;other_workexps.company_property_name;" +
+            "other_workexps.position_name;other_workexps.achievement;other_workexps.description;credentials.name;credentials.organization;credentials.url;" +
+            "attachments.name;attachment.description;skills.name;imports.user_name;imports.data;imports.account_id;awards.name;languages.name;works.name;works.url;" +
+            "works.description";
+
 }

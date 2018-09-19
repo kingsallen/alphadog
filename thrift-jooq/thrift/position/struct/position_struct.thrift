@@ -83,6 +83,7 @@ struct WechatPositionListQuery {
     16: optional bool order_by_priority,
     17: optional string custom,
     18: optional i32 user_id
+    19: optional i32 is_referral
 }
 
 struct WechatPositionListData {
@@ -103,10 +104,20 @@ struct WechatPositionListData {
     16: optional i32 priority,
     17: optional i32 publisher,
     18: optional string accountabilities
-    19: optional i32 totalNum,
+    19: optional i32 total_num,
     20: optional i32 candidate_source,
     21: optional string requirement,
-    22: optional string city_ename
+    22: optional string city_ename,
+    23: optional i32 is_referral
+    24: optional i32 employment_type;
+    25: optional string employment_type_name;
+    26: optional string publisher_name;
+    27: optional string update_time;
+    28: optional i32 degree_above;
+    29: optional i32 degree;
+    30: optional i32 experience_above;
+    31: optional string experience;
+    32: optional i32 team_id;
 }
 
 // 微信端职位列表的附加红包信息
@@ -137,8 +148,9 @@ struct WechatRpPositionListData {
     17: optional string city,
     18: optional i32 candidate_source,
     19: optional string requirement,
-    20: optional i32 totalNum,
-    21: optional string city_ename
+    20: optional i32 total_num,
+    21: optional string city_ename,
+    22: optional i32 is_referral
 }
 
 // 微信端获取红包分享信息
@@ -417,4 +429,17 @@ struct PositionDetailsForAlipayCampus{
 struct JobPositionHrCompanyFeatureDO{
   1: optional i32 pid,
   2: optional i32 fid
+}
+
+struct ReferralPositionUpdateDataDO{
+    1:optional list<i32> position_ids,
+    2:optional i32 all_selected,
+    3:optional i32 company_id,
+    4:optional i32 account_id,
+    5:optional i32 account_type,
+    6:optional string city,
+    7:optional i32 candidate_source,
+    8:optional i32 employment_type,
+    9:optional string keyWord,
+    10:optional string is_referral
 }

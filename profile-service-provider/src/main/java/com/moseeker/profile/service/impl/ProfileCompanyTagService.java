@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrTalentDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.profile.config.Sender;
@@ -43,6 +44,12 @@ public class ProfileCompanyTagService {
             userId=this.getUserIdFromProfile(profileId);
         }
         if(userId>0){
+            handlerCompanyTagByUserId(userId);
+        }
+    }
+
+    public void  handlerCompanyTagByUserId(int userId){
+        if(userId>0){
             boolean flag=this.validateUsertalent(userId);
             if(flag){
                 Set<Integer> userIdSet=new HashSet<>();
@@ -52,11 +59,12 @@ public class ProfileCompanyTagService {
                     Map<String,Object> message=new HashMap<>();
                     message.put("user_ids",userIdSet);
                     message.put("company_ids",companyIdSet);
-                    sender.send(JSON.toJSONString(message));
+                    sender.send(JSON.toJSONString(message),80000);
                 }
             }
         }
     }
+
     /*
      获取该人投递的公司
      */
