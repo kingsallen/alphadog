@@ -151,6 +151,7 @@ public class SearchMethodUtil {
         String candidateSource=params.get("candidate_source");
         String candidateSourceName=params.get("candidate_source_name");
         String city=params.get("city");
+        String cities=params.get("cities");
         String occupation=params.get("occupation");
         String teamName=params.get("team_name");
         String employmentType=params.get("employment_type");
@@ -211,6 +212,8 @@ public class SearchMethodUtil {
 
         if(StringUtils.isNotBlank(city)){
             searchUtil.handleTerms(city,query,"city");
+        } else if(StringUtils.isNotBlank(cities) ) {
+            searchUtil.handleTerms(cities,query,"city");
         }
 
         if(StringUtils.isNotBlank(occupation)){
