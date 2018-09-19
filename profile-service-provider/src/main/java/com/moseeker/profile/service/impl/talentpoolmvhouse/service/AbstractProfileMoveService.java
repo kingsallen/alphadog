@@ -365,8 +365,10 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         }
         if (origin.equals(ChannelType.MVHOUSEJOB51DOWNLOAD.getOrigin("")) || origin.equals(ChannelType.MVHOUSEZHILIANDOWNLOAD.getOrigin(""))) {
             return 1;
-        } else {
+        } else if(origin.equals(ChannelType.MVHOUSEJOB51UPLOAD.getOrigin("")) || origin.equals(ChannelType.MVHOUSEZHILIANUPLOAD.getOrigin(""))){
             return 0;
+        } else {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_ORIGIN_UPSUPORT);
         }
 
     }
@@ -446,6 +448,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     /**
      * 处理请求参数
+     * @param companyDOS            第三方公司集合
      * @param userHrAccountDO       hr账号do
      * @param hrThirdPartyAccountDO hr第三方账号do
      * @param startDate             简历搬家起始时间
