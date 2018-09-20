@@ -25,7 +25,7 @@ public class ZhiLianProfileMoveService extends AbstractProfileMoveService {
 
 
     public ZhiLianProfileMoveService() {
-        firstTime = 3L * 30 * 24 * 60 * 60 * 1000;
+        firstTime = 3L * 31 * 24 * 60 * 60 * 1000;
     }
 
     @Override

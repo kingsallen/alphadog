@@ -23,7 +23,7 @@ import java.util.List;
 public class Job51ProfileMoveService extends AbstractProfileMoveService {
 
     public Job51ProfileMoveService() {
-        firstTime = 6L * 30 * 24 * 60 * 60 * 1000;
+        firstTime = 6L * 31 * 24 * 60 * 60 * 1000;
     }
 
     @Override
