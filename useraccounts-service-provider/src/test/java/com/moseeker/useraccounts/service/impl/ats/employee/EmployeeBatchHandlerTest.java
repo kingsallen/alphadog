@@ -30,23 +30,78 @@ public class EmployeeBatchHandlerTest {
     public void postPutUserEmployeeBatch() throws Exception {
 
         String json = "{\n" +
-                "  'company_id': 133445,\n" +
-                "  'del_not_include': false,\n" +
-                "  'appid': 1,\n" +
-                "  'cancel_auth': true,\n" +
-                "  'data': [\n" +
-                "    \n" +
+                "  \"appid\": 1,\n" +
+                "  \"as_task\": true,\n" +
+                "  \"auth_method\": 0,\n" +
+                "  \"company_id\": 248355,\n" +
+                "  \"cancel_auth\": false,\n" +
+                "  \"del_not_include\": true,\n" +
+                "  \"data\": [\n" +
                 "    {\n" +
-                "      'company_id': 133445,\n" +
-                "      'custom_field_values': '[{\"82\": [\"CN MCCL Data Enabling Enterprise\"]},{\"98\": [\"Staff\"]}]',\n" +
-                "      'cname': '王晨',\n" +
-                "      'custom_field': '14119043',\n" +
-                "      'departmentname': '',\n" +
-                "      'email': 'steven.wang@cn.mcd.com'\n" +
+                "      \"email\": \"xiaoming.wang01@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN Shanghai\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10001959\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u738b\\u6653\\u660e\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"Junjie.Shen@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN Shanghai\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10002569\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u6c88\\u4fca\\u6770\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"yining.pan@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN Shanghai\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10007321\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u6f58\\u4f0a\\u5b81\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"sophia.shi@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN Shanghai\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10000251\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u65bd\\u654f\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"christine.chen@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN Shanghai\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10000272\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u9648\\u96f7\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"kiko.huang@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN Shanghai\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10006846\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u9ec4\\u6676\\u6676\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"guixia.zhang@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN MCCL Training Learning and Development\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10000533\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u5f20\\u6842\\u971e\"\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"email\": \"lynn.yan@cn.mcd.com\",\n" +
+                "      \"custom_field_values\": \"[{\\\"82\\\": [\\\"CN MCCL Training Learning and Development\\\"]},{\\\"98\\\": [\\\"Staff\\\"]}]\",\n" +
+                "      \"custom_field\": \"10001197\",\n" +
+                "      \"departmentname\": \"\",\n" +
+                "      \"company_id\": 248355,\n" +
+                "      \"cname\": \"\\u95eb\\u82d3\"\n" +
                 "    }\n" +
-                "  ],\n" +
-                "  'auth_method': 0,\n" +
-                "  'as_task': true\n" +
+                "  ]\n" +
                 "}";
 
         UserEmployeeBatchForm form = JSON.parseObject(json,UserEmployeeBatchForm.class);
