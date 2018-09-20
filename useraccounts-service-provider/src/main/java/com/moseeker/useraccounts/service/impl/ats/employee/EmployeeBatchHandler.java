@@ -56,7 +56,7 @@ public class EmployeeBatchHandler {
                 batchForm.isCancel_auth(), batchForm.getAuth_method(), batchForm.getData().size());
 
         //这批数据的特征值集合
-        List<String> uniqueFlags = new ArrayList<>();
+        Map<String, Integer> uniqueFlags = new HashMap<>();
 
         int[] dataStatus = new int[batchForm.getData().size()];//对应的数据的操作类型1，插入，2：更新，0：无效的数据
 
@@ -91,9 +91,9 @@ public class EmployeeBatchHandler {
             //开始检查
             for (UserEmployeeRecord record : records) {
                 flag = authMethod.uniqueKey(record);
-                if (uniqueFlags.contains(flag)) {
+                if (uniqueFlags.containsKey(flag)) {
                     //这条数据需要更新
-                    index = uniqueFlags.indexOf(flag);
+                    index = uniqueFlags.get(flag);
                     dataStatus[index] = NEED_UPDATE;
                     batchForm.getData().get(index).setId(record.getId());
                 } else {
