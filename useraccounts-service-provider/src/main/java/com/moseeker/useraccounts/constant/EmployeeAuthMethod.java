@@ -16,7 +16,7 @@ public enum EmployeeAuthMethod {
             } else{
                 email = employeeStruct.getEmail();
             }
-            return employeeStruct.getCompany_id() + "_email_" + email;
+            return employeeStruct.getCompany_id() + "_email_" + email.toLowerCase();
         }
 
         @Override
@@ -66,7 +66,7 @@ public enum EmployeeAuthMethod {
             } else{
                 cname = employeeStruct.getCname();
             }
-            return employeeStruct.getCompany_id() + "_cname_" + cname;
+            return employeeStruct.getCompany_id() + "_cname_" + cname.toLowerCase();
         }
 
         @Override
