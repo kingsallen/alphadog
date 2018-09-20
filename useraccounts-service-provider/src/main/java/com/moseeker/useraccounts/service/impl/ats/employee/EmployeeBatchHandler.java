@@ -46,6 +46,11 @@ public class EmployeeBatchHandler {
             return new int[0];
         }
 
+        // 默认自定义认证
+        if (!batchForm.isSetAuth_method()) {
+            batchForm.setAuth_method(EmployeeAuthMethod.CUSTOM_AUTH.getCode());
+        }
+
         // 默认物理删除
         if (!batchForm.isSetCancel_auth()) {
             batchForm.setCancel_auth(false);
