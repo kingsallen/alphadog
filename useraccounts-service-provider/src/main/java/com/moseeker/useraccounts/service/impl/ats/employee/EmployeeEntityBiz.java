@@ -6,6 +6,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.useraccounts.constant.EmployeeAuthMethod;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 员工实体业务工具
@@ -19,22 +20,23 @@ public class EmployeeEntityBiz {
      * @param batchForm
      * @return
      */
-    public static void getUniqueFlagsAndStatus(UserEmployeeBatchForm batchForm, List<String> uniqueFlags, int[] dataStatus) throws BIZException {
+    public static void getUniqueFlagsAndStatus(UserEmployeeBatchForm batchForm, Map<String,Integer> uniqueFlags, int[] dataStatus) throws BIZException {
         List<UserEmployeeStruct> employeeStructs = batchForm.getData();
 
         EmployeeAuthMethod authMethod = EmployeeAuthMethod.getAuthMethod(batchForm.getAuth_method());
 
         String flag;
         int index = 0;
-        for (UserEmployeeStruct struct : employeeStructs) {
+        for (int i=0;i<employeeStructs.size();i++) {
+            UserEmployeeStruct struct = employeeStructs.get(i);
             if (authMethod.checkDataValid(struct)) {
                 flag = authMethod.uniqueKey(struct);
-                if (uniqueFlags.contains(flag)) {
+                if (uniqueFlags.containsKey(flag)) {
                     dataStatus[index] = 0;//重复的数据
                 } else {
                     dataStatus[index] = 1;
                 }
-                uniqueFlags.add(flag);
+                uniqueFlags.put(flag,i);
             } else {
                 //无效
                 dataStatus[index] = 0;
