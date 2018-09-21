@@ -258,10 +258,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             // 判断上一次是否入库过，如果搬过一次，是否搬成功了
             int currentCrawlNum = profileMoveRecordRecord.getCrawlNum();
             TalentpoolProfileMoveDetailRecord profileMoveDetailRecord = poolProfileMoveDetailDao.getByMobile(mobile);
-            if(profileMoveDetailRecord != null){
-                i++;
-                logger.info("========================i:{},mobile:{}", i, mobile);
-            }
             if (profileMoveDetailRecord == null) {
                 // 如果第一次搬该简历，搬家简历数+1
                 currentCrawlNum = currentCrawlNum + 1;
@@ -293,7 +289,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
         return preserveResponse;
     }
-    int i = 0;
+
     private TalentpoolProfileMoveRecordRecord getProfileMoveRecordByCrawlType(List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords, int crawlType) {
         TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = new TalentpoolProfileMoveRecordRecord();
         for(TalentpoolProfileMoveRecordRecord one : profileMoveRecordRecords){
