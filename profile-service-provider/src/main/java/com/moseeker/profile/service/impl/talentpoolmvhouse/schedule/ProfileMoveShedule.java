@@ -63,6 +63,7 @@ public class ProfileMoveShedule {
             logger.info("=====================刷新简历搬家状态开始");
             for (TalentPoolProfileMoveRecordDO profileMoveDO : profileMoveDOS) {
                 // 当验证码错误时会创建一条总邮件为0，当前邮件为0的数据，这条数据认为搬家成功
+                logger.info("create:{},update:{}",profileMoveDO.getCreateTime(),profileMoveDO.getUpdateTime());
                 if (profileMoveDO.getCurrentEmailNum() == 0 && profileMoveDO.getTotalEmailNum() == 0) {
                     if(profileMoveDO.getCreateTime().equals(profileMoveDO.getUpdateTime())){
                         failedIdList.add(profileMoveDO.getId());
@@ -78,6 +79,7 @@ public class ProfileMoveShedule {
                     }
                 }
             }
+            logger.info("successIdList:{},failedIdList:{}",successIdList,failedIdList);
             if (successIdList.size() > 0) {
                 logger.info("========================简历搬家状态刷新successIdList:{}", successIdList);
                 profileMoveRecordDao.batchUpdateStatus(successIdList, ProfileMoveStateEnum.SUCCESS.getValue());
