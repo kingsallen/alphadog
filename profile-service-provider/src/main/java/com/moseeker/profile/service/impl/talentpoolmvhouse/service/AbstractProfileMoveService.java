@@ -433,7 +433,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_UPDATE_FAILED);
         }
         profileMoveDetailRecord.setUpdateTime(null);
-        int row = profileMoveDetailDao.updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, state);
+        int row = profileMoveDetailDao.updateWhereExist(profileMoveDetailRecord, profileMoveRecordId, state);
         if (row == 0) {
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
             updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
@@ -466,6 +466,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @return 简历搬家请求vo
      * @author cjm
      * @date 2018/9/9
+     * @throws BIZException bizException
      */
     public abstract MvHouseVO handleRequestParams(List<ThirdpartyAccountCompanyDO> companyDOS, UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO,
                                                   Date startDate, Date endDate, int profileMoveId, boolean isFirstMove) throws BIZException;
