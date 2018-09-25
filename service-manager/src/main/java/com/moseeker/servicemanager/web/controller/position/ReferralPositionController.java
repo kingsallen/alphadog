@@ -11,15 +11,18 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.position.bean.ReferralPointFlagVO;
+import com.moseeker.servicemanager.web.controller.referral.form.ReferralBonusForm;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -282,4 +285,37 @@ public class ReferralPositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+
+    /**
+     * 内推职位设置内推奖金
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/referral/position/bonus", method = RequestMethod.POST)
+    @ResponseBody
+    public String putReferralPositionBonus(HttpServletRequest request, HttpServletResponse response, @RequestBody ReferralBonusForm referralBonusForm) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+
+
+            logger.info("ReferralPositionController1 putReferralPostionBonus  referralBonusForm : {}",JSON.toJSONString(referralBonusForm)  );
+
+            referralPositionService.putReferralPositionBonus(convertReferralPositionBonusVO(referralBonusForm));
+
+            logger.info("ReferralPositionController1 putReferralPostionBonus  response Finished" );
+
+            return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    private ReferralPositionBonusVO convertReferralPositionBonusVO(ReferralBonusForm referralBonusForm) {
+        ReferralPositionBonusVO bonusVO = new ReferralPositionBonusVO();
+        return  bonusVO;
+    }
+
 }

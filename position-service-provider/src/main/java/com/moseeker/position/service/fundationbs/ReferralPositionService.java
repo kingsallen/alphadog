@@ -5,6 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfJooqDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -13,6 +16,9 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusDO;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusStageDetailDO;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.slf4j.Logger;
@@ -23,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +49,13 @@ public class ReferralPositionService {
 
     @Autowired
     ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
+
+    @Autowired
+    ReferralPositionBonusDao referralPositionBonusDao;
+
+    @Autowired
+    ReferralPositionBonusStageDetailDao referralPositionBonusStageDetailDao;
+
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -305,5 +319,28 @@ public class ReferralPositionService {
 
     }
 
+    @CounterIface
+    @Transactional
+    public void putReferralPositionBonus(ReferralPositionBonusVO referralPositionBonusVO) throws Exception{
+        logger.info("putReferralPositionBonus {}",JSON.toJSONString(referralPositionBonusVO) );
+        ReferralPositionBonusDO referralPositionBonusDO = referralPositionBonusVO.getPosition_bonus();
+        List<ReferralPositionBonusStageDetailDO> detailDOS = referralPositionBonusVO.getData();
+
+        Integer pid = referralPositionBonusDO.getPosition_id();
+
+        com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonus referralPositionBonus =  referralPositionBonusDao.fetchOne(ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID,pid);
+
+        LocalDateTime now = LocalDateTime.now();
+        if(referralPositionBonus == null) {
+            referralPositionBonus = new com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonus();
+            referralPositionBonus.setPositionId(pid);
+            referralPositionBonus.setCreateTime(Timestamp.valueOf(now));
+            referralPositionBonus.setUpdateTime(Timestamp.valueOf(now));
+
+        } else {
+
+        }
+
+    }
 
 }

@@ -8,6 +8,8 @@ import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 
 import javax.annotation.Generated;
@@ -45,6 +47,16 @@ public class Tables {
      * 内推记录
      */
     public static final ReferralLog REFERRAL_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralLog.REFERRAL_LOG;
+
+    /**
+     * The table <code>referraldb.referral_position_bonus</code>.
+     */
+    public static final ReferralPositionBonus REFERRAL_POSITION_BONUS = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus.REFERRAL_POSITION_BONUS;
+
+    /**
+     * The table <code>referraldb.referral_position_bonus_stage_detail</code>.
+     */
+    public static final ReferralPositionBonusStageDetail REFERRAL_POSITION_BONUS_STAGE_DETAIL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
 
     /**
      * The table <code>referraldb.referral_position_rel</code>.
