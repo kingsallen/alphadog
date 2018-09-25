@@ -82,7 +82,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     @Autowired
     protected ThirdpartyAccountCompanyDao thirdCompanyDao;
     @Autowired
-    protected TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao;
+    protected TalentPoolProfileMoveDetailDao profileMoveDetailDao;
     @Autowired
     protected HrCompanyAccountDao hrCompanyAccountDao;
 
@@ -231,6 +231,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         int crawlType = getCrawlTypeByOrigin(resumeObj);
         // 根据简历类型获取对应的操作记录
         TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = getProfileMoveRecordByCrawlType(profileMoveRecordRecords, crawlType);
+        int state = profileMoveRecordRecord.getStatus();
         // 如果当前邮件数与总邮件数相同，认为本次搬家成功
         int totalEmailNum = 0;
         for(TalentpoolProfileMoveRecordRecord recordRecord : profileMoveRecordRecords){
@@ -257,23 +258,26 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             long mobile = Long.parseLong(mobileStr);
             // 判断上一次是否入库过，如果搬过一次，是否搬成功了
             int currentCrawlNum = profileMoveRecordRecord.getCrawlNum();
-            TalentpoolProfileMoveDetailRecord profileMoveDetailRecord = poolProfileMoveDetailDao.getByMobile(mobile);
+            TalentpoolProfileMoveDetailRecord profileMoveDetailRecord = profileMoveDetailDao.getByMobile(mobile);
             if (profileMoveDetailRecord == null) {
                 // 如果第一次搬该简历，搬家简历数+1
                 currentCrawlNum = currentCrawlNum + 1;
                 // 入库成功时，插入一条合并记录，状态为成功，如果之后chaos发送搬家状态失败，则将本次合并记录置为失败，这里做连表插入判断：exists
-                insertCombineRecord(mobile, profileMoveRecordRecord.getId());
-            } else if (profileMoveDetailRecord.getProfileMoveStatus() == ProfileMoveStateEnum.SUCCESS.getValue()) {
-                // 如果是以前搬成功的简历，搬家简历数 + 1，由于可能多处修改这里，加乐观锁
-                currentCrawlNum = currentCrawlNum + 1;
-                updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordRecord.getId(), ProfileMoveStateEnum.SUCCESS.getValue(), 1);
-            } else {
-                // 如果上次搬失败了，本次搬的简历在上次已经计算在内，此次搬家简历数不+1，这次将其操作id和状态都修改掉
-                boolean isSameCompany = checkSameCompany(profileMoveDetailRecord.getProfileMoveRecordId(), companyId);
-                if (!isSameCompany) {
+                insertCombineRecord(mobile, profileMoveRecordRecord.getId(), state, 1);
+            } else{
+                profileMoveDetailRecord.setUpdateTime(null);
+                if (profileMoveDetailRecord.getProfileMoveStatus() == ProfileMoveStateEnum.SUCCESS.getValue()) {
+                    // 如果是以前搬成功的简历，搬家简历数 + 1，由于可能多处修改这里，加乐观锁
                     currentCrawlNum = currentCrawlNum + 1;
+                    updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
+                } else {
+                    // 如果上次搬失败了，本次搬的简历在上次已经计算在内，此次搬家简历数不+1，这次将其操作id和状态都修改掉
+                    boolean isSameCompany = checkSameCompany(profileMoveDetailRecord.getProfileMoveRecordId(), companyId);
+                    if (!isSameCompany) {
+                        currentCrawlNum = currentCrawlNum + 1;
+                    }
+                    updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
                 }
-                updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordRecord.getId(), ProfileMoveStateEnum.SUCCESS.getValue(), 1);
             }
             // 当currentEmailNum>当前简历类型的总email数量，将当前email减去当前简历类型的总email数量
             if(profileMoveRecordRecord.getTotalEmailNum() < currentEmailNum){
@@ -422,13 +426,17 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         return ResponseUtils.success(resultList);
     }
 
-    private void updateMoveDetailWithPositiveLock(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status, int retryTimes) throws BIZException {
+    private void updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte state, int retryTimes) throws BIZException {
+        byte status = (state == ProfileMoveStateEnum.MOVING.getValue() ? ProfileMoveStateEnum.SUCCESS.getValue() : state);
+        profileMoveDetailRecord.setProfileMoveStatus(status);
         if (retryTimes > TRY_TIMES) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_UPDATE_FAILED);
         }
-        int row = poolProfileMoveDetailDao.updateRecordWithPositiveLock(profileMoveDetailRecord, profileMoveRecordId, status);
+        profileMoveDetailRecord.setUpdateTime(null);
+        int row = profileMoveDetailDao.updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, state);
         if (row == 0) {
-            updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordId, status, ++retryTimes);
+            TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
+            updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
         }
     }
 
@@ -576,18 +584,22 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      *
      * @param mobile      手机号
      * @param profileMoveRecordId profile_move_record.id
+     * @param retryTimes 当前是第几次重试
      * @author cjm
      * @date 2018/9/10
      */
-    private void insertCombineRecord(long mobile, int profileMoveRecordId) {
+    private void insertCombineRecord(long mobile, int profileMoveRecordId, int state, int retryTimes) throws BIZException {
+        if(retryTimes >= TRY_TIMES){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
+        }
         TalentpoolProfileMoveDetailRecord record = new TalentpoolProfileMoveDetailRecord();
         record.setMobile(mobile);
         record.setProfileMoveRecordId(profileMoveRecordId);
-        record.setProfileMoveStatus(ProfileMoveStateEnum.SUCCESS.getValue());
-        int row = poolProfileMoveDetailDao.addWhereExistStatus(record, ProfileMoveStateEnum.MOVING.getValue());
+        record.setProfileMoveStatus(state == ProfileMoveStateEnum.MOVING.getValue() ? ProfileMoveStateEnum.SUCCESS.getValue() : (byte)state);
+        int row = profileMoveDetailDao.addWhereExistStatus(record, (byte)state);
         if (row == 0) {
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
-            poolProfileMoveDetailDao.addWhereExistStatus(record, recordRecord.getStatus());
+            insertCombineRecord(mobile, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
         }
     }
 
