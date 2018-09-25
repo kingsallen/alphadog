@@ -64,10 +64,7 @@ public class BindWxAccountService extends BindOnAccountService{
 			userUnionid.setUnionid("");
 			if (userdao.updateRecord(userUnionid) > 0) {
 				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
-				// 如果手机用户之前绑定过微信，需要把微信unionid对应的user_wx_user的sysuser_id都置为0
-				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
-					wxUserDao.invalidOldWxUser(userMobile.getUnionid());
-				}
+				invalidOldWxUser(userMobile.getUnionid());
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
@@ -81,9 +78,20 @@ public class BindWxAccountService extends BindOnAccountService{
 		// TODO Auto-generated method stub
 		userMobile.setUnionid(unionid);
 		try {
+			invalidOldWxUser(userMobile.getUnionid());
 			userdao.updateRecord(userMobile);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 如果手机用户之前绑定过微信，需要把微信unionid对应的user_wx_user的sysuser_id都置为0
+	 * @param unionid
+	 */
+	private void invalidOldWxUser(String unionid){
+		if(StringUtils.isNotNullOrEmpty(unionid)) {
+			wxUserDao.invalidOldWxUser(unionid);
 		}
 	}
 }
