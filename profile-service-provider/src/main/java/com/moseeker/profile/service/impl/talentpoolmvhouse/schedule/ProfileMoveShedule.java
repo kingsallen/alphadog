@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 简历搬家刷新搬家状态刷新定时任务
@@ -86,9 +85,7 @@ public class ProfileMoveShedule {
                 // 刷新时将detail表的状态一并刷新
                 logger.info("========================简历搬家状态刷新failedIdList:{}", failedIdList);
                 profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
-                List<TalentPoolProfileMoveRecordDO> recordDOS = profileMoveRecordDao.getListByMoveIds(failedIdList);
-                List<Integer> detailFailIds = recordDOS.stream().map(TalentPoolProfileMoveRecordDO::getId).collect(Collectors.toList());
-                poolProfileMoveDetailDao.batchUpdateStatus(detailFailIds, ProfileMoveStateEnum.FAILED.getValue());
+                poolProfileMoveDetailDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
             }
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常successIdList:" + successIdList.toString() + ",failedIdList:{}" + failedIdList.toString());
