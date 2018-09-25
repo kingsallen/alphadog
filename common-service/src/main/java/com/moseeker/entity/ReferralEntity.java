@@ -19,6 +19,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -29,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -179,13 +181,14 @@ public class ReferralEntity {
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
         if (application != null) {
-            JobApplicationRecord record = new JobApplicationRecord();
-            record.setId(application.getId());
-            record.setApplierId(userUserDO.getId());
-            record.setApplierName(userUserDO.getName());
-            record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-            applicationDao.updateRecord(record);
-            searchengineEntity.removeApplication(application.getApplierId(), application.getId(), record.getApplierId(), record.getApplierName(), record.getUpdateTime());
+
+            Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+            applicationDao.updateIfNotExist(application.getId(), userUserDO.getId(), userUserDO.getName(),
+                    ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()), updateTime,
+                    application.getPositionId());
+
+            searchengineEntity.removeApplication(application.getApplierId(), application.getId(),
+                    application.getApplierId(), application.getApplierName(), updateTime);
         }
 
         ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());

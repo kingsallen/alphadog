@@ -29,13 +29,13 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.Constant.EmployeeType;
-import com.moseeker.entity.biz.EmployeeEntityBiz;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
@@ -63,6 +63,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -145,7 +147,7 @@ public class EmployeeEntity {
         companyIds.add(companyId);
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
                 .and("disable", "0")
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), "0");
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), "0");
         return employeeDao.getData(query.buildQuery());
     }
 
@@ -373,9 +375,9 @@ public class EmployeeEntity {
             UserEmployeeDO userEmployeeDOTemp = employeeDao.getEmployee(query.buildQuery());
             List<Integer> companyIds = getCompanyIdsByUserId(userEmployeeDOTemp.getSysuserId());
             query.clear();
-            query.where(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), berecomIds, ValueOp.IN))
-                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
-                    .and(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
+            query.where(new Condition(USER_EMPLOYEE.SYSUSER_ID.getName(), berecomIds, ValueOp.IN))
+                    .and(USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                    .and(new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
             List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
             if (!StringUtils.isEmptyList(userEmployeeDOList)) {
                 userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
@@ -506,7 +508,7 @@ public class EmployeeEntity {
     public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
         return unbind(employeeDOList);
     }
@@ -519,10 +521,12 @@ public class EmployeeEntity {
      */
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
+            String now = DateUtils.dateToShortTime(new Date());
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
                 e.setCustomFieldValues("[]");
+                e.setUpdateTime(now);
             });
             for(UserEmployeeDO DO:employees){
                 int userId=DO.getSysuserId();
@@ -595,20 +599,20 @@ public class EmployeeEntity {
     public Boolean permissionJudge(List<Integer> userEmployeeIds, List<Integer> companyIds) {
         Condition companyIdCondition = null;
         if (companyIds.size() == 1) {
-            companyIdCondition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds.get(0), ValueOp.EQ);
+            companyIdCondition = new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds.get(0), ValueOp.EQ);
         } else {
-            companyIdCondition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+            companyIdCondition = new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
         }
         Condition userEmployeeId = null;
         if (userEmployeeIds.size() == 1) {
-            userEmployeeId = new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeIds.get(0), ValueOp.EQ);
+            userEmployeeId = new Condition(USER_EMPLOYEE.ID.getName(), userEmployeeIds.get(0), ValueOp.EQ);
         } else {
-            userEmployeeId = new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), userEmployeeIds, ValueOp.IN);
+            userEmployeeId = new Condition(USER_EMPLOYEE.ID.getName(), userEmployeeIds, ValueOp.IN);
         }
         // 查询公司的员工ID
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(companyIdCondition).and(userEmployeeId)
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+                .and(USER_EMPLOYEE.DISABLE.getName(), 0);
 
         List<UserEmployeeDO> list = employeeDao.getDatas(queryBuilder.buildQuery());
         if (StringUtils.isEmptyList(list)) {
@@ -708,9 +712,9 @@ public class EmployeeEntity {
      */
     public List<Integer> getCompanyIdsByUserId(Integer userId) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId);
-        queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeType.AUTH_SUCCESS.getValue());
-        queryBuilder.and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+        queryBuilder.where(USER_EMPLOYEE.SYSUSER_ID.getName(), userId);
+        queryBuilder.and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeType.AUTH_SUCCESS.getValue());
+        queryBuilder.and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         UserEmployeeDO userEmployeeDO = employeeDao.getData(queryBuilder.buildQuery());
         if (userEmployeeDO == null) {
             return new ArrayList<>();
@@ -760,9 +764,9 @@ public class EmployeeEntity {
      */
     public int countActiveEmployeeByCompanyIds(List<Integer> companyIdList) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+        queryBuilder.where(new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN))
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
+                .and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         return employeeDao.getCount(queryBuilder.buildQuery());
     }
 
@@ -778,13 +782,13 @@ public class EmployeeEntity {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID
             List<Integer> companyIds = getCompanyIds(companyId);
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
-                    .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
-                    .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
-            Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+            queryBuilder.select(USER_EMPLOYEE.ID.getName())
+                    .select(USER_EMPLOYEE.COMPANY_ID.getName())
+                    .select(USER_EMPLOYEE.SYSUSER_ID.getName());
+            Condition condition = new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
             queryBuilder.where(condition)
-                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
-                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeType.AUTH_SUCCESS.getValue());
+                    .and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
+                    .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeType.AUTH_SUCCESS.getValue());
             userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
         }
         return userEmployeeDOS;
@@ -803,25 +807,6 @@ public class EmployeeEntity {
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 添加员工记录集合。 会向员工记录中添加数据的同时，往ES员工索引维护队列中增加维护员工记录的任务。
-     *
-     * @param userEmployeeList 员工记录集合
-     * @return 添加好的员工记录。如果参数是空，那么返回值是null
-     * @throws CommonException
-     */
-    public List<UserEmployeeRecord> addEmployeeRecordList(List<UserEmployeeRecord> userEmployeeList) throws CommonException {
-        if (userEmployeeList != null && userEmployeeList.size() > 0) {
-            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(userEmployeeList);
-
-            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
-
-            return employeeDOS;
         } else {
             return null;
         }
@@ -865,176 +850,6 @@ public class EmployeeEntity {
     }
 
     /**
-     * ATS对接 批量修改员工信息
-     *
-     * @param batchForm
-     */
-    public int[] postPutUserEmployeeBatch(UserEmployeeBatchForm batchForm) throws CommonException {
-        if (batchForm.getData() == null || batchForm.getData().size() == 0) {
-            return new int[0];
-        }
-
-        logger.info("postPutUserEmployeeBatch {},总数据:{}条", batchForm.getCompany_id(), batchForm.getData().size());
-
-        Query.QueryBuilder builder = null;
-
-        //这批数据的特征值集合
-        List<String> uniqueFlags = new ArrayList<>();
-
-        int[] dataStatus = new int[batchForm.getData().size()];//对应的数据的操作类型1，插入，2：更新，0：无效的数据
-
-        EmployeeEntityBiz.getUniqueFlagsAndStatus(batchForm.getData(), uniqueFlags, dataStatus);
-
-        logger.info("postPutUserEmployeeBatch {},有效的数据:{}条", batchForm.getCompany_id(), uniqueFlags.size());
-
-        Set<Integer> delIds = new HashSet<>();
-        int page = 1;
-        int pageSize = 1000;
-
-        List<UserEmployeeRecord> records;
-
-        //每次取出1000条检查，把不在userEmployees里面的数据的id记录到delIds
-        while (true) {
-            logger.info("postPutUserEmployeeBatch {},检查数据:page:{}", batchForm.getCompany_id(), page);
-            builder = new Query.QueryBuilder();
-            builder.where("company_id", batchForm.getCompany_id());
-            builder.setPageSize(pageSize);
-            builder.setPageNum(page);
-            records = employeeDao.getRecords(builder.buildQuery());
-
-            //取完了
-            if (records == null || records.size() == 0) {
-                break;
-            }
-            int index;
-            String flag1, flag2;
-            //开始检查
-            for (UserEmployeeRecord record : records) {
-                if (record.getCustomField() == null) record.setCustomField("");
-                if (record.getCname() == null) record.setCname("");
-                flag1 = record.getCompanyId() + "_custom_field_" + record.getCustomField().trim();
-                if (uniqueFlags.contains(flag1)) {
-                    //这条数据需要更新
-                    index = uniqueFlags.indexOf(flag1);
-                    dataStatus[index] = 2;
-                    batchForm.getData().get(index).setId(record.getId());
-                } else {
-                    flag2 = record.getCompanyId() + "_cname_" + record.getCname().trim();
-                    if (uniqueFlags.contains(flag2)) {
-                        //这条数据需要更新
-                        index = uniqueFlags.indexOf(flag2);
-                        dataStatus[index] = 2;
-                        batchForm.getData().get(index).setId(record.getId());
-                    } else {
-                        //这条数据需要删除
-                        delIds.add(record.getId());
-                    }
-                }
-            }
-
-            //取完了
-            if (records.size() != pageSize) {
-                break;
-            }
-
-            //继续取下1000条记录检查
-            page++;
-
-        }
-
-        logger.info("postPutUserEmployeeBatch {},不在集合中的数据:{}条", batchForm.getCompany_id(), delIds.size());
-
-        if (batchForm.isDel_not_include() && delIds.size() > 0) {
-            logger.info("postPutUserEmployeeBatch {},删除数据:{}条", batchForm.getCompany_id(), delIds.size());
-            //把不在userEmployees中的数据从数据库中删除
-            int batchDeleteSize = 500;
-            Iterator<Integer> delIterator = delIds.iterator();
-            List<Integer> delBatch = new ArrayList<>();
-
-            //数据太多一次最多删除500个
-            while (delIterator.hasNext()) {
-                delBatch.add(delIterator.next());
-                delIterator.remove();
-                if (delBatch.size() >= 500) {
-                    Condition condition = new Condition("id", delBatch, ValueOp.IN);
-                    delete(condition);
-                    delBatch.clear();
-                }
-            }
-
-            if (delBatch.size() > 0) {
-                Condition condition = new Condition("id", delBatch, ValueOp.IN);
-                delete(condition);
-                delBatch.clear();
-            }
-        }
-
-        //要更新的数据
-        List<UserEmployeeStruct> updateDatas = new ArrayList<>();
-
-        //要添加的数据
-        List<UserEmployeeStruct> addDatas = new ArrayList<>();
-
-        for (int i = 0; i < dataStatus.length; i++) {
-            if (dataStatus[i] == 1) {
-                addDatas.add(batchForm.getData().get(i));
-            } else if (dataStatus[i] == 2) {
-                updateDatas.add(batchForm.getData().get(i));
-            }
-        }
-
-        logger.info("postPutUserEmployeeBatch {},需要添加的数据:{}条", batchForm.getCompany_id(), addDatas.size());
-        logger.info("postPutUserEmployeeBatch {},需要更新的数据:{}条", batchForm.getCompany_id(), updateDatas.size());
-
-        int batchSize = 500;
-
-        if (addDatas.size() > 0) {
-            //每次最多一次插入100条
-            int start = 0;
-            while ((start + batchSize) < addDatas.size()) {
-                addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
-                start += batchSize;
-                logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, addDatas.size() - start);
-            }
-            addEmployeeRecordList(BeanUtils.structToDB(addDatas.subList(start, addDatas.size()), UserEmployeeRecord.class));
-            logger.info("postPutUserEmployeeBatch {},批量插入数据{}条,剩余{}条", batchForm.getCompany_id(), addDatas.size() - start, 0);
-        }
-
-        if (updateDatas.size() > 0) {
-            //每次最多一次更新100条
-            int start = 0;
-            while ((start + batchSize) < updateDatas.size()) {
-                employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, start + batchSize), UserEmployeeRecord.class));
-                start += batchSize;
-                logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), batchSize, updateDatas.size() - start);
-            }
-            employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
-            searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
-            logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
-        }
-
-        logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500 ? Arrays.toString(dataStatus) : ("成功处理" + dataStatus.length + "条"));
-
-        return dataStatus;
-    }
-
-    /**
-     * 根据条件删除员工数据
-     *
-     * @param condition 条件
-     */
-    public void delete(Condition condition) throws CommonException {
-        if (condition != null) {
-            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.select("id").where(condition);
-            List<UserEmployeeDO> employeeRecordList = employeeDao.getDatas(queryBuilder.buildQuery());
-            removeEmployee(employeeRecordList.stream().map(m -> m.getId()).collect(Collectors.toList()));
-        } else {
-            //do nothing
-        }
-    }
-
-    /**
      * 根据员工编号查询员工数据
      *
      * @param employeeId 员工编号
@@ -1042,9 +857,9 @@ public class EmployeeEntity {
      */
     public UserEmployeeDO getEmployeeByID(int employeeId) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeId)
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0)
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+        queryBuilder.where(USER_EMPLOYEE.ID.getName(), employeeId)
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                .and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         return employeeDao.getData(queryBuilder.buildQuery());
     }
 
@@ -1058,24 +873,24 @@ public class EmployeeEntity {
         // 首先通过CompanyId 查询到该公司集团下所有的公司ID
         List<Integer> companyIds = getCompanyIds(companyId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
-                .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
-                .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
-        Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
-        queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+        queryBuilder.select(USER_EMPLOYEE.ID.getName())
+                .select(USER_EMPLOYEE.COMPANY_ID.getName())
+                .select(USER_EMPLOYEE.SYSUSER_ID.getName());
+        Condition condition = new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN);
+        queryBuilder.where(condition).and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
         return queryBuilder;
     }
 
     private Query.QueryBuilder buildFindActiveEmployeeQuery(List<Integer> companyIdList) {
         // 首先通过CompanyId 查询到该公司集团下所有的公司ID
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.select(UserEmployee.USER_EMPLOYEE.ID.getName())
-                .select(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName())
-                .select(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName());
-        Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN);
-        queryBuilder.where(condition).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
-                .and(new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), 0, ValueOp.NEQ));
+        queryBuilder.select(USER_EMPLOYEE.ID.getName())
+                .select(USER_EMPLOYEE.COMPANY_ID.getName())
+                .select(USER_EMPLOYEE.SYSUSER_ID.getName());
+        Condition condition = new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIdList, ValueOp.IN);
+        queryBuilder.where(condition).and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
+                .and(new Condition(USER_EMPLOYEE.SYSUSER_ID.getName(), 0, ValueOp.NEQ));
         return queryBuilder;
     }
 
@@ -1109,9 +924,9 @@ public class EmployeeEntity {
         if (userId > 0) {
             // 首先通过CompanyId 查询到该公司集团下所有的公司ID
             Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-            queryBuilder.where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), userId)
-                    .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
-                    .and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
+            queryBuilder.where(USER_EMPLOYEE.SYSUSER_ID.getName(), userId)
+                    .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
+                    .and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue());
             return employeeDao.getData(queryBuilder.buildQuery());
         } else {
             return null;

@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.*;
 
 /**
  * 封装申请表基本操作
@@ -212,6 +211,8 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
 				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(referenceId))
 				.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+				.orderBy(JobApplication.JOB_APPLICATION.ID.desc())
+				.limit(1)
 				.fetchOne();
 		if (record == null) {
 			return null;
@@ -262,5 +263,47 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 					.where(JobApplication.JOB_APPLICATION.ID.eq(id))
 					.execute();
 		}
+	}
+
+	/**
+	 * 修改申请的申请人
+	 * @param id 申请编号
+	 * @param newApplierId 新申请人
+	 * @param applierName 新申请人姓名
+	 * @param origin 来源
+	 * @param timestamp 修改时间
+	 * @param positionId 职位名称
+	 * @return 是否修改申请  true 修改成功 false 修改失败
+	 */
+	public boolean updateIfNotExist(Integer id, int newApplierId, String applierName, int origin, Timestamp timestamp,
+									Integer positionId) {
+		int execute = create.update(JobApplication.JOB_APPLICATION)
+				.set(JobApplication.JOB_APPLICATION.APPLIER_ID, newApplierId)
+				.set(JobApplication.JOB_APPLICATION.APPLIER_NAME, applierName)
+				.set(JobApplication.JOB_APPLICATION.UPDATE_TIME, timestamp)
+				.where(JobApplication.JOB_APPLICATION.ID.eq(id))
+				.andNotExists(
+						selectOne()
+						.from(
+								selectFrom(JobApplication.JOB_APPLICATION)
+								.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
+								.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+								.limit(1)
+						)
+				).execute();
+		if (execute == 0) {
+			JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
+					.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
+					.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+					.limit(1)
+					.fetchOne();
+			if (record != null) {
+				record.setOrigin(record.getOrigin() | origin);
+				record.setUpdateTime(timestamp);
+				create.attach(record);
+				record.update();
+			}
+		}
+		return execute == 1;
 	}
 }
