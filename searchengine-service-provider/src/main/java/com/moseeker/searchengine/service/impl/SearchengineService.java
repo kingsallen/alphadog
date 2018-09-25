@@ -389,7 +389,7 @@ public class SearchengineService {
             List<String> fieldList=new ArrayList<>();
             fieldList.add("city");
             fieldList.add("city_ename");
-            QueryBuilder keyand=searchUtil.shouldMatchQuery(fieldList,searchUtil.stringConvertList(citys));
+            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,searchUtil.stringConvertList(citys));
             return keyand;
         }
         return null;
