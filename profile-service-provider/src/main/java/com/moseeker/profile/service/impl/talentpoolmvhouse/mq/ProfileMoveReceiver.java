@@ -1,7 +1,7 @@
 package com.moseeker.profile.service.impl.talentpoolmvhouse.mq;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveDetailDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveRecordDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecordRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -37,10 +37,13 @@ public class ProfileMoveReceiver {
 
     private final ProfileMailUtil mailUtil;
 
+    private final TalentPoolProfileMoveDetailDao profileMoveDetailDao;
+
     @Autowired
-    public ProfileMoveReceiver(ProfileMailUtil mailUtil, TalentPoolProfileMoveRecordDao profileMoveRecordDao) {
+    public ProfileMoveReceiver(ProfileMailUtil mailUtil, TalentPoolProfileMoveRecordDao profileMoveRecordDao, TalentPoolProfileMoveDetailDao profileMoveDetailDao) {
         this.mailUtil = mailUtil;
         this.profileMoveRecordDao = profileMoveRecordDao;
+        this.profileMoveDetailDao = profileMoveDetailDao;
     }
 
     @RabbitHandler
@@ -61,6 +64,7 @@ public class ProfileMoveReceiver {
                 logger.info("=====================简历搬家失败:{}", json);
                 List<Integer> failedIdList = records.stream().map(TalentpoolProfileMoveRecordRecord::getId).collect(Collectors.toList());
                 profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
+                profileMoveDetailDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
                 return;
             }
             int applySuccessNum = params.getIntValue("apply_success_num");

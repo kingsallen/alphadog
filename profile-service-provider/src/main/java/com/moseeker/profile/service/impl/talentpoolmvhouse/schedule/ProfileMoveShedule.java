@@ -31,14 +31,14 @@ public class ProfileMoveShedule {
 
     private final TalentPoolProfileMoveRecordDao profileMoveRecordDao;
 
-    private final TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao;
+    private final TalentPoolProfileMoveDetailDao profileMoveDetailDao;
 
     private final ProfileMailUtil mailUtil;
 
     @Autowired
-    public ProfileMoveShedule(TalentPoolProfileMoveRecordDao profileMoveRecordDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao) {
+    public ProfileMoveShedule(TalentPoolProfileMoveRecordDao profileMoveRecordDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveDetailDao profileMoveDetailDao) {
         this.profileMoveRecordDao = profileMoveRecordDao;
-        this.poolProfileMoveDetailDao = poolProfileMoveDetailDao;
+        this.profileMoveDetailDao = profileMoveDetailDao;
         this.mailUtil = mailUtil;
     }
 
@@ -87,7 +87,7 @@ public class ProfileMoveShedule {
                 // 刷新时将detail表的状态一并刷新
                 logger.info("========================简历搬家状态刷新failedIdList:{}", failedIdList);
                 profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
-                poolProfileMoveDetailDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
+                profileMoveDetailDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
             }
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常successIdList:" + successIdList.toString() + ",failedIdList:{}" + failedIdList.toString());
