@@ -9,6 +9,7 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.biz.ProfileMailUtil;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.CrawlTypeEnum;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveConstant;
+import com.moseeker.profile.service.impl.talentpoolmvhouse.constant.ProfileMoveStateEnum;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 简历搬家mq消费者
@@ -52,13 +54,15 @@ public class ProfileMoveReceiver {
             if(response == null){
                 return;
             }
-            if(response.getStatus() != 0){
-                logger.info("=====================简历搬家失败:{}", json);
-                return;
-            }
             JSONObject params = JSONObject.parseObject(response.getData());
             int operationId = params.getIntValue("operation_id");
             List<TalentpoolProfileMoveRecordRecord> records = profileMoveRecordDao.getProfileMoveRecordById(operationId);
+            if(response.getStatus() != 0){
+                logger.info("=====================简历搬家失败:{}", json);
+                List<Integer> failedIdList = records.stream().map(TalentpoolProfileMoveRecordRecord::getId).collect(Collectors.toList());
+                profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
+                return;
+            }
             int applySuccessNum = params.getIntValue("apply_success_num");
             int downloadSuccessNum = params.getIntValue("download_success_num");
             if(records == null || records.size() == 0){
