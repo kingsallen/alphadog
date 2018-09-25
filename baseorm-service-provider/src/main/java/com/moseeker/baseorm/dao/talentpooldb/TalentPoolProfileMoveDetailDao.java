@@ -3,7 +3,6 @@ package com.moseeker.baseorm.dao.talentpooldb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveDetailRecord;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDetailDO;
-import org.jooq.Param;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 import java.util.List;
@@ -62,21 +61,15 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
                 .execute();
     }
 
-//    public int updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
-//        return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL)
-//                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS, status)
-//                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID, profileMoveRecordId)
-//                .where(TALENTPOOL_PROFILE_MOVE_DETAIL.ID.eq(profileMoveDetailRecord.getId()))
-//                .execute();
-//    }
-
-    public int updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
-        return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL.join(TALENTPOOL_PROFILE_MOVE_RECORD)
-                    .on(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID.eq(TALENTPOOL_PROFILE_MOVE_RECORD.ID))
-                    .and(TALENTPOOL_PROFILE_MOVE_RECORD.STATUS.eq(status)))
+    public int updateWhereExist(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
+        return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL)
                 .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS, profileMoveDetailRecord.getProfileMoveStatus())
                 .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID, profileMoveRecordId)
-                .where(TALENTPOOL_PROFILE_MOVE_DETAIL.ID.eq(profileMoveDetailRecord.getId()))
+                .whereExists(create.selectOne()
+                        .from(TALENTPOOL_PROFILE_MOVE_RECORD)
+                        .where(TALENTPOOL_PROFILE_MOVE_RECORD.ID.eq(profileMoveRecordId))
+                        .and(TALENTPOOL_PROFILE_MOVE_RECORD.STATUS.eq(status))
+                )
                 .execute();
     }
 
