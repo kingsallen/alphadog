@@ -220,4 +220,6 @@ public final class ConstantErrorCodeMessage {
 
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
+
+    public static final String DB_UPDATE_FAILED = "{'status':-1,'message':'数据库更新失败!'}";
 }

@@ -62,9 +62,19 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
                 .execute();
     }
 
-    public int updateRecordWithPositiveLock(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
-        return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL)
-                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS, status)
+//    public int updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
+//        return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL)
+//                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS, status)
+//                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID, profileMoveRecordId)
+//                .where(TALENTPOOL_PROFILE_MOVE_DETAIL.ID.eq(profileMoveDetailRecord.getId()))
+//                .execute();
+//    }
+
+    public int updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status) {
+        return create.update(TALENTPOOL_PROFILE_MOVE_DETAIL.join(TALENTPOOL_PROFILE_MOVE_RECORD)
+                    .on(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID.eq(TALENTPOOL_PROFILE_MOVE_RECORD.ID))
+                    .and(TALENTPOOL_PROFILE_MOVE_RECORD.STATUS.eq(status)))
+                .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS, profileMoveDetailRecord.getProfileMoveStatus())
                 .set(TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID, profileMoveRecordId)
                 .where(TALENTPOOL_PROFILE_MOVE_DETAIL.ID.eq(profileMoveDetailRecord.getId()))
                 .execute();

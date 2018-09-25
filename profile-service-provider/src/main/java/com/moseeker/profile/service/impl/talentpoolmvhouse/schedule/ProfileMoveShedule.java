@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 简历搬家刷新搬家状态刷新定时任务
@@ -32,14 +31,14 @@ public class ProfileMoveShedule {
 
     private final TalentPoolProfileMoveRecordDao profileMoveRecordDao;
 
-    private final TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao;
+    private final TalentPoolProfileMoveDetailDao profileMoveDetailDao;
 
     private final ProfileMailUtil mailUtil;
 
     @Autowired
-    public ProfileMoveShedule(TalentPoolProfileMoveRecordDao profileMoveRecordDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao) {
+    public ProfileMoveShedule(TalentPoolProfileMoveRecordDao profileMoveRecordDao, ProfileMailUtil mailUtil, TalentPoolProfileMoveDetailDao profileMoveDetailDao) {
         this.profileMoveRecordDao = profileMoveRecordDao;
-        this.poolProfileMoveDetailDao = poolProfileMoveDetailDao;
+        this.profileMoveDetailDao = profileMoveDetailDao;
         this.mailUtil = mailUtil;
     }
 
@@ -50,13 +49,13 @@ public class ProfileMoveShedule {
      * @author cjm
      * @date 2018/7/9
      */
-    @Scheduled(cron = "0 0 0/3 * * ?")
+    @Scheduled(cron = "0 0 0/6 * * ?")
     public void refreshEmailNum() {
         List<Integer> successIdList = new ArrayList<>();
         List<Integer> failedIdList = new ArrayList<>();
         try {
             Date date = new Date();
-            long timeout = 2 * 60 * 60 * 1000;
+            long timeout = 12 * 60 * 60 * 1000;
             Timestamp timestamp = new Timestamp(date.getTime() - timeout);
             // 获取距当前时间超过两个小时并且status为正在进行搬家的数据
             List<TalentPoolProfileMoveRecordDO> profileMoveDOS = profileMoveRecordDao.getProfileMoveByStatusAndDate(ProfileMoveStateEnum.MOVING.getValue(), timestamp);
@@ -88,9 +87,7 @@ public class ProfileMoveShedule {
                 // 刷新时将detail表的状态一并刷新
                 logger.info("========================简历搬家状态刷新failedIdList:{}", failedIdList);
                 profileMoveRecordDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
-                List<TalentPoolProfileMoveRecordDO> recordDOS = profileMoveRecordDao.getListByMoveIds(failedIdList);
-                List<Integer> detailFailIds = recordDOS.stream().map(TalentPoolProfileMoveRecordDO::getId).collect(Collectors.toList());
-                poolProfileMoveDetailDao.batchUpdateStatus(detailFailIds, ProfileMoveStateEnum.FAILED.getValue());
+                profileMoveDetailDao.batchUpdateStatus(failedIdList, ProfileMoveStateEnum.FAILED.getValue());
             }
         } catch (Exception e) {
             mailUtil.sendMvHouseFailedEmail(e, "定时任务刷新简历搬家状态时发生异常successIdList:" + successIdList.toString() + ",failedIdList:{}" + failedIdList.toString());
