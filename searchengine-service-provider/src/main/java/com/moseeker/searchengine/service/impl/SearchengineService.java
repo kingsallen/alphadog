@@ -59,6 +59,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -682,7 +683,7 @@ public class SearchengineService {
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);

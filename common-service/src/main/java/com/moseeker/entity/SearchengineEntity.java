@@ -59,6 +59,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -595,11 +596,11 @@ public class SearchengineEntity {
         logger.info(list.size() + "");
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
-                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time());
+                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 logger.info("award:{}", employeePointsRecordPojo.getAward());
                 logger.info("timespan:{}", employeePointsRecordPojo.getTimespan());
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
