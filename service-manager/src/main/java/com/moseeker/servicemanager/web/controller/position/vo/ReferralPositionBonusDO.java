@@ -8,6 +8,7 @@ public class ReferralPositionBonusDO implements Serializable {
   private static final long serialVersionUID = -2221144992412406654L;
 
   public int position_id; // optional
+
   public String total_bonus ="0"; // optional
 
   public int getPosition_id() {

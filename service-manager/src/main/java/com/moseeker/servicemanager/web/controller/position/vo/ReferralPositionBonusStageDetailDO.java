@@ -5,19 +5,10 @@ import java.io.Serializable;
 
 public class ReferralPositionBonusStageDetailDO implements Serializable {
 
-  public int position_id; // optional
+
   public String stage_bonus ="0"; // optional
   public int stage_proportion; // optional
   public int stage_type; // optional
-
-
-  public int getPosition_id() {
-    return position_id;
-  }
-
-  public void setPosition_id(int position_id) {
-    this.position_id = position_id;
-  }
 
   public String getStage_bonus() {
     return stage_bonus;
