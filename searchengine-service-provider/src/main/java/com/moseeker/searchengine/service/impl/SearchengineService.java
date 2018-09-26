@@ -14,6 +14,7 @@ import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
@@ -21,6 +22,8 @@ import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.SearchEngineException;
+import com.moseeker.searchengine.service.impl.tools.EmployeeBizTool;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -755,16 +758,7 @@ public class SearchengineService {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
 
-        if (StringUtils.isNotEmpty(keyword)) {
-            Map map = new HashMap();
-            map.put("email", keyword);
-            map.put("mobile", keyword);
-            map.put("nickname", keyword);
-            map.put("custom_field", keyword);
-            map.put("cname", keyword);
-//            searchUtil.matchPhrasePrefixQuery(map, query);
-            searchUtil.wildcardQuery(map, query);
-        }
+        EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
@@ -837,6 +831,41 @@ public class SearchengineService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(object);
+    }
+
+    public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
+                                   String emailValidate, int pageSize, int pageNumber) throws SearchEngineException {
+        TransportClient searchClient;
+        try {
+            searchClient = searchUtil.getEsClient();
+
+            Map<String, Object> result = new HashMap<>();
+            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
+            EmployeeBizTool.addCompanyIds(defaultQuery, companyIds, searchUtil);
+            EmployeeBizTool.addFilter(defaultQuery, filter, searchUtil);
+            EmployeeBizTool.addKeywords(defaultQuery, keywords, searchUtil);
+            EmployeeBizTool.addEmailValidate(defaultQuery, emailValidate, searchUtil);
+            SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(defaultQuery);
+            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
+            EmployeeBizTool.addPagination(searchRequestBuilder, pageSize, pageNumber);
+            SearchResponse response = searchRequestBuilder.execute().actionGet();
+            List<Map<String, Object>> data = new ArrayList<>();
+            result.put("total", response.getHits().getTotalHits());
+            for (SearchHit searchHit : response.getHits().getHits()) {
+                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                data.add(jsonObject);
+            }
+            logger.info("==================================");
+            logger.info("total ======="+response.getHits().getTotalHits());
+            logger.info("==================================");
+            result.put("data", data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
