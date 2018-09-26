@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
@@ -46,6 +47,7 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
@@ -73,6 +75,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -175,6 +178,8 @@ public class UserHrAccountService {
     @Autowired
     private HrWxHrChatListDao chatListDao;
 
+    @Autowired
+    private HrAccountApplicationNotifyDao hrAccountApplicationNotifyDao;
     /**
      * 修改手机号码
      *
@@ -1874,5 +1879,52 @@ public class UserHrAccountService {
             }
         }
         return userEmployeeVOS;
+    }
+
+
+    /**
+     *
+     * @param hrAccountId
+     * @param flag
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    public Response setApplicationNotify(int hrAccountId, boolean flag) throws BIZException, TException {
+
+       com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
+       LocalDateTime now = LocalDateTime.now();
+       if(hrAccountApplicationNotify == null)  {
+
+           hrAccountApplicationNotify = new com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify();
+           hrAccountApplicationNotify.setFlag((flag == true?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setCreateTime(Timestamp.valueOf(now));
+           hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+
+           hrAccountApplicationNotifyDao.insert(hrAccountApplicationNotify);
+       }else {
+           hrAccountApplicationNotify.setFlag((flag == true?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+       }
+       return ResponseUtils.success(true);
+    }
+
+    /**
+     *
+     * @param hrAccountId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
+
+        com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
+
+        if(hrAccountApplicationNotify  == null || hrAccountApplicationNotify.getFlag() == (byte)0) {
+            return ResponseUtils.success(true);
+
+        } else {
+            return ResponseUtils.success(false);
+        }
     }
 }

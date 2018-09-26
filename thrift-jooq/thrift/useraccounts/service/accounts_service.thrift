@@ -197,6 +197,11 @@ service UserHrAccountService {
     //获取HR信息
     useraccounts_struct.HRInfo getHR(1:i32 id) throws (1: common_struct.BIZException e);
 
+     //HR账号设置 申请确认时是否需要弹窗二次确认
+    common_struct.Response setApplicationNotify(1:i32 hrAccountId,2:bool flag) throws (1: common_struct.BIZException e);
+     //HR账号获取 申请确认时是否需要弹窗二次确认
+    common_struct.Response getApplicationNotify(1:i32 hrAccountId) throws (1: common_struct.BIZException e);
+
 }
 
 
