@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
@@ -332,12 +333,42 @@ public class ReferralPositionService {
 
         LocalDateTime now = LocalDateTime.now();
         if(referralPositionBonus == null) {
-            referralPositionBonus = new com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonus();
-            referralPositionBonus.setPositionId(pid);
-            referralPositionBonus.setCreateTime(Timestamp.valueOf(now));
-            referralPositionBonus.setUpdateTime(Timestamp.valueOf(now));
+           int referralPositionBounsId = referralPositionBonusDao.createReferralPositionBonus(referralPositionBonusDO.getPosition_id(),referralPositionBonusDO.getTotal_bonus());
+
+           for(ReferralPositionBonusStageDetailDO detailDO:detailDOS) {
+               ReferralPositionBonusStageDetail referralPositionBonusStageDetailRecord = new ReferralPositionBonusStageDetail();
+               referralPositionBonusStageDetailRecord.setReferralPositionBonusId(referralPositionBounsId);
+               referralPositionBonusStageDetailRecord.setStageBonus(detailDO.getStage_bonus());
+               referralPositionBonusStageDetailRecord.setStageProportion(detailDO.getStage_proportion());
+               referralPositionBonusStageDetailRecord.setPositionId(pid);
+               referralPositionBonusStageDetailRecord.setCreateTime(Timestamp.valueOf(now));
+               referralPositionBonusStageDetailRecord.setUpdateTime(Timestamp.valueOf(now));
+
+               referralPositionBonusStageDetailDao.insert(referralPositionBonusStageDetailRecord);
+           }
 
         } else {
+
+            referralPositionBonus.setTotalBonus(referralPositionBonusDO.getTotal_bonus());
+            referralPositionBonus.setUpdateTime(Timestamp.valueOf(now));
+            referralPositionBonusDao.update(referralPositionBonus);
+
+            for(ReferralPositionBonusStageDetailDO detailDO:detailDOS ) {
+                ReferralPositionBonusStageDetail referralPositionBonusStageDetail =  referralPositionBonusStageDetailDao.fetchByPositionIdStageType(detailDO.getPosition_id(),detailDO.getStage_type());
+                if(referralPositionBonusStageDetail == null) {
+                    ReferralPositionBonusStageDetail referralPositionBonusStageDetailRecord = new ReferralPositionBonusStageDetail();
+                    referralPositionBonusStageDetailRecord.setReferralPositionBonusId(referralPositionBonus.getId());
+                    referralPositionBonusStageDetailRecord.setStageBonus(detailDO.getStage_bonus());
+                    referralPositionBonusStageDetailRecord.setStageProportion(detailDO.getStage_proportion());
+                    referralPositionBonusStageDetailRecord.setPositionId(pid);
+                    referralPositionBonusStageDetailRecord.setCreateTime(Timestamp.valueOf(now));
+                    referralPositionBonusStageDetailRecord.setUpdateTime(Timestamp.valueOf(now));
+                } else {
+                    referralPositionBonusStageDetail.setStageBonus(detailDO.getStage_bonus());
+                    referralPositionBonusStageDetail.setStageProportion(detailDO.getStage_proportion());
+                    referralPositionBonusStageDetailDao.update(referralPositionBonusStageDetail);
+                }
+            }
 
         }
 

@@ -12,6 +12,7 @@ import org.jooq.Record5;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,18 +92,24 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
 
 
     public int createReferralPositionBonus(int positionId, int totalBonus) {
-
+        Timestamp now = new Timestamp(System.currentTimeMillis());
         Param<Integer> positionIdParam = param(ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID.getName(), positionId);
         Param<Integer> totalBonusParam = param(ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS.getName(), totalBonus);
+        Param<Timestamp> createTimeParam = param(ReferralPositionBonus.REFERRAL_POSITION_BONUS.CREATE_TIME.getName(), now);
+        Param<Timestamp> updateTimeParam = param(ReferralPositionBonus.REFERRAL_POSITION_BONUS.UPDATE_TIME.getName(),now);
 
         ReferralPositionBonusRecord referralPositionBonusRecord = using(configuration()).insertInto(
                 ReferralPositionBonus.REFERRAL_POSITION_BONUS,
                 ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID,
-                ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS
+                ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS,
+                ReferralPositionBonus.REFERRAL_POSITION_BONUS.CREATE_TIME,
+                ReferralPositionBonus.REFERRAL_POSITION_BONUS.UPDATE_TIME
                 ).select(
                 select(
                         positionIdParam,
-                        totalBonusParam
+                        totalBonusParam,
+                        createTimeParam,
+                        updateTimeParam
                 ).whereNotExists(
                         selectOne()
                                 .from(ReferralPositionBonus.REFERRAL_POSITION_BONUS)
