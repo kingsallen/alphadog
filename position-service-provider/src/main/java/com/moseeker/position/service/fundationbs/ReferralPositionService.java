@@ -386,4 +386,20 @@ public class ReferralPositionService {
 
     }
 
+    @CounterIface
+    @Transactional
+    public ReferralPositionBonusVO getReferralPositionBonus(Integer positionId) {
+        List<Integer> jdIdList = new ArrayList<>(positionId);
+
+        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(jdIdList);
+
+        ReferralPositionBonusVO referralPositionBonusVO  = refBonusMap.get(positionId);
+        if(referralPositionBonusVO !=null) {
+            return referralPositionBonusVO;
+        } else {
+            return new ReferralPositionBonusVO();
+        }
+    }
+
+
 }

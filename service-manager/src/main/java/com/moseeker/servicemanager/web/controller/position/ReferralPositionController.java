@@ -300,16 +300,50 @@ public class ReferralPositionController {
 
             logger.info("ReferralPositionController1 putReferralPostionBonus  referralBonusForm : {}",JSON.toJSONString(referralBonusForm)  );
 
-            referralPositionService.putReferralPositionBonus(convertReferralPositionBonusVO(referralBonusForm));
+            Response result = referralPositionService.putReferralPositionBonus(convertReferralPositionBonusVO(referralBonusForm));
 
             logger.info("ReferralPositionController1 putReferralPostionBonus  response Finished" );
 
-            return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
+            return ResponseLogNotification.success(request, result);
+
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
 
+
+
+    /**
+     * 根据PositionID获取内推奖金信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/referral/position/bonus", method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralPositionBonus(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil validateUtil = new ValidateUtil();
+            Integer positionId = params.getInt("position_id");
+            validateUtil.addRequiredStringValidate("positionId", positionId);
+
+            if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
+                return ResponseLogNotification.failJson(request, validateUtil.getResult());
+            }
+
+            logger.info("ReferralPositionController1 getReferralPositionBonus  position_id : {}",JSON.toJSONString(positionId)  );
+
+            Response result =  referralPositionService.getReferralPositionBonus(positionId);
+
+            logger.info("ReferralPositionController1 getReferralPositionBonus  response Finished" );
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 
     private ReferralPositionBonusVO convertReferralPositionBonusVO(ReferralBonusForm referralBonusForm) {
         Integer positionId = referralBonusForm.getPosition_id();
