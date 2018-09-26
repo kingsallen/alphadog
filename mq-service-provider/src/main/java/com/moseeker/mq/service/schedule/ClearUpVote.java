@@ -73,6 +73,10 @@ public class ClearUpVote {
             }
 
 
+        } else {
+            logger.info("不满足执行条件！ 当前时间：{}， 本周五：{}， 上周五：{}, 操作时间:{}", now, currentFriday, preFriday, operationDateTime);
+            logger.info("当前时间和本周五的前后顺序比较：{}", now.isAfter(currentFriday));
+            logger.info("当前时间和上周五的前后顺序比较：{}", now.isBefore(preFriday));
         }
     }
 }

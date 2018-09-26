@@ -17,9 +17,12 @@ service SearchengineServices {
                                          7:string startTime,8:string endTime,9:i32 companyId,10:i32 teamId,11:i32 motherCompanyId,12:i32 order,
                                          13:i32 moduleId,14:string candidateSource)throws (1: common_struct.BIZException e);
 
+    //目前废弃
     common_struct.Response queryAwardRanking(1: list<i32> companyIds, 2: string timespan, 3: i32 pageSize, 4: i32 pageNum,5:string keyword,6:i32 filter)throws (1: common_struct.BIZException e);
 
     common_struct.Response queryAwardRankingInWx(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId)throws (1: common_struct.BIZException e);
+    //员工列表
+    common_struct.Response fetchEmployees(1: list<i32> companyIds, 2: string keywords, 3: i32 filter, 4: string order, 5: string asc, 6: string emailValidate, 7: i32 pageSize, 8: i32 pageNumber)throws (1: common_struct.BIZException e);
     
     common_struct.Response listLeaderBoard(1: list<i32> companyIds, 2: string timespan, 3: i32 employeeId, 4: i32 pageNum, 5: i32 pageSize)throws (1: common_struct.BIZException e);
     

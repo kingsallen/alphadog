@@ -517,7 +517,7 @@ public class UserHrAccountServiceImpl implements Iface {
      *
      * @param keyword    关键字搜索
      * @param companyId  公司ID
-     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证, 3：撤销认证默认：0
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页

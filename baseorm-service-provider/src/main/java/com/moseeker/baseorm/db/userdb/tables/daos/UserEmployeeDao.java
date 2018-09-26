@@ -443,4 +443,11 @@ public class UserEmployeeDao extends DAOImpl<UserEmployeeRecord, com.moseeker.ba
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> fetchByDegree(Byte... values) {
         return fetch(UserEmployee.USER_EMPLOYEE.DEGREE, values);
     }
+
+    /**
+     * Fetch records that have <code>bonus IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> fetchByBonus(Integer... values) {
+        return fetch(UserEmployee.USER_EMPLOYEE.BONUS, values);
+    }
 }
