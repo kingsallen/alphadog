@@ -22,7 +22,7 @@ public class ReferralPositionServices {
 
     public com.moseeker.thrift.gen.common.struct.Response putReferralPositionBonus(com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO referralPositionBonusVO) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getReferralPositionBonus(int positionId) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO getReferralPositionBonus(int positionId) throws org.apache.thrift.TException;
 
   }
 
@@ -38,7 +38,7 @@ public class ReferralPositionServices {
 
     public void putReferralPositionBonus(com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO referralPositionBonusVO, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void getReferralPositionBonus(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void getReferralPositionBonus(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -169,7 +169,7 @@ public class ReferralPositionServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "putReferralPositionBonus failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getReferralPositionBonus(int positionId) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO getReferralPositionBonus(int positionId) throws org.apache.thrift.TException
     {
       send_getReferralPositionBonus(positionId);
       return recv_getReferralPositionBonus();
@@ -182,7 +182,7 @@ public class ReferralPositionServices {
       sendBase("getReferralPositionBonus", args);
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response recv_getReferralPositionBonus() throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO recv_getReferralPositionBonus() throws org.apache.thrift.TException
     {
       getReferralPositionBonus_result result = new getReferralPositionBonus_result();
       receiveBase(result, "getReferralPositionBonus");
@@ -373,16 +373,16 @@ public class ReferralPositionServices {
       }
     }
 
-    public void getReferralPositionBonus(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void getReferralPositionBonus(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getReferralPositionBonus_call method_call = new getReferralPositionBonus_call(positionId, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class getReferralPositionBonus_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
+    public static class getReferralPositionBonus_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> {
       private int positionId;
-      public getReferralPositionBonus_call(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public getReferralPositionBonus_call(int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.positionId = positionId;
       }
@@ -395,7 +395,7 @@ public class ReferralPositionServices {
         prot.writeMessageEnd();
       }
 
-      public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
+      public com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO getResult() throws org.apache.thrift.TException {
         if (getState() != State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
@@ -871,7 +871,7 @@ public class ReferralPositionServices {
       }
     }
 
-    public static class getReferralPositionBonus<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getReferralPositionBonus_args, com.moseeker.thrift.gen.common.struct.Response> {
+    public static class getReferralPositionBonus<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, getReferralPositionBonus_args, com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> {
       public getReferralPositionBonus() {
         super("getReferralPositionBonus");
       }
@@ -880,10 +880,10 @@ public class ReferralPositionServices {
         return new getReferralPositionBonus_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response>() { 
-          public void onComplete(com.moseeker.thrift.gen.common.struct.Response o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO>() { 
+          public void onComplete(com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO o) {
             getReferralPositionBonus_result result = new getReferralPositionBonus_result();
             result.success = o;
             try {
@@ -927,7 +927,7 @@ public class ReferralPositionServices {
         return false;
       }
 
-      public void start(I iface, getReferralPositionBonus_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+      public void start(I iface, getReferralPositionBonus_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO> resultHandler) throws org.apache.thrift.TException {
         iface.getReferralPositionBonus(args.positionId,resultHandler);
       }
     }
@@ -4697,7 +4697,7 @@ public class ReferralPositionServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getReferralPositionBonus_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getReferralPositionBonus_resultTupleSchemeFactory();
 
-    public com.moseeker.thrift.gen.common.struct.Response success; // required
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO success; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -4762,7 +4762,7 @@ public class ReferralPositionServices {
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
       tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.Response.class)));
+          new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getReferralPositionBonus_result.class, metaDataMap);
     }
@@ -4771,7 +4771,7 @@ public class ReferralPositionServices {
     }
 
     public getReferralPositionBonus_result(
-      com.moseeker.thrift.gen.common.struct.Response success)
+      com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO success)
     {
       this();
       this.success = success;
@@ -4782,7 +4782,7 @@ public class ReferralPositionServices {
      */
     public getReferralPositionBonus_result(getReferralPositionBonus_result other) {
       if (other.isSetSuccess()) {
-        this.success = new com.moseeker.thrift.gen.common.struct.Response(other.success);
+        this.success = new com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO(other.success);
       }
     }
 
@@ -4795,11 +4795,11 @@ public class ReferralPositionServices {
       this.success = null;
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getSuccess() {
+    public com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO getSuccess() {
       return this.success;
     }
 
-    public getReferralPositionBonus_result setSuccess(com.moseeker.thrift.gen.common.struct.Response success) {
+    public getReferralPositionBonus_result setSuccess(com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO success) {
       this.success = success;
       return this;
     }
@@ -4825,7 +4825,7 @@ public class ReferralPositionServices {
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((com.moseeker.thrift.gen.common.struct.Response)value);
+          setSuccess((com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO)value);
         }
         break;
 
@@ -4985,7 +4985,7 @@ public class ReferralPositionServices {
           switch (schemeField.id) {
             case 0: // SUCCESS
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
-                struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+                struct.success = new com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO();
                 struct.success.read(iprot);
                 struct.setSuccessIsSet(true);
               } else { 
@@ -5044,7 +5044,7 @@ public class ReferralPositionServices {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.success = new com.moseeker.thrift.gen.common.struct.Response();
+          struct.success = new com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO();
           struct.success.read(iprot);
           struct.setSuccessIsSet(true);
         }

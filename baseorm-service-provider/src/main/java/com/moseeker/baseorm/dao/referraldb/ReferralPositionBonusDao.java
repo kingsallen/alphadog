@@ -64,13 +64,13 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
                     detailDO.setStage_bonus(stage_bonus.toPlainString());
                     detailDO.setStage_proportion(stage_proportaion);
                     detailDO.setStage_type(stage_type);
-                    bonusVO.getData().add(detailDO);
+                    bonusVO.getBonus_details().add(detailDO);
                     hasMap.put(position_id, bonusVO);
 
                 } else {
                     ReferralPositionBonusVO bonusVO = new ReferralPositionBonusVO();
                     ReferralPositionBonusDO bonusDO = new ReferralPositionBonusDO();
-                    List<ReferralPositionBonusStageDetailDO> datas = new ArrayList<>();
+                    List<ReferralPositionBonusStageDetailDO> bonusStageDetailDOS = new ArrayList<>();
                     ReferralPositionBonusStageDetailDO detailDO = new ReferralPositionBonusStageDetailDO();
 
                     bonusDO.setPosition_id(position_id);
@@ -79,10 +79,10 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
                     detailDO.setStage_bonus(stage_bonus.toPlainString());
                     detailDO.setStage_proportion(stage_proportaion);
                     detailDO.setStage_type(stage_type);
-                    datas.add(detailDO);
+                    bonusStageDetailDOS.add(detailDO);
 
                     bonusVO.setPosition_bonus(bonusDO);
-                    bonusVO.setData(datas);
+                    bonusVO.setBonus_details(bonusStageDetailDOS);
 
                     hasMap.put(position_id, bonusVO);
                 }

@@ -447,7 +447,7 @@ struct ReferralPositionUpdateDataDO{
 
 struct ReferralPositionBonusVO {
    1:ReferralPositionBonusDO position_bonus;
-   2:list<ReferralPositionBonusStageDetailDO> data;
+   2:list<ReferralPositionBonusStageDetailDO> bonus_details;
 }
 
 struct ReferralPositionBonusDO {

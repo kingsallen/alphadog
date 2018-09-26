@@ -12,18 +12,18 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
   private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("ReferralPositionBonusVO");
 
   private static final org.apache.thrift.protocol.TField POSITION_BONUS_FIELD_DESC = new org.apache.thrift.protocol.TField("position_bonus", org.apache.thrift.protocol.TType.STRUCT, (short)1);
-  private static final org.apache.thrift.protocol.TField DATA_FIELD_DESC = new org.apache.thrift.protocol.TField("data", org.apache.thrift.protocol.TType.LIST, (short)2);
+  private static final org.apache.thrift.protocol.TField BONUS_DETAILS_FIELD_DESC = new org.apache.thrift.protocol.TField("bonus_details", org.apache.thrift.protocol.TType.LIST, (short)2);
 
   private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ReferralPositionBonusVOStandardSchemeFactory();
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ReferralPositionBonusVOTupleSchemeFactory();
 
   public ReferralPositionBonusDO position_bonus; // required
-  public java.util.List<ReferralPositionBonusStageDetailDO> data; // required
+  public java.util.List<ReferralPositionBonusStageDetailDO> bonus_details; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
   public enum _Fields implements org.apache.thrift.TFieldIdEnum {
     POSITION_BONUS((short)1, "position_bonus"),
-    DATA((short)2, "data");
+    BONUS_DETAILS((short)2, "bonus_details");
 
     private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
 
@@ -40,8 +40,8 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
       switch(fieldId) {
         case 1: // POSITION_BONUS
           return POSITION_BONUS;
-        case 2: // DATA
-          return DATA;
+        case 2: // BONUS_DETAILS
+          return BONUS_DETAILS;
         default:
           return null;
       }
@@ -87,7 +87,7 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
     tmpMap.put(_Fields.POSITION_BONUS, new org.apache.thrift.meta_data.FieldMetaData("position_bonus", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT        , "ReferralPositionBonusDO")));
-    tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.BONUS_DETAILS, new org.apache.thrift.meta_data.FieldMetaData("bonus_details", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
             new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT            , "ReferralPositionBonusStageDetailDO"))));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
@@ -99,11 +99,11 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
 
   public ReferralPositionBonusVO(
     ReferralPositionBonusDO position_bonus,
-    java.util.List<ReferralPositionBonusStageDetailDO> data)
+    java.util.List<ReferralPositionBonusStageDetailDO> bonus_details)
   {
     this();
     this.position_bonus = position_bonus;
-    this.data = data;
+    this.bonus_details = bonus_details;
   }
 
   /**
@@ -113,12 +113,12 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     if (other.isSetPosition_bonus()) {
       this.position_bonus = new ReferralPositionBonusDO(other.position_bonus);
     }
-    if (other.isSetData()) {
-      java.util.List<ReferralPositionBonusStageDetailDO> __this__data = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>(other.data.size());
-      for (ReferralPositionBonusStageDetailDO other_element : other.data) {
-        __this__data.add(other_element);
+    if (other.isSetBonus_details()) {
+      java.util.List<ReferralPositionBonusStageDetailDO> __this__bonus_details = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>(other.bonus_details.size());
+      for (ReferralPositionBonusStageDetailDO other_element : other.bonus_details) {
+        __this__bonus_details.add(other_element);
       }
-      this.data = __this__data;
+      this.bonus_details = __this__bonus_details;
     }
   }
 
@@ -129,7 +129,7 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
   @Override
   public void clear() {
     this.position_bonus = null;
-    this.data = null;
+    this.bonus_details = null;
   }
 
   public ReferralPositionBonusDO getPosition_bonus() {
@@ -156,42 +156,42 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     }
   }
 
-  public int getDataSize() {
-    return (this.data == null) ? 0 : this.data.size();
+  public int getBonus_detailsSize() {
+    return (this.bonus_details == null) ? 0 : this.bonus_details.size();
   }
 
-  public java.util.Iterator<ReferralPositionBonusStageDetailDO> getDataIterator() {
-    return (this.data == null) ? null : this.data.iterator();
+  public java.util.Iterator<ReferralPositionBonusStageDetailDO> getBonus_detailsIterator() {
+    return (this.bonus_details == null) ? null : this.bonus_details.iterator();
   }
 
-  public void addToData(ReferralPositionBonusStageDetailDO elem) {
-    if (this.data == null) {
-      this.data = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>();
+  public void addToBonus_details(ReferralPositionBonusStageDetailDO elem) {
+    if (this.bonus_details == null) {
+      this.bonus_details = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>();
     }
-    this.data.add(elem);
+    this.bonus_details.add(elem);
   }
 
-  public java.util.List<ReferralPositionBonusStageDetailDO> getData() {
-    return this.data;
+  public java.util.List<ReferralPositionBonusStageDetailDO> getBonus_details() {
+    return this.bonus_details;
   }
 
-  public ReferralPositionBonusVO setData(java.util.List<ReferralPositionBonusStageDetailDO> data) {
-    this.data = data;
+  public ReferralPositionBonusVO setBonus_details(java.util.List<ReferralPositionBonusStageDetailDO> bonus_details) {
+    this.bonus_details = bonus_details;
     return this;
   }
 
-  public void unsetData() {
-    this.data = null;
+  public void unsetBonus_details() {
+    this.bonus_details = null;
   }
 
-  /** Returns true if field data is set (has been assigned a value) and false otherwise */
-  public boolean isSetData() {
-    return this.data != null;
+  /** Returns true if field bonus_details is set (has been assigned a value) and false otherwise */
+  public boolean isSetBonus_details() {
+    return this.bonus_details != null;
   }
 
-  public void setDataIsSet(boolean value) {
+  public void setBonus_detailsIsSet(boolean value) {
     if (!value) {
-      this.data = null;
+      this.bonus_details = null;
     }
   }
 
@@ -205,11 +205,11 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
       }
       break;
 
-    case DATA:
+    case BONUS_DETAILS:
       if (value == null) {
-        unsetData();
+        unsetBonus_details();
       } else {
-        setData((java.util.List<ReferralPositionBonusStageDetailDO>)value);
+        setBonus_details((java.util.List<ReferralPositionBonusStageDetailDO>)value);
       }
       break;
 
@@ -221,8 +221,8 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     case POSITION_BONUS:
       return getPosition_bonus();
 
-    case DATA:
-      return getData();
+    case BONUS_DETAILS:
+      return getBonus_details();
 
     }
     throw new IllegalStateException();
@@ -237,8 +237,8 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     switch (field) {
     case POSITION_BONUS:
       return isSetPosition_bonus();
-    case DATA:
-      return isSetData();
+    case BONUS_DETAILS:
+      return isSetBonus_details();
     }
     throw new IllegalStateException();
   }
@@ -267,12 +267,12 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
         return false;
     }
 
-    boolean this_present_data = true && this.isSetData();
-    boolean that_present_data = true && that.isSetData();
-    if (this_present_data || that_present_data) {
-      if (!(this_present_data && that_present_data))
+    boolean this_present_bonus_details = true && this.isSetBonus_details();
+    boolean that_present_bonus_details = true && that.isSetBonus_details();
+    if (this_present_bonus_details || that_present_bonus_details) {
+      if (!(this_present_bonus_details && that_present_bonus_details))
         return false;
-      if (!this.data.equals(that.data))
+      if (!this.bonus_details.equals(that.bonus_details))
         return false;
     }
 
@@ -287,9 +287,9 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     if (isSetPosition_bonus())
       hashCode = hashCode * 8191 + position_bonus.hashCode();
 
-    hashCode = hashCode * 8191 + ((isSetData()) ? 131071 : 524287);
-    if (isSetData())
-      hashCode = hashCode * 8191 + data.hashCode();
+    hashCode = hashCode * 8191 + ((isSetBonus_details()) ? 131071 : 524287);
+    if (isSetBonus_details())
+      hashCode = hashCode * 8191 + bonus_details.hashCode();
 
     return hashCode;
   }
@@ -312,12 +312,12 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
         return lastComparison;
       }
     }
-    lastComparison = Boolean.valueOf(isSetData()).compareTo(other.isSetData());
+    lastComparison = Boolean.valueOf(isSetBonus_details()).compareTo(other.isSetBonus_details());
     if (lastComparison != 0) {
       return lastComparison;
     }
-    if (isSetData()) {
-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.data, other.data);
+    if (isSetBonus_details()) {
+      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.bonus_details, other.bonus_details);
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -350,11 +350,11 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
     }
     first = false;
     if (!first) sb.append(", ");
-    sb.append("data:");
-    if (this.data == null) {
+    sb.append("bonus_details:");
+    if (this.bonus_details == null) {
       sb.append("null");
     } else {
-      sb.append(this.data);
+      sb.append(this.bonus_details);
     }
     first = false;
     sb.append(")");
@@ -409,21 +409,21 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
-          case 2: // DATA
+          case 2: // BONUS_DETAILS
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list82 = iprot.readListBegin();
-                struct.data = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>(_list82.size);
+                struct.bonus_details = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>(_list82.size);
                 ReferralPositionBonusStageDetailDO _elem83;
                 for (int _i84 = 0; _i84 < _list82.size; ++_i84)
                 {
                   _elem83 = new ReferralPositionBonusStageDetailDO();
                   _elem83.read(iprot);
-                  struct.data.add(_elem83);
+                  struct.bonus_details.add(_elem83);
                 }
                 iprot.readListEnd();
               }
-              struct.setDataIsSet(true);
+              struct.setBonus_detailsIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
@@ -448,11 +448,11 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
         struct.position_bonus.write(oprot);
         oprot.writeFieldEnd();
       }
-      if (struct.data != null) {
-        oprot.writeFieldBegin(DATA_FIELD_DESC);
+      if (struct.bonus_details != null) {
+        oprot.writeFieldBegin(BONUS_DETAILS_FIELD_DESC);
         {
-          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.data.size()));
-          for (ReferralPositionBonusStageDetailDO _iter85 : struct.data)
+          oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.bonus_details.size()));
+          for (ReferralPositionBonusStageDetailDO _iter85 : struct.bonus_details)
           {
             _iter85.write(oprot);
           }
@@ -481,17 +481,17 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
       if (struct.isSetPosition_bonus()) {
         optionals.set(0);
       }
-      if (struct.isSetData()) {
+      if (struct.isSetBonus_details()) {
         optionals.set(1);
       }
       oprot.writeBitSet(optionals, 2);
       if (struct.isSetPosition_bonus()) {
         struct.position_bonus.write(oprot);
       }
-      if (struct.isSetData()) {
+      if (struct.isSetBonus_details()) {
         {
-          oprot.writeI32(struct.data.size());
-          for (ReferralPositionBonusStageDetailDO _iter86 : struct.data)
+          oprot.writeI32(struct.bonus_details.size());
+          for (ReferralPositionBonusStageDetailDO _iter86 : struct.bonus_details)
           {
             _iter86.write(oprot);
           }
@@ -511,16 +511,16 @@ public class ReferralPositionBonusVO implements org.apache.thrift.TBase<Referral
       if (incoming.get(1)) {
         {
           org.apache.thrift.protocol.TList _list87 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-          struct.data = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>(_list87.size);
+          struct.bonus_details = new java.util.ArrayList<ReferralPositionBonusStageDetailDO>(_list87.size);
           ReferralPositionBonusStageDetailDO _elem88;
           for (int _i89 = 0; _i89 < _list87.size; ++_i89)
           {
             _elem88 = new ReferralPositionBonusStageDetailDO();
             _elem88.read(iprot);
-            struct.data.add(_elem88);
+            struct.bonus_details.add(_elem88);
           }
         }
-        struct.setDataIsSet(true);
+        struct.setBonus_detailsIsSet(true);
       }
     }
   }

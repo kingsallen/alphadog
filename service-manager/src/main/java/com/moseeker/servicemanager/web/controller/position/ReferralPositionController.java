@@ -62,11 +62,11 @@ public class ReferralPositionController {
 
             ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
-            logger.info("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
+            logger.debug("ReferralPositionController putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
 
             referralPositionService.delReferralPositions(dataDO);
 
-            logger.info("ReferralPositionController delReferralPosition  response Finished" );
+            logger.debug("ReferralPositionController delReferralPosition  response Finished" );
 
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
@@ -89,11 +89,11 @@ public class ReferralPositionController {
 
             ReferralPositionUpdateDataDO dataDO =  ParamUtils.initModelForm(params, ReferralPositionUpdateDataDO.class);
 
-            logger.info("ReferralPositionController1 putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
+            logger.debug("ReferralPositionController1 putReferralPosition  dataDO : {}",JSON.toJSONString(dataDO)  );
 
             referralPositionService.putReferralPositions(dataDO);
 
-            logger.info("ReferralPositionController1 putReferralPosition  response Finished" );
+            logger.debug("ReferralPositionController1 putReferralPosition  response Finished" );
 
             return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
         } catch (Exception e) {
@@ -298,11 +298,11 @@ public class ReferralPositionController {
     public String putReferralPositionBonus(HttpServletRequest request, HttpServletResponse response, @RequestBody ReferralBonusForm referralBonusForm) {
         try {
 
-            logger.info("ReferralPositionController1 putReferralPostionBonus  referralBonusForm : {}",JSON.toJSONString(referralBonusForm)  );
+            logger.debug("ReferralPositionController1 putReferralPostionBonus  referralBonusForm : {}",JSON.toJSONString(referralBonusForm)  );
 
             Response result = referralPositionService.putReferralPositionBonus(convertReferralPositionBonusVO(referralBonusForm));
 
-            logger.info("ReferralPositionController1 putReferralPostionBonus  response Finished" );
+            logger.debug("ReferralPositionController1 putReferralPostionBonus  response Finished" );
 
             return ResponseLogNotification.success(request, result);
 
@@ -327,19 +327,23 @@ public class ReferralPositionController {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             ValidateUtil validateUtil = new ValidateUtil();
             Integer positionId = params.getInt("position_id");
-            validateUtil.addRequiredStringValidate("positionId", positionId);
+            validateUtil.addRequiredValidate("position_id", positionId);
 
             if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
                 return ResponseLogNotification.failJson(request, validateUtil.getResult());
             }
 
-            logger.info("ReferralPositionController1 getReferralPositionBonus  position_id : {}",JSON.toJSONString(positionId)  );
+            logger.debug("ReferralPositionController1 getReferralPositionBonus  position_id : {}",JSON.toJSONString(positionId)  );
 
-            Response result =  referralPositionService.getReferralPositionBonus(positionId);
+            ReferralPositionBonusVO rpcVO =  referralPositionService.getReferralPositionBonus(positionId);
 
-            logger.info("ReferralPositionController1 getReferralPositionBonus  response Finished" );
+            String jsonStr = JSON.toJSONString(rpcVO);
 
-            return ResponseLogNotification.success(request, result);
+            com.moseeker.servicemanager.web.controller.position.vo.ReferralPositionBonusVO vo = JSON.parseObject(jsonStr,com.moseeker.servicemanager.web.controller.position.vo.ReferralPositionBonusVO.class);
+
+            logger.debug("ReferralPositionController1 getReferralPositionBonus  response Finished" );
+
+            return ResponseLogNotification.successJson(request, vo);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
@@ -364,7 +368,7 @@ public class ReferralPositionController {
             detailDOS.add(detailDO);
         }
         bonusVO.setPosition_bonus(bonusDO);
-        bonusVO.setData(detailDOS);
+        bonusVO.setBonus_details(detailDOS);
 
         return  bonusVO;
     }
