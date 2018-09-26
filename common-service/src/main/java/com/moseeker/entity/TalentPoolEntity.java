@@ -613,13 +613,6 @@ public class TalentPoolEntity {
         if(userPubliccount>0){
             return 1;
         }
-        List<TalentpoolTalentRecord> list=getTalentpoolTalentByCompanyId(companyId);
-        Set<Integer> userIdList=getUserIdListByTalentpoolTalent(list);
-        if(!StringUtils.isEmptySet(userIdList)){
-            if(userIdList.contains(userId)){
-                return 1;
-            }
-        }
         return 0;
     }
 
