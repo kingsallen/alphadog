@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -99,8 +100,6 @@ public class SearchengineEntity {
     private TransportClient getTransportClient() {
         return EsClientInstance.getClient();
     }
-
-
 
     /**
      * 更新员工积分
@@ -175,6 +174,7 @@ public class SearchengineEntity {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("bonus", userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -326,6 +326,8 @@ public class SearchengineEntity {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
+                    jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("bonus", userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
