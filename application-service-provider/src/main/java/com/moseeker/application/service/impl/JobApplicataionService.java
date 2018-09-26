@@ -1078,7 +1078,7 @@ public class JobApplicataionService {
     private void addApplicationCountAtCompany(JobApplication jobApplication, byte candidateSource) {
 
         try {
-            applicationEntity.addApplicationCountAtCompany(jobApplication.getAppid(), (int)jobApplication.getCompany_id(), candidateSource);
+            applicationEntity.addApplicationCountAtCompany((int)jobApplication.getApplier_id(), (int)jobApplication.getCompany_id(), candidateSource);
 
         } catch (RedisException e) {
             WarnService.notify(e);
