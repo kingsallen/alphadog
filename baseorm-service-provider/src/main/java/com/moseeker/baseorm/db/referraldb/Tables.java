@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.referraldb;
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
@@ -42,6 +43,11 @@ public class Tables {
      * The table <code>referraldb.referral_company_conf</code>.
      */
     public static final ReferralCompanyConf REFERRAL_COMPANY_CONF = com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf.REFERRAL_COMPANY_CONF;
+
+    /**
+     * The table <code>referraldb.referral_employee_bonus_record</code>.
+     */
+    public static final ReferralEmployeeBonusRecord REFERRAL_EMPLOYEE_BONUS_RECORD = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD;
 
     /**
      * 内推记录

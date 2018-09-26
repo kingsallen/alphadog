@@ -73,6 +73,13 @@ public class ReferralPositionBonusDao extends DAOImpl<ReferralPositionBonusRecor
     }
 
     /**
+     * Fetch a unique record that has <code>position_id = value</code>
+     */
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonus fetchOneByPositionId(Integer value) {
+        return fetchOne(ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID, value);
+    }
+
+    /**
      * Fetch records that have <code>total_bonus IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonus> fetchByTotalBonus(Integer... values) {
