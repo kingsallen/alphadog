@@ -314,8 +314,7 @@ public class ReferralPositionController {
     private ReferralPositionBonusVO convertReferralPositionBonusVO(ReferralBonusForm referralBonusForm) {
         Integer positionId = referralBonusForm.getPosition_id();
         List<ReferralBonusStageData> datas = referralBonusForm.getStage_data();
-        Integer totalBonus =  referralBonusForm.getTotal_bonus();
-
+        String totalBonus =  referralBonusForm.getTotal_bonus();
 
         ReferralPositionBonusVO bonusVO = new ReferralPositionBonusVO();
         ReferralPositionBonusDO bonusDO = new ReferralPositionBonusDO();

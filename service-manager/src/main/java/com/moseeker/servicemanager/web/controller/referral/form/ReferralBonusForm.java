@@ -14,7 +14,7 @@ public class ReferralBonusForm implements Serializable{
     private static final long serialVersionUID = -2266728614120415854L;
 
     private Integer appid;
-    private Integer total_bonus =0;
+    private String total_bonus ="0";
     private Integer position_id;
     private List<ReferralBonusStageData> stage_data;
 
@@ -26,11 +26,11 @@ public class ReferralBonusForm implements Serializable{
         this.appid = appid;
     }
 
-    public Integer getTotal_bonus() {
+    public String getTotal_bonus() {
         return total_bonus;
     }
 
-    public void setTotal_bonus(Integer total_bonus) {
+    public void setTotal_bonus(String total_bonus) {
         this.total_bonus = total_bonus;
     }
 

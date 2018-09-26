@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -326,21 +327,27 @@ public class ReferralPositionService {
         logger.info("putReferralPositionBonus {}",JSON.toJSONString(referralPositionBonusVO) );
         ReferralPositionBonusDO referralPositionBonusDO = referralPositionBonusVO.getPosition_bonus();
         List<ReferralPositionBonusStageDetailDO> detailDOS = referralPositionBonusVO.getData();
-
+        BigDecimal bignum = new BigDecimal("100");
         Integer pid = referralPositionBonusDO.getPosition_id();
-
+        Integer total_bonus = new BigDecimal(referralPositionBonusDO.getTotal_bonus()).multiply(bignum).intValue() ;//转为分存入数据库
+        if(pid == null) {
+            return;
+        }
         com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonus referralPositionBonus =  referralPositionBonusDao.fetchOne(ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID,pid);
 
         LocalDateTime now = LocalDateTime.now();
+
+        //新增总奖金和节点奖金
         if(referralPositionBonus == null) {
-           int referralPositionBounsId = referralPositionBonusDao.createReferralPositionBonus(referralPositionBonusDO.getPosition_id(),referralPositionBonusDO.getTotal_bonus());
+           int referralPositionBounsId = referralPositionBonusDao.createReferralPositionBonus(pid,total_bonus);
 
            for(ReferralPositionBonusStageDetailDO detailDO:detailDOS) {
                ReferralPositionBonusStageDetail referralPositionBonusStageDetailRecord = new ReferralPositionBonusStageDetail();
                referralPositionBonusStageDetailRecord.setReferralPositionBonusId(referralPositionBounsId);
-               referralPositionBonusStageDetailRecord.setStageBonus(detailDO.getStage_bonus());
+               referralPositionBonusStageDetailRecord.setStageBonus(new BigDecimal(detailDO.getStage_bonus()).multiply(bignum).intValue()); //转为分存入数据库
                referralPositionBonusStageDetailRecord.setStageProportion(detailDO.getStage_proportion());
                referralPositionBonusStageDetailRecord.setPositionId(pid);
+               referralPositionBonusStageDetailRecord.setStageType(detailDO.getStage_type());
                referralPositionBonusStageDetailRecord.setCreateTime(Timestamp.valueOf(now));
                referralPositionBonusStageDetailRecord.setUpdateTime(Timestamp.valueOf(now));
 
@@ -348,24 +355,29 @@ public class ReferralPositionService {
            }
 
         } else {
-
-            referralPositionBonus.setTotalBonus(referralPositionBonusDO.getTotal_bonus());
+            //更新总奖金和节点奖金
+            referralPositionBonus.setTotalBonus(total_bonus);
             referralPositionBonus.setUpdateTime(Timestamp.valueOf(now));
             referralPositionBonusDao.update(referralPositionBonus);
 
             for(ReferralPositionBonusStageDetailDO detailDO:detailDOS ) {
-                ReferralPositionBonusStageDetail referralPositionBonusStageDetail =  referralPositionBonusStageDetailDao.fetchByPositionIdStageType(detailDO.getPosition_id(),detailDO.getStage_type());
+                ReferralPositionBonusStageDetail referralPositionBonusStageDetail =  referralPositionBonusStageDetailDao.fetchByReferralPositionBonusIdAndStageType(referralPositionBonus.getId(),detailDO.getStage_type());
+                //新增节点奖金
                 if(referralPositionBonusStageDetail == null) {
                     ReferralPositionBonusStageDetail referralPositionBonusStageDetailRecord = new ReferralPositionBonusStageDetail();
                     referralPositionBonusStageDetailRecord.setReferralPositionBonusId(referralPositionBonus.getId());
-                    referralPositionBonusStageDetailRecord.setStageBonus(detailDO.getStage_bonus());
+                    referralPositionBonusStageDetailRecord.setStageBonus(new BigDecimal(detailDO.getStage_bonus()).multiply(bignum).intValue()); //转为分存入数据库
                     referralPositionBonusStageDetailRecord.setStageProportion(detailDO.getStage_proportion());
                     referralPositionBonusStageDetailRecord.setPositionId(pid);
+                    referralPositionBonusStageDetailRecord.setStageType(detailDO.getStage_type());
                     referralPositionBonusStageDetailRecord.setCreateTime(Timestamp.valueOf(now));
                     referralPositionBonusStageDetailRecord.setUpdateTime(Timestamp.valueOf(now));
+                    referralPositionBonusStageDetailDao.insert(referralPositionBonusStageDetail);
                 } else {
-                    referralPositionBonusStageDetail.setStageBonus(detailDO.getStage_bonus());
+                    //更新节点奖金
+                    referralPositionBonusStageDetail.setStageBonus(new BigDecimal(detailDO.getStage_bonus()).multiply(bignum).intValue()); //转为分存入数据库
                     referralPositionBonusStageDetail.setStageProportion(detailDO.getStage_proportion());
+                    referralPositionBonusStageDetail.setUpdateTime(Timestamp.valueOf(now));
                     referralPositionBonusStageDetailDao.update(referralPositionBonusStageDetail);
                 }
             }

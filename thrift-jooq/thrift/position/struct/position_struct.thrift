@@ -453,14 +453,14 @@ struct ReferralPositionBonusVO {
 struct ReferralPositionBonusDO {
     1:optional i32 id,
     2:optional i32 position_id,
-    3:optional i32 total_bonus
+    3:optional string total_bonus
 }
 
 struct ReferralPositionBonusStageDetailDO {
     1:optional i32 id,
     2:optional i32 referral_position_bonus_id,
     3:optional i32 position_id,
-    4:optional i32 stage_bonus,
+    4:optional string stage_bonus,
     5:optional i32 stage_proportion,
     6:optional i32 stage_type
 
