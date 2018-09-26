@@ -54,7 +54,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.referraldb')
+            packageName('com.moseeker.baseorm.db.userdb')
             directory('src/main/java')
         }
     }

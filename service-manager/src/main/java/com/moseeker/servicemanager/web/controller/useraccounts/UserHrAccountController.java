@@ -903,13 +903,14 @@ public class UserHrAccountController {
 
     /**
      * 员工信息导出
-     *
+     * warnings:目前发现没有调用方调用该接口。员工导出接口调用的是@UserHrAccountController.employeeList接口用于获取员工数据
      * @param request
      * @param response
      * @return
      */
     @RequestMapping(value = "/hraccount/employee/export", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
