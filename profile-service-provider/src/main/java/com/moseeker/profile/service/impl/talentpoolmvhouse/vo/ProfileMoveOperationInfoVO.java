@@ -1,5 +1,7 @@
 package com.moseeker.profile.service.impl.talentpoolmvhouse.vo;
 
+import java.util.List;
+
 /**
  * 简历搬家操作信息
  * @author cjm
@@ -8,7 +10,7 @@ package com.moseeker.profile.service.impl.talentpoolmvhouse.vo;
 public class ProfileMoveOperationInfoVO {
     private String end_date;
     private String start_date;
-    private String company_name;
+    private List<String> company_name;
 
     public String getEnd_date() {
         return end_date;
@@ -26,11 +28,11 @@ public class ProfileMoveOperationInfoVO {
         this.start_date = start_date;
     }
 
-    public String getCompany_name() {
+    public List<String> getCompany_name() {
         return company_name;
     }
 
-    public void setCompany_name(String company_name) {
+    public void setCompany_name(List<String> company_name) {
         this.company_name = company_name;
     }
 
