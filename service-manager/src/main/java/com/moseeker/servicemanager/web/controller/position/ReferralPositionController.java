@@ -11,21 +11,24 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.position.bean.ReferralPointFlagVO;
+import com.moseeker.servicemanager.web.controller.referral.form.ReferralBonusForm;
+import com.moseeker.servicemanager.web.controller.referral.vo.ReferralBonusStageData;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
-import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
-import com.moseeker.thrift.gen.position.struct.WechatPositionListData;
+import com.moseeker.thrift.gen.position.struct.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -282,4 +285,88 @@ public class ReferralPositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+
+    /**
+     * 内推职位设置内推奖金
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/referral/position/bonus", method = RequestMethod.POST)
+    @ResponseBody
+    public String putReferralPositionBonus(HttpServletRequest request, HttpServletResponse response, @RequestBody ReferralBonusForm referralBonusForm) {
+        try {
+
+            logger.info("ReferralPositionController1 putReferralPostionBonus  referralBonusForm : {}",JSON.toJSONString(referralBonusForm)  );
+
+            Response result = referralPositionService.putReferralPositionBonus(convertReferralPositionBonusVO(referralBonusForm));
+
+            logger.info("ReferralPositionController1 putReferralPostionBonus  response Finished" );
+
+            return ResponseLogNotification.success(request, result);
+
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+
+    /**
+     * 根据PositionID获取内推奖金信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/referral/position/bonus", method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralPositionBonus(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil validateUtil = new ValidateUtil();
+            Integer positionId = params.getInt("position_id");
+            validateUtil.addRequiredStringValidate("positionId", positionId);
+
+            if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
+                return ResponseLogNotification.failJson(request, validateUtil.getResult());
+            }
+
+            logger.info("ReferralPositionController1 getReferralPositionBonus  position_id : {}",JSON.toJSONString(positionId)  );
+
+            Response result =  referralPositionService.getReferralPositionBonus(positionId);
+
+            logger.info("ReferralPositionController1 getReferralPositionBonus  response Finished" );
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    private ReferralPositionBonusVO convertReferralPositionBonusVO(ReferralBonusForm referralBonusForm) {
+        Integer positionId = referralBonusForm.getPosition_id();
+        List<ReferralBonusStageData> datas = referralBonusForm.getStage_data();
+        String totalBonus =  referralBonusForm.getTotal_bonus();
+
+        ReferralPositionBonusVO bonusVO = new ReferralPositionBonusVO();
+        ReferralPositionBonusDO bonusDO = new ReferralPositionBonusDO();
+        bonusDO.setPosition_id(positionId);
+        bonusDO.setTotal_bonus(totalBonus);
+
+        List<ReferralPositionBonusStageDetailDO> detailDOS = new ArrayList<>();
+        for(ReferralBonusStageData data : datas) {
+            ReferralPositionBonusStageDetailDO detailDO = new ReferralPositionBonusStageDetailDO();
+            detailDO.setStage_bonus(data.getBonus());
+            detailDO.setStage_proportion(data.getProportion());
+            detailDO.setStage_type(data.getStage_type());
+            detailDOS.add(detailDO);
+        }
+        bonusVO.setPosition_bonus(bonusDO);
+        bonusVO.setData(detailDOS);
+
+        return  bonusVO;
+    }
+
 }

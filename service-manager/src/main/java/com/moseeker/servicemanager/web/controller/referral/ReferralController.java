@@ -273,9 +273,39 @@ public class ReferralController {
         }
     }
 
-    @RequestMapping(value = "v1/referral/users/{id}/redpackets", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/referral/users/{id}/redpackets", method = RequestMethod.GET)
     @ResponseBody
     public String getRedPackets(@PathVariable Integer id,
+                                @RequestParam(value = "appid") Integer appid,
+                                @RequestParam(value = "page_no", defaultValue = "1") Integer pageNo,
+                                @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("用户编号", id);
+
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            RedPackets redPackets = referralService.getRedPackets(id, pageNo, pageSize);
+
+            com.moseeker.servicemanager.web.controller.referral.vo.RedPackets result
+                    = new com.moseeker.servicemanager.web.controller.referral.vo.RedPackets();
+            BeanUtils.copyProperties(redPackets, result);
+            if (redPackets.getRedpackets() != null && redPackets.getRedpackets().size() > 0) {
+                result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
+                    RedPacket redPacketStruct = new RedPacket();
+                    BeanUtils.copyProperties(redPacket, redPacketStruct);
+                    return redPacketStruct;
+                }).collect(Collectors.toList()));
+            }
+            return Result.success(result).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    @RequestMapping(value = "/v1/referral/users/{id}/bonus", method = RequestMethod.GET)
+    @ResponseBody
+    public String getBonus(@PathVariable Integer id,
                                 @RequestParam(value = "appid") Integer appid,
                                 @RequestParam(value = "page_no", defaultValue = "1") Integer pageNo,
                                 @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize) throws Exception {
