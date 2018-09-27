@@ -10,16 +10,15 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
-import com.moseeker.servicemanager.web.controller.referral.vo.City;
-import com.moseeker.servicemanager.web.controller.referral.vo.EmployeeInfoVO;
-import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
-import com.moseeker.servicemanager.web.controller.referral.vo.ReferralPositionInfo;
+import com.moseeker.servicemanager.web.controller.referral.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralCard;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
+import com.moseeker.thrift.gen.referral.service.ReferralService;
+import com.moseeker.thrift.gen.referral.struct.RedPackets;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +43,7 @@ public class ReferralController {
     private ProfileServices.Iface profileService =  ServiceManager.SERVICEMANAGER.getService(ProfileServices.Iface.class);
     private EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
+    private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
 
     /**
      * 员工上传简历
@@ -268,6 +268,36 @@ public class ReferralController {
             EmployeeInfoVO employeeInfoVO = new EmployeeInfoVO();
             BeanUtils.copyProperties(employeeInfo, employeeInfoVO);
             return Result.success(employeeInfoVO).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    @RequestMapping(value = "v1/referral/users/{id}/redpackets", method = RequestMethod.GET)
+    @ResponseBody
+    public String getRedPackets(@PathVariable Integer id,
+                                @RequestParam(value = "appid") Integer appid,
+                                @RequestParam(value = "page_no", defaultValue = "1") Integer pageNo,
+                                @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("用户编号", id);
+
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            RedPackets redPackets = referralService.getRedPackets(id, pageNo, pageSize);
+
+            com.moseeker.servicemanager.web.controller.referral.vo.RedPackets result
+                    = new com.moseeker.servicemanager.web.controller.referral.vo.RedPackets();
+            BeanUtils.copyProperties(redPackets, result);
+            if (redPackets.getRedpackets() != null && redPackets.getRedpackets().size() > 0) {
+                result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
+                    RedPacket redPacketStruct = new RedPacket();
+                    BeanUtils.copyProperties(redPacket, redPacketStruct);
+                    return redPacketStruct;
+                }).collect(Collectors.toList()));
+            }
+            return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }

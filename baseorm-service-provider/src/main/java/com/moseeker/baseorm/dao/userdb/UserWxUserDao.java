@@ -7,6 +7,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,16 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                     .fetchOne();
         }
         return wxuser;
+    }
+
+    public List<UserWxUserRecord> getWXUsersByUserId(int userId) {
+        if (userId > 0) {
+            return create.selectFrom(UserWxUser.USER_WX_USER)
+                    .where(UserWxUser.USER_WX_USER.SYSUSER_ID.eq(userId))
+                    .fetch();
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public UserWxUserDO getWXUserById(int id) {
@@ -100,5 +111,11 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
                 .limit(1)
                 .fetchOne();
+    }
+
+    public List<UserWxUserRecord> fetchByIdList(List<Integer> wxUserIdList) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.ID.in(wxUserIdList))
+                .fetch();
     }
 }

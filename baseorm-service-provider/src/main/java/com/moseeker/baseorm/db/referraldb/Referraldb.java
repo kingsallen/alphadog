@@ -8,6 +8,8 @@ import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 
 import java.util.ArrayList;
@@ -34,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 381466825;
+    private static final long serialVersionUID = -30033193;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -60,6 +62,16 @@ public class Referraldb extends SchemaImpl {
      * 内推记录
      */
     public final ReferralLog REFERRAL_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralLog.REFERRAL_LOG;
+
+    /**
+     * The table <code>referraldb.referral_position_bonus</code>.
+     */
+    public final ReferralPositionBonus REFERRAL_POSITION_BONUS = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus.REFERRAL_POSITION_BONUS;
+
+    /**
+     * The table <code>referraldb.referral_position_bonus_stage_detail</code>.
+     */
+    public final ReferralPositionBonusStageDetail REFERRAL_POSITION_BONUS_STAGE_DETAIL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
 
     /**
      * The table <code>referraldb.referral_position_rel</code>.
@@ -95,6 +107,8 @@ public class Referraldb extends SchemaImpl {
             HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL,
             ReferralCompanyConf.REFERRAL_COMPANY_CONF,
             ReferralLog.REFERRAL_LOG,
+            ReferralPositionBonus.REFERRAL_POSITION_BONUS,
+            ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL,
             ReferralPositionRel.REFERRAL_POSITION_REL);
     }
 }
