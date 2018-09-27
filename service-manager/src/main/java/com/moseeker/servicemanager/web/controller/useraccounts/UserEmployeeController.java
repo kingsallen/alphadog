@@ -348,7 +348,7 @@ public class UserEmployeeController {
             if(StringUtils.isNotNullOrEmpty(conf.getLink())){
                 logger.info("===============text:{}",conf.getLink());
                 vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, "请输入正确的链接");
-                vu.addStringLengthValidate("內推链接", conf.getLink(), null, "链接长度过长", 0, 2000);
+                vu.addStringLengthValidate("內推链接", conf.getLink(), null, "链接长度过长", 0, 2001);
             }
             vu.addIntTypeValidate("内推政策优先级", (int)conf.getPriority(), null, null, 0,3);
             String message = vu.validate();
