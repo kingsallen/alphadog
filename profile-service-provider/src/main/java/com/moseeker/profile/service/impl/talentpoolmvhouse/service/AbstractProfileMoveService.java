@@ -29,7 +29,6 @@ import com.moseeker.profile.service.impl.WholeProfileService;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseOperationVO;
 import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.MvHouseVO;
 
-import com.moseeker.profile.service.impl.talentpoolmvhouse.vo.ProfileMoveOperationInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -37,6 +36,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveDO;
 import com.moseeker.thrift.gen.dao.struct.talentpooldb.TalentPoolProfileMoveRecordDO;
+import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyAccountCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.talentpool.struct.ProfileMoveForm;
 import org.apache.thrift.TException;
@@ -82,7 +82,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     @Autowired
     protected ThirdpartyAccountCompanyDao thirdCompanyDao;
     @Autowired
-    protected TalentPoolProfileMoveDetailDao poolProfileMoveDetailDao;
+    protected TalentPoolProfileMoveDetailDao profileMoveDetailDao;
     @Autowired
     protected HrCompanyAccountDao hrCompanyAccountDao;
 
@@ -92,7 +92,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     private static final int TRY_TIMES = 3;
 
-    private static final long SIX_MONTH = 6L * 30 * 24 * 60 * 60 * 1000;
+    protected long firstTime;
 
     /**
      * 简历搬家用户登录
@@ -110,6 +110,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         if (userHrAccountDO == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_NOT_EXISTS);
         }
+        // 非主账号无法操作简历搬家
         if(userHrAccountDO.getAccountType() != 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVING_MAIN_ACCOUNT);
         }
@@ -119,69 +120,38 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         if (hrThirdPartyAccountDO == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
         }
+        HrThirdPartyAccountHrDO hrDO = hrThirdPartyAccountHrDao.getHrAccountInfo(hrId, channel);
+//             通过第三方账号获取第三方公司名称
+        List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(hrDO.getThirdPartyAccountId());
         // 查询下之前有没有搬家过，如果搬过家并且成功状态，起止时间为上次的结束时间
         List<TalentPoolProfileMoveDO> profileMoveDOS = profileMoveDao.getListByHrIdAndChannel(hrId, channel);
         List<Integer> moveIds = profileMoveDOS.stream().map(TalentPoolProfileMoveDO::getId).collect(Collectors.toList());
         List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS = profileMoveRecordDao.getListByMoveIds(moveIds);
         checkIsMoving(profileMoveRecordDOS);
-        // 过滤出搬家成功的list，去除第一个的创建时间为本次搬家的起始时间，如果list为空，则减去6个月为起始时间
-        Date startDate = new Date();
+        // 判断是否是第一次搬家
+        int successMoveId = 0;
+        boolean isFirstMove = false;
+        if (profileMoveRecordDOS.size() != 0) {
+            successMoveId = getSuccessMoveId(profileMoveRecordDOS);
+            if(successMoveId == 0){
+                isFirstMove = true;
+            }
+        }else{
+            isFirstMove = true;
+        }
+
+        Date startDate = getProfileMoveStartDate(successMoveId, profileMoveDOS);
+
         Date endDate = new Date();
-        try {
-            if (profileMoveRecordDOS.size() != 0) {
-                int successMoveId = getSuccessMoveId(profileMoveRecordDOS);
-                if(successMoveId == 0){
-                    startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
-                } else {
-                    for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
-                        if (profileMoveDO.getId() == successMoveId) {
-                            startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
-                            break;
-                        }
-                    }
-                }
-
-            } else {
-                // 当前时间减去六个月
-                startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
-            }
-        } catch (Exception e) {
-            startDate = new Date(System.currentTimeMillis() - SIX_MONTH);
-        }
+        // 插入简历搬家talentpool_profile_move表
+        TalentpoolProfileMoveRecord profileMoveRecord = insertProfileMoveRecord(hrId, channel, startDate, endDate);
+        int profileMoveId = profileMoveRecord.getId();
+        // 插入talentpool_profile_move_record表
+        insertProfileMoveRecordRecord(profileMoveId);
         // 映射简历搬家参数
-        List<MvHouseVO> mvHouseVOs = handleRequestParams(userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate);
-        for (MvHouseVO mvHouseVO : mvHouseVOs) {
-            sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_REQUEST, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
-            Thread.sleep(10000);
-        }
+        MvHouseVO mvHouseVO = handleRequestParams(thirdpartyAccountCompanyDOS, userHrAccountDO, hrThirdPartyAccountDO, startDate, endDate, profileMoveId, isFirstMove);
+        sender.sendMqRequest(mvHouseVO, ProfileMoveConstant.PROFILE_MOVE_ROUTING_KEY_REQUEST, ProfileMoveConstant.PROFILE_MOVE_EXCHANGE_NAME);
         return ResponseUtils.success(new HashMap<>(1 >> 4));
-    }
-
-    private void checkIsMoving(List<TalentPoolProfileMoveRecordDO> profileMoveDOS) throws BIZException {
-        List<Byte> stateList = profileMoveDOS.stream().map(TalentPoolProfileMoveRecordDO::getStatus).distinct().collect(Collectors.toList());
-        if (stateList != null && stateList.contains(ProfileMoveStateEnum.MOVING.getValue())) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVING);
-        }
-    }
-
-    private int getSuccessMoveId(List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS) {
-        List<Integer> moveIds = profileMoveRecordDOS.stream().map(TalentPoolProfileMoveRecordDO::getProfileMoveId).collect(Collectors.toList());
-        for (Integer moveId : moveIds) {
-            boolean flag = true;
-            for (TalentPoolProfileMoveRecordDO recordDO : profileMoveRecordDOS) {
-                if (moveId == recordDO.getProfileMoveId()) {
-                    if (recordDO.getStatus() != 1) {
-                        flag = false;
-                        break;
-                    }
-                }
-            }
-            if (flag) {
-                return moveId;
-            }
-        }
-        return 0;
-
     }
 
     /**
@@ -233,7 +203,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
 
     /**
      * 简历搬家
-     * todo 事务注解需要添加
      *
      * @param profile         解析后的简历json串
      * @param operationId     profileMove表主键id
@@ -251,17 +220,81 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_NOT_EXIST);
         }
         int hrId = profileMove.getHrId();
-        List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords = profileMoveRecordDao.getListByMoveId(operationId);
-        logger.info("=======================简历搬家record:{}", profileMoveRecordRecords);
-        if (profileMoveRecordRecords == null || profileMoveRecordRecords.size() == 0) {
-//            HrThirdPartyAccountHrDO hrDO = hrThirdPartyAccountHrDao.getHrAccountInfo(hrId, profileMove.getChannel());
-//             通过第三方账号获取第三方公司名称
-//            List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(hrDO.getHrAccountId());
-//             插入简历搬家操作TalentpoolProfileMoveRecord表
-            profileMoveRecordRecords = insertProfileMoveRecordRecord(operationId);
+        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
+        if (hrCompanyDO == null) {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
         }
+        int companyId = hrCompanyDO.getId();
+        List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords = profileMoveRecordDao.getListByMoveId(operationId);
         JSONObject resumeObj = JSONObject.parseObject(profile);
+        // 通过简历origin获取映射简历类型
         int crawlType = getCrawlTypeByOrigin(resumeObj);
+        // 根据简历类型获取对应的操作记录
+        TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = getProfileMoveRecordByCrawlType(profileMoveRecordRecords, crawlType);
+        int state = profileMoveRecordRecord.getStatus();
+        // 如果当前邮件数与总邮件数相同，认为本次搬家成功
+        int totalEmailNum = 0;
+        for(TalentpoolProfileMoveRecordRecord recordRecord : profileMoveRecordRecords){
+            totalEmailNum += recordRecord.getTotalEmailNum();
+        }
+        // 同一渠道搬家状态是同时成功或失败的，如果有一个成功，就说明已经全部成功，不用再修改搬家状态
+        boolean flag = true;
+        if (currentEmailNum == totalEmailNum) {
+            for(TalentpoolProfileMoveRecordRecord recordRecord : profileMoveRecordRecords){
+                if(recordRecord.getStatus() == ProfileMoveStateEnum.SUCCESS.getValue()){
+                    flag = false;
+                    break;
+                }
+                recordRecord.setStatus(ProfileMoveStateEnum.SUCCESS.getValue());
+            }
+        }
+        // 简历入库
+        Future<Response> preserveFuture =
+                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, hrId, companyId, 0, UserSource.MV_HOUSE.getValue()));
+        Response preserveResponse = preserveFuture.get(120, TimeUnit.SECONDS);
+        logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
+        if (preserveResponse.getStatus() == 0) {
+            String mobileStr = getUserMobileByProfile(resumeObj);
+            long mobile = Long.parseLong(mobileStr);
+            // 判断上一次是否入库过，如果搬过一次，是否搬成功了
+            int currentCrawlNum = profileMoveRecordRecord.getCrawlNum();
+            TalentpoolProfileMoveDetailRecord profileMoveDetailRecord = profileMoveDetailDao.getByMobile(mobile);
+            if (profileMoveDetailRecord == null) {
+                // 如果第一次搬该简历，搬家简历数+1
+                currentCrawlNum = currentCrawlNum + 1;
+                // 入库成功时，插入一条合并记录，状态为成功，如果之后chaos发送搬家状态失败，则将本次合并记录置为失败，这里做连表插入判断：exists
+                insertCombineRecord(mobile, profileMoveRecordRecord.getId(), state, 1);
+            } else{
+                profileMoveDetailRecord.setUpdateTime(null);
+                if (profileMoveDetailRecord.getProfileMoveStatus() == ProfileMoveStateEnum.SUCCESS.getValue()) {
+                    // 如果是以前搬成功的简历，搬家简历数 + 1，由于可能多处修改这里，加乐观锁
+                    currentCrawlNum = currentCrawlNum + 1;
+                    updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
+                } else {
+                    // 如果上次搬失败了，本次搬的简历在上次已经计算在内，此次搬家简历数不+1，这次将其操作id和状态都修改掉
+                    boolean isSameCompany = checkSameCompany(profileMoveDetailRecord.getProfileMoveRecordId(), companyId);
+                    if (!isSameCompany) {
+                        currentCrawlNum = currentCrawlNum + 1;
+                    }
+                    updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
+                }
+            }
+            // 当currentEmailNum>当前简历类型的总email数量，将当前email减去当前简历类型的总email数量
+//            if(profileMoveRecordRecord.getTotalEmailNum() < currentEmailNum){
+//                currentEmailNum = currentEmailNum - profileMoveRecordRecord.getTotalEmailNum();
+//            }
+            profileMoveRecordRecord.setCurrentEmailNum(currentEmailNum);
+            updateProfileMoveRecord(profileMoveRecordRecord, currentCrawlNum, 1);
+            if(flag){
+                profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
+            }
+            return ResponseUtils.success(new HashMap<>(1 >> 4));
+        }
+        profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
+        return preserveResponse;
+    }
+
+    private TalentpoolProfileMoveRecordRecord getProfileMoveRecordByCrawlType(List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords, int crawlType) {
         TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = new TalentpoolProfileMoveRecordRecord();
         for(TalentpoolProfileMoveRecordRecord one : profileMoveRecordRecords){
             if(one.getCrawlType() == crawlType){
@@ -269,57 +302,64 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 break;
             }
         }
-        // 如果当前邮件数与总邮件数相同，认为本次搬家成功
-        int totalEmailNum = 0;
-        for(TalentpoolProfileMoveRecordRecord recordRecord : profileMoveRecordRecords){
-            totalEmailNum += recordRecord.getTotalEmailNum();
+        return profileMoveRecordRecord;
+    }
+
+    private void checkIsMoving(List<TalentPoolProfileMoveRecordDO> profileMoveDOS) throws BIZException {
+        List<Byte> stateList = profileMoveDOS.stream().map(TalentPoolProfileMoveRecordDO::getStatus).distinct().collect(Collectors.toList());
+        if (stateList != null && stateList.contains(ProfileMoveStateEnum.MOVING.getValue())) {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVING);
         }
-        if (currentEmailNum == totalEmailNum) {
-            for(TalentpoolProfileMoveRecordRecord recordRecord : profileMoveRecordRecords){
-                recordRecord.setStatus(ProfileMoveStateEnum.SUCCESS.getValue());
-            }
-        }
-        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
-        if (hrCompanyDO == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_NOT_EXIST);
-        }
-        int companyId = hrCompanyDO.getId();
-        // 简历入库
-        Future<Response> preserveFuture =
-                pool.startTast(() -> wholeProfileService.preserveProfile(profile, null, hrId, companyId, 0, UserSource.MV_HOUSE.getValue()));
-        Response preserveResponse = preserveFuture.get(120, TimeUnit.SECONDS);
-//        Response preserveResponse = new Response(0, "");
-        logger.info("===========================简历搬家preserveResponse:{}", preserveResponse);
-        if (preserveResponse.getStatus() == 0) {
-            String mobileStr = getUserMobileByProfile(resumeObj);
-            long mobile = Long.parseLong(mobileStr);
-            // 判断上一次是否入库过，如果搬过一次，是否搬成功了
-            int currentCrawlNum = profileMoveRecordRecord.getCrawlNum();
-            TalentpoolProfileMoveDetailRecord profileMoveDetailRecord = poolProfileMoveDetailDao.getByMobile(mobile);
-            if (profileMoveDetailRecord == null) {
-                // 如果第一次搬该简历，搬家简历数+1
-                currentCrawlNum = currentCrawlNum + 1;
-                // 入库成功时，插入一条合并记录，状态为成功，如果之后chaos发送搬家状态失败，则将本次合并记录置为失败，这里做连表插入判断：exists
-                insertCombineRecord(mobile, profileMoveRecordRecord.getId());
-            } else if (profileMoveDetailRecord.getProfileMoveStatus() == ProfileMoveStateEnum.SUCCESS.getValue()) {
-                // 如果是以前搬成功的简历，搬家简历数 + 1，由于可能多处修改这里，加乐观锁
-                currentCrawlNum = currentCrawlNum + 1;
-                updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordRecord.getId(), ProfileMoveStateEnum.SUCCESS.getValue(), 1);
-            } else {
-                // 如果上次搬失败了，本次搬的简历在上次已经计算在内，此次搬家简历数不+1，这次将其操作id和状态都修改掉
-                boolean isSameCompany = checkSameCompany(profileMoveDetailRecord.getProfileMoveId(), companyId);
-                if (!isSameCompany) {
-                    currentCrawlNum = currentCrawlNum + 1;
+    }
+
+    private int getSuccessMoveId(List<TalentPoolProfileMoveRecordDO> profileMoveRecordDOS) {
+        List<Integer> moveIds = profileMoveRecordDOS.stream().map(TalentPoolProfileMoveRecordDO::getProfileMoveId).collect(Collectors.toList());
+        for (Integer moveId : moveIds) {
+            boolean flag = true;
+            for (TalentPoolProfileMoveRecordDO recordDO : profileMoveRecordDOS) {
+                if (moveId == recordDO.getProfileMoveId()) {
+                    if (recordDO.getStatus() != 1) {
+                        flag = false;
+                        break;
+                    }
                 }
-                updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordRecord.getId(), ProfileMoveStateEnum.SUCCESS.getValue(), 1);
             }
-            profileMoveRecordRecord.setCurrentEmailNum(currentEmailNum);
-            updateProfileMove(profileMoveRecordRecord, currentCrawlNum, 1);
-            profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
-            return ResponseUtils.success(new HashMap<>(1 >> 4));
+            if (flag) {
+                return moveId;
+            }
         }
-        profileMoveRecordDao.updateRecords(profileMoveRecordRecords);
-        return preserveResponse;
+        return 0;
+
+    }
+
+    /**
+     * 计算简历搬家起始时间
+     * @param   successMoveId 最近一次简历搬家成功的id
+     * @param   profileMoveDOS 简历搬家操作记录DOs
+     * @author  cjm
+     * @date  2018/9/16
+     * @return 返回简历搬家起始时间
+     */
+    private Date getProfileMoveStartDate(int successMoveId, List<TalentPoolProfileMoveDO> profileMoveDOS){
+        // 过滤出搬家成功的list，去除第一个的创建时间为本次搬家的起始时间，如果list为空，则减去6个月为起始时间
+        Date startDate = new Date();
+        try {
+            if(successMoveId == 0){
+                logger.info("firstTime:{}", firstTime);
+                startDate = new Date(System.currentTimeMillis() - firstTime);
+            } else {
+                for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
+                    if (profileMoveDO.getId() == successMoveId) {
+                        startDate = new SimpleDateFormat("yyyy-MM-dd").parse(profileMoveDO.getEndDate());
+                        break;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            startDate = new Date(System.currentTimeMillis() - firstTime);
+        }
+        return startDate;
     }
 
     private int getCrawlTypeByOrigin(JSONObject resumeObj) throws BIZException {
@@ -329,17 +369,17 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         }
         if (origin.equals(ChannelType.MVHOUSEJOB51DOWNLOAD.getOrigin("")) || origin.equals(ChannelType.MVHOUSEZHILIANDOWNLOAD.getOrigin(""))) {
             return 1;
-        } else {
+        } else if(origin.equals(ChannelType.MVHOUSEJOB51UPLOAD.getOrigin("")) || origin.equals(ChannelType.MVHOUSEZHILIANUPLOAD.getOrigin(""))){
             return 0;
+        } else {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_ORIGIN_UPSUPORT);
         }
 
     }
 
     public Response getMoveOperationState(int hrId) {
-        long timeout = 4 * 60 * 60 * 1000;
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis() - timeout);
         List<Map<String, Byte>> resultList = new ArrayList<>();
-        List<TalentPoolProfileMoveDO> talentPoolProfileMoveDOS = profileMoveDao.getProfileMoveDOByHrId(hrId, timestamp);
+        List<TalentPoolProfileMoveDO> talentPoolProfileMoveDOS = profileMoveDao.getProfileMoveDOByHrId(hrId);
         if (talentPoolProfileMoveDOS == null || talentPoolProfileMoveDOS.size() == 0) {
             return defaultState(resultList);
         }
@@ -386,13 +426,17 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         return ResponseUtils.success(resultList);
     }
 
-    private void updateMoveDetailWithPositiveLock(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte status, int retryTimes) throws BIZException {
+    private void updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte state, int retryTimes) throws BIZException {
+        byte status = (state == ProfileMoveStateEnum.MOVING.getValue() ? ProfileMoveStateEnum.SUCCESS.getValue() : state);
+        profileMoveDetailRecord.setProfileMoveStatus(status);
         if (retryTimes > TRY_TIMES) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_MOVE_DATA_UPDATE_FAILED);
         }
-        int row = poolProfileMoveDetailDao.updateRecordWithPositiveLock(profileMoveDetailRecord, profileMoveRecordId, status);
+        profileMoveDetailRecord.setUpdateTime(null);
+        int row = profileMoveDetailDao.updateWhereExist(profileMoveDetailRecord, profileMoveRecordId, state);
         if (row == 0) {
-            updateMoveDetailWithPositiveLock(profileMoveDetailRecord, profileMoveRecordId, status, ++retryTimes);
+            TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
+            updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
         }
     }
 
@@ -411,47 +455,29 @@ public abstract class AbstractProfileMoveService implements IChannelType {
     }
 
     /**
+     * 处理请求参数
+     * @param companyDOS            第三方公司集合
      * @param userHrAccountDO       hr账号do
      * @param hrThirdPartyAccountDO hr第三方账号do
      * @param startDate             简历搬家起始时间
      * @param endDate               简历搬家结束时间
-     * @return 简历搬家请求vo集合
+     * @param profileMoveId         简历搬家操作id
+     * @param isFirstMove           是否是第一次搬家
+     * @return 简历搬家请求vo
      * @author cjm
      * @date 2018/9/9
+     * @throws BIZException bizException
      */
-    private List<MvHouseVO> handleRequestParams(UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO, Date startDate, Date endDate) throws Exception {
-        HrThirdPartyAccountHrDO hrDO = hrThirdPartyAccountHrDao.getHrAccountInfo(userHrAccountDO.getId(), hrThirdPartyAccountDO.getChannel());
-        if (hrDO == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRACCOUNT_NOT_EXISTS);
-        }
-        // 插入简历搬家TalentpoolProfileMove表
-        TalentpoolProfileMoveRecord profileMoveRecord = insertProfileMoveRecord(userHrAccountDO.getId(), hrThirdPartyAccountDO.getChannel(), startDate, endDate);
-        int profileMoveId = profileMoveRecord.getId();
-        // 通过第三方账号获取第三方公司名称
-//        List<ThirdpartyAccountCompanyDO> thirdpartyAccountCompanyDOS = thirdCompanyDao.getCompanyByAccountId(thirdPartAccountId);
-        // 插入简历搬家操作TalentpoolProfileMoveRecord表
-        insertProfileMoveRecordRecord(profileMoveId);
-        List<MvHouseVO> mvHouseVOS = new ArrayList<>();
-        String password = hrThirdPartyAccountDO.getPassword();
-//        if (profileMoveRecordRecords.size() > 0) {
-        ProfileMoveOperationInfoVO operationInfoVO = new ProfileMoveOperationInfoVO();
-        operationInfoVO.setStart_date(new SimpleDateFormat("yyyy-MM-dd").format(startDate));
-        operationInfoVO.setEnd_date(new SimpleDateFormat("yyyy-MM-dd").format(endDate));
-        MvHouseVO mvHouseVO = new MvHouseVO();
-        mvHouseVO.setAccount_id(userHrAccountDO.getId());
-        mvHouseVO.setChannel(hrThirdPartyAccountDO.getChannel());
-        mvHouseVO.setMember_name(hrThirdPartyAccountDO.getExt());
-        mvHouseVO.setMobile(userHrAccountDO.getMobile());
-        mvHouseVO.setOperation_id(profileMoveId);
-        mvHouseVO.setUser_name(hrThirdPartyAccountDO.getUsername());
-        mvHouseVO.setPassword(password);
-        mvHouseVO.setOperation_info(operationInfoVO);
-        mvHouseVOS.add(mvHouseVO);
-//        }
-        return mvHouseVOS;
-    }
+    public abstract MvHouseVO handleRequestParams(List<ThirdpartyAccountCompanyDO> companyDOS, UserHrAccountDO userHrAccountDO, HrThirdPartyAccountDO hrThirdPartyAccountDO,
+                                                  Date startDate, Date endDate, int profileMoveId, boolean isFirstMove) throws BIZException;
 
-    private List<TalentpoolProfileMoveRecordRecord> insertProfileMoveRecordRecord(int profileMoveId) {
+    /**
+     * 插入简历搬家详细操作记录表 talentpool_profile_move_record
+     * @param   profileMoveId 简历搬家id
+     * @author  cjm
+     * @date  2018/9/17
+     */
+    private void insertProfileMoveRecordRecord(int profileMoveId) {
         List<TalentpoolProfileMoveRecordRecord> profileMoveRecordRecords = new ArrayList<>();
         for (int i = 0; i < CrawlTypeEnum.values().length; i++) {
             TalentpoolProfileMoveRecordRecord profileMoveRecordRecord = new TalentpoolProfileMoveRecordRecord();
@@ -461,14 +487,22 @@ public abstract class AbstractProfileMoveService implements IChannelType {
             long currentTime = DateTime.now().getMillis();
             profileMoveRecordRecord.setCreateTime(new Timestamp(currentTime));
             profileMoveRecordRecord.setUpdateTime(new Timestamp(currentTime));
-            profileMoveRecordRecord = profileMoveRecordDao.addRecord(profileMoveRecordRecord);
             profileMoveRecordRecords.add(profileMoveRecordRecord);
         }
-        // 51不需要多个公司名
         logger.info("profileMoveRecordRecords:{}", profileMoveRecordRecords);
-        return profileMoveRecordRecords;
+        profileMoveRecordDao.addAllRecord(profileMoveRecordRecords);
     }
 
+    /**
+     * 插入简历搬家记录表  talentpool_profile_move
+     * @param   hrId      hr.id
+     * @param   channel   简历搬家渠道
+     * @param   startDate 简历搬家起始时间
+     * @param   endDate   简历搬家结束时间
+     * @author  cjm
+     * @date  2018/9/17
+     * @return   返回插入的结果，主要是为了获取回填的主键id
+     */
     private TalentpoolProfileMoveRecord insertProfileMoveRecord(int hrId, int channel, Date startDate, Date endDate) {
         TalentpoolProfileMoveRecord record = new TalentpoolProfileMoveRecord();
         record.setStartDate(new java.sql.Date(startDate.getTime()));
@@ -479,7 +513,11 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         return record;
     }
 
-
+    /**
+     * 获取简历搬家操作列表，按照指定的时间规则转化时间格式
+     * @author  cjm
+     * @date  2018/9/17
+     */
     private List<MvHouseOperationVO> getOperationList(Map<Integer, List<TalentPoolProfileMoveRecordDO>> map, List<TalentPoolProfileMoveDO> profileMoveDOS) throws ParseException {
         List<MvHouseOperationVO> operationList = new ArrayList<>();
         for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
@@ -547,18 +585,22 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      *
      * @param mobile      手机号
      * @param profileMoveRecordId profile_move_record.id
+     * @param retryTimes 当前是第几次重试
      * @author cjm
      * @date 2018/9/10
      */
-    private void insertCombineRecord(long mobile, int profileMoveRecordId) {
+    private void insertCombineRecord(long mobile, int profileMoveRecordId, int state, int retryTimes) throws BIZException {
+        if(retryTimes >= TRY_TIMES){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
+        }
         TalentpoolProfileMoveDetailRecord record = new TalentpoolProfileMoveDetailRecord();
         record.setMobile(mobile);
-        record.setProfileMoveId(profileMoveRecordId);
-        record.setProfileMoveStatus(ProfileMoveStateEnum.SUCCESS.getValue());
-        int row = poolProfileMoveDetailDao.addWhereExistStatus(record, ProfileMoveStateEnum.MOVING.getValue());
+        record.setProfileMoveRecordId(profileMoveRecordId);
+        record.setProfileMoveStatus(state == ProfileMoveStateEnum.MOVING.getValue() ? ProfileMoveStateEnum.SUCCESS.getValue() : (byte)state);
+        int row = profileMoveDetailDao.addWhereExistStatus(record, (byte)state);
         if (row == 0) {
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
-            poolProfileMoveDetailDao.addWhereExistStatus(record, recordRecord.getStatus());
+            insertCombineRecord(mobile, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
         }
     }
 
@@ -569,7 +611,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @author cjm
      * @date 2018/7/23
      */
-    private void updateProfileMove(TalentpoolProfileMoveRecordRecord record, int currentCrawlNum, int retryTimes) throws BIZException {
+    private void updateProfileMoveRecord(TalentpoolProfileMoveRecordRecord record, int currentCrawlNum, int retryTimes) throws BIZException {
         if (retryTimes > TRY_TIMES) {
             throw new BIZException(1, "简历搬家操作记录数据库更新失败");
         }
@@ -577,7 +619,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         if (row == 0) {
             record = profileMoveRecordDao.getOneProfileMoveRecordById(record.getId());
             currentCrawlNum = record.getCrawlNum() + 1;
-            updateProfileMove(record, currentCrawlNum, ++retryTimes);
+            updateProfileMoveRecord(record, currentCrawlNum, ++retryTimes);
         }
     }
 
