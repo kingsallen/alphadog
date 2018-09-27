@@ -118,7 +118,7 @@ struct WechatPositionListData {
     30: optional i32 experience_above;
     31: optional string experience;
     32: optional i32 team_id;
-    33: ReferralPositionBonusVO bonusVO;
+    33: optional string total_bonus;
 }
 
 // 微信端职位列表的附加红包信息
@@ -447,7 +447,7 @@ struct ReferralPositionUpdateDataDO{
 
 struct ReferralPositionBonusVO {
    1:ReferralPositionBonusDO position_bonus;
-   2:list<ReferralPositionBonusStageDetailDO> data;
+   2:list<ReferralPositionBonusStageDetailDO> bonus_details;
 }
 
 struct ReferralPositionBonusDO {

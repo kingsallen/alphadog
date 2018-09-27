@@ -79,8 +79,12 @@ service UseraccountsServices {
     common_struct.Response deleteUserSearchPositionHistory(1: i32 userId)throws (1: common_struct.BIZException e);
     //认领内推卡片
     void claimReferralCard(1: useraccounts_struct.ClaimReferralCardForm form) throws (1: common_struct.BIZException e);
-}
 
+    //认领内推奖金
+    void claimReferralBonus(1: i32 bonus_record_id) throws (1: common_struct.BIZException e);
+
+
+}
 /**
 * 用户配置服务
 **/
@@ -196,6 +200,11 @@ service UserHrAccountService {
    
     //获取HR信息
     useraccounts_struct.HRInfo getHR(1:i32 id) throws (1: common_struct.BIZException e);
+
+     //HR账号设置 申请确认时是否需要弹窗二次确认
+    common_struct.Response setApplicationNotify(1:i32 hrAccountId,2:bool flag) throws (1: common_struct.BIZException e);
+     //HR账号获取 申请确认时是否需要弹窗二次确认
+    common_struct.Response getApplicationNotify(1:i32 hrAccountId) throws (1: common_struct.BIZException e);
 
 }
 

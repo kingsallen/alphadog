@@ -357,4 +357,24 @@ public class ReferralController {
         }
         return referralPositionInfo;
     }
+
+    /**
+     * 微信端员工认领内推奖金记录
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/wechat/employee/{id}/bonus/claim", method = RequestMethod.PUT)
+    @ResponseBody
+    public String claimReferralBonus(@PathVariable Integer id) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("id", id);
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            userService.claimReferralBonus(id);
+            return Result.success(true).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
 }
