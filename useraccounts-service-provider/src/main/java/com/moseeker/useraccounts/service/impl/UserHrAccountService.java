@@ -1911,6 +1911,8 @@ public class UserHrAccountService {
 
     /**
      *
+     *
+     *
      * @param hrAccountId
      * @return
      * @throws BIZException
@@ -1921,7 +1923,7 @@ public class UserHrAccountService {
         com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
 
         if(hrAccountApplicationNotify  == null || hrAccountApplicationNotify.getFlag() == (byte)0) {
-            return ResponseUtils.success(true);
+            return ResponseUtils.success(false);
 
         } else {
             return ResponseUtils.success(false);
