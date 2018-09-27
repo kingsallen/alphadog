@@ -1386,6 +1386,8 @@ public class UserHrAccountService {
         org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+        userEmployeeDetailVO.setAuthMethod(new Integer(userEmployeeDO.getAuthMethod()).intValue());
+
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
             userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
@@ -1933,4 +1935,5 @@ public class UserHrAccountService {
             return ResponseUtils.success(true);
         }
     }
+
 }
