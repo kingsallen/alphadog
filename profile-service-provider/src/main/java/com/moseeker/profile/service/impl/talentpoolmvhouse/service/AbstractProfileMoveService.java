@@ -280,9 +280,9 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 }
             }
             // 当currentEmailNum>当前简历类型的总email数量，将当前email减去当前简历类型的总email数量
-            if(profileMoveRecordRecord.getTotalEmailNum() < currentEmailNum){
-                currentEmailNum = currentEmailNum - profileMoveRecordRecord.getTotalEmailNum();
-            }
+//            if(profileMoveRecordRecord.getTotalEmailNum() < currentEmailNum){
+//                currentEmailNum = currentEmailNum - profileMoveRecordRecord.getTotalEmailNum();
+//            }
             profileMoveRecordRecord.setCurrentEmailNum(currentEmailNum);
             updateProfileMoveRecord(profileMoveRecordRecord, currentCrawlNum, 1);
             if(flag){
