@@ -305,7 +305,9 @@ public class DeliveryEmailProducer {
                     eduExps.setTime(DateUtils.appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
                     eduExps.setCollege((String) education.getOrDefault("college_name", ""));
                     eduExps.setMajor((String) education.getOrDefault("major_name", ""));
-                    eduExps.setDescription((String) education.getOrDefault("description", ""));
+                    String description = (String) education.getOrDefault("description", "");
+                    description = description.replaceAll("\\n","<br>");
+                    eduExps.setDescription(description);
                     if (education.get("degree") != null) {
                         for (DictConstantDO constantDO : degree) {
                             if (constantDO.getCode() == (int) education.get("degree"))
@@ -365,7 +367,9 @@ public class DeliveryEmailProducer {
                 for (Map<String, Object> workexp : workexpList) {
                     WorkExps workExps = new WorkExps();
                     workExps.setTime(DateUtils.appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
-                    workExps.setDescription((String) workexp.getOrDefault("description", ""));
+                    String description = (String) workexp.getOrDefault("description", "");
+                    description = description.replaceAll("\\n","<br>");
+                    workExps.setDescription(description);
                     workExps.setCompany((String) workexp.getOrDefault("company_name", ""));
                     workExps.setDepartment((String) workexp.getOrDefault("department_name", ""));
                     workExps.setPosition((String) workexp.getOrDefault("job", ""));
@@ -417,7 +421,9 @@ public class DeliveryEmailProducer {
                 Map<String, Object> worksData = worksList.get(0);
                 works.setCover((String) worksData.getOrDefault("cover", ""));
                 works.setUrl((String) worksData.getOrDefault("url", ""));
-                works.setDescription((String) worksData.getOrDefault("description", ""));
+                String description = (String) worksData.getOrDefault("description", "");
+                description = description.replaceAll("\\n","<br>");
+                works.setDescription(description);
                 emailInfo.setWorks(works);
             }
         }

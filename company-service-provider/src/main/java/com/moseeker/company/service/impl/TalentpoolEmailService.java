@@ -1752,7 +1752,9 @@ public class TalentpoolEmailService {
             info.setCompany((String)data.getOrDefault("internshipCompanyName",""));
             info.setDepartment((String)data.getOrDefault("internshipDepartmentName",""));
             info.setPosition((String)data.getOrDefault("internshipJob",""));
-            info.setDescription((String)data.getOrDefault("internshipDescriptionHidden",""));
+            String description = (String)data.getOrDefault("internshipDescriptionHidden","");
+            description = description.replaceAll("\\n","<br>");
+            info.setDescription(description);
             list.add(info);
         }
         return list;
@@ -1779,7 +1781,9 @@ public class TalentpoolEmailService {
                 start=start.substring(0,7).replace("-",".");
             }
             info.setTime(start+"-"+end);
-            info.setDescription((String)data.getOrDefault("schooljobDescriptionHidden",""));
+            String description = (String)data.getOrDefault("schooljobDescriptionHidden","");
+            description = description.replaceAll("\\n","<br>");
+            info.setDescription(description);
             info.setName((String)data.getOrDefault("schooljobJob",""));
             list.add(info);
         }
@@ -1945,7 +1949,9 @@ public class TalentpoolEmailService {
         info.setCompany((String)data.getOrDefault("company_name",""));
         info.setDepartment((String)data.getOrDefault("department_name",""));
         info.setPosition((String)data.getOrDefault("job_name",""));
-        info.setDescription((String)data.getOrDefault("description",""));
+        String description = (String)data.getOrDefault("description","");
+        description = description.replace("\\n","<br>");
+        info.setDescription(description);
         return info;
     }
     /*
@@ -1973,7 +1979,9 @@ public class TalentpoolEmailService {
             info.setCollege((String)data.getOrDefault("college_name",""));
             info.setDegree(DegreeConvertUtil.intToEnum.get(data.get("degree")));
             info.setMajor((String)data.getOrDefault("major_name",""));
-            info.setDescription((String)data.getOrDefault("description",""));
+            String description = (String)data.getOrDefault("description","");
+            description = description.replaceAll("\\n","<br>");
+            info.setDescription(description);
             list.add(info);
         }
         return list;
@@ -2002,7 +2010,9 @@ public class TalentpoolEmailService {
             info.setTime(start+"-"+end);
             info.setCompany((String)data.getOrDefault("company_name",""));
             info.setName((String)data.getOrDefault("name",""));
-            info.setDescription((String)data.getOrDefault("description",""));
+            String description = (String)data.getOrDefault("description","");
+            description = description.replaceAll("\\n","<br>");
+            info.setDescription(description);
             list.add(info);
         }
         return list;
@@ -2067,6 +2077,7 @@ public class TalentpoolEmailService {
         String cover=(String)data.getOrDefault("cover","");
         String url=(String)data.getOrDefault("url","");
         String description=(String)data.getOrDefault("description","");
+        description = description.replaceAll("\\n","<br>");
         info.setCover(cover);
         info.setUrl(url);
         info.setDescription(description);
