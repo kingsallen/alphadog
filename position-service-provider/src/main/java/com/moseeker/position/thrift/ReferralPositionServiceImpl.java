@@ -82,4 +82,5 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
         ReferralPositionBonusVO vo =  referralPositionService.getReferralPositionBonus(positionId);
         return vo;
     }
+
 }

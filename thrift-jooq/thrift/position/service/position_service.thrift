@@ -147,7 +147,6 @@ service ReferralPositionServices{
     common_struct.Response putReferralPositionBonus(1:position_struct.ReferralPositionBonusVO referralPositionBonusVO);
     position_struct.ReferralPositionBonusVO getReferralPositionBonus(1:i32 positionId);
 
-
 }
 
 /*
