@@ -1890,6 +1890,7 @@ public class UserHrAccountService {
      * @throws BIZException
      * @throws TException
      */
+    @Transactional
     public Response setApplicationNotify(int hrAccountId, boolean flag) throws BIZException, TException {
 
        com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
@@ -1897,14 +1898,16 @@ public class UserHrAccountService {
        if(hrAccountApplicationNotify == null)  {
 
            hrAccountApplicationNotify = new com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify();
-           hrAccountApplicationNotify.setFlag((flag == true?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setFlag((flag?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setHrAccountId(hrAccountId);
            hrAccountApplicationNotify.setCreateTime(Timestamp.valueOf(now));
            hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
 
            hrAccountApplicationNotifyDao.insert(hrAccountApplicationNotify);
        }else {
-           hrAccountApplicationNotify.setFlag((flag == true?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setFlag((flag?(byte)1:(byte)0));
            hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+           hrAccountApplicationNotifyDao.update(hrAccountApplicationNotify);
        }
        return ResponseUtils.success(true);
     }
@@ -1918,15 +1921,16 @@ public class UserHrAccountService {
      * @throws BIZException
      * @throws TException
      */
+    @Transactional
     public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
 
         com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
 
-        if(hrAccountApplicationNotify  == null || hrAccountApplicationNotify.getFlag() == (byte)0) {
+        if(hrAccountApplicationNotify  != null && hrAccountApplicationNotify.getFlag() == (byte)0) {
             return ResponseUtils.success(false);
 
         } else {
-            return ResponseUtils.success(false);
+            return ResponseUtils.success(true);
         }
     }
 }
