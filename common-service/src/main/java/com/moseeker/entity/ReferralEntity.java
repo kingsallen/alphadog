@@ -4,6 +4,9 @@ import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
 import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -11,6 +14,8 @@ import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -18,10 +23,12 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
+import com.moseeker.entity.pojos.HBBonusData;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.jooq.Record2;
@@ -39,6 +46,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +56,16 @@ import java.util.stream.Collectors;
 @Service
 @CounterIface
 public class ReferralEntity {
+
+
+    @Autowired
+    private HrHbConfigDao configDao;
+
+    @Autowired
+    private HrHbPositionBindingDao positionBindingDao;
+
+    @Autowired
+    private HrHbScratchCardDao scratchCardDao;
 
     @Autowired
     CandidateShareChainDao shareChainDao;
@@ -85,7 +103,11 @@ public class ReferralEntity {
     @Autowired
     SearchengineEntity searchengineEntity;
 
+    @Autowired
+    private UserWxEntity wxEntity;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private ThreadPool threadPool = ThreadPool.Instance;
 
     /**
      * 计算给定时间内的员工内推带来的转发次数
@@ -228,5 +250,78 @@ public class ReferralEntity {
             return referralLogDao.fetchReferenceIdByEmployeeId(employeeRecord.getId());
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * 查找个人中心红包列表所需的数据
+     * @param itemsRecords 红包记录
+     * @return 数据对象
+     */
+    public HBBonusData fetchHBBonusData(List<HrHbItemsRecord> itemsRecords) {
+        HBBonusData data = new HBBonusData();
+        //查找职位title
+        List<Integer> positionBindingIdList = itemsRecords.stream().map(HrHbItemsRecord::getBindingId).collect(Collectors.toList());
+        Future<List<Record2<Integer, String>>> titleFuture = threadPool.startTast(() -> positionBindingDao.fetchPositionTitle(positionBindingIdList));
+
+        //查找候选人姓名
+        List<Integer> triggerWxUserIdList = itemsRecords.stream().map(HrHbItemsRecord::getTriggerWxuserId).collect(Collectors.toList());
+        Future<Map<Integer, String>> candidateNamesFuture = threadPool.startTast(() -> wxEntity.fetchUserNamesByWxUserIdList(triggerWxUserIdList));
+
+        //查找刮刮卡cardno
+        List<Integer> itemIdList = itemsRecords.stream().map(HrHbItemsRecord::getId).collect(Collectors.toList());
+        Future<List<Record2<Integer, String>>> cardNoFuture = threadPool.startTast(() -> scratchCardDao.fetchCardNosByItemIdList(itemIdList));
+
+        //查找红包类型
+        List<Integer> configIdList = itemsRecords.stream().map(HrHbItemsRecord::getHbConfigId).distinct().collect(Collectors.toList());
+        Future<List<HrHbConfigRecord>> configListFuture = threadPool.startTast(() -> configDao.fetchByIdList(configIdList));
+
+        Map<Integer, String> titleMap = new HashMap<>();
+        try {
+            List<Record2<Integer, String>> titleList = titleFuture.get();
+            if (titleList != null && titleList.size() > 0) {
+                titleList.forEach(integerStringRecord2 -> {
+                    titleMap.put(integerStringRecord2.value1(), integerStringRecord2.value2());
+                });
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setTitleMap(titleMap);
+
+        Map<Integer, String> candidateNameMap = new HashMap<>();
+        try {
+            candidateNameMap = candidateNamesFuture.get();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setCandidateNameMap(candidateNameMap);
+
+        Map<Integer, String> cardNoMap = new HashMap<>();
+        try {
+            List<Record2<Integer, String>> cardNoList = cardNoFuture.get();
+            if (cardNoList != null && cardNoList.size() > 0) {
+                for (Record2<Integer, String> record2 : cardNoList) {
+                    cardNoMap.put(record2.value1(), record2.value2());
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setCardNoMap(cardNoMap);
+
+        Map<Integer, HrHbConfigRecord> configMap = new HashMap<>();
+        try {
+            List<HrHbConfigRecord> configRecordList= configListFuture.get();
+            if (configRecordList != null && configRecordList.size() > 0) {
+                configRecordList.forEach(hrHbConfigRecord -> {
+                    configMap.put(hrHbConfigRecord.getId(), hrHbConfigRecord);
+                });
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setConfigMap(configMap);
+
+        return data;
     }
 }
