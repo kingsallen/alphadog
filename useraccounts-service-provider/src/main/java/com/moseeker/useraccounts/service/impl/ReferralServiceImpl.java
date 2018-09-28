@@ -112,7 +112,8 @@ public class ReferralServiceImpl implements ReferralService {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             bonusList.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
 
-            List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList = referralEmployeeBonusDao.fetchByEmployeeId(userEmployeeDO.getId());
+            List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList
+                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId());
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
