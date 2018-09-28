@@ -19,3 +19,19 @@ struct RedPackets {
     2 : optional double totalBonus,
     3 : optional list<RedPacket> redpackets,
 } 
+
+struct Bonus {
+    1 : optional i32 id,
+    2 : optional string name,
+    3 : optional double value, 
+    4 : optional string positionTitle,
+    5 : optional string candidateName,
+    6 : optional i64 employmentDate,
+    7 : optional bool open
+}
+
+struct BonusList {
+    1 : optional double totalRedpackets,
+    2 : optional double totalBonus,
+    3 : optional list<Bonus> bonus,
+}

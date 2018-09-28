@@ -23,7 +23,6 @@ import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
-import com.moseeker.thrift.gen.referral.struct.RedPackets;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
@@ -280,7 +279,7 @@ public class ReferralController {
         }
     }
 
-    @RequestMapping(value = "/v1/referral/users/{id}/redpackets", method = RequestMethod.GET)
+    @RequestMapping(value = "v1/referral/users/{id}/redpackets", method = RequestMethod.GET)
     @ResponseBody
     public String getRedPackets(@PathVariable Integer id,
                                 @RequestParam(value = "appid") Integer appid,
@@ -292,7 +291,7 @@ public class ReferralController {
 
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
-            RedPackets redPackets = referralService.getRedPackets(id, pageNo, pageSize);
+            com.moseeker.thrift.gen.referral.struct.RedPackets redPackets = referralService.getRedPackets(id, pageNo, pageSize);
 
             com.moseeker.servicemanager.web.controller.referral.vo.RedPackets result
                     = new com.moseeker.servicemanager.web.controller.referral.vo.RedPackets();
@@ -322,16 +321,15 @@ public class ReferralController {
 
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
-            RedPackets redPackets = referralService.getRedPackets(id, pageNo, pageSize);
+            com.moseeker.thrift.gen.referral.struct.BonusList bonusList = referralService.getBonus(id, pageNo, pageSize);
 
-            com.moseeker.servicemanager.web.controller.referral.vo.RedPackets result
-                    = new com.moseeker.servicemanager.web.controller.referral.vo.RedPackets();
-            BeanUtils.copyProperties(redPackets, result);
-            if (redPackets.getRedpackets() != null && redPackets.getRedpackets().size() > 0) {
-                result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
-                    RedPacket redPacketStruct = new RedPacket();
-                    BeanUtils.copyProperties(redPacket, redPacketStruct);
-                    return redPacketStruct;
+            BonusList result = new BonusList();
+            BeanUtils.copyProperties(bonusList, result);
+            if (bonusList.getBonus() != null && bonusList.getBonus().size() > 0) {
+                result.setBonus(bonusList.getBonus().stream().map(bonusStruct -> {
+                    Bonus bonus = new Bonus();
+                    BeanUtils.copyProperties(bonusStruct, bonus);
+                    return bonus;
                 }).collect(Collectors.toList()));
             }
             return Result.success(result).toJson();

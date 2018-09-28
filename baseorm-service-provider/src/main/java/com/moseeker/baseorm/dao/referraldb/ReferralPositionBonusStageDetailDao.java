@@ -6,6 +6,9 @@ import org.jooq.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+import static com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
 import static org.jooq.impl.DSL.using;
 
 /**
@@ -24,15 +27,23 @@ public class ReferralPositionBonusStageDetailDao extends com.moseeker.baseorm.db
     public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail
     fetchByReferralPositionBonusIdAndStageType(Integer referralPositionBonusId,Integer stageType) {
         ReferralPositionBonusStageDetailRecord referralPositionBonusStageDetailRecord = using(configuration())
-                .selectFrom(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL)
-                .where(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.REFERRAL_POSITION_BONUS_ID.eq(referralPositionBonusId))
-                .and(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_TYPE.eq(stageType))
+                .selectFrom(REFERRAL_POSITION_BONUS_STAGE_DETAIL)
+                .where(REFERRAL_POSITION_BONUS_STAGE_DETAIL.REFERRAL_POSITION_BONUS_ID.eq(referralPositionBonusId))
+                .and(REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_TYPE.eq(stageType))
                 .fetchOne();
         if (referralPositionBonusStageDetailRecord != null) {
             return referralPositionBonusStageDetailRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail.class);
         } else {
             return null;
         }
+    }
+
+    public List<ReferralPositionBonusStageDetailRecord> fetchByIdList(List<Integer> stageIdList) {
+
+        return using(configuration())
+                .selectFrom(REFERRAL_POSITION_BONUS_STAGE_DETAIL)
+                .where(REFERRAL_POSITION_BONUS_STAGE_DETAIL.ID.in(stageIdList))
+                .fetch();
     }
 }
 
