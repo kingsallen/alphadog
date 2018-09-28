@@ -59,6 +59,16 @@ public class UserApplyCount {
             userApplyCount = new UserApplyCount();
             userApplyCount.setInit(true);
         }
+        logger.info("userApplyCount:{}", userApplyCount);
         return userApplyCount;
+    }
+
+    @Override
+    public String toString() {
+        return "UserApplyCount{" +
+                "socialApplyCount=" + socialApplyCount +
+                ", schoolApplyCount=" + schoolApplyCount +
+                ", init=" + init +
+                '}';
     }
 }
