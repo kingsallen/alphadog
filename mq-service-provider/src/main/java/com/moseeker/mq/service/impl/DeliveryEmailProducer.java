@@ -19,9 +19,11 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.MandrillMailListConsumer;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.pojo.profile.info.*;
+import com.moseeker.mq.service.email.MandrillMailConsumer;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
@@ -70,6 +72,9 @@ public class DeliveryEmailProducer {
 
     @Autowired
     private ProfileOtherEntity profileEntity;
+
+    @Autowired
+    private MandrillMailListConsumer mandrillMailListConsumer;
 
     WholeProfileServices.Iface profileServices = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
@@ -306,8 +311,7 @@ public class DeliveryEmailProducer {
                     eduExps.setCollege((String) education.getOrDefault("college_name", ""));
                     eduExps.setMajor((String) education.getOrDefault("major_name", ""));
                     String description = (String) education.getOrDefault("description", "");
-                    description = description.replaceAll("\\n","<br>");
-                    eduExps.setDescription(description);
+                    eduExps.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
                     if (education.get("degree") != null) {
                         for (DictConstantDO constantDO : degree) {
                             if (constantDO.getCode() == (int) education.get("degree"))
@@ -368,8 +372,7 @@ public class DeliveryEmailProducer {
                     WorkExps workExps = new WorkExps();
                     workExps.setTime(DateUtils.appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
                     String description = (String) workexp.getOrDefault("description", "");
-                    description = description.replaceAll("\\n","<br>");
-                    workExps.setDescription(description);
+                    workExps.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
                     workExps.setCompany((String) workexp.getOrDefault("company_name", ""));
                     workExps.setDepartment((String) workexp.getOrDefault("department_name", ""));
                     workExps.setPosition((String) workexp.getOrDefault("job", ""));
@@ -422,8 +425,7 @@ public class DeliveryEmailProducer {
                 works.setCover((String) worksData.getOrDefault("cover", ""));
                 works.setUrl((String) worksData.getOrDefault("url", ""));
                 String description = (String) worksData.getOrDefault("description", "");
-                description = description.replaceAll("\\n","<br>");
-                works.setDescription(description);
+                works.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
                 emailInfo.setWorks(works);
             }
         }
