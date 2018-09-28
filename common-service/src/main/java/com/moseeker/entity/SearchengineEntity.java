@@ -30,7 +30,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
 import org.elasticsearch.action.bulk.BulkResponse;
@@ -879,6 +878,42 @@ public class SearchengineEntity {
             DateTime endDate = new DateTime();
             logger.info("updateBulkReferralPostionStatus {} 条  计时结束时间 {}  耗时 {} 毫秒" ,positionIds.size(),endDate.toString("yyyy-MM-dd HH:mm:ss"),endDate.getMillisOfSecond()-nowDate.getMillisOfSecond() );
 
+            return ResponseUtils.success(bulkResponse);
+        }
+    }
+
+
+    /**
+     * 更新员工总奖金
+     * @param employeeIds
+     * @param bonus
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public Response updateEmployeeBonus(List<Integer> employeeIds,Integer bonus) throws Exception{
+        DateTime nowDate = new DateTime();
+
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        for(Integer employeeId: employeeIds) {
+            String idx = "" + employeeId;
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("bonus", bonus)
+                    .field("update_time",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
+                    .endObject();
+
+            bulkRequest.add(client.prepareUpdate("awards", "award", idx).setDoc(builder));
+
+        }
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if(bulkResponse.hasFailures()) {
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
             return ResponseUtils.success(bulkResponse);
         }
     }

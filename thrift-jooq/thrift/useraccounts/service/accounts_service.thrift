@@ -206,6 +206,8 @@ service UserHrAccountService {
      //HR账号获取 申请确认时是否需要弹窗二次确认
     common_struct.Response getApplicationNotify(1:i32 hrAccountId) throws (1: common_struct.BIZException e);
 
+    // 获取员工内推奖金明细
+    employee_struct.BonusVOPageVO getEmployeeBonus(1: i32 employeeId, 2: i32 companyId, 3: i32 pageNumber, 4: i32 pageSize);
 }
 
 
