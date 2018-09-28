@@ -275,6 +275,10 @@ public class CrawlerUtils {
                 && (Integer) messagBean.get("status") == 8) {
             decre(user_id, channelType);
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_VERIFY_CODE_WRONG);
+        } else if (messagBean.get("status") != null
+                && (Integer) messagBean.get("status") == 9) {
+            decre(user_id, channelType);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIME_OUT);
         }
         decre(user_id, channelType);
         return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);
