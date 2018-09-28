@@ -208,11 +208,9 @@ public class ApplicationEntity {
      * @return 用户申请数据
      */
     public UserApplyCount getApplyCount(long userId, long companyId) {
-        logger.info("userId:{}, companyId:{}", userId, companyId);
         String applicationCountCheck = redisClient.get(
                 Constant.APPID_ALPHADOG, REDIS_KEY_APPLICATION_COUNT_CHECK,
                 String.valueOf(userId), String.valueOf(companyId));
-        logger.info("applicationCountCheck:{}", applicationCountCheck);
         return UserApplyCount.initFromRedis(applicationCountCheck);
     }
 
