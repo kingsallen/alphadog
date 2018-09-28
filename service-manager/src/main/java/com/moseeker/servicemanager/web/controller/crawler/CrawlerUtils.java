@@ -144,14 +144,12 @@ public class CrawlerUtils {
         /*
         导入次数需要做限制，每人每天只能导入三次
          */
-        if(!isZhilianGetVerifyCode(channelType,form)) {    // 智联获取验证码不用做导入限制 todo 是否加个操作类型字段更好
-            int user_id = form.getUser_id();
-            StringBuffer sb = new StringBuffer();
-            sb.append(user_id).append("_").append(channelType);
-            String userIdStr = sb.toString();
-            if (!redisClient.isAllowed(PROFILE_IMPORT_UPPER_LIMIT, userIdStr, Constant.PROFILE_IMPORT_UPPER_LIMIT, "1")) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_IMPORT_UPPER_LIMIT);
-            }
+        int user_id = form.getUser_id();
+        StringBuffer sb = new StringBuffer();
+        sb.append(user_id).append("_").append(channelType);
+        String userIdStr = sb.toString();
+        if (!redisClient.isAllowed(PROFILE_IMPORT_UPPER_LIMIT, userIdStr, Constant.PROFILE_IMPORT_UPPER_LIMIT, "1")) {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CRAWLER_SERVICE_IMPORT_UPPER_LIMIT);
         }
 
         /*
