@@ -56,6 +56,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.thrift.gen.employee.struct.BonusVO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
@@ -1934,6 +1936,36 @@ public class UserHrAccountService {
         } else {
             return ResponseUtils.success(true);
         }
+    }
+
+    @Transactional
+    public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
+        BonusVOPageVO bonusVOPageVO = employeeEntity.getEmployeeBonusRecords(employeeId, pageNumber, pageSize);
+        /**
+         * 查询公司下候选人信息，如果候选人不存在则将berecomID 置为0，用以通知前端不需要拼接潜在候选人的url链接。
+         */
+        if (bonusVOPageVO.getData() != null && bonusVOPageVO.getData().size() > 0) {
+            List<Integer> beRecomIDList = bonusVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
+                    .map(m -> m.getBerecomId()).collect(Collectors.toList());
+            if (beRecomIDList != null && beRecomIDList.size() > 0) {
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
+                if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
+                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
+                                    Function.identity()));
+                    for (BonusVO bonusVO : bonusVOPageVO.getData()) {
+                        if (userUserDOSMap.get(bonusVO.getBerecomId()) == null) {
+                            bonusVO.setBerecomId(0);
+                        }
+                    }
+                } else {
+                    for (BonusVO bonusVO : bonusVOPageVO.getData()) {
+                        bonusVO.setBerecomId(0);
+                    }
+                }
+            }
+        }
+        return bonusVOPageVO;
     }
 
 }

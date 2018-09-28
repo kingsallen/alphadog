@@ -35,6 +35,11 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
     }
 
 
+    /**
+     * 更新职位ID找出设置的节点奖金信息
+     * @param pid
+     * @return
+     */
     public Map<Integer, ReferralPositionBonusVO> fetchByPid(List<Integer> pid) {
 
         Map<Integer, ReferralPositionBonusVO> hasMap = new HashMap<>();
@@ -52,8 +57,8 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
         if (result != null) {
             for (Record5<Integer, Integer, Integer, Integer, Integer> r : result) {
                 Integer position_id = r.getValue(ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID);
-                BigDecimal total_bonus = new BigDecimal(r.getValue(ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS)).divide(bignum);
-                BigDecimal stage_bonus = new BigDecimal(r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_BONUS)).divide(bignum);
+                BigDecimal total_bonus = new BigDecimal(r.getValue(ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS)).divide(bignum,2,BigDecimal.ROUND_HALF_UP);
+                BigDecimal stage_bonus = new BigDecimal(r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_BONUS)).divide(bignum,2,BigDecimal.ROUND_HALF_UP);
                 Integer stage_proportaion = r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_PROPORTION);
                 Integer stage_type = r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_TYPE);
 

@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral.vo;
 
+import com.moseeker.common.constants.ApplicationCondition;
+
 /**
  * @Date: 2018/9/26
  * @Author: JackYang
@@ -7,7 +9,7 @@ package com.moseeker.servicemanager.web.controller.referral.vo;
 public class ReferralBonusStageData {
 
     private String bonus = "0";
-    private int stage_type = 1;
+    private int stage_type = ApplicationCondition.Hired.getState();//入职
     private int proportion = 100;
 
     public String getBonus() {

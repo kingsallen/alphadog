@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeBonusRecord extends TableImpl<ReferralEmployeeBonusRecordRecord> {
 
-    private static final long serialVersionUID = -1150473093;
+    private static final long serialVersionUID = -182566029;
 
     /**
      * The reference instance of <code>referraldb.referral_employee_bonus_record</code>
@@ -147,7 +147,7 @@ public class ReferralEmployeeBonusRecord extends TableImpl<ReferralEmployeeBonus
      */
     @Override
     public List<UniqueKey<ReferralEmployeeBonusRecordRecord>> getKeys() {
-        return Arrays.<UniqueKey<ReferralEmployeeBonusRecordRecord>>asList(Keys.KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY);
+        return Arrays.<UniqueKey<ReferralEmployeeBonusRecordRecord>>asList(Keys.KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY, Keys.KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_UNIQUE_IDX);
     }
 
     /**

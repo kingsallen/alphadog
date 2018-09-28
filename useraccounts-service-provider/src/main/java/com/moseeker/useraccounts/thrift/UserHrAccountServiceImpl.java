@@ -16,6 +16,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
@@ -728,5 +729,10 @@ public class UserHrAccountServiceImpl implements Iface {
     @Override
     public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
         return service.getApplicationNotify(hrAccountId);
+    }
+
+    @Override
+    public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
+        return service.getEmployeeBonus(employeeId,companyId,pageNumber,pageSize);
     }
 }
