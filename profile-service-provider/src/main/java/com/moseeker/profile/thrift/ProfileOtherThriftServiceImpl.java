@@ -308,6 +308,21 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         }
     }
 
+    @Override
+    public Response updateSpecificResource(String params) throws TException {
+        try {
+            Map<String, Object> resume = JSON.parseObject(params);
+            int result = otherService.putSpecificOther((Map<String, Object>) resume.get("data"), (Integer) resume.get("profile_id"));
+            return ResponseUtils.success(result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
+        }
+    }
 
 
 }

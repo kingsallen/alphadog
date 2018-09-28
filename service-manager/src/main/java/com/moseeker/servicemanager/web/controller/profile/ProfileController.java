@@ -693,4 +693,22 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /*
+    *
+    * meetmobot指定更新other表的json串的内容
+    *
+    *
+    * */
+    @RequestMapping(value = "/profile/other/specific", method = RequestMethod.PUT)
+    @ResponseBody
+    public String put(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = profileOtherService.updateSpecificResource(JSON.toJSONString(params));
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
