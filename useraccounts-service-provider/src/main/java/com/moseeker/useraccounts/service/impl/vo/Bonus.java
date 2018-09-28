@@ -1,4 +1,4 @@
-package com.moseeker.servicemanager.web.controller.referral.vo;
+package com.moseeker.useraccounts.service.impl.vo;
 
 /**
  * 奖金
@@ -8,10 +8,10 @@ package com.moseeker.servicemanager.web.controller.referral.vo;
 public class Bonus {
 
     private int id;
-    private java.lang.String name;
+    private String name;
     private double value;
-    private java.lang.String positionTitle;
-    private java.lang.String candidateName;
+    private String positionTitle;
+    private String candidateName;
     private long employmentDate;
     private boolean open;
 

@@ -21,10 +21,9 @@ public class HrHbScratchCardDao extends JooqCrudImpl<HrHbScratchCardDO, HrHbScra
         super(table, hrHbScratchCardDOClass);
     }
 
-    public List<Record2<Integer, String>> fetchCardNosByItemIdList(List<Integer> itemIdList) {
+    public List<HrHbScratchCardRecord> fetchCardNosByItemIdList(List<Integer> itemIdList) {
 
-        return create.select(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID, HrHbScratchCard.HR_HB_SCRATCH_CARD.CARDNO)
-                .from(HrHbScratchCard.HR_HB_SCRATCH_CARD)
+        return create.selectFrom(HrHbScratchCard.HR_HB_SCRATCH_CARD)
                 .where(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID.in(itemIdList))
                 .fetch();
     }

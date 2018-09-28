@@ -1,10 +1,8 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @Author: jack
@@ -26,17 +24,8 @@ public class HBBizToolTest {
     @Test
     public void isOpen() throws Exception {
 
-        assertEquals(false, HBBizTool.isOpen((byte)0));
-        assertEquals(false, HBBizTool.isOpen((byte)1));
-        assertEquals(false, HBBizTool.isOpen((byte)2));
-        assertEquals(false, HBBizTool.isOpen((byte)3));
-        assertEquals(true, HBBizTool.isOpen((byte)4));
-        assertEquals(true, HBBizTool.isOpen((byte)5));
-        assertEquals(true, HBBizTool.isOpen((byte)6));
-        assertEquals(true, HBBizTool.isOpen((byte)7));
-        assertEquals(true, HBBizTool.isOpen((byte)100));
-        assertEquals(true, HBBizTool.isOpen((byte)-1));
-        assertEquals(true, HBBizTool.isOpen((byte)101));
-        assertEquals(false, HBBizTool.isOpen((byte)102));
+        assertEquals(false, HBBizTool.isOpen(0));
+        assertEquals(false, HBBizTool.isOpen(2));
+        assertEquals(true, HBBizTool.isOpen(1));
     }
 }

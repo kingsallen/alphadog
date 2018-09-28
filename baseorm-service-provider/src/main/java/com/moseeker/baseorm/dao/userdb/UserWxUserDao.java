@@ -118,4 +118,10 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .where(USER_WX_USER.ID.in(wxUserIdList))
                 .fetch();
     }
+
+    public List<UserWxUserRecord> getWXUserMapByUserIds(List<Integer> idList) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.SYSUSER_ID.in(idList))
+                .fetch();
+    }
 }

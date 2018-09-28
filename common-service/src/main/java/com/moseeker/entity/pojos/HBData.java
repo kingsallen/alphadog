@@ -1,6 +1,7 @@
 package com.moseeker.entity.pojos;
 
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +11,11 @@ import java.util.Map;
  * @Author: jack
  * @Date: 2018/9/27
  */
-public class HBBonusData {
+public class HBData {
 
     private Map<Integer, String> titleMap = new HashMap<>();
     private Map<Integer, String> candidateNameMap = new HashMap<>();
-    private Map<Integer, String> cardNoMap = new HashMap<>();
+    private Map<Integer, HrHbScratchCardRecord> cardNoMap = new HashMap<>();
     private Map<Integer, HrHbConfigRecord> configMap = new HashMap<>();
 
     public Map<Integer, String> getTitleMap() {
@@ -33,11 +34,11 @@ public class HBBonusData {
         this.candidateNameMap = candidateNameMap;
     }
 
-    public Map<Integer, String> getCardNoMap() {
+    public Map<Integer, HrHbScratchCardRecord> getCardNoMap() {
         return cardNoMap;
     }
 
-    public void setCardNoMap(Map<Integer, String> cardNoMap) {
+    public void setCardNoMap(Map<Integer, HrHbScratchCardRecord> cardNoMap) {
         this.cardNoMap = cardNoMap;
     }
 
