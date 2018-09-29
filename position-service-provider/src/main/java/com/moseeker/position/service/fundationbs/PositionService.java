@@ -1976,7 +1976,7 @@ public class PositionService {
 
             //添加内推奖金信息
             if(refBonusMap !=null) {
-                s.setBonusVO(refBonusMap.get(s.getId()) == null? null:refBonusMap.get(s.getId()));
+                s.setTotal_bonus(refBonusMap.get(s.getId()) == null? null:(refBonusMap.get(s.getId()).getPosition_bonus()).getTotal_bonus());
             }
             return s;
         }).collect(Collectors.toList());

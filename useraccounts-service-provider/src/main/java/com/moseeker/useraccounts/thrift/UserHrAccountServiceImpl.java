@@ -16,21 +16,22 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
-import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
-import java.util.List;
-import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -718,5 +719,20 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public Response setApplicationNotify(int hrAccountId, boolean flag) throws BIZException, TException {
+        return service.setApplicationNotify(hrAccountId,flag);
+    }
+
+    @Override
+    public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
+        return service.getApplicationNotify(hrAccountId);
+    }
+
+    @Override
+    public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
+        return service.getEmployeeBonus(employeeId,companyId,pageNumber,pageSize);
     }
 }

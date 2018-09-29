@@ -1253,4 +1253,54 @@ public class UserHrAccountController {
         HRInfo hrInfo = hrService.getHR(id);
         return Result.success(hrInfo).toJson();
     }
+
+
+    /**
+     * 招聘管理-查询是否需要二次提醒
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/v1/hr/application/notice/", method = RequestMethod.GET)
+    @ResponseBody
+    public String getApplicationNotice(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("hr_account_id", 0);
+            Response res = userHrAccountService.getApplicationNotify(account_id);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 招聘管理-设置是否需要二次提醒
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/v1/hr/application/notice/", method = RequestMethod.PUT)
+    @ResponseBody
+    public String putApplicationNotice(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("hr_account_id", 0);
+            boolean flag = params.getBoolean("flag", true);
+
+            Response res = userHrAccountService.setApplicationNotify(account_id,flag);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

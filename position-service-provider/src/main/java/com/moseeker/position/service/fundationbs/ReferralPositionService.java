@@ -3,10 +3,13 @@ package com.moseeker.position.service.fundationbs;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
@@ -58,6 +61,8 @@ public class ReferralPositionService {
     @Autowired
     ReferralPositionBonusStageDetailDao referralPositionBonusStageDetailDao;
 
+    @Autowired
+    JobPositionDao jobPositionDao;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -326,7 +331,11 @@ public class ReferralPositionService {
     public void putReferralPositionBonus(ReferralPositionBonusVO referralPositionBonusVO) throws Exception{
         logger.info("putReferralPositionBonus {}",JSON.toJSONString(referralPositionBonusVO) );
         ReferralPositionBonusDO referralPositionBonusDO = referralPositionBonusVO.getPosition_bonus();
-        List<ReferralPositionBonusStageDetailDO> detailDOS = referralPositionBonusVO.getData();
+
+        JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(referralPositionBonusDO.getPosition_id());
+
+
+        List<ReferralPositionBonusStageDetailDO> detailDOS = referralPositionBonusVO.getBonus_details();
         BigDecimal bignum = new BigDecimal("100");
         Integer pid = referralPositionBonusDO.getPosition_id();
         Integer total_bonus = new BigDecimal(referralPositionBonusDO.getTotal_bonus()).multiply(bignum).intValue() ;//转为分存入数据库
@@ -352,6 +361,7 @@ public class ReferralPositionService {
                referralPositionBonusStageDetailRecord.setUpdateTime(Timestamp.valueOf(now));
 
                referralPositionBonusStageDetailDao.insert(referralPositionBonusStageDetailRecord);
+
            }
 
         } else {
@@ -383,13 +393,15 @@ public class ReferralPositionService {
             }
 
         }
-
+        //更新职位updateTime
+        jobPositionRecord.setUpdateTime(Timestamp.valueOf(now));
+        jobPositionRecord.update();
     }
 
     @CounterIface
     @Transactional
     public ReferralPositionBonusVO getReferralPositionBonus(Integer positionId) {
-        List<Integer> jdIdList = new ArrayList<>(positionId);
+        List<Integer> jdIdList = Lists.newArrayList(positionId);
 
         Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(jdIdList);
 

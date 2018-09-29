@@ -78,8 +78,9 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     }
 
     @Override
-    public Response getReferralPositionBonus(int positionId) throws TException {
+    public ReferralPositionBonusVO getReferralPositionBonus(int positionId) throws TException {
         ReferralPositionBonusVO vo =  referralPositionService.getReferralPositionBonus(positionId);
-        return  ResponseUtils.success(vo);
+        return vo;
     }
+
 }

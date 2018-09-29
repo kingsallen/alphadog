@@ -35,6 +35,11 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
     }
 
 
+    /**
+     * 更新职位ID找出设置的节点奖金信息
+     * @param pid
+     * @return
+     */
     public Map<Integer, ReferralPositionBonusVO> fetchByPid(List<Integer> pid) {
 
         Map<Integer, ReferralPositionBonusVO> hasMap = new HashMap<>();
@@ -52,8 +57,8 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
         if (result != null) {
             for (Record5<Integer, Integer, Integer, Integer, Integer> r : result) {
                 Integer position_id = r.getValue(ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID);
-                BigDecimal total_bonus = new BigDecimal(r.getValue(ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS)).divide(bignum);
-                BigDecimal stage_bonus = new BigDecimal(r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_BONUS)).divide(bignum);
+                BigDecimal total_bonus = new BigDecimal(r.getValue(ReferralPositionBonus.REFERRAL_POSITION_BONUS.TOTAL_BONUS)).divide(bignum,2,BigDecimal.ROUND_HALF_UP);
+                BigDecimal stage_bonus = new BigDecimal(r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_BONUS)).divide(bignum,2,BigDecimal.ROUND_HALF_UP);
                 Integer stage_proportaion = r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_PROPORTION);
                 Integer stage_type = r.getValue(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_TYPE);
 
@@ -64,13 +69,13 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
                     detailDO.setStage_bonus(stage_bonus.toPlainString());
                     detailDO.setStage_proportion(stage_proportaion);
                     detailDO.setStage_type(stage_type);
-                    bonusVO.getData().add(detailDO);
+                    bonusVO.getBonus_details().add(detailDO);
                     hasMap.put(position_id, bonusVO);
 
                 } else {
                     ReferralPositionBonusVO bonusVO = new ReferralPositionBonusVO();
                     ReferralPositionBonusDO bonusDO = new ReferralPositionBonusDO();
-                    List<ReferralPositionBonusStageDetailDO> datas = new ArrayList<>();
+                    List<ReferralPositionBonusStageDetailDO> bonusStageDetailDOS = new ArrayList<>();
                     ReferralPositionBonusStageDetailDO detailDO = new ReferralPositionBonusStageDetailDO();
 
                     bonusDO.setPosition_id(position_id);
@@ -79,10 +84,10 @@ public class ReferralPositionBonusDao extends com.moseeker.baseorm.db.referraldb
                     detailDO.setStage_bonus(stage_bonus.toPlainString());
                     detailDO.setStage_proportion(stage_proportaion);
                     detailDO.setStage_type(stage_type);
-                    datas.add(detailDO);
+                    bonusStageDetailDOS.add(detailDO);
 
                     bonusVO.setPosition_bonus(bonusDO);
-                    bonusVO.setData(datas);
+                    bonusVO.setBonus_details(bonusStageDetailDOS);
 
                     hasMap.put(position_id, bonusVO);
                 }

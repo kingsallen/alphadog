@@ -2,11 +2,13 @@ package com.moseeker.servicemanager.web.controller.referral;
 
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
+import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
@@ -16,11 +18,12 @@ import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
-import com.moseeker.thrift.gen.employee.struct.ReferralCard;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
 import org.apache.commons.lang.StringUtils;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,7 +50,7 @@ public class ReferralController {
     private EmployeeService.Iface employeeService =  ServiceManager.SERVICEMANAGER.getService(EmployeeService.Iface.class);
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
-
+    private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
     /**
      * 员工上传简历
      * @param file 简历文件
@@ -226,7 +230,7 @@ public class ReferralController {
         if (StringUtils.isBlank(appid)) {
             return Result.fail(MessageType.APPID_NOT_EXIST).toJson();
         }
-        ReferralCard referralCard = employeeService.getReferralCard(id);
+        com.moseeker.thrift.gen.employee.struct.ReferralCard referralCard = employeeService.getReferralCard(id);
         com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard card = new com.moseeker.servicemanager.web.controller.referral.vo.ReferralCard();
         BeanUtils.copyProperties(referralCard, card);
         return Result.success(card).toJson();
@@ -357,5 +361,47 @@ public class ReferralController {
             referralPositionInfo.setCities(cities);
         }
         return referralPositionInfo;
+    }
+
+    /**
+     * 微信端员工认领内推奖金记录
+     * @param id
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/wechat/employee/{id}/bonus/claim", method = RequestMethod.PUT)
+    @ResponseBody
+    public String claimReferralBonus(@PathVariable Integer id) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("id", id);
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            userService.claimReferralBonus(id);
+            return Result.success(true).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    /**
+     * HR端根据员工获取内推奖金明细
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/referral/hr/employee/bonus/detail", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmployeeBonusDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        int employeeId = params.getInt("employeeId", 0);
+        int companyId = params.getInt("companyId", 0);
+        int pageNumber = params.getInt("pageNumber", 0);
+        int pageSize = params.getInt("pageSize", 0);
+        if (employeeId == 0) {
+            return ResponseLogNotification.fail(request, "员工Id不能为空");
+        } else {
+            BonusVOPageVO result = userHrAccountService.getEmployeeBonus(employeeId, companyId, pageNumber, pageSize);
+            return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(com.moseeker.baseorm.util.BeanUtils.convertStructToJSON(result)));
+        }
     }
 }

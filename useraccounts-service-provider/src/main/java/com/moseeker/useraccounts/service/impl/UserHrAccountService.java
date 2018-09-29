@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
@@ -46,6 +47,7 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
@@ -54,6 +56,8 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.thrift.gen.employee.struct.BonusVO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
@@ -73,6 +77,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -175,6 +180,8 @@ public class UserHrAccountService {
     @Autowired
     private HrWxHrChatListDao chatListDao;
 
+    @Autowired
+    private HrAccountApplicationNotifyDao hrAccountApplicationNotifyDao;
     /**
      * 修改手机号码
      *
@@ -1381,6 +1388,8 @@ public class UserHrAccountService {
         org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+        userEmployeeDetailVO.setAuthMethod(new Integer(userEmployeeDO.getAuthMethod()).intValue());
+
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
             userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
@@ -1875,4 +1884,88 @@ public class UserHrAccountService {
         }
         return userEmployeeVOS;
     }
+
+
+    /**
+     *
+     * @param hrAccountId
+     * @param flag
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Transactional
+    public Response setApplicationNotify(int hrAccountId, boolean flag) throws BIZException, TException {
+
+       com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
+       LocalDateTime now = LocalDateTime.now();
+       if(hrAccountApplicationNotify == null)  {
+
+           hrAccountApplicationNotify = new com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify();
+           hrAccountApplicationNotify.setFlag((flag?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setHrAccountId(hrAccountId);
+           hrAccountApplicationNotify.setCreateTime(Timestamp.valueOf(now));
+           hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+
+           hrAccountApplicationNotifyDao.insert(hrAccountApplicationNotify);
+       }else {
+           hrAccountApplicationNotify.setFlag((flag?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+           hrAccountApplicationNotifyDao.update(hrAccountApplicationNotify);
+       }
+       return ResponseUtils.success(true);
+    }
+
+    /**
+     *
+     *
+     *
+     * @param hrAccountId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Transactional
+    public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
+
+        com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
+
+        if(hrAccountApplicationNotify  != null && hrAccountApplicationNotify.getFlag() == (byte)0) {
+            return ResponseUtils.success(false);
+
+        } else {
+            return ResponseUtils.success(true);
+        }
+    }
+
+    @Transactional
+    public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
+        BonusVOPageVO bonusVOPageVO = employeeEntity.getEmployeeBonusRecords(employeeId, pageNumber, pageSize);
+        /**
+         * 查询公司下候选人信息，如果候选人不存在则将berecomID 置为0，用以通知前端不需要拼接潜在候选人的url链接。
+         */
+        if (bonusVOPageVO.getData() != null && bonusVOPageVO.getData().size() > 0) {
+            List<Integer> beRecomIDList = bonusVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
+                    .map(m -> m.getBerecomId()).collect(Collectors.toList());
+            if (beRecomIDList != null && beRecomIDList.size() > 0) {
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
+                if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
+                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
+                                    Function.identity()));
+                    for (BonusVO bonusVO : bonusVOPageVO.getData()) {
+                        if (userUserDOSMap.get(bonusVO.getBerecomId()) == null) {
+                            bonusVO.setBerecomId(0);
+                        }
+                    }
+                } else {
+                    for (BonusVO bonusVO : bonusVOPageVO.getData()) {
+                        bonusVO.setBerecomId(0);
+                    }
+                }
+            }
+        }
+        return bonusVOPageVO;
+    }
+
 }

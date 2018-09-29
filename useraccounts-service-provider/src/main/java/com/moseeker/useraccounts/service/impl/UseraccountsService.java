@@ -7,6 +7,7 @@ import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -14,6 +15,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
@@ -64,6 +66,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -115,6 +118,9 @@ public class UseraccountsService {
 
     @Autowired
     private JobApplicationDao applicationDao;
+
+    @Autowired
+    private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -1275,5 +1281,26 @@ public class UseraccountsService {
         }
 
         referralEntity.claimReferralCard(userUserDO, referralLog);
+    }
+
+
+
+    /**
+     * 认领内推奖金
+     * @param claimForm 参数
+     */
+    @Transactional
+    public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {
+        ReferralEmployeeBonusRecord referralEmployeeBonusRecord = referralEmployeeBonusRecordDao.findById(bonus_record_id);
+        if (referralEmployeeBonusRecord == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_BONUS_NOT_EXIST;
+        }
+        if (referralEmployeeBonusRecord.getClaim() == 1) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_BONUS__REPEAT_CLAIM;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        referralEmployeeBonusRecord.setClaim((byte) 1);
+        referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(now));
+        referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
     }
 }
