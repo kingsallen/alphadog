@@ -2045,6 +2045,7 @@ public class UserHrAccountService {
                     userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                 }
                 userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+                userEmployeeVO.setBonus(userEmployeeDO.getBonus());
                 userEmployeeVOS.add(userEmployeeVO);
             }
         }
