@@ -201,6 +201,9 @@ public class JobApplicataionService {
                                          }
             );
         }
+        // 投递失败将redis防止重复投递缓存清除
+        redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
     }
 
@@ -1026,6 +1029,8 @@ public class JobApplicataionService {
 
         //校验投递限制
         UserApplyCount userApplyCount = applicationEntity.getApplyCount(applierId, employeeDO.getCompanyId());
+        checkApplicationCountAtCompany(employeeDO.getCompanyId(), userApplyCount);
+
         for (com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position : positionList) {
             if (position.getCandidateSource() == 0) {
                 userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount() + 1);
@@ -1033,8 +1038,6 @@ public class JobApplicataionService {
                 userApplyCount.setSchoolApplyCount(userApplyCount.getSchoolApplyCount() + 1);
             }
         }
-        checkApplicationCountAtCompany(employeeDO.getCompanyId(), userApplyCount);
-
 
         List<ApplicationSaveResultVO> applyIdList = applicationEntity.storeEmployeeProxyApply(referenceId, applierId,
                 employeeDO.getCompanyId(), positionIdList);
