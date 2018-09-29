@@ -36,8 +36,10 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -1024,6 +1026,9 @@ public class JobApplicataionService {
 
         //校验投递限制
         UserApplyCount userApplyCount = applicationEntity.getApplyCount(applierId, employeeDO.getCompanyId());
+
+        checkApplicationCountAtCompany(employeeDO.getCompanyId(), userApplyCount);
+
         for (com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position : positionList) {
             if (position.getCandidateSource() == 0) {
                 userApplyCount.setSocialApplyCount(userApplyCount.getSocialApplyCount() + 1);
@@ -1031,7 +1036,7 @@ public class JobApplicataionService {
                 userApplyCount.setSchoolApplyCount(userApplyCount.getSchoolApplyCount() + 1);
             }
         }
-        checkApplicationCountAtCompany(employeeDO.getCompanyId(), userApplyCount);
+
 
 
         List<ApplicationSaveResultVO> applyIdList = applicationEntity.storeEmployeeProxyApply(referenceId, applierId,
@@ -1069,6 +1074,11 @@ public class JobApplicataionService {
 
         //todo 如果投递失败，则需要将投递次数减回去
 
+        // 如果投递失败，将redis限制同一职位只能投递一次的记录删除，与上面的todo无关
+        for(Integer position : positionIdList){
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    applierId + "", position + "");
+        }
         return new ArrayList<>();
     }
 

@@ -80,6 +80,11 @@ public class ProfileMoveReceiver {
                 }
                 recordRecord.setUpdateTime(null);
             }
+            if(applySuccessNum == 0 && downloadSuccessNum == 0){
+                for(TalentpoolProfileMoveRecordRecord recordRecord : records){
+                    recordRecord.setStatus(ProfileMoveStateEnum.SUCCESS.getValue());
+                }
+            }
             profileMoveRecordDao.updateRecords(records);
         } catch (BIZException e){
             logger.info("handle profile move email num Error : {}, message :{}",e.getMessage(),json);
