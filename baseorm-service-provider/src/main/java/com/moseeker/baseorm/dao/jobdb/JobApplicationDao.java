@@ -144,7 +144,6 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		long redisFlag = checkRedisApplication(record);
 		int result = 0;
 		if(redisFlag == 1){
-			logger.info("======================进来了");
 			List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
 			String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
 					.concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
