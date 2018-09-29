@@ -73,13 +73,6 @@ public class TalentpoolProfileMoveRecordDao extends DAOImpl<TalentpoolProfileMov
     }
 
     /**
-     * Fetch records that have <code>thirdparty_company_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveRecord> fetchByThirdpartyCompanyId(Integer... values) {
-        return fetch(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.THIRDPARTY_COMPANY_ID, values);
-    }
-
-    /**
      * Fetch records that have <code>crawl_type IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveRecord> fetchByCrawlType(Byte... values) {
