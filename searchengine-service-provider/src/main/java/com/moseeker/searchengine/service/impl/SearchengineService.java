@@ -848,6 +848,10 @@ public class SearchengineService {
                 data.add(jsonObject);
             }
             logger.info("==================================");
+            logger.info("fetchEmployees ======= "+searchRequestBuilder.toString());
+            logger.info("==================================");
+
+            logger.info("==================================");
             logger.info("total ======="+response.getHits().getTotalHits());
             logger.info("==================================");
             result.put("data", data);
