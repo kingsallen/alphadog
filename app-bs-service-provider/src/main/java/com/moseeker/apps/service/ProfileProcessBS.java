@@ -264,6 +264,8 @@ public class ProfileProcessBS {
                     preStateMap.put(stateInfo.getId(), stateInfo);
                 });
 
+                logger.info("processProfile stateMap:{}", JSON.toJSONString(preStateMap));
+
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
                 	List<HrAwardConfigTemplate> recruitProcesses=configSysPointsConfTplDao.findRecruitProcesses(companyId);
@@ -805,7 +807,9 @@ public class ProfileProcessBS {
      */
     private void publishStateChange(JobApplication jobApplication,
                                     Map<Integer, StateInfo> stateMap, DateTime operationTime) {
-        StateInfo stateInfo = stateMap.get(jobApplication.getId());
+        StateInfo stateInfo = stateMap.get((int)jobApplication.getId());
+        logger.info("publishStateChange stateMap:{}", JSON.toJSONString(stateMap));
+        logger.info("publishStateChange applicationId:{}, stateInfo:{}", jobApplication.getId(), JSON.toJSONString(stateInfo));
         byte move = 0;
         if (stateInfo.getRecruitOrder() != 13 && stateInfo.getPreRecruitOrder() < stateInfo.getRecruitOrder()) {
             move = 1;
