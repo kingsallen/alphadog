@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,6 +22,7 @@ import java.util.Map;
  */
 public class EmployeeBizTool {
 
+    private static Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      *  解析员工类型参数
      * @param defaultquery 查询工具
@@ -141,6 +144,7 @@ public class EmployeeBizTool {
         if (pageSize <= 0) {
             pageSize = 10;
         }
+        logger.info("addPagination pageNumber:{}, pageSize:{}, from:{}, size:{}", pageNumber, pageSize, (pageNumber-1)*pageSize, pageSize);
         searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
     }
 }
