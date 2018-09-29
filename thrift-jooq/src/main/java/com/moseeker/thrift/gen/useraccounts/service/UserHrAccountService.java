@@ -84,7 +84,7 @@ public class UserHrAccountService {
 
     public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String timespan, java.lang.String email_validate) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, int balanceType) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
     public java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO> employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId, int type) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -188,7 +188,7 @@ public class UserHrAccountService {
 
     public void employeeList(java.lang.String keword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String timespan, java.lang.String email_validate, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
 
-    public void getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
+    public void getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, int balanceType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException;
 
     public void employeeExport(java.util.List<java.lang.Integer> userEmployees, int companyId, int type, org.apache.thrift.async.AsyncMethodCallback<java.util.List<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO>> resultHandler) throws org.apache.thrift.TException;
 
@@ -1132,13 +1132,13 @@ public class UserHrAccountService {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "employeeList failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, int balanceType) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
-      send_getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate);
+      send_getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate, balanceType);
       return recv_getEmployees();
     }
 
-    public void send_getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate) throws org.apache.thrift.TException
+    public void send_getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, int balanceType) throws org.apache.thrift.TException
     {
       getEmployees_args args = new getEmployees_args();
       args.setKeyword(keyword);
@@ -1149,6 +1149,7 @@ public class UserHrAccountService {
       args.setPageNumber(pageNumber);
       args.setPageSize(pageSize);
       args.setEmail_validate(email_validate);
+      args.setBalanceType(balanceType);
       sendBase("getEmployees", args);
     }
 
@@ -2809,9 +2810,9 @@ public class UserHrAccountService {
       }
     }
 
-    public void getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
+    public void getEmployees(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, int balanceType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      getEmployees_call method_call = new getEmployees_call(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate, resultHandler, this, ___protocolFactory, ___transport);
+      getEmployees_call method_call = new getEmployees_call(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate, balanceType, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
@@ -2825,7 +2826,8 @@ public class UserHrAccountService {
       private int pageNumber;
       private int pageSize;
       private java.lang.String email_validate;
-      public getEmployees_call(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private int balanceType;
+      public getEmployees_call(java.lang.String keyword, int companyId, int filter, java.lang.String order, java.lang.String asc, int pageNumber, int pageSize, java.lang.String email_validate, int balanceType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.keyword = keyword;
         this.companyId = companyId;
@@ -2835,6 +2837,7 @@ public class UserHrAccountService {
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
         this.email_validate = email_validate;
+        this.balanceType = balanceType;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
@@ -2848,6 +2851,7 @@ public class UserHrAccountService {
         args.setPageNumber(pageNumber);
         args.setPageSize(pageSize);
         args.setEmail_validate(email_validate);
+        args.setBalanceType(balanceType);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -4284,7 +4288,7 @@ public class UserHrAccountService {
       public getEmployees_result getResult(I iface, getEmployees_args args) throws org.apache.thrift.TException {
         getEmployees_result result = new getEmployees_result();
         try {
-          result.success = iface.getEmployees(args.keyword, args.companyId, args.filter, args.order, args.asc, args.pageNumber, args.pageSize, args.email_validate);
+          result.success = iface.getEmployees(args.keyword, args.companyId, args.filter, args.order, args.asc, args.pageNumber, args.pageSize, args.email_validate, args.balanceType);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -6952,7 +6956,7 @@ public class UserHrAccountService {
       }
 
       public void start(I iface, getEmployees_args args, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO> resultHandler) throws org.apache.thrift.TException {
-        iface.getEmployees(args.keyword, args.companyId, args.filter, args.order, args.asc, args.pageNumber, args.pageSize, args.email_validate,resultHandler);
+        iface.getEmployees(args.keyword, args.companyId, args.filter, args.order, args.asc, args.pageNumber, args.pageSize, args.email_validate, args.balanceType,resultHandler);
       }
     }
 
@@ -39583,6 +39587,7 @@ public class UserHrAccountService {
     private static final org.apache.thrift.protocol.TField PAGE_NUMBER_FIELD_DESC = new org.apache.thrift.protocol.TField("pageNumber", org.apache.thrift.protocol.TType.I32, (short)6);
     private static final org.apache.thrift.protocol.TField PAGE_SIZE_FIELD_DESC = new org.apache.thrift.protocol.TField("pageSize", org.apache.thrift.protocol.TType.I32, (short)7);
     private static final org.apache.thrift.protocol.TField EMAIL_VALIDATE_FIELD_DESC = new org.apache.thrift.protocol.TField("email_validate", org.apache.thrift.protocol.TType.STRING, (short)8);
+    private static final org.apache.thrift.protocol.TField BALANCE_TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("balanceType", org.apache.thrift.protocol.TType.I32, (short)9);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getEmployees_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getEmployees_argsTupleSchemeFactory();
@@ -39595,6 +39600,7 @@ public class UserHrAccountService {
     public int pageNumber; // required
     public int pageSize; // required
     public java.lang.String email_validate; // required
+    public int balanceType; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -39605,7 +39611,8 @@ public class UserHrAccountService {
       ASC((short)5, "asc"),
       PAGE_NUMBER((short)6, "pageNumber"),
       PAGE_SIZE((short)7, "pageSize"),
-      EMAIL_VALIDATE((short)8, "email_validate");
+      EMAIL_VALIDATE((short)8, "email_validate"),
+      BALANCE_TYPE((short)9, "balanceType");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -39636,6 +39643,8 @@ public class UserHrAccountService {
             return PAGE_SIZE;
           case 8: // EMAIL_VALIDATE
             return EMAIL_VALIDATE;
+          case 9: // BALANCE_TYPE
+            return BALANCE_TYPE;
           default:
             return null;
         }
@@ -39680,6 +39689,7 @@ public class UserHrAccountService {
     private static final int __FILTER_ISSET_ID = 1;
     private static final int __PAGENUMBER_ISSET_ID = 2;
     private static final int __PAGESIZE_ISSET_ID = 3;
+    private static final int __BALANCETYPE_ISSET_ID = 4;
     private byte __isset_bitfield = 0;
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
@@ -39700,6 +39710,8 @@ public class UserHrAccountService {
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       tmpMap.put(_Fields.EMAIL_VALIDATE, new org.apache.thrift.meta_data.FieldMetaData("email_validate", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.BALANCE_TYPE, new org.apache.thrift.meta_data.FieldMetaData("balanceType", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
       org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(getEmployees_args.class, metaDataMap);
     }
@@ -39715,7 +39727,8 @@ public class UserHrAccountService {
       java.lang.String asc,
       int pageNumber,
       int pageSize,
-      java.lang.String email_validate)
+      java.lang.String email_validate,
+      int balanceType)
     {
       this();
       this.keyword = keyword;
@@ -39730,6 +39743,8 @@ public class UserHrAccountService {
       this.pageSize = pageSize;
       setPageSizeIsSet(true);
       this.email_validate = email_validate;
+      this.balanceType = balanceType;
+      setBalanceTypeIsSet(true);
     }
 
     /**
@@ -39753,6 +39768,7 @@ public class UserHrAccountService {
       if (other.isSetEmail_validate()) {
         this.email_validate = other.email_validate;
       }
+      this.balanceType = other.balanceType;
     }
 
     public getEmployees_args deepCopy() {
@@ -39773,6 +39789,8 @@ public class UserHrAccountService {
       setPageSizeIsSet(false);
       this.pageSize = 0;
       this.email_validate = null;
+      setBalanceTypeIsSet(false);
+      this.balanceType = 0;
     }
 
     public java.lang.String getKeyword() {
@@ -39963,6 +39981,29 @@ public class UserHrAccountService {
       }
     }
 
+    public int getBalanceType() {
+      return this.balanceType;
+    }
+
+    public getEmployees_args setBalanceType(int balanceType) {
+      this.balanceType = balanceType;
+      setBalanceTypeIsSet(true);
+      return this;
+    }
+
+    public void unsetBalanceType() {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __BALANCETYPE_ISSET_ID);
+    }
+
+    /** Returns true if field balanceType is set (has been assigned a value) and false otherwise */
+    public boolean isSetBalanceType() {
+      return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __BALANCETYPE_ISSET_ID);
+    }
+
+    public void setBalanceTypeIsSet(boolean value) {
+      __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __BALANCETYPE_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case KEYWORD:
@@ -40029,6 +40070,14 @@ public class UserHrAccountService {
         }
         break;
 
+      case BALANCE_TYPE:
+        if (value == null) {
+          unsetBalanceType();
+        } else {
+          setBalanceType((java.lang.Integer)value);
+        }
+        break;
+
       }
     }
 
@@ -40058,6 +40107,9 @@ public class UserHrAccountService {
       case EMAIL_VALIDATE:
         return getEmail_validate();
 
+      case BALANCE_TYPE:
+        return getBalanceType();
+
       }
       throw new java.lang.IllegalStateException();
     }
@@ -40085,6 +40137,8 @@ public class UserHrAccountService {
         return isSetPageSize();
       case EMAIL_VALIDATE:
         return isSetEmail_validate();
+      case BALANCE_TYPE:
+        return isSetBalanceType();
       }
       throw new java.lang.IllegalStateException();
     }
@@ -40176,6 +40230,15 @@ public class UserHrAccountService {
           return false;
       }
 
+      boolean this_present_balanceType = true;
+      boolean that_present_balanceType = true;
+      if (this_present_balanceType || that_present_balanceType) {
+        if (!(this_present_balanceType && that_present_balanceType))
+          return false;
+        if (this.balanceType != that.balanceType)
+          return false;
+      }
+
       return true;
     }
 
@@ -40206,6 +40269,8 @@ public class UserHrAccountService {
       hashCode = hashCode * 8191 + ((isSetEmail_validate()) ? 131071 : 524287);
       if (isSetEmail_validate())
         hashCode = hashCode * 8191 + email_validate.hashCode();
+
+      hashCode = hashCode * 8191 + balanceType;
 
       return hashCode;
     }
@@ -40298,6 +40363,16 @@ public class UserHrAccountService {
           return lastComparison;
         }
       }
+      lastComparison = java.lang.Boolean.valueOf(isSetBalanceType()).compareTo(other.isSetBalanceType());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetBalanceType()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.balanceType, other.balanceType);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       return 0;
     }
 
@@ -40364,6 +40439,10 @@ public class UserHrAccountService {
       } else {
         sb.append(this.email_validate);
       }
+      first = false;
+      if (!first) sb.append(", ");
+      sb.append("balanceType:");
+      sb.append(this.balanceType);
       first = false;
       sb.append(")");
       return sb.toString();
@@ -40474,6 +40553,14 @@ public class UserHrAccountService {
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
               break;
+            case 9: // BALANCE_TYPE
+              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                struct.balanceType = iprot.readI32();
+                struct.setBalanceTypeIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             default:
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
           }
@@ -40521,6 +40608,9 @@ public class UserHrAccountService {
           oprot.writeString(struct.email_validate);
           oprot.writeFieldEnd();
         }
+        oprot.writeFieldBegin(BALANCE_TYPE_FIELD_DESC);
+        oprot.writeI32(struct.balanceType);
+        oprot.writeFieldEnd();
         oprot.writeFieldStop();
         oprot.writeStructEnd();
       }
@@ -40563,7 +40653,10 @@ public class UserHrAccountService {
         if (struct.isSetEmail_validate()) {
           optionals.set(7);
         }
-        oprot.writeBitSet(optionals, 8);
+        if (struct.isSetBalanceType()) {
+          optionals.set(8);
+        }
+        oprot.writeBitSet(optionals, 9);
         if (struct.isSetKeyword()) {
           oprot.writeString(struct.keyword);
         }
@@ -40588,12 +40681,15 @@ public class UserHrAccountService {
         if (struct.isSetEmail_validate()) {
           oprot.writeString(struct.email_validate);
         }
+        if (struct.isSetBalanceType()) {
+          oprot.writeI32(struct.balanceType);
+        }
       }
 
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, getEmployees_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(8);
+        java.util.BitSet incoming = iprot.readBitSet(9);
         if (incoming.get(0)) {
           struct.keyword = iprot.readString();
           struct.setKeywordIsSet(true);
@@ -40625,6 +40721,10 @@ public class UserHrAccountService {
         if (incoming.get(7)) {
           struct.email_validate = iprot.readString();
           struct.setEmail_validateIsSet(true);
+        }
+        if (incoming.get(8)) {
+          struct.balanceType = iprot.readI32();
+          struct.setBalanceTypeIsSet(true);
         }
       }
     }

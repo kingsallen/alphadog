@@ -824,7 +824,7 @@ public class SearchengineService {
     }
 
     public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-                                   String emailValidate, int pageSize, int pageNumber) throws SearchEngineException {
+                                   String emailValidate, int pageSize, int pageNumber,int balanceType) throws SearchEngineException {
         TransportClient searchClient;
         try {
             searchClient = searchUtil.getEsClient();
@@ -836,6 +836,7 @@ public class SearchengineService {
             EmployeeBizTool.addFilter(query, filter, searchUtil);
             EmployeeBizTool.addKeywords(query, keywords, searchUtil);
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
+            EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
             SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
             EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
             EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);

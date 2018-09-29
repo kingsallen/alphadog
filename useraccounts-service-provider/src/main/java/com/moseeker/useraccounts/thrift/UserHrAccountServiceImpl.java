@@ -551,10 +551,10 @@ public class UserHrAccountServiceImpl implements Iface {
      */
     @Override
     public UserEmployeeVOPageVO getEmployees(String keyword, int companyId, int filter, String order, String asc,
-                                             int pageNumber, int pageSize, String email_validate)
+                                             int pageNumber, int pageSize, String email_validate,int balanceType)
             throws BIZException, TException {
         try {
-            return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate);
+            return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate,balanceType);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

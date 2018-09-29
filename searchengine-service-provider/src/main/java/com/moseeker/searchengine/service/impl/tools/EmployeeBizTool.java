@@ -146,4 +146,16 @@ public class EmployeeBizTool {
         }
         searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
     }
+
+    /**
+     * balanceType =2 返回员工奖金大于0的记录
+     * @param defaultquery
+     * @param balanceType
+     * @param searchUtil
+     */
+    public static void addBalanceTypeFilter(QueryBuilder defaultquery, Integer balanceType, SearchUtil searchUtil) {
+        if (balanceType !=null && balanceType == 2) {
+            searchUtil.hanleRange(0,defaultquery,"bonus");
+        }
+    }
 }
