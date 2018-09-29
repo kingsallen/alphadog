@@ -334,6 +334,18 @@ public class SearchengineServiceImpl implements Iface {
 	}
 
 	@Override
+	public Response mobotSearchPosition(Map<String, String> params) throws BIZException, TException {
+		try{
+			List<Map<String,Object>> list=service.mobotSearchPosition(params);
+			Response respose=ResponseUtils.success(list);
+			return respose;
+		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
 	public Response userQueryById(List<Integer> userIdlist) throws BIZException,TException {
 		try{
 			Map<String,Object> res=talentpoolSearchengine.getEsDataByUserIds(userIdlist);
