@@ -204,9 +204,9 @@ public class TemlateMsgHttp {
         }
     }
 
-    public void noticeEmployeeRererralBonus(int applicationId, long operationTIme) {
+    public void noticeEmployeeRererralBonus(int applicationId, long operationTIme, Integer nowStage) {
         JobApplication application = applicationDao.fetchOneById(applicationId);
-        if (application != null && application.getAppTplId() == BonusStage.Hired.getValue()) {
+        if (application != null && nowStage == BonusStage.Hired.getValue()) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
                 logger.info("noticeEmployeeRererralBonus 员工信息不存在！");

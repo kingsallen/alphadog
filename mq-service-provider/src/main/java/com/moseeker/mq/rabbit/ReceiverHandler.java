@@ -65,7 +65,8 @@ public class ReceiverHandler {
         try {
             String msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            temlateMsgHttp.noticeEmployeeRererralBonus(jsonObject.getInteger("applicaitonId"), jsonObject.getLong("operationTime"));
+            temlateMsgHttp.noticeEmployeeRererralBonus(jsonObject.getInteger("applicaitonId"),
+                    jsonObject.getLong("operationTime"), jsonObject.getInteger("nowStage"));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
