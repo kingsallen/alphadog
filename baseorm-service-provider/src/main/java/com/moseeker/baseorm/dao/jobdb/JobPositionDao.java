@@ -736,7 +736,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
      * @param idList 职位编号集合
      * @return 职位集合
      */
-    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchPositionTitle(List<Integer> idList) {
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchPosition(List<Integer> idList) {
 
         Result<JobPositionRecord> records = create
                 .selectFrom(JobPosition.JOB_POSITION)
