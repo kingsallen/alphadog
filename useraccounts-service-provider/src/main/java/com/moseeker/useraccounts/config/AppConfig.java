@@ -211,7 +211,7 @@ public class AppConfig {
     @Bean
     public List<Binding> bindBonus() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(clearUnViewdUpVoteQueue()).to(clearUnViewdUpVoteExchange())
+            add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
                     .with("application_state_change_routingkey.add_bonus"));
         }};
     }

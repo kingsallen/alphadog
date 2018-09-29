@@ -17,7 +17,6 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.*;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
@@ -59,6 +58,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -603,14 +602,15 @@ public class ProfileProcessBS {
                                     RecruitmentResult result, List<RewardsToBeAddBean> rewardsToBeAdd,
                                     Map<Integer, StateInfo> preStateMap)
             throws Exception {
+        DateTime dateTime = new DateTime();
         if (progressStatus == 13) {
             rewardsToBeAdd = this.Operation13(applications, rewardsToBeAdd,
-                    turnToCVCheckeds, preStateMap);
+                    turnToCVCheckeds, preStateMap, dateTime);
         } else if (progressStatus == 99) {
-            rewardsToBeAdd = this.Operation99(applications, rewardsToBeAdd, preStateMap);
+            rewardsToBeAdd = this.Operation99(applications, rewardsToBeAdd, preStateMap, dateTime);
         } else {
             rewardsToBeAdd = this.OperationOther(applications, rewardsToBeAdd,
-                    progressStatus, preStateMap);
+                    progressStatus, preStateMap, dateTime);
         }
         logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
         List<HrOperationRecordDO> lists = new ArrayList<>();
@@ -621,6 +621,7 @@ public class ProfileProcessBS {
             struct.setCompanyId(beans.getCompany_id());
             struct.setOperateTplId(beans.getOperate_tpl_id());
             struct.setAppId(beans.getApplication_id());
+            struct.setOptTime(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
             lists.add(struct);
         }
 		logger.info("ProfileProcessBS processProfile lists:{}", lists);
@@ -689,7 +690,7 @@ public class ProfileProcessBS {
     // 当 progress_status！=13&&progress_status！=99时的操作
     public List<RewardsToBeAddBean> OperationOther(
             List<ProcessValidationStruct> applications,
-            List<RewardsToBeAddBean> rewardsToBeAdd, int progressStatus, Map<Integer, StateInfo> stateMap)
+            List<RewardsToBeAddBean> rewardsToBeAdd, int progressStatus, Map<Integer, StateInfo> stateMap, DateTime dateTime)
             throws Exception {
         Query query=new Query.QueryBuilder().buildQuery();
         List<ConfigSysPointsConfTpl> list =configSysPointsConfTplDao.getDatas(query, ConfigSysPointsConfTpl.class);
@@ -709,7 +710,7 @@ public class ProfileProcessBS {
                     }
                 }
                 app.add(jobApplication);
-                publishStateChange(jobApplication, stateMap);
+                publishStateChange(jobApplication, stateMap, dateTime);
             }
             jobApplicationDao.updateRecords(convertDB(app));
             int operate_tpl_id = 0;
@@ -728,7 +729,7 @@ public class ProfileProcessBS {
     // 当 progress_status=99时的操作
     private List<RewardsToBeAddBean> Operation99(
             List<ProcessValidationStruct> applications,
-            List<RewardsToBeAddBean> rewardsToBeAdd, Map<Integer, StateInfo> stateMap) throws Exception {
+            List<RewardsToBeAddBean> rewardsToBeAdd, Map<Integer, StateInfo> stateMap, DateTime dateTime) throws Exception {
     	
 	    StringBuffer sb = new StringBuffer();
         sb.append("(");
@@ -760,7 +761,7 @@ public class ProfileProcessBS {
                 jobApplication.setNot_suitable(0);
                 jobApplication.setIs_viewed(0);
                 app.add(jobApplication);
-                publishStateChange(jobApplication, stateMap);
+                publishStateChange(jobApplication, stateMap, dateTime);
             }
             jobApplicationDao.updateRecords(convertDB(app));
         }
@@ -770,7 +771,7 @@ public class ProfileProcessBS {
     private List<RewardsToBeAddBean> Operation13(
             List<ProcessValidationStruct> applications,
             List<RewardsToBeAddBean> rewardsToBeAdd,
-            List<HrOperationRecordDO> turnToCVCheckeds, Map<Integer, StateInfo> stateMap) throws Exception {
+            List<HrOperationRecordDO> turnToCVCheckeds, Map<Integer, StateInfo> stateMap, DateTime operationTime) throws Exception {
         Query query=new Query.QueryBuilder().where("recruit_order", 13).buildQuery();
         ConfigSysPointsConfTpl config = configSysPointsConfTplDao.getData(query, ConfigSysPointsConfTpl.class);
         if (config!=null) {
@@ -785,7 +786,7 @@ public class ProfileProcessBS {
                 jobApplication.setIs_viewed(0);
                 jobApplication.setReward(struct.getReward());
                 list.add(jobApplication);
-                publishStateChange(jobApplication, stateMap);
+                publishStateChange(jobApplication, stateMap, operationTime);
             }
             jobApplicationDao.updateRecords(convertDB(list));
             for (RewardsToBeAddBean reward : rewardsToBeAdd) {
@@ -800,16 +801,17 @@ public class ProfileProcessBS {
      * 发布申请状态变更消息
      * @param jobApplication 申请数据
      * @param stateMap 申请状态相关数据
+     * @param operationTime 操作时间
      */
     private void publishStateChange(JobApplication jobApplication,
-                                    Map<Integer, StateInfo> stateMap) {
+                                    Map<Integer, StateInfo> stateMap, DateTime operationTime) {
         StateInfo stateInfo = stateMap.get(jobApplication.getId());
         byte move = 0;
         if (stateInfo.getRecruitOrder() != 13 && stateInfo.getPreRecruitOrder() < stateInfo.getRecruitOrder()) {
             move = 1;
         }
         applicaitonStateChangeSender.publishStateChangeEvent((int)jobApplication.getId(), stateInfo.getPreState(),
-                jobApplication.getApp_tpl_id(), stateInfo.getApplierId(), stateInfo.getPositionId(), move);
+                jobApplication.getApp_tpl_id(), stateInfo.getApplierId(), stateInfo.getPositionId(), move, operationTime);
     }
     /*
      * struct转化为db

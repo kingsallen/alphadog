@@ -105,4 +105,18 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 
 		return create.fetch(sb.toString()).into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord.class);
 	}
+
+    public com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord getCurentOperation(int applicationId) {
+		HrOperationRecordRecord recordRecord = create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.eq(Long.valueOf(applicationId)))
+				.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
+				.limit(1)
+				.fetchOne();
+		if (recordRecord != null) {
+			return recordRecord.into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord.class);
+		} else {
+			return null;
+		}
+
+    }
 }

@@ -5,7 +5,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
-import com.moseeker.common.constants.Constant;
+import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;

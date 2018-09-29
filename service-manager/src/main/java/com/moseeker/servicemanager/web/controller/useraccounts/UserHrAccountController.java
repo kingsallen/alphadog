@@ -876,9 +876,41 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employees", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/employees", method = RequestMethod.GET)
     @ResponseBody
     public String employeeList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String keyWord = params.getString("keyword", "");
+            int companyId = params.getInt("companyId", 0);
+            int filter = params.getInt("filter", 0);
+            String order = params.getString("order", "");
+            String asc = params.getString("asc", "");
+            String email_isvalid = params.getString("email_isvalid", "");
+            int pageNumber = params.getInt("pageNumber", 0);
+            int pageSize = params.getInt("pageSize", 0);
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
+                    order, asc, pageNumber, pageSize, email_isvalid);
+            return ResponseLogNotification.success(request,
+                    ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 员工列表
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employees", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmployees(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String keyWord = params.getString("keyword", "");
@@ -899,7 +931,6 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
 
     /**
      * 员工信息导出

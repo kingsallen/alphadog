@@ -363,7 +363,7 @@ public class ReferralEntity {
                     .map(JobApplicationRecord::getPositionId)
                     .collect(Collectors.toList());
             Future<List<JobPosition>> positionTitleFuture = threadPool
-                    .startTast(() -> positionDao.fetchPositionTitle(positionIdList));
+                    .startTast(() -> positionDao.fetchPosition(positionIdList));
 
             List<Integer> appIdList = applicationRecordList
                     .stream()

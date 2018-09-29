@@ -2,6 +2,7 @@ package com.moseeker.apps.service.biztools;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.Constant;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -32,8 +33,9 @@ public class ApplicaitonStateChangeSender {
      * @param applierId 申请人
      * @param positionId 职位编号
      * @param move 1表示向前操作；0表示向后操作
+     * @param operationTime 操作时间
      */
-    public void publishStateChangeEvent(int appId, int stage, int nextStage, int applierId, int positionId, byte move) {
+    public void publishStateChangeEvent(int appId, int stage, int nextStage, int applierId, int positionId, byte move, DateTime operationTime) {
 
         if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED) {
             JSONObject jsonObject = new JSONObject();
@@ -43,6 +45,7 @@ public class ApplicaitonStateChangeSender {
             jsonObject.put("applierId", applierId);
             jsonObject.put("positionId", positionId);
             jsonObject.put("move", move);
+            jsonObject.put("operationTime", operationTime.getMillis());
             amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                     APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());

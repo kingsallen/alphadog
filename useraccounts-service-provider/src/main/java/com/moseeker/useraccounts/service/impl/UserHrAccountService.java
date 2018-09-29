@@ -66,6 +66,8 @@ import com.moseeker.useraccounts.constant.HRAccountStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.EmployeeList;
+import com.moseeker.useraccounts.pojo.EmployeeRank;
+import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1052,14 +1054,175 @@ public class UserHrAccountService {
      *
      * @param keyword    关键字搜索
      * @param companyId  公司ID
-     * @param filter     过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
      * @param timespan   月，季，年
      * @param pageSize   每页的条数
      */
-    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan, String emailValidate) throws CommonException {
+    public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan,String emailValidate) throws CommonException {
+        UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
+        // 公司ID未设置
+        if (companyId == 0) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(HrCompany.HR_COMPANY.ID.getName(), companyId);
+        // 是否是子公司，如果是查询母公司ID
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getData(queryBuilder.buildQuery());
+        if (StringUtils.isEmptyObject(hrCompanyDO)) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+        List<Integer> list = employeeEntity.getCompanyIds(hrCompanyDO.getParentId() > 0 ? hrCompanyDO.getParentId() : companyId);
+        queryBuilder.clear();
+        Condition companyIdCon = new Condition(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), list, ValueOp.IN);
+        queryBuilder.where(companyIdCon).and(UserEmployee.USER_EMPLOYEE.DISABLE.getName(), 0);
+        // 取公司ID
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        // 如果有关键字，拼接关键字
+        if (!StringUtils.isNullOrEmpty(keyword)) {
+            getQueryBuilder(queryBuilder, keyword, companyId);
+        }
+        // 过滤条件
+        if (filter != 0) {
+            if (filter == 1) {
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
+            } else if (filter == 2) {
+                List<Integer> filters = new ArrayList<>();
+                filters.add(1);
+                filters.add(2);
+                filters.add(3);
+                filters.add(4);
+                filters.add(5);
+                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
+            }
+        }
+        if(StringUtils.isNotNullOrEmpty(emailValidate)){
+            queryBuilder.and(UserEmployee.USER_EMPLOYEE.EMAIL_ISVALID.getName(), Integer.parseInt(emailValidate));
+        }
+        // 排序条件
+        if (!StringUtils.isNullOrEmpty(order)) {
+            // 多个条件
+            if (order.indexOf(",") > -1 && asc.indexOf(",") > -1) {
+                String[] orders = order.split(",");
+                String[] ascs = asc.split(",");
+                // 排序条件设置错误
+                if (orders.length != ascs.length) {
+                    throw UserAccountException.ORDER_ERROR;
+                }
+                for (int i = 0; i < orders.length; i++) {
+                    // 首先判断排序的条件是否正确
+                    if (UserEmployee.USER_EMPLOYEE.field(orders[i]) != null) {
+                        if (Integer.valueOf(ascs[i]).intValue() == 1) {   //倒序
+                            queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), Order.DESC);
+                        } else if (Integer.valueOf(ascs[i]).intValue() == 0) {// 正序
+                            queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), Order.ASC);
+                        }
+                    }
+                }
+            } else {
+                // 首先判断排序的条件是否正确
+                if (UserEmployee.USER_EMPLOYEE.field(order) != null) {
+                    if (Integer.valueOf(asc).intValue() == 0) {  // 正序
+                        queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.ASC);
+                    } else if (Integer.valueOf(asc).intValue() == 1) { //倒序
+                        queryBuilder.orderBy(UserEmployee.USER_EMPLOYEE.field(order).getName(), Order.DESC);
+                    }
+                }
+            }
+
+        }
+
+        // 查询总条数
+        int counts = userEmployeeDao.getCount(queryBuilder.buildQuery());
+        if (counts == 0) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+
+        // 分页数据
+        if (pageNumber > 0 && pageSize > 0) {
+            // 取的数据超过了分页数，取最最后一页数据
+            if ((pageNumber * pageSize) > counts) {
+                queryBuilder.setPageSize(pageSize);
+                if ((counts % pageSize) == 0) {
+                    pageNumber = counts / pageSize;
+                } else {
+                    pageNumber = counts / pageSize + 1;
+                }
+                queryBuilder.setPageNum(pageNumber);
+            } else {
+                queryBuilder.setPageNum(pageNumber);
+                queryBuilder.setPageSize(pageSize);
+            }
+        }
+
+        // 不管ES中有没有数据，员工的分页数据用于一样
+        if (pageSize > 0) {
+            userEmployeeVOPageVO.setPageSize(pageSize);
+        }
+        if (pageNumber > 0) {
+            userEmployeeVOPageVO.setPageNumber(pageNumber);
+        }
+        userEmployeeVOPageVO.setTotalRow(counts);
+        // 员工列表，不需要取排行榜
+        if (StringUtils.isNullOrEmpty(timespan)) {
+            logger.info("timespan:{}", timespan);
+            userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
+            return userEmployeeVOPageVO;
+        }
+        // 员工列表，从ES中获取积分月，季，年榜单数据
+        Response response = null;
+        try {
+            response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber, keyword, filter);
+        } catch (Exception e) {
+            throw UserAccountException.SEARCH_ES_ERROR;
+        }
+        logger.info("ES date:{}", response.getData());
+        logger.info("ES date:{}", response.getStatus());
+        // ES取到数据
+        if (response != null && response.getStatus() == 0) {
+            logger.info("ES date:{}", response.getData());
+            EmployeeRankObj rankObj = JSONObject.parseObject(response.getData(), EmployeeRankObj.class);
+            List<EmployeeRank> employeeRankList = rankObj.getData();
+            if (employeeRankList != null && employeeRankList.size() > 0) {
+                logger.info("ES Data Size:{}", employeeRankList.size());
+                // 根据totalHits 条件命中条数重新设置分页信息
+                userEmployeeVOPageVO.setTotalRow(rankObj.getTotal());
+                // 封装查询条件
+                LinkedHashMap<Integer, Integer> employeeMap = new LinkedHashMap();
+                List<Integer> employeeIds = new ArrayList<>();
+                for (EmployeeRank employeeRank : employeeRankList) {
+                    employeeIds.add(employeeRank.getEmployeeId());
+                    employeeMap.put(employeeRank.getEmployeeId(), employeeRank.getAward());
+                }
+                queryBuilder.clear();
+                queryBuilder.where(new Condition(UserEmployee.USER_EMPLOYEE.ID.getName(), employeeIds, ValueOp.IN));
+                userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, employeeMap));
+            } else {
+                // ES没取到数据，从数据库中取数据，但是不设置任何积分
+                logger.info("ES ThirdPartyInfoData is empty!!!!");
+                userEmployeeVOPageVO.setData(employeeList(queryBuilder, 1, companyIds, null));
+            }
+        } else {
+            throw UserAccountException.SEARCH_ES_ERROR;
+        }
+        return userEmployeeVOPageVO;
+    }
+
+    /**
+     * 员工列表
+     *
+     * @param keyword    关键字搜索
+     * @param companyId  公司ID
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
+     * @param order      排序条件
+     * @param asc        正序，倒序 0: 正序,1:倒序 默认
+     * @param pageNumber 第几页
+     * @param pageSize   每页的条数
+     */
+    public UserEmployeeVOPageVO getEmployees(String keyword, Integer companyId, Integer filter, String order, String asc,
+                                             Integer pageNumber, Integer pageSize, String emailValidate) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1067,7 +1230,7 @@ public class UserHrAccountService {
         }
         // 取公司ID
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-        Response response = null;
+        Response response;
         try {
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate, pageSize, pageNumber);
         } catch (Exception e) {
@@ -1076,7 +1239,7 @@ public class UserHrAccountService {
         logger.info("ES date:{}", response.getData());
         logger.info("ES date:{}", response.getStatus());
         // ES取到数据
-        if (response != null && response.getStatus() == 0) {
+        if (response.getStatus() == 0) {
             logger.info("ES date:{}", response.getData());
             EmployeeList rankObj = JSONObject.parseObject(response.getData(), EmployeeList.class);
             List<UserEmployeeDO> employees = rankObj.getData();
