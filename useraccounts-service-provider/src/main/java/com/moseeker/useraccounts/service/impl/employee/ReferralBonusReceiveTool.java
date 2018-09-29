@@ -6,6 +6,7 @@ import com.moseeker.entity.EmployeeEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class ReferralBonusReceiveTool {
     private EmployeeEntity employeeEntity;
 
     @RabbitListener(queues = "#{addBonusQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
     public void  referralBonusReceive(Message message){
         String msgBody = "{}";
         try {

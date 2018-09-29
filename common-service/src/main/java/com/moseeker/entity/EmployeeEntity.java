@@ -1237,7 +1237,7 @@ public class EmployeeEntity {
                 //被推荐人ID
                 bonusVO.setBerecomId(jobApplicationDO.getApplierId());
                 bonusVO.setType(referralPositionBonusStageDetail.getStageType());
-                bonusVO.setBonus(new BigDecimal(bonusVO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
+                bonusVO.setBonus(new BigDecimal(bonusRecord.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
                 JobPositionDO jobPositionDO = positionMap.get(bonusVO.getPositionId());
                 if (jobPositionDO != null) {
                     // 职位名称
