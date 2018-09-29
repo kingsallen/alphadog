@@ -144,7 +144,6 @@ public class EmployeeBizTool {
         if (pageSize <= 0) {
             pageSize = 10;
         }
-        logger.info("addPagination pageNumber:{}, pageSize:{}, from:{}, size:{}", pageNumber, pageSize, (pageNumber-1)*pageSize, pageSize);
         searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
     }
 }

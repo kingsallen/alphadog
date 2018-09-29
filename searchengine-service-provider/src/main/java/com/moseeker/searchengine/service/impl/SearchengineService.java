@@ -838,7 +838,7 @@ public class SearchengineService {
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
             EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
-            EmployeeBizTool.addPagination(searchRequestBuilder, pageSize, pageNumber);
+            EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             result.put("total", response.getHits().getTotalHits());
