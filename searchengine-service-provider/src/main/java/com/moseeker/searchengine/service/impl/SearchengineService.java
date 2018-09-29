@@ -830,12 +830,13 @@ public class SearchengineService {
             searchClient = searchUtil.getEsClient();
 
             Map<String, Object> result = new HashMap<>();
-            QueryBuilder defaultQuery = QueryBuilders.matchAllQuery();
-            EmployeeBizTool.addCompanyIds(defaultQuery, companyIds, searchUtil);
-            EmployeeBizTool.addFilter(defaultQuery, filter, searchUtil);
-            EmployeeBizTool.addKeywords(defaultQuery, keywords, searchUtil);
-            EmployeeBizTool.addEmailValidate(defaultQuery, emailValidate, searchUtil);
-            SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(defaultQuery);
+            QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+            EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
+            EmployeeBizTool.addFilter(query, filter, searchUtil);
+            EmployeeBizTool.addKeywords(query, keywords, searchUtil);
+            EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
+            SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
             EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
             EmployeeBizTool.addPagination(searchRequestBuilder, pageSize, pageNumber);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
