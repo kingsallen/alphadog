@@ -412,7 +412,8 @@ struct HrNpsStatistic {
 
 struct UserEmployeeNumStatistic{
     1: optional i32 unregcount,
-    2: optional i32 regcount
+    2: optional i32 regcount,
+    3: optional i32 cancelcount 
 }
 
 struct UserEmployeeVO{
