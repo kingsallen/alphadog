@@ -1227,7 +1227,7 @@ public class UserHrAccountService {
      * @param pageSize   每页的条数
      */
     public UserEmployeeVOPageVO getEmployees(String keyword, Integer companyId, Integer filter, String order, String asc,
-                                             Integer pageNumber, Integer pageSize, String emailValidate) throws CommonException {
+                                             Integer pageNumber, Integer pageSize, String emailValidate,Integer balanceType) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1237,7 +1237,7 @@ public class UserHrAccountService {
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Response response;
         try {
-            response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate, pageSize, pageNumber);
+            response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate, pageSize, pageNumber,balanceType);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }
