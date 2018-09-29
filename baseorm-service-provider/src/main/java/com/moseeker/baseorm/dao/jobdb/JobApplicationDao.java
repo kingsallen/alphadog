@@ -19,6 +19,7 @@ import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
@@ -139,6 +140,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
      * @param record
      * @return
      */
+    @Transactional
 	public ApplicationSaveResultVO addIfNotExists(JobApplicationRecord record) {
 		// 为防止高并发下的重复申请，先在redis中检验是否申请过，如果没有再去执行sql语句
 		long redisFlag = checkRedisApplication(record);
