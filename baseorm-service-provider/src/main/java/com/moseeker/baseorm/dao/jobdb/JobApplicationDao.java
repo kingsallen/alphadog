@@ -7,15 +7,21 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -37,6 +43,9 @@ import static org.jooq.impl.DSL.*;
  */
 @Service
 public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplicationRecord> {
+
+	@Resource(name="cacheClient")
+	private RedisClient redisClient;
 
     public JobApplicationDao() {
         super(JobApplication.JOB_APPLICATION, JobApplicationDO.class);
@@ -131,19 +140,27 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
      * @param record
      * @return
      */
+    @Transactional
 	public ApplicationSaveResultVO addIfNotExists(JobApplicationRecord record) {
-        List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
-        String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
-                .concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
-                .concat(" from dual where not exists ( ")
-                .concat(" select id from jobdb.job_application where ")
-                .concat(JobApplication.JOB_APPLICATION.DISABLE.getName()).concat(" = 0 and ")
-                .concat(JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
-                .concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
-                .concat(" ) ");
-        logger.info("addIfNotExisits job_application sql: {}", insertSql);
+		// 为防止高并发下的重复申请，先在redis中检验是否申请过，如果没有再去执行sql语句
+		long redisFlag = checkRedisApplication(record);
+		int result = 0;
+		if(redisFlag == 1){
+			List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
+			String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
+					.concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
+					.concat(" from dual where not exists ( ")
+					.concat(" select id from jobdb.job_application where ")
+					.concat(JobApplication.JOB_APPLICATION.DISABLE.getName()).concat(" = 0 and ")
+					.concat(JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
+					.concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
+					.concat(" ) ");
+			logger.info("addIfNotExisits job_application sql: {}", insertSql);
+			result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
+		}
+
 		ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
-        int result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
+
         if (result == 0) {
             logger.info("用户:{}已申请过职位:{}, 无需重复投递", record.getApplierId(), record.getPositionId());
 			resultVO.setCreate(false);
@@ -180,6 +197,23 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 
         return resultVO;
     }
+
+    /**
+     * 为防止高并发下的重复申请，先在redis中检验是否申请过，如果没有再去执行sql语句
+     * @param  record 申请记录
+     * @author  cjm
+     * @date  2018/9/28
+     * @return  申请过返回0，没申请返回1
+     */
+	private long checkRedisApplication(JobApplicationRecord record) {
+		// 去库里查下，没有的话存入redis
+		com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication jobApplication = getByUserIdAndPositionId(record.getApplierId(), record.getPositionId());
+		if(jobApplication == null){
+			return redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+					record.getApplierId()+"", record.getPositionId()+"", "1");
+		}
+		return 0;
+	}
 
 	/**
 	 * 计算给定时间内的员工转发带来的投递次数
