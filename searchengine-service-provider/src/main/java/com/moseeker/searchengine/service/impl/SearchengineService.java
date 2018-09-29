@@ -51,6 +51,7 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
+import org.jboss.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1020,9 +1021,6 @@ public class SearchengineService {
         return res;
     }
 
-
-
-
      /*
       使用script的方式组装对application的查询
      */
@@ -1041,5 +1039,188 @@ public class SearchengineService {
 
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
+    }
+
+    @CounterIface
+    public List<Map<String,Object>> mobotSearchPosition(Map<String,String> params){
+        if(params==null||params.isEmpty()){
+            return new ArrayList<>();
+        }
+        TransportClient client = searchUtil.getEsClient();
+        List<String> list=this.getOrderFieldList();
+        List<Map<String,Object>> result=new ArrayList<>();
+        Map<String,String> newParams=this.getOtherParams(params);
+        handlerMobotSearch(list,params,result,client);
+        if(result==null||result.size()==0){
+            result=this.handlerMobotSearchShould(params,client);
+        }
+        return result;
+    }
+
+    /*
+     满足一个条件即可返回
+     */
+    private List<Map<String,Object>> handlerMobotSearchShould(Map<String,String> params,TransportClient client){
+        String companyId=params.get("company_id");
+        String occupation=params.get("occupation");
+        String title=params.get("title");
+        String citys=params.get("city");
+        String industry=params.get("industry");
+        String salary=params.get("salary");
+        String degree=params.get("degree");
+        String employeeType=params.get("employee_type");
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        searchUtil.handleMatch(companyId,query,"company_id");
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        if(StringUtils.isNotBlank(occupation)){
+            searchUtil.handleTermShould(occupation,keyand,"search_data.occupation");
+        }
+        if(StringUtils.isNotBlank(title)){
+            searchUtil.handleMatchParseShould(title,query,"title");
+        }
+        if(StringUtils.isNotBlank(citys)){
+            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(citys),"city",query);
+        }
+        if(StringUtils.isNotBlank(industry)){
+            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(industry),"industry",query);
+        }
+        if(StringUtils.isNotBlank(salary)){
+            QueryBuilder keyand1 = QueryBuilders.boolQuery();
+            searchUtil.handlerRangeLess(Integer.parseInt(salary),keyand1,"salary_top");
+            searchUtil.handlerRangeMore(Integer.parseInt(salary),keyand1,"salary_bottom");
+            ((BoolQueryBuilder) keyand).should(keyand1);
+        }
+        if(StringUtils.isNotBlank(degree)){
+            QueryBuilder builder= this.handlerMotBotDegree(degree);
+            ((BoolQueryBuilder) keyand).should(builder);
+        }
+        if(StringUtils.isNotBlank(employeeType)){
+            searchUtil.handleTermShould(employeeType,query,"employee_type");
+        }
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) query).must(keyand);
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
+                .setQuery(query)
+                .setSize(10)
+                .setTrackScores(true);
+        SearchResponse res=responseBuilder.execute().actionGet();
+        Map<String,Object> result=searchUtil.handleData(res,"positionList");
+        List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        return list;
+
+    }
+
+    private void handlerMobotSearch(List<String> fieldList,Map<String,String> params,List<Map<String,Object>> result,TransportClient client ){
+        if(fieldList.size()>0&&result.size()<10){
+            List<Integer> pidList=this.getPidList(result);
+            List<Map<String,Object>> data=this.mobotSearch(params,pidList,client);
+            result.addAll(data);
+            String field=fieldList.remove(-1);
+            params.remove(field);
+            handlerMobotSearch(fieldList, params, result,client );
+        }else{
+            if(result.size()>10){
+                result=result.subList(0,10);
+            }
+        }
+    }
+
+    private Map<String,String> getOtherParams(Map<String,String> params){
+        Map<String,String> newParams=new HashMap<>();
+        for(String key:params.keySet()){
+            newParams.put(key,params.get(key));
+        }
+        return newParams;
+    }
+
+    private List<Integer> getPidList(List<Map<String,Object>> result){
+        if(result!=null&&result.size()>0){
+            List<Integer> list=new ArrayList<>();
+            for(Map<String,Object> data:result){
+                int id= (int) data.get("id");
+                list.add(id);
+            }
+            return list;
+        }
+        return null;
+    }
+    /*
+     获取要处理或者查询的字段
+     */
+    private List<String> getOrderFieldList(){
+        List<String> list=new ArrayList<>();
+        list.add("title");
+        list.add("city");
+        list.add("industry");
+        list.add("salary");
+        list.add("degree");
+        list.add("employee_type");
+        list.add("occupation");
+        return list;
+    }
+    /*
+     处理查询，不做状态处理
+     */
+    private List<Map<String,Object>> mobotSearch( Map<String,String> params,List<Integer> pidList,TransportClient client){
+        String companyId=params.get("company_id");
+        String occupation=params.get("occupation");
+        String title=params.get("title");
+        String citys=params.get("city");
+        String industry=params.get("industry");
+        String salary=params.get("salary");
+        String degree=params.get("degree");
+        String employeeType=params.get("employee_type");
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        searchUtil.handleMatch(companyId,query,"company_id");
+        if(StringUtils.isNotBlank(occupation)){
+            searchUtil.handleTerm(occupation,query,"search_data.occupation");
+        }
+        if(StringUtils.isNotBlank(title)){
+            searchUtil.handleMatchParse(title,query,"title");
+        }
+        if(StringUtils.isNotBlank(citys)){
+            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(citys),"city",query);
+        }
+        if(StringUtils.isNotBlank(industry)){
+            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(industry),"industry",query);
+        }
+        if(StringUtils.isNotBlank(salary)){
+            searchUtil.handlerRangeLess(Integer.parseInt(salary),query,"salary_top");
+            searchUtil.handlerRangeMore(Integer.parseInt(salary),query,"salary_bottom");
+        }
+        if(StringUtils.isNotBlank(degree)){
+            QueryBuilder builder=this.handlerMotBotDegree(degree);
+            ((BoolQueryBuilder) query).should(builder);
+        }
+        if(StringUtils.isNotBlank(employeeType)){
+            searchUtil.handleTerm(employeeType,query,"employee_type");
+        }
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(pidList)){
+            searchUtil.handlerNotTerms(pidList,query,"id");
+        }
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
+                .setQuery(query)
+                .setSize(10)
+                .setTrackScores(true);
+        SearchResponse res=responseBuilder.execute().actionGet();
+        Map<String,Object> result=searchUtil.handleData(res,"positionList");
+        List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        return list;
+    }
+
+    private QueryBuilder  handlerMotBotDegree(String degree){
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+        QueryBuilder fullf = QueryBuilders.matchQuery("degree", degree);
+        ((BoolQueryBuilder) keyand).should(fullf);
+        QueryBuilder keyand1 = QueryBuilders.boolQuery();
+        QueryBuilder fullf1=QueryBuilders.rangeQuery("degree").lt(degree);
+        ((BoolQueryBuilder) keyand1).must(fullf1);
+        QueryBuilder fullf2=QueryBuilders.matchQuery("degree_above",1);
+        ((BoolQueryBuilder) keyand1).must(fullf2);
+        ((BoolQueryBuilder) keyand).should(keyand1);
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        return keyand;
     }
 }
