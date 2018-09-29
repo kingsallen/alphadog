@@ -22,7 +22,7 @@ import java.util.Map;
  */
 public class EmployeeBizTool {
 
-    private static Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(EmployeeBizTool.class);
     /**
      *  解析员工类型参数
      * @param defaultquery 查询工具
