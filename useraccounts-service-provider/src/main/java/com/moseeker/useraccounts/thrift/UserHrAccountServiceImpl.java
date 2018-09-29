@@ -518,7 +518,7 @@ public class UserHrAccountServiceImpl implements Iface {
      *
      * @param keyword    关键字搜索
      * @param companyId  公司ID
-     * @param filter     过滤条件，0：全部，1：已认证，2：未认证, 3：撤销认证默认：0
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证,默认：0
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
@@ -529,13 +529,35 @@ public class UserHrAccountServiceImpl implements Iface {
     public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan,String email_validate) throws BIZException, TException {
         try {
             return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan,email_validate);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw ExceptionUtils.convertException(e);
         }
 
+    }
+
+    /**
+     * 员工列表
+     * @param keyword 关键词
+     * @param companyId 公司编号
+     * @param filter 过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
+     * @param order 排序字段
+     * @param asc 升序降序
+     * @param pageNumber 页码
+     * @param pageSize 每页数量
+     * @param email_validate 邮箱认证条件
+     * @return 员工列表
+     * @throws BIZException 业务异常
+     * @throws TException rpc异常
+     */
+    @Override
+    public UserEmployeeVOPageVO getEmployees(String keyword, int companyId, int filter, String order, String asc,
+                                             int pageNumber, int pageSize, String email_validate)
+            throws BIZException, TException {
+        try {
+            return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     /**
