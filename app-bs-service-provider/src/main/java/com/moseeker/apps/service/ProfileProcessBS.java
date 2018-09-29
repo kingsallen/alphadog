@@ -807,7 +807,7 @@ public class ProfileProcessBS {
      */
     private void publishStateChange(JobApplication jobApplication,
                                     Map<Integer, StateInfo> stateMap, DateTime operationTime) {
-        StateInfo stateInfo = stateMap.get(jobApplication.getId());
+        StateInfo stateInfo = stateMap.get((int)jobApplication.getId());
         logger.info("publishStateChange stateMap:{}", JSON.toJSONString(stateMap));
         logger.info("publishStateChange applicationId:{}, stateInfo:{}", jobApplication.getId(), JSON.toJSONString(stateInfo));
         byte move = 0;
