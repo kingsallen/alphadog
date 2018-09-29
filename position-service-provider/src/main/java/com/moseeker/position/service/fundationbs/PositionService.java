@@ -1224,6 +1224,7 @@ public class PositionService {
                     .and("source", 9)
                     .and("source_id", sourceId)
                     .and("jobnumber", jobnumber)
+                    .and("status", PositionStatus.ACTIVED.getValue())
                     .buildQuery();
             jobPositionRecord = jobPositionDao.getRecord(queryUtil);
         } else {
