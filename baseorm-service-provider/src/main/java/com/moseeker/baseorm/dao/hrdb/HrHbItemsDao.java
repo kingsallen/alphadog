@@ -4,6 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
 import org.joda.time.DateTime;
 import org.jooq.Record;
@@ -20,10 +21,6 @@ import static org.jooq.impl.DSL.sum;
 @Repository
 public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
 
-    private static final Timestamp HB_START_TIME = new Timestamp(DateTime.parse("2018-07-01 00:00:00").getMillis());
-    private static List<Integer> receiveHB = new ArrayList<Integer>(){{add(100);add(101);}};
-    private static List<Integer> openCard = new ArrayList<Integer>(){{add(1);add(2);add(4);add(5);add(6);add(7);add(-1);}};
-
     public HrHbItemsDao() {
         super(HrHbItems.HR_HB_ITEMS, HrHbItemsDO.class);
     }
@@ -39,9 +36,9 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
                     .innerJoin(HrHbScratchCard.HR_HB_SCRATCH_CARD)
                     .on(HrHbItems.HR_HB_ITEMS.ID.eq(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID))
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
-                    .and((HrHbItems.HR_HB_ITEMS.STATUS.in(receiveHB))
-                            .or(HrHbItems.HR_HB_ITEMS.STATUS.in(openCard)
-                                    .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
+                    .and((HrHbItems.HR_HB_ITEMS.STATUS.in(Constant.receiveHB))
+                            .or(HrHbItems.HR_HB_ITEMS.STATUS.in(Constant.openCard)
+                                    .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(Constant.HB_START_TIME)))
                             )
                     )
                     .orderBy(HrHbScratchCard.HR_HB_SCRATCH_CARD.STATUS.asc(),
