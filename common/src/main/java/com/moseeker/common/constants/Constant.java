@@ -295,7 +295,8 @@ public final class Constant {
             "attachments.name;attachment.description;skills.name;imports.user_name;imports.data;imports.account_id;awards.name;languages.name;works.name;works.url;" +
             "works.description";
 
-    public static final Timestamp HB_START_TIME = new Timestamp(DateTime.parse("2018-07-01 00:00:00").getMillis());
+    public static final Timestamp HB_START_TIME = new Timestamp(DateTime.parse("2018-07-01").getMillis());
     public static List<Integer> receiveHB = new ArrayList<Integer>(){{add(100);add(101);}};
     public static List<Integer> openCard = new ArrayList<Integer>(){{add(1);add(2);add(4);add(5);add(6);add(7);add(-1);}};
+
 }
