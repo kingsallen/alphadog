@@ -1293,7 +1293,7 @@ public class UserHrAccountController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/v1/hr/application/notice/", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/hr/application/notice", method = RequestMethod.GET)
     @ResponseBody
     public String getApplicationNotice(HttpServletRequest request) {
         try {
@@ -1317,7 +1317,7 @@ public class UserHrAccountController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/v1/hr/application/notice/", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v1/hr/application/notice", method = RequestMethod.PUT)
     @ResponseBody
     public String putApplicationNotice(HttpServletRequest request) {
         try {
