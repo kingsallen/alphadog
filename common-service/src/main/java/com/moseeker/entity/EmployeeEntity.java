@@ -1101,7 +1101,7 @@ public class EmployeeEntity {
                 referralEmployeeBonusRecord.setClaim((byte)0);
                 referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                 referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
-                referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
+                referralEmployeeBonusRecordDao.insert(referralEmployeeBonusRecord);
             }
         }
 
