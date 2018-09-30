@@ -1123,7 +1123,7 @@ public class SearchengineService {
             if(data!=null&&data.size()>0){
                 result.addAll(data);
             }
-            String field=fieldList.remove(-1);
+            String field=fieldList.remove(fieldList.size()-1);
             params.remove(field);
             handlerMobotSearch(fieldList, params, result,client );
         }else{
