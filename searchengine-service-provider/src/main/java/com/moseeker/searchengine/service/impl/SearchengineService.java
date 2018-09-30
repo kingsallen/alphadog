@@ -1108,6 +1108,7 @@ public class SearchengineService {
                 .setQuery(query)
                 .setSize(10)
                 .setTrackScores(true);
+        logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
@@ -1208,6 +1209,7 @@ public class SearchengineService {
                 .setQuery(query)
                 .setSize(10)
                 .setTrackScores(true);
+        logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
