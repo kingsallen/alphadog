@@ -212,7 +212,7 @@ public class AppConfig {
     public List<Binding> bindBonus() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
-                    .with("application_state_change_routingkey.add_bonus"));
+                    .with("application_state_change_routingkey.change_state"));
         }};
     }
 }

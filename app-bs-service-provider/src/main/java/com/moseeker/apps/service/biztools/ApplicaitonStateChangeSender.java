@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class ApplicaitonStateChangeSender {
 
     private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
-    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.#";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

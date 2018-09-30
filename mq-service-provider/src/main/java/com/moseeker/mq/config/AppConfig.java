@@ -158,7 +158,7 @@ public class AppConfig {
             add(BindingBuilder.bind(sendTemplateQue()).to(templateExchange()).with("messagetemplate.#"));
             add(BindingBuilder.bind(personaRecomQue()).to(personaRecomExchange()).with("personarecom.#"));
             add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
-            add(BindingBuilder.bind(bonusNoticeQueue()).to(applicationStateChangeExchange()).with("application_state_change_routingkey.bonus_notice"));
+            add(BindingBuilder.bind(bonusNoticeQueue()).to(applicationStateChangeExchange()).with("application_state_change_routingkey.change_state"));
         }};
     }
 }
