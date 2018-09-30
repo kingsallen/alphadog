@@ -1061,10 +1061,10 @@ public class EmployeeEntity {
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         //现在节点奖金主数据
-        ReferralPositionBonusStageDetail nowStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionBonusIdAndStageType(positionId,nowStage);
+        ReferralPositionBonusStageDetail nowStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nowStage);
 
         //下个节点奖金主数据
-        ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionBonusIdAndStageType(positionId,nextStage);
+        ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
 
         Integer userId = jobApplication.getRecommenderUserId();
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
