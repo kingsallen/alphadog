@@ -27,9 +27,10 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
         super(table, talentPoolProfileMoveDetailDOClass);
     }
 
-    public TalentpoolProfileMoveDetailRecord getByMobile(long mobile) {
+    public TalentpoolProfileMoveDetailRecord getByHrIdAndMobile(int hrId, long mobile) {
         return create.selectFrom(TALENTPOOL_PROFILE_MOVE_DETAIL)
                 .where(TALENTPOOL_PROFILE_MOVE_DETAIL.MOBILE.eq(mobile))
+                .and(TALENTPOOL_PROFILE_MOVE_DETAIL.HR_ID.eq(hrId))
                 .fetchOne();
     }
 
