@@ -22,7 +22,9 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
@@ -144,6 +146,9 @@ public class EmployeeEntity {
 
     @Autowired
     JobApplicationDao applicationDao;
+
+    @Autowired
+    JobPositionDao jobPositionDao;
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
@@ -1060,6 +1065,12 @@ public class EmployeeEntity {
 
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
+        JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+
+        //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
+        if(jobPositionRecord == null || jobPositionRecord.getIsReferral() != 1) {
+            return;
+        }
         //现在节点奖金主数据
         ReferralPositionBonusStageDetail nowStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nowStage);
 
@@ -1079,7 +1090,6 @@ public class EmployeeEntity {
         logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {}",
                 applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus);
 
-        logger.info("nextStageDetail !=null && move == 1  {}",(nextStageDetail !=null && move == 1));
         //添加奖金
         if(nextStageDetail !=null && move == 1 ) {
             Integer stageBonus  = nextStageDetail.getStageBonus();
@@ -1112,7 +1122,6 @@ public class EmployeeEntity {
 
             }
         }
-        logger.info("move == 0 &&  nowStageDetail!=null  {}",(move == 0 &&  nowStageDetail!=null));
 
         //减少奖金
         if( move == 0 &&  nowStageDetail!=null) {
@@ -1121,10 +1130,6 @@ public class EmployeeEntity {
             //获取用户当前节点扣减的奖金,
             ReferralEmployeeBonusRecord recordMinus = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdMinus(employeeId, nowStageDetail.getId());
 
-            //如果有撤销节点奖金记录,不再重复扣减
-            if(recordMinus !=null) {
-                return;
-            }
             //如果有该节点发放奖金,复制一条，将奖金设为负存入DB
             if(recordPlus !=null) {
                 ReferralEmployeeBonusRecord newRecord = new ReferralEmployeeBonusRecord();
@@ -1300,5 +1305,6 @@ public class EmployeeEntity {
         }
         return bonusVOPageVO;
     }
+
 }
 
