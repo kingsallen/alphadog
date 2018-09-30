@@ -93,7 +93,7 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 	public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord> fetchLastOperationByAppIdListAndSate(
 			List<Integer> applicationIdList, int recruitStatus) {
 		StringBuffer sb = new StringBuffer();
-		sb.append(" select op.id, op.app_id, op.operate_tpl_id ");
+		sb.append(" select op.id, op.app_id, op.operate_tpl_id, op.opt_time ");
 		sb.append(" from (select operation.id, operation.app_id, operation.operate_tpl_id ");
 		sb.append(" from hrdb.hr_operation_record operation ");
 		sb.append(" where operation.app_id in ");
