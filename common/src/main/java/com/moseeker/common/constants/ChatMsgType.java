@@ -86,6 +86,18 @@ public enum ChatMsgType {
         public boolean vaildChat(ChatVO chatVO) {
             return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
+    },
+    POSITIONSELECT("positionSelect") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    INDUSTRYSELECT("industrySelect") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
     }
     ;
 
