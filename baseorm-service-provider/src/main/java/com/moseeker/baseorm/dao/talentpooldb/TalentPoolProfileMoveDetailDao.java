@@ -44,11 +44,13 @@ public class TalentPoolProfileMoveDetailDao extends JooqCrudImpl<TalentPoolProfi
      */
     public int addWhereExistStatus(TalentpoolProfileMoveDetailRecord record, byte value) {
         return create.insertInto(TALENTPOOL_PROFILE_MOVE_DETAIL,
+                TALENTPOOL_PROFILE_MOVE_DETAIL.HR_ID,
                 TALENTPOOL_PROFILE_MOVE_DETAIL.MOBILE,
                 TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID,
                 TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_STATUS)
                 .select(
                         select(
+                                value(record.getHrId()),
                                 value(record.getMobile()),
                                 value(record.getProfileMoveRecordId()),
                                 value(record.getProfileMoveStatus())
