@@ -1067,7 +1067,7 @@ public class EmployeeEntity {
 
         Integer userId = jobApplication.getRecommenderUserId();
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
-        Integer employeeId = Integer.valueOf(userEmployeeRecord.getEmployeeid());
+        Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
 
         LocalDateTime localDateTime = LocalDateTime.now();
