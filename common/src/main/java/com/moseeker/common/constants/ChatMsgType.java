@@ -98,6 +98,12 @@ public enum ChatMsgType {
         public boolean vaildChat(ChatVO chatVO) {
             return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
+    },
+    TEXTPLACEHOLDER("textPlaceholder") {
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
     }
     ;
 
