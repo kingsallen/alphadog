@@ -407,7 +407,7 @@ public class ProfileIntentionService {
                             toBeAddIntentionPosition.setPositionCode(legalRecord.getCode());
                             toBeAddIntentionPosition.setPositionName(legalRecord.getName());
                             toBeAddIntentionPosition.setProfileIntentionId(intentionId);
-                            break;
+//                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
@@ -425,8 +425,11 @@ public class ProfileIntentionService {
                             }
                             toBeAddIntentionPosition.setPositionName(entry.getKey());
                             toBeAddIntentionPosition.setProfileIntentionId(intentionId);
-                            break;
+//                            break;
                         }
+                    }
+                    if (toBeAddIntentionPosition != null) {
+                        intentionPositionDao.addRecord(toBeAddIntentionPosition);
                     }
                 }
             }
@@ -434,9 +437,7 @@ public class ProfileIntentionService {
                 intentionPositionDao.deleteRecords(selectedPositionRecords);
             }
         }
-        if (toBeAddIntentionPosition != null) {
-            intentionPositionDao.addRecord(toBeAddIntentionPosition);
-        }
+
 
     }
 
@@ -483,7 +484,7 @@ public class ProfileIntentionService {
                             toBeAddIntentionIndustry.setIndustryCode(legalRecord.getCode());
                             toBeAddIntentionIndustry.setIndustryName(legalRecord.getName());
                             toBeAddIntentionIndustry.setProfileIntentionId(intentionId);
-                            break;
+//                            break;
                         }
                     } else {
                         //如果没有key的情况下，只有name有值才有意义
@@ -501,8 +502,11 @@ public class ProfileIntentionService {
                             }
                             toBeAddIntentionIndustry.setIndustryName(entry.getKey());
                             toBeAddIntentionIndustry.setProfileIntentionId(intentionId);
-                            break;
+//                            break;
                         }
+                    }
+                    if (toBeAddIntentionIndustry != null) {
+                        intentionIndustryDao.addRecord(toBeAddIntentionIndustry);
                     }
                 }
             }
@@ -510,10 +514,6 @@ public class ProfileIntentionService {
                 intentionIndustryDao.deleteRecords(selectedIndustryRecords);
             }
         }
-        if (toBeAddIntentionIndustry != null) {
-            intentionIndustryDao.addRecord(toBeAddIntentionIndustry);
-        }
-
     }
 
     /**
