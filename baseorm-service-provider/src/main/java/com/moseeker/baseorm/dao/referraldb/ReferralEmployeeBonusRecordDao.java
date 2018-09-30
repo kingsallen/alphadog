@@ -36,10 +36,14 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
      */
     public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdPlus(Integer employeeId,Integer bonusStageDetailId) {
 
+        //排序
+        List<SortField<?>> fields = new ArrayList<>(2);
+        fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc());
+
         ReferralEmployeeBonusRecordRecord referralEmployeeBonusRecordRecord = using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
                 where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
                 .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId))
-                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS.gt(0))
+                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS.gt(0)).orderBy(fields).limit(1)
                 .fetchOne();
         if (referralEmployeeBonusRecordRecord != null) {
             return referralEmployeeBonusRecordRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord.class);
@@ -56,10 +60,14 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
      */
     public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdMinus(Integer employeeId,Integer bonusStageDetailId) {
 
+        //排序
+        List<SortField<?>> fields = new ArrayList<>(2);
+        fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc());
+
         ReferralEmployeeBonusRecordRecord referralEmployeeBonusRecordRecord = using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
                 where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
                 .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId))
-                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS.lt(0))
+                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS.lt(0)).orderBy(fields).limit(1)
                 .fetchOne();
         if (referralEmployeeBonusRecordRecord != null) {
             return referralEmployeeBonusRecordRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord.class);
