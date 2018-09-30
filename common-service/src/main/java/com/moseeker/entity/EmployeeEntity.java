@@ -1079,6 +1079,7 @@ public class EmployeeEntity {
         logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {}",
                 applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus);
 
+        logger.info("nextStageDetail !=null && move == 1  {}",(nextStageDetail !=null && move == 1));
         //添加奖金
         if(nextStageDetail !=null && move == 1 ) {
             Integer stageBonus  = nextStageDetail.getStageBonus();
@@ -1111,6 +1112,7 @@ public class EmployeeEntity {
 
             }
         }
+        logger.info("move == 0 &&  nowStageDetail!=null  {}",(move == 0 &&  nowStageDetail!=null));
 
         //减少奖金
         if( move == 0 &&  nowStageDetail!=null) {
