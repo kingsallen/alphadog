@@ -415,6 +415,7 @@ public class ReferralEntity {
                 List<HrOperationRecord> operationRecordList = hiredFuture.get();
                 if (operationRecordList != null && operationRecordList.size() > 0) {
                     operationRecordList.forEach(operation -> {
+                        logger.info("fetchBonusData operation.appId:{}, optTime:{}", operation.getAppId(), operation.getOptTime());
                         employmentDateMap.put(operation.getAppId().intValue(), operation.getOptTime().getTime());
                     });
                 }
