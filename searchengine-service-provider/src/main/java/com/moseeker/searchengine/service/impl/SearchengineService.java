@@ -1055,9 +1055,14 @@ public class SearchengineService {
         List<Map<String,Object>> result=new ArrayList<>();
         Map<String,String> newParams=this.getOtherParams(params);
         handlerMobotSearch(list,newParams,result,client);
+        logger.info("===========main1============");
+
+        logger.info(JSON.toJSONString(result));
         if(result==null||result.size()==0){
             result=this.handlerMobotSearchShould(params,client);
         }
+        logger.info("===========main2============");
+        logger.info(JSON.toJSONString(result));
         return result;
     }
 
@@ -1112,6 +1117,9 @@ public class SearchengineService {
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        logger.info("===========children1============");
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString(list));
         return list;
 
     }
@@ -1215,6 +1223,9 @@ public class SearchengineService {
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        logger.info("===========children2============");
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString(list));
         return list;
     }
 
