@@ -27,7 +27,9 @@ struct Bonus {
     4 : optional string positionTitle,
     5 : optional string candidateName,
     6 : optional i64 employmentDate,
-    7 : optional bool open
+    7 : optional bool open,
+    8 : optional i32 type,
+    9 : optional bool cancel,
 }
 
 struct BonusList {
