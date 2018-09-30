@@ -1066,8 +1066,9 @@ public class EmployeeEntity {
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+        logger.info("Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0) {} {}",Integer.valueOf(jobPositionRecord.getIsReferral()),(Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)));
         //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
-        if(jobPositionRecord == null || ! Integer.valueOf(jobPositionRecord.getIsReferral()).equals(1)) {
+        if(jobPositionRecord == null || Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)) {
             return;
         }
         //现在节点奖金主数据
