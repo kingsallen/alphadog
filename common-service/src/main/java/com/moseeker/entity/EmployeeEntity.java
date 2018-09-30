@@ -1126,15 +1126,13 @@ public class EmployeeEntity {
         //减少奖金
         if( move == 0 &&  nowStageDetail!=null) {
             //获取用户当前节点发放的奖金,
-            ReferralEmployeeBonusRecord recordPlus = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdPlus(employeeId, nowStageDetail.getId());
-            //获取用户当前节点扣减的奖金,
-            ReferralEmployeeBonusRecord recordMinus = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdMinus(employeeId, nowStageDetail.getId());
+            ReferralEmployeeBonusRecord recordGTZero = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdGTZero(employeeId, nowStageDetail.getId());
 
             //如果有该节点发放奖金,复制一条，将奖金设为负存入DB
-            if(recordPlus !=null) {
+            if(recordGTZero !=null) {
                 ReferralEmployeeBonusRecord newRecord = new ReferralEmployeeBonusRecord();
 
-                Integer stageBonus = recordPlus.getBonus()* -1;
+                Integer stageBonus = recordGTZero.getBonus()* -1;
                 Integer newBonus  =employeeBonus + stageBonus;
 
                 //更新员工总奖金
@@ -1145,10 +1143,10 @@ public class EmployeeEntity {
                 searchengineEntity.updateEmployeeBonus(Lists.newArrayList(employeeId),newBonus);
 
                 // 添加员工扣减奖金记录
-                newRecord.setBonusStageDetailId(recordPlus.getBonusStageDetailId());
-                newRecord.setBonus(recordPlus.getBonus() * -1);
-                newRecord.setEmployeeId(recordPlus.getEmployeeId());
-                newRecord.setApplicationId(recordPlus.getApplicationId());
+                newRecord.setBonusStageDetailId(recordGTZero.getBonusStageDetailId());
+                newRecord.setBonus(recordGTZero.getBonus() * -1);
+                newRecord.setEmployeeId(recordGTZero.getEmployeeId());
+                newRecord.setApplicationId(recordGTZero.getApplicationId());
                 newRecord.setClaim((byte)1);
                 newRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                 newRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
