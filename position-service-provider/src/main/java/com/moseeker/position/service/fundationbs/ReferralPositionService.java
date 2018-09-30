@@ -371,7 +371,7 @@ public class ReferralPositionService {
             referralPositionBonusDao.update(referralPositionBonus);
 
             for(ReferralPositionBonusStageDetailDO detailDO:detailDOS ) {
-                ReferralPositionBonusStageDetail referralPositionBonusStageDetail =  referralPositionBonusStageDetailDao.fetchByReferralPositionBonusIdAndStageType(referralPositionBonus.getId(),detailDO.getStage_type());
+                ReferralPositionBonusStageDetail referralPositionBonusStageDetail =  referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(referralPositionBonus.getId(),detailDO.getStage_type());
                 //新增节点奖金
                 if(referralPositionBonusStageDetail == null) {
                     ReferralPositionBonusStageDetail referralPositionBonusStageDetailRecord = new ReferralPositionBonusStageDetail();

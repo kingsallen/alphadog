@@ -1,6 +1,5 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import org.jooq.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +24,10 @@ public class ReferralPositionBonusStageDetailDao extends com.moseeker.baseorm.db
 
 
     public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail
-    fetchByReferralPositionBonusIdAndStageType(Integer referralPositionBonusId,Integer stageType) {
+    fetchByReferralPositionIdAndStageType(Integer positionId, Integer stageType) {
         ReferralPositionBonusStageDetailRecord referralPositionBonusStageDetailRecord = using(configuration())
                 .selectFrom(REFERRAL_POSITION_BONUS_STAGE_DETAIL)
-                .where(REFERRAL_POSITION_BONUS_STAGE_DETAIL.REFERRAL_POSITION_BONUS_ID.eq(referralPositionBonusId))
+                .where(REFERRAL_POSITION_BONUS_STAGE_DETAIL.POSITION_ID.eq(positionId))
                 .and(REFERRAL_POSITION_BONUS_STAGE_DETAIL.STAGE_TYPE.eq(stageType))
                 .fetchOne();
         if (referralPositionBonusStageDetailRecord != null) {

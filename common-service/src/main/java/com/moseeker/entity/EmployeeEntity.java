@@ -22,7 +22,9 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
@@ -49,6 +51,7 @@ import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -143,6 +146,9 @@ public class EmployeeEntity {
 
     @Autowired
     JobApplicationDao applicationDao;
+
+    @Autowired
+    JobPositionDao jobPositionDao;
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
@@ -1059,15 +1065,21 @@ public class EmployeeEntity {
 
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
+        JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+
+        //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
+        if(jobPositionRecord == null || jobPositionRecord.getIsReferral() != 1) {
+            return;
+        }
         //现在节点奖金主数据
-        ReferralPositionBonusStageDetail nowStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionBonusIdAndStageType(positionId,nowStage);
+        ReferralPositionBonusStageDetail nowStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nowStage);
 
         //下个节点奖金主数据
-        ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionBonusIdAndStageType(positionId,nextStage);
+        ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
 
         Integer userId = jobApplication.getRecommenderUserId();
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
-        Integer employeeId = Integer.valueOf(userEmployeeRecord.getEmployeeid());
+        Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
 
         LocalDateTime localDateTime = LocalDateTime.now();
@@ -1085,42 +1097,42 @@ public class EmployeeEntity {
             Integer newBonus  = employeeBonus + stageBonus;
 
             if(newBonus >=0) {
-                //更新员工总奖金
-                userEmployeeDO.setBonus(newBonus);
-                userEmployeeDO.setUpdateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
-                employeeDao.updateData(userEmployeeDO);
+                try{
+                    //更新员工总奖金
+                    userEmployeeDO.setBonus(newBonus);
+                    userEmployeeDO.setUpdateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+                    employeeDao.updateData(userEmployeeDO);
 
-                //ES更新员工总奖金
-                searchengineEntity.updateEmployeeBonus(Lists.newArrayList(employeeId),newBonus);
+                    //ES更新员工总奖金
+                    Response response  = searchengineEntity.updateEmployeeBonus(Lists.newArrayList(employeeId),newBonus);
+                    logger.info("addReferralBonus es response {}",JSON.toJSONString(response));
+                    // 添加员工发放奖金记录
+                    referralEmployeeBonusRecord.setBonusStageDetailId(nextStageDetail.getId());
+                    referralEmployeeBonusRecord.setBonus(stageBonus);
+                    referralEmployeeBonusRecord.setEmployeeId(employeeId);
+                    referralEmployeeBonusRecord.setApplicationId(applicationId);
+                    referralEmployeeBonusRecord.setClaim((byte)0);
+                    referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
+                    referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                    referralEmployeeBonusRecordDao.insert(referralEmployeeBonusRecord);
 
-                // 添加员工发放奖金记录
-                referralEmployeeBonusRecord.setBonusStageDetailId(nextStageDetail.getId());
-                referralEmployeeBonusRecord.setBonus(stageBonus);
-                referralEmployeeBonusRecord.setEmployeeId(employeeId);
-                referralEmployeeBonusRecord.setApplicationId(applicationId);
-                referralEmployeeBonusRecord.setClaim((byte)0);
-                referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
-                referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
-                referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
+                    }catch (Exception e) {
+                        logger.error(e.getClass().getName(),e);
+                    }
+
             }
         }
 
         //减少奖金
-        if( move == 0  ) {
+        if( move == 0 &&  nowStageDetail!=null) {
             //获取用户当前节点发放的奖金,
-            ReferralEmployeeBonusRecord recordPlus = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdPlus(employeeId, nowStageDetail.getId());
-            //获取用户当前节点扣减的奖金,
-            ReferralEmployeeBonusRecord recordMinus = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdMinus(employeeId, nowStageDetail.getId());
+            ReferralEmployeeBonusRecord recordGTZero = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdGTZero(employeeId, nowStageDetail.getId());
 
-            //如果有撤销节点奖金记录,不再重复扣减
-            if(recordMinus !=null) {
-                return;
-            }
             //如果有该节点发放奖金,复制一条，将奖金设为负存入DB
-            if(recordPlus !=null) {
+            if(recordGTZero !=null) {
                 ReferralEmployeeBonusRecord newRecord = new ReferralEmployeeBonusRecord();
 
-                Integer stageBonus = recordPlus.getBonus()* -1;
+                Integer stageBonus = recordGTZero.getBonus()* -1;
                 Integer newBonus  =employeeBonus + stageBonus;
 
                 //更新员工总奖金
@@ -1131,10 +1143,10 @@ public class EmployeeEntity {
                 searchengineEntity.updateEmployeeBonus(Lists.newArrayList(employeeId),newBonus);
 
                 // 添加员工扣减奖金记录
-                newRecord.setBonusStageDetailId(recordPlus.getBonusStageDetailId());
-                newRecord.setBonus(recordPlus.getBonus() * -1);
-                newRecord.setEmployeeId(recordPlus.getEmployeeId());
-                newRecord.setApplicationId(recordPlus.getApplicationId());
+                newRecord.setBonusStageDetailId(recordGTZero.getBonusStageDetailId());
+                newRecord.setBonus(recordGTZero.getBonus() * -1);
+                newRecord.setEmployeeId(recordGTZero.getEmployeeId());
+                newRecord.setApplicationId(recordGTZero.getApplicationId());
                 newRecord.setClaim((byte)1);
                 newRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                 newRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
@@ -1291,5 +1303,6 @@ public class EmployeeEntity {
         }
         return bonusVOPageVO;
     }
+
 }
 
