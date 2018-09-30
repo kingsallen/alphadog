@@ -1120,7 +1120,9 @@ public class SearchengineService {
         if(fieldList.size()>0&&result.size()<10){
             List<Integer> pidList=this.getPidList(result);
             List<Map<String,Object>> data=this.mobotSearch(params,pidList,client);
-            result.addAll(data);
+            if(data!=null&&data.size()>0){
+                result.addAll(data);
+            }
             String field=fieldList.remove(-1);
             params.remove(field);
             handlerMobotSearch(fieldList, params, result,client );
