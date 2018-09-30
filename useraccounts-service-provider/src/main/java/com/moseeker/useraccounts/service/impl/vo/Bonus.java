@@ -14,6 +14,8 @@ public class Bonus {
     private String candidateName;
     private long employmentDate;
     private boolean open;
+    private int type;
+    private boolean cancel;
 
     public int getId() {
         return id;
@@ -69,5 +71,22 @@ public class Bonus {
 
     public void setOpen(boolean open) {
         this.open = open;
+    }
+
+    public boolean isCancel() {
+        return cancel;
+    }
+
+    public void setCancel(boolean cancel) {
+        this.cancel = cancel;
+    }
+
+    public int getType() {
+
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

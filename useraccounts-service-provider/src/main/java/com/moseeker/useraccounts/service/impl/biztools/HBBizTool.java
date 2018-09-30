@@ -108,6 +108,12 @@ public class HBBizTool {
         if (bonusData.getEmploymentDateMap().get(referralEmployeeBonusRecord.getApplicationId()) != null) {
             bonus.setEmploymentDate(bonusData.getEmploymentDateMap().get(referralEmployeeBonusRecord.getApplicationId()));
         }
+        bonus.setType(3);
+        if (bonus.getValue() >= 0) {
+            bonus.setCancel(false);
+        } else {
+            bonus.setCancel(true);
+        }
         return bonus;
     }
 }
