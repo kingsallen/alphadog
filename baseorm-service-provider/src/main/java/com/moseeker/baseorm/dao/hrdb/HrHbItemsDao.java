@@ -84,7 +84,7 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
                     .from(HrHbItems.HR_HB_ITEMS)
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
                     .fetchOne();
-            if(bigDecimalRecord1 !=null) {
+            if(bigDecimalRecord1 !=null && bigDecimalRecord1.value1() !=null) {
                 return bigDecimalRecord1.value1().doubleValue();
             }
         } else {
