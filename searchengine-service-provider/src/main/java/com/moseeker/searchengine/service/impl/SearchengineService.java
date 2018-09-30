@@ -1054,7 +1054,7 @@ public class SearchengineService {
         List<String> list=this.getOrderFieldList();
         List<Map<String,Object>> result=new ArrayList<>();
         Map<String,String> newParams=this.getOtherParams(params);
-        handlerMobotSearch(list,params,result,client);
+        handlerMobotSearch(list,newParams,result,client);
         if(result==null||result.size()==0){
             result=this.handlerMobotSearchShould(params,client);
         }
@@ -1084,10 +1084,10 @@ public class SearchengineService {
             searchUtil.handleMatchParseShould(title,query,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(citys),"city",query);
+            searchUtil.shouldMatchParseQueryShould("city",citys,query);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(industry),"industry",query);
+            searchUtil.shouldMatchParseQueryShould("industry",industry,query);
         }
         if(StringUtils.isNotBlank(salary)){
             QueryBuilder keyand1 = QueryBuilders.boolQuery();
@@ -1188,10 +1188,10 @@ public class SearchengineService {
             searchUtil.handleMatchParse(title,query,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(citys),"city",query);
+            searchUtil.shouldMatchParseQuery("city",citys,query);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(industry),"industry",query);
+            searchUtil.shouldMatchParseQuery("industry",industry,query);
         }
         if(StringUtils.isNotBlank(salary)){
             searchUtil.handlerRangeLess(Integer.parseInt(salary),query,"salary_top");

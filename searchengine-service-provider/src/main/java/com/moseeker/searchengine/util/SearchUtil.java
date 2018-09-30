@@ -669,6 +669,31 @@ public class SearchUtil {
                 }
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).should(keyand);
+        }
+    }
+    public void shouldMatchParseQueryShould(String field,String condition ,QueryBuilder query){
+        if (StringUtils.isNotBlank(condition)) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).should(keyand);
+        }
+    }
+
+    public void shouldMatchParseQuery(String field,String condition ,QueryBuilder query){
+        if (StringUtils.isNotBlank(condition)) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
