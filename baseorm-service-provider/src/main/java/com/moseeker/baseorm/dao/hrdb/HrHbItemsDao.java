@@ -7,10 +7,12 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
 import org.joda.time.DateTime;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,14 +80,16 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
 
     public double sumRedPacketsByWxUserIdList(List<Integer> wxUserIdList) {
         if (wxUserIdList != null && wxUserIdList.size() > 0) {
-            return create.select(sum(HrHbItems.HR_HB_ITEMS.AMOUNT))
+            Record1<BigDecimal> bigDecimalRecord1 = create.select(sum(HrHbItems.HR_HB_ITEMS.AMOUNT))
                     .from(HrHbItems.HR_HB_ITEMS)
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
-                    .fetchOne()
-                    .value1()
-                    .doubleValue();
+                    .fetchOne();
+            if(bigDecimalRecord1 !=null) {
+                return bigDecimalRecord1.value1().doubleValue();
+            }
         } else {
             return 0;
         }
+        return 0;
     }
 }
