@@ -381,7 +381,7 @@ public class ReferralController {
         } else {
             return Result.validateFailed(validateResult).toJson();
         }
-    }
+    }/**/
 
     /**
      * HR端根据员工获取内推奖金明细
@@ -389,14 +389,14 @@ public class ReferralController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/v1/referral/hr/employee/bonus/detail", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/referral/hr/employee/{id}/bonus/detail", method = RequestMethod.GET)
     @ResponseBody
-    public String getEmployeeBonusDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String getEmployeeBonusDetail(HttpServletRequest request, HttpServletResponse response,@PathVariable Integer id) throws Exception {
         Params<String, Object> params = ParamUtils.parseRequestParam(request);
-        int employeeId = params.getInt("employeeId", 0);
-        int companyId = params.getInt("companyId", 0);
-        int pageNumber = params.getInt("pageNumber", 0);
-        int pageSize = params.getInt("pageSize", 0);
+        int employeeId = id;
+        int companyId = params.getInt("company_id", 0);
+        int pageNumber = params.getInt("page_number", 0);
+        int pageSize = params.getInt("page_size", 0);
         if (employeeId == 0) {
             return ResponseLogNotification.fail(request, "员工Id不能为空");
         } else {
