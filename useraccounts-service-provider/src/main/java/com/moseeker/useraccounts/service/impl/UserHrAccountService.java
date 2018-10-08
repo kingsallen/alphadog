@@ -927,13 +927,12 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 4
                                 || (Byte) map.get("activation") == 5) {
                             cancelCount+=(Integer) map.get("activation_count");
-//                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         } else if ((Byte) map.get("activation") == 3) {
                             userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
                 }
-                userEmployeeNumStatistic.setUnregcount(cancelCount);
+                userEmployeeNumStatistic.setCancelcount(cancelCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
