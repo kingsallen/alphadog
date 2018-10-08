@@ -265,19 +265,12 @@ public abstract class AbstractProfileMoveService implements IChannelType {
                 // 入库成功时，插入一条合并记录，状态为成功，如果之后chaos发送搬家状态失败，则将本次合并记录置为失败，这里做连表插入判断：exists
                 insertCombineRecord(mobile, profileMoveRecordRecord.getId(), hrId, state, 1);
             } else{
-                profileMoveDetailRecord.setUpdateTime(null);
                 if (profileMoveDetailRecord.getProfileMoveStatus() == ProfileMoveStateEnum.SUCCESS.getValue()) {
                     // 如果是以前搬成功的简历，搬家简历数 + 1，由于可能多处修改这里，加乐观锁
                     currentCrawlNum = currentCrawlNum + 1;
-                    updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
-                } else {
-                    // 如果上次搬失败了，本次搬的简历在上次已经计算在内，此次搬家简历数不+1，这次将其操作id和状态都修改掉
-                    boolean isSameCompany = checkSameCompany(profileMoveDetailRecord.getProfileMoveRecordId(), companyId);
-                    if (!isSameCompany) {
-                        currentCrawlNum = currentCrawlNum + 1;
-                    }
-                    updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
                 }
+                // 如果上次搬失败了，本次搬的简历在上次已经计算在内，此次搬家简历数不+1，这次将其操作id和状态都修改掉
+                updateProfileDetail(profileMoveDetailRecord, profileMoveRecordRecord.getId(), (byte)state, 1);
             }
             profileMoveRecordRecord.setCurrentEmailNum(currentEmailNum);
             updateProfileMoveRecord(profileMoveRecordRecord, currentCrawlNum, 1);
@@ -341,7 +334,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         Date startDate = new Date();
         try {
             if(successMoveId == 0){
-                logger.info("firstTime:{}", firstTime);
                 startDate = new Date(System.currentTimeMillis() - firstTime);
             } else {
                 for (TalentPoolProfileMoveDO profileMoveDO : profileMoveDOS) {
@@ -432,22 +424,12 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         int row = profileMoveDetailDao.updateWhereExist(profileMoveDetailRecord, profileMoveRecordId, state);
         if (row == 0) {
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
+            logger.info("================重试开始retryTimes:{}", retryTimes);
+            logger.info("========profileMoveDetailRecord:{}", profileMoveDetailRecord);
+            logger.info("========recordRecord:{}", recordRecord);
+            logger.info("========profileMoveRecordId:{}, state:{}, retryTimes:{}", profileMoveRecordId, state, retryTimes);
             updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
         }
-    }
-
-    private boolean checkSameCompany(Integer profileMoveId, int companyId) {
-        TalentpoolProfileMoveRecordRecord profileMoveRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveId);
-        if (profileMoveRecord == null) {
-            return false;
-        }
-        TalentpoolProfileMoveRecord profileMove = profileMoveDao.fetchRecordById(profileMoveRecord.getProfileMoveId());
-        if (profileMove == null) {
-            return false;
-        }
-        int hrId = profileMove.getHrId();
-        HrCompanyDO hrCompanyDO = hrCompanyAccountDao.getHrCompany(hrId);
-        return hrCompanyDO != null && hrCompanyDO.getId() == companyId;
     }
 
     /**
