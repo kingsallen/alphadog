@@ -5,9 +5,12 @@ import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
@@ -26,7 +29,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -72,16 +77,11 @@ public class ReferralServiceImpl implements ReferralService {
             //计算红包总额
             redPackets.setTotalRedpackets(itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList));
 
-            int index = (pageNum - 1) * pageSize;
-            if (index < 0) {
-                index = 0;
-            }
-            if (pageSize <= 0) {
-                pageSize = 10;
-            }
+            PageUtil pageUtil = new PageUtil(pageNum, pageSize);
+
             int count = itemsDao.countByWxUserIdList(wxUserIdList);
             redPackets.setTotalRedpackets(count);
-            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, index, pageSize);
+            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
                 HBData data = referralEntity.fetchHBData(itemsRecords);
@@ -108,8 +108,10 @@ public class ReferralServiceImpl implements ReferralService {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             bonusList.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
 
+            PageUtil pageUtil = new PageUtil(pageNum, pageSize);
+
             List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList
-                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId(),pageNum,pageSize);
+                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId(), pageUtil.getIndex(), pageUtil.getSize());
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
