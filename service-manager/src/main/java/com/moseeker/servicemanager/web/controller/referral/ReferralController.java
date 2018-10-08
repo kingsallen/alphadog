@@ -396,7 +396,7 @@ public class ReferralController {
         int employeeId = id;
         int companyId = params.getInt("company_id", 0);
         int pageNumber = params.getInt("page_number", 0);
-        int pageSize = params.getInt("page_/**/size", 0);
+        int pageSize = params.getInt("page_size", 0);
         if (employeeId == 0) {
             return ResponseLogNotification.fail(request, "员工Id不能为空");
         } else {
