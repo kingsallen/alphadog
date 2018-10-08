@@ -44,6 +44,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
@@ -211,7 +212,7 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @author cjm
      * @date 2018/7/18
      */
-    @Transactional(rollbackFor = Exception.class)
+//    @Transactional(rollbackFor = Exception.class)
     public Response profileMove(String profile, int operationId, int currentEmailNum) throws TException, InterruptedException, ExecutionException, TimeoutException {
 
         logger.info("profile:{}, operationId:{}, currentEmailNum:{}", profile, operationId, currentEmailNum);
@@ -414,7 +415,8 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         return ResponseUtils.success(resultList);
     }
 
-    private void updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte state, int retryTimes) throws BIZException {
+//    @Transactional(propagation = Propagation.REQUIRES_NEW, rollbackFor = Exception.class)
+    public void updateProfileDetail(TalentpoolProfileMoveDetailRecord profileMoveDetailRecord, int profileMoveRecordId, byte state, int retryTimes) throws BIZException {
         byte status = (state == ProfileMoveStateEnum.MOVING.getValue() ? ProfileMoveStateEnum.SUCCESS.getValue() : state);
         profileMoveDetailRecord.setProfileMoveStatus(status);
         if (retryTimes > TRY_TIMES) {

@@ -66,8 +66,8 @@ public class ReceiverHandler {
             String msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             log.info("bonusNotice jsonObject:{}", jsonObject);
-            temlateMsgHttp.noticeEmployeeRererralBonus(jsonObject.getInteger("applicationId"),
-                    jsonObject.getLong("operationTime"), jsonObject.getInteger("nowStage"));
+            temlateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
+                    jsonObject.getLong("operationTime"), jsonObject.getInteger("nextStage"));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
