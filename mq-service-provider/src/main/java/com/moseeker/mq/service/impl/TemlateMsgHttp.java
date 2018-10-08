@@ -222,7 +222,7 @@ public class TemlateMsgHttp {
         if (application != null && nowStage == BonusStage.Hired.getValue()) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
-                logger.info("noticeEmployeeRererralBonus 员工信息不存在！");
+                logger.info("noticeEmployeeReferralBonus 员工信息不存在！");
                 return;
             }
             ReferralLog referralLog = referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeDO.getId(),
