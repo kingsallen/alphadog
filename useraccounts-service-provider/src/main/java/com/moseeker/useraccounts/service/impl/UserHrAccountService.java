@@ -928,6 +928,7 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 5) {
                             cancelCount+=(Integer) map.get("activation_count");
                         } else if ((Byte) map.get("activation") == 3) {
+                            logger.info("getListNum ");
                             userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
@@ -938,6 +939,7 @@ public class UserHrAccountService {
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getListNum userEmployeeNumStatistic:{}", JSON.toJSONString(userEmployeeNumStatistic));
         return userEmployeeNumStatistic;
     }
 
