@@ -1134,7 +1134,7 @@ public class SearchengineService {
         }
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
-        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query)
                 .setSize(10)
                 .setTrackScores(true);
@@ -1240,7 +1240,7 @@ public class SearchengineService {
         if(!com.moseeker.common.util.StringUtils.isEmptyList(pidList)){
             searchUtil.handlerNotTerms(pidList,query,"id");
         }
-        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query)
                 .setSize(10)
                 .setTrackScores(true);
