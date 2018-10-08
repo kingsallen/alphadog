@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusReco
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
@@ -76,16 +77,11 @@ public class ReferralServiceImpl implements ReferralService {
             //计算红包总额
             redPackets.setTotalRedpackets(itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList));
 
-            int index = (pageNum - 1) * pageSize;
-            if (index < 0) {
-                index = 0;
-            }
-            if (pageSize <= 0) {
-                pageSize = 10;
-            }
+            PageUtil pageUtil = new PageUtil(pageNum, pageSize);
+
             int count = itemsDao.countByWxUserIdList(wxUserIdList);
             redPackets.setTotalRedpackets(count);
-            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, index, pageSize);
+            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
                 HBData data = referralEntity.fetchHBData(itemsRecords);
@@ -112,11 +108,10 @@ public class ReferralServiceImpl implements ReferralService {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             bonusList.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
 
-            int size = pageSize < 1 ? Constant.PAGE_SIZE:pageSize;
-            int index = ((pageNum < 1 ? 1: pageNum)-1) * size;
+            PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
             List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList
-                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId(), index, size);
+                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId(), pageUtil.getIndex(), pageUtil.getSize());
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
