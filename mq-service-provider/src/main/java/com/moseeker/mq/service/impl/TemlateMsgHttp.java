@@ -219,6 +219,7 @@ public class TemlateMsgHttp {
         JobApplication application = applicationDao.fetchOneById(applicationId);
         logger.info("TemplateMsgHttp noticeEmployeeRererralBonus application:{}", application);
 
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus BonusStage.Hired:{}, result:{}", BonusStage.Hired.getValue(), nowStage == BonusStage.Hired.getValue());
         if (application != null && nowStage == BonusStage.Hired.getValue()) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
