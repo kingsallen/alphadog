@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
@@ -163,6 +164,8 @@ public class PositionService {
     @Autowired
     LiePinReceiverHandler receiverHandler;
 
+    @Autowired
+    ReferralPositionBonusDao referralPositionBonusDao;
 
 
     private ThreadPool pool = ThreadPool.Instance;
@@ -1955,6 +1958,9 @@ public class PositionService {
             hrTeamMap.put(hrTeamDO.getId(), hrTeamDO);
         }
 
+        // 获取职位的内推奖金
+        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(jdIdList);
+
         //拼装 company 和 publisher 相关内容
         dataList = dataList.stream().map(s -> {
             s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
@@ -1968,7 +1974,10 @@ public class PositionService {
                 s.setDepartment(hrTeamMap.get(s.getTeam_id()) == null ? "" : hrTeamMap.get(s.getTeam_id()).getName());
             }
 
-
+            //添加内推奖金信息
+            if(refBonusMap !=null) {
+                s.setTotal_bonus(refBonusMap.get(s.getId()) == null? null:(refBonusMap.get(s.getId()).getPosition_bonus()).getTotal_bonus());
+            }
             return s;
         }).collect(Collectors.toList());
 
@@ -2706,6 +2715,13 @@ public class PositionService {
             // do nothing
         }
         return dataList;
+    }
+
+    private List<ReferralPositionBonusVO> getReferralBonusVO(List<Integer> pid) {
+
+
+
+        return null;
     }
 
 }

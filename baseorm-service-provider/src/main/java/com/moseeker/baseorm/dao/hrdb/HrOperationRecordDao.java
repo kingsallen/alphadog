@@ -73,24 +73,6 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 
 		operationrecordDOList = create.fetch(sb.toString()).into(HrOperationRecordDO.class);
 
-		/*TableLike<?> e = create.select(HrOperationRecord.HR_OPERATION_RECORD.ID, HrOperationRecord.HR_OPERATION_RECORD.APP_ID,
-				HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID).from(HrOperationRecord.HR_OPERATION_RECORD)
-				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(appidSet))
-				.and(HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.notEqual(Constant.RECRUIT_STATUS_REJECT))
-				.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc());
-
-		HrOperationRecord.HR_OPERATION_RECORD.as("s");
-		Field<Integer> ID = HrOperationRecord.HR_OPERATION_RECORD.ID.as("id");
-		Field<Long> APP_ID = HrOperationRecord.HR_OPERATION_RECORD.APP_ID.as("app_id");
-		Field<Integer> OPERATE_TPL_ID = HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID.as("operate_tpl_id");
-
-
-		operationrecordDOList = create.select(ID, APP_ID, OPERATE_TPL_ID)
-				.from(e)
-				.where(e.field(OPERATE_TPL_ID).notEqual(Constant.RECRUIT_STATUS_REJECT))
-				.groupBy(HrOperationRecord.HR_OPERATION_RECORD.APP_ID)
-				.fetch().into(HrOperationRecordDO.class);*/
-
 		return operationrecordDOList;
 	}
 
@@ -106,5 +88,35 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 				.returning()
 				.fetchOne();
 		return recordRecord != null ? recordRecord.getId():0;
+    }
+
+	public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord> fetchLastOperationByAppIdListAndSate(
+			List<Integer> applicationIdList, int recruitStatus) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(" select op.id, op.app_id, op.operate_tpl_id, op.opt_time ");
+		sb.append(" from (select operation.id, operation.app_id, operation.operate_tpl_id ");
+		sb.append(" from hrdb.hr_operation_record operation ");
+		sb.append(" where operation.app_id in ");
+		sb.append(StringUtils.converToStr(applicationIdList));
+		sb.append(" and operation.operate_tpl_id = ");
+		sb.append(recruitStatus);
+		sb.append(" order by operation.opt_time desc) as op ");
+		sb.append(" group by op.app_id");
+
+		return create.fetch(sb.toString()).into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord.class);
+	}
+
+    public com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord getCurentOperation(int applicationId) {
+		HrOperationRecordRecord recordRecord = create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.eq(Long.valueOf(applicationId)))
+				.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
+				.limit(1)
+				.fetchOne();
+		if (recordRecord != null) {
+			return recordRecord.into(com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord.class);
+		} else {
+			return null;
+		}
+
     }
 }

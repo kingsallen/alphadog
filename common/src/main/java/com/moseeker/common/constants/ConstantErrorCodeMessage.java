@@ -218,6 +218,7 @@ public final class ConstantErrorCodeMessage {
 
     //APPBS错误代码61000
 
+    //searchengine 100001
 
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";

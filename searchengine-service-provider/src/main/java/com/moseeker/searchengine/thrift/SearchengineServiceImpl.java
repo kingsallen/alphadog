@@ -54,7 +54,6 @@ public class SearchengineServiceImpl implements Iface {
 			return service.query(keywords, cities, industries, occupations, scale, employment_type, candidate_source,
 					experience, degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
 		}catch (Exception e){
-			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -64,7 +63,6 @@ public class SearchengineServiceImpl implements Iface {
 		try {
 			return service.updateposition(position, id);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -80,7 +78,6 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
 
@@ -100,7 +97,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -111,7 +108,7 @@ public class SearchengineServiceImpl implements Iface {
 		try {
 			return service.queryAwardRanking(employeeIds, timespan, pageSize, pageNum, keyword, filter);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
     }
@@ -121,10 +118,20 @@ public class SearchengineServiceImpl implements Iface {
 		try {
 			return service.queryAwardRankingInWx(companyIds, timespan, employeeId);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
     }
+
+	@Override
+	public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
+								   String emailValidate, int pageSize, int pageNumber,int balanceType) throws BIZException, TException {
+		try {
+			return service.fetchEmployees(companyIds, keywords, filter, order, asc, emailValidate, pageSize, pageNumber,balanceType);
+		}catch(Exception e){
+			throw ExceptionUtils.convertException(e);
+		}
+	}
 
 	@Override
 	public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum,
@@ -132,7 +139,7 @@ public class SearchengineServiceImpl implements Iface {
 		try {
 			return service.listLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -147,7 +154,7 @@ public class SearchengineServiceImpl implements Iface {
 		try {
 			return service.updateEmployeeAwards(employeeIds);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
     }
@@ -157,7 +164,7 @@ public class SearchengineServiceImpl implements Iface {
 		try {
 			return service.deleteEmployeeDO(employeeIds);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
     }
@@ -174,7 +181,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -188,7 +195,7 @@ public class SearchengineServiceImpl implements Iface {
             }
             return ResponseUtils.success(res);
         }catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
         }
     }
@@ -203,7 +210,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -217,7 +224,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -228,7 +235,7 @@ public class SearchengineServiceImpl implements Iface {
 			return service.queryPositionIndex(keywords, cities, industries, occupations, scale, employment_type, candidate_source, experience,
 					degree, salary, company_name, page_from, page_size, child_company_name, department, order_by_priority, custom);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -242,7 +249,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -256,7 +263,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return res;
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);		}
 	}
 
@@ -266,7 +273,7 @@ public class SearchengineServiceImpl implements Iface {
 			int result=talentpoolSearchengine.getUserListByCompanyTagCount(params);
 			return result;
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -281,7 +288,7 @@ public class SearchengineServiceImpl implements Iface {
             }
             return ResponseUtils.success(res);
         }catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
         }
     }
@@ -291,7 +298,7 @@ public class SearchengineServiceImpl implements Iface {
 		try{
 			return talentpoolSearchengine.getTalentUserList(params);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -305,7 +312,7 @@ public class SearchengineServiceImpl implements Iface {
 			Response respose=ResponseUtils.successWithoutStringify(res);
 			return respose;
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -328,7 +335,7 @@ public class SearchengineServiceImpl implements Iface {
 			Response respose=ResponseUtils.successWithoutStringify(res);
 			return respose;
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -354,7 +361,7 @@ public class SearchengineServiceImpl implements Iface {
 			}
 			return ResponseUtils.success(res);
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
@@ -365,7 +372,7 @@ public class SearchengineServiceImpl implements Iface {
 			int res=talentpoolSearchengine.talentSearchNum(params);
 			return res;
 		}catch(Exception e){
-			logger.error(e.getMessage(),e);
+
 			throw ExceptionUtils.convertException(e);
 		}
 	}
