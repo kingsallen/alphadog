@@ -211,7 +211,6 @@ public abstract class AbstractProfileMoveService implements IChannelType {
      * @author cjm
      * @date 2018/7/18
      */
-    @Transactional(rollbackFor = Exception.class)
     public Response profileMove(String profile, int operationId, int currentEmailNum) throws TException, InterruptedException, ExecutionException, TimeoutException {
 
         logger.info("profile:{}, operationId:{}, currentEmailNum:{}", profile, operationId, currentEmailNum);
