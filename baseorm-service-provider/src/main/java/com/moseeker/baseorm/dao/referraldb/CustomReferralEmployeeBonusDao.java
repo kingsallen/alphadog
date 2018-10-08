@@ -27,11 +27,12 @@ public class CustomReferralEmployeeBonusDao extends ReferralEmployeeBonusRecordD
     }
 
 
-    public List<ReferralEmployeeBonusRecord> fetchByEmployeeIdOrderByClaim(int employeeId) {
+    public List<ReferralEmployeeBonusRecord> fetchByEmployeeIdOrderByClaim(int employeeId,int pageNum,int pageSize) {
         Result<ReferralEmployeeBonusRecordRecord> result =  using(configuration())
                 .selectFrom(REFERRAL_EMPLOYEE_BONUS_RECORD)
                 .where(REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
-                .orderBy(REFERRAL_EMPLOYEE_BONUS_RECORD.CLAIM.asc(), REFERRAL_EMPLOYEE_BONUS_RECORD.UPDATE_TIME.desc())
+                .orderBy(REFERRAL_EMPLOYEE_BONUS_RECORD.CLAIM.asc(), REFERRAL_EMPLOYEE_BONUS_RECORD.UPDATE_TIME.desc()).
+                        limit((pageNum - 1) * pageNum, pageSize)
                 .fetch();
         if (result != null && result.size() > 0) {
             return result.into(ReferralEmployeeBonusRecord.class);
@@ -39,4 +40,6 @@ public class CustomReferralEmployeeBonusDao extends ReferralEmployeeBonusRecordD
             return new ArrayList<>();
         }
     }
+
+
 }
