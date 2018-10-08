@@ -1383,7 +1383,9 @@ public class WholeProfileService {
         if(basicMap.get("country_code")!=null){
             userMap.put("country_code",basicMap.get("country_code"));
         }else{
-            userMap.put("country_code","86");
+            if(userMap.get("country_code")==null){
+                userMap.put("country_code","86");
+            }
         }
         userMap.put("source", source);
         return userMap;
