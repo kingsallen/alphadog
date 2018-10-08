@@ -4,10 +4,9 @@
 package com.moseeker.baseorm.db.referraldb.tables.pojos;
 
 
+import javax.annotation.Generated;
 import java.io.Serializable;
 import java.sql.Timestamp;
-
-import javax.annotation.Generated;
 
 
 /**

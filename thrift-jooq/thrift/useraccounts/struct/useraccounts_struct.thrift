@@ -412,7 +412,8 @@ struct HrNpsStatistic {
 
 struct UserEmployeeNumStatistic{
     1: optional i32 unregcount,
-    2: optional i32 regcount
+    2: optional i32 regcount,
+    3: optional i32 cancelcount 
 }
 
 struct UserEmployeeVO{
@@ -428,7 +429,9 @@ struct UserEmployeeVO{
     10: optional string companyName, // 公司名称
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime, // 认证时间
-    13: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息
+    13: optional list<map<string,list<string>>> customFieldValues, // 公司员工认证后补填字段配置信息
+    14: optional i64 bonus, // 奖金
+    15: optional i32 authMethod, //认证方式 
 }
 // 员工列表分页实体
 struct UserEmployeeVOPageVO{
@@ -452,7 +455,9 @@ struct UserEmployeeDetailVO{
     11: optional string companyAbbreviation, // 公司简称
     12: optional string bindingTime // 绑定时间
     13: optional i32 award, // 积分
-    14: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息
+    14: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息,
+    15: optional i32 bonus //员工当前的奖金总额,
+    16: optional i32 authMethod //认证方式,
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{

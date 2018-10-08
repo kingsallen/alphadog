@@ -195,4 +195,24 @@ public class AppConfig {
                     .with("employee_view_leader_board_routing_key"));
         }};
     }
+
+    @Bean
+    public Queue addBonusQueue() {
+        Queue queue = new Queue("add_bonus_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange addBonusExchange() {
+        TopicExchange topicExchange = new TopicExchange("application_state_change_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> bindBonus() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
+                    .with("application_state_change_routingkey.change_state"));
+        }};
+    }
 }
