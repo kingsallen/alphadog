@@ -244,7 +244,7 @@ public class TemlateMsgHttp {
                         employeeDO.getSysuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
                 if (userWxUserDO != null) {
 
-                    String name = userAccountEntity.genUsername(referralLog.getReferenceId());
+                    String name = userAccountEntity.genUsername(application.getApplierId());
                     List<JobPosition> positionList = positionDao.fetchPosition(new ArrayList<Integer>(){{add(application.getId());}});
                     String title = "";
                     if (positionList != null && positionList.size() > 0) {
