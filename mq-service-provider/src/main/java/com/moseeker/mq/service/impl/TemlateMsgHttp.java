@@ -204,18 +204,18 @@ public class TemlateMsgHttp {
         }
     }
 
-    public void noticeEmployeeRererralBonus(int applicationId, long operationTIme, Integer nowStage) {
+    public void noticeEmployeeReferralBonus(int applicationId, long operationTIme, Integer nowStage) {
         JobApplication application = applicationDao.fetchOneById(applicationId);
         if (application != null && nowStage == BonusStage.Hired.getValue()) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
-                logger.info("noticeEmployeeRererralBonus 员工信息不存在！");
+                logger.info("noticeEmployeeReferralBonus 员工信息不存在！");
                 return;
             }
             ReferralLog referralLog = referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeDO.getId(),
                     application.getApplierId(), application.getPositionId());
             if (referralLog == null) {
-                logger.info("noticeEmployeeRererralBonus 内推记录不存在！");
+                logger.info("noticeEmployeeReferralBonus 内推记录不存在！");
                 return;
             }
 
@@ -310,7 +310,7 @@ public class TemlateMsgHttp {
             }
 
         } else {
-            logger.error("noticeEmployeeRererralBonus 申请信息不存在!");
+            logger.error("noticeEmployeeReferralBonus 申请信息不存在!");
         }
     }
 
