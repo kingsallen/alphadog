@@ -52,6 +52,7 @@ import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
@@ -1106,7 +1107,10 @@ public class EmployeeEntity {
         ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
 
         Integer userId = jobApplication.getRecommenderUserId();
-        UserEmployeeRecord userEmployeeRecord = employeeDao.getEmployeeByUserId(userId);
+        UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
+        if(userEmployeeRecord == null) {
+            throw new BIZException(-1,"不是已认证员工,不能发内推奖金");
+        }
         Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
 
@@ -1120,6 +1124,13 @@ public class EmployeeEntity {
 
         //添加奖金
         if(nextStageDetail !=null && move == 1 ) {
+
+            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nextStageDetail.getId());
+            //取id最大的一条,如果此节点已经有一条最新的增加奖金记录 直接返回
+            if(latestOne != null && latestOne.getBonus() > 0 ) {
+                return;
+            }
+
             Integer stageBonus  = nextStageDetail.getStageBonus();
 
             Integer newBonus  = employeeBonus + stageBonus;
@@ -1154,6 +1165,13 @@ public class EmployeeEntity {
 
         //减少奖金
         if( move == 0 &&  nowStageDetail!=null) {
+
+            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nowStageDetail.getId());
+            //取id最大的一条 如果此节点已经有一条最新的扣减记录 直接返回
+            if(latestOne != null && latestOne.getBonus() < 0 ) {
+                return;
+            }
+
             //获取用户当前节点发放的奖金,
             ReferralEmployeeBonusRecord recordGTZero = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdGTZero(employeeId, nowStageDetail.getId());
 
