@@ -1298,6 +1298,9 @@ public class WholeProfileService {
             if(map.get("email")!=null){
                 userRecord.setEmail(String.valueOf(map.get("email")));
             }
+            if(map.get("country_code")!=null){
+                userRecord.setCountryCode(String.valueOf(map.get("country_code")));
+            }
 
             Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
             if(res.getStatus()!=0){
