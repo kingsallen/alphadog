@@ -206,16 +206,11 @@ public class TemlateMsgHttp {
 
     public void noticeEmployeeReferralBonus(int applicationId, long operationTIme, Integer nowStage) {
         JobApplication application = applicationDao.fetchOneById(applicationId);
-        if (application != null && nowStage == BonusStage.Hired.getValue()) {
+        if (application != null && nowStage == BonusStage.Hired.getValue()
+                && application.getRecommenderUserId() != null && application.getRecommenderUserId() > 0) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
                 logger.info("noticeEmployeeReferralBonus 员工信息不存在！");
-                return;
-            }
-            ReferralLog referralLog = referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeDO.getId(),
-                    application.getApplierId(), application.getPositionId());
-            if (referralLog == null) {
-                logger.info("noticeEmployeeReferralBonus 内推记录不存在！");
                 return;
             }
 
