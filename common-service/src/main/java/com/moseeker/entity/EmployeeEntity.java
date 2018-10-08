@@ -1106,7 +1106,7 @@ public class EmployeeEntity {
         ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
 
         Integer userId = jobApplication.getRecommenderUserId();
-        UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
+        UserEmployeeRecord userEmployeeRecord = employeeDao.getEmployeeByUserId(userId);
         Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
 
