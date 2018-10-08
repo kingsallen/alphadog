@@ -892,7 +892,7 @@ public class SearchengineEntity {
      */
     @Transactional
     public Response updateEmployeeBonus(List<Integer> employeeIds,Integer bonus) throws Exception{
-        DateTime nowDate = new DateTime();
+        LocalDateTime nowDate = LocalDateTime.now();
 
         TransportClient client = getTransportClient();
         if (client == null) {
@@ -904,9 +904,8 @@ public class SearchengineEntity {
             XContentBuilder builder = XContentFactory.jsonBuilder()
                     .startObject()
                     .field("bonus", bonus)
-                    .field("update_time",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
+                    .field("update_time",nowDate)
                     .endObject();
-
             bulkRequest.add(client.prepareUpdate("awards", "award", idx).setDoc(builder));
 
         }
@@ -917,4 +916,6 @@ public class SearchengineEntity {
             return ResponseUtils.success(bulkResponse);
         }
     }
+
+
 }

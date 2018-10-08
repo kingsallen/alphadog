@@ -78,6 +78,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -1006,7 +1007,7 @@ public class UserHrAccountService {
                             } else if (flag.intValue() == 1) {
                                 userEmployeeVO.setAward(0);
                             }
-                            userEmployeeVO.setBonus(userEmployeeDO.getBonus());
+                            userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
                             userEmployeeVOS.add(userEmployeeVO);
                         } else {
                             continue;
@@ -1042,7 +1043,7 @@ public class UserHrAccountService {
                         userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                     }
                     userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                    userEmployeeVO.setBonus(userEmployeeDO.getBonus());
+                    userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
                     userEmployeeVOS.add(userEmployeeVO);
                 }
             }
@@ -2045,7 +2046,7 @@ public class UserHrAccountService {
                     userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                 }
                 userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                userEmployeeVO.setBonus(userEmployeeDO.getBonus());
+                userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
                 userEmployeeVOS.add(userEmployeeVO);
             }
         }
