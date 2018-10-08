@@ -913,7 +913,7 @@ public class UserHrAccountService {
             queryBuilder.groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
             // 查询
             List<Map<String, Object>> result = userEmployeeDao.getMaps(queryBuilder.buildQuery());
-            int unCount=0;
+            int cancelCount=0;
             if (!StringUtils.isEmptyList(result)) {
                 logger.info("=======================");
                 logger.info(JSON.toJSONString(result));
@@ -926,14 +926,14 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 2
                                 || (Byte) map.get("activation") == 4
                                 || (Byte) map.get("activation") == 5) {
-                            unCount+=(Integer) map.get("activation_count");
+                            cancelCount+=(Integer) map.get("activation_count");
 //                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
                         } else if ((Byte) map.get("activation") == 3) {
-                            userEmployeeNumStatistic.setCancelcount((Integer) map.get("activation_count"));
+                            userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
                 }
-                userEmployeeNumStatistic.setUnregcount(unCount);
+                userEmployeeNumStatistic.setUnregcount(cancelCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

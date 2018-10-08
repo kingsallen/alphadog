@@ -29,6 +29,30 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
 
 
     /**
+     * 获取员工最新增的奖金记录
+     * @param employeeId
+     * @param bonusStageDetailId
+     * @return
+     */
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdLastOne(Integer employeeId,Integer bonusStageDetailId) {
+
+        //排序
+        List<SortField<?>> fields = new ArrayList<>(2);
+        fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc());
+        ReferralEmployeeBonusRecordRecord referralEmployeeBonusRecordRecord = using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
+                where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
+                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId))
+                .orderBy(fields).limit(1)
+                .fetchOne();
+        if (referralEmployeeBonusRecordRecord != null) {
+            return referralEmployeeBonusRecordRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord.class);
+        } else {
+            return null;
+        }
+    }
+
+
+    /**
      * 获取员工的新增节点奖金记录
      * @param employeeId
      * @param bonusStageDetailId

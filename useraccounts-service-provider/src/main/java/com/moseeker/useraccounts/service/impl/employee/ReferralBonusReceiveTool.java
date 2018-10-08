@@ -38,7 +38,8 @@ public class ReferralBonusReceiveTool {
             Integer nextStage = jsonObject.getIntValue("nextStage");
             Integer positionId = jsonObject.getIntValue("positionId");
             Integer move = jsonObject.getIntValue("move");
-            employeeEntity.addReferralBonus(applicationId,nowStage,nextStage,move,positionId);
+            Integer applierId = jsonObject.getIntValue("applierId");
+            employeeEntity.addReferralBonus(applicationId,nowStage,nextStage,move,positionId,applierId);
         } catch (CommonException e) {
             logger.info(e.getMessage(), e);
         } catch (Exception e) {
