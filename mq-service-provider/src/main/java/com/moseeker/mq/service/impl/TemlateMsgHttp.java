@@ -216,7 +216,7 @@ public class TemlateMsgHttp {
 
     public void noticeEmployeeRererralBonus(int applicationId, long operationTIme, Integer nowStage) {
         JobApplication application = applicationDao.fetchOneById(applicationId);
-        logger.info("TemlateMsgHttp noticeEmployeeRererralBonus application:{}", application);
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus application:{}", application);
         if (application != null && nowStage == BonusStage.Hired.getValue()) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
@@ -226,7 +226,7 @@ public class TemlateMsgHttp {
             ReferralLog referralLog = referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeDO.getId(),
                     application.getApplierId(), application.getPositionId());
             if (referralLog == null) {
-                logger.info("noticeEmployeeRererralBonus 内推记录不存在！");
+                logger.info("TemplateMsgHttp noticeEmployeeReferralBonus 内推记录不存在！");
                 return;
             }
 
@@ -313,7 +313,7 @@ public class TemlateMsgHttp {
 
                     try {
                         String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
-                        logger.info("noticeEmployeeVerify result:{}", result);
+                        logger.info("TemlateMsgHttp noticeEmployeeVerify result:{}", result);
                     } catch (ConnectException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -321,7 +321,7 @@ public class TemlateMsgHttp {
             }
 
         } else {
-            logger.error("noticeEmployeeRererralBonus 申请信息不存在!");
+            logger.error("TemplateMsgHttp noticeEmployeeRererralBonus 申请信息不存在!");
         }
     }
 
