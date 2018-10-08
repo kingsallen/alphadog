@@ -424,6 +424,10 @@ public abstract class AbstractProfileMoveService implements IChannelType {
         int row = profileMoveDetailDao.updateWhereExist(profileMoveDetailRecord, profileMoveRecordId, state);
         if (row == 0) {
             TalentpoolProfileMoveRecordRecord recordRecord = profileMoveRecordDao.getOneProfileMoveRecordById(profileMoveRecordId);
+            logger.info("================重试开始retryTimes:{}", retryTimes);
+            logger.info("========profileMoveDetailRecord:{}", profileMoveDetailRecord);
+            logger.info("========recordRecord:{}", recordRecord);
+            logger.info("========profileMoveRecordId:{}, state:{}, retryTimes:{}", profileMoveRecordId, state, retryTimes);
             updateProfileDetail(profileMoveDetailRecord, profileMoveRecordId, recordRecord.getStatus(), ++retryTimes);
         }
     }
