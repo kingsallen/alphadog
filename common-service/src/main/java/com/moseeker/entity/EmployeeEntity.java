@@ -1,6 +1,7 @@
 package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
@@ -22,7 +23,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
@@ -39,6 +39,7 @@ import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -68,6 +69,8 @@ import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -149,6 +152,12 @@ public class EmployeeEntity {
 
     @Autowired
     JobPositionDao jobPositionDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
+    private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
@@ -1080,7 +1089,7 @@ public class EmployeeEntity {
      * @throws EmployeeException
      */
     @Transactional
-    public void addReferralBonus(Integer applicationId, Integer nowStage, Integer nextStage, Integer move,Integer positionId) throws Exception {
+    public void addReferralBonus(Integer applicationId, Integer nowStage, Integer nextStage, Integer move,Integer positionId,Integer applierId) throws Exception {
 
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
@@ -1106,8 +1115,8 @@ public class EmployeeEntity {
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
         Integer employeeBonus =  userEmployeeDO.getBonus();
 
-        logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {}",
-                applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus);
+        logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {} applierId{}",
+                applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus,applierId);
 
         //添加奖金
         if(nextStageDetail !=null && move == 1 ) {
@@ -1134,7 +1143,8 @@ public class EmployeeEntity {
                     referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                     referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
                     referralEmployeeBonusRecordDao.insert(referralEmployeeBonusRecord);
-
+                    DateTime dateTime = new DateTime();
+                    publishAddBonusChangeEvent(applicationId,nowStage,nextStage,applierId,positionId,move.byteValue(),dateTime);
                     }catch (Exception e) {
                         logger.error(e.getClass().getName(),e);
                     }
@@ -1323,5 +1333,31 @@ public class EmployeeEntity {
         return bonusVOPageVO;
     }
 
+
+    @Transactional
+    public void publishAddBonusChangeEvent(int appId, int stage, int nextStage, int applierId, int positionId, byte move, DateTime operationTime) {
+
+        logger.info("publishAddBonusChangeEvent appId:{}, stage:{}, nextStage:{}, " +
+                        "applierId:{}, positionId:{}, move:{}, operationTime:{}",
+                appId, stage, nextStage, applierId, positionId, move,
+                operationTime.toString("yyyy-MM-dd HH:mm:ss"));
+        if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("applicationId", appId);
+            jsonObject.put("nowStage", stage);
+            jsonObject.put("nextStage", nextStage);
+            jsonObject.put("applierId", applierId);
+            jsonObject.put("positionId", positionId);
+            jsonObject.put("move", move);
+            jsonObject.put("operationTime", operationTime.getMillis());
+
+            logger.info("publishAddBonusChangeEventstage change: {} -> {}",
+                    stage, nextStage);
+
+            amqpTemplate.sendAndReceive(ADD_BONUS_CHANGE_EXCHNAGE,
+                    ADD_BONUS_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                            .build());
+        }
+    }
 }
 
