@@ -100,8 +100,6 @@ public class SearchengineEntity {
         return EsClientInstance.getClient();
     }
 
-
-
     /**
      * 更新员工积分
      *
@@ -175,6 +173,7 @@ public class SearchengineEntity {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("bonus", userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -326,6 +325,8 @@ public class SearchengineEntity {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
+                    jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("bonus", userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -888,4 +889,41 @@ public class SearchengineEntity {
             return ResponseUtils.success(bulkResponse);
         }
     }
+
+
+    /**
+     * 更新员工总奖金
+     * @param employeeIds
+     * @param bonus
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public Response updateEmployeeBonus(List<Integer> employeeIds,Integer bonus) throws Exception{
+        LocalDateTime nowDate = LocalDateTime.now();
+
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        for(Integer employeeId: employeeIds) {
+            String idx = "" + employeeId;
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("bonus", bonus)
+                    .field("update_time",nowDate)
+                    .endObject();
+            bulkRequest.add(client.prepareUpdate("awards", "award", idx).setDoc(builder));
+
+        }
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if(bulkResponse.hasFailures()) {
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
+            return ResponseUtils.success(bulkResponse);
+        }
+    }
+
+
 }

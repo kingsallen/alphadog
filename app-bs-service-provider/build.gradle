@@ -13,6 +13,8 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-context"]
     testCompile deps["spring-test"]
+
+    compile deps["spring-rabbit"]
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

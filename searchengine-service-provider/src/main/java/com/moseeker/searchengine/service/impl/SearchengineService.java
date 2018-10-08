@@ -14,13 +14,15 @@ import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.SearchEngineException;
+import com.moseeker.searchengine.service.impl.tools.EmployeeBizTool;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -35,15 +37,12 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -57,15 +56,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.InetAddress;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -593,6 +585,7 @@ public class SearchengineService {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
+                    jsonObject.put("bonus",userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -755,16 +748,7 @@ public class SearchengineService {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
 
-        if (StringUtils.isNotEmpty(keyword)) {
-            Map map = new HashMap();
-            map.put("email", keyword);
-            map.put("mobile", keyword);
-            map.put("nickname", keyword);
-            map.put("custom_field", keyword);
-            map.put("cname", keyword);
-//            searchUtil.matchPhrasePrefixQuery(map, query);
-            searchUtil.wildcardQuery(map, query);
-        }
+        EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
@@ -837,6 +821,47 @@ public class SearchengineService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(object);
+    }
+
+    public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
+                                   String emailValidate, int pageSize, int pageNumber,int balanceType) throws SearchEngineException {
+        TransportClient searchClient;
+        try {
+            searchClient = searchUtil.getEsClient();
+
+            Map<String, Object> result = new HashMap<>();
+            QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+            EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
+            EmployeeBizTool.addFilter(query, filter, searchUtil);
+            EmployeeBizTool.addKeywords(query, keywords, searchUtil);
+            EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
+            EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
+            SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
+            EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
+            SearchResponse response = searchRequestBuilder.execute().actionGet();
+            List<Map<String, Object>> data = new ArrayList<>();
+            result.put("total", response.getHits().getTotalHits());
+            for (SearchHit searchHit : response.getHits().getHits()) {
+                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                data.add(jsonObject);
+            }
+            logger.info("==================================");
+            logger.info("fetchEmployees ======= "+searchRequestBuilder.toString());
+            logger.info("==================================");
+
+            logger.info("==================================");
+            logger.info("total ======="+response.getHits().getTotalHits());
+            logger.info("==================================");
+            result.put("data", data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
@@ -1054,10 +1079,15 @@ public class SearchengineService {
         List<String> list=this.getOrderFieldList();
         List<Map<String,Object>> result=new ArrayList<>();
         Map<String,String> newParams=this.getOtherParams(params);
-        handlerMobotSearch(list,params,result,client);
+        handlerMobotSearch(list,newParams,result,client);
+        logger.info("===========main1============");
+
+        logger.info(JSON.toJSONString(result));
         if(result==null||result.size()==0){
             result=this.handlerMobotSearchShould(params,client);
         }
+        logger.info("===========main2============");
+        logger.info(JSON.toJSONString(result));
         return result;
     }
 
@@ -1081,13 +1111,13 @@ public class SearchengineService {
             searchUtil.handleTermShould(occupation,keyand,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(title)){
-            searchUtil.handleMatchParseShould(title,query,"title");
+            searchUtil.handleMatchParseShould(title,keyand,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(citys),"city",query);
+            searchUtil.shouldMatchParseQueryShould("city",citys,keyand);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(industry),"industry",query);
+            searchUtil.shouldMatchParseQueryShould("industry",industry,keyand);
         }
         if(StringUtils.isNotBlank(salary)){
             QueryBuilder keyand1 = QueryBuilders.boolQuery();
@@ -1100,7 +1130,7 @@ public class SearchengineService {
             ((BoolQueryBuilder) keyand).should(builder);
         }
         if(StringUtils.isNotBlank(employeeType)){
-            searchUtil.handleTermShould(employeeType,query,"employee_type");
+            searchUtil.handleTermShould(employeeType,keyand,"employee_type");
         }
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
@@ -1112,6 +1142,9 @@ public class SearchengineService {
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        logger.info("===========children1============");
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString(list));
         return list;
 
     }
@@ -1120,8 +1153,10 @@ public class SearchengineService {
         if(fieldList.size()>0&&result.size()<10){
             List<Integer> pidList=this.getPidList(result);
             List<Map<String,Object>> data=this.mobotSearch(params,pidList,client);
-            result.addAll(data);
-            String field=fieldList.remove(-1);
+            if(data!=null&&data.size()>0){
+                result.addAll(data);
+            }
+            String field=fieldList.remove(fieldList.size()-1);
             params.remove(field);
             handlerMobotSearch(fieldList, params, result,client );
         }else{
@@ -1186,10 +1221,10 @@ public class SearchengineService {
             searchUtil.handleMatchParse(title,query,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(citys),"city",query);
+            searchUtil.shouldMatchParseQuery("city",citys,query);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(industry),"industry",query);
+            searchUtil.shouldMatchParseQuery("industry",industry,query);
         }
         if(StringUtils.isNotBlank(salary)){
             searchUtil.handlerRangeLess(Integer.parseInt(salary),query,"salary_top");
@@ -1213,6 +1248,9 @@ public class SearchengineService {
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        logger.info("===========children2============");
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString(list));
         return list;
     }
 

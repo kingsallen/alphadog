@@ -18,6 +18,7 @@ public class EmployeeException extends CommonException {
     public static final EmployeeException EMPLOYEE_REPEAT_CLAIM= new EmployeeException(42507, "重复认领!");
     public static final EmployeeException EMPLOYEE_AWARD_ZERO= new EmployeeException(42508, "添加积分点数不能为0");
 
+
     public EmployeeException(int code, String message) {
         super(code, message);
     }

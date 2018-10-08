@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserReferralRecord extends TableImpl<UserReferralRecordRecord> {
 
-    private static final long serialVersionUID = -765611375;
+    private static final long serialVersionUID = -1044904023;
 
     /**
      * The reference instance of <code>userdb.user_referral_record</code>
@@ -84,7 +84,7 @@ public class UserReferralRecord extends TableImpl<UserReferralRecordRecord> {
     /**
      * The column <code>userdb.user_referral_record.scene</code>. 内推的场景 1. ChatBot 上传 2. 内推
      */
-    public final TableField<UserReferralRecordRecord, Byte> SCENE = createField("scene", org.jooq.impl.SQLDataType.TINYINT, this, "内推的场景 1. ChatBot 上传 2. 内推");
+    public final TableField<UserReferralRecordRecord, Byte> SCENE = createField("scene", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "内推的场景 1. ChatBot 上传 2. 内推");
 
     /**
      * Create a <code>userdb.user_referral_record</code> table reference

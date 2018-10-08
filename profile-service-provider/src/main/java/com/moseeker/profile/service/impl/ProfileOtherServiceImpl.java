@@ -102,32 +102,34 @@ ProfileOtherServiceImpl implements ProfileOtherService {
 
     @Override
     public int putSpecificOther(Map<String,Object> map,Integer profileId) {
-        Map<String,Object> currentOhterMap = new HashMap<>();
-        ProfileOtherDO profileOtherDO = new ProfileOtherDO();
-        currentOhterMap.put("other",JSON.toJSONString(map));
-        profileParseUtil.handerSortprofileOtherMap(currentOhterMap);
-        Map<String,Object> newOhterMap = (Map<String, Object>)JSON.parseObject((String) currentOhterMap.get("other"));
-        if(profileId!=null){
-            ProfileOther other= dao.getProfileOtherByProfileId(profileId);
-            if(other!=null&&newOhterMap!=null){
-                Map<String, Object> resume = JSON.parseObject(other.getOther());
-                for(String key : newOhterMap.keySet()){
-                    for(String key1 : resume.keySet())
-                    {
-                        if(key.equals(key1)&&!newOhterMap.get(key).equals(resume.get(key1))){
-                            resume.put(key1,newOhterMap.get(key1));
-                            newOhterMap.remove(key);
+        if(map !=null){
+            Map<String,Object> currentOhterMap = new HashMap<>();
+            ProfileOtherDO profileOtherDO = new ProfileOtherDO();
+            currentOhterMap.put("other",JSON.toJSONString(map));
+            profileParseUtil.handerSortprofileOtherMap(currentOhterMap);
+            Map<String,Object> newOhterMap = (Map<String, Object>)JSON.parseObject((String) currentOhterMap.get("other"));
+            if(profileId!=null){
+                ProfileOther other= dao.getProfileOtherByProfileId(profileId);
+                if(other!=null&&newOhterMap!=null){
+                    Map<String, Object> resume = JSON.parseObject(other.getOther());
+                    for(String key : newOhterMap.keySet()){
+                        for(String key1 : resume.keySet())
+                        {
+                            if(key.equals(key1)&&!newOhterMap.get(key).equals(resume.get(key1))){
+                                resume.put(key1,newOhterMap.get(key1));
+                                newOhterMap.remove(key);
+                            }
                         }
                     }
-                }
-                for(String key:newOhterMap.keySet()){
-                    resume.put(key,newOhterMap.get(key));
-                }
-                String result = JSON.toJSONString(resume);
-                if(!result.equals(other.getOther())){
-                    profileOtherDO.setProfileId(profileId);
-                    profileOtherDO.setOther(result);
-                    return putOther(profileOtherDO);
+                    for(String key:newOhterMap.keySet()){
+                        resume.put(key,newOhterMap.get(key));
+                    }
+                    String result = JSON.toJSONString(resume);
+                    if(!result.equals(other.getOther())){
+                        profileOtherDO.setProfileId(profileId);
+                        profileOtherDO.setOther(result);
+                        return putOther(profileOtherDO);
+                    }
                 }
             }
         }

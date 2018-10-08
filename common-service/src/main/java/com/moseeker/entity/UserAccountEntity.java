@@ -5,9 +5,11 @@ import com.moseeker.baseorm.dao.talentpooldb.TalentpoolTalentDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -17,7 +19,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -40,6 +44,9 @@ public class UserAccountEntity {
 
     @Autowired
     private UserReferralRecordDao referralRecordDao;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
 
     /**
      * 获取用户的称呼
@@ -258,5 +265,41 @@ public class UserAccountEntity {
     public void updateUserRecord(UserUserRecord userRecord) {
         int  execute = userDao.updateRecord(userRecord);
         log.info("updateUserRecord execute:{}", execute);
+    }
+
+    /**
+     * 查询用户名称
+     * @param idList 用户编号
+     * @return 用户编号和用户名称
+     */
+    public Map<Integer, String> fetchUserName(List<Integer> idList) {
+        Map<Integer, String> result = new HashMap<>();
+        List<UserUserRecord> userUserRecords = userDao.fetchByIdList(idList);
+        if (userUserRecords != null && userUserRecords.size() > 0) {
+
+            List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUserMapByUserIds(idList);
+
+            userUserRecords.forEach(userUserRecord -> {
+                String name = "";
+                if (org.apache.commons.lang.StringUtils.isNotBlank(userUserRecord.getName())
+                        || org.apache.commons.lang.StringUtils.isNotBlank(userUserRecord.getNickname())) {
+                    name = org.apache.commons.lang.StringUtils.isNotBlank(userUserRecord.getName())
+                            ? userUserRecord.getName():userUserRecord.getNickname();
+                } else {
+                    if (wxUserRecords != null && wxUserRecords.size() > 0) {
+                        Optional<UserWxUserRecord> optional = wxUserRecords
+                                .stream()
+                                .filter(userWxUserRecord1 -> userWxUserRecord1.getSysuserId().equals(userUserRecord.getId()))
+                                .findAny();
+                        if (optional.isPresent()) {
+                            name = optional.get().getNickname();
+                        }
+                    }
+                }
+                result.put(userUserRecord.getId(), name);
+            });
+        }
+
+        return result;
     }
 }

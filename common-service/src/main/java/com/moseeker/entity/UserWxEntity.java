@@ -3,9 +3,11 @@ package com.moseeker.entity;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
@@ -17,14 +19,14 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
+import org.jooq.Record2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -41,13 +43,13 @@ public class UserWxEntity {
     private HrWxWechatDao hrWxWechatDao;
 
     @Autowired
-    private UserWxUserDao userWxUserDao;
-
-    @Autowired
     private HrCompanyDao hrCompanyDao;
 
     @Autowired
     private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    private UserUserDao userUserDao;
 
     /**
      *  获取用户wxUserId
@@ -201,7 +203,46 @@ public class UserWxEntity {
      */
     public List<UserWxUserRecord> getUserWxUserData(List<Integer> userIdList){
         Query query=new Query.QueryBuilder().where(new Condition("sysuser_id",userIdList.toArray(),ValueOp.IN)).buildQuery();
-        List<UserWxUserRecord> list=userWxUserDao.getRecords(query);
+        List<UserWxUserRecord> list=wxUserDao.getRecords(query);
         return list;
+    }
+
+    /**
+     * 查找用户名称。优先获取仟寻账号名称，仟寻账号昵称，微信账号昵称
+     * @param wxUserIdList 微信账号编号集合
+     * @return 微信编号和名称的对应关系集合
+     */
+    public Map<Integer, String> fetchUserNamesByWxUserIdList(List<Integer> wxUserIdList) {
+        Map<Integer, String> result = new HashMap<>();
+        List<UserWxUserRecord> wxUserRecords = wxUserDao.fetchByIdList(wxUserIdList);
+        if (wxUserRecords != null && wxUserRecords.size() > 0) {
+            List<Integer> userIdList = wxUserRecords
+                    .stream()
+                    .filter(userWxUserRecord -> userWxUserRecord.getSysuserId() != null
+                            && userWxUserRecord.getSysuserId() > 0)
+                    .map(UserWxUserRecord::getSysuserId)
+                    .collect(Collectors.toList());
+            List<UserUserRecord> userUserRecords = userUserDao.fetchByIdList(userIdList);
+            wxUserRecords.forEach(userWxUserRecord -> {
+                Map<Integer, String> map = new HashMap<>();
+                if (userUserRecords != null && userUserRecords.size() > 0) {
+                    Optional<UserUserRecord> optional = userUserRecords
+                            .stream()
+                            .filter(userUserRecord -> userUserRecord.getId().equals(userWxUserRecord.getSysuserId()))
+                            .findAny();
+                    if (optional.isPresent()) {
+                        map.put(userWxUserRecord.getId().intValue(),
+                                org.apache.commons.lang.StringUtils.isNotBlank(optional.get().getName())
+                                        ? optional.get().getName()
+                                        : optional.get().getNickname());
+                    }
+                }
+                if (org.apache.commons.lang.StringUtils.isBlank(map.get(userWxUserRecord.getId()))) {
+                    map.put(userWxUserRecord.getId().intValue(), userWxUserRecord.getNickname());
+                }
+
+            });
+        }
+        return result;
     }
 }
