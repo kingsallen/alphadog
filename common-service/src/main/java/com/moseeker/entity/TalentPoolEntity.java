@@ -1778,8 +1778,10 @@ public class TalentPoolEntity {
     /*
      获取上传简历的user_id
      */
-    public UserUserRecord getTalentUploadUser(String phone,int companyId, int source){
-        String countryCode="86";
+    public UserUserRecord getTalentUploadUser(String phone,int companyId, int source,String countryCode){
+        if(StringUtils.isNullOrEmpty(countryCode)){
+            countryCode="86";
+        }
         if(phone.contains("-")){
             String [] phoneArray=phone.split("-");
             countryCode=phoneArray[0];

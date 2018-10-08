@@ -1181,13 +1181,22 @@ public class WholeProfileService {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
         String mobile = ((String) map.get("mobile"));
+        String countryCode="86";
+        if(basic.get("country_code")!=null){
+            countryCode=String.valueOf(basic.get("country_code"));
+        }else{
+            if(map.get("country_code")!=null){
+                countryCode=String.valueOf(map.get("country_code"));
+            }
+        }
         if(StringUtils.isNullOrEmpty(mobile)){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue());
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue(),countryCode);
         if(userRecord==null){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
@@ -1278,7 +1287,12 @@ public class WholeProfileService {
 //        if(mobile.length()!=11){
 //            return ResponseUtils.fail(1,"手机号必须为11位");
 //        }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source);
+
+        String countryCode="86";
+        if(map.get("country_code")!=null){
+            countryCode=String.valueOf(map.get("country_code"));
+        }
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source,countryCode);
         int newUerId=0;
         if(userRecord!=null){
             newUerId=userRecord.getId();
