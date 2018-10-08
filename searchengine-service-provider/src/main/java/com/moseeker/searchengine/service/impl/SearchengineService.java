@@ -1086,13 +1086,13 @@ public class SearchengineService {
             searchUtil.handleTermShould(occupation,keyand,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(title)){
-            searchUtil.handleMatchParseShould(title,query,"title");
+            searchUtil.handleMatchParseShould(title,keyand,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQueryShould("city",citys,query);
+            searchUtil.shouldMatchParseQueryShould("city",citys,keyand);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQueryShould("industry",industry,query);
+            searchUtil.shouldMatchParseQueryShould("industry",industry,keyand);
         }
         if(StringUtils.isNotBlank(salary)){
             QueryBuilder keyand1 = QueryBuilders.boolQuery();
@@ -1105,7 +1105,7 @@ public class SearchengineService {
             ((BoolQueryBuilder) keyand).should(builder);
         }
         if(StringUtils.isNotBlank(employeeType)){
-            searchUtil.handleTermShould(employeeType,query,"employee_type");
+            searchUtil.handleTermShould(employeeType,keyand,"employee_type");
         }
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
