@@ -306,7 +306,7 @@ public class TemlateMsgHttp {
                     applierTemplate.put("touser", userWxUserDO.getOpenid());
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
-                    applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getAccessToken()));
+                    applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature()));
 
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
