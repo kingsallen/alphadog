@@ -1096,8 +1096,8 @@ public class EmployeeEntity {
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
         Integer employeeBonus =  userEmployeeDO.getBonus();
 
-        logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {}",
-                applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus);
+        logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {} applierId{}",
+                applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus,applierId);
 
         //添加奖金
         if(nextStageDetail !=null && move == 1 ) {
