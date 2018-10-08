@@ -389,11 +389,11 @@ public class ReferralController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/v1/referral/hr/employee/bonus/detail", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/referral/hr/employee/{id}/bonus/detail", method = RequestMethod.GET)
     @ResponseBody
-    public String getEmployeeBonusDetail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public String getEmployeeBonusDetail(HttpServletRequest request, HttpServletResponse response,@PathVariable Integer id) throws Exception {
         Params<String, Object> params = ParamUtils.parseRequestParam(request);
-        int employeeId = params.getInt("employeeId", 0);
+        int employeeId = id;
         int companyId = params.getInt("companyId", 0);
         int pageNumber = params.getInt("pageNumber", 0);
         int pageSize = params.getInt("pageSize", 0);
