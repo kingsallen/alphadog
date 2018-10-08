@@ -263,7 +263,7 @@ public class TemlateMsgHttp {
                 if (userWxUserDO != null) {
 
                     String name = userAccountEntity.genUsername(application.getApplierId());
-                    List<JobPosition> positionList = positionDao.fetchPosition(new ArrayList<Integer>(){{add(application.getId());}});
+                    List<JobPosition> positionList = positionDao.fetchPosition(new ArrayList<Integer>(){{add(application.getPositionId());}});
                     String title = "";
                     if (positionList != null && positionList.size() > 0) {
                         title = positionList.get(0).getTitle();
