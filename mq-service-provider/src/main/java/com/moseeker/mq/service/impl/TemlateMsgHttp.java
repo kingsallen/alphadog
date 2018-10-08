@@ -214,12 +214,14 @@ public class TemlateMsgHttp {
         }
     }
 
-    public void noticeEmployeeRererralBonus(int applicationId, long operationTIme, Integer nowStage) {
-        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus applicationId:{}, operationTIme:{}, nowStage:{}", applicationId, operationTIme, nowStage);
+    public void noticeEmployeeReferralBonus(int applicationId, long operationTIme, Integer nowStage) {
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus applicationId:{}, operationTIme:{}, nowStage:{}",
+                applicationId, operationTIme, nowStage);
         JobApplication application = applicationDao.fetchOneById(applicationId);
         logger.info("TemplateMsgHttp noticeEmployeeRererralBonus application:{}", application);
 
-        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus BonusStage.Hired:{}, result:{}", BonusStage.Hired.getValue(), nowStage == BonusStage.Hired.getValue());
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus BonusStage.Hired:{}, result:{}",
+                BonusStage.Hired.getValue(), nowStage == BonusStage.Hired.getValue());
         if (application != null && nowStage == BonusStage.Hired.getValue()) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
