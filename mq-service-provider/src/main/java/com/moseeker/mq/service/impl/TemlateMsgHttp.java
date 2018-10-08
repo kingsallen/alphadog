@@ -106,6 +106,7 @@ public class TemlateMsgHttp {
     private static String NoticeEmployeeReferralBonusFirst = "恭喜你获得内推入职奖励";
     private static String NoticeEmployeeReferralBonusRemark = "请点击查看详情";
     private static String NoticeEmployeeReferralBonusTemplateId = "OPENTM411613026";
+    private static String NoticeEmployeeReferralBonusTitle = "简历推荐成功提醒";
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
@@ -217,7 +218,8 @@ public class TemlateMsgHttp {
             String first;
             String remark;
             ConfigSysTemplateMessageLibraryRecord record =
-                    templateMessageLibraryDao.getByTemplateIdAndTitle("OPENTM204875750", "员工认证提醒通知");
+                    templateMessageLibraryDao.getByTemplateIdAndTitle(NoticeEmployeeReferralBonusTemplateId,
+                            NoticeEmployeeReferralBonusTitle);
             if (record != null) {
                 first = record.getFirst();
                 remark = record.getRemark();
@@ -245,7 +247,7 @@ public class TemlateMsgHttp {
                 if (userWxUserDO != null) {
 
                     String name = userAccountEntity.genUsername(application.getApplierId());
-                    List<JobPosition> positionList = positionDao.fetchPosition(new ArrayList<Integer>(){{add(application.getId());}});
+                    List<JobPosition> positionList = positionDao.fetchPosition(new ArrayList<Integer>(){{add(application.getPositionId());}});
                     String title = "";
                     if (positionList != null && positionList.size() > 0) {
                         title = positionList.get(0).getTitle();
@@ -288,7 +290,7 @@ public class TemlateMsgHttp {
                     applierTemplate.put("touser", userWxUserDO.getOpenid());
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
-                    applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getAccessToken()));
+                    applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature()));
 
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
