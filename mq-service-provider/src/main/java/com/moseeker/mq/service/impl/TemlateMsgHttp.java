@@ -222,16 +222,11 @@ public class TemlateMsgHttp {
 
         logger.info("TemplateMsgHttp noticeEmployeeRererralBonus BonusStage.Hired:{}, result:{}",
                 BonusStage.Hired.getValue(), nowStage == BonusStage.Hired.getValue());
-        if (application != null && nowStage == BonusStage.Hired.getValue()) {
+        if (application != null && nowStage == BonusStage.Hired.getValue()
+                && application.getRecommenderUserId() != null && application.getRecommenderUserId() > 0) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
             if (employeeDO == null) {
                 logger.info("noticeEmployeeReferralBonus 员工信息不存在！");
-                return;
-            }
-            ReferralLog referralLog = referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeDO.getId(),
-                    application.getApplierId(), application.getPositionId());
-            if (referralLog == null) {
-                logger.info("TemplateMsgHttp noticeEmployeeReferralBonus 内推记录不存在！");
                 return;
             }
 
@@ -265,7 +260,7 @@ public class TemlateMsgHttp {
                         employeeDO.getSysuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
                 if (userWxUserDO != null) {
 
-                    String name = userAccountEntity.genUsername(referralLog.getReferenceId());
+                    String name = userAccountEntity.genUsername(application.getApplierId());
                     List<JobPosition> positionList = positionDao.fetchPosition(new ArrayList<Integer>(){{add(application.getId());}});
                     String title = "";
                     if (positionList != null && positionList.size() > 0) {
