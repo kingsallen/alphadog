@@ -1,13 +1,11 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeRegisterLogRecord;
 import org.joda.time.DateTime;
 import org.jooq.Configuration;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import static com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG;
 import static org.jooq.impl.DSL.using;

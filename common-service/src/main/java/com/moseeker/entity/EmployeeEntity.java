@@ -13,10 +13,7 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
@@ -27,6 +24,7 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
@@ -77,6 +75,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -143,7 +142,7 @@ public class EmployeeEntity {
     private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
 
     @Autowired
-    private ReferralPositionBonusDao referralPositionBonusDao;
+    private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
 
     @Autowired
     private ReferralPositionBonusStageDetailDao referralPositionBonusStageDetailDao;
@@ -542,12 +541,27 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
+    @Transactional
     public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
-        return unbind(employeeDOList);
+        boolean result = unbind(employeeDOList);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        List<ReferralEmployeeRegisterLog> logs = employeeIds
+                .stream()
+                .distinct()
+                .map(integer -> {
+                    ReferralEmployeeRegisterLog log = new ReferralEmployeeRegisterLog();
+                    log.setEmployeeId(integer);
+                    log.setRegister((byte)0);
+                    log.setOperateTime(timestamp);
+                    return log;
+                })
+                .collect(Collectors.toList());
+        referralEmployeeRegisterLogDao.insert(logs);
+        return result;
     }
 
     /**
@@ -556,6 +570,7 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
+
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
             String now = DateUtils.dateToShortTime(new Date());
@@ -571,7 +586,6 @@ public class EmployeeEntity {
                 convertCandidatePerson(userId, companyId);
             }
             int[] rows = employeeDao.updateDatas(employees);
-
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
                 searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
@@ -1063,12 +1077,14 @@ public class EmployeeEntity {
 
 
     /**
-     * 
-     * @param employeeId
+     *
      * @param applicationId
+     * @param nowStage
+     * @param nextStage
+     * @param move
      * @param positionId
-     * @param stage
-     * @throws EmployeeException
+     * @param applierId
+     * @throws Exception
      */
     @Transactional
     public void addReferralBonus(Integer applicationId, Integer nowStage, Integer nextStage, Integer move,Integer positionId,Integer applierId) throws Exception {
