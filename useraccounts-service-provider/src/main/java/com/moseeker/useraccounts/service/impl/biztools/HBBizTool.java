@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public class HBBizTool {
 
-    private static Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(HBBizTool.class);
     /**
      * 红包类型名称
      * @param type 红包类型
