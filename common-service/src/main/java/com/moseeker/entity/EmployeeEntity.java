@@ -1000,7 +1000,9 @@ public class EmployeeEntity {
         if (wxWechatDO.getCompanyId() != employeeDO.getCompanyId()) {
             throw EmployeeException.NODATA_EXCEPTION;
         }
-        employeeDao.followWechat(employeeDO.getId(), employeeDO.getSysuserId());
+        DateTime currentDateTime = new DateTime(subscribeTime);
+        employeeDao.followWechat(employeeDO.getId(), employeeDO.getSysuserId(), currentDateTime.toString("yyyy-MM-dd HH:mm:ss"));
+        referralEmployeeRegisterLogDao.addRegisterLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
         }});
@@ -1020,6 +1022,7 @@ public class EmployeeEntity {
             throw EmployeeException.NODATA_EXCEPTION;
         }
         employeeDao.unFollowWechat(employeeDO.getId());
+        referralEmployeeRegisterLogDao.addCancelLog(employeeDO.getId(), new DateTime(subscribeTime));
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
             add(employeeDO.getId());
         }});
