@@ -239,13 +239,13 @@ struct BonusVOPageVO{
     1:optional i32 pageNumber, // 当前第几页
     2:optional i32 pageSize,// 每页多少条
     3:optional i32 totalRow,// 总共多少条
-    4:optional i32 totalBonus; // 奖金总数
+    4:optional string totalBonus; // 奖金总数
     5:optional list<BonusVO> data
 }
 //员工奖金明细
 struct BonusVO{
     1: optional string reason, // 说明
-    2: optional i32 bonus, // 奖金
+    2: optional string bonus, // 奖金
     3: optional string updateTime, // 操作时间
     4: optional i32 type, // 奖金类型
     5: optional i32 positionId, // 职位ID
