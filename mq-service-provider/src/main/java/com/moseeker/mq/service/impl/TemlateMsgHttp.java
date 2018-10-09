@@ -52,6 +52,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NOTICE_TPL;
+
 /**
  * 简历投递时发送模板消息
  * Created by moseeker on 2017/12/18.
@@ -218,8 +220,7 @@ public class TemlateMsgHttp {
             String first;
             String remark;
             ConfigSysTemplateMessageLibraryRecord record =
-                    templateMessageLibraryDao.getByTemplateIdAndTitle(NoticeEmployeeReferralBonusTemplateId,
-                            NoticeEmployeeReferralBonusTitle);
+                    templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(TEMPLATES_REFERRAL_BONUS_NOTICE_TPL);
             if (record != null) {
                 first = record.getFirst();
                 remark = record.getRemark();
@@ -235,7 +236,7 @@ public class TemlateMsgHttp {
             if (hrChatDO != null) {
                 String templateId;
                 HrWxTemplateMessageDO hrWxTemplateMessage = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                        hrChatDO.getId()).and("sys_template_id", Constant.TEMPLATES_REFERRAL_BONUS_NOTICE_TPL).and("disable", "0").buildQuery());
+                        hrChatDO.getId()).and("sys_template_id", TEMPLATES_REFERRAL_BONUS_NOTICE_TPL).and("disable", "0").buildQuery());
                 if (hrWxTemplateMessage == null) {
                     templateId = NoticeEmployeeReferralBonusTemplateId;
                 } else {
