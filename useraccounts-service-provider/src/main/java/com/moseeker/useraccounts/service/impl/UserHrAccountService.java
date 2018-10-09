@@ -848,20 +848,10 @@ public class UserHrAccountService {
      * @return
      */
     private Query.QueryBuilder getQueryBuilder(Query.QueryBuilder queryBuilder, String keyWord, Integer companyId) throws CommonException {
-        List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getActiveEmployeeDOList(companyId);
-        List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0)
-                .map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
-        Condition sysuserId = new Condition(UserUser.USER_USER.ID.getName(), sysIdsTemp, ValueOp.IN);
-        Condition nickName = new Condition(UserUser.USER_USER.NICKNAME.getName(), keyWord, ValueOp.LIKE);
-
-        Query.QueryBuilder nicknameCondition = new Query.QueryBuilder();
-        nicknameCondition.where(sysuserId).and(nickName);
-        List<UserUserDO> userUserDOList = userUserDao.getDatas(nicknameCondition.buildQuery());
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("%");
         stringBuffer.append(keyWord);
         stringBuffer.append("%");
-        List<Integer> sysIds = userUserDOList.stream().map(userUserDO -> userUserDO.getId()).collect(Collectors.toList());
         // 名字
         Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 自定义字段
@@ -872,14 +862,6 @@ public class UserHrAccountService {
         Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);
 
         queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile);
-
-        if (!StringUtils.isEmptyList(userEmployeeDOList)) {
-            Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
-            queryBuilder.or(sysIdsCon);
-        }
-        // sysuser_id
-        Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
-        queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile).or(sysIdsCon);
         return queryBuilder;
     }
 

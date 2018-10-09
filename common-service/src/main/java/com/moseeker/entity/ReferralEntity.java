@@ -316,7 +316,7 @@ public class ReferralEntity {
             List<HrHbScratchCardRecord> cardNoList = cardNoFuture.get();
             if (cardNoList != null && cardNoList.size() > 0) {
                 for (HrHbScratchCardRecord record2 : cardNoList) {
-                    cardNoMap.put(record2.getId(), record2);
+                    cardNoMap.put(record2.getHbItemId(), record2);
                 }
             }
         } catch (Exception e) {
