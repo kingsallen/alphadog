@@ -75,7 +75,10 @@ public class ReferralServiceImpl implements ReferralService {
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
 
 
-            List<Integer> wxUserIdList = wxUserRecords.stream().map(UserWxUserRecord::getSysuserId).collect(Collectors.toList());
+            List<Integer> wxUserIdList = wxUserRecords
+                    .stream()
+                    .map(userWxUserRecord -> userWxUserRecord.getId().intValue())
+                    .collect(Collectors.toList());
             logger.info("ReferralServiceImpl getRedPackets wxUserIdList:{}", wxUserIdList
                     .stream()
                     .map(integer -> String.valueOf(integer))

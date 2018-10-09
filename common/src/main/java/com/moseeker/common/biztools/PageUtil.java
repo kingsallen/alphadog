@@ -23,4 +23,12 @@ public class PageUtil {
     public int getSize() {
         return size;
     }
+
+
+    public static void main(String[] args) {
+        PageUtil pageUtil = new PageUtil(1, 10);
+
+        System.out.println(pageUtil.getIndex());
+        System.out.println(pageUtil.getSize());
+    }
 }
