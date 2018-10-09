@@ -3,7 +3,6 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
@@ -72,6 +71,7 @@ import com.moseeker.useraccounts.pojo.EmployeeList;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2025,6 +2025,8 @@ public class UserHrAccountService {
                 UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
                 org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
                 userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                //将绑定时间2018-10-09T18:09:09.766+08:00格式化成2018-10-09 18:09:09
+                userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 List customFieldValues = new ArrayList();
                 if (userEmployeeDO.getCustomFieldValues() != null) {
                     customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
@@ -2132,5 +2134,12 @@ public class UserHrAccountService {
             }
         }
         return bonusVOPageVO;
+    }
+
+    public static void main(String[] args) {
+        String date = "2018-10-09T18:09:09.766+08:00";
+        DateTime dateTime = new DateTime(date);
+
+        System.out.println(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
     }
 }
