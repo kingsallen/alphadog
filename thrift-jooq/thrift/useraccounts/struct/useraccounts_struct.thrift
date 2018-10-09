@@ -458,6 +458,7 @@ struct UserEmployeeDetailVO{
     14: optional list<map<string,list<string>>> customFieldValues // 公司员工认证后补填字段配置信息,
     15: optional i32 bonus //员工当前的奖金总额,
     16: optional i32 authMethod //认证方式,
+    17: optional string unbindingTime //解除绑定时间
 }
 // 员工导入统计数据
 struct ImportErrorUserEmployee{
