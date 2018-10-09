@@ -1007,6 +1007,7 @@ public class UserHrAccountService {
                                 userEmployeeVO.setAward(0);
                             }
                             userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
+                            userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
                             userEmployeeVOS.add(userEmployeeVO);
                         } else {
                             continue;
