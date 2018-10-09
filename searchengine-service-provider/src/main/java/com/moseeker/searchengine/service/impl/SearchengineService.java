@@ -266,13 +266,13 @@ public class SearchengineService {
             QueryBuilder cityor = QueryBuilders.boolQuery();
             for (int i = 0; i < city_list.length; i++) {
                 String city = city_list[i];
-                System.out.println(city);
                 QueryBuilder cityfilter =this.handlerCommonCity(city);
-                QueryBuilder cityboosting = QueryBuilders.boostingQuery()
-                        .positive(cityfilter)
-                        .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
-
-                ((BoolQueryBuilder) cityor).should(cityboosting);
+                if(cityfilter!=null){
+                    QueryBuilder cityboosting = QueryBuilders.boostingQuery()
+                            .positive(cityfilter)
+                            .negative(QueryBuilders.matchPhraseQuery("title", city)).negativeBoost(0.5f);
+                    ((BoolQueryBuilder) cityor).should(cityboosting);
+                }
             }
             ((BoolQueryBuilder) query).must(cityor);
         }
@@ -382,7 +382,7 @@ public class SearchengineService {
             List<String> fieldList=new ArrayList<>();
             fieldList.add("city");
             fieldList.add("city_ename");
-            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,searchUtil.stringConvertList(citys));
+            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,citys);
             return keyand;
         }
         return null;
@@ -733,6 +733,7 @@ public class SearchengineService {
         if (from > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom(from);
         }
+        logger.info(searchRequestBuilder.toString());
         return searchRequestBuilder;
     }
 
