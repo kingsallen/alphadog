@@ -64,10 +64,15 @@ public class EmployeeBizTool {
      */
     public static void addKeywords(QueryBuilder defaultquery, String keyword, SearchUtil searchUtil) {
         if (StringUtils.isNotBlank(keyword)) {
-            searchUtil.shouldMatchQuery(
+            /*searchUtil.shouldMatchQuery(
                     new ArrayList<String>(){{
                         add("email");add("mobile");add("nickname");add("custom_field");add("cname");
                     }},
+                    keyword,
+                    defaultquery);*/
+            searchUtil.shouldMatchParseQuery(new ArrayList<String>(){{
+                                                 add("email");add("mobile");add("nickname");add("custom_field");add("cname");
+                                             }},
                     keyword,
                     defaultquery);
         }

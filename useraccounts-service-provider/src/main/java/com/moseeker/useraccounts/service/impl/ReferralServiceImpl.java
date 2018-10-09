@@ -72,8 +72,10 @@ public class ReferralServiceImpl implements ReferralService {
         List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(id);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
 
-            List<Integer> wxUserIdList = wxUserRecords.stream().map(UserWxUserRecord::getSysuserId).collect(Collectors.toList());
-
+            List<Integer> wxUserIdList = wxUserRecords
+                    .stream()
+                    .map(userWxUserRecord -> userWxUserRecord.getId().intValue())
+                    .collect(Collectors.toList());
             //计算红包总额
             redPackets.setTotalRedpackets(itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList));
 
