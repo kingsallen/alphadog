@@ -104,6 +104,12 @@ public enum ChatMsgType {
         public boolean vaildChat(ChatVO chatVO) {
             return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
+    },
+    SATISFACTION("satisfaction"){
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
     }
     ;
 
