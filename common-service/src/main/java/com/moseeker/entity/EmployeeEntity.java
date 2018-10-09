@@ -1316,7 +1316,7 @@ public class EmployeeEntity {
                 //被推荐人ID
                 bonusVO.setBerecomId(jobApplicationDO.getApplierId());
                 bonusVO.setType(referralPositionBonusStageDetail.getStageType());
-                bonusVO.setBonus(new BigDecimal(bonusRecord.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString());
+                bonusVO.setBonus(new BigDecimal(bonusRecord.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                 JobPositionDO jobPositionDO = positionMap.get(bonusVO.getPositionId());
                 if (jobPositionDO != null) {
                     // 职位名称
@@ -1397,5 +1397,6 @@ public class EmployeeEntity {
                             .build());
         }
     }
+
 }
 

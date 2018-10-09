@@ -1308,6 +1308,7 @@ public class UseraccountsService {
         }
         LocalDateTime now = LocalDateTime.now();
         referralEmployeeBonusRecord.setClaim((byte) 1);
+        referralEmployeeBonusRecord.setClaimTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
     }
