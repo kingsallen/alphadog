@@ -34,14 +34,14 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
      * @param bonusStageDetailId
      * @return
      */
-    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdLastOne(Integer employeeId,Integer bonusStageDetailId) {
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdLastOne(Integer employeeId,Integer bonusStageDetailId,Integer applicationId) {
 
         //排序
         List<SortField<?>> fields = new ArrayList<>(2);
         fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc());
         ReferralEmployeeBonusRecordRecord referralEmployeeBonusRecordRecord = using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
                 where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
-                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId))
+                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId)).and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.APPLICATION_ID.eq(applicationId))
                 .orderBy(fields).limit(1)
                 .fetchOne();
         if (referralEmployeeBonusRecordRecord != null) {
@@ -58,14 +58,14 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
      * @param bonusStageDetailId
      * @return
      */
-    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdGTZero(Integer employeeId,Integer bonusStageDetailId) {
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdGTZero(Integer employeeId,Integer bonusStageDetailId,Integer applicationId) {
 
         //排序
         List<SortField<?>> fields = new ArrayList<>(2);
         fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc());
         ReferralEmployeeBonusRecordRecord referralEmployeeBonusRecordRecord = using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
                 where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
-                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId))
+                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId)).and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.APPLICATION_ID.eq(applicationId))
                 .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS.gt(0)).orderBy(fields).limit(1)
                 .fetchOne();
         if (referralEmployeeBonusRecordRecord != null) {
@@ -81,7 +81,7 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
      * @param bonusStageDetailId
      * @return
      */
-    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdLTZero(Integer employeeId,Integer bonusStageDetailId) {
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord fetchByEmployeeIdStageDetailIdLTZero(Integer employeeId,Integer bonusStageDetailId,Integer applicationId) {
 
         //排序
         List<SortField<?>> fields = new ArrayList<>(2);
@@ -89,7 +89,7 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
 
         ReferralEmployeeBonusRecordRecord referralEmployeeBonusRecordRecord = using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
                 where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
-                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId))
+                .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS_STAGE_DETAIL_ID.eq(bonusStageDetailId)).and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.APPLICATION_ID.eq(applicationId))
                 .and(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.BONUS.lt(0)).orderBy(fields).limit(1)
                 .fetchOne();
         if (referralEmployeeBonusRecordRecord != null) {
