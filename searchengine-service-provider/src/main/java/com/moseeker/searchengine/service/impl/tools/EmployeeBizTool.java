@@ -11,10 +11,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: jack
@@ -67,13 +64,12 @@ public class EmployeeBizTool {
      */
     public static void addKeywords(QueryBuilder defaultquery, String keyword, SearchUtil searchUtil) {
         if (StringUtils.isNotBlank(keyword)) {
-            Map map = new HashMap();
-            map.put("email", keyword);
-            map.put("mobile", keyword);
-            map.put("nickname", keyword);
-            map.put("custom_field", keyword);
-            map.put("cname", keyword);
-            searchUtil.wildcardQuery(map, defaultquery);
+            searchUtil.shouldMatchQuery(
+                    new ArrayList<String>(){{
+                        add("email");add("mobile");add("nickname");add("custom_field");add("cname");
+                    }},
+                    keyword,
+                    defaultquery);
         }
     }
 
