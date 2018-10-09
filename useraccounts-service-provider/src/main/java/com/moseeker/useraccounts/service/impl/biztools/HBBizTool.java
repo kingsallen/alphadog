@@ -9,6 +9,8 @@ import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.Map;
  */
 public class HBBizTool {
 
+    private static Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 红包类型名称
      * @param type 红包类型
@@ -59,6 +62,9 @@ public class HBBizTool {
         RedPacket redPacket = new RedPacket();
         redPacket.setId(hrHbItemsRecord.getId());
         redPacket.setCandidateName(candidateNameMap.get(hrHbItemsRecord.getId()));
+
+        logger.info("HBBizTool packageRedPacket carNoMap.value:{}", cardNoMap.get(hrHbItemsRecord.getId()));
+
         redPacket.setCardno(cardNoMap.get(hrHbItemsRecord.getId()).getCardno());
         HrHbConfigRecord configRecord = configMap.get(hrHbItemsRecord.getHbConfigId());
         if (configRecord != null) {
