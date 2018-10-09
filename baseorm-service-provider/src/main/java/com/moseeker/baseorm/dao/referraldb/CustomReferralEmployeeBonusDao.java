@@ -31,7 +31,7 @@ public class CustomReferralEmployeeBonusDao extends ReferralEmployeeBonusRecordD
         Result<ReferralEmployeeBonusRecordRecord> result =  using(configuration())
                 .selectFrom(REFERRAL_EMPLOYEE_BONUS_RECORD)
                 .where(REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
-                .orderBy(REFERRAL_EMPLOYEE_BONUS_RECORD.CLAIM.asc(), REFERRAL_EMPLOYEE_BONUS_RECORD.UPDATE_TIME.desc())
+                .orderBy(REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc())
                 .limit(index, pageSize)
                 .fetch();
         if (result != null && result.size() > 0) {
