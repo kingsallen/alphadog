@@ -235,6 +235,7 @@ class LocalQuery<R extends Record> {
     public SelectJoinStep<Record> convertToOneResult() {
         SelectJoinStep<Record> select = convertToResult();
         select.limit(1);
+        logger.info("convertToOneResult:{}", select.getSQL());
         return select;
     }
 }

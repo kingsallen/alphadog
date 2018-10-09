@@ -133,6 +133,7 @@ public class ReferralServiceImpl implements ReferralService {
                 for (ReferralEmployeeBonusRecord referralEmployeeBonusRecord : referralEmployeeBonusRecordList) {
                     bonuses.add(HBBizTool.packageBonus(referralEmployeeBonusRecord, bonusData));
                 }
+                logger.info("ReferralServiceImpl getBonus bonuses:{}", JSON.toJSONString(bonuses));
                 bonusList.setBonus(bonuses);
             }
         }
