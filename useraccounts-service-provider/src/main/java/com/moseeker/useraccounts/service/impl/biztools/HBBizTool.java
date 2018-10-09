@@ -63,7 +63,7 @@ public class HBBizTool {
         redPacket.setId(hrHbItemsRecord.getId());
         redPacket.setCandidateName(candidateNameMap.get(hrHbItemsRecord.getId()));
 
-        logger.info("HBBizTool packageRedPacket carNoMap.value:{}", cardNoMap.get(hrHbItemsRecord.getId()));
+        logger.info("HBBizTool packageRedPacket hrHbItemsRecord.id:{} carNoMap.value:{}", hrHbItemsRecord.getId(), cardNoMap.get(hrHbItemsRecord.getId()));
 
         redPacket.setCardno(cardNoMap.get(hrHbItemsRecord.getId()).getCardno());
         HrHbConfigRecord configRecord = configMap.get(hrHbItemsRecord.getHbConfigId());
