@@ -30,14 +30,14 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         super(HrHbItems.HR_HB_ITEMS, HrHbItemsDO.class);
         HB_START_TIME = new Timestamp(DateTime.parse("2018-07-01").getMillis());
         receiveHB = new ArrayList<Integer>(){{add(100);add(101);}};
-        openCard = new ArrayList<Integer>(){{add(1);add(2);add(4);add(5);add(6);add(7);add(-1);}};
+        openCard = new ArrayList<Integer>(){{add(1);add(2);add(3);add(4);add(5);add(6);add(7);add(-1);}};
     }
 
     public HrHbItemsDao(TableImpl<HrHbItemsRecord> table, Class<HrHbItemsDO> hrHbItemsDOClass) {
         super(table, hrHbItemsDOClass);
         HB_START_TIME = new Timestamp(DateTime.parse("2018-07-01").getMillis());
         receiveHB = new ArrayList<Integer>(){{add(100);add(101);}};
-        openCard = new ArrayList<Integer>(){{add(1);add(2);add(4);add(5);add(6);add(7);add(-1);}};
+        openCard = new ArrayList<Integer>(){{add(1);add(2);add(3);add(4);add(5);add(6);add(7);add(-1);}};
     }
 
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> fetchItemsByWxUserIdList(List<Integer> wxUserIdList, int index, int pageSize) {
