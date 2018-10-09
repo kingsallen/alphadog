@@ -1144,7 +1144,7 @@ public class EmployeeEntity {
         //添加奖金
         if(nextStageDetail !=null && move == 1 ) {
 
-            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nextStageDetail.getId());
+            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nextStageDetail.getId(),applicationId);
             //取id最大的一条,如果此节点已经有一条最新的增加奖金记录 直接返回
             if(latestOne != null && latestOne.getBonus() > 0 ) {
                 return;
@@ -1185,14 +1185,14 @@ public class EmployeeEntity {
         //减少奖金
         if( move == 0 &&  nowStageDetail!=null) {
 
-            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nowStageDetail.getId());
+            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nowStageDetail.getId(),applicationId);
             //取id最大的一条 如果此节点已经有一条最新的扣减记录 直接返回
             if(latestOne != null && latestOne.getBonus() < 0 ) {
                 return;
             }
 
             //获取用户当前节点发放的奖金,
-            ReferralEmployeeBonusRecord recordGTZero = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdGTZero(employeeId, nowStageDetail.getId());
+            ReferralEmployeeBonusRecord recordGTZero = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdGTZero(employeeId, nowStageDetail.getId(),applicationId);
 
             //如果有该节点发放奖金,复制一条，将奖金设为负存入DB
             if(recordGTZero !=null) {
