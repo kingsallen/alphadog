@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
@@ -95,7 +96,11 @@ public class EmployeeBatchHandler {
                     //这条数据需要更新
                     index = uniqueFlags.get(flag);
                     dataStatus[index] = NEED_UPDATE;
-                    batchForm.getData().get(index).setId(record.getId());
+                    UserEmployeeStruct formData = batchForm.getData().get(index);
+                    if(StringUtils.isEmptyList(formData.getUpdateIds())){
+                        formData.setUpdateIds(new ArrayList<>());
+                    }
+                    formData.getUpdateIds().add(record.getId());    //一条ats传过来的UserEmployeeStruct可能对应多条数据库的user_employee数据
                 } else {
                     //这条数据需要删除
                     delIds.add(record.getId());
@@ -142,7 +147,7 @@ public class EmployeeBatchHandler {
         }
 
         if (updateDatas.size() > 0) {
-            updateEmployees(updateDatas, batchForm);
+            updateEmployees(createUpdateDatas(updateDatas), batchForm);
         }
 
         logger.info("postPutUserEmployeeBatch {},result:{},", batchForm.getCompany_id(), dataStatus.length < 500 ? Arrays.toString(dataStatus) : ("成功处理" + dataStatus.length + "条"));
@@ -193,17 +198,38 @@ public class EmployeeBatchHandler {
      * @param updateDatas
      * @param batchForm
      */
-    private void updateEmployees(List<UserEmployeeStruct> updateDatas, UserEmployeeBatchForm batchForm) {
+    private void updateEmployees(List<UserEmployeeRecord> updateDatas, UserEmployeeBatchForm batchForm) {
         //每次最多一次更新100条
         int start = 0;
         while ((start + BATCH_SIZE) < updateDatas.size()) {
-            employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, start + BATCH_SIZE), UserEmployeeRecord.class));
+            employeeDao.updateRecords(updateDatas.subList(start, start + BATCH_SIZE));
             start += BATCH_SIZE;
             logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), BATCH_SIZE, updateDatas.size() - start);
         }
-        employeeDao.updateRecords(BeanUtils.structToDB(updateDatas.subList(start, updateDatas.size()), UserEmployeeRecord.class));
+        employeeDao.updateRecords(updateDatas.subList(start, updateDatas.size()));
         searchengineEntity.updateEmployeeAwards(updateDatas.subList(start, updateDatas.size()).stream().map(m -> m.getId()).collect(Collectors.toList()));
         logger.info("postPutUserEmployeeBatch {},批量更新数据{}条,剩余{}条", batchForm.getCompany_id(), updateDatas.size() - start, 0);
+    }
+
+    /**
+     * 一条ats传过来的UserEmployeeStruct可能对应多条数据库的user_employee数据
+     * 所以一个UserEmployeeStruct，根据updateIds生成多个UserEmployeeRecord
+     *
+     * @param partUpdateDatas
+     * @return
+     */
+    private List<UserEmployeeRecord> createUpdateDatas(List<UserEmployeeStruct> partUpdateDatas){
+        List<UserEmployeeRecord> datasToBeUpdate = new ArrayList<>();
+        for(UserEmployeeStruct updateData:partUpdateDatas){
+            if(!StringUtils.isEmptyList(updateData.getUpdateIds())) {
+                for (int updateId : updateData.getUpdateIds()) {
+                    UserEmployeeRecord temp = BeanUtils.structToDB(updateData, UserEmployeeRecord.class);
+                    temp.setId(updateId);
+                    datasToBeUpdate.add(temp);
+                }
+            }
+        }
+        return datasToBeUpdate;
     }
 
     /**
