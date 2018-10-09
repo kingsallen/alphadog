@@ -1352,7 +1352,16 @@ public class EmployeeEntity {
         return bonusVOPageVO;
     }
 
-
+    /**
+     * 添加奖金成功后,推送MQ消息,微信端发送入职奖金消息通知
+     * @param appId
+     * @param stage
+     * @param nextStage
+     * @param applierId
+     * @param positionId
+     * @param move
+     * @param operationTime
+     */
     @Transactional
     public void publishAddBonusChangeEvent(int appId, int stage, int nextStage, int applierId, int positionId, byte move, DateTime operationTime) {
 
