@@ -200,7 +200,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
      * @param id 员工编号
      * @param sysuserId 用户编号
      */
-    public void followWechat(int id, int sysuserId) {
+    public void followWechat(int id, int sysuserId, String time) {
 
         create.execute("update " +
                 " userdb.user_employee u " +
@@ -209,7 +209,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 "  from userdb.user_employee uu " +
                 "  where uu.sysuser_id = "+sysuserId+" and uu.activation = 0 and uu.disable = 0) ut " +
                 " on u.sysuser_id = ut.user_id " +
-                " set u.activation = "+EmployeeActiveState.Actived.getState()+
+                " set u.activation = "+EmployeeActiveState.Actived.getState() +
+                " , set u.binding_time = " + time +
                 " where u.activation = "+ EmployeeActiveState.UnFollow.getState() + " " +
                 " and u.id = "+ id + " and ut.id is null");
     }
