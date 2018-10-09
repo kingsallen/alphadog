@@ -123,7 +123,7 @@ public class ReferralEmployeeBonusRecordDao extends com.moseeker.baseorm.db.refe
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord> fetchByEmployeeId(Integer employeeId, Integer pageNumber, Integer pageSize) {
 
         List<SortField<?>> fields = new ArrayList<>(2);
-        fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.UPDATE_TIME.desc());
+        fields.add(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID.desc());
 
         Result<ReferralEmployeeBonusRecordRecord> result =  using(configuration()).selectFrom(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD).
                 where(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.EMPLOYEE_ID.eq(employeeId))
