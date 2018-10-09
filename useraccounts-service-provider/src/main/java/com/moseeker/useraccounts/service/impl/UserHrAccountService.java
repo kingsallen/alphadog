@@ -3,12 +3,14 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -19,6 +21,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
@@ -76,6 +79,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -185,6 +189,9 @@ public class UserHrAccountService {
 
     @Autowired
     private HrAccountApplicationNotifyDao hrAccountApplicationNotifyDao;
+
+    @Autowired
+    private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
     /**
      * 修改手机号码
      *
@@ -1588,6 +1595,13 @@ public class UserHrAccountService {
             }
         }
 
+        // 设置解绑时间
+        List<ReferralEmployeeRegisterLog> referralEmployeeRegisterLogs = referralEmployeeRegisterLogDao.fetchByEmployeeId(userEmployeeId);
+        if(!CollectionUtils.isEmpty(referralEmployeeRegisterLogs) && (referralEmployeeRegisterLogs.get(0)!= null)) {
+            Timestamp timestamp = referralEmployeeRegisterLogs.get(0).getOperateTime();
+            userEmployeeDetailVO.setUnbindingTime(timestamp.toString());
+        }
+
         return userEmployeeDetailVO;
     }
 
@@ -2141,5 +2155,4 @@ public class UserHrAccountService {
         }
         return bonusVOPageVO;
     }
-
 }
