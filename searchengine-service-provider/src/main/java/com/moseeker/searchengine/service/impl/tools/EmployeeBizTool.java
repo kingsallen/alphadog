@@ -7,6 +7,7 @@ import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,7 +71,7 @@ public class EmployeeBizTool {
                     }},
                     keyword,
                     defaultquery);*/
-            searchUtil.shouldMatchParseQuery(new ArrayList<String>(){{
+            searchUtil.matchPhrasePrefixQuery(new ArrayList<String>(){{
                                                  add("email");add("mobile");add("nickname");add("custom_field");add("cname");
                                              }},
                     keyword,
