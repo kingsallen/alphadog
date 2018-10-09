@@ -25,7 +25,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
   private static final org.apache.thrift.protocol.TField BINDING_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("bindingTime", org.apache.thrift.protocol.TType.STRING, (short)12);
   private static final org.apache.thrift.protocol.TField AWARD_FIELD_DESC = new org.apache.thrift.protocol.TField("award", org.apache.thrift.protocol.TType.I32, (short)13);
   private static final org.apache.thrift.protocol.TField CUSTOM_FIELD_VALUES_FIELD_DESC = new org.apache.thrift.protocol.TField("customFieldValues", org.apache.thrift.protocol.TType.LIST, (short)14);
-  private static final org.apache.thrift.protocol.TField BONUS_FIELD_DESC = new org.apache.thrift.protocol.TField("bonus", org.apache.thrift.protocol.TType.I32, (short)15);
+  private static final org.apache.thrift.protocol.TField BONUS_FIELD_DESC = new org.apache.thrift.protocol.TField("bonus", org.apache.thrift.protocol.TType.STRING, (short)15);
   private static final org.apache.thrift.protocol.TField AUTH_METHOD_FIELD_DESC = new org.apache.thrift.protocol.TField("authMethod", org.apache.thrift.protocol.TType.I32, (short)16);
   private static final org.apache.thrift.protocol.TField UNBINDING_TIME_FIELD_DESC = new org.apache.thrift.protocol.TField("unbindingTime", org.apache.thrift.protocol.TType.STRING, (short)17);
 
@@ -46,7 +46,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
   public String bindingTime; // optional
   public int award; // optional
   public java.util.List<java.util.Map<String,java.util.List<String>>> customFieldValues; // optional
-  public int bonus; // optional
+  public String bonus; // optional
   public int authMethod; // optional
   public String unbindingTime; // optional
 
@@ -161,8 +161,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
   private static final int __ACTIVATION_ISSET_ID = 1;
   private static final int __COMPANYID_ISSET_ID = 2;
   private static final int __AWARD_ISSET_ID = 3;
-  private static final int __BONUS_ISSET_ID = 4;
-  private static final int __AUTHMETHOD_ISSET_ID = 5;
+  private static final int __AUTHMETHOD_ISSET_ID = 4;
   private byte __isset_bitfield = 0;
   private static final _Fields optionals[] = {_Fields.ID,_Fields.USERNAME,_Fields.MOBILE,_Fields.EMAIL,_Fields.CUSTOM_FIELD,_Fields.NICK_NAME,_Fields.ACTIVATION,_Fields.COMPANY_NAME,_Fields.HEAD_IMG,_Fields.COMPANY_ID,_Fields.COMPANY_ABBREVIATION,_Fields.BINDING_TIME,_Fields.AWARD,_Fields.CUSTOM_FIELD_VALUES,_Fields.BONUS,_Fields.AUTH_METHOD,_Fields.UNBINDING_TIME};
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
@@ -201,7 +200,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
                 new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
                     new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING))))));
     tmpMap.put(_Fields.BONUS, new org.apache.thrift.meta_data.FieldMetaData("bonus", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
-        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+        new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     tmpMap.put(_Fields.AUTH_METHOD, new org.apache.thrift.meta_data.FieldMetaData("authMethod", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.UNBINDING_TIME, new org.apache.thrift.meta_data.FieldMetaData("unbindingTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -268,7 +267,9 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
       }
       this.customFieldValues = __this__customFieldValues;
     }
-    this.bonus = other.bonus;
+    if (other.isSetBonus()) {
+      this.bonus = other.bonus;
+    }
     this.authMethod = other.authMethod;
     if (other.isSetUnbindingTime()) {
       this.unbindingTime = other.unbindingTime;
@@ -299,8 +300,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     setAwardIsSet(false);
     this.award = 0;
     this.customFieldValues = null;
-    setBonusIsSet(false);
-    this.bonus = 0;
+    this.bonus = null;
     setAuthMethodIsSet(false);
     this.authMethod = 0;
     this.unbindingTime = null;
@@ -653,27 +653,28 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     }
   }
 
-  public int getBonus() {
+  public String getBonus() {
     return this.bonus;
   }
 
-  public UserEmployeeDetailVO setBonus(int bonus) {
+  public UserEmployeeDetailVO setBonus(String bonus) {
     this.bonus = bonus;
-    setBonusIsSet(true);
     return this;
   }
 
   public void unsetBonus() {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __BONUS_ISSET_ID);
+    this.bonus = null;
   }
 
   /** Returns true if field bonus is set (has been assigned a value) and false otherwise */
   public boolean isSetBonus() {
-    return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __BONUS_ISSET_ID);
+    return this.bonus != null;
   }
 
   public void setBonusIsSet(boolean value) {
-    __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __BONUS_ISSET_ID, value);
+    if (!value) {
+      this.bonus = null;
+    }
   }
 
   public int getAuthMethod() {
@@ -841,7 +842,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
       if (value == null) {
         unsetBonus();
       } else {
-        setBonus((Integer)value);
+        setBonus((String)value);
       }
       break;
 
@@ -1112,7 +1113,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     if (this_present_bonus || that_present_bonus) {
       if (!(this_present_bonus && that_present_bonus))
         return false;
-      if (this.bonus != that.bonus)
+      if (!this.bonus.equals(that.bonus))
         return false;
     }
 
@@ -1199,7 +1200,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
 
     hashCode = hashCode * 8191 + ((isSetBonus()) ? 131071 : 524287);
     if (isSetBonus())
-      hashCode = hashCode * 8191 + bonus;
+      hashCode = hashCode * 8191 + bonus.hashCode();
 
     hashCode = hashCode * 8191 + ((isSetAuthMethod()) ? 131071 : 524287);
     if (isSetAuthMethod())
@@ -1536,7 +1537,11 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
     if (isSetBonus()) {
       if (!first) sb.append(", ");
       sb.append("bonus:");
-      sb.append(this.bonus);
+      if (this.bonus == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.bonus);
+      }
       first = false;
     }
     if (isSetAuthMethod()) {
@@ -1745,8 +1750,8 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
             }
             break;
           case 15: // BONUS
-            if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.bonus = iprot.readI32();
+            if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+              struct.bonus = iprot.readString();
               struct.setBonusIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -1895,10 +1900,12 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
           oprot.writeFieldEnd();
         }
       }
-      if (struct.isSetBonus()) {
-        oprot.writeFieldBegin(BONUS_FIELD_DESC);
-        oprot.writeI32(struct.bonus);
-        oprot.writeFieldEnd();
+      if (struct.bonus != null) {
+        if (struct.isSetBonus()) {
+          oprot.writeFieldBegin(BONUS_FIELD_DESC);
+          oprot.writeString(struct.bonus);
+          oprot.writeFieldEnd();
+        }
       }
       if (struct.isSetAuthMethod()) {
         oprot.writeFieldBegin(AUTH_METHOD_FIELD_DESC);
@@ -2044,7 +2051,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
         }
       }
       if (struct.isSetBonus()) {
-        oprot.writeI32(struct.bonus);
+        oprot.writeString(struct.bonus);
       }
       if (struct.isSetAuthMethod()) {
         oprot.writeI32(struct.authMethod);
@@ -2144,7 +2151,7 @@ public class UserEmployeeDetailVO implements org.apache.thrift.TBase<UserEmploye
         struct.setCustomFieldValuesIsSet(true);
       }
       if (incoming.get(14)) {
-        struct.bonus = iprot.readI32();
+        struct.bonus = iprot.readString();
         struct.setBonusIsSet(true);
       }
       if (incoming.get(15)) {
