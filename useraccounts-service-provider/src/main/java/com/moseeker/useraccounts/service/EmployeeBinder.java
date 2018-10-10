@@ -217,12 +217,12 @@ public abstract class EmployeeBinder {
                         unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
                     }
                     unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
-                    log.info("unActiveEmployee update record");
+                    log.info("doneBind unActiveEmployee update record");
                     log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
+                    unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
                     if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                        unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
-                                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                                .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
                         employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
                     }
                     useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
