@@ -21,6 +21,9 @@ import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbConfig;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
@@ -2105,6 +2108,143 @@ public class PositionService {
         return result;
     }
 
+    @CounterIface
+    public List<RpExtInfo> getNewPositionListRpExt(List<Integer> pids){
+        if(StringUtils.isEmptyList(pids)){
+            return new ArrayList<>();
+        }
+        /*
+         获取配置红包的职位
+         */
+        List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList=jobPositionDao.getJobPositionByIdListAndHbStatus(pids);
+        if(StringUtils.isEmptyList(positionList)){
+            return new ArrayList<>();
+        }
+        int companyId=positionList.get(0).getCompanyId();
+        /*
+         获取公司下配置的红包
+         */
+        List<HrHbConfig> hrHbList=this.getHrHbList(companyId,3);
+        if(StringUtils.isEmptyList(hrHbList)){
+            return new ArrayList<>();
+        }
+        List<Integer> hrHbIdList=this.getHbConfgIdList(hrHbList);
+        /*
+         获取红包和公司的绑定罐系列表
+         */
+        List<HrHbPositionBinding> bindingList=hrHbPositionBindingDao.getHrHbPositionBindingListByPidListAndHbConfigList(pids,hrHbIdList);
+        if(StringUtils.isEmptyList(bindingList)){
+            return new ArrayList<>();
+        }
+        List<Integer> bindingIdList=this.getHrHbPositionBindingIdList(bindingList);
+        if(StringUtils.isEmptyList(bindingList)){
+            return new ArrayList<>();
+        }
+        /*
+         获取具体的绑定项
+         */
+        List<HrHbItems> hrHbItemsList=hrHbItemsDao.getHbItemsListBybindingIdList(bindingIdList,0);
+        if(StringUtils.isEmptyList(hrHbItemsList)){
+            return new ArrayList<>();
+        }
+        List<RpExtInfo> result=this.handlerPositionListRpExt(positionList,bindingList,hrHbItemsList,hrHbList);
+        return result;
+    }
+    /*
+     遍历处理数据，获取需要的RpExtInfo列表
+     */
+    private List<RpExtInfo> handlerPositionListRpExt(List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList,
+                                                     List<HrHbPositionBinding> bindingList,List<HrHbItems> hrHbItemsList,
+                                                     List<HrHbConfig> hrHbList){
+        List<RpExtInfo> result=new ArrayList<>();
+        for(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position:positionList){
+            RpExtInfo rpExtInfo=new RpExtInfo();
+            int pid=position.getId();
+            /*
+            找到职位下对应的HrHbPositionBinding.id的列表和HrHbConfig.id的列表
+             */
+            List<Integer> positionBindingIdList=new ArrayList<>();
+            List<Integer> hbConfigIdList=new ArrayList<>();
+            for(HrHbPositionBinding hrHbPositionBinding:bindingList){
+                if(pid==hrHbPositionBinding.getPositionId()){
+                    positionBindingIdList.add(hrHbPositionBinding.getId());
+                    if(!hbConfigIdList.contains(hrHbPositionBinding.getHbConfigId())){
+                        hbConfigIdList.add(hrHbPositionBinding.getHbConfigId());
+                    }
+                }
+            }
+            /*
+             根据获取的HrHbConfig.id，查找target 从而用来确定Employee_only的属性值
+             */
+            rpExtInfo.setEmployee_only(true);
+            if(!StringUtils.isEmptyList(hbConfigIdList)){
+                for(HrHbConfig hrHbConfig:hrHbList){
+                    int id=hrHbConfig.getId();
+                    if(hbConfigIdList.contains(id)){
+                        if(hrHbConfig.getTarget()>0){
+                            rpExtInfo.setEmployee_only(false);
+                            break;
+                        }
+                    }
+                }
+            }
+             /*
+             根据获取的HrHbConfig.id，查找HrHbItems列表 计算amount的值
+             */
+            if(!StringUtils.isEmptyList(positionBindingIdList)){
+                double remain=0;
+                for(HrHbItems hrHbItems:hrHbItemsList){
+                    int bid=hrHbItems.getBindingId();
+                    if(positionBindingIdList.contains(bid)){
+                        remain=remain+hrHbItems.getAmount().doubleValue();
+                    }
+                }
+                rpExtInfo.setRemain(toIntExact(round(remain)));
+
+            }
+            result.add(rpExtInfo);
+        }
+        return result;
+    }
+
+    /*
+     根据公司获取正在运行的红包配置表
+     */
+    private List<HrHbConfig> getHrHbList(int companyId,int status){
+        List<Integer> typeList=new ArrayList<>();
+        typeList.add(2);
+        typeList.add(3);
+        List<HrHbConfig> hrHbList=hrHbConfigDao.getHrHbConfigByCompanyId(companyId,status,typeList);
+        return hrHbList;
+    }
+    /*
+     获取HrHbConfig.id列表
+     */
+    private List<Integer> getHbConfgIdList(List<HrHbConfig> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(HrHbConfig hrHbConfig:list){
+            result.add(hrHbConfig.getId());
+        }
+        return result;
+    }
+    /*
+    获取HrHbPositionBinding.id列表
+    */
+    private List<Integer> getHrHbPositionBindingIdList(List<HrHbPositionBinding> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(HrHbPositionBinding hrHbPositionBinding:list){
+            result.add(hrHbPositionBinding.getId());
+        }
+        return result;
+    }
+
+
     /**
      * @param company_id      公司ID
      * @param department_name 部门名称
@@ -2185,8 +2325,8 @@ public class PositionService {
         });
 
         // 拼装红包信息
-        List<RpExtInfo> rpExtInfoList = getPositionListRpExt(pids);
-
+//        List<RpExtInfo> rpExtInfoList = getPositionListRpExt(pids);
+        List<RpExtInfo> rpExtInfoList = getNewPositionListRpExt(pids);
         result.forEach(s -> {
             RpExtInfo rpInfo = rpExtInfoList.stream().filter(e -> e.getPid() == s.getId()).findFirst().orElse(
                     null);

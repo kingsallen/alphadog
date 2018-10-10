@@ -57,13 +57,13 @@ public class PositionServiceTest {
 //		System.out.println(bool+"==================");
 	}
 
-//    @Test
+    @Test
     public void test() throws Exception {
     	List<Integer> list=new ArrayList<Integer>();
     	list.add(124340);
     	list.add(124341);
     	list.add(124342);
-        List<RpExtInfo> res= service.getPositionListRpExt(list);
+        List<RpExtInfo> res= service.getNewPositionListRpExt(list);
         System.out.println(res);
     }
 
