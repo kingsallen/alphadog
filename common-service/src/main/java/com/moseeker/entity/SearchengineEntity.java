@@ -422,9 +422,10 @@ public class SearchengineEntity {
             GetResponse response = client.prepareGet("awards", "award", userEmployeeId + "").execute().actionGet();
             // ES中的积分数据
             Map<String, Object> mapTemp = response.getSource();
+            logger.info("SearchengineEntity updateEmployeeAwards mapTemp:{}", mapTemp);
             if (mapTemp != null) {
                 if (mapTemp.get("award") != null) {
-                    employeeAward = (Integer)awards.get("award");
+                    employeeAward = (Integer)mapTemp.get("award");
                 }
                 // 积分信息
                 Map<String, Object> awardsMap = (Map) mapTemp.get("awards");
