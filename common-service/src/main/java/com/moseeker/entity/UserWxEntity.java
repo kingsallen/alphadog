@@ -239,7 +239,7 @@ public class UserWxEntity {
                                         : optional.get().getNickname());
                     }
                 }
-                if (org.apache.commons.lang.StringUtils.isBlank(result.get(userWxUserRecord.getId()))) {
+                if (org.apache.commons.lang.StringUtils.isBlank(result.get(userWxUserRecord.getId().intValue()))) {
                     result.put(userWxUserRecord.getId().intValue(), userWxUserRecord.getNickname());
                 }
 
