@@ -58,7 +58,7 @@ public class HBBizTool {
                                              Map<Integer, HrHbScratchCardRecord> cardNoMap) {
         RedPacket redPacket = new RedPacket();
         redPacket.setId(hrHbItemsRecord.getId());
-        redPacket.setCandidateName(candidateNameMap.get(hrHbItemsRecord.getTriggerWxuserId()));
+        redPacket.setCandidateName(candidateNameMap.get(hrHbItemsRecord.getTriggerWxuserId().intValue()));
         redPacket.setCardno(cardNoMap.get(hrHbItemsRecord.getId()).getCardno());
         HrHbConfigRecord configRecord = configMap.get(hrHbItemsRecord.getHbConfigId());
         if (configRecord != null) {
