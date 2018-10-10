@@ -79,11 +79,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -1581,7 +1581,8 @@ public class UserHrAccountService {
         ReferralEmployeeRegisterLog referralEmployeeRegisterLog = referralEmployeeRegisterLogDao.getRegisterLogByEmployeeId(userEmployeeId, 0);
         if(referralEmployeeRegisterLog!=null) {
             Timestamp timestamp = referralEmployeeRegisterLog.getOperateTime();
-            userEmployeeDetailVO.setUnbindingTime(timestamp.toString());
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            userEmployeeDetailVO.setUnbindingTime(df.format(timestamp));
         }
 
         return userEmployeeDetailVO;
