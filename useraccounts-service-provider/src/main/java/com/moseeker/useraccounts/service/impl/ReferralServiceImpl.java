@@ -88,7 +88,7 @@ public class ReferralServiceImpl implements ReferralService {
             logger.info("ReferralServiceImpl getRedPackets totalRedPackets:{}", redPackets.getTotalRedpackets());
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
-            int count = itemsDao.countByWxUserIdList(wxUserIdList);
+            double count = itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList);
             redPackets.setTotalRedpackets(count);
             List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
@@ -141,7 +141,7 @@ public class ReferralServiceImpl implements ReferralService {
         List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
             List<Integer> wxUserIdList = wxUserRecords.stream().map(UserWxUserRecord::getSysuserId).collect(Collectors.toList());
-            int count = itemsDao.countByWxUserIdList(wxUserIdList);
+            double count = itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList);
             bonusList.setTotalRedpackets(count);
         }
         return bonusList;
