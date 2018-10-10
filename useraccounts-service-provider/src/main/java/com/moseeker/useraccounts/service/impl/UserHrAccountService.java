@@ -995,7 +995,7 @@ public class UserHrAccountService {
                             } else if (flag.intValue() == 1) {
                                 userEmployeeVO.setAward(0);
                             }
-                            userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
+                            userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                             userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
                             userEmployeeVOS.add(userEmployeeVO);
                         } else {
@@ -1032,7 +1032,7 @@ public class UserHrAccountService {
                         userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                     }
                     userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                    userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
+                    userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                     userEmployeeVOS.add(userEmployeeVO);
                 }
             }
@@ -1545,7 +1545,7 @@ public class UserHrAccountService {
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
         userEmployeeDetailVO.setAuthMethod(new Integer(userEmployeeDO.getAuthMethod()).intValue());
-        userEmployeeDetailVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
+        userEmployeeDetailVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
 
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
@@ -1574,9 +1574,9 @@ public class UserHrAccountService {
         }
 
         // 设置解绑时间
-        List<ReferralEmployeeRegisterLog> referralEmployeeRegisterLogs = referralEmployeeRegisterLogDao.fetchByEmployeeId(userEmployeeId);
-        if(!CollectionUtils.isEmpty(referralEmployeeRegisterLogs) && (referralEmployeeRegisterLogs.get(0)!= null)) {
-            Timestamp timestamp = referralEmployeeRegisterLogs.get(0).getOperateTime();
+        ReferralEmployeeRegisterLog referralEmployeeRegisterLog = referralEmployeeRegisterLogDao.getRegisterLogByEmployeeId(userEmployeeId, 0);
+        if(referralEmployeeRegisterLog!=null) {
+            Timestamp timestamp = referralEmployeeRegisterLog.getOperateTime();
             userEmployeeDetailVO.setUnbindingTime(timestamp.toString());
         }
 
@@ -2045,7 +2045,7 @@ public class UserHrAccountService {
                     userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                 }
                 userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
-                userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).intValue());
+                userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                 userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
                 userEmployeeVOS.add(userEmployeeVO);
             }
@@ -2136,10 +2136,4 @@ public class UserHrAccountService {
         return bonusVOPageVO;
     }
 
-    public static void main(String[] args) {
-        String date = "2018-10-09T18:09:09.766+08:00";
-        DateTime dateTime = new DateTime(date);
-
-        System.out.println(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
-    }
 }
