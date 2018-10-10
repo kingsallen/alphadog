@@ -416,12 +416,16 @@ public class SearchengineEntity {
                 return ResponseUtils.fail(9999, "更新的数据为空！");
             }
             JSONObject jsonObject = new JSONObject();
+            int employeeAward = 0;
             // 积分信息
             JSONObject awards = new JSONObject();
             GetResponse response = client.prepareGet("awards", "award", userEmployeeId + "").execute().actionGet();
             // ES中的积分数据
             Map<String, Object> mapTemp = response.getSource();
             if (mapTemp != null) {
+                if (mapTemp.get("award") != null) {
+                    employeeAward = (Integer)awards.get("award");
+                }
                 // 积分信息
                 Map<String, Object> awardsMap = (Map) mapTemp.get("awards");
                 String lastUpdateTime = userEmployeePointsRecordDO.getUpdateTime();
@@ -467,11 +471,8 @@ public class SearchengineEntity {
                 }
 
             }
-            int award = 0;
-            if (awards.get("award") != null) {
-                award = (Integer)awards.get("award");
-            }
-            awards.put("award", award + userEmployeePointsRecordDO.getAward());
+
+            awards.put("award", employeeAward + userEmployeePointsRecordDO.getAward());
             jsonObject.put("awards", awards);
             logger.info(JSONObject.toJSONString(jsonObject));
             // 更新ES
