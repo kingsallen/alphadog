@@ -467,13 +467,16 @@ public class SearchengineEntity {
                 }
 
             }
+            logger.info("SearchengineEntity updateEmployeeAwards source.award:{}", jsonObject.get("award"));
             int award = 0;
             if (awards.get("award") != null) {
                 award = (Integer)awards.get("award");
             }
+            logger.info("SearchengineEntity updateEmployeeAwards award:{}", award);
             awards.put("award", award + userEmployeePointsRecordDO.getAward());
+            logger.info("SearchengineEntity updateEmployeeAwards after update award:{}", awards.get("award"));
             jsonObject.put("awards", awards);
-            logger.info(JSONObject.toJSONString(jsonObject));
+            logger.info("SearchengineEntity",JSONObject.toJSONString(jsonObject));
             // 更新ES
             client.prepareUpdate("awards", "award", userEmployeeId + "")
                     .setDoc(jsonObject).get();
