@@ -418,10 +418,8 @@ public class ReferralEntity {
                         employmentDateMap.put(operation.getAppId().intValue(), operation.getOptTime().getTime());
                     });
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
             bonusData.setEmploymentDateMap(employmentDateMap);
         }

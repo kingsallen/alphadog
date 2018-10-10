@@ -94,7 +94,7 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 			List<Integer> applicationIdList, int recruitStatus) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(" select op.id, op.app_id, op.operate_tpl_id, op.opt_time ");
-		sb.append(" from (select operation.id, operation.app_id, operation.operate_tpl_id ");
+		sb.append(" from (select operation.id, operation.app_id, operation.operate_tpl_id, operation.opt_time ");
 		sb.append(" from hrdb.hr_operation_record operation ");
 		sb.append(" where operation.app_id in ");
 		sb.append(StringUtils.converToStr(applicationIdList));
