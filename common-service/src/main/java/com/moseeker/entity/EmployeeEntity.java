@@ -75,7 +75,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -303,6 +302,13 @@ public class EmployeeEntity {
         return true;
     }
 
+    /**
+     * 员工认证，新增员工认证积分并且修改认证时间
+     * @param employeeId 员工编号
+     * @param companyId 公司编号
+     * @return true 修改成功；false 修改失败
+     * @throws EmployeeException
+     */
     public boolean addRewardByEmployeeVerified(int employeeId, int companyId) throws EmployeeException {
 
         HrPointsConfRecord record = hrPointsConfDao.getEmployeeVerified(companyId);
