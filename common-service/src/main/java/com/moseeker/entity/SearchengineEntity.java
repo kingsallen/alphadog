@@ -424,7 +424,7 @@ public class SearchengineEntity {
             Map<String, Object> mapTemp = response.getSource();
             if (mapTemp != null) {
                 if (mapTemp.get("award") != null) {
-                    employeeAward = (Integer)awards.get("award");
+                    employeeAward = (Integer)mapTemp.get("award");
                 }
                 // 积分信息
                 Map<String, Object> awardsMap = (Map) mapTemp.get("awards");
