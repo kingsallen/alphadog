@@ -9,7 +9,7 @@ public class Bonus {
 
     private int id;
     private java.lang.String name;
-    private String value;
+    private double value;
     private java.lang.String positionTitle;
     private java.lang.String candidateName;
     private long employmentDate;
@@ -33,11 +33,11 @@ public class Bonus {
         this.name = name;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
     }
 
