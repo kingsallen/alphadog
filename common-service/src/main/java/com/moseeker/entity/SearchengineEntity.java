@@ -472,7 +472,7 @@ public class SearchengineEntity {
 
             }
 
-            awards.put("award", employeeAward + userEmployeePointsRecordDO.getAward());
+            jsonObject.put("award", employeeAward + userEmployeePointsRecordDO.getAward());
             jsonObject.put("awards", awards);
             logger.info(JSONObject.toJSONString(jsonObject));
             // 更新ES
