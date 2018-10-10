@@ -1120,9 +1120,9 @@ public class EmployeeEntity {
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
-        logger.info("Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0) {} {}",Integer.valueOf(jobPositionRecord.getIsReferral()),(Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)));
         //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
         if(jobPositionRecord == null || Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)) {
+            logger.info("addReferralBonus 不是内推职位 不发内推奖金 positionId {}  isReferral {} ",positionId,jobPositionRecord.getIsReferral());
             return;
         }
         //现在节点奖金主数据
@@ -1134,7 +1134,9 @@ public class EmployeeEntity {
         Integer userId = jobApplication.getRecommenderUserId();
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
         if(userEmployeeRecord == null) {
-            throw new BIZException(-1,"不是已认证员工,不能发内推奖金");
+
+            logger.info("addReferralBonus 不是已认证员工,不能发内推奖金 employeeId {}",userId);
+            throw new BIZException(-1, userId +" 不是已认证员工,不能发内推奖金");
         }
         Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
@@ -1144,7 +1146,7 @@ public class EmployeeEntity {
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
         Integer employeeBonus =  userEmployeeDO.getBonus();
 
-        logger.info("addReferralBonus  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {} applierId{}",
+        logger.info("addReferralBonus params  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {} applierId{}",
                 applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus,applierId);
 
         //添加奖金
