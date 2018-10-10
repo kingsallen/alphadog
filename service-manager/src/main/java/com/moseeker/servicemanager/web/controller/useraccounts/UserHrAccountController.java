@@ -919,7 +919,7 @@ public class UserHrAccountController {
             int filter = params.getInt("filter", 0);
             String order = params.getString("order", "");
             String asc = params.getString("asc", "");
-            String timeSpan = params.getString("timeSpan", "");
+            String timeSpan = params.getString("timespan", "");
             String email_isvalid = params.getString("email_isvalid", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);

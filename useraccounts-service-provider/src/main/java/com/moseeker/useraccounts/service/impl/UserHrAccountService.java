@@ -2136,10 +2136,4 @@ public class UserHrAccountService {
         return bonusVOPageVO;
     }
 
-    public static void main(String[] args) {
-        String date = "2018-10-09T18:09:09.766+08:00";
-        DateTime dateTime = new DateTime(date);
-
-        System.out.println(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
-    }
 }
