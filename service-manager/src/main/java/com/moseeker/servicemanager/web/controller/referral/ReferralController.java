@@ -300,6 +300,7 @@ public class ReferralController {
                 result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
                     RedPacket redPacketStruct = new RedPacket();
                     BeanUtils.copyProperties(redPacket, redPacketStruct);
+                    redPacketStruct.setValue(String.valueOf(redPacket.getValue()).replace(".00", ""));
                     return redPacketStruct;
                 }).collect(Collectors.toList()));
             }
@@ -329,6 +330,7 @@ public class ReferralController {
                 result.setBonus(bonusList.getBonus().stream().map(bonusStruct -> {
                     Bonus bonus = new Bonus();
                     BeanUtils.copyProperties(bonusStruct, bonus);
+                    bonus.setValue(String.valueOf(bonusStruct.getValue()).replace(".00", ""));
                     return bonus;
                 }).collect(Collectors.toList()));
             }
