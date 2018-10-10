@@ -19,6 +19,8 @@ import java.util.List;
 
 import static org.jooq.impl.DSL.sum;
 
+import java.util.List;
+
 @Repository
 public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
 
@@ -92,5 +94,12 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
             return 0;
         }
         return 0;
+    }
+
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> getHbItemsListBybindingIdList(List<Integer> bindingList,int wxUserId){
+        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> list=create.selectFrom(HrHbItems.HR_HB_ITEMS)
+                .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.eq(wxUserId)).and(HrHbItems.HR_HB_ITEMS.BINDING_ID.in(bindingList))
+                .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems.class);
+        return list;
     }
 }

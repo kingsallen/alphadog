@@ -95,10 +95,11 @@ public class MessageTemplateEntity {
         String MDString= MD5Util.md5(params.getUserId()+params.getCompanyId()+""+new Date().getTime());
         MDString=MDString.substring(8,24);
         String url=params.getUrl().replace("{}",wxSignture);
+        HrCompanyDO company=this.getCompanyById(params.getCompanyId());
         if(params.getType()==2){
             //校验推送职位是否下架
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),0);
-            url=url.replace("{algorithm_name}",params.getAlgorithmName()).replace("recom_code",MDString);
+//            url=url.replace("{algorithm_name}",params.getAlgorithmName()).replace("recom_code",MDString);
         }else if(params.getType()==3){
             //校验推送职位是否下架,以及将数据加入推送的表中
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),1);
@@ -106,7 +107,10 @@ public class MessageTemplateEntity {
             url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
         url = url+"&from_template_message="+params.getTemplateId()+"&send_time=" + new Date().getTime();
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId());
+        if(url.contains("{hr_id}")){
+            url=url.replace("{hr_id}",company.getHraccountId()+"");
+        }
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName());
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;
@@ -115,6 +119,7 @@ public class MessageTemplateEntity {
         this.handlerRecomLog(params,MDString,1);
         return messageTemplateNoticeStruct;
     }
+
 
     /*
       添加日志
@@ -194,13 +199,13 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int wxId,int type,int companyId,int weChatId){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int wxId,int type,int companyId,int weChatId,String companyName){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId,wxId,weChatId);
         }else if(type==2||type==3){
-            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId);
+            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,companyName);
         }else if(type==4){
             colMap=this.handleDataProfileTemplate(userId,companyId,weChatId);
         }
@@ -255,10 +260,10 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId,String companyName){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String jobName="";
-        String companyName=this.getCompanyName(companyId);
+//        String companyName=this.getCompanyName(companyId);
         if(type==2){
             jobName = this.getJobName(userId,companyId,0);
             String firstName="根据您的求职意愿，仟寻为您挑选了一些新机会。";
