@@ -425,6 +425,7 @@ public class SearchengineEntity {
             logger.info("SearchengineEntity updateEmployeeAwards mapTemp:{}", mapTemp);
             if (mapTemp != null) {
                 if (mapTemp.get("award") != null) {
+                    logger.info("SearchengineEntity updateEmployeeAwards mapTemp.award:{}", mapTemp.get("award"));
                     employeeAward = (Integer)mapTemp.get("award");
                 }
                 // 积分信息
@@ -482,8 +483,7 @@ public class SearchengineEntity {
                     .setDoc(jsonObject).get();
             return ResponseUtils.success("");
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
         logger.info("------增量更新员工积分信息结束-------");
         return ResponseUtils.success("");
