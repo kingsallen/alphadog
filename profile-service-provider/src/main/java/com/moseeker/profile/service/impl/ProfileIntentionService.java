@@ -150,9 +150,9 @@ public class ProfileIntentionService {
 
                     List<Map<String, Object>> industryMaps = new ArrayList<>();
                     if (industries != null && industries.size() > 0) {
-                        Map<String, Object> industryMap = new HashMap<>();
                         for (ProfileIntentionIndustryRecord record : industries) {
                             if (intention.getId().intValue() == record.getProfileIntentionId().intValue()) {
+                                Map<String, Object> industryMap = new HashMap<>();
                                 industryMap.put("industry_code", record.getIndustryCode().intValue());
                                 industryMap.put("industry_name", record.getIndustryName());
                                 industryMaps.add(industryMap);
