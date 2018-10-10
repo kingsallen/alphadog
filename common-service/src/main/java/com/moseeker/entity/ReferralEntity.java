@@ -416,16 +416,18 @@ public class ReferralEntity {
             try {
                 List<HrOperationRecord> operationRecordList = hiredFuture.get();
                 if (operationRecordList != null && operationRecordList.size() > 0) {
+                    logger.info("ReferralEntity fetchBonusData operationRecordList:{}", operationRecordList);
                     operationRecordList.forEach(operation -> {
                         employmentDateMap.put(operation.getAppId().intValue(), operation.getOptTime().getTime());
                     });
+                } else {
+                    logger.info("ReferralEntity fetchBonusData operationRecordList is null!");
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
             }
             bonusData.setEmploymentDateMap(employmentDateMap);
+            logger.info("ReferralEntity fetchBonusData employmentDateMap:{}", bonusData.getEmploymentDateMap());
         }
 
         List<Integer> stageIdList = referralEmployeeBonusRecordList
