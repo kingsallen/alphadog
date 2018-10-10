@@ -95,7 +95,7 @@ public class ReferralServiceImpl implements ReferralService {
 
                 logger.info("ReferralServiceImpl getRedPackets itemsRecords.size:{}", itemsRecords.size());
                 HBData data = referralEntity.fetchHBData(itemsRecords);
-                logger.info("ReferralServiceImpl getRedPackets data:{}", data);
+                logger.info("ReferralServiceImpl getRedPackets data.candidateNameMap:{}", data.getCandidateNameMap());
 
                 List<RedPacket> list = new ArrayList<>();
                 for (HrHbItems hrHbItems : itemsRecords) {
