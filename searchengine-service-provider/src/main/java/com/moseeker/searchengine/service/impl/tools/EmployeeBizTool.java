@@ -112,19 +112,19 @@ public class EmployeeBizTool {
                 for (int i = 0; i < orders.length; i++) {
                     // 首先判断排序的条件是否正确
                     if (UserEmployee.USER_EMPLOYEE.field(orders[i]) != null) {
-                        if (Integer.valueOf(ascs[i]).intValue() == 1) {   //倒序
-                            searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), SortOrder.DESC);
-                        } else if (Integer.valueOf(ascs[i]).intValue() == 0) {// 正序
+                        if (Integer.valueOf(ascs[i]).intValue() == 1) {   //升序
                             searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), SortOrder.ASC);
+                        } else if (Integer.valueOf(ascs[i]).intValue() == 0) {// 倒序
+                            searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), SortOrder.DESC);
                         }
                     }
                 }
             } else {
                 // 首先判断排序的条件是否正确
                 if (UserEmployee.USER_EMPLOYEE.field(order) != null) {
-                    if (Integer.valueOf(asc).intValue() == 0) {  // 正序
+                    if (Integer.valueOf(asc).intValue() == 0) {  // 倒序
                         searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(order).getName(), SortOrder.DESC);
-                    } else if (Integer.valueOf(asc).intValue() == 1) { //倒序
+                    } else if (Integer.valueOf(asc).intValue() == 1) { //升序
                         searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(order).getName(), SortOrder.ASC);
                     }
                 }
