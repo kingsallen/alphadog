@@ -328,10 +328,10 @@ public class ReferralEntity {
         try {
             List<HrHbConfigRecord> configRecordList= configListFuture.get();
             if (configRecordList != null && configRecordList.size() > 0) {
-                configRecordList.forEach(hrHbConfigRecord -> {
-                    configMap.put(hrHbConfigRecord.getId(), hrHbConfigRecord);
-                });
+                configRecordList.forEach(hrHbConfigRecord -> configMap.put(hrHbConfigRecord.getId(), hrHbConfigRecord));
             }
+
+            
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
