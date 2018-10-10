@@ -310,6 +310,8 @@ public class ReferralEntity {
             logger.error(e.getMessage(), e);
         }
         data.setCandidateNameMap(candidateNameMap);
+        logger.info("ReferralEntity fetchHBData triggerWxUserIdList:{}", triggerWxUserIdList);
+        logger.info("ReferralEntity fetchHBData candidateNameMap:{}", data.getCandidateNameMap());
 
         Map<Integer, HrHbScratchCardRecord> cardNoMap = new HashMap<>();
         try {
