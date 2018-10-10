@@ -180,7 +180,7 @@ public abstract class EmployeeBinder {
             log.info("result:{}", useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime()));
             String bindTime = useremployee.getBindingTime();
-            useremployee.setBindingTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+            useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
             employeeDao.updateData(useremployee);
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
@@ -249,6 +249,8 @@ public abstract class EmployeeBinder {
             userUserDO.setName(useremployee.getCname());
             userDao.updateData(userUserDO);
         }
+
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
 
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
