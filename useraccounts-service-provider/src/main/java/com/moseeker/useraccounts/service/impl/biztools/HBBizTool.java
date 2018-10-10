@@ -73,8 +73,6 @@ public class HBBizTool {
         redPacket.setPositionTitle(titleMap.get(hrHbItemsRecord.getBindingId()));
         if (hrHbItemsRecord.getOpenTime() != null) {
             redPacket.setOpenTime(hrHbItemsRecord.getOpenTime().getTime());
-        } else {
-            redPacket.setOpenTime(hrHbItemsRecord.getUpdateTime().getTime());
         }
         return redPacket;
     }

@@ -90,7 +90,8 @@ public class ReferralServiceImpl implements ReferralService {
 
             double count = itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList);
             redPackets.setTotalRedpackets(count);
-            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(), pageUtil.getSize());
+            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(),
+                    pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
                 logger.info("ReferralServiceImpl getRedPackets itemsRecords.size:{}", itemsRecords.size());
@@ -125,7 +126,8 @@ public class ReferralServiceImpl implements ReferralService {
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
             List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList
-                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId(), pageUtil.getIndex(), pageUtil.getSize());
+                    = referralEmployeeBonusDao.fetchByEmployeeIdOrderByClaim(userEmployeeDO.getId(),
+                    pageUtil.getIndex(), pageUtil.getSize());
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
@@ -141,7 +143,10 @@ public class ReferralServiceImpl implements ReferralService {
         }
         List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
-            List<Integer> wxUserIdList = wxUserRecords.stream().map(UserWxUserRecord::getSysuserId).collect(Collectors.toList());
+            List<Integer> wxUserIdList = wxUserRecords
+                    .stream()
+                    .map(UserWxUserRecord::getSysuserId)
+                    .collect(Collectors.toList());
             double count = itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList);
             bonusList.setTotalRedpackets(count);
         }
