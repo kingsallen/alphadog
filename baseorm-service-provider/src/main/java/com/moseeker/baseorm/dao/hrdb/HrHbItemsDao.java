@@ -66,7 +66,10 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         if (wxUserIdList != null && wxUserIdList.size() > 0) {
             return create.selectCount()
                     .from(HrHbItems.HR_HB_ITEMS)
+                    .innerJoin(HrHbScratchCard.HR_HB_SCRATCH_CARD)
+                    .on(HrHbItems.HR_HB_ITEMS.ID.eq(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID))
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
+                    .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
                     .fetchOne().value1();
         } else {
             return 0;
@@ -77,7 +80,10 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         if (wxUserIdList != null && wxUserIdList.size() > 0) {
             Record1<BigDecimal> bigDecimalRecord1 = create.select(sum(HrHbItems.HR_HB_ITEMS.AMOUNT))
                     .from(HrHbItems.HR_HB_ITEMS)
+                    .innerJoin(HrHbScratchCard.HR_HB_SCRATCH_CARD)
+                    .on(HrHbItems.HR_HB_ITEMS.ID.eq(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID))
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
+                    .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
                     .fetchOne();
             if(bigDecimalRecord1 !=null && bigDecimalRecord1.value1() !=null) {
                 return bigDecimalRecord1.value1().doubleValue();
