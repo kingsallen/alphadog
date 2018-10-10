@@ -77,7 +77,7 @@ public class ReferralServiceImpl implements ReferralService {
                     .map(userWxUserRecord -> userWxUserRecord.getId().intValue())
                     .collect(Collectors.toList());
             //计算红包总额
-            redPackets.setTotalRedpackets(itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList));
+            redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList));
 
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
@@ -133,7 +133,7 @@ public class ReferralServiceImpl implements ReferralService {
                     .stream()
                     .map(UserWxUserRecord::getSysuserId)
                     .collect(Collectors.toList());
-            double count = itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList);
+            double count = itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList);
             bonusList.setTotalRedpackets(count);
         }
         return bonusList;
