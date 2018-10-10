@@ -1574,9 +1574,9 @@ public class UserHrAccountService {
         }
 
         // 设置解绑时间
-        List<ReferralEmployeeRegisterLog> referralEmployeeRegisterLogs = referralEmployeeRegisterLogDao.fetchByEmployeeId(userEmployeeId);
-        if(!CollectionUtils.isEmpty(referralEmployeeRegisterLogs) && (referralEmployeeRegisterLogs.get(0)!= null)) {
-            Timestamp timestamp = referralEmployeeRegisterLogs.get(0).getOperateTime();
+        ReferralEmployeeRegisterLog referralEmployeeRegisterLog = referralEmployeeRegisterLogDao.getRegisterLogByEmployeeId(userEmployeeId, 0);
+        if(referralEmployeeRegisterLog!=null) {
+            Timestamp timestamp = referralEmployeeRegisterLog.getOperateTime();
             userEmployeeDetailVO.setUnbindingTime(timestamp.toString());
         }
 
