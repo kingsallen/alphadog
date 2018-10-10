@@ -282,6 +282,7 @@ public class SearchengineService {
 
                 ((BoolQueryBuilder) cityor).should(cityboosting);
             }
+            ((BoolQueryBuilder) cityor).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(cityor);
         }
 
@@ -293,6 +294,7 @@ public class SearchengineService {
                 QueryBuilder industryfilter = QueryBuilders.matchPhraseQuery("industry", industry);
                 ((BoolQueryBuilder) industryor).should(industryfilter);
             }
+            ((BoolQueryBuilder) industryor).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(industryor);
         }
         if (!StringUtils.isEmpty(occupations)) {
@@ -303,6 +305,7 @@ public class SearchengineService {
                 QueryBuilder occupationfilter = QueryBuilders.termQuery("search_data.occupation", occupation);
                 ((BoolQueryBuilder) occupationor).should(occupationfilter);
             }
+            ((BoolQueryBuilder) occupationor).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(occupationor);
         }
 
@@ -342,6 +345,7 @@ public class SearchengineService {
                 QueryBuilder degreefilter = QueryBuilders.termQuery("search_data.degree_name", degree_name);
                 ((BoolQueryBuilder) degreeor).should(degreefilter);
             }
+            ((BoolQueryBuilder) degreeor).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(degreeor);
         }
 
@@ -354,6 +358,7 @@ public class SearchengineService {
                 QueryBuilder companyfilter = QueryBuilders.matchPhraseQuery("company_id", company_id);
                 ((BoolQueryBuilder) companyor).should(companyfilter);
             }
+            ((BoolQueryBuilder) companyor).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(companyor);
         }
 
