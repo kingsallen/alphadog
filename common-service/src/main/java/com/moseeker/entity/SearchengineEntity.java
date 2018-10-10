@@ -327,6 +327,7 @@ public class SearchengineEntity {
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
+
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
