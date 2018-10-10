@@ -1050,10 +1050,15 @@ public class SearchengineService {
         List<String> list=this.getOrderFieldList();
         List<Map<String,Object>> result=new ArrayList<>();
         Map<String,String> newParams=this.getOtherParams(params);
-        handlerMobotSearch(list,params,result,client);
+        handlerMobotSearch(list,newParams,result,client);
+        logger.info("===========main1============");
+
+        logger.info(JSON.toJSONString(result));
         if(result==null||result.size()==0){
             result=this.handlerMobotSearchShould(params,client);
         }
+        logger.info("===========main2============");
+        logger.info(JSON.toJSONString(result));
         return result;
     }
 
@@ -1077,13 +1082,13 @@ public class SearchengineService {
             searchUtil.handleTermShould(occupation,keyand,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(title)){
-            searchUtil.handleMatchParseShould(title,query,"title");
+            searchUtil.handleMatchParseShould(title,keyand,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(citys),"city",query);
+            searchUtil.shouldMatchParseQueryShould("city",citys,keyand);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQueryShould(searchUtil.stringConvertList(industry),"industry",query);
+            searchUtil.shouldMatchParseQueryShould("industry",industry,keyand);
         }
         if(StringUtils.isNotBlank(salary)){
             QueryBuilder keyand1 = QueryBuilders.boolQuery();
@@ -1096,17 +1101,21 @@ public class SearchengineService {
             ((BoolQueryBuilder) keyand).should(builder);
         }
         if(StringUtils.isNotBlank(employeeType)){
-            searchUtil.handleTermShould(employeeType,query,"employee_type");
+            searchUtil.handleTermShould(employeeType,keyand,"employee_type");
         }
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
-        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query)
                 .setSize(10)
                 .setTrackScores(true);
+        logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        logger.info("===========children1============");
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString(list));
         return list;
 
     }
@@ -1115,8 +1124,10 @@ public class SearchengineService {
         if(fieldList.size()>0&&result.size()<10){
             List<Integer> pidList=this.getPidList(result);
             List<Map<String,Object>> data=this.mobotSearch(params,pidList,client);
+            if(data!=null&&data.size()>0){
             result.addAll(data);
-            String field=fieldList.remove(-1);
+            }
+            String field=fieldList.remove(fieldList.size()-1);
             params.remove(field);
             handlerMobotSearch(fieldList, params, result,client );
         }else{
@@ -1181,10 +1192,10 @@ public class SearchengineService {
             searchUtil.handleMatchParse(title,query,"title");
         }
         if(StringUtils.isNotBlank(citys)){
-            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(citys),"city",query);
+            searchUtil.shouldMatchParseQuery("city",citys,query);
         }
         if(StringUtils.isNotBlank(industry)){
-            searchUtil.shouldMatchParseQuery(searchUtil.stringConvertList(industry),"industry",query);
+            searchUtil.shouldMatchParseQuery("industry",industry,query);
         }
         if(StringUtils.isNotBlank(salary)){
             searchUtil.handlerRangeLess(Integer.parseInt(salary),query,"salary_top");
@@ -1200,13 +1211,17 @@ public class SearchengineService {
         if(!com.moseeker.common.util.StringUtils.isEmptyList(pidList)){
             searchUtil.handlerNotTerms(pidList,query,"id");
         }
-        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE)
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query)
                 .setSize(10)
                 .setTrackScores(true);
+        logger.info(responseBuilder.toString());
         SearchResponse res=responseBuilder.execute().actionGet();
         Map<String,Object> result=searchUtil.handleData(res,"positionList");
         List<Map<String,Object>> list= (List<Map<String, Object>>) result.get("positionList");
+        logger.info("===========children2============");
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString(list));
         return list;
     }
 

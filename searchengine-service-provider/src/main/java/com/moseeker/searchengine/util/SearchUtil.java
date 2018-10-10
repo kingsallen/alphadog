@@ -615,6 +615,21 @@ public class SearchUtil {
         }
         return null;
     }
+    public QueryBuilder shouldMatchParseQuery(List<String> fieldsList,List<String>dataIdList) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                for(String condition: dataIdList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(fields, condition);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            return keyand;
+        }
+        return null;
+    }
     public void shouldMatchQuery(List<String> fieldList,String condition ,QueryBuilder query){
         if (fieldList!=null&&fieldList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
@@ -654,8 +669,48 @@ public class SearchUtil {
                 }
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).should(keyand);
+        }
+    }
+    public void shouldMatchParseQueryShould(String field,String condition ,QueryBuilder query){
+        if (StringUtils.isNotBlank(condition)) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).should(keyand);
+        }
+    }
+
+    public void shouldMatchParseQuery(String field,String condition ,QueryBuilder query){
+        if (StringUtils.isNotBlank(condition)) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
         }
+    }
+    public QueryBuilder shouldMatchParseQuery(List<String> fieldList,String condition ){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            return keyand;
+        }
+        return null;
     }
     //将xx,xx,xx格式的字符串转化为list
     public List<String> stringConvertList(String keyWords) {
@@ -843,5 +898,18 @@ public class SearchUtil {
         }
     }
 
-
+    public void matchPhrasePrefixQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
 }
