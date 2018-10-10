@@ -439,6 +439,7 @@ public class SearchengineEntity {
                 hashMap.put(month, point);
                 // 更新ES信息
                 if (awardsMap != null && awardsMap.size() > 0) {
+                    boolean updateAward = false;
                     for (Map.Entry<String, Object> entry : awardsMap.entrySet()) {
                         JSONObject object = new JSONObject();
                         Map awardMap = (Map) entry.getValue();
@@ -451,6 +452,7 @@ public class SearchengineEntity {
                             awards.put(entry.getKey(), object);
                             hashMap.remove(entry.getKey());
                         }
+
                     }
                 }
                 // 新追加的积分信息
@@ -463,7 +465,13 @@ public class SearchengineEntity {
                         awards.put(entry.getKey(), object);
                     }
                 }
+
             }
+            int award = 0;
+            if (awards.get("award") != null) {
+                award = (Integer)awards.get("award");
+            }
+            awards.put("award", award + userEmployeePointsRecordDO.getAward());
             jsonObject.put("awards", awards);
             logger.info(JSONObject.toJSONString(jsonObject));
             // 更新ES
