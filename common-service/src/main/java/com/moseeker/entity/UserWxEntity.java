@@ -51,6 +51,8 @@ public class UserWxEntity {
     @Autowired
     private UserUserDao userUserDao;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     /**
      *  获取用户wxUserId
      */
@@ -222,26 +224,28 @@ public class UserWxEntity {
                             && userWxUserRecord.getSysuserId() > 0)
                     .map(UserWxUserRecord::getSysuserId)
                     .collect(Collectors.toList());
+            logger.info("UserWxEntity getUserWxUserData userIdList:{}", userIdList);
             List<UserUserRecord> userUserRecords = userUserDao.fetchByIdList(userIdList);
             wxUserRecords.forEach(userWxUserRecord -> {
-                Map<Integer, String> map = new HashMap<>();
                 if (userUserRecords != null && userUserRecords.size() > 0) {
                     Optional<UserUserRecord> optional = userUserRecords
                             .stream()
                             .filter(userUserRecord -> userUserRecord.getId().equals(userWxUserRecord.getSysuserId()))
                             .findAny();
                     if (optional.isPresent()) {
-                        map.put(userWxUserRecord.getId().intValue(),
+                        result.put(userWxUserRecord.getId().intValue(),
                                 org.apache.commons.lang.StringUtils.isNotBlank(optional.get().getName())
                                         ? optional.get().getName()
                                         : optional.get().getNickname());
                     }
                 }
-                if (org.apache.commons.lang.StringUtils.isBlank(map.get(userWxUserRecord.getId()))) {
-                    map.put(userWxUserRecord.getId().intValue(), userWxUserRecord.getNickname());
+                if (org.apache.commons.lang.StringUtils.isBlank(result.get(userWxUserRecord.getId()))) {
+                    result.put(userWxUserRecord.getId().intValue(), userWxUserRecord.getNickname());
                 }
 
             });
+        } else {
+            logger.info("UserWxEntity getUserWxUserData result is null:{}");
         }
         return result;
     }
