@@ -47,11 +47,7 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
                     .innerJoin(HrHbScratchCard.HR_HB_SCRATCH_CARD)
                     .on(HrHbItems.HR_HB_ITEMS.ID.eq(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID))
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
-                    .and((HrHbItems.HR_HB_ITEMS.STATUS.in(receiveHB))
-                            .or(HrHbItems.HR_HB_ITEMS.STATUS.in(openCard)
-                                    .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
-                            )
-                    )
+                    .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
                     .orderBy(HrHbScratchCard.HR_HB_SCRATCH_CARD.STATUS.asc(),
                             HrHbItems.HR_HB_ITEMS.OPEN_TIME.desc(),
                             HrHbItems.HR_HB_ITEMS.UPDATE_TIME.desc())
