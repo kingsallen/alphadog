@@ -129,6 +129,7 @@ public class ReferralServiceImpl implements ReferralService {
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
+                logger.info("ReferralServiceImpl getBonus bonusData bonusData.getEmploymentDateMap:{}", bonusData.getEmploymentDateMap());
 
                 List<Bonus> bonuses = new ArrayList<>();
                 for (ReferralEmployeeBonusRecord referralEmployeeBonusRecord : referralEmployeeBonusRecordList) {
