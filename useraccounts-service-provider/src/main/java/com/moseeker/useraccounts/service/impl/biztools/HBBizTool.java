@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.service.impl.biztools;
 
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.entity.Constant.BonusStage;
@@ -13,7 +12,6 @@ import com.moseeker.useraccounts.service.impl.vo.RedPacket;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 /**
  * @Author: jack

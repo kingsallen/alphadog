@@ -3,6 +3,7 @@ package com.moseeker.servicemanager.web.controller.referral;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.BonusTools;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
@@ -304,12 +305,12 @@ public class ReferralController {
                 result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
                     RedPacket redPacketStruct = new RedPacket();
                     BeanUtils.copyProperties(redPacket, redPacketStruct);
-                    redPacketStruct.setValue(bonusFormat.format(redPacket.getValue()));
+                    redPacketStruct.setValue(BonusTools.convertToBonus(redPacket.getValue()));
                     return redPacketStruct;
                 }).collect(Collectors.toList()));
             }
-            result.setTotalBonus(bonusFormat.format(redPackets.getTotalBonus()));
-            result.setTotalRedpackets(bonusFormat.format(redPackets.getTotalRedpackets()));
+            result.setTotalBonus(BonusTools.convertToBonus(redPackets.getTotalBonus()));
+            result.setTotalRedpackets(BonusTools.convertToBonus(redPackets.getTotalRedpackets()));
             return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
@@ -338,12 +339,12 @@ public class ReferralController {
                     Bonus bonus = new Bonus();
                     BeanUtils.copyProperties(bonusStruct, bonus);
 
-                    bonus.setValue(bonusFormat.format(bonusStruct.getValue()));
+                    bonus.setValue(BonusTools.convertToBonus(bonusStruct.getValue()));
                     return bonus;
                 }).collect(Collectors.toList()));
             }
-            result.setTotalBonus(bonusFormat.format(bonusList.getTotalBonus()));
-            result.setTotalRedpackets(bonusFormat.format(bonusList.getTotalRedpackets()));
+            result.setTotalBonus(BonusTools.convertToBonus(bonusList.getTotalBonus()));
+            result.setTotalRedpackets(BonusTools.convertToBonus(bonusList.getTotalRedpackets()));
             return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
