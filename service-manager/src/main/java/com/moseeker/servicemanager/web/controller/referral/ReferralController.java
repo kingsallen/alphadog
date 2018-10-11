@@ -416,4 +416,5 @@ public class ReferralController {
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(com.moseeker.baseorm.util.BeanUtils.convertStructToJSON(result)));
         }
     }
+
 }
