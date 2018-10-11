@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterL
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeRegisterLogRecord;
 import org.joda.time.DateTime;
 import org.jooq.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -18,6 +19,7 @@ import static org.jooq.impl.DSL.using;
 @Repository
 public class ReferralEmployeeRegisterLogDao extends com.moseeker.baseorm.db.referraldb.tables.daos.ReferralEmployeeRegisterLogDao {
 
+    @Autowired
     public ReferralEmployeeRegisterLogDao(Configuration configuration) {
         super(configuration);
     }
