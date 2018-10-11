@@ -223,7 +223,8 @@ struct UserEmployeeStruct {
 	51: optional i32 team_id,
 	52: optional i8 job_grade,
 	53: optional i32 city_code,
-	54: optional i8 degree
+	54: optional i8 degree,
+	55: optional list<i32> updateIds
 }
 
 struct UserEmployeeBatchForm{

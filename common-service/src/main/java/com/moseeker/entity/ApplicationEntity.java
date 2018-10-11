@@ -13,7 +13,9 @@ import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.ApplyType;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
@@ -133,31 +135,37 @@ public class ApplicationEntity {
         return applyIdList;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int applyByReferral(UserUserRecord userRecord, int position, UserEmployeeDO employeeDO) throws CommonException {
-        JobPositionRecord positionRecord = positionEntity.getPositionByID(position);
-        if (positionRecord == null || positionRecord.getStatus() != PositionStatus.ACTIVED.getValue()) {
-            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+        try{
+            JobPositionRecord positionRecord = positionEntity.getPositionByID(position);
+            if (positionRecord == null || positionRecord.getStatus() != PositionStatus.ACTIVED.getValue()) {
+                throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+            }
+
+            List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
+            if (!companyIdList.contains(positionRecord.getCompanyId())) {
+                throw ApplicationException.NO_PERMISSION_EXCEPTION;
+            }
+
+            checkApplicationCountAtCompany(userRecord.getId(), employeeDO.getCompanyId(), positionRecord.getCandidateSource());
+
+            JobApplicationRecord jobApplicationRecord = initApplicationInfo(positionRecord, userRecord, employeeDO.getCompanyId(),
+                    employeeDO, Constant.RECRUIT_STATUS_APPLY, ApplicationSource.EMPLOYEE_REFERRAL);
+
+            ApplicationSaveResultVO resultVO = applicationDao.addIfNotExists(jobApplicationRecord);
+            if (!resultVO.isCreate()) {
+                HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, positionRecord);
+                hrOperationRecordDao.addRecord(hrOperationRecord);
+
+                addApplicationCountAtCompany(userRecord.getId(), positionRecord.getCompanyId(), positionRecord.getCandidateSource());
+            }
+            return resultVO.getApplicationId();
+        }catch (Exception e){
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    userRecord.getId() + "", position + "");
+            throw e;
         }
-
-        List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
-        if (!companyIdList.contains(positionRecord.getCompanyId())) {
-            throw ApplicationException.NO_PERMISSION_EXCEPTION;
-        }
-
-        checkApplicationCountAtCompany(userRecord.getId(), employeeDO.getCompanyId(), positionRecord.getCandidateSource());
-
-        JobApplicationRecord jobApplicationRecord = initApplicationInfo(positionRecord, userRecord, employeeDO.getCompanyId(),
-                employeeDO, Constant.RECRUIT_STATUS_APPLY, ApplicationSource.EMPLOYEE_REFERRAL);
-
-        ApplicationSaveResultVO resultVO = applicationDao.addIfNotExists(jobApplicationRecord);
-        if (!resultVO.isCreate()) {
-            HrOperationRecordRecord hrOperationRecord = getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, positionRecord);
-            hrOperationRecordDao.addRecord(hrOperationRecord);
-
-            addApplicationCountAtCompany(userRecord.getId(), positionRecord.getCompanyId(), positionRecord.getCandidateSource());
-        }
-        return resultVO.getApplicationId();
     }
 
     /**

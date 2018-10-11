@@ -63,10 +63,9 @@ public class TalentPoolProfileMoveDao extends JooqCrudImpl<TalentPoolProfileMove
                 .fetchOne();
     }
 
-    public List<TalentPoolProfileMoveDO> getProfileMoveDOByHrId(int hrId, Timestamp timestamp) {
+    public List<TalentPoolProfileMoveDO> getProfileMoveDOByHrId(int hrId) {
         return create.selectFrom(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE)
                 .where(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.HR_ID.eq(hrId))
-                .and(TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE.CREATE_TIME.gt(timestamp))
                 .fetchInto(TalentPoolProfileMoveDO.class);
     }
 }

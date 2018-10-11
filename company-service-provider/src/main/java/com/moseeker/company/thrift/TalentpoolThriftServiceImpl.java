@@ -61,6 +61,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
         try{
             Response result=talentPoolService.upsertTalentPoolApplication(hrId,companyId,type);
             return result;
+
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);

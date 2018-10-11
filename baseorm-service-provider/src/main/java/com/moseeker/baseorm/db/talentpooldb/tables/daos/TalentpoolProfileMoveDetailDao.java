@@ -77,7 +77,7 @@ public class TalentpoolProfileMoveDetailDao extends DAOImpl<TalentpoolProfileMov
      * Fetch records that have <code>profile_move_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveDetail> fetchByProfileMoveId(Integer... values) {
-        return fetch(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_ID, values);
+        return fetch(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID, values);
     }
 
     /**
