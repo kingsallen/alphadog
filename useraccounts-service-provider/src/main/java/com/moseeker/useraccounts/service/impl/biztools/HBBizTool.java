@@ -88,7 +88,8 @@ public class HBBizTool {
         bonus.setId(referralEmployeeBonusRecord.getId());
         bonus.setValue(new BigDecimal(referralEmployeeBonusRecord.getBonus().doubleValue())
                 .divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
-        bonus.setOpen(referralEmployeeBonusRecord.getClaim() == 1 && referralEmployeeBonusRecord.getDisable() == 0);
+        bonus.setOpen((referralEmployeeBonusRecord.getClaim() == 1 && referralEmployeeBonusRecord.getDisable() ==0)
+                || referralEmployeeBonusRecord.getDisable() == 1);
         bonusData.getStageDetailMap().get(referralEmployeeBonusRecord.getBonusStageDetailId());
         if (bonusData.getStageDetailMap().get(referralEmployeeBonusRecord.getBonusStageDetailId()) != null) {
             ReferralPositionBonusStageDetailRecord referralPositionBonusStageDetailRecord =
