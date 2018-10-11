@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,6 +52,8 @@ public class ReferralController {
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
+
+    DecimalFormat decimalFormat = new DecimalFormat("###################");
     /**
      * 员工上传简历
      * @param file 简历文件
@@ -300,7 +303,7 @@ public class ReferralController {
                 result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
                     RedPacket redPacketStruct = new RedPacket();
                     BeanUtils.copyProperties(redPacket, redPacketStruct);
-                    redPacketStruct.setValue(String.valueOf(redPacket.getValue()).replace(".00", ""));
+                    redPacketStruct.setValue(decimalFormat.format(redPacket.getValue()));
                     return redPacketStruct;
                 }).collect(Collectors.toList()));
             }
@@ -326,11 +329,13 @@ public class ReferralController {
 
             BonusList result = new BonusList();
             BeanUtils.copyProperties(bonusList, result);
+
             if (bonusList.getBonus() != null && bonusList.getBonus().size() > 0) {
                 result.setBonus(bonusList.getBonus().stream().map(bonusStruct -> {
                     Bonus bonus = new Bonus();
                     BeanUtils.copyProperties(bonusStruct, bonus);
-                    bonus.setValue(String.valueOf(bonusStruct.getValue()).replace(".00", ""));
+
+                    bonus.setValue(decimalFormat.format(bonusStruct.getValue()));
                     return bonus;
                 }).collect(Collectors.toList()));
             }
