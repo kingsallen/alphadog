@@ -1161,6 +1161,7 @@ public class EmployeeEntity {
                     referralEmployeeBonusRecord.setClaim((byte)0);
                     referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                     referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                    referralEmployeeBonusRecord.setDisable(0);
                     referralEmployeeBonusRecordDao.insert(referralEmployeeBonusRecord);
                     DateTime dateTime = new DateTime();
                     publishAddBonusChangeEvent(applicationId,nowStage,nextStage,applierId,positionId,move.byteValue(),dateTime);
@@ -1205,6 +1206,7 @@ public class EmployeeEntity {
                 newRecord.setClaim((byte)1);
                 newRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                 newRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                newRecord.setDisable(0);
                 referralEmployeeBonusRecordDao.insert(newRecord);
 
                 // 将上笔添加入职奖金设置为不可领取disable=1
