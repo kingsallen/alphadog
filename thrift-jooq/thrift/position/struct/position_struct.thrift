@@ -124,7 +124,7 @@ struct WechatPositionListData {
 // 微信端职位列表的附加红包信息
 struct RpExtInfo {
     1: optional i32 pid,
-    2: optional i32 remain,
+    2: optional double remain,
     3: optional bool employee_only
 }
 
@@ -144,7 +144,7 @@ struct WechatRpPositionListData {
     12: optional string company_logo,
     13: optional string company_name,
     14: optional bool is_new
-    15: optional i32 remain,
+    15: optional double remain,
     16: optional bool employee_only,
     17: optional string city,
     18: optional i32 candidate_source,

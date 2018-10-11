@@ -2199,7 +2199,7 @@ public class PositionService {
                         remain=remain+hrHbItems.getAmount().doubleValue();
                     }
                 }
-                rpExtInfo.setRemain(toIntExact(round(remain)));
+                rpExtInfo.setRemain(remain);
 
             }
             result.add(rpExtInfo);
