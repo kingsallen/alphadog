@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralRecomHbPositionRecord> implements Record5<Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -1011709230;
+    private static final long serialVersionUID = -1285095723;
 
     /**
      * Setter for <code>referraldb.referral_recom_hb_position.id</code>. 序列ID
@@ -47,16 +47,16 @@ public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralR
     }
 
     /**
-     * Setter for <code>referraldb.referral_recom_hb_position.position_id</code>. 职位ID
+     * Setter for <code>referraldb.referral_recom_hb_position.recom_record_id</code>. 推荐记录ID
      */
-    public void setPositionId(Integer value) {
+    public void setRecomRecordId(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_recom_hb_position.position_id</code>. 职位ID
+     * Getter for <code>referraldb.referral_recom_hb_position.recom_record_id</code>. 推荐记录ID
      */
-    public Integer getPositionId() {
+    public Integer getRecomRecordId() {
         return (Integer) get(1);
     }
 
@@ -147,7 +147,7 @@ public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralR
      */
     @Override
     public Field<Integer> field2() {
-        return ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.POSITION_ID;
+        return ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.RECOM_RECORD_ID;
     }
 
     /**
@@ -187,7 +187,7 @@ public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralR
      */
     @Override
     public Integer value2() {
-        return getPositionId();
+        return getRecomRecordId();
     }
 
     /**
@@ -228,7 +228,7 @@ public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralR
      */
     @Override
     public ReferralRecomHbPositionRecord value2(Integer value) {
-        setPositionId(value);
+        setRecomRecordId(value);
         return this;
     }
 
@@ -286,11 +286,11 @@ public class ReferralRecomHbPositionRecord extends UpdatableRecordImpl<ReferralR
     /**
      * Create a detached, initialised ReferralRecomHbPositionRecord
      */
-    public ReferralRecomHbPositionRecord(Integer id, Integer positionId, Integer hbItemId, Timestamp createTime, Timestamp updateTime) {
+    public ReferralRecomHbPositionRecord(Integer id, Integer recomRecordId, Integer hbItemId, Timestamp createTime, Timestamp updateTime) {
         super(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION);
 
         set(0, id);
-        set(1, positionId);
+        set(1, recomRecordId);
         set(2, hbItemId);
         set(3, createTime);
         set(4, updateTime);

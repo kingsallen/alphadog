@@ -18,7 +18,7 @@ public class HBData {
     private Map<Integer, String> candidateNameMap = new HashMap<>();
     private Map<Integer, HrHbScratchCardRecord> cardNoMap = new HashMap<>();
     private Map<Integer, HrHbConfigRecord> configMap = new HashMap<>();
-    private Map<Integer, String> recomPositionTitleMap = new HashMap<>();
+    private Map<Integer, RecommendHBData> recomPositionTitleMap = new HashMap<>();
 
     public Map<Integer, String> getTitleMap() {
         return titleMap;
@@ -52,11 +52,11 @@ public class HBData {
         this.configMap = configMap;
     }
 
-    public Map<Integer, String> getRecomPositionTitleMap() {
+    public Map<Integer, RecommendHBData> getRecomPositionTitleMap() {
         return recomPositionTitleMap;
     }
 
-    public void setRecomPositionTitleMap(Map<Integer, String> recomPositionTitleMap) {
+    public void setRecomPositionTitleMap(Map<Integer, RecommendHBData> recomPositionTitleMap) {
         this.recomPositionTitleMap = recomPositionTitleMap;
     }
 }
