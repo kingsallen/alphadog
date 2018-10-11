@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeBonusRecord implements Serializable {
 
-    private static final long serialVersionUID = -526126630;
+    private static final long serialVersionUID = -1898368270;
 
     private Integer   id;
     private Integer   employeeId;
@@ -34,6 +34,7 @@ public class ReferralEmployeeBonusRecord implements Serializable {
     private Timestamp claimTime;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   disable;
 
     public ReferralEmployeeBonusRecord() {}
 
@@ -47,6 +48,7 @@ public class ReferralEmployeeBonusRecord implements Serializable {
         this.claimTime = value.claimTime;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.disable = value.disable;
     }
 
     public ReferralEmployeeBonusRecord(
@@ -58,7 +60,8 @@ public class ReferralEmployeeBonusRecord implements Serializable {
         Byte      claim,
         Timestamp claimTime,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   disable
     ) {
         this.id = id;
         this.employeeId = employeeId;
@@ -69,6 +72,7 @@ public class ReferralEmployeeBonusRecord implements Serializable {
         this.claimTime = claimTime;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.disable = disable;
     }
 
     public Integer getId() {
@@ -143,6 +147,14 @@ public class ReferralEmployeeBonusRecord implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getDisable() {
+        return this.disable;
+    }
+
+    public void setDisable(Integer disable) {
+        this.disable = disable;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralEmployeeBonusRecord (");
@@ -156,6 +168,7 @@ public class ReferralEmployeeBonusRecord implements Serializable {
         sb.append(", ").append(claimTime);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(disable);
 
         sb.append(")");
         return sb.toString();

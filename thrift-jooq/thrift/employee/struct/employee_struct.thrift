@@ -257,6 +257,7 @@ struct BonusVO{
     11:optional i32 recommendId, // 推荐人Id
     12:optional string recommendName, // 推荐人名称
     13:optional i32 berecomId,// 被推荐人Id
-    14:optional string berecomName // 被推荐人姓名
-    15:optional i32 cancel //是否是取消动作 1:取消 0:取消
+    14:optional string berecomName, // 被推荐人姓名
+    15:optional i32 cancel, //是否是取消动作 1:取消 0:取消
+    16:optional i32 disable //是否是有效记录 1:无效  0:有效
 }

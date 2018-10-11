@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeBonusRecord extends TableImpl<ReferralEmployeeBonusRecordRecord> {
 
-    private static final long serialVersionUID = -1150473093;
+    private static final long serialVersionUID = -101633607;
 
     /**
      * The reference instance of <code>referraldb.referral_employee_bonus_record</code>
@@ -95,6 +95,11 @@ public class ReferralEmployeeBonusRecord extends TableImpl<ReferralEmployeeBonus
      * The column <code>referraldb.referral_employee_bonus_record.update_time</code>. 更新时间
      */
     public final TableField<ReferralEmployeeBonusRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>referraldb.referral_employee_bonus_record.disable</code>. 记录是否可用
+     */
+    public final TableField<ReferralEmployeeBonusRecordRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "记录是否可用");
 
     /**
      * Create a <code>referraldb.referral_employee_bonus_record</code> table reference
