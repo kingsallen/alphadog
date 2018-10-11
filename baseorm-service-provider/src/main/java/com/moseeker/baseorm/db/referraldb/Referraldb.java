@@ -6,11 +6,6 @@ package com.moseeker.baseorm.db.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
-import com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCustomFields;
-import com.moseeker.baseorm.db.referraldb.tables.HrGroupCompany;
-import com.moseeker.baseorm.db.referraldb.tables.HrGroupCompanyRel;
-import com.moseeker.baseorm.db.referraldb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
@@ -18,8 +13,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
-import com.moseeker.baseorm.db.referraldb.tables.TestTable;
-import com.moseeker.baseorm.db.referraldb.tables.UserEmployee;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +39,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 603106381;
+    private static final long serialVersionUID = 1832029516;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -61,31 +55,6 @@ public class Referraldb extends SchemaImpl {
      * The table <code>referraldb.history_referral_position_rel</code>.
      */
     public final HistoryReferralPositionRel HISTORY_REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL;
-
-    /**
-     * 部门员工配置表
-     */
-    public final HrEmployeeCertConf HR_EMPLOYEE_CERT_CONF = com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF;
-
-    /**
-     * 员工认证自定义字段表
-     */
-    public final HrEmployeeCustomFields HR_EMPLOYEE_CUSTOM_FIELDS = com.moseeker.baseorm.db.referraldb.tables.HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS;
-
-    /**
-     * 集团公司
-     */
-    public final HrGroupCompany HR_GROUP_COMPANY = com.moseeker.baseorm.db.referraldb.tables.HrGroupCompany.HR_GROUP_COMPANY;
-
-    /**
-     * 集团公司与公司的关系
-     */
-    public final HrGroupCompanyRel HR_GROUP_COMPANY_REL = com.moseeker.baseorm.db.referraldb.tables.HrGroupCompanyRel.HR_GROUP_COMPANY_REL;
-
-    /**
-     * 企业用户导入数据异步处理监控操作表
-     */
-    public final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.referraldb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
     /**
      * The table <code>referraldb.referral_company_conf</code>.
@@ -123,14 +92,9 @@ public class Referraldb extends SchemaImpl {
     public final ReferralPositionRel REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel.REFERRAL_POSITION_REL;
 
     /**
-     * 测试
+     * 推荐类红包与被推荐职位关系表
      */
-    public final TestTable TEST_TABLE = com.moseeker.baseorm.db.referraldb.tables.TestTable.TEST_TABLE;
-
-    /**
-     * The table <code>referraldb.user_employee</code>.
-     */
-    public final UserEmployee USER_EMPLOYEE = com.moseeker.baseorm.db.referraldb.tables.UserEmployee.USER_EMPLOYEE;
+    public final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
 
     /**
      * No further instances allowed
@@ -159,11 +123,6 @@ public class Referraldb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD,
             HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL,
-            HrEmployeeCertConf.HR_EMPLOYEE_CERT_CONF,
-            HrEmployeeCustomFields.HR_EMPLOYEE_CUSTOM_FIELDS,
-            HrGroupCompany.HR_GROUP_COMPANY,
-            HrGroupCompanyRel.HR_GROUP_COMPANY_REL,
-            HrImporterMonitor.HR_IMPORTER_MONITOR,
             ReferralCompanyConf.REFERRAL_COMPANY_CONF,
             ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD,
             ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG,
@@ -171,7 +130,6 @@ public class Referraldb extends SchemaImpl {
             ReferralPositionBonus.REFERRAL_POSITION_BONUS,
             ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL,
             ReferralPositionRel.REFERRAL_POSITION_REL,
-            TestTable.TEST_TABLE,
-            UserEmployee.USER_EMPLOYEE);
+            ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION);
     }
 }

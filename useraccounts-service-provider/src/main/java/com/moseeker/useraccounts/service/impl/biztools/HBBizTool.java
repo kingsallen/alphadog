@@ -2,18 +2,18 @@ package com.moseeker.useraccounts.service.impl.biztools;
 
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.pojos.BonusData;
+import com.moseeker.entity.pojos.HBData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 /**
  * @Author: jack
@@ -48,40 +48,40 @@ public class HBBizTool {
     }
 
     /**
-     * 封装红包
-     * @param hrHbItemsRecord 红包记录
-     * @param candidateNameMap 候选人名称
-     * @param configMap 红包类型
-     * @param titleMap 职位名称
-     * @param cardNoMap 刮刮卡
+     * 封装红包数据
+     * @param hrHbItems 红包记录集合
+     * @param data 数据对象
      * @return 红包数据
      */
-    public static RedPacket packageRedPacket(HrHbItems hrHbItemsRecord, Map<Integer, String> candidateNameMap,
-                                             Map<Integer, HrHbConfigRecord> configMap, Map<Integer, String> titleMap,
-                                             Map<Integer, HrHbScratchCardRecord> cardNoMap) {
+    public static RedPacket packageRedPacket(HrHbItems hrHbItems, HBData data) {
         RedPacket redPacket = new RedPacket();
-        redPacket.setId(hrHbItemsRecord.getId());
-        redPacket.setCandidateName(candidateNameMap.get(hrHbItemsRecord.getTriggerWxuserId().intValue()));
-        redPacket.setCardno(cardNoMap.get(hrHbItemsRecord.getId()).getCardno());
-        HrHbConfigRecord configRecord = configMap.get(hrHbItemsRecord.getHbConfigId());
+        redPacket.setId(hrHbItems.getId());
+        redPacket.setCandidateName(data.getCandidateNameMap().get(hrHbItems.getTriggerWxuserId().intValue()));
+        redPacket.setCardno(data.getCardNoMap().get(hrHbItems.getId()).getCardno());
+        HrHbConfigRecord configRecord = data.getConfigMap().get(hrHbItems.getHbConfigId());
         if (configRecord != null) {
             redPacket.setType(configRecord.getType());
             redPacket.setName(HBBizTool.getConfigName(configRecord.getType()));
         }
-        redPacket.setValue(hrHbItemsRecord.getAmount().doubleValue());
-        redPacket.setOpen(HBBizTool.isOpen(cardNoMap.get(hrHbItemsRecord.getId()).getStatus()));
-        redPacket.setPositionTitle(titleMap.get(hrHbItemsRecord.getBindingId()));
-        if (hrHbItemsRecord.getOpenTime() != null) {
-            redPacket.setOpenTime(hrHbItemsRecord.getOpenTime().getTime());
+        redPacket.setValue(hrHbItems.getAmount().doubleValue());
+        redPacket.setOpen(HBBizTool.isOpen(data.getCardNoMap().get(hrHbItems.getId()).getStatus()));
+        redPacket.setPositionTitle(data.getTitleMap().get(hrHbItems.getBindingId()));
+        if (hrHbItems.getOpenTime() != null) {
+            redPacket.setOpenTime(hrHbItems.getOpenTime().getTime());
+        }
+        if (StringUtils.isBlank(redPacket.getPositionTitle())) {
+            if (data.getRecomPositionTitleMap().get(hrHbItems.getId()) != null) {
+                redPacket.setPositionTitle(data.getRecomPositionTitleMap().get(hrHbItems.getId()));
+            }
         }
         return redPacket;
     }
 
     /**
      * 封装奖金数据
-     * @param referralEmployeeBonusRecord
-     * @param bonusData
-     * @return
+     * @param referralEmployeeBonusRecord 奖金记录
+     * @param bonusData 数据对象
+     * @return 奖金数据
      */
     public static Bonus packageBonus(ReferralEmployeeBonusRecord referralEmployeeBonusRecord, BonusData bonusData) {
         Bonus bonus = new Bonus();
@@ -89,7 +89,7 @@ public class HBBizTool {
         bonus.setId(referralEmployeeBonusRecord.getId());
         bonus.setValue(new BigDecimal(referralEmployeeBonusRecord.getBonus().doubleValue())
                 .divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
-        bonus.setOpen(referralEmployeeBonusRecord.getClaim() == 1);
+        bonus.setOpen(referralEmployeeBonusRecord.getClaim() == 1 && referralEmployeeBonusRecord.getDisable() == 0);
         bonusData.getStageDetailMap().get(referralEmployeeBonusRecord.getBonusStageDetailId());
         if (bonusData.getStageDetailMap().get(referralEmployeeBonusRecord.getBonusStageDetailId()) != null) {
             ReferralPositionBonusStageDetailRecord referralPositionBonusStageDetailRecord =

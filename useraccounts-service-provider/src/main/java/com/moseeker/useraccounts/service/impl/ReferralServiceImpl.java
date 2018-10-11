@@ -100,8 +100,7 @@ public class ReferralServiceImpl implements ReferralService {
 
                 List<RedPacket> list = new ArrayList<>();
                 for (HrHbItems hrHbItems : itemsRecords) {
-                    list.add(HBBizTool.packageRedPacket(hrHbItems, data.getCandidateNameMap(),
-                            data.getConfigMap(), data.getTitleMap(), data.getCardNoMap()));
+                    list.add(HBBizTool.packageRedPacket(hrHbItems, data));
                 }
                 logger.info("ReferralServiceImpl getRedPackets list:{}", JSON.toJSONString(list));
                 redPackets.setRedpackets(list);

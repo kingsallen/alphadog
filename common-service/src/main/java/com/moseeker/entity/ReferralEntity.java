@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
@@ -13,12 +14,14 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
@@ -108,6 +111,9 @@ public class ReferralEntity {
 
     @Autowired
     private HrOperationRecordDao operationRecordDao;
+
+    @Autowired
+    private ReferralRecomHbPositionDao referralRecomHbPositionDao;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -331,9 +337,38 @@ public class ReferralEntity {
             List<HrHbConfigRecord> configRecordList= configListFuture.get();
             if (configRecordList != null && configRecordList.size() > 0) {
                 configRecordList.forEach(hrHbConfigRecord -> configMap.put(hrHbConfigRecord.getId(), hrHbConfigRecord));
+
+
+                List<HrHbConfigRecord> recomTypes = configRecordList
+                        .stream().filter(hrHbConfigRecord ->
+                                hrHbConfigRecord.getType().equals(HBType.Recommend.getValue()))
+                        .collect(Collectors.toList());
+
+                if (recomTypes != null && recomTypes.size() > 0) {
+                    List<Integer> recomItemIdList = itemsRecords
+                            .stream()
+                            .filter(hrHbItems -> {
+                                Optional<HrHbConfigRecord> recomTypeOptional = recomTypes
+                                        .stream()
+                                        .filter(hrHbConfigRecord -> hrHbConfigRecord.getId().equals(hrHbItems.getHbConfigId()))
+                                        .findAny();
+                                return recomTypeOptional.isPresent();
+                            })
+                            .map(hrHbItems -> hrHbItems.getId())
+                            .collect(Collectors.toList());
+                    if (recomItemIdList != null && recomItemIdList.size() > 0) {
+                        List<Record2<Integer, String>> result = referralRecomHbPositionDao.fetchPositionTitle(recomItemIdList);
+
+                        if (result != null && result.size() > 0) {
+                            data.setRecomPositionTitleMap(
+                                    result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2))
+                            );
+                        }
+                    }
+                }
+
             }
 
-            
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
