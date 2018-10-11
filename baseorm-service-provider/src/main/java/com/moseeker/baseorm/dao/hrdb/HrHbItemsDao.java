@@ -51,7 +51,8 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
                     .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
                     .orderBy(HrHbScratchCard.HR_HB_SCRATCH_CARD.STATUS.asc(),
-                            HrHbItems.HR_HB_ITEMS.OPEN_TIME.desc())
+                            HrHbItems.HR_HB_ITEMS.OPEN_TIME.desc(),
+                            HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.desc())
                     .limit(index, pageSize)
                     .fetch();
             if (result != null && result.size() > 0) {
