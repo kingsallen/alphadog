@@ -2,6 +2,7 @@ package com.moseeker.entity.pojos;
 
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomHbPositionRecord;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class HBData {
     private Map<Integer, String> candidateNameMap = new HashMap<>();
     private Map<Integer, HrHbScratchCardRecord> cardNoMap = new HashMap<>();
     private Map<Integer, HrHbConfigRecord> configMap = new HashMap<>();
+    private Map<Integer, String> recomPositionTitleMap = new HashMap<>();
 
     public Map<Integer, String> getTitleMap() {
         return titleMap;
@@ -48,5 +50,13 @@ public class HBData {
 
     public void setConfigMap(Map<Integer, HrHbConfigRecord> configMap) {
         this.configMap = configMap;
+    }
+
+    public Map<Integer, String> getRecomPositionTitleMap() {
+        return recomPositionTitleMap;
+    }
+
+    public void setRecomPositionTitleMap(Map<Integer, String> recomPositionTitleMap) {
+        this.recomPositionTitleMap = recomPositionTitleMap;
     }
 }
