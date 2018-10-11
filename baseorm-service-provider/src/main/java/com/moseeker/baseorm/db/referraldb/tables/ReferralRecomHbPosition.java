@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomHbPosition extends TableImpl<ReferralRecomHbPositionRecord> {
 
-    private static final long serialVersionUID = -1580381786;
+    private static final long serialVersionUID = 1193853375;
 
     /**
      * The reference instance of <code>referraldb.referral_recom_hb_position</code>
@@ -57,9 +57,9 @@ public class ReferralRecomHbPosition extends TableImpl<ReferralRecomHbPositionRe
     public final TableField<ReferralRecomHbPositionRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "序列ID");
 
     /**
-     * The column <code>referraldb.referral_recom_hb_position.position_id</code>. 职位ID
+     * The column <code>referraldb.referral_recom_hb_position.recom_record_id</code>. 推荐记录ID
      */
-    public final TableField<ReferralRecomHbPositionRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位ID");
+    public final TableField<ReferralRecomHbPositionRecord, Integer> RECOM_RECORD_ID = createField("recom_record_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "推荐记录ID");
 
     /**
      * The column <code>referraldb.referral_recom_hb_position.hb_item_id</code>. 红包ID
