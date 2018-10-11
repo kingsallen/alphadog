@@ -7,23 +7,23 @@ import java.util.List;
  */
 public class BonusList {
 
-    private double totalRedpackets;
-    private double totalBonus;
+    private String totalRedpackets;
+    private String totalBonus;
     private List<Bonus> bonus;
 
-    public double getTotalRedpackets() {
+    public String getTotalRedpackets() {
         return totalRedpackets;
     }
 
-    public void setTotalRedpackets(double totalRedpackets) {
+    public void setTotalRedpackets(String totalRedpackets) {
         this.totalRedpackets = totalRedpackets;
     }
 
-    public double getTotalBonus() {
+    public String getTotalBonus() {
         return totalBonus;
     }
 
-    public void setTotalBonus(double totalBonus) {
+    public void setTotalBonus(String totalBonus) {
         this.totalBonus = totalBonus;
     }
 

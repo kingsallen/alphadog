@@ -2031,7 +2031,9 @@ public class UserHrAccountService {
                 org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
                 userEmployeeVO.setUsername(userEmployeeDO.getCname());
                 //将绑定时间2018-10-09T18:09:09.766+08:00格式化成2018-10-09 18:09:09
-                userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
+                    userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
                 List customFieldValues = new ArrayList();
                 if (userEmployeeDO.getCustomFieldValues() != null) {
                     customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));

@@ -11,7 +11,7 @@ public class RedPacket {
     private int type;
     private String name;
     private boolean open;
-    private double value;
+    private String value;
     private String positionTitle;
     private String candidateName;
     private long openTime;
@@ -25,11 +25,11 @@ public class RedPacket {
         this.id = id;
     }
 
-    public double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
     }
 
