@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
+import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
@@ -53,23 +54,26 @@ public class HBBizTool {
     public static RedPacket packageRedPacket(HrHbItems hrHbItems, HBData data) {
         RedPacket redPacket = new RedPacket();
         redPacket.setId(hrHbItems.getId());
-        redPacket.setCandidateName(data.getCandidateNameMap().get(hrHbItems.getTriggerWxuserId().intValue()));
         redPacket.setCardno(data.getCardNoMap().get(hrHbItems.getId()).getCardno());
         HrHbConfigRecord configRecord = data.getConfigMap().get(hrHbItems.getHbConfigId());
         if (configRecord != null) {
             redPacket.setType(configRecord.getType());
             redPacket.setName(HBBizTool.getConfigName(configRecord.getType()));
         }
+        if (redPacket.getType() == HBType.Recommend.getValue()) {
+            if (data.getRecomPositionTitleMap().get(hrHbItems.getId()) != null) {
+                redPacket.setPositionTitle(data.getRecomPositionTitleMap().get(hrHbItems.getId()).getPositionTitle());
+                redPacket.setCandidateName(data.getRecomPositionTitleMap().get(hrHbItems.getId()).getCandidateName());
+            }
+        } else {
+            redPacket.setCandidateName(data.getCandidateNameMap().get(hrHbItems.getTriggerWxuserId()));
+            redPacket.setPositionTitle(data.getTitleMap().get(hrHbItems.getBindingId()));
+        }
         redPacket.setValue(hrHbItems.getAmount().doubleValue());
         redPacket.setOpen(HBBizTool.isOpen(data.getCardNoMap().get(hrHbItems.getId()).getStatus()));
-        redPacket.setPositionTitle(data.getTitleMap().get(hrHbItems.getBindingId()));
+
         if (hrHbItems.getOpenTime() != null) {
             redPacket.setOpenTime(hrHbItems.getOpenTime().getTime());
-        }
-        if (StringUtils.isBlank(redPacket.getPositionTitle())) {
-            if (data.getRecomPositionTitleMap().get(hrHbItems.getId()) != null) {
-                redPacket.setPositionTitle(data.getRecomPositionTitleMap().get(hrHbItems.getId()));
-            }
         }
         return redPacket;
     }

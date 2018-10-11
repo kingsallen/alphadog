@@ -66,10 +66,10 @@ public class ReferralRecomHbPositionDao extends DAOImpl<ReferralRecomHbPositionR
     }
 
     /**
-     * Fetch records that have <code>position_id IN (values)</code>
+     * Fetch records that have <code>recom_record_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomHbPosition> fetchByPositionId(Integer... values) {
-        return fetch(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.POSITION_ID, values);
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomHbPosition> fetchByRecomRecordId(Integer... values) {
+        return fetch(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.RECOM_RECORD_ID, values);
     }
 
     /**

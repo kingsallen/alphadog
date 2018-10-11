@@ -21,7 +21,6 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRe
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
@@ -41,9 +40,11 @@ import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
+import com.moseeker.entity.pojos.RecommendHBData;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -355,12 +355,18 @@ public class ReferralEntity {
                             .map(hrHbItems -> hrHbItems.getId())
                             .collect(Collectors.toList());
                     if (recomItemIdList != null && recomItemIdList.size() > 0) {
-                        List<Record2<Integer, String>> result = referralRecomHbPositionDao.fetchPositionTitle(recomItemIdList);
+                        List<Record3<Integer, String, String>> result = referralRecomHbPositionDao.fetchRecommendHBData(recomItemIdList);
 
                         if (result != null && result.size() > 0) {
-                            data.setRecomPositionTitleMap(
-                                    result.stream().collect(Collectors.toMap(Record2::value1, Record2::value2))
-                            );
+                            Map<Integer, RecommendHBData> recommendHBDataMap = new HashMap<>();
+
+                            result.forEach(integerStringStringRecord3 -> {
+                                RecommendHBData recommendHBData = new RecommendHBData();
+                                recommendHBData.setPositionTitle(integerStringStringRecord3.value2());
+                                recommendHBData.setCandidateName(integerStringStringRecord3.value3());
+                                recommendHBDataMap.put(integerStringStringRecord3.value1(), recommendHBData);
+                            });
+                            data.setRecomPositionTitleMap(recommendHBDataMap);
                         }
                     }
                 }

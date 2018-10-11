@@ -23,10 +23,10 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomHbPosition implements Serializable {
 
-    private static final long serialVersionUID = 790790634;
+    private static final long serialVersionUID = -1700218096;
 
     private Integer   id;
-    private Integer   positionId;
+    private Integer   recomRecordId;
     private Integer   hbItemId;
     private Timestamp createTime;
     private Timestamp updateTime;
@@ -35,7 +35,7 @@ public class ReferralRecomHbPosition implements Serializable {
 
     public ReferralRecomHbPosition(ReferralRecomHbPosition value) {
         this.id = value.id;
-        this.positionId = value.positionId;
+        this.recomRecordId = value.recomRecordId;
         this.hbItemId = value.hbItemId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
@@ -43,13 +43,13 @@ public class ReferralRecomHbPosition implements Serializable {
 
     public ReferralRecomHbPosition(
         Integer   id,
-        Integer   positionId,
+        Integer   recomRecordId,
         Integer   hbItemId,
         Timestamp createTime,
         Timestamp updateTime
     ) {
         this.id = id;
-        this.positionId = positionId;
+        this.recomRecordId = recomRecordId;
         this.hbItemId = hbItemId;
         this.createTime = createTime;
         this.updateTime = updateTime;
@@ -63,12 +63,12 @@ public class ReferralRecomHbPosition implements Serializable {
         this.id = id;
     }
 
-    public Integer getPositionId() {
-        return this.positionId;
+    public Integer getRecomRecordId() {
+        return this.recomRecordId;
     }
 
-    public void setPositionId(Integer positionId) {
-        this.positionId = positionId;
+    public void setRecomRecordId(Integer recomRecordId) {
+        this.recomRecordId = recomRecordId;
     }
 
     public Integer getHbItemId() {
@@ -100,7 +100,7 @@ public class ReferralRecomHbPosition implements Serializable {
         StringBuilder sb = new StringBuilder("ReferralRecomHbPosition (");
 
         sb.append(id);
-        sb.append(", ").append(positionId);
+        sb.append(", ").append(recomRecordId);
         sb.append(", ").append(hbItemId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
