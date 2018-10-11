@@ -308,8 +308,8 @@ public class ReferralController {
                     return redPacketStruct;
                 }).collect(Collectors.toList()));
             }
-            result.setTotalBonus(bonusFormat.format(result.getTotalBonus()));
-            result.setTotalRedpackets(bonusFormat.format(result.getTotalRedpackets()));
+            result.setTotalBonus(bonusFormat.format(redPackets.getTotalBonus()));
+            result.setTotalRedpackets(bonusFormat.format(redPackets.getTotalRedpackets()));
             return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
@@ -342,8 +342,8 @@ public class ReferralController {
                     return bonus;
                 }).collect(Collectors.toList()));
             }
-            result.setTotalBonus(bonusFormat.format(result.getTotalBonus()));
-            result.setTotalRedpackets(bonusFormat.format(result.getTotalRedpackets()));
+            result.setTotalBonus(bonusFormat.format(bonusList.getTotalBonus()));
+            result.setTotalRedpackets(bonusFormat.format(bonusList.getTotalRedpackets()));
             return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
