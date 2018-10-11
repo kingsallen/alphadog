@@ -81,8 +81,6 @@ public class ReferralServiceImpl implements ReferralService {
 
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
-            double count = itemsDao.sumRedPacketsByWxUserIdList(wxUserIdList);
-            redPackets.setTotalRedpackets(count);
             List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(),
                     pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
