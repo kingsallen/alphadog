@@ -211,8 +211,8 @@ public class SearchengineEntity {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
-
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -365,6 +365,7 @@ public class SearchengineEntity {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
