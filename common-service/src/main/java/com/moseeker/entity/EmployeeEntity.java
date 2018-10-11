@@ -1180,6 +1180,7 @@ public class EmployeeEntity {
                     referralEmployeeBonusRecord.setClaim((byte)0);
                     referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                     referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                    referralEmployeeBonusRecord.setDisable(0);
                     referralEmployeeBonusRecordDao.insert(referralEmployeeBonusRecord);
                     DateTime dateTime = new DateTime();
                     publishAddBonusChangeEvent(applicationId,nowStage,nextStage,applierId,positionId,move.byteValue(),dateTime);
@@ -1224,7 +1225,13 @@ public class EmployeeEntity {
                 newRecord.setClaim((byte)1);
                 newRecord.setCreateTime(Timestamp.valueOf(localDateTime));
                 newRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                newRecord.setDisable(0);
                 referralEmployeeBonusRecordDao.insert(newRecord);
+
+                // 将上笔添加入职奖金设置为不可领取disable=1
+                recordGTZero.setDisable(1);
+                recordGTZero.setUpdateTime(Timestamp.valueOf(localDateTime));
+                referralEmployeeBonusRecordDao.update(recordGTZero);
             }
         }
 
@@ -1325,6 +1332,7 @@ public class EmployeeEntity {
                 bonusVO.setBerecomId(jobApplicationDO.getApplierId());
                 bonusVO.setType(referralPositionBonusStageDetail.getStageType());
                 bonusVO.setBonus(new BigDecimal(bonusRecord.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
+                bonusVO.setDisable(bonusRecord.getDisable());
                 JobPositionDO jobPositionDO = positionMap.get(bonusVO.getPositionId());
                 if (jobPositionDO != null) {
                     // 职位名称
