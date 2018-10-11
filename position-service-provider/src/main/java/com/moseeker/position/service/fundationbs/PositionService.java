@@ -2155,6 +2155,7 @@ public class PositionService {
             /*
             找到职位下对应的HrHbPositionBinding.id的列表和HrHbConfig.id的列表
              */
+            rpExtInfo.setPid(pid);
             List<Integer> positionBindingIdList=new ArrayList<>();
             List<Integer> hbConfigIdList=new ArrayList<>();
             for(HrHbPositionBinding hrHbPositionBinding:bindingList){
