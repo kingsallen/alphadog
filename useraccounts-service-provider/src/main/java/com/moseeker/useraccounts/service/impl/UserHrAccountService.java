@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
@@ -1658,6 +1659,7 @@ public class UserHrAccountService {
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
+                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId));
             } else {
                 response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
             }
