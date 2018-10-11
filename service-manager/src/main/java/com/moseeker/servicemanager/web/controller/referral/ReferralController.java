@@ -53,7 +53,8 @@ public class ReferralController {
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
 
-    DecimalFormat decimalFormat = new DecimalFormat("###################");
+    DecimalFormat bonusFormat = new DecimalFormat("###################");
+
     /**
      * 员工上传简历
      * @param file 简历文件
@@ -303,10 +304,12 @@ public class ReferralController {
                 result.setRedpackets(redPackets.getRedpackets().stream().map(redPacket -> {
                     RedPacket redPacketStruct = new RedPacket();
                     BeanUtils.copyProperties(redPacket, redPacketStruct);
-                    redPacketStruct.setValue(decimalFormat.format(redPacket.getValue()));
+                    redPacketStruct.setValue(bonusFormat.format(redPacket.getValue()));
                     return redPacketStruct;
                 }).collect(Collectors.toList()));
             }
+            result.setTotalBonus(bonusFormat.format(result.getTotalBonus()));
+            result.setTotalRedpackets(bonusFormat.format(result.getTotalRedpackets()));
             return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
@@ -335,10 +338,12 @@ public class ReferralController {
                     Bonus bonus = new Bonus();
                     BeanUtils.copyProperties(bonusStruct, bonus);
 
-                    bonus.setValue(decimalFormat.format(bonusStruct.getValue()));
+                    bonus.setValue(bonusFormat.format(bonusStruct.getValue()));
                     return bonus;
                 }).collect(Collectors.toList()));
             }
+            result.setTotalBonus(bonusFormat.format(result.getTotalBonus()));
+            result.setTotalRedpackets(bonusFormat.format(result.getTotalRedpackets()));
             return Result.success(result).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
