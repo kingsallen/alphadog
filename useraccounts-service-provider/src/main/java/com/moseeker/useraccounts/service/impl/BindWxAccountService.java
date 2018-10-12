@@ -63,9 +63,20 @@ public class BindWxAccountService extends BindOnAccountService{
 				userMobile.setUnionid(userUnionid.getUnionid());
 			}
 			userUnionid.setUnionid("");
-			if (userdao.updateRecord(userUnionid) > 0) {
+			/*if (userdao.updateRecord(userUnionid) > 0) {
 				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
 				invalidOldWxUser(userMobile.getUnionid());
+				consummateUserAccount(userMobile, userUnionid);
+			}*/
+			userUnionid.setUnionid("");
+			if (userdao.updateRecord(userUnionid) > 0) {
+				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
+				logger.info("BindOnAccountService combineAccount change wxuserwx from userMobile.getId() to userUnionid.getId()");
+				// 如果手机用户之前绑定过微信，需要把微信unionid对应的user_wx_user的sysuser_id都置为0
+				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
+					wxUserDao.invalidOldWxUser(userMobile.getUnionid());
+					logger.info("BindOnAccountService combineAccount set wx_user_wx.sysuser_id = 0 where unionid={}", userMobile.getUnionid());
+				}
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
