@@ -188,7 +188,6 @@ public abstract class BindOnAccountService {
 	 *            信息来源
 	 */
 	protected void consummateUserAccount(UserUserRecord userMobile, UserUserRecord userUnionid) {
-		userMobile.setUnionid(userUnionid.getUnionid());
 		/* 完善用户名称 */
 		if (StringUtils.isNullOrEmpty(userMobile.getName()) && StringUtils.isNotNullOrEmpty(userUnionid.getName())) {
 			userMobile.setName(userUnionid.getName());
