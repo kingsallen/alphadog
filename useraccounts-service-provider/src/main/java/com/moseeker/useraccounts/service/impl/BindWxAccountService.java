@@ -57,13 +57,8 @@ public class BindWxAccountService extends BindOnAccountService{
 			logger.info("BindOnAccountService combineAccount appid:{}, userMobile:{}, userUnionid:{}", appid, userMobile, userUnionid);
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
-			userMobile.setUnionid(userUnionid.getUnionid());
-			userUnionid.setUnionid("");
-			/*if (userdao.updateRecord(userUnionid) > 0) {
-				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
-				invalidOldWxUser(userMobile.getUnionid());
-				consummateUserAccount(userMobile, userUnionid);
-			}*/
+			/* 完善unionid */
+			String unionId = userUnionid.getUnionid();
 			userUnionid.setUnionid("");
 			if (userdao.updateRecord(userUnionid) > 0) {
 				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
@@ -73,6 +68,7 @@ public class BindWxAccountService extends BindOnAccountService{
 					wxUserDao.invalidOldWxUser(userMobile.getUnionid());
 					logger.info("BindOnAccountService combineAccount set wx_user_wx.sysuser_id = 0 where unionid={}", userMobile.getUnionid());
 				}
+				userMobile.setUnionid(unionId);
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());
