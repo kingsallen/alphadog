@@ -54,6 +54,7 @@ public class BindWxAccountService extends BindOnAccountService{
 	@Override
 	protected void combineAccount(int appid, UserUserRecord userMobile, UserUserRecord userUnionid) {
 		try {
+			logger.info("BindOnAccountService combineAccount appid:{}, userMobile:{}, userUnionid:{}", appid, userMobile, userUnionid);
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
 			/* 完善unionid */
