@@ -69,6 +69,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -522,6 +523,16 @@ public class PositionService {
         positionFeature.setSource(obj.getSource());
 
         return positionFeature;
+    }
+
+    /**
+     * 根据职位ID批量获取position_ext数据
+     * @param ids
+     * @return
+     */
+    public List<JobPositionExtDO> getPositionExtList(List<Integer> ids) {
+
+        return jobPositionExtDao.getDatasByPids(ids);
     }
 
     private enum DBOperation {
