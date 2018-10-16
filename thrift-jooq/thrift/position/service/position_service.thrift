@@ -9,6 +9,7 @@ include "../struct/third_position_struct.thrift"
 include "../../dao/struct/hrdb/hr_third_party_account_struct.thrift"
 include "../../dao/struct/jobdb/job_pc_reported_struct.thrift"
 include "../../dao/struct/jobdb/job_position_liepin_mapping.thrift"
+include "../../dao/struct/jobdb/job_position_ext_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.position.service
 /*
@@ -45,6 +46,9 @@ service PositionServices {
 
     //微信端职位列表
     list<position_struct.WechatPositionListData> getPositionList(1: position_struct.WechatPositionListQuery query);
+
+    //根据职位ID批量获取position_ext数据
+    list<job_position_ext_struct.JobPositionExtDO> getPositionExtList(1: list<i32> ids);
 
     //微信端职位列表的附加红包信息
     list<position_struct.RpExtInfo> getPositionListRpExt(1: list<i32> pids);
