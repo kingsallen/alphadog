@@ -112,7 +112,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             mesBody.put("#date_today#",  LocalDate.now().toString());
             String url = ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrwechatResult.getSignature());
             if(bindEmailSource==EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
-                url.concat("bind_email_source=").concat(EmployeeOperationEntrance.IMEMPLOYEE.getKey()+"");
+                url = url.concat("&bind_email_source=").concat(EmployeeOperationEntrance.IMEMPLOYEE.getKey()+"");
             }
             mesBody.put("#auth_url#", url);
             // 发件人信息
@@ -155,7 +155,6 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     }
 
     public static void main(String[] args) {
-
     }
 
     public Result emailActivation(String activationCode,int bindEmailSource) throws TException {

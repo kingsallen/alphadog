@@ -577,6 +577,7 @@ public class ChatService {
             chatDO.setOrigin(chat.getOrigin());
             chatDO.setMsgType(chat.getMsgType());
             chatDO.setCompoundContent(chat.getCompoundContent());
+            chatDO.setStats(chat.getStats());
             if(StringUtils.isNotNullOrEmpty(chat.getContent())){
                 chatDO.setContent(chat.getContent());
             }else{
