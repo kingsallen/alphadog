@@ -454,6 +454,9 @@ public class ProfileProcessBS {
         if (StringUtils.isNullOrEmpty(positionName)) {
             return;
         }
+        if(Constant.USERNAME_IS_NULL.equals(userName)){
+            userName = "";
+        }
         MsInfo msInfo = tm.processStatus(status, userName);
         logger.info("msInfo: {}", msInfo);
         if(msInfo == null){
