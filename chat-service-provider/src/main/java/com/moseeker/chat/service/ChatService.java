@@ -503,6 +503,10 @@ public class ChatService {
                     if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
                         chatVO.setCompoundContent(compoundContent);
                     }
+                    String stats = (record.get(HrWxHrChat.HR_WX_HR_CHAT.STATS));
+                    if (org.apache.commons.lang.StringUtils.isNotBlank(stats)) {
+                        chatVO.setStats(stats);
+                    }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
                 //Lists.reverse(chatDOList);

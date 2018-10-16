@@ -49,7 +49,7 @@ public class ProfileSkillServicesImplTest {
             Skill skill = new Skill();
             skill.setProfile_id(170);
             skill.setLevel(Short.valueOf("1"));
-            skill.setName("test postResources");
+            skill.setName("resumeFileParser postResources");
             response = service.postResources(new ArrayList<Skill>(){{add(skill);add(skill);}});
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,11 +64,11 @@ public class ProfileSkillServicesImplTest {
 
             Skill skill = new Skill();
             skill.setId(90121);
-            skill.setName("test putResources");
+            skill.setName("resumeFileParser putResources");
 
             Skill skill2 = new Skill();
             skill2.setId(90122);
-            skill2.setName("test putResources2");
+            skill2.setName("resumeFileParser putResources2");
 
             response = service.putResources(new ArrayList<Skill>(){{add(skill);add(skill2);}});
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ProfileSkillServicesImplTest {
             Skill skill = new Skill();
             skill.setProfile_id(170);
             skill.setLevel(Short.valueOf("1"));
-            skill.setName("test postResource");
+            skill.setName("resumeFileParser postResource");
             response = service.postResource(skill);
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class ProfileSkillServicesImplTest {
         try {
             Skill skill = new Skill();
             skill.setId(90123);
-            skill.setName("test putResource");
+            skill.setName("resumeFileParser putResource");
             response = service.putResource(skill);
         } catch (Exception e) {
             e.printStackTrace();
