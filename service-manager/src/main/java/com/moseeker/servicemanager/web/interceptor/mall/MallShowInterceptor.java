@@ -21,12 +21,8 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class MallShowInterceptor extends HandlerInterceptorAdapter {
 
-    private final UserEmployeeDao userEmployeeDao;
-
     @Autowired
-    public MallShowInterceptor(UserEmployeeDao userEmployeeDao) {
-        this.userEmployeeDao = userEmployeeDao;
-    }
+    private UserEmployeeDao userEmployeeDao;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
