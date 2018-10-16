@@ -225,6 +225,20 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	 */
 	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, List<Integer> positionIdList,
 															   LocalDateTime lastFriday, LocalDateTime currentFriday) {
+
+		System.out.println(create.select(
+				JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
+				count(JobApplication.JOB_APPLICATION.ID).as("count")
+		)
+				.from(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIdList))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
+						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
+								.toEpochMilli())))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
+						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).getSQL());
 		return create.select(
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					count(JobApplication.JOB_APPLICATION.ID).as("count")
@@ -340,4 +354,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 		return execute == 1;
 	}
+
+	/**
+	 * 根据申请编号集合查找申请记录集合
+	 * @param idList 申请编号集合
+	 * @return
+	 */
+    public List<JobApplicationRecord> fetchByIdList(List<Integer> idList) {
+		return create
+				.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.ID.in(idList))
+				.fetch();
+    }
 }

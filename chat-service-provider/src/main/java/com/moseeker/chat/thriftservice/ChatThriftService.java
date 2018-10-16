@@ -37,7 +37,7 @@ public class ChatThriftService implements Iface {
             return chatService.listHRChatRoom(hrId, pageNo, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -57,7 +57,7 @@ public class ChatThriftService implements Iface {
             return chatService.listHRChatRoomByIndex(hrId, keyword, roomId, apply, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -67,7 +67,7 @@ public class ChatThriftService implements Iface {
             return chatService.listUserChatRoom(userId, pageNo, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
 
     }
@@ -78,7 +78,7 @@ public class ChatThriftService implements Iface {
             return chatService.listChatLogs(roomId, pageNo, pageSize);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 
@@ -88,14 +88,18 @@ public class ChatThriftService implements Iface {
             return chatService.saveChat(chat);
         } catch (Exception e) {
             logger.error(JSON.toJSONString(chat) + e.getMessage(), e);
-            throw e;
+            throw ExceptionUtils.convertException(e);
         }
     }
 
 
     @Override
     public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) throws TException {
-        return chatService.enterChatRoom(userId, hrId, positionId, roomId, is_gamma);
+        try {
+            return chatService.enterChatRoom(userId, hrId, positionId, roomId, is_gamma);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
@@ -104,7 +108,7 @@ public class ChatThriftService implements Iface {
             return chatService.getChat(roomId, speaker);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
+            throw ExceptionUtils.convertException(e);
         }
     }
 

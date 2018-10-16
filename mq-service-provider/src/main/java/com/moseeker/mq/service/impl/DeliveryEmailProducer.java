@@ -19,9 +19,11 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.MandrillMailListConsumer;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.pojo.profile.info.*;
+import com.moseeker.mq.service.email.MandrillMailConsumer;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
@@ -70,6 +72,9 @@ public class DeliveryEmailProducer {
 
     @Autowired
     private ProfileOtherEntity profileEntity;
+
+    @Autowired
+    private MandrillMailListConsumer mandrillMailListConsumer;
 
     WholeProfileServices.Iface profileServices = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
     ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER
@@ -287,7 +292,7 @@ public class DeliveryEmailProducer {
                 profileEntity.updateProfileOther(otherDatas, emailInfo);
             }
             //获取教育信息
-            List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", new ArrayList());
+            List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", null);
             if (degree != null && degree.size() > 0 && !StringUtils.isEmptyList(educationList)) {
                 for (DictConstantDO constantDO : degree) {
                     if (educationList.get(0).get("degree") != null) {
@@ -305,7 +310,8 @@ public class DeliveryEmailProducer {
                     eduExps.setTime(DateUtils.appendTime(education.get("start_date"), education.get("end_date"), education.get("end_until_now")));
                     eduExps.setCollege((String) education.getOrDefault("college_name", ""));
                     eduExps.setMajor((String) education.getOrDefault("major_name", ""));
-                    eduExps.setDescription((String) education.getOrDefault("description", ""));
+                    String description = (String) education.getOrDefault("description", "");
+                    eduExps.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
                     if (education.get("degree") != null) {
                         for (DictConstantDO constantDO : degree) {
                             if (constantDO.getCode() == (int) education.get("degree"))
@@ -365,7 +371,8 @@ public class DeliveryEmailProducer {
                 for (Map<String, Object> workexp : workexpList) {
                     WorkExps workExps = new WorkExps();
                     workExps.setTime(DateUtils.appendTime(workexp.get("start_date"), workexp.get("end_date"), workexp.get("end_until_now")));
-                    workExps.setDescription((String) workexp.getOrDefault("description", ""));
+                    String description = (String) workexp.getOrDefault("description", "");
+                    workExps.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
                     workExps.setCompany((String) workexp.getOrDefault("company_name", ""));
                     workExps.setDepartment((String) workexp.getOrDefault("department_name", ""));
                     workExps.setPosition((String) workexp.getOrDefault("job", ""));
@@ -417,7 +424,8 @@ public class DeliveryEmailProducer {
                 Map<String, Object> worksData = worksList.get(0);
                 works.setCover((String) worksData.getOrDefault("cover", ""));
                 works.setUrl((String) worksData.getOrDefault("url", ""));
-                works.setDescription((String) worksData.getOrDefault("description", ""));
+                String description = (String) worksData.getOrDefault("description", "");
+                works.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
                 emailInfo.setWorks(works);
             }
         }

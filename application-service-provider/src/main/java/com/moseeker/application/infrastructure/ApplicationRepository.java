@@ -22,6 +22,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
+import com.moseeker.thrift.gen.employee.struct.Employee;
 import org.jooq.Configuration;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -110,6 +111,7 @@ public class ApplicationRepository {
 
     @Autowired
     private EmployeeEntity entity;
+
     /**
      * 查找申请投递的职位名称
      * @param applicationIdList 申请编号

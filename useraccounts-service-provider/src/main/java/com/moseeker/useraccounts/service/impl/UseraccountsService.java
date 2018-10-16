@@ -7,6 +7,7 @@ import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -14,6 +15,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
@@ -64,6 +66,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -116,6 +119,9 @@ public class UseraccountsService {
     @Autowired
     private JobApplicationDao applicationDao;
 
+    @Autowired
+    private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -161,6 +167,10 @@ public class UseraccountsService {
                 if (userUserDO.getUnionid().equals(unionid)) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_SAME);
                 }
+
+                // 把之前的user_wx_user的sysuser_id置为0
+                wxuserdao.invalidOldWxUser(userUserDO.getUnionid());
+
                 // 更新user_user
                 userUserDO.setUnionid(unionid);
                 userdao.updateData(userUserDO);
@@ -1194,9 +1204,11 @@ public class UseraccountsService {
     public Response getUserSearchPositionHistory(int userId) throws BIZException {
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         List<String> history = null;
+        logger.info("getUserSearchPositionHistory info --------------:{}",info);
         if(StringUtils.isNotNullOrEmpty(info)){
             history = (List)JSONObject.parse(info);
         }
+        logger.info("getUserSearchPositionHistory history --------------:{}",history);
         return ResponseUtils.success(history);
     }
 
@@ -1215,6 +1227,7 @@ public class UseraccountsService {
         if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
+        logger.info("claimReferralCard claim form:{}", JSON.toJSONString(claimForm));
         ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
         if (referralLog == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
@@ -1248,7 +1261,7 @@ public class UseraccountsService {
         if (!claimForm.getName().equals(referralUser.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
-
+        logger.info("claimReferralCard userUserDO:{}", userUserDO);
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
@@ -1260,6 +1273,7 @@ public class UseraccountsService {
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
             boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
+            logger.info("claimReferralCard validateVerifyResult:{}", validateVerifyResult);
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }
@@ -1275,5 +1289,27 @@ public class UseraccountsService {
         }
 
         referralEntity.claimReferralCard(userUserDO, referralLog);
+    }
+
+
+
+    /**
+     * 认领内推奖金
+     * @param claimForm 参数
+     */
+    @Transactional
+    public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {
+        ReferralEmployeeBonusRecord referralEmployeeBonusRecord = referralEmployeeBonusRecordDao.findById(bonus_record_id);
+        if (referralEmployeeBonusRecord == null) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_BONUS_NOT_EXIST;
+        }
+        if (referralEmployeeBonusRecord.getClaim() == 1) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_BONUS__REPEAT_CLAIM;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        referralEmployeeBonusRecord.setClaim((byte) 1);
+        referralEmployeeBonusRecord.setClaimTime(Timestamp.valueOf(now));
+        referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(now));
+        referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
     }
 }

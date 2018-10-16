@@ -148,6 +148,7 @@ public class PersonaRecomEntity {
      */
     private List<HistoryCampaignPersonaRecomRecord> convertToHistoryCampaignPersonaRecomPojo(List<CampaignPersonaRecomRecord> list){
         if(StringUtils.isEmptyList(list)){
+
             return null;
         }
         List<HistoryCampaignPersonaRecomRecord> result=new ArrayList<>();

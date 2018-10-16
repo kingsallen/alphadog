@@ -43,6 +43,7 @@ public abstract class AbstractMutiResumeParser<T, R> implements IResumeParser {
 
     @Override
     public ProfileObj parseResume(ProfileObj moseekerProfile, ResumeObj resumeProfile) {
+        logger.info("====================moseekerProfile:{}, resumeProfile:{}", moseekerProfile, resumeProfile);
         List<T> datas = get(resumeProfile);
         List<R> r = new ArrayList<>();
 

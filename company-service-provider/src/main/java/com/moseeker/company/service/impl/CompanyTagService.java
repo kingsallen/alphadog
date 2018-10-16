@@ -171,7 +171,7 @@ public class CompanyTagService {
                 for (Integer userId : idList) {
                     logger.info("handlerCompanyTagTalent userId:{}",userId);
                     for (Map<String, Object> tag : tagList) {
-                        logger.info("handlerCompanyTagTalent tag:{}",tag);
+                        logger.info("handlerCompanyTagTalent tagId:"+tag.get("id"));
                         TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
                         delRecord.setUserId(userId);
                         delRecord.setTagId((Integer) tag.get("id"));
@@ -186,7 +186,7 @@ public class CompanyTagService {
                             params.put("size", "0");
                             params.put("user_id", String.valueOf(userId));
                             int total = service.queryCompanyTagUserIdListCount(params);
-                            logger.info("handlerCompanyTagTalent total:{}",total);
+                            logger.info("handlerCompanyTagTalent total:"+total);
                             if(total>0){
                                 TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
                                 record.setUserId(userId);
@@ -195,7 +195,6 @@ public class CompanyTagService {
                                 list.add(record);
                             }
                         }
-
                     }
                 }
             }
@@ -209,10 +208,9 @@ public class CompanyTagService {
                     Map<String, Object> result = new HashMap<>();
                     result.put("user_id", userId);
                     result.put("tag_ids",tagIdList);
-                    logger.info("handlerCompanyTagTalent result:{}",result);
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
-
+                    logger.info("handlerCompanyTagTalent redis result:{}", result);
                 }
             }
         }catch(Exception e){
