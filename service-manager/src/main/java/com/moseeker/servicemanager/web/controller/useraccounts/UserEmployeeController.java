@@ -262,11 +262,12 @@ public class UserEmployeeController {
             int type = param.getInt("type");
             param.put("type",type);
 
+            //获取来源
+//            int bindSource = Integer.parseInt(param.get("appid").toString());
             BindingParams bindingParams = new JSONObject(){{
                 putAll(param);
             }}.toJavaObject(BindingParams.class);
-
-            Result result = employeeService.bind(bindingParams);
+            Result result = employeeService.bind(bindingParams,102);
             if(!result.success){
                 return ResponseLogNotification.fail(request, result.getMessage());
             }

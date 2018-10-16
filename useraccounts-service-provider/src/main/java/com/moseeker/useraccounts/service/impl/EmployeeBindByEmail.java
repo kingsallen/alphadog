@@ -7,15 +7,14 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.LogEmployeeOperationLogEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -54,6 +53,9 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
 
+    @Autowired
+    private LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -85,7 +87,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     }
 
     @Override
-    protected Result doneBind(UserEmployeeDO userEmployee) throws TException {
+    protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException {
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.clear();
@@ -108,7 +110,11 @@ public class EmployeeBindByEmail extends EmployeeBinder{
             mesBody.put("#official_account_name#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getName(), ""));
             mesBody.put("#official_account_qrcode#",  org.apache.commons.lang.StringUtils.defaultIfEmpty(hrwechatResult.getQrcode(), ""));
             mesBody.put("#date_today#",  LocalDate.now().toString());
-            mesBody.put("#auth_url#", ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrwechatResult.getSignature()));
+            String url = ConfigPropertiesUtil.getInstance().get("platform.url", String.class).concat("m/employee/bindemail?activation_code=").concat(activationCode).concat("&wechat_signature=").concat(hrwechatResult.getSignature());
+            if(bindEmailSource==EmployeeOperationEntrance.IMEMPLOYEE.getKey()) {
+                url.concat("bind_email_source=").concat(EmployeeOperationEntrance.IMEMPLOYEE.getKey()+"");
+            }
+            mesBody.put("#auth_url#", url);
             // 发件人信息
             ConfigPropertiesUtil propertiesUtil = ConfigPropertiesUtil.getInstance();
             String senderName = propertiesUtil.get("email.verify.sendName", String.class);
@@ -152,7 +158,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
     }
 
-    public Result emailActivation(String activationCode) throws TException {
+    public Result emailActivation(String activationCode,int bindEmailSource) throws TException {
         log.info("emailActivation param: activationCode={}", activationCode);
         Result response = new Result();
         response.setSuccess(false);
@@ -178,12 +184,17 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                     log.error("员工认证邮箱激活失败, 邮箱:{} 已被占用", employee.getEmail());
                     response.setMessage("员工认证邮箱激活失败, 该邮箱被占用");
                 } else {
-                    response = super.doneBind(employee);
+                    response = super.doneBind(employee,bindEmailSource);
                     response.setEmployeeId(employee.getId());
                 }
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, value);
                 log.info("emailActivation del key activationCode:{}",activationCode);
+                if(response.isSuccess()){
+                    if(bindEmailSource == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                        logEmployeeOperationLogEntity.insertEmployeeOperationLog(Integer.parseInt(employee.getEmployeeid()),bindEmailSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),employee.getCompanyId(),null);
+                    }
+                }
             }
         } else {
             query.clear();

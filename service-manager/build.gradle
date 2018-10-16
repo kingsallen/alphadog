@@ -62,7 +62,9 @@ task copyJars(type: Copy) {
 war {
     dependsOn copyEnvResources
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 project.description = '''
     1) Spring MVC --- provide restful HTTP API access
     2) we call it "Client" in this project

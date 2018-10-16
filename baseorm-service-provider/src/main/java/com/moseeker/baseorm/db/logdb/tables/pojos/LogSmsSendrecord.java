@@ -23,44 +23,44 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogSmsSendrecord implements Serializable {
 
-    private static final long serialVersionUID = -1203613642;
+    private static final long serialVersionUID = -1186874846;
 
     private Integer   id;
+    private String    countryCode;
     private Byte      sys;
     private Long      mobile;
     private String    msg;
     private String    ip;
     private Timestamp createTime;
-    private String    countryCode;
 
     public LogSmsSendrecord() {}
 
     public LogSmsSendrecord(LogSmsSendrecord value) {
         this.id = value.id;
+        this.countryCode = value.countryCode;
         this.sys = value.sys;
         this.mobile = value.mobile;
         this.msg = value.msg;
         this.ip = value.ip;
         this.createTime = value.createTime;
-        this.countryCode = value.countryCode;
     }
 
     public LogSmsSendrecord(
         Integer   id,
+        String    countryCode,
         Byte      sys,
         Long      mobile,
         String    msg,
         String    ip,
-        Timestamp createTime,
-        String    countryCode
+        Timestamp createTime
     ) {
         this.id = id;
+        this.countryCode = countryCode;
         this.sys = sys;
         this.mobile = mobile;
         this.msg = msg;
         this.ip = ip;
         this.createTime = createTime;
-        this.countryCode = countryCode;
     }
 
     public Integer getId() {
@@ -69,6 +69,14 @@ public class LogSmsSendrecord implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getCountryCode() {
+        return this.countryCode;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 
     public Byte getSys() {
@@ -111,25 +119,17 @@ public class LogSmsSendrecord implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getCountryCode() {
-        return this.countryCode;
-    }
-
-    public void setCountryCode(String countryCode) {
-        this.countryCode = countryCode;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogSmsSendrecord (");
 
         sb.append(id);
+        sb.append(", ").append(countryCode);
         sb.append(", ").append(sys);
         sb.append(", ").append(mobile);
         sb.append(", ").append(msg);
         sb.append(", ").append(ip);
         sb.append(", ").append(createTime);
-        sb.append(", ").append(countryCode);
 
         sb.append(")");
         return sb.toString();

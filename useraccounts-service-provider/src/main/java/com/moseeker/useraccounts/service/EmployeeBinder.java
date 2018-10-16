@@ -10,13 +10,13 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.EmployeeOperationEntrance;
+import com.moseeker.common.constants.EmployeeOperationIsSuccess;
+import com.moseeker.common.constants.EmployeeOperationType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.SearchengineEntity;
-import com.moseeker.entity.UserAccountEntity;
-import com.moseeker.entity.UserWxEntity;
+import com.moseeker.entity.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
@@ -78,6 +78,9 @@ public abstract class EmployeeBinder {
     @Autowired
     protected CandidateCompanyDao candidateCompanyDao;
 
+    @Autowired
+    protected LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
     /**
@@ -85,7 +88,7 @@ public abstract class EmployeeBinder {
      * @param bindingParams 认证参数
      * @return 认证结果
      */
-    public Result bind(BindingParams bindingParams) {
+    public Result bind(BindingParams bindingParams,Integer bingSource) {
         log.info("bind param: BindingParams={}", bindingParams);
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
@@ -103,7 +106,12 @@ public abstract class EmployeeBinder {
             }
             paramCheck(bindingParams, certConf);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
-            response = doneBind(userEmployee);
+            response = doneBind(userEmployee,bingSource);
+            if(response.isSuccess()){
+                if(bingSource == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                    logEmployeeOperationLogEntity.insertEmployeeOperationLog(Integer.parseInt(userEmployee.getEmployeeid()),bingSource, EmployeeOperationType.EMPLOYEEVALID.getKey(), EmployeeOperationIsSuccess.SUCCESS.getKey(),userEmployee.getCompanyId(),null);
+                }
+            }
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             response.setSuccess(false);
@@ -160,7 +168,7 @@ public abstract class EmployeeBinder {
      * @return
      * @throws TException
      */
-    protected Result doneBind(UserEmployeeDO useremployee) throws TException {
+    protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException {
         log.info("doneBind param: useremployee={}", useremployee);
         Result response = new Result();
         int employeeId;
