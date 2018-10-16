@@ -85,6 +85,7 @@ public class PositionSyncVerifyHandlerUtil {
         Query query=new Query.QueryBuilder()
                 .where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.getName(),hrWxWechatDO.getId())
                 .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(), Constant.POSITION_SYNC_VERIFY_INFO)
+                .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(), 0)
                 .buildQuery();
         HrWxTemplateMessageDO template=templateMessageDao.getData(query);
 
