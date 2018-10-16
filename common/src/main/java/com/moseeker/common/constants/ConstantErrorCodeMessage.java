@@ -39,6 +39,13 @@ public final class ConstantErrorCodeMessage {
     public static final String WEXIN_IS_INVALID = "{'status':10026,'message':'unionid 有误'}";
     public static final String MOBILE_WECHAT_IS_INVALID = "{'status':10027,'message':'该手机号码或微信账号已经注册'}";
     public static final String HRCOMPANY_CONF_NOTEXIST = "{'status':10028,'message':'公司配置不存在!'}";
+    public static final String MALL_STATE_UNSUPPORTED = "{'status':10029,'message':'不支持的商城操作状态!'}";
+    public static final String MALL_GOODS_UNEXISTS = "{'status':10030,'message':'商品不存在!'}";
+    public static final String MALL_GOODS_NEED_DOWNSHELF = "{'status':10031,'message':'必须先下架商品才能编辑!'}";
+    public static final String MALL_LIMIT_SUPER_ACCOUNT = "{'status':10032,'message':'非主账号权限不能操作!'}";
+    public static final String MALL_VISIT_LIMIT = "{'status':10033,'message':'未认证员工不能进入积分商城!'}";
+    public static final String MALL_ORDER_OPERATION_LIMIT = "{'status':10034,'message':'非本公司订单不能操作!'}";
+    public static final String MALL_ORDER_TYPE_UNEXISTS = "{'status':10035,'message':'不存在的订单类型!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
