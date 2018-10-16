@@ -32,6 +32,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionServices.Iface;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -148,6 +149,11 @@ public class PositionServicesImpl implements Iface {
     @Override
     public List<WechatPositionListData> getPositionList(WechatPositionListQuery query) throws TException {
         return service.getPositionList(query);
+    }
+
+    @Override
+    public List<JobPositionExtDO> getPositionExtList(List<Integer> ids) throws TException {
+        return service.getPositionExtList(ids);
     }
 
     @Override

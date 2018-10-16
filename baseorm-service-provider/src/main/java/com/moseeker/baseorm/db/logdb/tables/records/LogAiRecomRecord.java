@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecomRecord extends UpdatableRecordImpl<LogAiRecomRecord> implements Record10<Integer, Integer, Integer, String, Byte, Timestamp, String, String, Integer, Byte> {
 
-    private static final long serialVersionUID = 434180782;
+    private static final long serialVersionUID = -1359174296;
 
     /**
      * Setter for <code>logdb.log_ai_recom.id</code>.
@@ -151,28 +151,28 @@ type=4员工简历完善
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.wx_id</code>. 微信id
+     * Setter for <code>logdb.log_ai_recom.wx_id</code>.
      */
     public void setWxId(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.wx_id</code>. 微信id
+     * Getter for <code>logdb.log_ai_recom.wx_id</code>.
      */
     public Integer getWxId() {
         return (Integer) get(8);
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.is_send</code>. 是否发送 1已发送 0未发送
+     * Setter for <code>logdb.log_ai_recom.is_send</code>.
      */
     public void setIsSend(Byte value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.is_send</code>. 是否发送 1已发送 0未发送
+     * Getter for <code>logdb.log_ai_recom.is_send</code>.
      */
     public Byte getIsSend() {
         return (Byte) get(9);

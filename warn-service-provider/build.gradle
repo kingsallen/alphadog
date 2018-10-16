@@ -33,7 +33,9 @@ jar {
 
 
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 project.description = '''
     1) 预警通知服务
 '''

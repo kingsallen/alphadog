@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
 
-    private static final long serialVersionUID = -1931059400;
+    private static final long serialVersionUID = 140081128;
 
     /**
      * The reference instance of <code>logdb.log_resume_record</code>
@@ -52,29 +52,29 @@ public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
     }
 
     /**
-     * The column <code>logdb.log_resume_record.id</code>.
+     * The column <code>logdb.log_resume_record.id</code>. id
      */
-    public final TableField<LogResumeRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<LogResumeRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "id");
 
     /**
-     * The column <code>logdb.log_resume_record.user_id</code>.
+     * The column <code>logdb.log_resume_record.user_id</code>. user_user 表 id
      */
-    public final TableField<LogResumeRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<LogResumeRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER, this, "user_user 表 id");
 
     /**
-     * The column <code>logdb.log_resume_record.file_name</code>.
+     * The column <code>logdb.log_resume_record.file_name</code>. 文件名称
      */
-    public final TableField<LogResumeRecordRecord, String> FILE_NAME = createField("file_name", org.jooq.impl.SQLDataType.VARCHAR.length(1000), this, "");
+    public final TableField<LogResumeRecordRecord, String> FILE_NAME = createField("file_name", org.jooq.impl.SQLDataType.VARCHAR.length(1000), this, "文件名称");
 
     /**
-     * The column <code>logdb.log_resume_record.error_log</code>.
+     * The column <code>logdb.log_resume_record.error_log</code>. 错误日志
      */
-    public final TableField<LogResumeRecordRecord, String> ERROR_LOG = createField("error_log", org.jooq.impl.SQLDataType.VARCHAR.length(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<LogResumeRecordRecord, String> ERROR_LOG = createField("error_log", org.jooq.impl.SQLDataType.VARCHAR.length(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "错误日志");
 
     /**
-     * The column <code>logdb.log_resume_record.field_value</code>.
+     * The column <code>logdb.log_resume_record.field_value</code>. 错误字段、value
      */
-    public final TableField<LogResumeRecordRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.VARCHAR.length(2000).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
+    public final TableField<LogResumeRecordRecord, String> FIELD_VALUE = createField("field_value", org.jooq.impl.SQLDataType.VARCHAR.length(2000).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "错误字段、value");
 
     /**
      * The column <code>logdb.log_resume_record.result_data</code>. resume解析后的原始数据
@@ -82,14 +82,9 @@ public class LogResumeRecord extends TableImpl<LogResumeRecordRecord> {
     public final TableField<LogResumeRecordRecord, String> RESULT_DATA = createField("result_data", org.jooq.impl.SQLDataType.CLOB, this, "resume解析后的原始数据");
 
     /**
-     * The column <code>logdb.log_resume_record.create_time</code>.
+     * The column <code>logdb.log_resume_record.create_time</code>. 创建时间
      */
-    public final TableField<LogResumeRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
-
-    /**
-     * The column <code>logdb.log_resume_record.uuid</code>. profile的uuid标识,与主键一一对应
-     */
-    public final TableField<LogResumeRecordRecord, String> UUID = createField("uuid", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "profile的uuid标识,与主键一一对应");
+    public final TableField<LogResumeRecordRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
      * The column <code>logdb.log_resume_record.text</code>. 解析前的文本数据

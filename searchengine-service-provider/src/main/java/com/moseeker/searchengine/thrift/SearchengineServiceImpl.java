@@ -7,6 +7,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
 import com.moseeker.searchengine.service.impl.CompanySearchengine;
@@ -343,8 +344,8 @@ public class SearchengineServiceImpl implements Iface {
 	@Override
 	public Response mobotSearchPosition(Map<String, String> params) throws BIZException, TException {
 		try{
-			List<Map<String,Object>> list=service.mobotSearchPosition(params);
-			Response respose=ResponseUtils.success(list);
+			MeetBotResult result=service.mobotSearchPosition(params);
+			Response respose=ResponseUtils.success(result);
 			return respose;
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);

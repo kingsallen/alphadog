@@ -98,8 +98,10 @@ public class ChatService {
 
     private ThreadPool pool = ThreadPool.Instance;
 
-    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
-    private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{hrName}，{companyName}HR，关于职位和公司信息有任何问题请随时和我沟通。";
+    private static String AUTO_CONTENT_WITH_HR_NOTEXIST = "您好，我是{companyName}的HR，关于职位和公司信息有任何问题请随时和我沟通。";
+//    private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{hrName}，{companyName}的HR，关于职位和公司信息有任何问题请随时和我沟通。";
+//    private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，我是{hrName}，{companyName}的HR，关于职位和公司信息有任何问题请随时和我沟通。";
+    private static String AUTO_CONTENT_WITH_HR_EXIST = "您好，{companyName}的{hrName}，关于职位和公司信息有任何问题请随时和我沟通。";
     private static String AUTO_CONTENT_WITH_HR_EXIST_START = "您好，我是";
 
     /**
@@ -577,6 +579,7 @@ public class ChatService {
             chatDO.setOrigin(chat.getOrigin());
             chatDO.setMsgType(chat.getMsgType());
             chatDO.setCompoundContent(chat.getCompoundContent());
+            chatDO.setStats(chat.getStats());
             if(StringUtils.isNotNullOrEmpty(chat.getContent())){
                 chatDO.setContent(chat.getContent());
             }else{

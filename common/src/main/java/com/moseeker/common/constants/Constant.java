@@ -296,4 +296,6 @@ public final class Constant {
             "other_workexps.position_name;other_workexps.achievement;other_workexps.description;credentials.name;credentials.organization;credentials.url;" +
             "attachments.name;attachment.description;skills.name;imports.user_name;imports.data;imports.account_id;awards.name;languages.name;works.name;works.url;" +
             "works.description";
+
+    public static final String USERNAME_IS_NULL="未填写";
 }

@@ -36,7 +36,9 @@ jar {
 
 
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 project.description = '''
     1) 字典表数据读取服务
 '''
