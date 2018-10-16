@@ -19,4 +19,10 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
    public HistoryUserEmployeeDao() {
         super(HistoryUserEmployee.HISTORY_USER_EMPLOYEE, UserEmployeeDO.class);
    }
+
+   public UserEmployeeDO getUserEmployeeById(int employeeId){
+       return create.selectFrom(HistoryUserEmployee.HISTORY_USER_EMPLOYEE)
+               .where(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.ID.eq(employeeId))
+               .fetchOneInto(UserEmployeeDO.class);
+   }
 }

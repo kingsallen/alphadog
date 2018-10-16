@@ -46,6 +46,7 @@ public final class ConstantErrorCodeMessage {
     public static final String MALL_VISIT_LIMIT = "{'status':10033,'message':'未认证员工不能进入积分商城!'}";
     public static final String MALL_ORDER_OPERATION_LIMIT = "{'status':10034,'message':'非本公司订单不能操作!'}";
     public static final String MALL_ORDER_TYPE_UNEXISTS = "{'status':10035,'message':'不存在的订单类型!'}";
+    public static final String USER_NOTEXIST = "{'status':10036,'message':'员工信息不存在!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 

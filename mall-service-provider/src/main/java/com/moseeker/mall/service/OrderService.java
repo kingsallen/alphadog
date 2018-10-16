@@ -1,14 +1,18 @@
 package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.PaginationUtils;
+import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +36,12 @@ public class OrderService {
     @Autowired
     private MallGoodsOrderDao orderDao;
 
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    private HistoryUserEmployeeDao historyUserEmployeeDao;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -42,6 +53,13 @@ public class OrderService {
      * @return 返回订单list和总行数
      */
     public Map<String,String> getCompanyOrderList(OrderSearchForm orderSearchForm) {
+        int state = orderSearchForm.getState();
+        if(state == OrderEnum.CONFIRM.getState()){
+
+        }else {
+
+        }
+
         int totalRows = orderDao.getTotalRowsByCompanyId(orderSearchForm.getCompany_id());
         int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
         List<MallOrderDO> orderList = orderDao.getOrdersListByPage(orderSearchForm.getCompany_id(), startIndex, orderSearchForm.getPage_size());
@@ -112,14 +130,32 @@ public class OrderService {
     }
 
     /**
-     * 员工获取积分兑换记录 todo 需要数据组装
+     * 员工获取积分兑换记录
      * @param  employeeId 员工id
      * @author  cjm
      * @date  2018/10/16
      * @return  兑换记录list
      */
-    public String getEmployeeOrderList(int employeeId) {
+    public String getEmployeeOrderList(int employeeId) throws BIZException {
         List<MallOrderDO> orderList = orderDao.getOrdersListByEmployeeId(employeeId);
-        return JSON.toJSONString(orderList);
+        UserEmployeeDO userEmployeeDO = getUserEmployeeById(employeeId);
+        List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
+        for(MallOrderDO mallOrderDO : orderList){
+            MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
+            mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO);
+            mallOrderInfoVOS.add(mallOrderInfoVO);
+        }
+        return JSON.toJSONString(mallOrderInfoVOS);
+    }
+
+    private UserEmployeeDO getUserEmployeeById(int employeeId) throws BIZException {
+        UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(employeeId);
+        if(userEmployeeDO == null){
+            userEmployeeDO = historyUserEmployeeDao.getUserEmployeeById(employeeId);
+            if(userEmployeeDO == null){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USER_NOTEXIST);
+            }
+        }
+        return userEmployeeDO;
     }
 }

@@ -14,6 +14,9 @@ public class MallOrderInfoVO{
     private Integer order_id;
     private Integer good_id;
     private Integer credit;
+    private String mobile;
+    private String email;
+    private String custom;
     private String title;
     private String pic_url;
     private Integer count;
@@ -110,19 +113,44 @@ public class MallOrderInfoVO{
         this.employee_state = employee_state;
     }
 
-    public MallOrderInfoVO cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO){
-        MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
-        mallOrderInfoVO.setId(mallOrderDO.getId());
-        mallOrderInfoVO.setAssign_time(mallOrderDO.getAssign_time());
-        mallOrderInfoVO.setCount(mallOrderDO.getCount());
-        mallOrderInfoVO.setCreate_time(mallOrderDO.getCreateTime());
-        mallOrderInfoVO.setCredit(mallOrderDO.getCredit());
-        mallOrderInfoVO.setGood_id(mallOrderDO.getGoods_id());
-        mallOrderInfoVO.setOrder_id(mallOrderDO.getOrder_id());
-        mallOrderInfoVO.setPic_url(mallOrderDO.getPic_url());
-        mallOrderInfoVO.setOrder_state(mallOrderDO.getState());
-        mallOrderInfoVO.setEmployee_state((byte)userEmployeeDO.getStatus());
-        mallOrderInfoVO.setTitle(mallOrderDO.getTitle());
-        return mallOrderInfoVO;
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getCustom() {
+        return custom;
+    }
+
+    public void setCustom(String custom) {
+        this.custom = custom;
+    }
+
+    public void cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO){
+        setId(mallOrderDO.getId());
+        setAssign_time(mallOrderDO.getAssign_time());
+        setCount(mallOrderDO.getCount());
+        setCreate_time(mallOrderDO.getCreateTime());
+        setCredit(mallOrderDO.getCredit());
+        setGood_id(mallOrderDO.getGoods_id());
+        setOrder_id(mallOrderDO.getOrder_id());
+        setPic_url(mallOrderDO.getPic_url());
+        setOrder_state(mallOrderDO.getState());
+        setEmployee_state((byte)userEmployeeDO.getStatus());
+        setTitle(mallOrderDO.getTitle());
+        setMobile(userEmployeeDO.getMobile());
+        setEmail(userEmployeeDO.getEmail());
+        setCustom(userEmployeeDO.getCustomField());
     }
 }

@@ -346,4 +346,10 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .fetchOne();
     }
+
+    public UserEmployeeDO getEmployeeById(int employeeId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(employeeId))
+                .fetchOneInto(UserEmployeeDO.class);
+    }
 }
