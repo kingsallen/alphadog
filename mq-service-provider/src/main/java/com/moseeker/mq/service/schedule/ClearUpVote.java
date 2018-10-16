@@ -36,6 +36,8 @@ public class ClearUpVote {
         LocalDateTime currentFriday = now.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
         LocalDateTime preFriday = currentFriday.minusDays(7);
 
+        logger.info("clearUpVote, now:{}, currentFriday:{}, preFriday:{}", now, currentFriday, preFriday);
+
         //如果第一次执行，并且超过这周周五，那么执行；或者上一次执行的时间在上周五之前，那么执行。执行后更新执行时间
         if ((operationDateTime == null && now.isAfter(currentFriday)) ||
                 (operationDateTime != null && operationDateTime.isBefore(preFriday))) {
@@ -73,6 +75,10 @@ public class ClearUpVote {
             }
 
 
+        } else {
+            logger.info("不满足执行条件！ 当前时间：{}， 本周五：{}， 上周五：{}, 操作时间:{}", now, currentFriday, preFriday, operationDateTime);
+            logger.info("当前时间和本周五的前后顺序比较：{}", now.isAfter(currentFriday));
+            logger.info("当前时间和上周五的前后顺序比较：{}", now.isBefore(preFriday));
         }
     }
 }

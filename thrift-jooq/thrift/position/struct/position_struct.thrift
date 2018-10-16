@@ -118,12 +118,13 @@ struct WechatPositionListData {
     30: optional i32 experience_above;
     31: optional string experience;
     32: optional i32 team_id;
+    33: optional string total_bonus;
 }
 
 // 微信端职位列表的附加红包信息
 struct RpExtInfo {
     1: optional i32 pid,
-    2: optional i32 remain,
+    2: optional double remain,
     3: optional bool employee_only
 }
 
@@ -143,7 +144,7 @@ struct WechatRpPositionListData {
     12: optional string company_logo,
     13: optional string company_name,
     14: optional bool is_new
-    15: optional i32 remain,
+    15: optional double remain,
     16: optional bool employee_only,
     17: optional string city,
     18: optional i32 candidate_source,
@@ -442,4 +443,25 @@ struct ReferralPositionUpdateDataDO{
     8:optional i32 employment_type,
     9:optional string keyWord,
     10:optional string is_referral
+}
+
+struct ReferralPositionBonusVO {
+   1:ReferralPositionBonusDO position_bonus;
+   2:list<ReferralPositionBonusStageDetailDO> bonus_details;
+}
+
+struct ReferralPositionBonusDO {
+    1:optional i32 id,
+    2:optional i32 position_id,
+    3:optional string total_bonus
+}
+
+struct ReferralPositionBonusStageDetailDO {
+    1:optional i32 id,
+    2:optional i32 referral_position_bonus_id,
+    3:optional i32 position_id,
+    4:optional string stage_bonus,
+    5:optional i32 stage_proportion,
+    6:optional i32 stage_type
+
 }

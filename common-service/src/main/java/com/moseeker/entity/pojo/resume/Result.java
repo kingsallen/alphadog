@@ -312,4 +312,44 @@ public class Result {
     public void setCont_certificate(String cont_certificate) {
         this.cont_certificate = cont_certificate;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "surname='" + surname + '\'' +
+                ", resume_type='" + resume_type + '\'' +
+                ", city='" + city + '\'' +
+                ", cont_my_desc='" + cont_my_desc + '\'' +
+                ", expect_jnature='" + expect_jnature + '\'' +
+                ", skills_objs=" + skills_objs +
+                ", education_objs=" + education_objs +
+                ", resume_integrity='" + resume_integrity + '\'' +
+                ", expect_jlocation='" + expect_jlocation + '\'' +
+                ", email='" + email + '\'' +
+                ", cont_job_exp='" + cont_job_exp + '\'' +
+                ", work_company='" + work_company + '\'' +
+                ", lang_objs=" + lang_objs +
+                ", cert_objs=" + cert_objs +
+                ", proj_exp_objs=" + proj_exp_objs +
+                ", work_year='" + work_year + '\'' +
+                ", phone='" + phone + '\'' +
+                ", birthday='" + birthday + '\'' +
+                ", training_objs=" + training_objs +
+                ", expect_salary='" + expect_salary + '\'' +
+                ", raw_text='" + raw_text + '\'' +
+                ", expect_job='" + expect_job + '\'' +
+                ", name='" + name + '\'' +
+                ", cont_expect_job='" + cont_expect_job + '\'' +
+                ", cont_basic_info='" + cont_basic_info + '\'' +
+                ", job_exp_objs=" + job_exp_objs +
+                ", gender='" + gender + '\'' +
+                ", age='" + age + '\'' +
+                ", living_address='" + living_address + '\'' +
+                ", work_position='" + work_position + '\'' +
+                ", work_start_time='" + work_start_time + '\'' +
+                ", cont_certificate='" + cont_certificate + '\'' +
+                ", nationality='" + nationality + '\'' +
+                ", qq='" + qq + '\'' +
+                '}';
+    }
 }

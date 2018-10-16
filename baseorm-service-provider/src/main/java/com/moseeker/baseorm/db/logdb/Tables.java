@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -79,6 +80,11 @@ public class Tables {
      * 第三方简历回流email解析日志
      */
     public static final LogJbEmailparseRecord LOG_JB_EMAILPARSE_RECORD = com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD;
+
+    /**
+     * 记录meetmobot的推荐日志
+     */
+    public static final LogMeetmobotRecom LOG_MEETMOBOT_RECOM = com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom.LOG_MEETMOBOT_RECOM;
 
     /**
      * The table <code>logdb.log_resume_record</code>.

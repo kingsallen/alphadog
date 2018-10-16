@@ -130,28 +130,6 @@ public class ReferralServiceImpl implements ReferralService {
         fileNameData.setOriginName(fileName);
 
         return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
-
-        /*// 调用SDK得到结果
-        ResumeObj resumeObj;
-        try {
-            resumeObj = profileEntity.profileParserAdaptor(fileName, StreamUtils.byteArrayToBase64String(dataArray));
-        } catch (TException | IOException e) {
-            logger.error(e.getMessage(), e);
-            throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
-        }
-        ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
-        profileDocParseResult.setMobile(profileObj.getUser().getMobile());
-        profileDocParseResult.setName(profileObj.getUser().getName());
-        profileObj.setResumeObj(null);
-        JSONObject jsonObject = ProfileExtUtils.convertToReferralProfileJson(profileObj);
-        ProfileExtUtils.createAttachment(jsonObject, fileNameData, Constant.EMPLOYEE_PARSE_PROFILE_DOCUMENT);
-        ProfileExtUtils.createReferralUser(jsonObject, profileDocParseResult.getName(), profileDocParseResult.getMobile());
-
-        ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
-
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
-                "", profilePojo.toJson(), 24*60*60);
-        return profileDocParseResult;*/
     }
 
     @Override
@@ -353,9 +331,12 @@ public class ReferralServiceImpl implements ReferralService {
                 userUserRecord.setMobile(Long.valueOf(mobile));
                 flag = true;
             }
+            logger.info("recommend flag:{}", flag);
             if (flag) {
                 userAccountEntity.updateUserRecord(userUserRecord);
             }
+            logger.info("recommend id:{}, name:{}, mobile:{}", userRecord.getId(), name, mobile);
+            userAccountEntity.updateUserRecord(userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (StringUtils.isBlank(userRecord.getUsername())) {

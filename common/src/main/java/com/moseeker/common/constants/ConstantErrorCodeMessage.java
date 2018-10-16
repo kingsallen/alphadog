@@ -66,6 +66,8 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_MOVING_MAIN_ACCOUNT = "{'status':31028,'message':'简历搬家只能主账号操作!'}";
     public static final String PROFILE_ORIGIN_UPSUPORT = "{'status':31028,'message':'简历搬家不支持的简历来源!'}";
 
+    public static final String PROFILE_CALL_RESUMESDK_RESULT_ERROR = "{'status':31024,'message':'调用ResumeSDK返回结果错误,log id:{}'}";
+
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
     public static final String COMPANY_SCALE_ELLEGAL = "{'status':33002,'message':'公司规模不合法!'}";
@@ -137,7 +139,6 @@ public final class ConstantErrorCodeMessage {
     public static final String HRACCOUNT_NOT_EXISTS="{'status':43003,'message':'沒有符合条件的hr账号！'}";
     public static final String HRACCOUNT_INFO_ERROR="{'status':43003,'message':'用戶信息错误！'}";
     public static final String NO_MATCH_AUTH_METHOD="{'status':43005,'message':'没有匹配的员工认证方式！'}";
-
 
     //Position服务提示信息说明
     public static final String POSITION_NODELETE_BLANK = "{'status':51001,'message':'参数nodelete不能为空！'}";
@@ -217,6 +218,7 @@ public final class ConstantErrorCodeMessage {
 
     //APPBS错误代码61000
 
+    //searchengine 100001
 
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";

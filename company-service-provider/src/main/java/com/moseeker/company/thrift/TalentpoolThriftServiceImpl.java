@@ -8,13 +8,11 @@ import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.company.bean.TalentTagPOJO;
 import com.moseeker.company.bean.email.TalentEmailEnum;
-import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.TalentPoolService;
 import com.moseeker.company.service.impl.TalentpoolEmailService;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
@@ -25,11 +23,6 @@ import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountConsumptionForm;
 import com.moseeker.thrift.gen.company.struct.EmailAccountForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -37,6 +30,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by zztaiwll on 17/12/7.
@@ -325,6 +323,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
         }
+
     }
 
     @Override
@@ -623,6 +622,7 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
 
 
     private Set<Integer> ConvertListToSet(List<Integer> list){

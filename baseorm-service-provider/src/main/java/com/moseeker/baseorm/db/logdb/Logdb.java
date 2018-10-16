@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -48,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1406102383;
+    private static final long serialVersionUID = -2128008641;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -96,6 +97,11 @@ public class Logdb extends SchemaImpl {
     public final LogJbEmailparseRecord LOG_JB_EMAILPARSE_RECORD = com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD;
 
     /**
+     * 记录meetmobot的推荐日志
+     */
+    public final LogMeetmobotRecom LOG_MEETMOBOT_RECOM = com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom.LOG_MEETMOBOT_RECOM;
+
+    /**
      * The table <code>logdb.log_resume_record</code>.
      */
     public final LogResumeRecord LOG_RESUME_RECORD = com.moseeker.baseorm.db.logdb.tables.LogResumeRecord.LOG_RESUME_RECORD;
@@ -111,7 +117,7 @@ public class Logdb extends SchemaImpl {
     public final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
 
     /**
-     * 邮件额度每天消耗日志
+     * 邮件额度每天使用日志
      */
     public final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
@@ -183,6 +189,7 @@ public class Logdb extends SchemaImpl {
             LogHrloginRecord.LOG_HRLOGIN_RECORD,
             LogHrOperationRecord.LOG_HR_OPERATION_RECORD,
             LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD,
+            LogMeetmobotRecom.LOG_MEETMOBOT_RECOM,
             LogResumeRecord.LOG_RESUME_RECORD,
             LogScraperRecord.LOG_SCRAPER_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,

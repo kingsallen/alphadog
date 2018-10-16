@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
 
-    private static final long serialVersionUID = -1357232798;
+    private static final long serialVersionUID = 1524205969;
 
     /**
      * The reference instance of <code>logdb.log_ai_recom</code>
@@ -92,14 +92,15 @@ public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
     public final TableField<LogAiRecomRecord, String> ALGORITHM_NAME = createField("algorithm_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "算法名称");
 
     /**
-     * The column <code>logdb.log_ai_recom.wx_id</code>. 微信id
+     * The column <code>logdb.log_ai_recom.wx_id</code>.
      */
-    public final TableField<LogAiRecomRecord, Integer> WX_ID = createField("wx_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "微信id");
+    public final TableField<LogAiRecomRecord, Integer> WX_ID = createField("wx_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
+     * The column <code>logdb.log_ai_recom.is_send</code>.
      * The column <code>logdb.log_ai_recom.is_send</code>. 消息是否发送 0未发送 1已发送
      */
-    public final TableField<LogAiRecomRecord, Byte> IS_SEND = createField("is_send", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "消息是否发送 0未发送 1已发送");
+    public final TableField<LogAiRecomRecord, Byte> IS_SEND = createField("is_send", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * Create a <code>logdb.log_ai_recom</code> table reference

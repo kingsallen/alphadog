@@ -14,6 +14,10 @@ import java.util.Calendar;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserRecommendRefusal.USER_RECOMMEND_REFUSAL;
 
+/**
+ * @Author: jack
+ * @Date: 2018/8/21
+ */
 @Repository
 public class UserRecommendRefusalDao extends JooqCrudImpl<UserRecommendRefusalDO, UserRecommendRefusalRecord> {
 

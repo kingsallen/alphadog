@@ -18,17 +18,13 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.exception.ApplicationException;
-import com.moseeker.entity.exception.ProfileException;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import org.apache.commons.lang.StringUtils;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -228,10 +224,12 @@ public class ApplicationEntity {
         logger.info("userApplyCount参数校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
         if (candidateSource == 0) {
             if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
+                logger.info("社招超限制");
                 throw ApplicationException.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK;
             }
         } else {
             if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
+                logger.info("校招超限制");
                 throw ApplicationException.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK;
             }
         }

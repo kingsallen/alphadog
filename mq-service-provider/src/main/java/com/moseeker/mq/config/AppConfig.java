@@ -138,6 +138,19 @@ public class AppConfig {
         TopicExchange topicExchange = new TopicExchange("profile_company_tag_recom_exchange", true, false);
         return topicExchange;
     }
+
+    @Bean
+    public Queue bonusNoticeQueue() {
+        Queue queue = new Queue("bonus_notice_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange applicationStateChangeExchange() {
+        TopicExchange topicExchange = new TopicExchange("add_bonus_change_exchange", true, false);
+        return topicExchange;
+    }
+
     @Bean
     public List<Binding> binding() {
         return new ArrayList<Binding>(){{
@@ -145,6 +158,7 @@ public class AppConfig {
             add(BindingBuilder.bind(sendTemplateQue()).to(templateExchange()).with("messagetemplate.#"));
             add(BindingBuilder.bind(personaRecomQue()).to(personaRecomExchange()).with("personarecom.#"));
             add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
+            add(BindingBuilder.bind(bonusNoticeQueue()).to(applicationStateChangeExchange()).with("add_bonus_change_routingkey.add_bonus"));
         }};
     }
 }

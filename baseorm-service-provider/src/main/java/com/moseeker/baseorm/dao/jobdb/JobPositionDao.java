@@ -694,6 +694,22 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     }
 
     /**
+     * batchhandler的时候根据公司ID查询职位部分字段，只有部分字段，因为全字段可能量很大，导致mysql查询很慢
+     * @param companyId
+     * @param source
+     * @return
+     */
+    public List<JobPositionRecord> getDatasForBatchhandlerDelete(int companyId, int source) {
+        return create.select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.SOURCE_ID, JobPosition.JOB_POSITION.JOBNUMBER
+                , JobPosition.JOB_POSITION.SOURCE, JobPosition.JOB_POSITION.CANDIDATE_SOURCE, JobPosition.JOB_POSITION.STATUS
+                , JobPosition.JOB_POSITION.COMPANY_ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
+                .fetchInto(JobPositionRecord.class);
+    }
+
+    /**
      * 计算合法再招并且是给定公司下的职位的数量
      * @param companyId 公司编号
      * @param positionIdList 职位编号集合
@@ -729,5 +745,38 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             return new ArrayList<>();
         }
 
+    }
+
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getJobPositionByIdListAndHbStatus(List<Integer> positionIdList) {
+
+
+        Result<JobPositionRecord> positionRecords = create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
+                .and(JobPosition.JOB_POSITION.HB_STATUS.ge((byte)0))
+                .fetch();
+        if (positionRecords != null && positionRecords.size() > 0) {
+            return positionRecords.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        } else {
+            return new ArrayList<>();
+        }
+
+    }
+
+    /**
+     * 查找职位信息
+     * @param idList 职位编号集合
+     * @return 职位集合
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchPosition(List<Integer> idList) {
+
+        Result<JobPositionRecord> records = create
+                .selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.in(idList))
+                .fetch();
+        if (records != null && records.size() > 0) {
+            return records.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

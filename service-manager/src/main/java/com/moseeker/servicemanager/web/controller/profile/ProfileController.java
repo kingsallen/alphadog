@@ -381,6 +381,7 @@ public class ProfileController {
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
                 logger.info("/profile/parser MultipartFile file :{}",file.getOriginalFilename());
                 Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
+                logger.info("profileParser ===============：{}",res);
                 return ResponseLogNotification.success(request, res);
             } else {
                 return null;
@@ -695,6 +696,24 @@ public class ProfileController {
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    *
+    * meetmobot指定更新other表的json串的内容
+    *
+    *
+    * */
+    @RequestMapping(value = "/profile/other/specific", method = RequestMethod.PUT)
+    @ResponseBody
+    public String put(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = profileOtherService.updateSpecificResource(JSON.toJSONString(params));
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

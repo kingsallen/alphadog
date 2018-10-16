@@ -33,16 +33,13 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.company.bean.email.*;
+import com.moseeker.entity.*;
 import com.moseeker.entity.Constant.EmailAccountConsumptionType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.company.bean.*;
-import com.moseeker.entity.PcRevisionEntity;
-import com.moseeker.entity.TalentPoolEmailEntity;
-import com.moseeker.entity.TalentPoolEntity;
-import com.moseeker.entity.UserWxEntity;
 import com.moseeker.entity.biz.CommonUtils;
 import com.moseeker.entity.exception.TalentPoolException;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -146,6 +143,8 @@ public class TalentpoolEmailService {
     private UserWxEntity userWxEntity;
     ProfileOtherThriftService.Iface profileOtherService = ServiceManager.SERVICEMANAGER.getService(ProfileOtherThriftService.Iface.class);
 
+    @Autowired
+    MandrillMailListConsumer mandrillMailListConsumer;
     /**
      * 获取公司邮件剩余额度
      * @param hr_id         HR编号
@@ -1752,7 +1751,8 @@ public class TalentpoolEmailService {
             info.setCompany((String)data.getOrDefault("internshipCompanyName",""));
             info.setDepartment((String)data.getOrDefault("internshipDepartmentName",""));
             info.setPosition((String)data.getOrDefault("internshipJob",""));
-            info.setDescription((String)data.getOrDefault("internshipDescriptionHidden",""));
+            String description = (String)data.getOrDefault("internshipDescriptionHidden","");
+            info.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
             list.add(info);
         }
         return list;
@@ -1779,7 +1779,8 @@ public class TalentpoolEmailService {
                 start=start.substring(0,7).replace("-",".");
             }
             info.setTime(start+"-"+end);
-            info.setDescription((String)data.getOrDefault("schooljobDescriptionHidden",""));
+            String description = (String)data.getOrDefault("schooljobDescriptionHidden","");
+            info.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
             info.setName((String)data.getOrDefault("schooljobJob",""));
             list.add(info);
         }
@@ -1857,7 +1858,6 @@ public class TalentpoolEmailService {
             basicInfo.setDegree((String)education.get("degree_name"));
             basicInfo.setMajor((String)education.getOrDefault("major_name",""));
             basicInfo.setCollege((String)education.getOrDefault("college_name",""));
-
         }
         if(!StringUtils.isEmptyMap(works)){
             basicInfo.setPosition((String)works.getOrDefault("job_name",""));
@@ -1945,7 +1945,8 @@ public class TalentpoolEmailService {
         info.setCompany((String)data.getOrDefault("company_name",""));
         info.setDepartment((String)data.getOrDefault("department_name",""));
         info.setPosition((String)data.getOrDefault("job_name",""));
-        info.setDescription((String)data.getOrDefault("description",""));
+        String description = (String)data.getOrDefault("description","");
+        info.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
         return info;
     }
     /*
@@ -1973,7 +1974,8 @@ public class TalentpoolEmailService {
             info.setCollege((String)data.getOrDefault("college_name",""));
             info.setDegree(DegreeConvertUtil.intToEnum.get(data.get("degree")));
             info.setMajor((String)data.getOrDefault("major_name",""));
-            info.setDescription((String)data.getOrDefault("description",""));
+            String description = (String)data.getOrDefault("description","");
+            info.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
             list.add(info);
         }
         return list;
@@ -2002,7 +2004,8 @@ public class TalentpoolEmailService {
             info.setTime(start+"-"+end);
             info.setCompany((String)data.getOrDefault("company_name",""));
             info.setName((String)data.getOrDefault("name",""));
-            info.setDescription((String)data.getOrDefault("description",""));
+            String description = (String)data.getOrDefault("description","");
+            info.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
             list.add(info);
         }
         return list;
@@ -2069,7 +2072,7 @@ public class TalentpoolEmailService {
         String description=(String)data.getOrDefault("description","");
         info.setCover(cover);
         info.setUrl(url);
-        info.setDescription(description);
+        info.setDescription(mandrillMailListConsumer.replaceHTMLEnterToBr(description));
         return info;
     }
 

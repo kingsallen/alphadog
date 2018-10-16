@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 人才库人HR与备注的关系
+ * 人才库人HR与标签的关系
  */
 @Generated(
     value = {
@@ -23,15 +23,15 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolComment implements Serializable {
 
-    private static final long serialVersionUID = 1139962684;
+    private static final long serialVersionUID = -1901052376;
 
     private Integer   id;
     private String    content;
     private Integer   hrId;
     private Integer   userId;
-    private Integer   companyId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   companyId;
 
     public TalentpoolComment() {}
 
@@ -40,9 +40,9 @@ public class TalentpoolComment implements Serializable {
         this.content = value.content;
         this.hrId = value.hrId;
         this.userId = value.userId;
-        this.companyId = value.companyId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.companyId = value.companyId;
     }
 
     public TalentpoolComment(
@@ -50,17 +50,17 @@ public class TalentpoolComment implements Serializable {
         String    content,
         Integer   hrId,
         Integer   userId,
-        Integer   companyId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   companyId
     ) {
         this.id = id;
         this.content = content;
         this.hrId = hrId;
         this.userId = userId;
-        this.companyId = companyId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.companyId = companyId;
     }
 
     public Integer getId() {
@@ -95,14 +95,6 @@ public class TalentpoolComment implements Serializable {
         this.userId = userId;
     }
 
-    public Integer getCompanyId() {
-        return this.companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -119,6 +111,14 @@ public class TalentpoolComment implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TalentpoolComment (");
@@ -127,9 +127,9 @@ public class TalentpoolComment implements Serializable {
         sb.append(", ").append(content);
         sb.append(", ").append(hrId);
         sb.append(", ").append(userId);
-        sb.append(", ").append(companyId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(companyId);
 
         sb.append(")");
         return sb.toString();

@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 简历搬家chaos请求操作记录表
+ * 简历搬家操作记录表
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecord implements Serializable {
 
-    private static final long serialVersionUID = 320894619;
+    private static final long serialVersionUID = -1355586252;
 
     private Integer   id;
     private Integer   profileMoveId;

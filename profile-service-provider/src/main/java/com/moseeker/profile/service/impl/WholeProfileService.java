@@ -30,7 +30,6 @@ import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.EmojiFilter;
@@ -80,8 +79,6 @@ public class WholeProfileService {
     ProfileExtUtils profileUtils = new ProfileExtUtils();
 
     ThreadPool pool = ThreadPool.Instance;
-
-    ScheduledThread thread=ScheduledThread.Instance;
     @Autowired
     ProfileEntity profileEntity;
 
@@ -1184,13 +1181,22 @@ public class WholeProfileService {
         params = EmojiFilter.filterEmoji1(params);
         Map<String, Object> resume = JSON.parseObject(params);
         Map<String, Object> map = (Map<String, Object>) resume.get("user");
+        Map<String,Object> basic=(Map<String, Object>)resume.get("basic");
         String mobile = ((String) map.get("mobile"));
+        String countryCode="86";
+        if(basic.get("country_code")!=null){
+            countryCode=String.valueOf(basic.get("country_code"));
+        }else{
+            if(map.get("country_code")!=null){
+                countryCode=String.valueOf(map.get("country_code"));
+            }
+        }
         if(StringUtils.isNullOrEmpty(mobile)){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
             return ResponseUtils.success(StringUtils.underscoreNameMap(resume));
         }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue());
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, UserSource.TALENT_UPLOAD.getValue(),countryCode);
         if(userRecord==null){
             this.handlerWorkExpData(resume);
             handleResumeMap(resume);
@@ -1281,7 +1287,13 @@ public class WholeProfileService {
 //        if(mobile.length()!=11){
 //            return ResponseUtils.fail(1,"手机号必须为11位");
 //        }
-        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source);
+
+        String countryCode="86";
+        if(map.get("country_code")!=null){
+            countryCode=String.valueOf(map.get("country_code"));
+        }
+
+        UserUserRecord userRecord=talentPoolEntity.getTalentUploadUser(mobile,companyId, source,countryCode);
         int newUerId=0;
         if(userRecord!=null){
             newUerId=userRecord.getId();
@@ -1301,6 +1313,9 @@ public class WholeProfileService {
             if(map.get("email")!=null){
                 userRecord.setEmail(String.valueOf(map.get("email")));
             }
+            if(map.get("country_code")!=null){
+                userRecord.setCountryCode(String.valueOf(map.get("country_code")));
+            }
 
             Response res=this.upsertProfile(resume,userRecord,userId,newUerId);
             if(res.getStatus()!=0){
@@ -1313,16 +1328,10 @@ public class WholeProfileService {
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(newUerId);
         talentPoolEntity.realTimeUpload(userIdList,1);
-        thread.startTast(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    talentpoolService.handlerCompanyTagAndProfile(userIdList, companyId);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        },80000);
+        pool.startTast(() -> {
+            talentpoolService.handlerCompanyTagAndProfile(userIdList,companyId);
+            return 0;
+        });
         return ResponseUtils.success("success");
     }
     /*
@@ -1383,7 +1392,9 @@ public class WholeProfileService {
         if(basicMap.get("country_code")!=null){
             userMap.put("country_code",basicMap.get("country_code"));
         }else{
-            userMap.put("country_code","86");
+            if(userMap.get("country_code")==null){
+                userMap.put("country_code","86");
+            }
         }
         userMap.put("source", source);
         return userMap;

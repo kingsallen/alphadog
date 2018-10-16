@@ -4,6 +4,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jack on 02/01/2018.
@@ -37,4 +38,6 @@ public interface ProfileOtherService {
      * @return 执行的条数
      */
     int putOther(ProfileOtherDO other) throws CommonException;
+
+    int putSpecificOther(Map<String,Object> params, Integer profileId);
 }
