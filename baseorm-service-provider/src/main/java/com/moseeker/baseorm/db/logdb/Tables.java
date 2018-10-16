@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -20,6 +21,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogWxWechatMenuDailyRecord;
 
 import javax.annotation.Generated;
 
@@ -73,6 +75,11 @@ public class Tables {
     public static final LogJbEmailparseRecord LOG_JB_EMAILPARSE_RECORD = com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD;
 
     /**
+     * 记录meetmobot的推荐日志
+     */
+    public static final LogMeetmobotRecom LOG_MEETMOBOT_RECOM = com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom.LOG_MEETMOBOT_RECOM;
+
+    /**
      * The table <code>logdb.log_resume_record</code>.
      */
     public static final LogResumeRecord LOG_RESUME_RECORD = com.moseeker.baseorm.db.logdb.tables.LogResumeRecord.LOG_RESUME_RECORD;
@@ -116,4 +123,9 @@ public class Tables {
      * 模板消息发送结果记录
      */
     public static final LogWxTemplateMessageSendrecord LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD;
+
+    /**
+     * 每日微信公众号菜单数据, 脚本运行每天的已经微信公众号菜单数据
+     */
+    public static final LogWxWechatMenuDailyRecord LOG_WX_WECHAT_MENU_DAILY_RECORD = com.moseeker.baseorm.db.logdb.tables.LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD;
 }

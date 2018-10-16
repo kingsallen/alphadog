@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -20,6 +21,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogWxWechatMenuDailyRecord;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +47,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1487774170;
+    private static final long serialVersionUID = -2128008641;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -86,6 +88,11 @@ public class Logdb extends SchemaImpl {
      * 第三方简历回流email解析日志
      */
     public final LogJbEmailparseRecord LOG_JB_EMAILPARSE_RECORD = com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD;
+
+    /**
+     * 记录meetmobot的推荐日志
+     */
+    public final LogMeetmobotRecom LOG_MEETMOBOT_RECOM = com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom.LOG_MEETMOBOT_RECOM;
 
     /**
      * The table <code>logdb.log_resume_record</code>.
@@ -133,6 +140,11 @@ public class Logdb extends SchemaImpl {
     public final LogWxTemplateMessageSendrecord LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD;
 
     /**
+     * 每日微信公众号菜单数据, 脚本运行每天的已经微信公众号菜单数据
+     */
+    public final LogWxWechatMenuDailyRecord LOG_WX_WECHAT_MENU_DAILY_RECORD = com.moseeker.baseorm.db.logdb.tables.LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD;
+
+    /**
      * No further instances allowed
      */
     private Logdb() {
@@ -164,6 +176,7 @@ public class Logdb extends SchemaImpl {
             LogHrloginRecord.LOG_HRLOGIN_RECORD,
             LogHrOperationRecord.LOG_HR_OPERATION_RECORD,
             LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD,
+            LogMeetmobotRecom.LOG_MEETMOBOT_RECOM,
             LogResumeRecord.LOG_RESUME_RECORD,
             LogScraperRecord.LOG_SCRAPER_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,
@@ -172,6 +185,7 @@ public class Logdb extends SchemaImpl {
             LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG,
             LogWxMenuRecord.LOG_WX_MENU_RECORD,
             LogWxMessageRecord.LOG_WX_MESSAGE_RECORD,
-            LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD);
+            LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD,
+            LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD);
     }
 }
