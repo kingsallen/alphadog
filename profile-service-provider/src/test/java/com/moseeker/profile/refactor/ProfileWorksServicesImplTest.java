@@ -48,7 +48,7 @@ public class ProfileWorksServicesImplTest {
         try {
             Works work = new Works();
             work.setProfile_id(170);
-            work.setName("test postResources");
+            work.setName("resumeFileParser postResources");
             response = service.postResources(new ArrayList<Works>() {{
                 add(work);
             }});
@@ -65,7 +65,7 @@ public class ProfileWorksServicesImplTest {
 
             Works work = new Works();
             work.setId(60066);
-            work.setName("test putResources");
+            work.setName("resumeFileParser putResources");
 
             response = service.putResources(new ArrayList<Works>() {{
                 add(work);
@@ -97,7 +97,7 @@ public class ProfileWorksServicesImplTest {
         try {
             Works work = new Works();
             work.setProfile_id(170);
-            work.setName("test postResource");
+            work.setName("resumeFileParser postResource");
             response = service.postResource(work);
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class ProfileWorksServicesImplTest {
         try {
             Works work = new Works();
             work.setId(60067);
-            work.setName("test putResource");
+            work.setName("resumeFileParser putResource");
             response = service.putResource(work);
         } catch (Exception e) {
             e.printStackTrace();
