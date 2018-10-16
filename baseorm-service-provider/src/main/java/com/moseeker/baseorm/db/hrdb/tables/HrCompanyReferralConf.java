@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyReferralConf extends TableImpl<HrCompanyReferralConfRecord> {
 
-    private static final long serialVersionUID = -935669888;
+    private static final long serialVersionUID = -737433379;
 
     /**
      * The reference instance of <code>hrdb.hr_company_referral_conf</code>
@@ -64,7 +64,7 @@ public class HrCompanyReferralConf extends TableImpl<HrCompanyReferralConfRecord
     /**
      * The column <code>hrdb.hr_company_referral_conf.link</code>. 内推政策链接
      */
-    public final TableField<HrCompanyReferralConfRecord, String> LINK = createField("link", org.jooq.impl.SQLDataType.VARCHAR.length(500).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "内推政策链接");
+    public final TableField<HrCompanyReferralConfRecord, String> LINK = createField("link", org.jooq.impl.SQLDataType.VARCHAR.length(2000).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "内推政策链接");
 
     /**
      * The column <code>hrdb.hr_company_referral_conf.text</code>. 内推政策文案
