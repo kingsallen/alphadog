@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.logdb.LogMeetmobotRecomDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.logdb.tables.records.LogMeetmobotRecomRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
@@ -18,9 +20,11 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.common.util.EsClientInstance;
+import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -60,12 +64,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -92,6 +91,9 @@ public class SearchengineService {
 
     @Autowired
     private SearchMethodUtil searchMethodUtil;
+
+    @Autowired
+    private LogMeetmobotRecomDao logMeetmobotRecomDao;
 
 
     @CounterIface
@@ -1047,14 +1049,15 @@ public class SearchengineService {
     }
 
     @CounterIface
-    public List<Map<String,Object>> mobotSearchPosition(Map<String,String> params){
+    public MeetBotResult mobotSearchPosition(Map<String,String> params){
         if(params==null||params.isEmpty()){
-            return new ArrayList<>();
+            return new MeetBotResult();
         }
         TransportClient client = searchUtil.getEsClient();
         List<String> list=this.getOrderFieldList();
         List<Map<String,Object>> result=new ArrayList<>();
         Map<String,String> newParams=this.getOtherParams(params);
+        int total=0;
         handlerMobotSearch(list,newParams,result,client);
         logger.info("===========main1============");
 
@@ -1062,11 +1065,55 @@ public class SearchengineService {
         if(result==null||result.size()==0){
             result=this.handlerMobotSearchShould(params,client);
         }
-        logger.info("===========main2============");
-        logger.info(JSON.toJSONString(result));
-        return result;
-    }
 
+
+        String mDString= MD5Util.md5(params.get("company_id")+params.get("title")+params.get("industry")+params.get("degree")+new Date().getTime());
+        mDString=mDString.substring(8,24);
+        String algorithmName="meetbot_es";
+        MeetBotResult data=this.getMeetBotResult(mDString,algorithmName,result);
+        this.addLog(mDString,algorithmName,JSON.toJSONString(params),result);
+        logger.info("===========main2============");
+        logger.info(JSON.toJSONString(data));
+        return data;
+    }
+    /*
+     获取代码返回值
+     */
+    private MeetBotResult getMeetBotResult(String recomCode,String algorithmName,List<Map<String,Object>> result){
+        MeetBotResult data=new MeetBotResult();
+        data.setResult(result);
+        data.setRecom_code(recomCode);
+        data.setAlgorithm_name(algorithmName);
+        return data;
+    }
+    /*
+     添加日志
+     */
+    private void addLog(String recomCode,String algorithmName,String params,List<Map<String,Object>> result ){
+        List<Integer> pidList=this.getMobotPidList(result);
+        if(pidList!=null&&pidList.size()>0){
+            LogMeetmobotRecomRecord record=new LogMeetmobotRecomRecord();
+            record.setAlgorithmName(algorithmName);
+            record.setPids(searchUtil.listConvertString(pidList));
+            record.setRecomCode(recomCode);
+            record.setRecomParams(params);
+            logMeetmobotRecomDao.addRecord(record);
+        }
+    }
+    /*
+     获取职位id列表
+     */
+    private List<Integer> getMobotPidList(List<Map<String,Object>> result ){
+        if(result==null&&result.size()==0){
+            return null;
+        }
+        List<Integer> pidList=new ArrayList<>();
+        for(Map<String,Object> position:result){
+            int id=Integer.parseInt(String.valueOf(position.get("id")));
+            pidList.add(id);
+        }
+        return pidList;
+    }
     /*
      满足一个条件即可返回
      */
