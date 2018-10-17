@@ -14,13 +14,15 @@ import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.ConverTools;
 import com.moseeker.common.util.EsClientInstance;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.searchengine.SearchEngineException;
+import com.moseeker.searchengine.service.impl.tools.EmployeeBizTool;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -35,15 +37,12 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.ScriptQueryBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -56,15 +55,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.InetAddress;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -592,6 +584,7 @@ public class SearchengineService {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
+                    jsonObject.put("bonus",userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -618,8 +611,8 @@ public class SearchengineService {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
-
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -755,16 +748,7 @@ public class SearchengineService {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
 
-        if (StringUtils.isNotEmpty(keyword)) {
-            Map map = new HashMap();
-            map.put("email", keyword);
-            map.put("mobile", keyword);
-            map.put("nickname", keyword);
-            map.put("custom_field", keyword);
-            map.put("cname", keyword);
-//            searchUtil.matchPhrasePrefixQuery(map, query);
-            searchUtil.wildcardQuery(map, query);
-        }
+        EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
                 .addSort(buildSortScript(timespan, "award", SortOrder.DESC))
@@ -837,6 +821,47 @@ public class SearchengineService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
         return ResponseUtils.success(object);
+    }
+
+    public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
+                                   String emailValidate, int pageSize, int pageNumber,int balanceType) throws SearchEngineException {
+        TransportClient searchClient;
+        try {
+            searchClient = searchUtil.getEsClient();
+
+            Map<String, Object> result = new HashMap<>();
+            QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+            QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+            EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
+            EmployeeBizTool.addFilter(query, filter, searchUtil);
+            EmployeeBizTool.addKeywords(query, keywords, searchUtil);
+            EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
+            EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
+            SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
+            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
+            EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
+            SearchResponse response = searchRequestBuilder.execute().actionGet();
+            List<Map<String, Object>> data = new ArrayList<>();
+            result.put("total", response.getHits().getTotalHits());
+            for (SearchHit searchHit : response.getHits().getHits()) {
+                JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                data.add(jsonObject);
+            }
+            logger.info("==================================");
+            logger.info("fetchEmployees ======= "+searchRequestBuilder.toString());
+            logger.info("==================================");
+
+            logger.info("==================================");
+            logger.info("total ======="+response.getHits().getTotalHits());
+            logger.info("==================================");
+            result.put("data", data);
+            return ResponseUtils.success(result);
+        } catch (CommonException e) {
+            throw e;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+        }
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {

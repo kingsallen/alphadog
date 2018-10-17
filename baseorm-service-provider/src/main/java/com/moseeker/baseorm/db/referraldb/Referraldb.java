@@ -7,8 +7,13 @@ package com.moseeker.baseorm.db.referraldb;
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +39,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 381466825;
+    private static final long serialVersionUID = 1832029516;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -57,14 +62,39 @@ public class Referraldb extends SchemaImpl {
     public final ReferralCompanyConf REFERRAL_COMPANY_CONF = com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf.REFERRAL_COMPANY_CONF;
 
     /**
+     * The table <code>referraldb.referral_employee_bonus_record</code>.
+     */
+    public final ReferralEmployeeBonusRecord REFERRAL_EMPLOYEE_BONUS_RECORD = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD;
+
+    /**
+     * 员工认证取消认证操作记录
+     */
+    public final ReferralEmployeeRegisterLog REFERRAL_EMPLOYEE_REGISTER_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG;
+
+    /**
      * 内推记录
      */
     public final ReferralLog REFERRAL_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralLog.REFERRAL_LOG;
 
     /**
+     * The table <code>referraldb.referral_position_bonus</code>.
+     */
+    public final ReferralPositionBonus REFERRAL_POSITION_BONUS = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus.REFERRAL_POSITION_BONUS;
+
+    /**
+     * The table <code>referraldb.referral_position_bonus_stage_detail</code>.
+     */
+    public final ReferralPositionBonusStageDetail REFERRAL_POSITION_BONUS_STAGE_DETAIL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
+
+    /**
      * The table <code>referraldb.referral_position_rel</code>.
      */
     public final ReferralPositionRel REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel.REFERRAL_POSITION_REL;
+
+    /**
+     * 推荐类红包与被推荐职位关系表
+     */
+    public final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
 
     /**
      * No further instances allowed
@@ -94,7 +124,12 @@ public class Referraldb extends SchemaImpl {
             EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD,
             HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL,
             ReferralCompanyConf.REFERRAL_COMPANY_CONF,
+            ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD,
+            ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG,
             ReferralLog.REFERRAL_LOG,
-            ReferralPositionRel.REFERRAL_POSITION_REL);
+            ReferralPositionBonus.REFERRAL_POSITION_BONUS,
+            ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL,
+            ReferralPositionRel.REFERRAL_POSITION_REL,
+            ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION);
     }
 }

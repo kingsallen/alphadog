@@ -7,6 +7,8 @@ import com.moseeker.apps.bean.RecruitmentResult;
 import com.moseeker.apps.bean.RewardsToBeAddBean;
 import com.moseeker.apps.constants.TemplateMs;
 import com.moseeker.apps.constants.TemplateMs.MsInfo;
+import com.moseeker.apps.service.biztools.ApplicaitonStateChangeSender;
+import com.moseeker.apps.service.vo.StateInfo;
 import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
@@ -15,7 +17,6 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.*;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
@@ -57,6 +58,7 @@ import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +67,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -137,13 +138,11 @@ public class ProfileProcessBS {
     @Autowired
     private HrCompanyConfDao companyConfDao;
 
-
-
-    @Autowired
-    private UserEmployeePointsRecordDao userEmployeePointsRecordDao;
-
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private ApplicaitonStateChangeSender applicaitonStateChangeSender;
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -230,7 +229,7 @@ public class ProfileProcessBS {
             // 对需要修改的进行权限验证
             List<ProcessValidationStruct> list=jobApplicationDao.getAuth(appIds, companyId, progressStatus);
             if (list!=null&&list.size()>0) {
-               
+
                 boolean processStatus = true;
                 int recruitOrder = 0;
                 UserHrAccount account = this.getAccount(accountId);
@@ -253,6 +252,20 @@ public class ProfileProcessBS {
                 if (recruitOrder == progressStatus) {
                     return ResponseUtils.success(dataResult);
                 }
+                Map<Integer, StateInfo> preStateMap = new HashMap<>();
+                list.forEach(processValidationStruct -> {
+                    StateInfo stateInfo = new StateInfo();
+                    stateInfo.setId(processValidationStruct.getId());
+                    stateInfo.setPreRecruitOrder(processValidationStruct.getRecruit_order());
+                    stateInfo.setPreState(processValidationStruct.getTemplate_id());
+                    stateInfo.setRecruitOrder(progressStatus);
+                    stateInfo.setApplierId(processValidationStruct.getApplier_id());
+                    stateInfo.setPositionId(processValidationStruct.getPosition_id());
+                    preStateMap.put(stateInfo.getId(), stateInfo);
+                });
+
+                logger.info("processProfile stateMap:{}", JSON.toJSONString(preStateMap));
+
                 //  对所有的
                 if (processStatus || progressStatus == 13 || progressStatus == 99) {
                 	List<HrAwardConfigTemplate> recruitProcesses=configSysPointsConfTplDao.findRecruitProcesses(companyId);
@@ -339,7 +352,7 @@ public class ProfileProcessBS {
                         }
                         this.updateRecruitState(progressStatus, list,
                                 turnToCVCheckeds, employeesToBeUpdates, result,
-                                rewardsToBeAdd);
+                                rewardsToBeAdd, preStateMap);
                         //注意这是结果返回值的插入，提示调用方调用成功的有哪些，调用失败的有哪些，========这部分代码是新增的
 
                         dataResult.put("success_data",JSON.toJSONString(successList));
@@ -378,7 +391,7 @@ public class ProfileProcessBS {
                                         pvs.getApplier_name(), companyId, company,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.RESRT);
-                            }else {
+                            } else {
                                 sendTemplate(pvs.getApplier_id(),
                                         pvs.getApplier_name(), companyId, company,
                                         progressStatus, pvs.getPosition_name(),
@@ -588,19 +601,21 @@ public class ProfileProcessBS {
                                     List<ProcessValidationStruct> applications,
                                     List<HrOperationRecordDO> turnToCVCheckeds,
                                     List<UserEmployeeStruct> employeesToBeUpdates,
-                                    RecruitmentResult result, List<RewardsToBeAddBean> rewardsToBeAdd)
+                                    RecruitmentResult result, List<RewardsToBeAddBean> rewardsToBeAdd,
+                                    Map<Integer, StateInfo> preStateMap)
             throws Exception {
+        DateTime dateTime = new DateTime();
         if (progressStatus == 13) {
             rewardsToBeAdd = this.Operation13(applications, rewardsToBeAdd,
-                    turnToCVCheckeds);
+                    turnToCVCheckeds, preStateMap, dateTime);
         } else if (progressStatus == 99) {
-            rewardsToBeAdd = this.Operation99(applications, rewardsToBeAdd);
+            rewardsToBeAdd = this.Operation99(applications, rewardsToBeAdd, preStateMap, dateTime);
         } else {
             rewardsToBeAdd = this.OperationOther(applications, rewardsToBeAdd,
-                    progressStatus);
+                    progressStatus, preStateMap, dateTime);
         }
         logger.info("ProfileProcessBS processProfile rewardsToBeAdd:{}", rewardsToBeAdd);
-        List<HrOperationRecordDO> lists = new ArrayList<HrOperationRecordDO>();
+        List<HrOperationRecordDO> lists = new ArrayList<>();
         HrOperationRecordDO struct = null;
         for (RewardsToBeAddBean beans : rewardsToBeAdd) {
             struct = new HrOperationRecordDO();
@@ -608,6 +623,7 @@ public class ProfileProcessBS {
             struct.setCompanyId(beans.getCompany_id());
             struct.setOperateTplId(beans.getOperate_tpl_id());
             struct.setAppId(beans.getApplication_id());
+            struct.setOptTime(dateTime.toString("yyyy-MM-dd HH:mm:ss"));
             lists.add(struct);
         }
 		logger.info("ProfileProcessBS processProfile lists:{}", lists);
@@ -676,7 +692,7 @@ public class ProfileProcessBS {
     // 当 progress_status！=13&&progress_status！=99时的操作
     public List<RewardsToBeAddBean> OperationOther(
             List<ProcessValidationStruct> applications,
-            List<RewardsToBeAddBean> rewardsToBeAdd, int progressStatus)
+            List<RewardsToBeAddBean> rewardsToBeAdd, int progressStatus, Map<Integer, StateInfo> stateMap, DateTime dateTime)
             throws Exception {
         Query query=new Query.QueryBuilder().buildQuery();
         List<ConfigSysPointsConfTpl> list =configSysPointsConfTplDao.getDatas(query, ConfigSysPointsConfTpl.class);
@@ -696,6 +712,7 @@ public class ProfileProcessBS {
                     }
                 }
                 app.add(jobApplication);
+                publishStateChange(jobApplication, stateMap, dateTime);
             }
             jobApplicationDao.updateRecords(convertDB(app));
             int operate_tpl_id = 0;
@@ -714,7 +731,7 @@ public class ProfileProcessBS {
     // 当 progress_status=99时的操作
     private List<RewardsToBeAddBean> Operation99(
             List<ProcessValidationStruct> applications,
-            List<RewardsToBeAddBean> rewardsToBeAdd) throws Exception {
+            List<RewardsToBeAddBean> rewardsToBeAdd, Map<Integer, StateInfo> stateMap, DateTime dateTime) throws Exception {
     	
 	    StringBuffer sb = new StringBuffer();
         sb.append("(");
@@ -737,7 +754,7 @@ public class ProfileProcessBS {
                     }
                 }
             }
-            List<JobApplication> app = new ArrayList<JobApplication>();
+            List<JobApplication> app = new ArrayList<>();
             JobApplication jobApplication = null;
             for (HistoryOperate data : list) {
                 jobApplication = new JobApplication();
@@ -746,6 +763,7 @@ public class ProfileProcessBS {
                 jobApplication.setNot_suitable(0);
                 jobApplication.setIs_viewed(0);
                 app.add(jobApplication);
+                publishStateChange(jobApplication, stateMap, dateTime);
             }
             jobApplicationDao.updateRecords(convertDB(app));
         }
@@ -755,12 +773,12 @@ public class ProfileProcessBS {
     private List<RewardsToBeAddBean> Operation13(
             List<ProcessValidationStruct> applications,
             List<RewardsToBeAddBean> rewardsToBeAdd,
-            List<HrOperationRecordDO> turnToCVCheckeds) throws Exception {     
+            List<HrOperationRecordDO> turnToCVCheckeds, Map<Integer, StateInfo> stateMap, DateTime operationTime) throws Exception {
         Query query=new Query.QueryBuilder().where("recruit_order", 13).buildQuery();
         ConfigSysPointsConfTpl config = configSysPointsConfTplDao.getData(query, ConfigSysPointsConfTpl.class);
         if (config!=null) {
             int app_tpl_id = config.getId();
-            List<JobApplication> list = new ArrayList<JobApplication>();
+            List<JobApplication> list = new ArrayList<>();
             JobApplication jobApplication = null;
             for (ProcessValidationStruct struct : applications) {
                 jobApplication = new JobApplication();
@@ -770,6 +788,7 @@ public class ProfileProcessBS {
                 jobApplication.setIs_viewed(0);
                 jobApplication.setReward(struct.getReward());
                 list.add(jobApplication);
+                publishStateChange(jobApplication, stateMap, operationTime);
             }
             jobApplicationDao.updateRecords(convertDB(list));
             for (RewardsToBeAddBean reward : rewardsToBeAdd) {
@@ -778,6 +797,25 @@ public class ProfileProcessBS {
             hrOperationRecordDao.addAllData(turnToCVCheckeds);
         }
         return rewardsToBeAdd;
+    }
+
+    /**
+     * 发布申请状态变更消息
+     * @param jobApplication 申请数据
+     * @param stateMap 申请状态相关数据
+     * @param operationTime 操作时间
+     */
+    private void publishStateChange(JobApplication jobApplication,
+                                    Map<Integer, StateInfo> stateMap, DateTime operationTime) {
+        StateInfo stateInfo = stateMap.get((int)jobApplication.getId());
+        logger.info("publishStateChange stateMap:{}", JSON.toJSONString(stateMap));
+        logger.info("publishStateChange applicationId:{}, stateInfo:{}", jobApplication.getId(), JSON.toJSONString(stateInfo));
+        byte move = 0;
+        if (stateInfo.getRecruitOrder() != 13 && stateInfo.getPreRecruitOrder() < stateInfo.getRecruitOrder()) {
+            move = 1;
+        }
+        applicaitonStateChangeSender.publishStateChangeEvent((int)jobApplication.getId(), stateInfo.getPreState(),
+                jobApplication.getApp_tpl_id(), stateInfo.getApplierId(), stateInfo.getPositionId(), move, operationTime);
     }
     /*
      * struct转化为db

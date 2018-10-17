@@ -1,15 +1,6 @@
 package com.moseeker.searchengine.util;
 
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -32,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.util.ConfigPropertiesUtil;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchUtil {
@@ -818,5 +813,18 @@ public class SearchUtil {
         }
     }
 
-
+    public void matchPhrasePrefixQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
 }
