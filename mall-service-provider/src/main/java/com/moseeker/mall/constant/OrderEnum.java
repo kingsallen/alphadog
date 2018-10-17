@@ -18,7 +18,11 @@ public enum OrderEnum {
     /**
      * 已拒绝发放
      */
-    REFUSED(2)
+    REFUSED(2),
+    /**
+     * 全部状态，只在搜索时使用
+     */
+    All(9)
     ;
 
 

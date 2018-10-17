@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
@@ -54,19 +55,89 @@ public class OrderService {
      */
     public Map<String,String> getCompanyOrderList(OrderSearchForm orderSearchForm) {
         int state = orderSearchForm.getState();
-        if(state == OrderEnum.CONFIRM.getState()){
-
-        }else {
-
-        }
-
-        int totalRows = orderDao.getTotalRowsByCompanyId(orderSearchForm.getCompany_id());
-        int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
-        List<MallOrderDO> orderList = orderDao.getOrdersListByPage(orderSearchForm.getCompany_id(), startIndex, orderSearchForm.getPage_size());
+        List<MallOrderDO> orderList;
         Map<String, String> resultMap = new HashMap<>(1 >> 4);
+        int totalRows;
+        if(state == OrderEnum.All.getState()){
+            totalRows = orderDao.getTotalRowsByCompanyId(orderSearchForm.getCompany_id());
+            int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
+            orderList = orderDao.getOrdersListByPage(orderSearchForm.getCompany_id(), startIndex, orderSearchForm.getPage_size());
+        }else {
+            totalRows = orderDao.getTotalRowsByCompanyIdAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState());
+            int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
+            if(StringUtils.isNullOrEmpty(orderSearchForm.getKeyword())){
+
+            }else {
+                // todo 关键字查询
+            }
+            orderList = orderDao.getOrdersListByPageAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState(), startIndex, orderSearchForm.getPage_size());
+        }
+        Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
+        List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
+        Map<Integer, UserEmployeeDO> employeeMap = getEmployeeMap(employeeIds);
+        List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeMap, employeeIds);
         resultMap.put("total_row", totalRows + "");
-        resultMap.put("orders", JSON.toJSONString(orderList));
+        resultMap.put("orders", JSON.toJSONString(mallOrderInfoVOS));
         return resultMap;
+    }
+
+    /**
+     * 组装订单记录数据
+     * @param   employeeOrderMap 员工ID-订单map
+     * @param   employeeMap 员工ID-员工map
+     * @param   employeeIds 员工IDS
+     * @author  cjm
+     * @date  2018/10/16
+     * @return   mallOrderInfoVOS
+     */
+    private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, Map<Integer, UserEmployeeDO> employeeMap, List<Integer> employeeIds) {
+        List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
+        for(Integer employeeId : employeeIds){
+            List<MallOrderDO> tempList = employeeOrderMap.get(employeeId);
+            for(MallOrderDO mallOrderDO : tempList){
+                MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
+                mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, employeeMap.get(employeeId));
+                mallOrderInfoVOS.add(mallOrderInfoVO);
+            }
+        }
+        return mallOrderInfoVOS;
+    }
+
+    /**
+     *  员工ID-员工  map
+     * @param   employeeIds 员工IDS
+     * @author  cjm
+     * @date  2018/10/16
+     * @return map
+     */
+    private Map<Integer,UserEmployeeDO> getEmployeeMap(List<Integer> employeeIds) {
+        List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
+        if(employeeDOS.size() != employeeIds.size()){
+            employeeDOS.addAll(historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds));
+        }
+        return employeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
+    }
+
+    /**
+     *
+     * @param   orderList 订单list
+     * @author  cjm
+     * @date  2018/10/16
+     * @return   员工ID-订单 map
+     */
+    private Map<Integer,List<MallOrderDO>> getEmployeeOrderMap(List<MallOrderDO> orderList) {
+        Map<Integer,List<MallOrderDO>> employeeOrderMap = new HashMap<>(1 >> 4);
+        for(MallOrderDO mallOrderDO : orderList){
+            if(employeeOrderMap.get(mallOrderDO.getEmployee_id()) == null){
+                List<MallOrderDO> tempList = new ArrayList<>();
+                tempList.add(mallOrderDO);
+                employeeOrderMap.put(mallOrderDO.getEmployee_id(), tempList);
+            }else {
+                List<MallOrderDO> tempList = employeeOrderMap.get(mallOrderDO.getEmployee_id());
+                tempList.add(mallOrderDO);
+            }
+        }
+        return employeeOrderMap;
     }
 
     /**

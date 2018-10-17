@@ -57,4 +57,20 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
                 .where(MALL_ORDER.ID.in(ids))
                 .fetchInto(MallOrderDO.class);
     }
+
+    public int getTotalRowsByCompanyIdAndState(int companyId, byte state) {
+        return create.selectCount()
+                .from(MALL_ORDER)
+                .where(MALL_ORDER.COMPANY_ID.eq(companyId))
+                .and(MALL_ORDER.STATE.eq(state))
+                .execute();
+    }
+
+    public List<MallOrderDO> getOrdersListByPageAndState(int companyId, byte state, int startIndex, int pageSize) {
+        return create.selectFrom(MALL_ORDER)
+                .where(MALL_ORDER.COMPANY_ID.eq(companyId))
+                .and(MALL_ORDER.STATE.eq(state))
+                .limit(startIndex, pageSize)
+                .fetchInto(MallOrderDO.class);
+    }
 }
