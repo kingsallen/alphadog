@@ -7,7 +7,7 @@ import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
@@ -71,7 +71,7 @@ public class ReferralServiceImpl implements ReferralService {
             redPackets.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         logger.info("ReferralServiceImpl getRedPackets userEmployeeDO:{}", userEmployeeDO);
-            List<UserWxUser> wxUserRecords = wxUserDao.getWXUsersByUserIdAndCompanyId(userId, companyId);
+        List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
 
 
@@ -84,12 +84,12 @@ public class ReferralServiceImpl implements ReferralService {
                     .map(integer -> String.valueOf(integer))
                     .collect(Collectors.joining(",")));
             //计算红包总额
-            redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList));
+            redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList, companyId));
             logger.info("ReferralServiceImpl getRedPackets totalRedPackets:{}", redPackets.getTotalRedpackets());
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
-            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(),
-                    pageUtil.getSize());
+            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, companyId,
+                    pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
                 logger.info("ReferralServiceImpl getRedPackets itemsRecords.size:{}", itemsRecords.size());
@@ -138,13 +138,13 @@ public class ReferralServiceImpl implements ReferralService {
                 bonusList.setBonus(bonuses);
             }
         }
-        List<UserWxUser> wxUserRecords = wxUserDao.getWXUsersByUserIdAndCompanyId(userId, companyId);
+        List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
             List<Integer> wxUserIdList = wxUserRecords
                     .stream()
-                    .map(UserWxUser::getSysuserId)
+                    .map(UserWxUserRecord::getSysuserId)
                     .collect(Collectors.toList());
-            double count = itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList);
+            double count = itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList, companyId);
             bonusList.setTotalRedpackets(count);
         }
         return bonusList;

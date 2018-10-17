@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.hrdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
@@ -18,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.sum;
-
-import java.util.List;
 
 @Repository
 public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
@@ -42,14 +41,18 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         openCard = new ArrayList<Integer>(){{add(1);add(2);add(3);add(4);add(5);add(6);add(7);add(-1);}};
     }
 
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> fetchItemsByWxUserIdList(List<Integer> wxUserIdList, int index, int pageSize) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> fetchItemsByWxUserIdList(
+            List<Integer> wxUserIdList, int companyId, int index, int pageSize) {
         if (wxUserIdList != null && wxUserIdList.size() > 0) {
             Result<Record> result =  create.select(HrHbItems.HR_HB_ITEMS.fields())
                     .from(HrHbItems.HR_HB_ITEMS)
                     .innerJoin(HrHbScratchCard.HR_HB_SCRATCH_CARD)
                     .on(HrHbItems.HR_HB_ITEMS.ID.eq(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID))
+                    .innerJoin(HrHbConfig.HR_HB_CONFIG)
+                    .on(HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID.eq(HrHbConfig.HR_HB_CONFIG.ID))
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
                     .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
+                    .and(HrHbConfig.HR_HB_CONFIG.COMPANY_ID.eq(companyId))
                     .orderBy(HrHbScratchCard.HR_HB_SCRATCH_CARD.STATUS.asc(),
                             HrHbItems.HR_HB_ITEMS.OPEN_TIME.desc(),
                             HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.desc())
@@ -104,15 +107,18 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         return list;
     }
 
-    public double sumOpenedRedPacketsByWxUserIdList(List<Integer> wxUserIdList) {
+    public double sumOpenedRedPacketsByWxUserIdList(List<Integer> wxUserIdList, int companyId) {
         if (wxUserIdList != null && wxUserIdList.size() > 0) {
             Record1<BigDecimal> bigDecimalRecord1 = create.select(sum(HrHbItems.HR_HB_ITEMS.AMOUNT))
                     .from(HrHbItems.HR_HB_ITEMS)
                     .innerJoin(HrHbScratchCard.HR_HB_SCRATCH_CARD)
                     .on(HrHbItems.HR_HB_ITEMS.ID.eq(HrHbScratchCard.HR_HB_SCRATCH_CARD.HB_ITEM_ID))
+                    .innerJoin(HrHbConfig.HR_HB_CONFIG)
+                    .on(HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID.eq(HrHbConfig.HR_HB_CONFIG.ID))
                     .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.in(wxUserIdList))
                     .and((HrHbScratchCard.HR_HB_SCRATCH_CARD.CREATE_TIME.gt(HB_START_TIME)))
                     .and(HrHbScratchCard.HR_HB_SCRATCH_CARD.STATUS.eq(1))
+                    .and(HrHbConfig.HR_HB_CONFIG.COMPANY_ID.eq(companyId))
                     .fetchOne();
             if(bigDecimalRecord1 !=null && bigDecimalRecord1.value1() !=null) {
                 return bigDecimalRecord1.value1().doubleValue();
