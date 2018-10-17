@@ -288,15 +288,19 @@ public class ReferralController {
     @ResponseBody
     public String getRedPackets(@PathVariable Integer id,
                                 @RequestParam(value = "appid") Integer appid,
+                                @RequestParam(value = "company_id") Integer companyId,
                                 @RequestParam(value = "page_no", defaultValue = "1") Integer pageNo,
-                                @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize) throws Exception {
+                                @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize)
+            throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("用户编号", id);
+        validateUtil.addRequiredValidate("公司编号", companyId);
 
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
-            com.moseeker.thrift.gen.referral.struct.RedPackets redPackets = referralService.getRedPackets(id, pageNo, pageSize);
+            com.moseeker.thrift.gen.referral.struct.RedPackets redPackets = referralService.getRedPackets(id, companyId,
+                    pageNo, pageSize);
 
             com.moseeker.servicemanager.web.controller.referral.vo.RedPackets result
                     = new com.moseeker.servicemanager.web.controller.referral.vo.RedPackets();
@@ -321,15 +325,18 @@ public class ReferralController {
     @ResponseBody
     public String getBonus(@PathVariable Integer id,
                                 @RequestParam(value = "appid") Integer appid,
+                                @RequestParam(value = "company_id") Integer companyId,
                                 @RequestParam(value = "page_no", defaultValue = "1") Integer pageNo,
-                                @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize) throws Exception {
+                                @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize)
+            throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("用户编号", id);
+        validateUtil.addRequiredValidate("公司编号", companyId);
 
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
-            com.moseeker.thrift.gen.referral.struct.BonusList bonusList = referralService.getBonus(id, pageNo, pageSize);
+            com.moseeker.thrift.gen.referral.struct.BonusList bonusList = referralService.getBonus(id, companyId, pageNo, pageSize);
 
             BonusList result = new BonusList();
             BeanUtils.copyProperties(bonusList, result);
