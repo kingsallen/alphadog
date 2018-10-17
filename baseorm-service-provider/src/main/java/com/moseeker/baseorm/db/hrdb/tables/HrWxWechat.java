@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 881209395;
+    private static final long serialVersionUID = 1206897548;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -119,7 +119,7 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     /**
      * The column <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
      */
-    public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(300).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
+    public final TableField<HrWxWechatRecord, String> QRCODE = createField("qrcode", org.jooq.impl.SQLDataType.VARCHAR.length(150).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "关注公众号的二维码");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.passive_seeker</code>. 被动求职者开关，0= 开启, 1=不开启
