@@ -18,7 +18,9 @@ dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
     testCompile 'junit:junit:4.12'
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 task copyJars(type: Copy) {
     from configurations.runtime
     into 'build/libs' // 目标位置

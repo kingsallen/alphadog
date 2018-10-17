@@ -36,7 +36,7 @@ public class MallService {
         }
         return hrCompanyConfDO.getMallSwitch();
     }
-
+    @OnlyEmployee
     public void openOrCloseMall(int companyId, int state) throws BIZException {
         int row = hrCompanyConfDao.updateMallSwitch(companyId, state);
         if(row == 0){

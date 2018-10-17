@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.malldb.MallGoodsInfoDao;
 import com.moseeker.baseorm.db.malldb.tables.records.MallGoodsInfoRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallGoodsInfoVO;
 import com.moseeker.mall.constant.GoodsEnum;
@@ -67,6 +68,7 @@ public class GoodsService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @OnlyEmployee
     public void addGood(MallGoodsInfoDO mallGoodsInfoDO) {
         MallGoodsInfoRecord record = new MallGoodsInfoRecord();
         BeanUtils.copyProperties(mallGoodsInfoDO, record);

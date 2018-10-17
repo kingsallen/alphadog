@@ -14,12 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MallThriftServiceImpl implements Iface{
 
-    private final MallService mallService;
-
     @Autowired
-    public MallThriftServiceImpl(MallService mallService) {
-        this.mallService = mallService;
-    }
+    private MallService mallService;
 
     @Override
     public int getMallSwitch(int companyId) throws BIZException, TException {

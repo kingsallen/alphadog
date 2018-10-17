@@ -4,15 +4,19 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 /**
  * 商城各操作拦截
@@ -35,7 +39,21 @@ public class MallVisitAspect {
     @Before("cut()")
     public void beforeCall(JoinPoint joinPoint) throws BIZException {
         Object[] rags = joinPoint.getArgs();
-        System.out.println(rags);
+        MallGoodsInfoDO mallGoodsInfoDO = (MallGoodsInfoDO)rags[0];
+        System.out.println(mallGoodsInfoDO.toString());
+        for(Object o : rags){
+            System.out.println(String.valueOf(o));
+        }
+        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+        Parameter[] parameters = method.getParameters();
+        System.out.println(String.valueOf(joinPoint.getTarget()));
+        System.out.println(joinPoint.getSignature().getName());
+
+        for(Parameter parameter : parameters){
+            System.out.println(String.valueOf(parameter.getName()));
+            System.out.println(String.valueOf(parameter.getType()));
+        }
+
     }
 
     private Integer getValidHrId(HttpServletRequest request) throws BIZException {
