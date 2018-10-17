@@ -3,11 +3,14 @@ package com.moseeker.servicemanager.config;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4;
 import com.moseeker.baseorm.config.AppConfig;
 import com.moseeker.servicemanager.common.UTF8StringHttpMessageConverter;
+import com.moseeker.servicemanager.web.interceptor.mall.MallManageInterceptor;
+import com.moseeker.servicemanager.web.interceptor.mall.MallShowInterceptor;
 import org.springframework.context.annotation.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.io.IOException;
@@ -45,5 +48,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         fastJsonpHttpMessageConverter4.setSupportedMediaTypes(mediaTypes);
         converters.add(fastJsonpHttpMessageConverter4);
         super.configureMessageConverters(converters);
+    }
+
+    @Bean
+    public MallManageInterceptor mallManagerInterceptor(){
+        return new MallManageInterceptor();
+    }
+    @Bean
+    public MallShowInterceptor mallShowInterceptor(){
+        return new MallShowInterceptor();
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(mallManagerInterceptor())
+                .addPathPatterns("/api/mall/manage/**");
+        registry.addInterceptor(mallShowInterceptor())
+                .addPathPatterns("/api/mall/visit/**");
+        super.addInterceptors(registry);
     }
 }
