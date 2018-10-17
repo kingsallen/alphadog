@@ -185,10 +185,6 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 } else {
                     response = super.doneBind(employee,bindEmailSource);
                     response.setEmployeeId(employee.getId());
-                    if(bindEmailSource == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
-                        logEmployeeOperationLogEntity.insertEmployeeOperationLog(Integer.parseInt(employee.getEmployeeid()),bindEmailSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),employee.getCompanyId(),null);
-                        log.error("insertLogSuccess","我是员工");
-                    }
                 }
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_CODE, activationCode);
                 client.del(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, value);

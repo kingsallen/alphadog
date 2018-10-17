@@ -1,8 +1,7 @@
 package com.moseeker.entity;
 
 import com.moseeker.baseorm.dao.logdb.LogEmployeeOperationLogDao;
-import com.moseeker.baseorm.db.logdb.tables.records.LogEmployeeOperationLogRecord;
-import com.moseeker.thrift.gen.profile.struct.LogEmployeeOperationLog;
+import com.moseeker.baseorm.db.logdb.tables.pojos.LogEmployeeOperationLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class LogEmployeeOperationLogEntity {
      */
 
     public void insertEmployeeOperationLog(int referenceId,int enterance,int operationType,int isSuccess,int companyId,Integer profileId){
-        LogEmployeeOperationLogRecord logEmployeeOperationLog = new LogEmployeeOperationLogRecord();
+        LogEmployeeOperationLog logEmployeeOperationLog = new LogEmployeeOperationLog();
         logEmployeeOperationLog.setUserId(referenceId);
         logEmployeeOperationLog.setType((byte)enterance);
         logEmployeeOperationLog.setOperationType((byte)operationType);
@@ -27,6 +26,6 @@ public class LogEmployeeOperationLogEntity {
         if(profileId!=null) {
             logEmployeeOperationLog.setProfileId(profileId);
         }
-        logEmployeeOperationLogDao.addRecord(logEmployeeOperationLog);
+        logEmployeeOperationLogDao.insertNewLog(logEmployeeOperationLog);
     }
 }

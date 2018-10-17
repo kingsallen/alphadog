@@ -17,4 +17,10 @@ public class LogEmployeeOperationLogDao extends JooqCrudImpl<LogEmployeeOperatio
     public LogEmployeeOperationLogDao(TableImpl<LogEmployeeOperationLogRecord> table, Class<LogEmployeeOperationLog> logEmployeeOperationLogClass) {
         super(table, logEmployeeOperationLogClass);
     }
+
+    public void insertNewLog(com.moseeker.baseorm.db.logdb.tables.pojos.LogEmployeeOperationLog logEmployeeOperationLog) {
+        create.insertInto(LOG_EMPLOYEE_OPERATION_LOG,LOG_EMPLOYEE_OPERATION_LOG.USER_ID,LOG_EMPLOYEE_OPERATION_LOG.COMPANY_ID,LOG_EMPLOYEE_OPERATION_LOG.TYPE,LOG_EMPLOYEE_OPERATION_LOG.PROFILE_ID,LOG_EMPLOYEE_OPERATION_LOG.OPERATION_TYPE,LOG_EMPLOYEE_OPERATION_LOG.IS_SUCCESS)
+                .values(logEmployeeOperationLog.getUserId(),logEmployeeOperationLog.getCompanyId(),logEmployeeOperationLog.getType(),logEmployeeOperationLog.getProfileId(),logEmployeeOperationLog.getOperationType(),logEmployeeOperationLog.getIsSuccess()).execute();
+
+    }
 }
