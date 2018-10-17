@@ -312,6 +312,12 @@ public abstract class EmployeeBinder {
             response.setSuccess(false);
             response.setMessage("fail");
         }
+        if(response.success){
+            if(bindSource == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(employeeId,bindSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),useremployee.getCompanyId(),null);
+                log.error("insertLogSuccess","我是员工");
+            }
+        }
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         return response;
