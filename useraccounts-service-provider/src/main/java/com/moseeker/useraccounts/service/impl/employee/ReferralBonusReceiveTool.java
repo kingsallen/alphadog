@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl.employee;
 
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.EmployeeEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,8 @@ public class ReferralBonusReceiveTool {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    ThreadPool tp = ThreadPool.Instance;
+
     @Autowired
     private EmployeeEntity employeeEntity;
 
@@ -40,10 +43,13 @@ public class ReferralBonusReceiveTool {
             Integer move = jsonObject.getIntValue("move");
             Integer applierId = jsonObject.getIntValue("applierId");
             employeeEntity.addReferralBonus(applicationId,nowStage,nextStage,move,positionId,applierId);
+
         } catch (CommonException e) {
             logger.info(e.getMessage(), e);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
     }
+
+
 }

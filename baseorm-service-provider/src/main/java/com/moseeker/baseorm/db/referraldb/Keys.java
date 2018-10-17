@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
@@ -16,6 +17,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.records.EmployeeReferralRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.HistoryReferralPositionRelRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralCompanyConfRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeBonusRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeRegisterLogRecord;
@@ -52,6 +54,7 @@ public class Keys {
 
     public static final Identity<EmployeeReferralRecordRecord, Integer> IDENTITY_EMPLOYEE_REFERRAL_RECORD = Identities0.IDENTITY_EMPLOYEE_REFERRAL_RECORD;
     public static final Identity<HistoryReferralPositionRelRecord, Integer> IDENTITY_HISTORY_REFERRAL_POSITION_REL = Identities0.IDENTITY_HISTORY_REFERRAL_POSITION_REL;
+    public static final Identity<ReferralApplicationStatusCountRecord, Integer> IDENTITY_REFERRAL_APPLICATION_STATUS_COUNT = Identities0.IDENTITY_REFERRAL_APPLICATION_STATUS_COUNT;
     public static final Identity<ReferralCompanyConfRecord, Integer> IDENTITY_REFERRAL_COMPANY_CONF = Identities0.IDENTITY_REFERRAL_COMPANY_CONF;
     public static final Identity<ReferralEmployeeBonusRecordRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_BONUS_RECORD = Identities0.IDENTITY_REFERRAL_EMPLOYEE_BONUS_RECORD;
     public static final Identity<ReferralEmployeeRegisterLogRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_REGISTER_LOG = Identities0.IDENTITY_REFERRAL_EMPLOYEE_REGISTER_LOG;
@@ -67,6 +70,7 @@ public class Keys {
 
     public static final UniqueKey<EmployeeReferralRecordRecord> KEY_EMPLOYEE_REFERRAL_RECORD_PRIMARY = UniqueKeys0.KEY_EMPLOYEE_REFERRAL_RECORD_PRIMARY;
     public static final UniqueKey<HistoryReferralPositionRelRecord> KEY_HISTORY_REFERRAL_POSITION_REL_PRIMARY = UniqueKeys0.KEY_HISTORY_REFERRAL_POSITION_REL_PRIMARY;
+    public static final UniqueKey<ReferralApplicationStatusCountRecord> KEY_REFERRAL_APPLICATION_STATUS_COUNT_PRIMARY = UniqueKeys0.KEY_REFERRAL_APPLICATION_STATUS_COUNT_PRIMARY;
     public static final UniqueKey<ReferralCompanyConfRecord> KEY_REFERRAL_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_REFERRAL_COMPANY_CONF_PRIMARY;
     public static final UniqueKey<ReferralEmployeeBonusRecordRecord> KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY = UniqueKeys0.KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY;
     public static final UniqueKey<ReferralEmployeeRegisterLogRecord> KEY_REFERRAL_EMPLOYEE_REGISTER_LOG_PRIMARY = UniqueKeys0.KEY_REFERRAL_EMPLOYEE_REGISTER_LOG_PRIMARY;
@@ -92,6 +96,7 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<EmployeeReferralRecordRecord, Integer> IDENTITY_EMPLOYEE_REFERRAL_RECORD = createIdentity(EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD, EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD.ID);
         public static Identity<HistoryReferralPositionRelRecord, Integer> IDENTITY_HISTORY_REFERRAL_POSITION_REL = createIdentity(HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL, HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.ID);
+        public static Identity<ReferralApplicationStatusCountRecord, Integer> IDENTITY_REFERRAL_APPLICATION_STATUS_COUNT = createIdentity(ReferralApplicationStatusCount.REFERRAL_APPLICATION_STATUS_COUNT, ReferralApplicationStatusCount.REFERRAL_APPLICATION_STATUS_COUNT.ID);
         public static Identity<ReferralCompanyConfRecord, Integer> IDENTITY_REFERRAL_COMPANY_CONF = createIdentity(ReferralCompanyConf.REFERRAL_COMPANY_CONF, ReferralCompanyConf.REFERRAL_COMPANY_CONF.ID);
         public static Identity<ReferralEmployeeBonusRecordRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_BONUS_RECORD = createIdentity(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD, ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID);
         public static Identity<ReferralEmployeeRegisterLogRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_REGISTER_LOG = createIdentity(ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG, ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG.ID);
@@ -105,6 +110,7 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<EmployeeReferralRecordRecord> KEY_EMPLOYEE_REFERRAL_RECORD_PRIMARY = createUniqueKey(EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD, "KEY_employee_referral_record_PRIMARY", EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD.ID);
         public static final UniqueKey<HistoryReferralPositionRelRecord> KEY_HISTORY_REFERRAL_POSITION_REL_PRIMARY = createUniqueKey(HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL, "KEY_history_referral_position_rel_PRIMARY", HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL.ID);
+        public static final UniqueKey<ReferralApplicationStatusCountRecord> KEY_REFERRAL_APPLICATION_STATUS_COUNT_PRIMARY = createUniqueKey(ReferralApplicationStatusCount.REFERRAL_APPLICATION_STATUS_COUNT, "KEY_referral_application_status_count_PRIMARY", ReferralApplicationStatusCount.REFERRAL_APPLICATION_STATUS_COUNT.ID);
         public static final UniqueKey<ReferralCompanyConfRecord> KEY_REFERRAL_COMPANY_CONF_PRIMARY = createUniqueKey(ReferralCompanyConf.REFERRAL_COMPANY_CONF, "KEY_referral_company_conf_PRIMARY", ReferralCompanyConf.REFERRAL_COMPANY_CONF.ID);
         public static final UniqueKey<ReferralEmployeeBonusRecordRecord> KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY = createUniqueKey(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD, "KEY_referral_employee_bonus_record_PRIMARY", ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID);
         public static final UniqueKey<ReferralEmployeeRegisterLogRecord> KEY_REFERRAL_EMPLOYEE_REGISTER_LOG_PRIMARY = createUniqueKey(ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG, "KEY_referral_employee_register_log_PRIMARY", ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG.ID);

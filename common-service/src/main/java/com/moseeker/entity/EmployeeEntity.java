@@ -22,10 +22,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -90,6 +88,10 @@ import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 @CounterIface
 public class EmployeeEntity {
 
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";
+
+
     @Autowired
     private UserEmployeeDao employeeDao;
 
@@ -139,6 +141,9 @@ public class EmployeeEntity {
 
     @Autowired
     private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
+
+    @Autowired
+    ReferralApplicationStatusCountDao referralApplicationStatusCountDao;
 
     @Autowired
     private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
@@ -1082,6 +1087,41 @@ public class EmployeeEntity {
         employeeInfo.setName(name);
         employeeInfo.setHeadImg(headImg);
         return employeeInfo;
+    }
+
+    public void publishInitalScreenHbEvent(JobApplication jobApplication, JobPositionRecord jobPositionRecord,
+                                           Integer nowStage, Integer nextStage){
+        if(jobApplication != null && jobPositionRecord != null) {
+            int hbStatus = jobPositionRecord.getHbStatus();
+            if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
+                ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplByRecruitOrder(nextStage);
+                ReferralApplicationStatusCountRecord statusCount = referralApplicationStatusCountDao
+                        .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
+                if(statusCount == null){
+
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("applicationId", appId);
+                    jsonObject.put("nowStage", stage);
+                    jsonObject.put("nextStage", nextStage);
+                    jsonObject.put("applierId", applierId);
+                    jsonObject.put("positionId", positionId);
+                    jsonObject.put("move", move);
+                    jsonObject.put("operationTime", operationTime.getMillis());
+                    amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
+                            APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                    .build());
+                    statusCount = new ReferralApplicationStatusCountRecord();
+                    statusCount.setAppicationTplStatus(confTplDO.getId());
+                    statusCount.setApplicationId(jobApplication.getId());
+                    statusCount.setCount(1);
+                    statusCount.insert();
+                }else{
+                    int count = statusCount.getCount();
+                    statusCount.setCount(count+1);
+                    statusCount.update();
+                }
+            }
+        }
     }
 
 

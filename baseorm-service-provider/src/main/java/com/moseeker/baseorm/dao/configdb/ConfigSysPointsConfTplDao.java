@@ -76,4 +76,12 @@ public class ConfigSysPointsConfTplDao extends JooqCrudImpl<ConfigSysPointsConfT
 				.limit(1)
 				.fetchOne();
     }
+
+    public ConfigSysPointsConfTplRecord getTplByRecruitOrder(Integer recruitOrder) {
+        return
+                create.selectFrom(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
+                        .where(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER.eq(recruitOrder))
+                        .limit(1)
+                        .fetchOne();
+    }
 }
