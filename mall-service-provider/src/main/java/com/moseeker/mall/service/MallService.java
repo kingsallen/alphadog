@@ -3,6 +3,7 @@ package com.moseeker.mall.service;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.MallSwitchState;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -27,6 +28,7 @@ public class MallService {
     @Autowired
     private GoodsService goodsService;
 
+    @OnlyEmployee
     public int getMallSwitch(int companyId) throws BIZException {
         HrCompanyConfDO hrCompanyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
         if(hrCompanyConfDO == null){
