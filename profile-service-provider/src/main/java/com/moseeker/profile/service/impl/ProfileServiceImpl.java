@@ -8,6 +8,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.profile.exception.ProfileException;
+import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
 import java.util.UUID;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserUser.USER_USER;
@@ -77,5 +80,10 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
             profileCompanyTagService.handlerProfileCompanyTag(profileProfileDO.getId(),userUserDO.getId());
             return profileProfileDO.getId();
         }
+    }
+
+    @Override
+    public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
+        return null;
     }
 }
