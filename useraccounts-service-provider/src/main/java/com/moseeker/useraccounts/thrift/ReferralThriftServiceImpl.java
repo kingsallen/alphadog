@@ -7,10 +7,8 @@ import com.moseeker.thrift.gen.referral.struct.Bonus;
 import com.moseeker.thrift.gen.referral.struct.BonusList;
 import com.moseeker.thrift.gen.referral.struct.RedPacket;
 import com.moseeker.thrift.gen.referral.struct.RedPackets;
-import com.moseeker.useraccounts.exception.UserAccountException;
 import org.apache.thrift.TException;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
