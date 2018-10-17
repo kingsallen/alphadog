@@ -323,6 +323,9 @@ public class ProfileProcessBS {
                             recommenderIds.add(record.getRecommender_user_id());
                             dataList.add(record);
                             successList.add(record.getId());
+                            if(result.getReason().equals(ProcessUtils.LETTERS_RECRUITMENT_CVPASSED)){
+
+                            }
                         }
                         //由于后面要发消息模板，所以只处理那些被处理的数据
                         list=dataList;
