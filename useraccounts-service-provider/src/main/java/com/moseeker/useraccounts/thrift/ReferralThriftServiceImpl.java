@@ -27,10 +27,11 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     private com.moseeker.useraccounts.service.ReferralService referralService;
 
     @Override
-    public RedPackets getRedPackets(int userId, int pageNum, int pageSize) throws BIZException, TException {
+    public RedPackets getRedPackets(int userId, int companyId, int pageNum, int pageSize)
+            throws BIZException, TException {
         try {
             com.moseeker.useraccounts.service.impl.vo.RedPackets redPackets
-                    = referralService.getRedPackets(userId, pageNum, pageSize);
+                    = referralService.getRedPackets(userId, companyId, pageNum, pageSize);
 
             RedPackets result = new RedPackets();
             BeanUtils.copyProperties(redPackets, result);
@@ -48,10 +49,10 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public BonusList getBonus(int userId, int pageNum, int pageSize) throws BIZException, TException {
+    public BonusList getBonus(int userId, int companyId, int pageNum, int pageSize) throws BIZException, TException {
         try {
-            com.moseeker.useraccounts.service.impl.vo.BonusList bonusList = referralService.getBonus(userId, pageNum,
-                    pageSize);
+            com.moseeker.useraccounts.service.impl.vo.BonusList bonusList = referralService.getBonus(userId, companyId,
+                    pageNum, pageSize);
             BonusList result = new BonusList();
             BeanUtils.copyProperties(bonusList, result);
             if (bonusList.getBonus() != null && bonusList.getBonus().size() > 0) {
