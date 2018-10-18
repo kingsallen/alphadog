@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -1678397726;
+    private static final long serialVersionUID = 186143591;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -49,11 +49,8 @@ public class HrCompanyConf implements Serializable {
     private String    employeeSlug;
     private String    displayLocale;
     private Byte      talentpoolStatus;
-    private Byte      veryeastSwitch;
     private Byte      job51SalaryDiscuss;
-    private Byte      mallSwitch;
-    private String    mallGoodsMethod;
-    private Byte      mallGoodsMethodState;
+    private Byte      veryeastSwitch;
 
     public HrCompanyConf() {}
 
@@ -82,11 +79,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
-        this.veryeastSwitch = value.veryeastSwitch;
         this.job51SalaryDiscuss = value.job51SalaryDiscuss;
-        this.mallSwitch = value.mallSwitch;
-        this.mallGoodsMethod = value.mallGoodsMethod;
-        this.mallGoodsMethodState = value.mallGoodsMethodState;
+        this.veryeastSwitch = value.veryeastSwitch;
     }
 
     public HrCompanyConf(
@@ -114,11 +108,8 @@ public class HrCompanyConf implements Serializable {
         String    employeeSlug,
         String    displayLocale,
         Byte      talentpoolStatus,
-        Byte      veryeastSwitch,
         Byte      job51SalaryDiscuss,
-        Byte      mallSwitch,
-        String    mallGoodsMethod,
-        Byte      mallGoodsMethodState
+        Byte      veryeastSwitch
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -144,11 +135,8 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
-        this.veryeastSwitch = veryeastSwitch;
         this.job51SalaryDiscuss = job51SalaryDiscuss;
-        this.mallSwitch = mallSwitch;
-        this.mallGoodsMethod = mallGoodsMethod;
-        this.mallGoodsMethodState = mallGoodsMethodState;
+        this.veryeastSwitch = veryeastSwitch;
     }
 
     public Integer getCompanyId() {
@@ -343,14 +331,6 @@ public class HrCompanyConf implements Serializable {
         this.talentpoolStatus = talentpoolStatus;
     }
 
-    public Byte getVeryeastSwitch() {
-        return this.veryeastSwitch;
-    }
-
-    public void setVeryeastSwitch(Byte veryeastSwitch) {
-        this.veryeastSwitch = veryeastSwitch;
-    }
-
     public Byte getJob51SalaryDiscuss() {
         return this.job51SalaryDiscuss;
     }
@@ -359,28 +339,12 @@ public class HrCompanyConf implements Serializable {
         this.job51SalaryDiscuss = job51SalaryDiscuss;
     }
 
-    public Byte getMallSwitch() {
-        return this.mallSwitch;
+    public Byte getVeryeastSwitch() {
+        return this.veryeastSwitch;
     }
 
-    public void setMallSwitch(Byte mallSwitch) {
-        this.mallSwitch = mallSwitch;
-    }
-
-    public String getMallGoodsMethod() {
-        return this.mallGoodsMethod;
-    }
-
-    public void setMallGoodsMethod(String mallGoodsMethod) {
-        this.mallGoodsMethod = mallGoodsMethod;
-    }
-
-    public Byte getMallGoodsMethodState() {
-        return this.mallGoodsMethodState;
-    }
-
-    public void setMallGoodsMethodState(Byte mallGoodsMethodState) {
-        this.mallGoodsMethodState = mallGoodsMethodState;
+    public void setVeryeastSwitch(Byte veryeastSwitch) {
+        this.veryeastSwitch = veryeastSwitch;
     }
 
     @Override
@@ -411,11 +375,8 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
-        sb.append(", ").append(veryeastSwitch);
         sb.append(", ").append(job51SalaryDiscuss);
-        sb.append(", ").append(mallSwitch);
-        sb.append(", ").append(mallGoodsMethod);
-        sb.append(", ").append(mallGoodsMethodState);
+        sb.append(", ").append(veryeastSwitch);
 
         sb.append(")");
         return sb.toString();

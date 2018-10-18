@@ -16,7 +16,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
- * 邮件额度每天使用日志
+ * 公司和CS匹配表
  */
 @Generated(
     value = {
@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyCsRecord extends UpdatableRecordImpl<HrCompanyCsRecord> implements Record5<Integer, Integer, Integer, String, String> {
 
-    private static final long serialVersionUID = 846555748;
+    private static final long serialVersionUID = -1256689882;
 
     /**
      * Setter for <code>hrdb.hr_company_cs.id</code>.

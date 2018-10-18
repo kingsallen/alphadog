@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 86319449;
+    private static final long serialVersionUID = -825196155;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -58,28 +58,28 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id)，多个发布人用,隔开
+     * Setter for <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id),多个发布人之间用,隔开
      */
     public void setPublisher(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id)，多个发布人用,隔开
+     * Getter for <code>hrdb.hr_search_condition.publisher</code>. 发布人id(user_hr_account.id),多个发布人之间用,隔开
      */
     public String getPublisher() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.position_id</code>. 职位id,多个职位用,隔开
+     * Setter for <code>hrdb.hr_search_condition.position_id</code>. 职位id 多个职位之间用,隔开
      */
     public void setPositionId(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.position_id</code>. 职位id,多个职位用,隔开
+     * Getter for <code>hrdb.hr_search_condition.position_id</code>. 职位id 多个职位之间用,隔开
      */
     public String getPositionId() {
         return (String) get(3);
@@ -128,14 +128,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地
+     * Setter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地, 允许多个，使用逗号分隔，要和city_code保持一致
      */
     public void setCityName(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地
+     * Getter for <code>hrdb.hr_search_condition.city_name</code>. 现居住地, 允许多个，使用逗号分隔，要和city_code保持一致
      */
     public String getCityName() {
         return (String) get(7);
@@ -212,14 +212,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+     * Setter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致
      */
     public void setIntentionCityName(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地
+     * Getter for <code>hrdb.hr_search_condition.intention_city_name</code>. 期望工作地, 允许多个，使用逗号分隔，要和intention_city_code保持一致
      */
     public String getIntentionCityName() {
         return (String) get(13);
@@ -366,14 +366,14 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.origins</code>. 简历来源，申请来源，是否上传，多个之间用,隔开
+     * Setter for <code>hrdb.hr_search_condition.origins</code>. 来源，简历来源，是否上传，申请来源 多个来源之间用,隔开
      */
     public void setOrigins(String value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.origins</code>. 简历来源，申请来源，是否上传，多个之间用,隔开
+     * Getter for <code>hrdb.hr_search_condition.origins</code>. 来源，简历来源，是否上传，申请来源 多个来源之间用,隔开
      */
     public String getOrigins() {
         return (String) get(24);
@@ -394,115 +394,115 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开
+     * Setter for <code>hrdb.hr_search_condition.tag_ids</code>. 标签id -1 全部公开0我的收藏 其他则为tag_id
      */
     public void setTagIds(String value) {
         set(26, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.tag_ids</code>. 标签id  -1 全部公开0我的收藏 其他则为tag_id，多个之间用逗号隔开
+     * Getter for <code>hrdb.hr_search_condition.tag_ids</code>. 标签id -1 全部公开0我的收藏 其他则为tag_id
      */
     public String getTagIds() {
         return (String) get(26);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.favorite_hrs</code>.
+     * Setter for <code>hrdb.hr_search_condition.favorite_hrs</code>. 收藏人
      */
     public void setFavoriteHrs(String value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.favorite_hrs</code>.
+     * Getter for <code>hrdb.hr_search_condition.favorite_hrs</code>. 收藏人
      */
     public String getFavoriteHrs() {
         return (String) get(27);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.city_code</code>.
+     * Setter for <code>hrdb.hr_search_condition.city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地
      */
     public void setCityCode(String value) {
         set(28, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.city_code</code>.
+     * Getter for <code>hrdb.hr_search_condition.city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔,表示现居住地
      */
     public String getCityCode() {
         return (String) get(28);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.intention_city_code</code>.
+     * Setter for <code>hrdb.hr_search_condition.intention_city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地
      */
     public void setIntentionCityCode(String value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.intention_city_code</code>.
+     * Getter for <code>hrdb.hr_search_condition.intention_city_code</code>. dictdb.dict_city.code,多个code之间使用逗号分隔，表示期望工作地
      */
     public String getIntentionCityCode() {
         return (String) get(29);
     }
 
     /**
+     * Setter for <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     */
+    public void setPositionKeyWord(String value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     */
+    public String getPositionKeyWord() {
+        return (String) get(30);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     */
+    public void setPastPositionKeyWord(String value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     */
+    public String getPastPositionKeyWord() {
+        return (String) get(31);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     */
+    public void setPastCompanyKeyWord(String value) {
+        set(32, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     */
+    public String getPastCompanyKeyWord() {
+        return (String) get(32);
+    }
+
+    /**
      * Setter for <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
     public void setPositionStatus(Integer value) {
-        set(30, value);
+        set(33, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
     public Integer getPositionStatus() {
-        return (Integer) get(30);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_search_condition.position_key_word</code>.
-     */
-    public void setPositionKeyWord(String value) {
-        set(31, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_search_condition.position_key_word</code>.
-     */
-    public String getPositionKeyWord() {
-        return (String) get(31);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_search_condition.past_position_key_word</code>.
-     */
-    public void setPastPositionKeyWord(String value) {
-        set(32, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_search_condition.past_position_key_word</code>.
-     */
-    public String getPastPositionKeyWord() {
-        return (String) get(32);
-    }
-
-    /**
-     * Setter for <code>hrdb.hr_search_condition.past_company_key_word</code>.
-     */
-    public void setPastCompanyKeyWord(String value) {
-        set(33, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_search_condition.past_company_key_word</code>.
-     */
-    public String getPastCompanyKeyWord() {
-        return (String) get(33);
+        return (Integer) get(33);
     }
 
     // -------------------------------------------------------------------------
@@ -531,7 +531,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     /**
      * Create a detached, initialised HrSearchConditionRecord
      */
-    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, Integer positionStatus, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord) {
+    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord, Integer positionStatus) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
 
         set(0, id);
@@ -564,9 +564,9 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         set(27, favoriteHrs);
         set(28, cityCode);
         set(29, intentionCityCode);
-        set(30, positionStatus);
-        set(31, positionKeyWord);
-        set(32, pastPositionKeyWord);
-        set(33, pastCompanyKeyWord);
+        set(30, positionKeyWord);
+        set(31, pastPositionKeyWord);
+        set(32, pastCompanyKeyWord);
+        set(33, positionStatus);
     }
 }

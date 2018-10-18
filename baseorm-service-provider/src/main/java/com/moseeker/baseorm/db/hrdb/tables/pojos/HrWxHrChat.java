@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat implements Serializable {
 
-    private static final long serialVersionUID = 260063648;
+    private static final long serialVersionUID = -1768915971;
 
     private Integer   id;
     private Integer   chatlistId;
@@ -37,7 +37,6 @@ public class HrWxHrChat implements Serializable {
     private String    picUrl;
     private String    btnContent;
     private String    compoundContent;
-    private String    stats;
 
     public HrWxHrChat() {}
 
@@ -54,7 +53,6 @@ public class HrWxHrChat implements Serializable {
         this.picUrl = value.picUrl;
         this.btnContent = value.btnContent;
         this.compoundContent = value.compoundContent;
-        this.stats = value.stats;
     }
 
     public HrWxHrChat(
@@ -69,8 +67,7 @@ public class HrWxHrChat implements Serializable {
         String    msgType,
         String    picUrl,
         String    btnContent,
-        String    compoundContent,
-        String    stats
+        String    compoundContent
     ) {
         this.id = id;
         this.chatlistId = chatlistId;
@@ -84,7 +81,6 @@ public class HrWxHrChat implements Serializable {
         this.picUrl = picUrl;
         this.btnContent = btnContent;
         this.compoundContent = compoundContent;
-        this.stats = stats;
     }
 
     public Integer getId() {
@@ -183,14 +179,6 @@ public class HrWxHrChat implements Serializable {
         this.compoundContent = compoundContent;
     }
 
-    public String getStats() {
-        return this.stats;
-    }
-
-    public void setStats(String stats) {
-        this.stats = stats;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxHrChat (");
@@ -207,7 +195,6 @@ public class HrWxHrChat implements Serializable {
         sb.append(", ").append(picUrl);
         sb.append(", ").append(btnContent);
         sb.append(", ").append(compoundContent);
-        sb.append(", ").append(stats);
 
         sb.append(")");
         return sb.toString();

@@ -141,11 +141,4 @@ public class HrWxHrChatDao extends DAOImpl<HrWxHrChatRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByCompoundContent(String... values) {
         return fetch(HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT, values);
     }
-
-    /**
-     * Fetch records that have <code>stats IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxHrChat> fetchByStats(String... values) {
-        return fetch(HrWxHrChat.HR_WX_HR_CHAT.STATS, values);
-    }
 }
