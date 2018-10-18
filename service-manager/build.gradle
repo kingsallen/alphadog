@@ -8,7 +8,9 @@ webAppDirName = 'WebContent'    // 设置 WebApp 根目录
 sourceCompatibility = 1.8
   
 //compileJava.dependsOn(":thrift-gen-java:copyGeneratedFile")
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 // 设置依赖
 dependencies {
     //compile project(":thrift-jooq")rofileintention

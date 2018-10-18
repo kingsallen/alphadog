@@ -31,6 +31,13 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .execute();
     }
 
+    public List<MallGoodsInfoDO> getGoodDetailByGoodsIdAndCompanyId(List<Integer> goodsId, int companyId) {
+        return create.selectFrom(MALL_GOODS_INFO)
+                .where(MALL_GOODS_INFO.ID.in(goodsId))
+                .and(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
+                .fetchInto(MallGoodsInfoDO.class);
+    }
+
     public MallGoodsInfoDO getGoodDetailByGoodIdAndCompanyId(int goodId, int companyId) {
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.ID.eq(goodId))
@@ -46,11 +53,11 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .execute();
     }
 
-    public int updateGoodState(MallGoodsInfoDO mallGoodsInfoDO, int state) {
+    public int updateGoodStateByIds(List<Integer> ids, int companyId, int state) {
         return create.update(MALL_GOODS_INFO)
                 .set(MALL_GOODS_INFO.STATE, (byte)state)
-                .where(MALL_GOODS_INFO.ID.eq(mallGoodsInfoDO.getId()))
-                .and(MALL_GOODS_INFO.STATE.eq(mallGoodsInfoDO.getState()))
+                .where(MALL_GOODS_INFO.ID.in(ids))
+                .and(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .execute();
     }
 
@@ -70,7 +77,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
         return create.selectCount()
                 .from(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
-                .execute();
+                .fetchOne(0, int.class);
     }
 
     public int getTotalRowsByCompanyIdAndState(int companyId, int state) {
@@ -78,12 +85,13 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .from(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)state))
-                .execute();
+                .fetchOne(0, int.class);
     }
 
     public List<MallGoodsInfoDO> getGoodsListByPage(int companyId, int startIndex, int pageSize) {
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
+                .orderBy(MALL_GOODS_INFO.UPDATE_TIME.desc())
                 .limit(startIndex, pageSize)
                 .fetchInto(MallGoodsInfoDO.class);
     }
@@ -92,6 +100,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)state))
+                .orderBy(MALL_GOODS_INFO.UPDATE_TIME.desc())
                 .limit(startIndex, pageSize)
                 .fetchInto(MallGoodsInfoDO.class);
     }

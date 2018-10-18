@@ -8,12 +8,16 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.mall.annotation.OnlyEmployee;
+import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
+import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +57,7 @@ public class OrderService {
      * @date  2018/10/16
      * @return 返回订单list和总行数
      */
+    @OnlySuperAccount
     public Map<String,String> getCompanyOrderList(OrderSearchForm orderSearchForm) {
         int state = orderSearchForm.getState();
         List<MallOrderDO> orderList;
@@ -90,6 +95,7 @@ public class OrderService {
      * @date  2018/10/16
      * @return   mallOrderInfoVOS
      */
+    @OnlySuperAccount
     private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, Map<Integer, UserEmployeeDO> employeeMap, List<Integer> employeeIds) {
         List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
         for(Integer employeeId : employeeIds){
@@ -146,6 +152,7 @@ public class OrderService {
      * @author  cjm
      * @date  2018/10/16
      */
+    @OnlyEmployee
     public void confirmOrder(OrderForm orderForm) throws BIZException {
         // todo redis防止重复提交
 
@@ -153,21 +160,20 @@ public class OrderService {
 
     /**
      * 确认发放或不发放 todo 做防止重复提交限制 消息模板
-     * @param ids 订单ids
-     * @param companyId 公司id
-     * @param state 需要修改的订单状态
+     * @param updateForm 订单更新实体
      * @author  cjm
      * @date  2018/10/16
      */
     @Transactional(rollbackFor = Exception.class)
-    public void updateOrder(List<Integer> ids, int companyId, int state) throws BIZException {
+    @OnlySuperAccount
+    public void updateOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException {
         // todo redis防止重复提交
-        checkOrderOperationState(state);
-        List<MallOrderDO> orderList = orderDao.getOrdersByIds(ids);
-        checkOrderLimit(orderList, companyId);
-        if(state == OrderEnum.CONFIRM.getState()){
-            int rows = orderDao.updateOrderStateByIdAndCompanyId(ids, companyId, state);
-            if(rows != ids.size()){
+        checkOrderOperationState(updateForm.getState());
+        List<MallOrderDO> orderList = orderDao.getOrdersByIds(updateForm.getIds());
+        checkOrderLimit(orderList, updateForm.getCompany_id());
+        if(updateForm.getState() == OrderEnum.CONFIRM.getState()){
+            int rows = orderDao.updateOrderStateByIdAndCompanyId(updateForm.getIds(), updateForm.getCompany_id(), updateForm.getState());
+            if(rows != updateForm.getIds().size()){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
             }
         }else {
@@ -176,6 +182,26 @@ public class OrderService {
         }
 
 
+    }
+
+    /**
+     * 员工获取积分兑换记录
+     * @param  baseMallForm 基础form
+     * @author  cjm
+     * @date  2018/10/16
+     * @return  兑换记录list
+     */
+    @OnlyEmployee
+    public String getEmployeeOrderList(BaseMallForm baseMallForm) throws BIZException {
+        List<MallOrderDO> orderList = orderDao.getOrdersListByEmployeeId(baseMallForm.getEmployee_id());
+        UserEmployeeDO userEmployeeDO = getUserEmployeeById(baseMallForm.getEmployee_id());
+        List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
+        for(MallOrderDO mallOrderDO : orderList){
+            MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
+            mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO);
+            mallOrderInfoVOS.add(mallOrderInfoVO);
+        }
+        return JSON.toJSONString(mallOrderInfoVOS);
     }
 
     private void checkOrderOperationState(int state) throws BIZException {
@@ -198,25 +224,6 @@ public class OrderService {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_OPERATION_LIMIT);
             }
         }
-    }
-
-    /**
-     * 员工获取积分兑换记录
-     * @param  employeeId 员工id
-     * @author  cjm
-     * @date  2018/10/16
-     * @return  兑换记录list
-     */
-    public String getEmployeeOrderList(int employeeId) throws BIZException {
-        List<MallOrderDO> orderList = orderDao.getOrdersListByEmployeeId(employeeId);
-        UserEmployeeDO userEmployeeDO = getUserEmployeeById(employeeId);
-        List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
-        for(MallOrderDO mallOrderDO : orderList){
-            MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
-            mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO);
-            mallOrderInfoVOS.add(mallOrderInfoVO);
-        }
-        return JSON.toJSONString(mallOrderInfoVOS);
     }
 
     private UserEmployeeDO getUserEmployeeById(int employeeId) throws BIZException {
