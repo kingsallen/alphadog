@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -858,7 +859,7 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
+        UpdateResponse response = client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
         if(response.getGetResult() == null) {
@@ -885,7 +886,7 @@ public class SearchengineEntity {
                     .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
-            bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
+            bulkRequest.add(client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx).setDoc(builder));
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
