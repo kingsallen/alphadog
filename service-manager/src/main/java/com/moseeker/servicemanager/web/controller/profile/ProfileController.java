@@ -404,6 +404,7 @@ public class ProfileController {
         Params<String, Object> params = ParamUtils.parseRequestParam(request);
         String profile = params.getString("profile");
         Integer referenceId = params.getInt("reference_id");
+        Integer appid = params.getInt("appid");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredStringValidate("简历", profile);
         validateUtil.addRequiredValidate("员工", referenceId);
@@ -411,7 +412,7 @@ public class ProfileController {
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return ResponseLogNotification.fail(request, result);
         } else {
-            int userId = service.parseText(profile, referenceId);
+            int userId = service.parseText(profile, referenceId, appid);
             return Result.success(new HashMap<String,Integer>(){{put("user_id", userId);}}).toJson();
             //return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }
