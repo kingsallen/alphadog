@@ -699,7 +699,6 @@ public class ProfileController {
         }
     }
 
-<<<<<<<<< Temporary merge branch 1
     /*
     *
     * meetmobot指定更新other表的json串的内容
