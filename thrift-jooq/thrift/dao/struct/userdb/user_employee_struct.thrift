@@ -54,6 +54,7 @@ struct UserEmployeeDO {
 	48: optional i32 sectionId,	//hr_employee_section.id, 部门ID
 	49: optional i8 emailIsvalid,	//是否认证了1：是, 0：否
 	50: optional i8 authMethod,	//员工认证途径 0:使用邮箱认证 1:使用自定义认证 2:使用问答认证
-	51: optional string customFieldValues	//自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
+	51: optional string customFieldValues,	//自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
+	52: optional i32 bonus//自定 义字段键值, 结构[{<id>: "<value>"},{...},...]
 
 }

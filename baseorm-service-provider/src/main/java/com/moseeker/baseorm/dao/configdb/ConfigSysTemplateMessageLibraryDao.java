@@ -40,4 +40,11 @@ public class ConfigSysTemplateMessageLibraryDao extends JooqCrudImpl<ConfigSysTe
                 .limit(1)
                 .fetchOne();
     }
+
+    public ConfigSysTemplateMessageLibraryRecord getConfigSysTemplateMessageLibraryDOByidListAndDisable(int id){
+        ConfigSysTemplateMessageLibraryRecord result= create.selectFrom(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY)
+                .where(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID.eq(id))
+                .fetchOne();
+        return result;
+    }
 }
