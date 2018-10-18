@@ -59,7 +59,7 @@ public class ProfileCredentialsServicesImplTest {
 
 		Credentials credentials = new Credentials();
 		credentials.setProfile_id(170);
-		credentials.setName("test credentials");
+		credentials.setName("resumeFileParser credentials");
 
 		response = service.postResources(new ArrayList<Credentials>(){{add(credentials);}});
 	}
@@ -68,10 +68,10 @@ public class ProfileCredentialsServicesImplTest {
 	public void putResources() throws TException {
 		Credentials credentials = new Credentials();
 		credentials.setId(69406);
-		credentials.setName("test credentials 2");
+		credentials.setName("resumeFileParser credentials 2");
 		Credentials credentials2 = new Credentials();
 		credentials2.setId(69407);
-		credentials2.setName("test credentials 3");
+		credentials2.setName("resumeFileParser credentials 3");
 		response = service.putResources(new ArrayList<Credentials>(){{add(credentials);add(credentials2);}});
 	}
 
@@ -88,7 +88,7 @@ public class ProfileCredentialsServicesImplTest {
 	public void postResource() throws TException {
 		Credentials credentials = new Credentials();
 		credentials.setProfile_id(170);
-		credentials.setName("test credentials  180");
+		credentials.setName("resumeFileParser credentials  180");
 		response = service.postResource(credentials);
 	}
 
@@ -96,7 +96,7 @@ public class ProfileCredentialsServicesImplTest {
 	public void putResource() throws TException {
 		Credentials credentials = new Credentials();
 		credentials.setId(69406);
-		credentials.setName("test credentials 24184");
+		credentials.setName("resumeFileParser credentials 24184");
 		response = service.putResource(credentials);
 	}
 

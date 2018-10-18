@@ -10,12 +10,15 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
+import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
@@ -29,6 +32,8 @@ import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
+
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -399,6 +404,7 @@ public class ProfileController {
         Params<String, Object> params = ParamUtils.parseRequestParam(request);
         String profile = params.getString("profile");
         Integer referenceId = params.getInt("reference_id");
+        Integer appid = params.getInt("appid");
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredStringValidate("简历", profile);
         validateUtil.addRequiredValidate("员工", referenceId);
@@ -406,7 +412,7 @@ public class ProfileController {
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return ResponseLogNotification.fail(request, result);
         } else {
-            int userId = service.parseText(profile, referenceId);
+            int userId = service.parseText(profile, referenceId, appid);
             return Result.success(new HashMap<String,Integer>(){{put("user_id", userId);}}).toJson();
             //return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }

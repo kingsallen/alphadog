@@ -1,6 +1,10 @@
 package com.moseeker.profile.service;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.profile.exception.ProfileException;
+import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+
+import java.nio.ByteBuffer;
 
 /**
  * 简历接口
@@ -18,4 +22,5 @@ public interface ProfileService {
      * @throws CommonException 业务异常
      */
     public int upsertProfile(int userId, String profileParameter) throws CommonException;
+
 }

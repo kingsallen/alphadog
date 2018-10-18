@@ -48,10 +48,10 @@ public class ProfileWorkExpServicesImplTest {
         try {
             WorkExp workExp = new WorkExp();
             workExp.setProfile_id(170);
-            workExp.setDescription("test postResource");
-            workExp.setPosition_name("test postResource");
-            workExp.setCompany_name("test postResource");
-            workExp.setJob("test postResource");
+            workExp.setDescription("resumeFileParser postResource");
+            workExp.setPosition_name("resumeFileParser postResource");
+            workExp.setCompany_name("resumeFileParser postResource");
+            workExp.setJob("resumeFileParser postResource");
             workExp.setStart_date("2017-01-01");
             response = service.postResource(workExp);
         } catch (Exception e) {
@@ -66,10 +66,10 @@ public class ProfileWorkExpServicesImplTest {
         try {
             WorkExp workExp = new WorkExp();
             workExp.setProfile_id(170);
-            workExp.setDescription("test postResources");
-            workExp.setPosition_name("test postResources");
-            workExp.setCompany_name("test postResources");
-            workExp.setJob("test postResources");
+            workExp.setDescription("resumeFileParser postResources");
+            workExp.setPosition_name("resumeFileParser postResources");
+            workExp.setCompany_name("resumeFileParser postResources");
+            workExp.setJob("resumeFileParser postResources");
             workExp.setStart_date("2017-01-01");
             response = service.postResources(new ArrayList<WorkExp>(){{add(workExp);add(workExp);}});
         } catch (Exception e) {
