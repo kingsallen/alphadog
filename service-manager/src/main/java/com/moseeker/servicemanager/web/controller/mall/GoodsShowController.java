@@ -79,16 +79,4 @@ public class GoodsShowController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-
-
-    /**
-     * 获取商品详情
-     * @author  cjm
-     * @date  2018/10/12
-     */
-    @RequestMapping(value = "goods/{goodId}", method = RequestMethod.GET)
-    @ResponseBody
-    public String getGoodDetail(@PathVariable Integer goodId, HttpServletRequest request) {
-        return manageController.getGoodDetail(goodId, request);
-    }
 }
