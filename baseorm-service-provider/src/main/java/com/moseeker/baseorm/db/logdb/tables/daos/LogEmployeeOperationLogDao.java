@@ -113,4 +113,11 @@ public class LogEmployeeOperationLogDao extends DAOImpl<LogEmployeeOperationLogR
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogEmployeeOperationLog> fetchByCreateTime(Timestamp... values) {
         return fetch(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.CREATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>update_tiem IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogEmployeeOperationLog> fetchByUpdateTiem(Timestamp... values) {
+        return fetch(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.UPDATE_TIEM, values);
+    }
 }
