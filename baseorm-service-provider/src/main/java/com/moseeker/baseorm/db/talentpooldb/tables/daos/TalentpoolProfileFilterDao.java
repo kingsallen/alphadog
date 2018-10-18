@@ -199,16 +199,16 @@ public class TalentpoolProfileFilterDao extends DAOImpl<TalentpoolProfileFilterR
     }
 
     /**
-     * Fetch records that have <code>update_time IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchByUpdateTime(Timestamp... values) {
-        return fetch(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.UPDATE_TIME, values);
-    }
-
-    /**
      * Fetch records that have <code>disable IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchByDisable(Integer... values) {
         return fetch(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.DISABLE, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter> fetchByUpdateTime(Timestamp... values) {
+        return fetch(TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER.UPDATE_TIME, values);
     }
 }

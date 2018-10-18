@@ -7,6 +7,8 @@ import org.jooq.Configuration;
 import org.jooq.Param;
 import org.jooq.Record1;
 import org.jooq.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +25,8 @@ import static org.jooq.impl.DSL.*;
  */
 @Repository
 public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.daos.ReferralLogDao {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public ReferralLogDao(Configuration configuration) {

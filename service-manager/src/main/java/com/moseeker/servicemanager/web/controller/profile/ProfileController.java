@@ -412,7 +412,7 @@ public class ProfileController {
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return ResponseLogNotification.fail(request, result);
         } else {
-            int userId = service.parseText(profile, referenceId, appid);
+            int userId = service.parseText(profile, referenceId,appid);
             return Result.success(new HashMap<String,Integer>(){{put("user_id", userId);}}).toJson();
             //return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }
@@ -695,6 +695,24 @@ public class ProfileController {
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /*
+    *
+    * meetmobot指定更新other表的json串的内容
+    *
+    *
+    * */
+    @RequestMapping(value = "/profile/other/specific", method = RequestMethod.PUT)
+    @ResponseBody
+    public String put(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Response result = profileOtherService.updateSpecificResource(JSON.toJSONString(params));
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

@@ -28,7 +28,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
@@ -51,7 +50,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
-import com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
@@ -68,8 +66,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
-import com.moseeker.baseorm.db.hrdb.tables.LogEmployeeOperationLog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -95,7 +91,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 614778417;
+    private static final long serialVersionUID = -761350071;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -158,7 +154,7 @@ public class Hrdb extends SchemaImpl {
     public final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
 
     /**
-     * 公司和CS匹配表
+     * 邮件额度每天使用日志
      */
     public final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
@@ -221,11 +217,6 @@ public class Hrdb extends SchemaImpl {
      * 红包记录表
      */
     public final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
-
-    /**
-     * The table <code>hrdb.hr_hb_items_backup_chendi_180625</code>.
-     */
-    public final HrHbItemsBackupChendi_180625 HR_HB_ITEMS_BACKUP_CHENDI_180625 = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625.HR_HB_ITEMS_BACKUP_CHENDI_180625;
 
     /**
      * 红包配置和职位绑定表
@@ -333,11 +324,6 @@ public class Hrdb extends SchemaImpl {
     public final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
 
     /**
-     * The table <code>hrdb.hr_team_20180118_chendi</code>.
-     */
-    public final HrTeam_20180118Chendi HR_TEAM_20180118_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi.HR_TEAM_20180118_CHENDI;
-
-    /**
      * 团队成员信息
      */
     public final HrTeamMember HR_TEAM_MEMBER = com.moseeker.baseorm.db.hrdb.tables.HrTeamMember.HR_TEAM_MEMBER;
@@ -378,7 +364,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
     /**
-     * 语音聊天的语音信息
+     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
      */
     public final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 
@@ -388,7 +374,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * 微信模块表
+     * The table <code>hrdb.hr_wx_module</code>.
      */
     public final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
@@ -418,19 +404,9 @@ public class Hrdb extends SchemaImpl {
     public final HrWxWechat HR_WX_WECHAT = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat.HR_WX_WECHAT;
 
     /**
-     * The table <code>hrdb.hr_wx_wechat_20180127chendi</code>.
-     */
-    public final HrWxWechat_20180127chendi HR_WX_WECHAT_20180127CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi.HR_WX_WECHAT_20180127CHENDI;
-
-    /**
      * 微信消息通知同步状态
      */
     public final HrWxWechatNoticeSyncStatus HR_WX_WECHAT_NOTICE_SYNC_STATUS = com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-
-    /**
-     * The table <code>hrdb.log_employee_operation_log</code>.
-     */
-    public final LogEmployeeOperationLog LOG_EMPLOYEE_OPERATION_LOG = com.moseeker.baseorm.db.hrdb.tables.LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG;
 
     /**
      * No further instances allowed
@@ -481,7 +457,6 @@ public class Hrdb extends SchemaImpl {
             HrGroupCompanyRel.HR_GROUP_COMPANY_REL,
             HrHbConfig.HR_HB_CONFIG,
             HrHbItems.HR_HB_ITEMS,
-            HrHbItemsBackupChendi_180625.HR_HB_ITEMS_BACKUP_CHENDI_180625,
             HrHbPositionBinding.HR_HB_POSITION_BINDING,
             HrHbScratchCard.HR_HB_SCRATCH_CARD,
             HrHbSendRecord.HR_HB_SEND_RECORD,
@@ -503,7 +478,6 @@ public class Hrdb extends SchemaImpl {
             HrSuperaccountApply.HR_SUPERACCOUNT_APPLY,
             HrTalentpool.HR_TALENTPOOL,
             HrTeam.HR_TEAM,
-            HrTeam_20180118Chendi.HR_TEAM_20180118_CHENDI,
             HrTeamMember.HR_TEAM_MEMBER,
             HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT,
             HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR,
@@ -520,8 +494,6 @@ public class Hrdb extends SchemaImpl {
             HrWxRule.HR_WX_RULE,
             HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE,
             HrWxWechat.HR_WX_WECHAT,
-            HrWxWechat_20180127chendi.HR_WX_WECHAT_20180127CHENDI,
-            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS,
-            LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG);
+            HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS);
     }
 }

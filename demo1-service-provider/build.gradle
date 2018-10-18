@@ -7,7 +7,9 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 dependencies {
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
@@ -18,7 +20,9 @@ task copyJars(type: Copy) {
     from configurations.runtime
     into 'build/libs' // 目标位置
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 jar {
 
     // build one flat jar

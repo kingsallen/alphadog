@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMoveRecordRecord> {
 
-    private static final long serialVersionUID = -678794509;
+    private static final long serialVersionUID = 509086647;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move_record</code>
@@ -77,9 +77,9 @@ public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMove
     public final TableField<TalentpoolProfileMoveRecordRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.TINYINT)), this, "0.获取失败 1.已完成 2.获取中");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_move_record.current_email_num</code>. 当前执行的简历搬家的第n封邮件
+     * The column <code>talentpooldb.talentpool_profile_move_record.current_email_num</code>. 当前执行的简历搬家的第n封邮件1111
      */
-    public final TableField<TalentpoolProfileMoveRecordRecord, Integer> CURRENT_EMAIL_NUM = createField("current_email_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "当前执行的简历搬家的第n封邮件");
+    public final TableField<TalentpoolProfileMoveRecordRecord, Integer> CURRENT_EMAIL_NUM = createField("current_email_num", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "当前执行的简历搬家的第n封邮件1111");
 
     /**
      * The column <code>talentpooldb.talentpool_profile_move_record.total_email_num</code>. 本次简历搬家的邮件总数
@@ -115,7 +115,7 @@ public class TalentpoolProfileMoveRecord extends TableImpl<TalentpoolProfileMove
     }
 
     private TalentpoolProfileMoveRecord(String alias, Table<TalentpoolProfileMoveRecordRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "简历搬家chaos请求操作记录表");
+        super(alias, null, aliased, parameters, "简历搬家操作记录表");
     }
 
     /**

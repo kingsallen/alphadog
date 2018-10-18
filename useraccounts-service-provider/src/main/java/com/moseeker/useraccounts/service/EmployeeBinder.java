@@ -28,6 +28,7 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -82,11 +83,13 @@ public abstract class EmployeeBinder {
     protected CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
-    protected ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
-
-    @Autowired
     protected LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
 
+    @Autowired
+    EmployeeBindByEmail employeeBindByEmail;
+
+    @Autowired
+    protected ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
@@ -172,17 +175,23 @@ public abstract class EmployeeBinder {
      */
     protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException {
         log.info("doneBind param: useremployee={}", useremployee);
+        log.info("useremployee.authMethod:{}", useremployee.getAuthMethod());
         Result response = new Result();
 
         DateTime currentTime = new DateTime();
         int employeeId;
         if (useremployee.getId() != 0) {
             useremployee.setUpdateTime(null);
+            log.info("doneBind useremployee.authMethod:{}, useremployee.bindingTime:{}", useremployee.getAuthMethod(), useremployee.getBindingTime());
+
+            log.info("result:{}", useremployee.getAuthMethod() == 1 &&
+                    org.apache.commons.lang.StringUtils.isBlank(useremployee.getBindingTime()));
             String bindTime = useremployee.getBindingTime();
             useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
             employeeDao.updateData(useremployee);
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
+                log.info("自定义添加积分！");
                 employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
             }
             employeeId = useremployee.getId();
@@ -194,8 +203,12 @@ public abstract class EmployeeBinder {
             UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                     useremployee.getCompanyId());
             if (unActiveEmployee != null) {
+                log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
+                log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
                 employeeId = unActiveEmployee.getId();
+                log.info("userEmployee active:{}", unActiveEmployee.getActivation());
                 if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                    log.info("userEmployee not active");
                     if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getEmail())) {
                         unActiveEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
                     }
@@ -212,6 +225,7 @@ public abstract class EmployeeBinder {
                     }
                     unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
                     log.info("doneBind unActiveEmployee update record");
+                    log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
                     unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                             .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
@@ -224,9 +238,12 @@ public abstract class EmployeeBinder {
 
                 }
             } else {
+                log.info("employeeDao.registerEmployee");
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
                 employeeId = executeResult.getId();
+                log.info("executeResult :{}", JSON.toJSONString(executeResult));
                 if (executeResult.getExecute() > 0) {
+                    log.info("employee add award");
                     employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
                 }
             }
@@ -297,7 +314,7 @@ public abstract class EmployeeBinder {
         }
         if(response.success){
             if(bindSource == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
-                logEmployeeOperationLogEntity.insertEmployeeOperationLog(employeeId,bindSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),useremployee.getCompanyId(),null);
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(useremployee.getSysuserId(),bindSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),useremployee.getCompanyId(),null);
                 log.error("insertLogSuccess","我是员工");
             }
         }

@@ -1,23 +1,14 @@
 package com.moseeker.company.service.impl;
 
-import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.hrdb.tables.*;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
-import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
-import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.*;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
-import com.moseeker.baseorm.db.hrdb.tables.pojos.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
@@ -27,11 +18,9 @@ import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.CompanyType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
@@ -51,29 +40,26 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.*;
-import com.moseeker.thrift.gen.company.struct.HrCompanyConf;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
-
+import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.SmsType;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
@@ -886,28 +872,45 @@ public class CompanyService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+        long startTime = System.currentTimeMillis();
         //获取本月有积分增加的员工map 员工编号 = 积分增加只
         Map<Integer, Integer> employeePointsMap = employeeEntity.getEmployeeAwardSum(date);
         Set<Integer> employeeIdList = employeePointsMap.keySet();
+        long pointTime = System.currentTimeMillis();
+        logger.info("getCompanyInfoByTemplateRank ============== point:{}",pointTime - startTime);
         //获取本月有积分增加的员工列表
         List<UserEmployeeDO> employeeDOList = employeeEntity.getUserEmployeeByIdList(employeeIdList);
+        long employeeTime = System.currentTimeMillis();
+        logger.info("getCompanyInfoByTemplateRank ============== employee:{}",employeeTime - pointTime);
         if(!StringUtils.isEmptyList(employeeDOList)) {
             List<Integer> companyList = employeeDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
             List<Integer> companyIdList = hrGroupCompanyRelDao.getGroupCompanyRelDoByCompanyIds(companyList);
+            long companyTime = System.currentTimeMillis();
+            logger.info("getCompanyInfoByTemplateRank ============== groupCompany :{}",companyTime - employeeTime);
             //获取本月有积分增加员工对应公司认证员工数量 公司编号 = 认证员工数量
             Map<Integer, Integer> companyEmployeeMap = employeeEntity.getEmployeeNum(companyIdList);
+            long employeeNumTime = System.currentTimeMillis();
+            logger.info("getCompanyInfoByTemplateRank ============== employeeNum :{}", employeeNumTime - companyTime);
             //获取对应公众号信息
             List<HrWxWechatDO> wechatDOList = wechatDao.getHrWxWechatByCompanyIds(companyIdList);
+            long wechatTime = System.currentTimeMillis();
+            logger.info("getCompanyInfoByTemplateRank ============== wechat :{}", wechatTime - employeeNumTime);
             if(!StringUtils.isEmptyList(wechatDOList)) {
                 List<Integer> wechatIdList = wechatDOList.stream().map(m -> m.getId()).collect(Collectors.toList());
                 List<HrWxTemplateMessageDO> messageDOList = messageDao
                         .getHrWxTemplateMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                long messageTime = System.currentTimeMillis();
+                logger.info("getCompanyInfoByTemplateRank ============== message :{}", messageTime - wechatTime);
                 //筛选出来排名通知消息模板为开的公众号开关
                 List<HrWxNoticeMessageDO> noticeList = noticeDao.getHrWxNoticeMessageDOByWechatIds(wechatIdList, Constant.AWARD_RANKING);
+                long noticeTime = System.currentTimeMillis();
+                logger.info("getCompanyInfoByTemplateRank ============== notice :{}", noticeTime - messageTime);
                 if(!StringUtils.isEmptyList(noticeList)) {
                     wechatIdList = noticeList.stream().map(m -> m.getWechatId()).collect(Collectors.toList());
                     wechatDOList = wechatDao.getHrWxWechatByIds(wechatIdList);
                     companyIdList = wechatDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+                    long companyIdTime = System.currentTimeMillis();
+                    logger.info("getCompanyInfoByTemplateRank ============== companyIdTime :{}", companyIdTime - noticeTime);
                     return handerCompanyWechatInfo(companyId, companyIdList, wechatDOList, messageDOList, companyEmployeeMap);
                 }
             }
@@ -1154,6 +1157,7 @@ public class CompanyService {
 
     private List<HrCompanyWechatDO> handerCompanyWechatInfo(int companyid, List<Integer> companyIds, List<HrWxWechatDO> wechatDOList,
                                                             List<HrWxTemplateMessageDO> messageDOList, Map<Integer, Integer> params){
+        long startTime = System.currentTimeMillis();
         if(!StringUtils.isEmptyList(companyIds) && params!=null){
             logger.info("===============params:{}",params);
             List<HrCompanyWechatDO> companyWechatDOList = new ArrayList<>();
@@ -1190,6 +1194,8 @@ public class CompanyService {
                 }
                 companyWechatDOList.add(companyWechatDO);
             }
+            long endTime = System.currentTimeMillis();
+            logger.info("getCompanyInfoByTemplateRank ============== handerCompanyWechatInfo :{}", endTime - startTime);
             return companyWechatDOList;
         }
         return new ArrayList<>();

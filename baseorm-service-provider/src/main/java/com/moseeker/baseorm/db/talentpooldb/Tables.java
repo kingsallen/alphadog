@@ -44,7 +44,7 @@ public class Tables {
     public static final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
-     * 人才库人HR与备注的关系
+     * 人才库人HR与标签的关系
      */
     public static final TalentpoolComment TALENTPOOL_COMMENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment.TALENTPOOL_COMMENT;
 
@@ -89,7 +89,7 @@ public class Tables {
     public static final TalentpoolProfileFilterExecute TALENTPOOL_PROFILE_FILTER_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE;
 
     /**
-     * 简历搬家hr操作记录表
+     * The table <code>talentpooldb.talentpool_profile_move</code>.
      */
     public static final TalentpoolProfileMove TALENTPOOL_PROFILE_MOVE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE;
 
@@ -100,7 +100,7 @@ public class Tables {
     public static final TalentpoolProfileMoveDetail TALENTPOOL_PROFILE_MOVE_DETAIL = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL;
 
     /**
-     * 简历搬家chaos请求操作记录表
+     * 简历搬家操作记录表
      */
     public static final TalentpoolProfileMoveRecord TALENTPOOL_PROFILE_MOVE_RECORD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD;
 
@@ -120,7 +120,7 @@ public class Tables {
     public static final TalentpoolUpload TALENTPOOL_UPLOAD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload.TALENTPOOL_UPLOAD;
 
     /**
-     * 人才库人人才与标签的关系
+     * 人才标签表
      */
     public static final TalentpoolUserTag TALENTPOOL_USER_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag.TALENTPOOL_USER_TAG;
 }

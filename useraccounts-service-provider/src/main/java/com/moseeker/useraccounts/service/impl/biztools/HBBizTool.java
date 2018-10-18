@@ -11,6 +11,8 @@ import com.moseeker.entity.pojos.HBData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
  */
 public class HBBizTool {
 
+    private static Logger logger = LoggerFactory.getLogger(HBBizTool.class);
     /**
      * 红包类型名称
      * @param type 红包类型

@@ -80,6 +80,7 @@ public class ReceiverHandler {
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("addAwardHandler jsonObject:{}", jsonObject.toJSONString());
             employeeEntity.addAwardBefore(jsonObject.getIntValue("employeeId"),
                     jsonObject.getIntValue("companyId"), jsonObject.getIntValue("positionId"),
                     jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"),

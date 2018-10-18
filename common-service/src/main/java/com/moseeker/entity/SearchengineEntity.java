@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -424,8 +425,10 @@ public class SearchengineEntity {
             GetResponse response = client.prepareGet("awards", "award", userEmployeeId + "").execute().actionGet();
             // ES中的积分数据
             Map<String, Object> mapTemp = response.getSource();
+            logger.info("SearchengineEntity updateEmployeeAwards mapTemp:{}", mapTemp);
             if (mapTemp != null) {
                 if (mapTemp.get("award") != null) {
+                    logger.info("SearchengineEntity updateEmployeeAwards mapTemp.award:{}", mapTemp.get("award"));
                     employeeAward = (Integer)mapTemp.get("award");
                 }
                 // 积分信息
@@ -473,17 +476,17 @@ public class SearchengineEntity {
                 }
 
             }
-
+            logger.info("SearchengineEntity updateEmployeeAwards award:{}", employeeAward);
             jsonObject.put("award", employeeAward + userEmployeePointsRecordDO.getAward());
+            logger.info("SearchengineEntity updateEmployeeAwards after update award:{}", employeeAward + userEmployeePointsRecordDO.getAward());
             jsonObject.put("awards", awards);
-            logger.info(JSONObject.toJSONString(jsonObject));
+            logger.info("SearchengineEntity",JSONObject.toJSONString(jsonObject));
             // 更新ES
             client.prepareUpdate("awards", "award", userEmployeeId + "")
                     .setDoc(jsonObject).get();
             return ResponseUtils.success("");
         } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
         logger.info("------增量更新员工积分信息结束-------");
         return ResponseUtils.success("");
@@ -556,7 +559,9 @@ public class SearchengineEntity {
                         if (applications != null && applications.size() > 0) {
                             Optional<Map<String, Object>> applicationOptional = applications.stream().filter(stringObjectMap -> (stringObjectMap.get("id")).equals(applicationId)).findAny();
                             if (applicationOptional.isPresent()) {
-                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !(stringObjectMap.get("id")).equals(applicationId)).collect(Collectors.toList());
+                                logger.info("removeApplication exists ");
+                                List<Map<String, Object>> apps = applications.stream().filter(stringObjectMap -> !stringObjectMap.get("id").equals(applicationId)).collect(Collectors.toList());
+                                logger.info("removeApplication apps :{}", apps);
                                 if (apps == null || apps.size() == 0) {
                                     logger.info("removeApplication 删除索引 users id:{}", id);
                                     client.prepareDelete("users", "users", id + "").execute().actionGet();
@@ -630,6 +635,7 @@ public class SearchengineEntity {
 
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild).setFrom(0).setSize(employeeIdList.size());
+            logger.info("getCurrentMonthList searchRequestBuilder:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
 
             LocalDateTime localDateTime = LocalDateTime.now();
@@ -637,12 +643,14 @@ public class SearchengineEntity {
                     (localDateTime.getMonthValue() < 10 ?
                             ("0"+localDateTime.getMonthValue()) : localDateTime.getMonthValue());
 
+            logger.info("getCurrentMonthList response:{}", response);
             List<EmployeeAwards> employeeAwardsList = new ArrayList<>();
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
 
                 EmployeeAwards employeeAwards = new EmployeeAwards();
                 employeeAwards.setId(jsonObject.getInteger("id"));
+                logger.info("id:{},  awards:{}, timespan:{}", jsonObject.get("id"), jsonObject.get("awards"), timeSpan);
                 if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
                     JSONObject timeSpanAward = jsonObject.getJSONObject("awards").getJSONObject(timeSpan);
                     employeeAwards.setAward(timeSpanAward.getInteger("award"));
@@ -652,6 +660,7 @@ public class SearchengineEntity {
                                     .getString("last_update_time"))
                                     .atZone(ZoneId.systemDefault()).toInstant()
                                     .toEpochMilli());
+                    logger.info("getCurrentMonthList - employeeAwards:{}", employeeAwards);
                     employeeAwardsList.add(employeeAwards);
                 }
             }
@@ -686,6 +695,7 @@ public class SearchengineEntity {
             logger.error("无法获取ES客户端！！！！");
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getSort id:{}, award:{}, lastUpdateTime:{}, timeSpan:{}, companyIdList:{}", id, award, lastUpdateTime, timeSpan, companyIdList);
         QueryBuilder companyIdListQueryBuild = QueryBuilders.termsQuery("company_id", companyIdList);
         return getSort(client, id, award, lastUpdateTime, timeSpan, companyIdListQueryBuild);
     }
@@ -720,6 +730,7 @@ public class SearchengineEntity {
             SearchRequestBuilder searchRequestBuilder = client.prepareSearch("awards").setTypes("award")
                     .setQuery(employeeIdListQueryBuild);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
+            logger.info("getEmployeeInfo id:{},  response:{}", id, response);
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
@@ -732,10 +743,9 @@ public class SearchengineEntity {
 
     private int getSort(TransportClient client, int employeeId, int award, long lastUpdateTime,  String timeSpan,
                         QueryBuilder companyIdListQueryBuild) {
+        logger.info("getSort award:{}", award);
         if (award > 0) {
-
             LocalDateTime lastUpdateDateTime = Instant.ofEpochMilli(lastUpdateTime).atZone(ZoneId.systemDefault()).toLocalDateTime();
-
             QueryBuilder defaultQueryGTAward = QueryBuilders.matchAllQuery();
             QueryBuilder queryGTAward = QueryBuilders.boolQuery().must(defaultQueryGTAward);
 
@@ -828,6 +838,7 @@ public class SearchengineEntity {
                     .setQuery(query)
                     .addSort(buildSortScript(timeSpan, "award", SortOrder.ASC))
                     .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.DESC))
+                    .setFetchSource(new String[]{"id", "awards." + timeSpan + ".award", "awards." + timeSpan + ".last_update_time"}, null)
                     .setSize(1).execute().get();
             if (response.getHits() != null && response.getHits().totalHits() > 0) {
                 SearchHit searchHit = response.getHits().getAt(0);
@@ -848,7 +859,7 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
+        UpdateResponse response = client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
         if(response.getGetResult() == null) {
@@ -875,7 +886,7 @@ public class SearchengineEntity {
                     .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
-            bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
+            bulkRequest.add(client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx).setDoc(builder));
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();

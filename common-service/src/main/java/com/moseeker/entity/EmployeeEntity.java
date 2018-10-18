@@ -191,16 +191,24 @@ public class EmployeeEntity {
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
                                int applicationId) throws Exception {
         // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
+        logger.info("addAwardHandler");
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
+            logger.info("addAwardHandler 有配置信息");
             JobPositionPojo positionPojo = positionDao.getPosition(positionId);
+            if (positionPojo != null) {
+                logger.info("addAwardBefore positionPojo is_referral:{}", positionPojo.is_referral);
+            } else {
+                logger.info("addAwardBefore positionPojo is null!");
+            }
             if (positionPojo != null && positionPojo.is_referral == 0) {
                 logger.info("公司开启只针对内推职位奖励，并且职位不是内推职位，所以不做积分奖励操作！");
                 return;
             }
         }
         employeeDao.getUserEmployeeForUpdate(employeeId);
+        logger.info("addAwardHandler 锁表");
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
         HrPointsConfDO hrPointsConfDO = hrPointsConfDao.getData(query.buildQuery());
@@ -214,6 +222,7 @@ public class EmployeeEntity {
             logger.warn("重复的加积分操作, employeeId:{}, positionId:{}, templateId:{}, berecomUserId:{}", employeeId, positionId, templateId, berecomUserId);
             throw EmployeeException.EMPLOYEE_AWARD_REPEAT_PLUS;
         }
+        logger.info("addAwardHandler 添加积分");
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
     }
@@ -227,20 +236,26 @@ public class EmployeeEntity {
      */
     @Transactional
     public int addReward(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws EmployeeException {
+        logger.info("addReward employeeId:{}, companyId:{}, ueprdDo:{}", employeeId, companyId, ueprDo);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("id", employeeId).and("disable", 0).and("activation", 0);
         UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
+        logger.info("addReward userEmployeeDO:{}", userEmployeeDO);
         if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
+            logger.info("addReward  userEmployee exist!");
             // 修改用户总积分, 积分不能扣成负数
             int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
+            logger.info("addReward  userEmployee totalAward:{}", totalAward);
             if (totalAward < 0) {
                 logger.error("增加用户积分失败，用户积分不足：为用户{},用户当前积分{}点,添加积分{}点, reason:{}", employeeId, userEmployeeDO.getAward(), ueprDo.getAward(), ueprDo.getReason());
                 throw EmployeeException.EMPLOYEE_AWARD_NOT_ENOUGH;
             }
             int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward, userEmployeeDO.getAward());
+            logger.info("addReward  userEmployee row:{}", row);
             // 积分记录
             if (row > 0) {
                 ueprDo = ueprDao.addData(ueprDo);
+                logger.info("addReward  userEmployee ueprDo:{}", ueprDo);
                 if (ueprDo.getId() > 0) {
                     logger.info("增加用户积分成功：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
                     // 记录积分来源公司
@@ -256,6 +271,8 @@ public class EmployeeEntity {
                     throw EmployeeException.EMPLOYEE_AWARD_ADD_FAILED;
                 }
             }
+        } else {
+            logger.info("addReward  userEmployee not exist!");
         }
         return 0;
     }
@@ -311,6 +328,7 @@ public class EmployeeEntity {
      */
     public boolean addRewardByEmployeeVerified(int employeeId, int companyId) throws EmployeeException {
 
+        logger.info("addRewardByEmployeeVerified employeeId:{}, companyId:{}", employeeId, companyId);
         HrPointsConfRecord record = hrPointsConfDao.getEmployeeVerified(companyId);
         String reason;
         int award;
@@ -326,6 +344,7 @@ public class EmployeeEntity {
             award = record.getReward().intValue();
         }
 
+        logger.info("addRewardByEmployeeVerified reason:{}, award:{}", reason, award);
         UserEmployeePointsRecordDO ueprDo = new UserEmployeePointsRecordDO();
         ueprDo.setReason(reason);
         ueprDo.setAward(award);

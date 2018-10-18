@@ -869,7 +869,7 @@ public class ProfileService {
             String phone = resumeObj.getResult().getPhone();
             int userId = 0;
             if (StringUtils.isNotNullOrEmpty(phone)) {
-                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue());
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue(),null);
                 if (userRecord != null) {
                     userId = userRecord.getId();
                 }
@@ -902,7 +902,7 @@ public class ProfileService {
         if (employeeDO == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
-        logger.info("parseText ");
+        logger.info("parseText :{}", profile);
         File file;
         try {
             file = FileUtil.createFile("employee_proxy_apply.txt", profile);
@@ -942,6 +942,8 @@ public class ProfileService {
 
         ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
 
+        logger.info("profileParser profileObj:{}", JSON.toJSONString(profileObj));
+
         if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
             //判断请求来源是否为我是员工
             if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
@@ -951,6 +953,8 @@ public class ProfileService {
         }
         resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
 
+        logger.info("profileParser fillProfileObj profileObj:{}", JSON.toJSONString(profileObj));
+
         profileObj.setResumeObj(null);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
         JSONObject profileProfile = createChatBotProfileData();
@@ -958,11 +962,14 @@ public class ProfileService {
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
+        logger.info("profileParser profilePojo :{}", jsonObject.toJSONString());
+
         UserUserRecord userRecord = userAccountEntity.getCompanyUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
         int profileId;
         if (userRecord != null) {
+            logger.info("profileParser user not null! userRecord:{}", userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (profilePojo.getProfileRecord() != null) {
@@ -975,6 +982,10 @@ public class ProfileService {
                 logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),employeeDO.getCompanyId(),profileId);
             }
         } else {
+            logger.info("profileParser user is null");
+
+            logger.info("profileParser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                    profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
             resumeEntity.fillDefault(profilePojo);
             try {
                 userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT, appid);
@@ -992,6 +1003,7 @@ public class ProfileService {
             }
         }
 
+        logger.info("profileParser userRecord :{}", userRecord);
         return userId;
     }
 

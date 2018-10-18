@@ -911,6 +911,7 @@ public class UserHrAccountService {
                 for (Map<String, Object> map : result) {
                     if (map.get("activation") != null) {
                         if ((Byte) map.get("activation") == 0) {
+                            logger.info("getListNum regcount:{}", cancelCount);
                             userEmployeeNumStatistic.setRegcount((Integer) map.get("activation_count"));
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
@@ -918,16 +919,19 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 5) {
                             cancelCount+=(Integer) map.get("activation_count");
                         } else if ((Byte) map.get("activation") == 3) {
+                            logger.info("getListNum unregcount:{}", map.get("activation_count"));
                             userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
                 }
+                logger.info("getListNum cancelCount:{}", cancelCount);
                 userEmployeeNumStatistic.setCancelcount(cancelCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getListNum userEmployeeNumStatistic:{}", JSON.toJSONString(userEmployeeNumStatistic));
         return userEmployeeNumStatistic;
     }
 

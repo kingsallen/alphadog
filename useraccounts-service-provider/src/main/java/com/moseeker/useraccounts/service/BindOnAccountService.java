@@ -55,11 +55,11 @@ public abstract class BindOnAccountService {
 	 */
 	public Response handler(int appid, String unionid, String mobile,String countryCode) {
 		try {
-			
+
+			logger.info("BindOnAccountService handler appid:{}, unionid:{}, mobile:{}, countryCode:{}", appid, unionid, mobile, countryCode);
 			UserUserRecord userUnionid = getUserByUnionId(unionid);
 
             Query.QueryBuilder query = new Query.QueryBuilder();
-			Map<String, String> filters = new HashMap<>();
 			if (StringUtils.isNullOrEmpty(countryCode)){
 				countryCode="86";
 			}
@@ -67,13 +67,17 @@ public abstract class BindOnAccountService {
 			query.where("username", mobile).and("country_code",countryCode);
 			UserUserRecord userMobile = userdao.getRecord(query.buildQuery());
 
+			logger.info("BindOnAccountService handler userMobile:{}", userMobile);
 			if (userUnionid == null && userMobile == null) {
+				logger.info("BindOnAccountService handler userUnionid is null and userMobile is null");
 				// post, 都为空的情况, 需要事先调用 user_
 				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
 			} else if (userUnionid != null && userMobile != null
 					&& userUnionid.getId().intValue() == userMobile.getId().intValue()) {	//unionid用户和mobile用户是同一个用户
+				logger.info("BindOnAccountService handler userUnionid equals userMobile");
 				return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_NONEED);
 			} else if (userUnionid != null && userMobile == null) {	//只有unionid用户，没有mobile用户
+				logger.info("BindOnAccountService handler only have unionid");
 				userUnionid.setMobile(Long.valueOf(mobile));
 				userUnionid.setUsername(mobile);
 				userUnionid.setCountryCode(countryCode);
@@ -94,6 +98,7 @@ public abstract class BindOnAccountService {
 				return ResponseUtils.success(map);
 			} else if (userUnionid != null && userMobile != null
 					&& userUnionid.getId().intValue() != userMobile.getId().intValue()) { //同时有mobile用户和unionid用户，但不是同一个，需要绑定
+				logger.info("BindOnAccountService handler need combine");
 				// 2 accounts, one unoinid, one mobile, need to merge.
 				if (volidationBind(userMobile, userUnionid)) {
 					return ResponseUtils.fail(ConstantErrorCodeMessage.USERACCOUNT_BIND_REPEATBIND);

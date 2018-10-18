@@ -8,12 +8,14 @@ webAppDirName = 'WebContent'    // 设置 WebApp 根目录
 sourceCompatibility = 1.8
   
 //compileJava.dependsOn(":thrift-gen-java:copyGeneratedFile")
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 // 设置依赖
 dependencies {
-    //compile project(":thrift-jooq")
+    //compile project(":thrift-jooq")rofileintention
     compile project(":common")
-    compile project(":common-service")
+    compile project (":common-service")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
 
@@ -33,14 +35,15 @@ dependencies {
     compile deps["commons-fileupload"]
     //compile files('lib/*.jar')
 
-
     runtime deps['jstl']
 
     testCompile deps["junit"]
     testCompile deps["spring-test"]
 }
 
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 jar {
 
     // build one flat jar

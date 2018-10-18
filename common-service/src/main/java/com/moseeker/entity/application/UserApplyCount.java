@@ -1,13 +1,14 @@
 package com.moseeker.entity.application;
 
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 用户投递次数
  * Created by jack on 21/12/2017.
  */
 public class UserApplyCount {
-
     private int socialApplyCount;   //社招职位的投递次数
     private int schoolApplyCount;   //校招职位投递的次数
     private boolean init;           //当前这个是new 出来的还是redis反射产生。true是刚创建，false是redis反射产生。

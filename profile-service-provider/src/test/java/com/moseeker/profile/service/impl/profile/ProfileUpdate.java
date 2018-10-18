@@ -1,5 +1,7 @@
 package com.moseeker.profile.service.impl.profile;
 
+import com.moseeker.baseorm.dao.talentpooldb.TalentPoolProfileMoveRecordDao;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolProfileMoveRecordRecord;
 import com.moseeker.profile.config.AppConfig;
 import com.moseeker.profile.service.impl.ProfileBasicService;
 import org.junit.Test;
@@ -20,5 +22,13 @@ public class ProfileUpdate {
     @Test
     public  void basicTest(){
 //        profileBasicService.delBasic(251314);
+    }
+
+    @Autowired
+    TalentPoolProfileMoveRecordDao  dao;
+
+    @Test
+    public void test1(){
+        TalentpoolProfileMoveRecordRecord recordRecord = dao.getOneProfileMoveRecordById(186);
     }
 }

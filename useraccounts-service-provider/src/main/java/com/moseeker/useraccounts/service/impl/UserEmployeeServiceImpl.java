@@ -305,6 +305,7 @@ public class UserEmployeeServiceImpl {
         List<UserEmployeeDO> employeeDOS = employeeEntity.getActiveEmployeeDOList(companyIdList, pageNum, pageSize);
         List<Integer> positionIdList = positionEntity.getPositionIdList(companyIdList);
 
+        logger.info("getContributions positionIdList:{}", positionIdList);
         if (employeeDOS != null && employeeDOS.size() > 0) {
 
             //用户与员工关系
@@ -317,10 +318,16 @@ public class UserEmployeeServiceImpl {
                 userIdList.add(employeeDO.getSysuserId());
 
             }
+            logger.info("getContributions userIdList:{}", userIdList);
+
+            logger.info("getContributions userEmployeeMap:{}", userEmployeeMap);
 
             LocalDateTime today = LocalDateTime.now();
             LocalDateTime lastFriday = today.with(DayOfWeek.MONDAY).minusDays(3).withHour(17).withMinute(0).withSecond(0).withNano(0);
             LocalDateTime currentFriday = today.with(DayOfWeek.FRIDAY).withHour(17).withMinute(0).withSecond(0).withNano(0);
+
+            logger.info("getContributions start date:{}", lastFriday.toString());
+            logger.info("getContributions end date:{}", currentFriday.toString());
 
             //查找转发数量
             Future<Map<Integer,Integer>> forwardCountFuture = threadPool.startTast(() ->
@@ -328,6 +335,7 @@ public class UserEmployeeServiceImpl {
             //查找申请数量
             Future<Map<Integer, Integer>> applyCountFuture = threadPool.startTast(() ->
                     applicationEntity.countEmployeeApply(userIdList, positionIdList, lastFriday, currentFriday));
+
             //查找积分数量
             Future<Map<Integer, Integer>> awardsCountFuture = threadPool.startTast(() ->
                     referralEntity.countEmployeeAwards(employeeIdList, lastFriday, currentFriday));
@@ -408,6 +416,7 @@ public class UserEmployeeServiceImpl {
                 });
             }
 
+            logger.info("getContributions applyCountFuture:{}", applyCount);
             List<ContributionDetail> list = new ArrayList<>();
             for (UserEmployeeDO userEmployeeDO: employeeDOS) {
                 ContributionDetail contributionDetail = new ContributionDetail();

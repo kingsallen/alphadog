@@ -8,6 +8,7 @@ import java.util.concurrent.*;
 public enum ScheduledThread {
     Instance;
     ScheduledExecutorService executorService;
+
     private ScheduledThread(){
         init();
     }

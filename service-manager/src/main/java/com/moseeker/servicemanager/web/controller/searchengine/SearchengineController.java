@@ -103,7 +103,7 @@ public class SearchengineController {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             logger.info(JSON.toJSONString(reqParams)+"=============");
             String keywords = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
-            String cities =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("cities")));
+            String cities =BeanUtils.converToString(reqParams.get("cities"));
             String industries =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("industries")));
             String occupations = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("occupations")));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
@@ -354,6 +354,9 @@ public class SearchengineController {
                 params.put("is_referral","1");
                 params.put("position_status","0");
             }
+//            logger.info("+++++++++++++++++++");
+//            logger.info(JSON.toJSONString(params));
+//            logger.info("+++++++++++++++++++");
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
@@ -440,6 +443,26 @@ public class SearchengineController {
                 params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
             }
             Response res=searchengineServices.searchpastCompany(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/mobot/search", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchMobotPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
+            }
+            Response res=searchengineServices.mobotSearchPosition(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

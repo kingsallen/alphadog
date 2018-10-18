@@ -159,7 +159,8 @@ public class PositionServicesImpl implements Iface {
     @Override
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) throws TException {
         try {
-            return service.getPositionListRpExt(pids);
+//            return service.getPositionListRpExt(pids);
+            return service.getNewPositionListRpExt(pids);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return new ArrayList<>();
