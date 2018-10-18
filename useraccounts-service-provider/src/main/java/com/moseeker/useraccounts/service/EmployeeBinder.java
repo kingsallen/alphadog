@@ -314,7 +314,7 @@ public abstract class EmployeeBinder {
         }
         if(response.success){
             if(bindSource == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
-                logEmployeeOperationLogEntity.insertEmployeeOperationLog(employeeId,bindSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),useremployee.getCompanyId(),null);
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(useremployee.getId(),bindSource, EmployeeOperationType.EMPLOYEEVALID.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),useremployee.getCompanyId(),null);
                 log.error("insertLogSuccess","我是员工");
             }
         }

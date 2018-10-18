@@ -381,7 +381,6 @@ public class ProfileController {
                 String data = new String(Base64.encodeBase64(file.getBytes()), Consts.UTF_8);
                 logger.info("/profile/parser MultipartFile file :{}",file.getOriginalFilename());
                 Response res = service.resumeProfile(uid, file.getOriginalFilename(), data);
-                logger.info("profileParser ===============：{}",res);
                 return ResponseLogNotification.success(request, res);
             } else {
                 return null;
@@ -700,6 +699,7 @@ public class ProfileController {
         }
     }
 
+<<<<<<<<< Temporary merge branch 1
     /*
     *
     * meetmobot指定更新other表的json串的内容
@@ -715,46 +715,6 @@ public class ProfileController {
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
-        }
-    }
-
-    /**
-     * 创建仟寻个人档案：手机上传简历
-     * @param file 简历文件
-     * @param request 请求数据
-     * @return 解析结果
-     * @throws Exception 异常信息
-     */
-    @RequestMapping(value = "/api/profile/file-parser", method = RequestMethod.POST)
-    @ResponseBody
-    public String parseFileProfile(@RequestParam(value = "file", required = false) MultipartFile file,
-                                   HttpServletRequest request) throws Exception {
-        Params<String, Object> params = ParamUtils.parseequestParameter(request);
-        int userId = params.getInt("user_id", 0);
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("简历", file);
-        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
-        validateUtil.addIntTypeValidate("用户", userId, 1, null);
-        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
-        String result = validateUtil.validate();
-        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
-            }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
-
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
-            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    service.parseFileProfile(userId, params.getString("file_name"), byteBuffer);
-            ProfileDocParseResult parseResult = new ProfileDocParseResult();
-            org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
-            return Result.success(parseResult).toJson();
-        } else {
-            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
 }
