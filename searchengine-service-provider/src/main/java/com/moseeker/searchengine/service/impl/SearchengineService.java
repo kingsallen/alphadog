@@ -1129,6 +1129,7 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleMatch(companyId,query,"company_id");
+        searchUtil.handleMatch(0,query,"status");
         QueryBuilder keyand = QueryBuilders.boolQuery();
         if(StringUtils.isNotBlank(occupation)){
             searchUtil.handleTermShould(occupation,keyand,"search_data.occupation");
@@ -1237,6 +1238,7 @@ public class SearchengineService {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleMatch(companyId,query,"company_id");
+        searchUtil.handleMatch(0,query,"status");
         if(StringUtils.isNotBlank(occupation)){
             searchUtil.handleTerm(occupation,query,"search_data.occupation");
         }
