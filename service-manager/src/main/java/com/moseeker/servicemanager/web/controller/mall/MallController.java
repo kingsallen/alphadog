@@ -48,9 +48,7 @@ public class MallController {
             BaseMallForm baseMallForm = ParamUtils.initModelForm(request, BaseMallForm.class);
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("company_id", baseMallForm.getCompany_id());
-            vu.addRequiredValidate("hr_id", baseMallForm.getHr_id());
             vu.addIntTypeValidate("company_id", baseMallForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
-            vu.addIntTypeValidate("hr_id", baseMallForm.getHr_id(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 int state = mallService.getMallSwitch(baseMallForm);

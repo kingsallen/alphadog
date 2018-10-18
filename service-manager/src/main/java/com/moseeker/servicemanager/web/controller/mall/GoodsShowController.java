@@ -91,16 +91,4 @@ public class GoodsShowController {
     public String getGoodDetail(@PathVariable Integer goodId, HttpServletRequest request) {
         return manageController.getGoodDetail(goodId, request);
     }
-
-
-    /**
-     * 获取公司是否开通过积分商城
-     * @author  cjm
-     * @date  2018/10/12
-     */
-    @RequestMapping(value = "/switch", method = RequestMethod.GET)
-    @ResponseBody
-    public String getMallSwitch(HttpServletRequest request) {
-        return mallController.getMallSwitch(request);
-    }
 }
