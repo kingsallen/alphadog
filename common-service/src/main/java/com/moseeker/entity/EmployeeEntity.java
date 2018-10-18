@@ -37,6 +37,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -88,8 +89,6 @@ import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 @CounterIface
 public class EmployeeEntity {
 
-    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
-    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";
 
 
     @Autowired
@@ -159,6 +158,12 @@ public class EmployeeEntity {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
+
+    ThreadPool tp =ThreadPool.Instance;
+
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";
+
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
     private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
@@ -1090,7 +1095,7 @@ public class EmployeeEntity {
     }
 
     public void publishInitalScreenHbEvent(JobApplication jobApplication, JobPositionRecord jobPositionRecord,
-                                           Integer nowStage, Integer nextStage){
+                                           Integer userId, Integer nextStage){
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
@@ -1100,13 +1105,12 @@ public class EmployeeEntity {
                 if(statusCount == null){
 
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("applicationId", appId);
-                    jsonObject.put("nowStage", stage);
+                    jsonObject.put("applicationId", jobApplication.getId());
+                    jsonObject.put("recomId", userId);
                     jsonObject.put("nextStage", nextStage);
-                    jsonObject.put("applierId", applierId);
-                    jsonObject.put("positionId", positionId);
-                    jsonObject.put("move", move);
-                    jsonObject.put("operationTime", operationTime.getMillis());
+                    jsonObject.put("positionId", jobPositionRecord.getId());
+                    jsonObject.put("companyId", jobPositionRecord.getCompanyId());
+                    jsonObject.put("userId", jobApplication.getApplierId());
                     amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                             APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                     .build());
@@ -1141,6 +1145,17 @@ public class EmployeeEntity {
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+        Integer userId = jobApplication.getRecommenderUserId();
+        UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
+        if(userEmployeeRecord == null) {
+
+            logger.info("addReferralBonus 不是已认证员工,不能发内推奖金 employeeId {}",userId);
+            throw new BIZException(-1, userId +" 不是已认证员工,不能发内推奖金");
+        }
+         tp.startTast(()->{
+            this.publishInitalScreenHbEvent(jobApplication,jobPositionRecord, userId,nextStage);
+             return 0;
+         });
         //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
         if(jobPositionRecord == null || Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)) {
             logger.info("addReferralBonus 不是内推职位 不发内推奖金 positionId {}  isReferral {} ",positionId,jobPositionRecord.getIsReferral());
@@ -1152,13 +1167,7 @@ public class EmployeeEntity {
         //下个节点奖金主数据
         ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
 
-        Integer userId = jobApplication.getRecommenderUserId();
-        UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
-        if(userEmployeeRecord == null) {
 
-            logger.info("addReferralBonus 不是已认证员工,不能发内推奖金 employeeId {}",userId);
-            throw new BIZException(-1, userId +" 不是已认证员工,不能发内推奖金");
-        }
         Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
 

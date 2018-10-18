@@ -22,9 +22,6 @@ import org.springframework.stereotype.Component;
 public class ReferralBonusReceiveTool {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    ThreadPool tp = ThreadPool.Instance;
-
     @Autowired
     private EmployeeEntity employeeEntity;
 
