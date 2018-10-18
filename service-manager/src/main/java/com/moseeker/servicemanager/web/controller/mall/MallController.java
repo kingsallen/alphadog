@@ -7,6 +7,9 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.mall.service.MallService;
+import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
+import com.moseeker.thrift.gen.mall.struct.MallRuleForm;
+import com.moseeker.thrift.gen.mall.struct.MallSwitchForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -42,12 +45,21 @@ public class MallController {
     @ResponseBody
     public String getMallSwitch(HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-            int state = mallService.getMallSwitch(companyId);
-            Map<String, Integer> resultMap = new HashMap<>(1 >> 4);
-            resultMap.put("state", state);
-            return ResponseLogNotification.successJson(request, resultMap);
+            BaseMallForm baseMallForm = ParamUtils.initModelForm(request, BaseMallForm.class);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("company_id", baseMallForm.getCompany_id());
+            vu.addRequiredValidate("hr_id", baseMallForm.getHr_id());
+            vu.addIntTypeValidate("company_id", baseMallForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("hr_id", baseMallForm.getHr_id(), null, null, 1, Integer.MAX_VALUE);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                int state = mallService.getMallSwitch(baseMallForm);
+                Map<String, Integer> resultMap = new HashMap<>(1 >> 4);
+                resultMap.put("state", state);
+                return ResponseLogNotification.successJson(request, resultMap);
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -63,18 +75,19 @@ public class MallController {
     @ResponseBody
     public String openOrCloseMall(HttpServletRequest request) {
         try {
-
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            MallSwitchForm mallSwitchForm = ParamUtils.initModelForm(request, MallSwitchForm.class);
             ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("商城状态", map.get("state"));
-            vu.addIntTypeValidate("商城状态", map.get("state"), null, null, 1, 3);
+            vu.addRequiredValidate("商城状态", mallSwitchForm.getState());
+            vu.addRequiredValidate("company_id", mallSwitchForm.getCompany_id());
+            vu.addRequiredValidate("hr_id", mallSwitchForm.getHr_id());
+            vu.addIntTypeValidate("商城状态", (int)mallSwitchForm.getState(), null, null, 1, 3);
+            vu.addIntTypeValidate("company_id", mallSwitchForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("hr_id", mallSwitchForm.getHr_id(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-                Integer state = Integer.parseInt(String.valueOf(map.get("state")));
-                mallService.openOrCloseMall(companyId, state);
+                mallService.openOrCloseMall(mallSwitchForm);
                 Map<String, Integer> resultMap = new HashMap<>(1 >> 4);
-                resultMap.put("state", state);
+                resultMap.put("state", (int)mallSwitchForm.getState());
                 return ResponseLogNotification.successJson(request, resultMap);
             } else {
                 return ResponseLogNotification.fail(request, message);
@@ -94,9 +107,13 @@ public class MallController {
     @ResponseBody
     public String getDefaultRule(HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-            String rule = mallService.getDefaultRule(companyId);
+            BaseMallForm baseMallForm = ParamUtils.initModelForm(request, BaseMallForm.class);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("company_id", baseMallForm.getCompany_id());
+            vu.addRequiredValidate("hr_id", baseMallForm.getHr_id());
+            vu.addIntTypeValidate("company_id", baseMallForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("hr_id", baseMallForm.getHr_id(), null, null, 1, Integer.MAX_VALUE);
+            String rule = mallService.getDefaultRule(baseMallForm);
             Map<String, String> resultMap = new HashMap<>(1 >> 4);
             resultMap.put("rule", rule);
             return ResponseLogNotification.successJson(request, resultMap);
@@ -115,18 +132,19 @@ public class MallController {
     @ResponseBody
     public String updateDefaultRule(HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            MallRuleForm mallRuleForm = ParamUtils.initModelForm(request, MallRuleForm.class);
             ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("默认领取规则", map.get("rule"));
-            vu.addRequiredValidate("默认领取状态", map.get("state"));
-            vu.addIntTypeValidate("默认领取规则", map.get("state"), null, null, 1, 2);
-            vu.addStringLengthValidate("默认领取状态", map.get("rule"), null, null, 0, 200);
+            vu.addRequiredValidate("company_id", mallRuleForm.getCompany_id());
+            vu.addRequiredValidate("hr_id", mallRuleForm.getHr_id());
+            vu.addRequiredValidate("默认领取规则", mallRuleForm.getRule());
+            vu.addRequiredValidate("默认领取规则状态", mallRuleForm.getState());
+            vu.addIntTypeValidate("company_id", mallRuleForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("hr_id", mallRuleForm.getHr_id(), null, null, 1, Integer.MAX_VALUE);
+            vu.addStringLengthValidate("默认领取规则", mallRuleForm.getRule(), null, null, 0, 200);
+            vu.addIntTypeValidate("默认领取规则状态", (int)mallRuleForm.getState(), null, null, 0, 2);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-                Integer state = Integer.parseInt(String.valueOf(map.get("state")));
-                String rule = String.valueOf(map.get("rule"));
-                mallService.updateDefaultRule(companyId, state, rule);
+                mallService.updateDefaultRule(mallRuleForm);
                 return ResponseLogNotification.successJson(request, null);
             } else {
                 return ResponseLogNotification.fail(request, message);

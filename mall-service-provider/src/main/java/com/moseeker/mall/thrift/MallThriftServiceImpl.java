@@ -3,6 +3,9 @@ package com.moseeker.mall.thrift;
 import com.moseeker.mall.service.MallService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.mall.service.MallService.Iface;
+import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
+import com.moseeker.thrift.gen.mall.struct.MallRuleForm;
+import com.moseeker.thrift.gen.mall.struct.MallSwitchForm;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,9 @@ public class MallThriftServiceImpl implements Iface{
     private MallService mallService;
 
     @Override
-    public int getMallSwitch(int companyId) throws BIZException, TException {
+    public int getMallSwitch(BaseMallForm baseMallForm) throws BIZException, TException {
         try {
-            return mallService.getMallSwitch(companyId);
+            return mallService.getMallSwitch(baseMallForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){
@@ -29,9 +32,9 @@ public class MallThriftServiceImpl implements Iface{
     }
 
     @Override
-    public void openOrCloseMall(int companyId, int state) throws BIZException, TException {
+    public void openOrCloseMall(MallSwitchForm mallSwitchForm) throws BIZException, TException {
         try {
-            mallService.openOrCloseMall(companyId, state);
+            mallService.openOrCloseMall(mallSwitchForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){
@@ -40,9 +43,9 @@ public class MallThriftServiceImpl implements Iface{
     }
 
     @Override
-    public String getDefaultRule(int companyId) throws BIZException, TException {
+    public String getDefaultRule(BaseMallForm baseMallForm) throws BIZException, TException {
         try {
-            return mallService.getDefaultRule(companyId);
+            return mallService.getDefaultRule(baseMallForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){
@@ -51,9 +54,9 @@ public class MallThriftServiceImpl implements Iface{
     }
 
     @Override
-    public void updateDefaultRule(int companyId, int state, String rule) throws BIZException, TException {
+    public void updateDefaultRule(MallRuleForm mallRuleForm) throws BIZException, TException {
         try {
-            mallService.updateDefaultRule(companyId, state, rule);
+            mallService.updateDefaultRule(mallRuleForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){

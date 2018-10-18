@@ -1,10 +1,13 @@
 package com.moseeker.mall.aspect;
 
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -29,7 +32,7 @@ import java.lang.reflect.Parameter;
 public class MallVisitAspect {
 
     @Autowired
-    private UserHrAccountDao userHrAccountDao;
+    private UserEmployeeDao userEmployeeDao;
 
 
     @Pointcut("@annotation(com.moseeker.mall.annotation.OnlyEmployee)")
@@ -38,53 +41,29 @@ public class MallVisitAspect {
 
     @Before("cut()")
     public void beforeCall(JoinPoint joinPoint) throws BIZException {
-        Object[] rags = joinPoint.getArgs();
-        MallGoodsInfoDO mallGoodsInfoDO = (MallGoodsInfoDO)rags[0];
-        System.out.println(mallGoodsInfoDO.toString());
-        for(Object o : rags){
-            System.out.println(String.valueOf(o));
+        if(joinPoint.getArgs()[0] != null){
+            String objStr = JSONObject.toJSONString(joinPoint.getArgs()[0]);
+            JSONObject jsonObject = JSONObject.parseObject(objStr);
+            Integer employeeId = jsonObject.getIntValue("employee_id");
+            Integer companyId = jsonObject.getIntValue("company_id");
+            checkEmployeeInfo(employeeId, companyId);
         }
-        Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-        Parameter[] parameters = method.getParameters();
-        System.out.println(String.valueOf(joinPoint.getTarget()));
-        System.out.println(joinPoint.getSignature().getName());
-
-        for(Parameter parameter : parameters){
-            System.out.println(String.valueOf(parameter.getName()));
-            System.out.println(String.valueOf(parameter.getType()));
-        }
-
     }
 
-    private Integer getValidHrId(HttpServletRequest request) throws BIZException {
-        Integer hrId;
-        try{
-            hrId = Integer.parseInt(request.getParameter("hr_id"));
-        }catch (Exception e){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-        }
-        return hrId;
-    }
-
-    private Integer getValidCompanyId(HttpServletRequest request) throws BIZException {
-        Integer companyId;
-        try{
-            companyId = Integer.parseInt(request.getParameter("company_id"));
-        }catch (Exception e){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-        }
-        return companyId;
-    }
     /**
      * 非主账号无法操作积分商城
-     * @param   hrId hrId
+     * @param   employeeId hrId
+     * @param   companyId companyId
      * @author  cjm
      * @date  2018/10/12
      */
-    private void checkSuperAccount(int hrId, int companyId) throws BIZException {
-        UserHrAccountDO userHrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if(userHrAccountDO == null || userHrAccountDO.getCompanyId() != companyId || userHrAccountDO.getAccountType() != 0){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_LIMIT_SUPER_ACCOUNT);
+    private void checkEmployeeInfo(Integer employeeId, Integer companyId) throws BIZException {
+        UserEmployeeDO userEmployeeDO = userEmployeeDao.getUserEmployeeForUpdate(employeeId);
+        if(userEmployeeDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_VISIT_LIMIT);
+        }
+        if(userEmployeeDO.getCompanyId() != companyId){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
     }
 }

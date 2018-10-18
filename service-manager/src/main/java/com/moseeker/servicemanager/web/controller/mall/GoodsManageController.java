@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.mall;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -8,7 +9,8 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.mall.service.GoodsService;
-import com.moseeker.thrift.gen.mall.struct.GoodSearchForm;
+import com.moseeker.thrift.gen.mall.struct.*;
+import org.elasticsearch.search.aggregations.metrics.geobounds.InternalGeoBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -18,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,14 +54,18 @@ public class GoodsManageController {
             vu.addRequiredValidate("页码", goodSearchForm.getPage_number());
             vu.addRequiredValidate("页面大小", goodSearchForm.getPage_size());
             vu.addIntTypeValidate("页码", goodSearchForm.getPage_number(), null, null, 1, Integer.MAX_VALUE);
-            vu.addIntTypeValidate("页面大小", goodSearchForm.getPage_size(), null, null, 1, 20);
+            vu.addIntTypeValidate("页面大小", goodSearchForm.getPage_size(), null, null, 1, 21);
 
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 if(0 == goodSearchForm.getState()){
                     goodSearchForm.setState((byte)9);
                 }
-                return ResponseLogNotification.successJson(request, goodsService.getGoodsList(goodSearchForm));
+                Map<String, Object> resultMap = new HashMap<>(1 >> 4);
+                Map<String, String> tempMap = goodsService.getGoodsList(goodSearchForm);
+                resultMap.put("goods_list", JSONArray.parseArray(tempMap.get("goods_list")));
+                resultMap.put("total_row", tempMap.get("total_row"));
+                return ResponseLogNotification.successJson(request, resultMap);
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -75,14 +84,13 @@ public class GoodsManageController {
     @ResponseBody
     public String addGood(HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            ValidateUtil vu = validateRequireInfo(map);
-            vu.addRequiredValidate("库存", map.get("stock"));
-            vu.addIntTypeValidate("库存", map.get("stock"), null, null, 0, 99999);
+            MallGoodsInfoForm mallGoodsInfoForm = ParamUtils.initModelForm(request, MallGoodsInfoForm.class);
+            ValidateUtil vu = validateRequireInfo(mallGoodsInfoForm);
+            vu.addRequiredValidate("库存", mallGoodsInfoForm.getStock());
+            vu.addIntTypeValidate("库存", mallGoodsInfoForm.getStock(), null, null, 0, 100000);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                MallGoodsInfoDO mallGoodsInfoDO = ParamUtils.initModelForm(map, MallGoodsInfoDO.class);
-                goodsService.addGood(mallGoodsInfoDO);
+                goodsService.addGood(mallGoodsInfoForm);
                 return ResponseLogNotification.successJson(request, null);
             } else {
                 return ResponseLogNotification.fail(request, message);
@@ -102,14 +110,13 @@ public class GoodsManageController {
     @ResponseBody
     public String editGood(HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
-            ValidateUtil vu = validateRequireInfo(map);
-            vu.addRequiredValidate("商品id", map.get("id"));
-            vu.addIntTypeValidate("商品id", map.get("id"), null, null, 0, Integer.MAX_VALUE);
+            MallGoodsInfoForm mallGoodsInfoForm = ParamUtils.initModelForm(request, MallGoodsInfoForm.class);
+            ValidateUtil vu = validateRequireInfo(mallGoodsInfoForm);
+            vu.addRequiredValidate("商品id", mallGoodsInfoForm.getId());
+            vu.addIntTypeValidate("商品id", mallGoodsInfoForm.getId(), null, null, 0, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                MallGoodsInfoDO mallGoodsInfoDO = ParamUtils.initModelForm(map, MallGoodsInfoDO.class);
-                goodsService.editGood(mallGoodsInfoDO);
+                goodsService.editGood(mallGoodsInfoForm);
                 return ResponseLogNotification.successJson(request, null);
             } else {
                 return ResponseLogNotification.fail(request, message);
@@ -126,21 +133,25 @@ public class GoodsManageController {
      * @author  cjm
      * @date  2018/10/12
      */
-    @RequestMapping(value = "/goods/{goodId}/state", method = RequestMethod.PUT)
+    @RequestMapping(value = "/goods/state", method = RequestMethod.PUT)
     @ResponseBody
-    public String updateGoodState(@PathVariable Integer goodId, HttpServletRequest request) {
+    public String updateGoodState(HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            MallGoodsStateForm mallGoodsStateForm = ParamUtils.initModelForm(request, MallGoodsStateForm.class);
             ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("商品id", goodId);
-            vu.addRequiredValidate("商品状态", map.get("state"));
-            vu.addIntTypeValidate("商品id", goodId, null, null, 1, Integer.MAX_VALUE);
-            vu.addIntTypeValidate("商品状态", map.get("state"), null, null, 0, 1);
+            vu.addRequiredValidate("商品状态", mallGoodsStateForm.getState());
+            vu.addIntTypeValidate("商品状态", (int)mallGoodsStateForm.getState(), null, null, 1, 3);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-                Integer state = Integer.parseInt(String.valueOf(map.get("state")));
-                return ResponseLogNotification.successJson(request, goodsService.updateGoodState(goodId, companyId, state));
+                List<Integer> goodsIds = goodsService.updateGoodState(mallGoodsStateForm);
+                List<Map<String, Integer>> resultList = new ArrayList<>();
+                for(Integer goodId : goodsIds){
+                    Map<String, Integer> map = new HashMap<>(1 >> 4);
+                    map.put("good_id", goodId);
+                    map.put("state", (int)mallGoodsStateForm.getState());
+                    resultList.add(map);
+                }
+                return ResponseLogNotification.successJson(request, resultList);
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -159,17 +170,16 @@ public class GoodsManageController {
     @ResponseBody
     public String updateGoodStock(@PathVariable Integer goodId, HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            MallGoodsStockForm mallGoodsStockForm = ParamUtils.initModelForm(request, MallGoodsStockForm.class);
             ValidateUtil vu = new ValidateUtil();
-            vu.addRequiredValidate("库存", map.get("stock"));
-            vu.addIntTypeValidate("库存", map.get("stock"), null, null, 1, Integer.MAX_VALUE);
-            vu.addRequiredValidate("商品id", map.get("goodId"));
-            vu.addIntTypeValidate("商品id", map.get("goodId"), null, null, 1, Integer.MAX_VALUE);
+            vu.addRequiredValidate("库存", mallGoodsStockForm.getStock());
+            vu.addIntTypeValidate("库存", mallGoodsStockForm.getStock(), null, null, -99999, 99999);
+            vu.addRequiredValidate("商品id", goodId);
+            vu.addIntTypeValidate("商品id", goodId, null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-                Integer stock = Integer.parseInt(String.valueOf(map.get("stock")));
-                return ResponseLogNotification.successJson(request, goodsService.updateGoodStock(goodId, companyId, stock));
+                mallGoodsStockForm.setGood_id(goodId);
+                return ResponseLogNotification.successJson(request, goodsService.updateGoodStock(mallGoodsStockForm));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -188,14 +198,13 @@ public class GoodsManageController {
     @ResponseBody
     public String getGoodDetail(@PathVariable Integer goodId, HttpServletRequest request) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            MallGoodsIdForm mallGoodsIdForm = ParamUtils.initModelForm(request, MallGoodsIdForm.class);
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("商品id", goodId);
             vu.addIntTypeValidate("商品id", goodId, null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Integer companyId = Integer.parseInt(String.valueOf(map.get("company_id")));
-                return ResponseLogNotification.successJson(request, goodsService.getGoodDetail(goodId, companyId));
+                return ResponseLogNotification.successJson(request, goodsService.getGoodDetail(mallGoodsIdForm));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -207,27 +216,27 @@ public class GoodsManageController {
 
     /**
      * 校验商品信息完整性，编辑商品时由于不能编辑库存，故不校验商品的库存
-     * @param   map 商品参数map
+     * @param   mallGoodsInfoForm 商品参数form
      * @author  cjm
      * @date  2018/10/12
      * @return 返回校验信息
      */
-    private ValidateUtil validateRequireInfo(Map<String, Object> map){
+    private ValidateUtil validateRequireInfo(MallGoodsInfoForm mallGoodsInfoForm){
 
         ValidateUtil vu = new ValidateUtil();
-        vu.addRequiredValidate("主图url", map.get("pic_url"));
-        vu.addRequiredValidate("公司id", map.get("company_id"));
-        vu.addRequiredValidate("标题", map.get("title"));
-        vu.addRequiredValidate("积分", map.get("credit"));
-        vu.addRequiredValidate("详情", map.get("detail"));
-        vu.addRequiredValidate("领取规则", map.get("rule"));
+        vu.addRequiredValidate("主图url", mallGoodsInfoForm.getPic_url());
+        vu.addRequiredValidate("公司id", mallGoodsInfoForm.getCompany_id());
+        vu.addRequiredValidate("标题", mallGoodsInfoForm.getTitle());
+        vu.addRequiredValidate("积分", mallGoodsInfoForm.getCredit());
+        vu.addRequiredValidate("详情", mallGoodsInfoForm.getDetail());
+        vu.addRequiredValidate("领取规则", mallGoodsInfoForm.getRule());
 
-        vu.addIntTypeValidate("积分", map.get("credit"), null, null, 0, Integer.MAX_VALUE);
-        vu.addIntTypeValidate("公司id", map.get("company_id"), null, null, 1, Integer.MAX_VALUE);
-        vu.addStringLengthValidate("标题", map.get("title"), null, null, 1, 16);
-        vu.addStringLengthValidate("主图url", map.get("pic_url"), null, null, 1, 2000);
-        vu.addStringLengthValidate("详情", map.get("detail"), null, null, 1, 2000);
-        vu.addStringLengthValidate("领取规则", map.get("rule"), null, null, 1, 200);
+        vu.addIntTypeValidate("积分", mallGoodsInfoForm.getCredit(), null, null, 0, Integer.MAX_VALUE);
+        vu.addIntTypeValidate("公司id", mallGoodsInfoForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+        vu.addStringLengthValidate("标题", mallGoodsInfoForm.getTitle(), null, null, 1, 16);
+        vu.addStringLengthValidate("主图url", mallGoodsInfoForm.getPic_url(), null, null, 1, 2000);
+        vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 2000);
+        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 1, 200);
         return vu;
     }
 }

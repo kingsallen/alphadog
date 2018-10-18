@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.mall;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 商品展示controller
@@ -63,7 +66,11 @@ public class GoodsShowController {
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 goodSearchForm.setState((byte)2);
-                return ResponseLogNotification.successJson(request, goodsService.getGoodsList(goodSearchForm));
+                Map<String, Object> resultMap = new HashMap<>(1 >> 4);
+                Map<String, String> tempMap = goodsService.getGoodsList(goodSearchForm);
+                resultMap.put("goods_list", JSONArray.parseArray(tempMap.get("goods_list")));
+                resultMap.put("total_row", tempMap.get("total_row"));
+                return ResponseLogNotification.successJson(request, resultMap);
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
