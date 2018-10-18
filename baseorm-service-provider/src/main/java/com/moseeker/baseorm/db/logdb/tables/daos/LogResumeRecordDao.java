@@ -108,13 +108,6 @@ public class LogResumeRecordDao extends DAOImpl<LogResumeRecordRecord, com.mosee
     }
 
     /**
-     * Fetch records that have <code>uuid IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogResumeRecord> fetchByUuid(String... values) {
-        return fetch(LogResumeRecord.LOG_RESUME_RECORD.UUID, values);
-    }
-
-    /**
      * Fetch records that have <code>text IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogResumeRecord> fetchByText(String... values) {

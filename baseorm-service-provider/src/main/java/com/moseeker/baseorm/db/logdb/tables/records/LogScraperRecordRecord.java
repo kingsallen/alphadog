@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogScraperRecordRecord extends UpdatableRecordImpl<LogScraperRecordRecord> implements Record8<Integer, Integer, String, Byte, Timestamp, String, String, Timestamp> {
 
-    private static final long serialVersionUID = -1278383312;
+    private static final long serialVersionUID = 1265806928;
 
     /**
      * Setter for <code>logdb.log_scraper_record.id</code>.
@@ -47,14 +47,14 @@ public class LogScraperRecordRecord extends UpdatableRecordImpl<LogScraperRecord
     }
 
     /**
-     * Setter for <code>logdb.log_scraper_record.channel</code>. 1   51job， 2 liepin， 3 zhaopin，4 linkedin
+     * Setter for <code>logdb.log_scraper_record.channel</code>. 1   51job， 2 liepin， 3 zhaopin，4 linkedin , 5 最佳东方 ， 8 jobsdb
      */
     public void setChannel(Integer value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>logdb.log_scraper_record.channel</code>. 1   51job， 2 liepin， 3 zhaopin，4 linkedin
+     * Getter for <code>logdb.log_scraper_record.channel</code>. 1   51job， 2 liepin， 3 zhaopin，4 linkedin , 5 最佳东方 ， 8 jobsdb
      */
     public Integer getChannel() {
         return (Integer) get(1);

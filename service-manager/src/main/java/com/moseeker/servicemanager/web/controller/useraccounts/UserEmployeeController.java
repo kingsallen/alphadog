@@ -7,6 +7,7 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -30,13 +31,9 @@ import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.http.Consts;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -265,11 +262,12 @@ public class UserEmployeeController {
             int type = param.getInt("type");
             param.put("type",type);
 
+            //获取来源
+            int bindSource = Integer.parseInt(param.get("appid").toString());
             BindingParams bindingParams = new JSONObject(){{
                 putAll(param);
             }}.toJavaObject(BindingParams.class);
-
-            Result result = employeeService.bind(bindingParams);
+            Result result = employeeService.bind(bindingParams,bindSource);
             if(!result.success){
                 return ResponseLogNotification.fail(request, result.getMessage());
             }
@@ -343,12 +341,12 @@ public class UserEmployeeController {
             if(StringUtils.isNotNullOrEmpty(conf.getText())){
                 logger.info("===============text:{}",conf.getText());
                 vu.addSensitiveValidate("內推文案", conf.getText(), null, "文章中不能含有敏感词");
-                vu.addStringLengthValidate("內推文案", conf.getText(), null, "文章的长度过长", 0, 5001);
+                vu.addStringLengthValidate("內推文案", conf.getText(), null, "文章的长度过长", 0, 10001);
             }
             if(StringUtils.isNotNullOrEmpty(conf.getLink())){
                 logger.info("===============text:{}",conf.getLink());
-                vu.addRegExpressValidate("內推链接", conf.getLink(), "^(http|https)://([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$",null, "请输入正确的链接");
-                vu.addStringLengthValidate("內推链接", conf.getLink(), null, "链接长度过长", 0, 501);
+                vu.addRegExpressValidate("內推链接", conf.getLink(), FormCheck.getUrlExp(),null, "请输入正确的链接");
+                vu.addStringLengthValidate("內推链接", conf.getLink(), null, "链接长度过长", 0, 2001);
             }
             vu.addIntTypeValidate("内推政策优先级", (int)conf.getPriority(), null, null, 0,3);
             String message = vu.validate();
