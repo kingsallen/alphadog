@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.mall;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 商品展示controller
@@ -63,7 +66,11 @@ public class GoodsShowController {
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 goodSearchForm.setState((byte)2);
-                return ResponseLogNotification.successJson(request, goodsService.getGoodsList(goodSearchForm));
+                Map<String, Object> resultMap = new HashMap<>(1 >> 4);
+                Map<String, String> tempMap = goodsService.getGoodsList(goodSearchForm);
+                resultMap.put("goods_list", JSONArray.parseArray(tempMap.get("goods_list")));
+                resultMap.put("total_row", tempMap.get("total_row"));
+                return ResponseLogNotification.successJson(request, resultMap);
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
@@ -71,29 +78,5 @@ public class GoodsShowController {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
-    }
-
-
-    /**
-     * 获取商品详情
-     * @author  cjm
-     * @date  2018/10/12
-     */
-    @RequestMapping(value = "goods/{goodId}", method = RequestMethod.GET)
-    @ResponseBody
-    public String getGoodDetail(@PathVariable Integer goodId, HttpServletRequest request) {
-        return manageController.getGoodDetail(goodId, request);
-    }
-
-
-    /**
-     * 获取公司是否开通过积分商城
-     * @author  cjm
-     * @date  2018/10/12
-     */
-    @RequestMapping(value = "/switch", method = RequestMethod.GET)
-    @ResponseBody
-    public String getMallSwitch(HttpServletRequest request) {
-        return mallController.getMallSwitch(request);
     }
 }

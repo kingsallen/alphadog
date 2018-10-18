@@ -20,7 +20,9 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 task copyJars(type: Copy) {
   from configurations.runtime
   into 'build/libs' // 目标位置

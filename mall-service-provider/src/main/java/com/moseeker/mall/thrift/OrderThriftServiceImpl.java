@@ -3,6 +3,8 @@ package com.moseeker.mall.thrift;
 import com.moseeker.mall.service.OrderService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.mall.service.OrderService.Iface;
+import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
+import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
 import org.apache.thrift.TException;
@@ -36,9 +38,9 @@ public class OrderThriftServiceImpl implements Iface{
     }
 
     @Override
-    public String getEmployeeOrderList(int employeeId) throws TException {
+    public String getEmployeeOrderList(BaseMallForm baseMallForm) throws TException {
         try {
-            return orderService.getEmployeeOrderList(employeeId);
+            return orderService.getEmployeeOrderList(baseMallForm);
         }catch (Exception e){
             throw e;
         }
@@ -56,9 +58,9 @@ public class OrderThriftServiceImpl implements Iface{
     }
 
     @Override
-    public void updateOrder(List<Integer> ids, int companyId, int state) throws BIZException, TException {
+    public void updateOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException, TException {
         try {
-            orderService.updateOrder(ids, companyId, state);
+            orderService.updateOrder(updateForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){

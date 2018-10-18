@@ -6,11 +6,12 @@ import com.moseeker.mall.service.GoodsService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.mall.service.GoodsService.Iface;
-import com.moseeker.thrift.gen.mall.struct.GoodSearchForm;
+import com.moseeker.thrift.gen.mall.struct.*;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,18 +38,18 @@ public class GoodsThriftServiceImpl implements Iface {
     }
 
     @Override
-    public void addGood(MallGoodsInfoDO mallGoodsInfoDO) throws TException {
+    public void addGood(MallGoodsInfoForm mallGoodsInfoForm) throws TException {
         try {
-            goodsService.addGood(mallGoodsInfoDO);
+            goodsService.addGood(mallGoodsInfoForm);
         }catch (Exception e){
             throw e;
         }
     }
 
     @Override
-    public void editGood(MallGoodsInfoDO mallGoodsInfoDO) throws TException {
+    public void editGood(MallGoodsInfoForm mallGoodsInfoForm) throws TException {
         try {
-            goodsService.editGood(mallGoodsInfoDO);
+            goodsService.editGood(mallGoodsInfoForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){
@@ -57,9 +58,9 @@ public class GoodsThriftServiceImpl implements Iface {
     }
 
     @Override
-    public int updateGoodState(int goodId, int companyId, int state) throws TException {
+    public List<Integer> updateGoodState(MallGoodsStateForm mallGoodsStateForm) throws TException {
         try {
-            return goodsService.updateGoodState(goodId, companyId, state);
+            return goodsService.updateGoodState(mallGoodsStateForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){
@@ -68,9 +69,9 @@ public class GoodsThriftServiceImpl implements Iface {
     }
 
     @Override
-    public int updateGoodStock(int goodId, int companyId, int stock) throws TException {
+    public int updateGoodStock(MallGoodsStockForm mallGoodsStockForm) throws TException {
         try {
-            return goodsService.updateGoodStock(goodId, companyId, stock);
+            return goodsService.updateGoodStock(mallGoodsStockForm);
         }catch (BIZException e){
             throw e;
         }catch (Exception e){
@@ -79,9 +80,9 @@ public class GoodsThriftServiceImpl implements Iface {
     }
 
     @Override
-    public String getGoodDetail(int goodId, int companyId) throws TException {
+    public String getGoodDetail(MallGoodsIdForm mallGoodsIdForm) throws TException {
         try {
-            MallGoodsInfoVO mallGoodsInfoVO = goodsService.getGoodDetail(goodId, companyId);
+            MallGoodsInfoVO mallGoodsInfoVO = goodsService.getGoodDetail(mallGoodsIdForm);
             return JSON.toJSONString(mallGoodsInfoVO);
         }catch (BIZException e){
             throw e;
