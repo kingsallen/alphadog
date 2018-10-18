@@ -263,6 +263,9 @@ public final class Constant {
     public static final String ES_INDEX="users";
     public static final String ES_TYPE="users";
 
+    public static final String POSITION_WX_TYPE="fulltext";
+    public static final String POSITION_WX_INDEX="new_index";
+
     //talentpool邮件的config_id
     public static final int TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS = 70;
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;

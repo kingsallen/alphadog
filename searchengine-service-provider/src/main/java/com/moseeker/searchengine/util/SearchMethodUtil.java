@@ -2,6 +2,7 @@ package com.moseeker.searchengine.util;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.FormCheck;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -79,7 +80,7 @@ public class SearchMethodUtil {
         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
         logger.info("searchPrefix   query : {}", query);
-        SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.POSITION_WX_INDEX).setTypes(Constant.POSITION_WX_TYPE)
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
@@ -100,7 +101,7 @@ public class SearchMethodUtil {
         list.add("title");
         searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
-        SearchRequestBuilder responseBuilder=client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.POSITION_WX_INDEX).setTypes(Constant.POSITION_WX_TYPE)
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
