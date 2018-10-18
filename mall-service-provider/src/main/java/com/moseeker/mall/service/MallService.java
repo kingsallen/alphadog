@@ -63,7 +63,8 @@ public class MallService {
         if(hrCompanyConfDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);
         }
-        return hrCompanyConfDO.getMallGoodsMethod();
+
+        return hrCompanyConfDO.getMallGoodsMethodState() == 0 ? "" : hrCompanyConfDO.getMallGoodsMethod();
     }
 
     @OnlySuperAccount

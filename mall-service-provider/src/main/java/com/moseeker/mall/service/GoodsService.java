@@ -72,6 +72,7 @@ public class GoodsService {
     public void editGood(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException {
         MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
         BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
+        checkGoodsState(mallGoodsInfoDO);
         int row = mallGoodsInfoDao.editGood(mallGoodsInfoDO);
         if(row == 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_UNEXISTS);
@@ -80,12 +81,14 @@ public class GoodsService {
 
     @OnlySuperAccount
     @Transactional(rollbackFor = Exception.class)
-    @OnlyEmployee
-    public void addGood(MallGoodsInfoForm mallGoodsInfoForm) {
-        MallGoodsInfoRecord record = new MallGoodsInfoRecord();
-        BeanUtils.copyProperties(mallGoodsInfoForm, record);
-        logger.info("record:{}",record);
-        mallGoodsInfoDao.addRecord(record);
+    public void addGood(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException{
+        try {
+            MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
+            BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
+            mallGoodsInfoDao.addData(mallGoodsInfoDO);
+        }catch (Exception e){
+            throw new BIZException(1232131, e.getMessage());
+        }
     }
 
     public Map<String,String> getGoodsList(GoodSearchForm goodSearchForm) {
@@ -161,8 +164,9 @@ public class GoodsService {
             return updateGoodStockByLock(mallGoodsInfoDO, updatedStock, ++retryTimes);
         }else {
             MallGoodsInfoDO updatedGoods = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
-            if(updatedGoods.getStock() < 0){
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_CANNOT_MINUS);
+            // 商品库存在0~99999之间
+            if(updatedGoods.getStock() < 0 || updatedGoods.getStock() > 99999){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_LIMIT);
             }
             return updatedGoods.getStock();
         }
@@ -180,8 +184,8 @@ public class GoodsService {
         List<Integer> goodIds = mallGoodsStateForm.getIds();
         int companyId = mallGoodsStateForm.getCompany_id();
         List<MallGoodsInfoDO> mallGoodsInfoDOS = mallGoodsInfoDao.getGoodDetailByGoodsIdAndCompanyId(goodIds, companyId);
-        for (MallGoodsInfoDO mallGoodsInfoDO : mallGoodsInfoDOS) {
-            checkGoodsExist(mallGoodsInfoDO);
+        if(goodIds.size() != mallGoodsInfoDOS.size()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
         int rows = mallGoodsInfoDao.updateGoodStateByIds(goodIds, mallGoodsStateForm.getCompany_id(), mallGoodsStateForm.getState());
         if(rows != goodIds.size()){

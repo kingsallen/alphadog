@@ -128,8 +128,7 @@ public class GoodsManageController {
     }
 
     /**
-     * todo 希望改成批量
-     * 修改商品状态（上下架）
+     * 批量修改商品状态（上下架）
      * @author  cjm
      * @date  2018/10/12
      */
@@ -173,13 +172,15 @@ public class GoodsManageController {
             MallGoodsStockForm mallGoodsStockForm = ParamUtils.initModelForm(request, MallGoodsStockForm.class);
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("库存", mallGoodsStockForm.getStock());
-            vu.addIntTypeValidate("库存", mallGoodsStockForm.getStock(), null, null, -99999, 99999);
+            vu.addIntTypeValidate("库存", mallGoodsStockForm.getStock(), null, null, -99999, 100000);
             vu.addRequiredValidate("商品id", goodId);
             vu.addIntTypeValidate("商品id", goodId, null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 mallGoodsStockForm.setGood_id(goodId);
-                return ResponseLogNotification.successJson(request, goodsService.updateGoodStock(mallGoodsStockForm));
+                Map<String, Integer> map = new HashMap<>(1 >> 4);
+                map.put("stock", goodsService.updateGoodStock(mallGoodsStockForm));
+                return ResponseLogNotification.successJson(request, map);
             } else {
                 return ResponseLogNotification.fail(request, message);
             }

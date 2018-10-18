@@ -47,7 +47,7 @@ public final class ConstantErrorCodeMessage {
     public static final String MALL_ORDER_OPERATION_LIMIT = "{'status':10034,'message':'非本公司订单不能操作!'}";
     public static final String MALL_ORDER_TYPE_UNEXISTS = "{'status':10035,'message':'不存在的订单类型!'}";
     public static final String USER_NOTEXIST = "{'status':10036,'message':'员工信息不存在!'}";
-    public static final String MALL_STOCK_CANNOT_MINUS = "{'status':10037,'message':'库存不能为负数!'}";
+    public static final String MALL_STOCK_LIMIT = "{'status':10037,'message':'库存范围是1~99999，不能超出此范围!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 

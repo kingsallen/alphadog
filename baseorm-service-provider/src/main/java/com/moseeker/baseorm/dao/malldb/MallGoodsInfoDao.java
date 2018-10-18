@@ -91,6 +91,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
     public List<MallGoodsInfoDO> getGoodsListByPage(int companyId, int startIndex, int pageSize) {
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
+                .orderBy(MALL_GOODS_INFO.UPDATE_TIME.desc())
                 .limit(startIndex, pageSize)
                 .fetchInto(MallGoodsInfoDO.class);
     }
@@ -99,6 +100,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)state))
+                .orderBy(MALL_GOODS_INFO.UPDATE_TIME.desc())
                 .limit(startIndex, pageSize)
                 .fetchInto(MallGoodsInfoDO.class);
     }
