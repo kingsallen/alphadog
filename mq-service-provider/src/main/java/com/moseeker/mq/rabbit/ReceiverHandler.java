@@ -10,6 +10,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
+import com.moseeker.mq.service.impl.TemlateMsgHttp;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -55,6 +56,22 @@ public class ReceiverHandler {
     @Autowired
     private PersonaRecomEntity personaRecomEntity;
 
+    @Autowired
+    private TemlateMsgHttp temlateMsgHttp;
+
+    @RabbitListener(queues = "#{bonusNoticeQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void bonusNotice(Message message) {
+        try {
+            String msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("bonusNotice jsonObject:{}", jsonObject);
+            temlateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
+                    jsonObject.getLong("operationTime"), jsonObject.getInteger("nextStage"));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler

@@ -1,44 +1,61 @@
 package com.moseeker.entity;
 
+import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
-import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
+import com.moseeker.entity.pojos.BonusData;
+import com.moseeker.entity.pojos.HBData;
+import com.moseeker.entity.pojos.RecommendHBData;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import org.jooq.Record2;
+import org.jooq.Record3;
 import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +65,16 @@ import java.util.stream.Collectors;
 @Service
 @CounterIface
 public class ReferralEntity {
+
+
+    @Autowired
+    private HrHbConfigDao configDao;
+
+    @Autowired
+    private HrHbPositionBindingDao positionBindingDao;
+
+    @Autowired
+    private HrHbScratchCardDao scratchCardDao;
 
     @Autowired
     CandidateShareChainDao shareChainDao;
@@ -74,10 +101,19 @@ public class ReferralEntity {
     private ProfileCompletenessImpl completeness;
 
     @Autowired
-    private HrPointsConfDao pointsConfDao;
+    private ReferralPositionBonusStageDetailDao stageDetailDao;
 
     @Autowired
     private JobApplicationDao applicationDao;
+
+    @Autowired
+    private JobPositionDao positionDao;
+
+    @Autowired
+    private HrOperationRecordDao operationRecordDao;
+
+    @Autowired
+    private ReferralRecomHbPositionDao referralRecomHbPositionDao;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -85,7 +121,14 @@ public class ReferralEntity {
     @Autowired
     SearchengineEntity searchengineEntity;
 
+    @Autowired
+    private UserWxEntity wxEntity;
+
+    @Autowired
+    private UserAccountEntity userAccountEntity;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private ThreadPool threadPool = ThreadPool.Instance;
 
     /**
      * 计算给定时间内的员工内推带来的转发次数
@@ -228,5 +271,222 @@ public class ReferralEntity {
             return referralLogDao.fetchReferenceIdByEmployeeId(employeeRecord.getId());
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * 查找个人中心红包列表所需的数据
+     * @param itemsRecords 红包记录
+     * @return 数据对象
+     */
+    public HBData fetchHBData(List<HrHbItems> itemsRecords) {
+        HBData data = new HBData();
+        //查找职位title
+        List<Integer> positionBindingIdList = itemsRecords.stream().map(HrHbItems::getBindingId).collect(Collectors.toList());
+        Future<List<Record2<Integer, String>>> titleFuture = threadPool.startTast(() -> positionBindingDao.fetchPositionTitle(positionBindingIdList));
+
+        //查找候选人姓名
+        List<Integer> triggerWxUserIdList = itemsRecords.stream().map(HrHbItems::getTriggerWxuserId).collect(Collectors.toList());
+        Future<Map<Integer, String>> candidateNamesFuture = threadPool.startTast(() -> wxEntity.fetchUserNamesByWxUserIdList(triggerWxUserIdList));
+
+        //查找刮刮卡cardno
+        List<Integer> itemIdList = itemsRecords.stream().map(HrHbItems::getId).collect(Collectors.toList());
+        Future<List<HrHbScratchCardRecord>> cardNoFuture = threadPool.startTast(() -> scratchCardDao.fetchCardNosByItemIdList(itemIdList));
+
+        //查找红包类型
+        List<Integer> configIdList = itemsRecords.stream().map(HrHbItems::getHbConfigId).distinct().collect(Collectors.toList());
+        Future<List<HrHbConfigRecord>> configListFuture = threadPool.startTast(() -> configDao.fetchByIdList(configIdList));
+
+        Map<Integer, String> titleMap = new HashMap<>();
+        try {
+            List<Record2<Integer, String>> titleList = titleFuture.get();
+            if (titleList != null && titleList.size() > 0) {
+                titleList.forEach(integerStringRecord2 -> {
+                    titleMap.put(integerStringRecord2.value1(), integerStringRecord2.value2());
+                });
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setTitleMap(titleMap);
+
+        Map<Integer, String> candidateNameMap = new HashMap<>();
+        try {
+            candidateNameMap = candidateNamesFuture.get();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setCandidateNameMap(candidateNameMap);
+
+        Map<Integer, HrHbScratchCardRecord> cardNoMap = new HashMap<>();
+        try {
+            List<HrHbScratchCardRecord> cardNoList = cardNoFuture.get();
+            if (cardNoList != null && cardNoList.size() > 0) {
+                for (HrHbScratchCardRecord record2 : cardNoList) {
+                    cardNoMap.put(record2.getHbItemId(), record2);
+                }
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setCardNoMap(cardNoMap);
+
+        Map<Integer, HrHbConfigRecord> configMap = new HashMap<>();
+        try {
+            List<HrHbConfigRecord> configRecordList= configListFuture.get();
+            if (configRecordList != null && configRecordList.size() > 0) {
+                configRecordList.forEach(hrHbConfigRecord -> configMap.put(hrHbConfigRecord.getId(), hrHbConfigRecord));
+
+
+                List<HrHbConfigRecord> recomTypes = configRecordList
+                        .stream().filter(hrHbConfigRecord ->
+                                hrHbConfigRecord.getType().equals(HBType.Recommend.getValue()))
+                        .collect(Collectors.toList());
+
+                if (recomTypes != null && recomTypes.size() > 0) {
+                    List<Integer> recomItemIdList = itemsRecords
+                            .stream()
+                            .filter(hrHbItems -> {
+                                Optional<HrHbConfigRecord> recomTypeOptional = recomTypes
+                                        .stream()
+                                        .filter(hrHbConfigRecord -> hrHbConfigRecord.getId().equals(hrHbItems.getHbConfigId()))
+                                        .findAny();
+                                return recomTypeOptional.isPresent();
+                            })
+                            .map(hrHbItems -> hrHbItems.getId())
+                            .collect(Collectors.toList());
+                    if (recomItemIdList != null && recomItemIdList.size() > 0) {
+                        List<Record3<Integer, String, String>> result = referralRecomHbPositionDao.fetchRecommendHBData(recomItemIdList);
+
+                        if (result != null && result.size() > 0) {
+                            Map<Integer, RecommendHBData> recommendHBDataMap = new HashMap<>();
+
+                            result.forEach(integerStringStringRecord3 -> {
+                                RecommendHBData recommendHBData = new RecommendHBData();
+                                recommendHBData.setPositionTitle(integerStringStringRecord3.value2());
+                                recommendHBData.setCandidateName(integerStringStringRecord3.value3());
+                                recommendHBDataMap.put(integerStringStringRecord3.value1(), recommendHBData);
+                            });
+                            data.setRecomPositionTitleMap(recommendHBDataMap);
+                        }
+                    }
+                }
+
+            }
+
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        data.setConfigMap(configMap);
+
+        return data;
+    }
+
+    public BonusData fetchBonusData(List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList) {
+        BonusData bonusData = new BonusData();
+
+        List<Integer> applicationIdList = referralEmployeeBonusRecordList
+                .stream()
+                .map(ReferralEmployeeBonusRecord::getApplicationId)
+                .collect(Collectors.toList());
+        List<JobApplicationRecord> applicationRecordList = applicationDao.fetchByIdList(applicationIdList);
+
+        if (applicationRecordList != null && applicationRecordList.size() > 0) {
+
+            List<Integer> applierIdList = applicationRecordList
+                    .stream()
+                    .map(JobApplicationRecord::getApplierId)
+                    .collect(Collectors.toList());
+            Future<Map<Integer, String>> candidateNameFuture = threadPool
+                    .startTast(() -> userAccountEntity.fetchUserName(applierIdList));
+
+            List<Integer> positionIdList = applicationRecordList
+                    .stream()
+                    .map(JobApplicationRecord::getPositionId)
+                    .collect(Collectors.toList());
+            Future<List<JobPosition>> positionTitleFuture = threadPool
+                    .startTast(() -> positionDao.fetchPosition(positionIdList));
+
+            List<Integer> appIdList = applicationRecordList
+                    .stream()
+                    .map(JobApplicationRecord::getId)
+                    .collect(Collectors.toList());
+            Future<List<HrOperationRecord>> hiredFuture = threadPool
+                    .startTast(()
+                            -> operationRecordDao.fetchLastOperationByAppIdListAndSate(appIdList,
+                            Constant.RECRUIT_STATUS_HIRED));
+
+            try {
+                Map<Integer, String> candidateMap = new HashMap<>();
+                Map<Integer, String> userNameMap = candidateNameFuture.get();
+                userNameMap.forEach((key, value) -> {
+                    Optional<JobApplicationRecord> optional = applicationRecordList
+                            .stream()
+                            .filter(jobApplicationRecord -> jobApplicationRecord.getApplierId().equals(key))
+                            .findAny();
+                    if (optional.isPresent()) {
+                        candidateMap.put(optional.get().getId(), value);
+                    }
+                });
+                bonusData.setCandidateMap(candidateMap);
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            Map<Integer, String> positionTitleMap = new HashMap<>();
+            try {
+                List<JobPosition> positionList = positionTitleFuture.get();
+                if (positionIdList != null && positionList.size() > 0) {
+                    applicationRecordList.forEach(jobApplicationRecord -> {
+                        Optional<JobPosition> positionOptional = positionList
+                                .stream()
+                                .filter(jobPosition -> jobPosition.getId().equals(jobApplicationRecord.getPositionId()))
+                                .findAny();
+                        if (positionOptional.isPresent()) {
+                            positionTitleMap.put(jobApplicationRecord.getId(), positionOptional.get().getTitle());
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            bonusData.setPositionTitleMap(positionTitleMap);
+
+            Map<Integer, Long> employmentDateMap = new HashMap<>();
+            try {
+                List<HrOperationRecord> operationRecordList = hiredFuture.get();
+                if (operationRecordList != null && operationRecordList.size() > 0) {
+                    operationRecordList.forEach(operation -> {
+                        employmentDateMap.put(operation.getAppId().intValue(), operation.getOptTime().getTime());
+                    });
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            bonusData.setEmploymentDateMap(employmentDateMap);
+        }
+
+        List<Integer> stageIdList = referralEmployeeBonusRecordList
+                .stream()
+                .map(ReferralEmployeeBonusRecord::getBonusStageDetailId)
+                .collect(Collectors.toList());
+
+        Future<List<ReferralPositionBonusStageDetailRecord>> stageDetailFuture = threadPool
+                .startTast(() -> stageDetailDao.fetchByIdList(stageIdList));
+        Map<Integer, ReferralPositionBonusStageDetailRecord> stageDetailRecordMap = new HashMap<>();
+        try {
+            List<ReferralPositionBonusStageDetailRecord> stageDetailRecordList = stageDetailFuture.get();
+            if (stageDetailRecordList != null && stageDetailRecordList.size() > 0) {
+                stageDetailRecordList
+                        .forEach(referralPositionBonusStageDetailRecord
+                                -> stageDetailRecordMap
+                                .put(referralPositionBonusStageDetailRecord.getId(),
+                                        referralPositionBonusStageDetailRecord));
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        bonusData.setStageDetailMap(stageDetailRecordMap);
+
+        return bonusData;
     }
 }

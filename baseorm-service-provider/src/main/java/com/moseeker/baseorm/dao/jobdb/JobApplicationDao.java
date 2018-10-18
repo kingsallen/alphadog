@@ -340,4 +340,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 		return execute == 1;
 	}
+
+	/**
+	 * 根据申请编号集合查找申请记录集合
+	 * @param idList 申请编号集合
+	 * @return
+	 */
+    public List<JobApplicationRecord> fetchByIdList(List<Integer> idList) {
+		return create
+				.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.ID.in(idList))
+				.fetch();
+    }
 }

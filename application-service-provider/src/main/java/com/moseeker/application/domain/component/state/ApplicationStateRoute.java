@@ -11,7 +11,8 @@ import java.util.Map;
  */
 public enum ApplicationStateRoute {
 
-    Apply(1, "简历提交成功"), CVChecked(6, "简历被HR查看/简历被下载"), CVPassed(10, "简历评审合格"), Offered(12, "面试通过"), Hired(3, "入职");
+    Apply(1, "简历提交成功"), CVChecked(6, "简历被HR查看/简历被下载"), CVPassed(10, "简历评审合格"), Offered(12, "面试通过"),
+    Hired(3, "入职"), EmployeeReferral(15, "员工上传人才简历");
 
     private ApplicationStateRoute(int state, String name) {
         this.state = state;
@@ -31,6 +32,7 @@ public enum ApplicationStateRoute {
 
     private void init() {
         ApplicationStateRoute applyState = ApplicationStateRoute.Apply;
+        ApplicationStateRoute referral = ApplicationStateRoute.EmployeeReferral;
         ApplicationStateRoute viewedState = ApplicationStateRoute.CVChecked;
         ApplicationStateRoute cvPassedState = ApplicationStateRoute.CVPassed;
         ApplicationStateRoute offeredStatus = ApplicationStateRoute.Offered;
@@ -55,6 +57,11 @@ public enum ApplicationStateRoute {
         thirdNode.setNextNode(fifthNode);
         fifthNode.setState(hiredState);
 
+        Node firstNode1 = new Node();
+        firstNode1.setState(referral);
+        firstNode1.setNextNode(secondNode);
+
+        path.put(referral, firstNode1);
         path.put(applyState, firstNode);
         path.put(viewedState, secondNode);
         path.put(cvPassedState, thirdNode);
@@ -78,6 +85,7 @@ public enum ApplicationStateRoute {
         ApplicationState applicationState;
         switch (this) {
             case Apply: applicationState = new ApplyState(applicationEntity);break;
+            case EmployeeReferral: applicationState = new ReferralState(applicationEntity); break;
             case CVChecked: applicationState = new CVCheckedState(applicationEntity); break;
             case CVPassed: applicationState = new CVPassedState(applicationEntity); break;
             case Hired:applicationState = new HiredState(applicationEntity); break;
