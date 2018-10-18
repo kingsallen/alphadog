@@ -320,8 +320,13 @@ public class PositionService {
             jobPositionPojo.province = sb.toString();
         }
         List<DictCityDO> dictList= commonPositionUtils.handlerCity(positionId);
+
         String citynames=commonPositionUtils.getPositionCityName(dictList);
         String cityEnames=commonPositionUtils.getPositionCityEname(dictList);
+        List<String> cityList=StringUtils.stringToList(citynames,",");
+        List<String> eCityList=StringUtils.stringToList(cityEnames,",");
+        searchData.setCity_list(cityList);
+        searchData.setEcity_list(eCityList);
         logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝" + citynames);
         if (StringUtils.isNotNullOrEmpty(citynames)) {
             jobPositionPojo.city = citynames;
