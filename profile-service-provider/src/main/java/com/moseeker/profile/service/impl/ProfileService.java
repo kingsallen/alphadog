@@ -799,6 +799,7 @@ public class ProfileService {
      * @return
      */
     public Response otherFieldsCheck(int profielId, String fields) {
+
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", profielId);
         ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
