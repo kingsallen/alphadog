@@ -29,7 +29,7 @@ public class MallManageAspect {
     private UserHrAccountDao userHrAccountDao;
 
 
-    @Pointcut("@within(com.moseeker.mall.annotation.OnlySuperAccount)")
+    @Pointcut("@annotation(com.moseeker.mall.annotation.OnlySuperAccount)")
     private void cut() {
     }
 

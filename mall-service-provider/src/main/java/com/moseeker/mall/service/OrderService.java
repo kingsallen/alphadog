@@ -2,6 +2,7 @@ package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
+import com.moseeker.baseorm.dao.malldb.MallGoodsInfoDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -14,6 +15,7 @@ import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
@@ -46,6 +48,12 @@ public class OrderService {
 
     @Autowired
     private HistoryUserEmployeeDao historyUserEmployeeDao;
+
+    @Autowired
+    private MallGoodsInfoDao mallGoodsInfoDao;
+
+    @Autowired
+    private GoodsService goodsService;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -155,8 +163,22 @@ public class OrderService {
     @OnlyEmployee
     public void confirmOrder(OrderForm orderForm) throws BIZException {
         // todo redis防止重复提交
+        UserEmployeeDO userEmployeeDO = getUserEmployeeById(orderForm.getEmployee_id());
+        MallGoodsInfoDO mallGoodsInfoDO = goodsService.getUpshelfGoodById(orderForm.getGoods_id(), orderForm.getCompany_id());
+        int payCredit = orderForm.getCount() * mallGoodsInfoDO.getCredit();
+        int count = orderForm.getCount();
+        int stock = mallGoodsInfoDO.getStock();
+        if(count > stock){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_LACK);
+        }
+        int award = userEmployeeDO.getAward();
+        if(payCredit > award){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_AWARD_LACK);
+        }
 
     }
+
+
 
     /**
      * 确认发放或不发放 todo 做防止重复提交限制 消息模板
