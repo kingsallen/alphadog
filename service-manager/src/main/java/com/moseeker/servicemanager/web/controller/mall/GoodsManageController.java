@@ -180,6 +180,7 @@ public class GoodsManageController {
                 mallGoodsStockForm.setGood_id(goodId);
                 Map<String, Integer> map = new HashMap<>(1 >> 4);
                 map.put("stock", goodsService.updateGoodStock(mallGoodsStockForm));
+                map.put("good_id", goodId);
                 return ResponseLogNotification.successJson(request, map);
             } else {
                 return ResponseLogNotification.fail(request, message);
