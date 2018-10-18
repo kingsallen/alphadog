@@ -50,9 +50,6 @@ public class OrderService {
     private HistoryUserEmployeeDao historyUserEmployeeDao;
 
     @Autowired
-    private MallGoodsInfoDao mallGoodsInfoDao;
-
-    @Autowired
     private GoodsService goodsService;
 
     @Resource(name = "cacheClient")
@@ -161,6 +158,7 @@ public class OrderService {
      * @date  2018/10/16
      */
     @OnlyEmployee
+    @Transactional(rollbackFor = Exception.class)
     public void confirmOrder(OrderForm orderForm) throws BIZException {
         // todo redis防止重复提交
         UserEmployeeDO userEmployeeDO = getUserEmployeeById(orderForm.getEmployee_id());
@@ -175,7 +173,10 @@ public class OrderService {
         if(payCredit > award){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_AWARD_LACK);
         }
-
+//        insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
+//        minusAwardByLock(userEmployeeDO, payCredit);
+//        insertAwardRecord();
+//        sendAwardTemplate();
     }
 
 
