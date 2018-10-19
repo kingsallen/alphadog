@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
@@ -18,6 +19,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
+import com.moseeker.baseorm.db.logdb.tables.LogUserEmployee;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
@@ -60,6 +62,11 @@ public class Tables {
     public static final LogEmailSendrecord LOG_EMAIL_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord.LOG_EMAIL_SENDRECORD;
 
     /**
+     * The table <code>logdb.log_employee_operation_log</code>.
+     */
+    public static final LogEmployeeOperationLog LOG_EMPLOYEE_OPERATION_LOG = com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG;
+
+    /**
      * hr每日登陆/使用统计表
      */
     public static final LogHrloginRecord LOG_HRLOGIN_RECORD = com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord.LOG_HRLOGIN_RECORD;
@@ -95,7 +102,7 @@ public class Tables {
     public static final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
 
     /**
-     * 邮件额度每天使用日志
+     * 邮件额度每天消耗日志
      */
     public static final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
@@ -108,6 +115,11 @@ public class Tables {
      * 人才库简历过滤日志
      */
     public static final LogTalentpoolProfileFilterLog LOG_TALENTPOOL_PROFILE_FILTER_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG;
+
+    /**
+     * The table <code>logdb.log_user_employee</code>.
+     */
+    public static final LogUserEmployee LOG_USER_EMPLOYEE = com.moseeker.baseorm.db.logdb.tables.LogUserEmployee.LOG_USER_EMPLOYEE;
 
     /**
      * 微信菜单操作日志表

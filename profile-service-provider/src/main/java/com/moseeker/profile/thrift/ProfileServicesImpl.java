@@ -233,9 +233,9 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int parseText(String profile, int referenceId) throws BIZException, TException {
+    public int parseText(String profile, int referenceId, int appid) throws BIZException, TException {
         try {
-            return service.parseText(profile, referenceId);
+            return service.parseText(profile, referenceId,appid);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);

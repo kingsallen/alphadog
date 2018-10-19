@@ -15,5 +15,7 @@ struct HrWxHrChatDO {
 	9: optional string msgType,     // 消息类型
 	10:optional string picUrl,      //照片Url
 	11:optional string btnContent   //控件内容
+	12:optional string compoundContent   //聊天内容，表单、button等复合字段,保存为json格式
+	13:optional string stats   //数据统计时使用的参数
 
 }
