@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
@@ -32,6 +33,8 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +46,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -83,6 +89,9 @@ public abstract class EmployeeBinder {
 
     @Autowired
     protected ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
@@ -224,6 +233,12 @@ public abstract class EmployeeBinder {
                 employeeId = executeResult.getId();
                 if (executeResult.getExecute() > 0) {
                     employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", employeeId);
+                    jsonObject.put("binding_time", currentTime.getMillis());
+                    amqpTemplate.sendAndReceive(EMPLOYEE_REGISTER_EXCHNAGE,
+                            EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                    .build());
                 }
             }
         }
