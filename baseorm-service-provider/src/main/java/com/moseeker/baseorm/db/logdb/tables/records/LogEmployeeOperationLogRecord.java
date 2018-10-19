@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmployeeOperationLogRecord extends UpdatableRecordImpl<LogEmployeeOperationLogRecord> implements Record9<Integer, Integer, Byte, Byte, Byte, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 136264966;
+    private static final long serialVersionUID = -1456728374;
 
     /**
      * Setter for <code>logdb.log_employee_operation_log.id</code>. primaryKey
