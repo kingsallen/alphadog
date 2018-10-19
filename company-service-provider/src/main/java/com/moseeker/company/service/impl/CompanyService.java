@@ -1148,7 +1148,9 @@ public class CompanyService {
             if((count+recordList.size())>20){
                 return -1;
             }
-            hrCompanyFeatureDao.addAllRecord(recordList);
+            List<HrCompanyFeatureRecord> featureRecords=hrCompanyFeatureDao.addAllRecord(recordList);
+            logger.info("======================= addCompanyFeatureList Id:{}",featureRecords);
+
             return 1;
         }
 
