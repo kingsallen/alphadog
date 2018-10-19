@@ -212,13 +212,14 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(city)){
+            searchUtil.handleTerm(city,query,"city");
+
+        } else if(StringUtils.isNotBlank(cities) ) {
             List<String> citys = searchUtil.stringConvertList(city);
             List<String> fieldList=new ArrayList<>();
             fieldList.add("search_data.city_list");
             fieldList.add("search_data.ecity_list");
             searchUtil.shouldTermsQueryString(fieldList,citys,query);
-        } else if(StringUtils.isNotBlank(cities) ) {
-            searchUtil.handleTerms(cities,query,"city");
         }
 
         if(StringUtils.isNotBlank(occupation)){
