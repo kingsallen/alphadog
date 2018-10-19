@@ -1,8 +1,8 @@
 package com.moseeker.common.constants;
 
 public enum  EmployeeOperationIsSuccess {
-    SUCCESS(0,"成功"),
-    FAIL(1,"失败");
+    SUCCESS(1,"成功"),
+    FAIL(0,"失败");
 
     Integer key;
     String value;

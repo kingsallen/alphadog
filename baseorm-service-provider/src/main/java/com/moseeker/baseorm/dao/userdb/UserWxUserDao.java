@@ -1,12 +1,14 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +44,29 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                     .fetchOne();
         }
         return wxuser;
+    }
+
+    public List<UserWxUserRecord> getWXUsersByUserId(int userId) {
+        if (userId > 0) {
+            return create.selectFrom(UserWxUser.USER_WX_USER)
+                    .where(UserWxUser.USER_WX_USER.SYSUSER_ID.eq(userId))
+                    .fetch();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser> getWXUsersByUserIdAndCompanyId(int userId, int companyId) {
+        if (userId > 0) {
+            return create.select(UserWxUser.USER_WX_USER.fields())
+                    .from(UserWxUser.USER_WX_USER).innerJoin(HrWxWechat.HR_WX_WECHAT)
+                    .on(UserWxUser.USER_WX_USER.WECHAT_ID.eq(HrWxWechat.HR_WX_WECHAT.ID))
+                    .where(UserWxUser.USER_WX_USER.SYSUSER_ID.eq(userId))
+                    .and(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.eq(companyId))
+                    .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser.class);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
     public UserWxUserDO getWXUserById(int id) {
@@ -100,5 +125,17 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
                 .limit(1)
                 .fetchOne();
+    }
+
+    public List<UserWxUserRecord> fetchByIdList(List<Integer> wxUserIdList) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.ID.in(wxUserIdList))
+                .fetch();
+    }
+
+    public List<UserWxUserRecord> getWXUserMapByUserIds(List<Integer> idList) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.SYSUSER_ID.in(idList))
+                .fetch();
     }
 }

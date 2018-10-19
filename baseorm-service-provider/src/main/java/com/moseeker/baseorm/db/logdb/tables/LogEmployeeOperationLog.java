@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRecord> {
 
-    private static final long serialVersionUID = 334168630;
+    private static final long serialVersionUID = -628703379;
 
     /**
      * The reference instance of <code>logdb.log_employee_operation_log</code>
@@ -94,7 +94,7 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     /**
      * The column <code>logdb.log_employee_operation_log.update_tiem</code>. 更新时间
      */
-    public final TableField<LogEmployeeOperationLogRecord, Timestamp> UPDATE_TIEM = createField("update_tiem", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<LogEmployeeOperationLogRecord, Timestamp> UPDATE_TIEM = createField("update_tiem", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>logdb.log_employee_operation_log</code> table reference

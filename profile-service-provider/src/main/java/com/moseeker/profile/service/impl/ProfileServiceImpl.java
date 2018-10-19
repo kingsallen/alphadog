@@ -82,8 +82,4 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
         }
     }
 
-    @Override
-    public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
-        return null;
-    }
 }
