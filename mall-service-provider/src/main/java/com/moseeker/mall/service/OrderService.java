@@ -13,6 +13,7 @@ import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.OrderEnum;
+import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -176,16 +177,24 @@ public class OrderService {
         if(payCredit > award){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_AWARD_LACK);
         }
-        MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
+        insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
         minusStockByLock(mallGoodsInfoDO, count);
-        minusAwardByLock(userEmployeeDO, payCredit);
+        minusAward(userEmployeeDO, -payCredit);
 //        insertAwardRecord();
 //        sendAwardTemplate();
 
     }
 
-    private void minusAwardByLock(UserEmployeeDO userEmployeeDO, int payCredit) {
-//        userEmployeeDao.minusAwardByLock(userEmployeeDO);
+    private void minusAward(UserEmployeeDO userEmployeeDO, int payCredit) throws BIZException {
+        minusAwardByLock(userEmployeeDO, payCredit, 1);
+    }
+
+    private void minusAwardByLock(UserEmployeeDO userEmployeeDO, int payCredit, int retryTimes) throws BIZException {
+        DbUtils.checkRetryTimes(retryTimes);
+        int row = userEmployeeDao.addAward(userEmployeeDO.getId(), userEmployeeDO.getAward() + payCredit, userEmployeeDO.getAward());
+        if(row == 0){
+            minusAwardByLock(userEmployeeDO, payCredit, ++retryTimes);
+        }
     }
 
     /**
