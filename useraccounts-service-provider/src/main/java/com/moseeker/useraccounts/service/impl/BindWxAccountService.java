@@ -57,10 +57,7 @@ public class BindWxAccountService extends BindOnAccountService{
 			// unnionid置为子账号
 			userUnionid.setParentid(userMobile.getId());
 			/* 完善unionid */
-			if (StringUtils.isNullOrEmpty(userMobile.getUnionid())
-					&& StringUtils.isNotNullOrEmpty(userUnionid.getUnionid())) {
-				userMobile.setUnionid(userUnionid.getUnionid());
-			}
+			String unionId = userUnionid.getUnionid();
 			userUnionid.setUnionid("");
 			if (userdao.updateRecord(userUnionid) > 0) {
 				wxUserDao.combineWxUser(userMobile.getId(), userUnionid.getId());
@@ -68,6 +65,7 @@ public class BindWxAccountService extends BindOnAccountService{
 				if(StringUtils.isNotNullOrEmpty(userMobile.getUnionid())) {
 					wxUserDao.invalidOldWxUser(userMobile.getUnionid());
 				}
+				userMobile.setUnionid(unionId);
 				consummateUserAccount(userMobile, userUnionid);
 			}
 			doSomthing(userMobile.getId().intValue(), userUnionid.getId().intValue());

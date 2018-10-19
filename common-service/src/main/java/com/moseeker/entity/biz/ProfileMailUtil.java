@@ -159,12 +159,11 @@ public class ProfileMailUtil {
         try {
             configUtils.loadResource("setting.properties");
         } catch (Exception e) {
-            logger.error("加载配置文件失败!");
-            return null;
+            return "";
         }
         String emailConfig = configUtils.get(configKey, String.class);
         if (emailConfig == null) {
-            return null;
+            return "";
         }
         return emailConfig;
     }

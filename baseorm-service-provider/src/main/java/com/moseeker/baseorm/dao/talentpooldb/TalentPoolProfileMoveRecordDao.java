@@ -70,7 +70,7 @@ public class TalentPoolProfileMoveRecordDao extends JooqCrudImpl<TalentPoolProfi
     public int batchUpdateStatus(List<Integer> ids, byte value) {
         return create.update(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD)
                 .set(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.STATUS, value)
-                .where(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.PROFILE_MOVE_ID.in(ids))
+                .where(TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD.ID.in(ids))
                 .execute();
     }
 
