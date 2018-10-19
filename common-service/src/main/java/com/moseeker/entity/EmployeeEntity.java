@@ -863,7 +863,12 @@ public class EmployeeEntity {
      */
     public List<UserEmployeeDO> addEmployeeList(List<UserEmployeeDO> userEmployeeList) throws CommonException {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
-            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(BeanUtils.structToDB(userEmployeeList, UserEmployeeRecord.class));
+            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
+            for(UserEmployeeDO employee : userEmployeeList){
+                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                record.insert();
+                employeeDOS.add(record);
+            }
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
