@@ -56,7 +56,7 @@ public class GoodsService {
     @Transactional(rollbackFor = Exception.class)
     public int updateGoodStock(MallGoodsStockForm mallGoodsStockForm) throws BIZException {
         logger.info("=================mallGoodsStockForm:{}", mallGoodsStockForm);
-        return updateGoodStockByLock(mallGoodsStockForm, 1);
+        return updateGoodStockOnDownshelfState(mallGoodsStockForm.getGood_id(), mallGoodsStockForm.getCompany_id(), mallGoodsStockForm.getStock());
     }
 
     @OnlySuperAccount
@@ -144,25 +144,41 @@ public class GoodsService {
     }
 
     /**
+     * 在下架状态下更新库存
+     * @param goodId 商品id
+     * @param companyId 公司id
+     * @param updateStock 要更新的库存
+     * @author  cjm
+     * @date  2018/10/19
+     * @return 返回当前商品剩余库存
+     */
+    private int updateGoodStockOnDownshelfState(int goodId, int companyId, int updateStock) throws BIZException {
+        return updateGoodStockByLock(goodId, companyId, updateStock, GoodsEnum.DOWNSHELF.getState(), 1);
+    }
+
+    /**
      * 乐观锁更新商品库存
-     * @param mallGoodsStockForm 要更新的商品信息
+     * @param goodId 商品id
+     * @param companyId 公司id
+     * @param updateStock 要更新的库存
      * @param retryTimes 重试次数 不大于三次
      * @author  cjm
      * @date  2018/10/18
      * @return 返回当前商品剩余库存
      */
-    private int updateGoodStockByLock(MallGoodsStockForm mallGoodsStockForm, int retryTimes) throws BIZException {
+    public int updateGoodStockByLock(int goodId, int companyId, int updateStock, int state, int retryTimes) throws BIZException {
         checkRetryTimes(retryTimes);
-        MallGoodsInfoDO mallGoodsInfoDO = getGoodById(mallGoodsStockForm.getGood_id(), mallGoodsStockForm.getCompany_id(), GoodsEnum.DOWNSHELF.getState());
-        int row = mallGoodsInfoDao.updateGoodStock(mallGoodsInfoDO, mallGoodsStockForm.getStock());
+        MallGoodsInfoDO mallGoodsInfoDO = getGoodById(goodId, companyId, state);
+        int row = mallGoodsInfoDao.updateGoodStock(mallGoodsInfoDO, updateStock);
         if(row == 0){
-            return updateGoodStockByLock(mallGoodsStockForm, ++retryTimes);
+            return updateGoodStockByLock(goodId, companyId, updateStock, state, ++retryTimes);
         }else {
             MallGoodsInfoDO updatedGoods = getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
             // 商品库存在0~99999之间
             if(updatedGoods.getStock() < 0 || updatedGoods.getStock() > 99999){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_LIMIT);
             }
+            System.out.println("更新成功");
             return updatedGoods.getStock();
         }
 
