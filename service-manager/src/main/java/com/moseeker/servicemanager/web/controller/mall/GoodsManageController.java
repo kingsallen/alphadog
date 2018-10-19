@@ -146,7 +146,7 @@ public class GoodsManageController {
                 List<Map<String, Integer>> resultList = new ArrayList<>();
                 for(Integer goodId : goodsIds){
                     Map<String, Integer> map = new HashMap<>(1 >> 4);
-                    map.put("good_id", goodId);
+                    map.put("id", goodId);
                     map.put("state", (int)mallGoodsStateForm.getState());
                     resultList.add(map);
                 }
@@ -180,7 +180,7 @@ public class GoodsManageController {
                 mallGoodsStockForm.setGood_id(goodId);
                 Map<String, Integer> map = new HashMap<>(1 >> 4);
                 map.put("stock", goodsService.updateGoodStock(mallGoodsStockForm));
-                map.put("good_id", goodId);
+                map.put("id", goodId);
                 return ResponseLogNotification.successJson(request, map);
             } else {
                 return ResponseLogNotification.fail(request, message);
