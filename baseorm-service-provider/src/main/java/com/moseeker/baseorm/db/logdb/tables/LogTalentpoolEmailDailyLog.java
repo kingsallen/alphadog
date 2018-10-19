@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDailyLogRecord> {
 
-    private static final long serialVersionUID = 1026534349;
+    private static final long serialVersionUID = 460596425;
 
     /**
      * The reference instance of <code>logdb.log_talentpool_email_daily_log</code>
