@@ -216,7 +216,7 @@ public class SearchMethodUtil {
             List<String> fieldList=new ArrayList<>();
             fieldList.add("search_data.city_list");
             fieldList.add("search_data.ecity_list");
-            searchUtil.shouldTermsQuery(fieldList,citys,query);
+            searchUtil.shouldTermsQueryString(fieldList,citys,query);
         } else if(StringUtils.isNotBlank(cities) ) {
             searchUtil.handleTerms(cities,query,"city");
         }

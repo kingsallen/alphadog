@@ -925,7 +925,7 @@ public class SearchUtil {
         }
     }
 
-    public void shouldTermsQuery(List<String> fieldsList,List<String>dataIdList, QueryBuilder query) {
+    public void shouldTermsQueryString(List<String> fieldsList,List<String>dataIdList, QueryBuilder query) {
         if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
             for (String fields : fieldsList) {
