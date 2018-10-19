@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.malldb.MallGoodsInfoDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.mall.annotation.OnlySuperAccount;
+import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallGoodsInfoVO;
 import com.moseeker.mall.constant.GoodsEnum;
@@ -33,8 +34,6 @@ public class GoodsService {
 
     @Autowired
     private MallGoodsInfoDao mallGoodsInfoDao;
-
-    private static final int TRY_TIMES = 3;
 
     /**
      * 获取商品详情
@@ -167,7 +166,7 @@ public class GoodsService {
      * @return 返回当前商品剩余库存
      */
     public int updateGoodStockByLock(int goodId, int companyId, int updateStock, int state, int retryTimes) throws BIZException {
-        checkRetryTimes(retryTimes);
+        DbUtils.checkRetryTimes(retryTimes);
         MallGoodsInfoDO mallGoodsInfoDO = getGoodById(goodId, companyId, state);
         int row = mallGoodsInfoDao.updateGoodStock(mallGoodsInfoDO, updateStock);
         if(row == 0){
@@ -178,7 +177,6 @@ public class GoodsService {
             if(updatedGoods.getStock() < 0 || updatedGoods.getStock() > 99999){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_LIMIT);
             }
-            System.out.println("更新成功");
             return updatedGoods.getStock();
         }
 
@@ -209,12 +207,6 @@ public class GoodsService {
     private void checkGoodsState(MallGoodsInfoDO mallGoodsInfoDO, int state) throws BIZException {
         if(mallGoodsInfoDO.getState() != state){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_NEED_DOWNSHELF);
-        }
-    }
-
-    private void checkRetryTimes(int retryTimes) throws BIZException {
-        if(retryTimes >= TRY_TIMES){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
         }
     }
 
