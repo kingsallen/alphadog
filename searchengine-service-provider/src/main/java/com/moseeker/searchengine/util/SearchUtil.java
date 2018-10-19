@@ -924,4 +924,16 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+
+    public void shouldTermsQuery(List<String> fieldsList,List<String>dataIdList, QueryBuilder query) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                QueryBuilder fullf = QueryBuilders.termsQuery(fields, dataIdList);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
 }
