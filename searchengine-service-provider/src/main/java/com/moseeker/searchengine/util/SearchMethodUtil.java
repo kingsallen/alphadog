@@ -211,7 +211,11 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(city)){
-            searchUtil.handleTerms(city,query,"city");
+            List<String> citys = searchUtil.stringConvertList(city);
+            List<String> fieldList=new ArrayList<>();
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            searchUtil.shouldTermsQuery(fieldList,citys,query);
         } else if(StringUtils.isNotBlank(cities) ) {
             searchUtil.handleTerms(cities,query,"city");
         }
@@ -291,4 +295,5 @@ public class SearchMethodUtil {
 //
 //        searchUtil.handleShouldMatchFilter(params,query);
 //    }
+
 }
