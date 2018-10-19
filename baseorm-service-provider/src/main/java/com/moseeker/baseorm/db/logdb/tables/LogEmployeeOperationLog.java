@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRecord> {
 
-    private static final long serialVersionUID = -628703379;
+    private static final long serialVersionUID = 334168630;
 
     /**
      * The reference instance of <code>logdb.log_employee_operation_log</code>
@@ -61,9 +62,9 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     public final TableField<LogEmployeeOperationLogRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "user_user Id");
 
     /**
-     * The column <code>logdb.log_employee_operation_log.type</code>. 入口类型  0：我是员工
+     * The column <code>logdb.log_employee_operation_log.type</code>. 入口类型  102：我是员工
      */
-    public final TableField<LogEmployeeOperationLogRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "入口类型  0：我是员工");
+    public final TableField<LogEmployeeOperationLogRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "入口类型  102：我是员工");
 
     /**
      * The column <code>logdb.log_employee_operation_log.operation_type</code>. 操作类型  0：员工认证， 1：推荐简历
@@ -71,9 +72,9 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     public final TableField<LogEmployeeOperationLogRecord, Byte> OPERATION_TYPE = createField("operation_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "操作类型  0：员工认证， 1：推荐简历");
 
     /**
-     * The column <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 0：成功，1：失败
+     * The column <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 1：成功，0：失败
      */
-    public final TableField<LogEmployeeOperationLogRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否成功 0：成功，1：失败");
+    public final TableField<LogEmployeeOperationLogRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "是否成功 1：成功，0：失败");
 
     /**
      * The column <code>logdb.log_employee_operation_log.company_id</code>. hr_company id
@@ -81,14 +82,19 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     public final TableField<LogEmployeeOperationLogRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_company id");
 
     /**
-     * The column <code>logdb.log_employee_operation_log.profile_id</code>. profile_profile id 建立成功的简历id,其他为0。
+     * The column <code>logdb.log_employee_operation_log.profile_id</code>. profile_profile id 建立成功的简历id。
      */
-    public final TableField<LogEmployeeOperationLogRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "profile_profile id 建立成功的简历id,其他为0。");
+    public final TableField<LogEmployeeOperationLogRecord, Integer> PROFILE_ID = createField("profile_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "profile_profile id 建立成功的简历id。");
 
     /**
      * The column <code>logdb.log_employee_operation_log.create_time</code>. 创建时间
      */
     public final TableField<LogEmployeeOperationLogRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>logdb.log_employee_operation_log.update_tiem</code>. 更新时间
+     */
+    public final TableField<LogEmployeeOperationLogRecord, Timestamp> UPDATE_TIEM = createField("update_tiem", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
      * Create a <code>logdb.log_employee_operation_log</code> table reference
@@ -118,6 +124,14 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     @Override
     public Schema getSchema() {
         return Logdb.LOGDB;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<LogEmployeeOperationLogRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_LOG_EMPLOYEE_OPERATION_LOG;
     }
 
     /**

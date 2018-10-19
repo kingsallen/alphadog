@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = -1244482205;
+    private static final long serialVersionUID = -372230959;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -62,9 +62,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Integer> CHATLIST_ID = createField("chatlist_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "wx_hr_chat_list.id");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
+     * The column <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
      */
-    public final TableField<HrWxHrChatRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容");
+    public final TableField<HrWxHrChatRecord, String> CONTENT = createField("content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容,job类型：职位ID");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pid</code>. hr_position.id
@@ -92,9 +92,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Byte> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 ");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
+     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
-    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind");
+    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
@@ -110,11 +110,6 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
      * The column <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
      */
     public final TableField<HrWxHrChatRecord, String> COMPOUND_CONTENT = createField("compound_content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容，表单、button等复合字段,保存为json格式");
-
-    /**
-     * The column <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用的参数
-     */
-    public final TableField<HrWxHrChatRecord, String> STATS = createField("stats", org.jooq.impl.SQLDataType.CLOB, this, "数据统计时使用的参数");
 
     /**
      * Create a <code>hrdb.hr_wx_hr_chat</code> table reference

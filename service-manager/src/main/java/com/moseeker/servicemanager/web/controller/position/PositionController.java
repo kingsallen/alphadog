@@ -115,7 +115,7 @@ public class PositionController {
 
             query.setUser_id(Integer.valueOf((String) map.getOrDefault("user_id", "0")));
             query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
-            query.setCities(StringUtils.filterStringForSearch((String) map.getOrDefault("cities", "")));
+            query.setCities((String) map.getOrDefault("cities", ""));
             query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
             query.setOccupations(StringUtils.filterStringForSearch((String) map.getOrDefault("occupations", "")));
             query.setScale((String) map.getOrDefault("scale", ""));

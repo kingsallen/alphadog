@@ -103,7 +103,7 @@ public class SearchengineController {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             logger.info(JSON.toJSONString(reqParams)+"=============");
             String keywords = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
-            String cities =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("cities")));
+            String cities =BeanUtils.converToString(reqParams.get("cities"));
             String industries =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("industries")));
             String occupations = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("occupations")));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
