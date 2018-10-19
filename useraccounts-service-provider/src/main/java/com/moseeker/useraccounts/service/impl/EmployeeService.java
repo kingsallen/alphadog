@@ -250,14 +250,14 @@ public class EmployeeService {
         return getEmployeeVerificationConf(employeeDO.getCompanyId());
     }
 
-    public Result bind(BindingParams bindingParams) throws TException {
+    public Result bind(BindingParams bindingParams,int bindSource) throws TException {
         Result response = new Result();
         String authMethod = "auth_method_".concat(bindingParams.getType().toString().toLowerCase());
         if (!employeeBinder.containsKey(authMethod)) {
             response.setSuccess(false);
             response.setMessage("暂不支持该认证方式");
         } else {
-            response = employeeBinder.get(authMethod).bind(bindingParams);
+            response = employeeBinder.get(authMethod).bind(bindingParams,bindSource);
         }
         return response;
     }

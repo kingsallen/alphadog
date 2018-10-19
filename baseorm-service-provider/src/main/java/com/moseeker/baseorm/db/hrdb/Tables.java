@@ -139,7 +139,7 @@ public class Tables {
     public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
 
     /**
-     * 邮件额度每天使用日志
+     * 公司和CS匹配表
      */
     public static final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
@@ -349,7 +349,7 @@ public class Tables {
     public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
     /**
-     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
+     * 语音聊天的语音信息
      */
     public static final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 
@@ -359,7 +359,7 @@ public class Tables {
     public static final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * The table <code>hrdb.hr_wx_module</code>.
+     * 微信模块表
      */
     public static final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 

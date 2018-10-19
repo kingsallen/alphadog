@@ -40,7 +40,7 @@ public class ProfileAttachmentServicesImplTest{
 	////@Test
 	public void postResources() throws TException {
 		Attachment attachment = new Attachment();
-		attachment.setDescription("test");
+		attachment.setDescription("resumeFileParser");
 		attachment.setName("testname");
 		attachment.setProfile_id(170);
 
@@ -50,7 +50,7 @@ public class ProfileAttachmentServicesImplTest{
 	////@Test
 	public void putResources() throws TException {
 		Attachment attachment = new Attachment();
-		attachment.setDescription("test----------");
+		attachment.setDescription("resumeFileParser----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19417);
 
@@ -60,7 +60,7 @@ public class ProfileAttachmentServicesImplTest{
 //	//@Test
 	public void delResources() throws TException {
 		Attachment attachment = new Attachment();
-		attachment.setDescription("test----------");
+		attachment.setDescription("resumeFileParser----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19417);
 
@@ -70,7 +70,7 @@ public class ProfileAttachmentServicesImplTest{
 	////@Test
 	public void postResource() throws TException {
 		Attachment attachment = new Attachment();
-		attachment.setDescription("test");
+		attachment.setDescription("resumeFileParser");
 		attachment.setName("testname");
 		attachment.setProfile_id(170);
 		response = service.postResource(attachment);
@@ -79,7 +79,7 @@ public class ProfileAttachmentServicesImplTest{
 	////@Test
 	public void putResource() throws TException {
 		Attachment attachment = new Attachment();
-		attachment.setDescription("test----------");
+		attachment.setDescription("resumeFileParser----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19418);
 		response = service.putResource(attachment);
@@ -88,7 +88,7 @@ public class ProfileAttachmentServicesImplTest{
 	////@Test
 	public void delResource() throws TException {
 		Attachment attachment = new Attachment();
-		attachment.setDescription("test----------");
+		attachment.setDescription("resumeFileParser----------");
 		attachment.setName("testname-------------");
 		attachment.setId(19415);
 		response = service.delResource(attachment);

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = 583574056;
+    private static final long serialVersionUID = -372230959;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -110,6 +110,11 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
      * The column <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
      */
     public final TableField<HrWxHrChatRecord, String> COMPOUND_CONTENT = createField("compound_content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容，表单、button等复合字段,保存为json格式");
+
+    /**
+     * The column <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用的参数
+     */
+    public final TableField<HrWxHrChatRecord, String> STATS = createField("stats", org.jooq.impl.SQLDataType.CLOB, this, "数据统计时使用的参数");
 
     /**
      * Create a <code>hrdb.hr_wx_hr_chat</code> table reference
