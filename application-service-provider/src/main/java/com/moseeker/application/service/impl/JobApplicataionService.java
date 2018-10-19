@@ -76,6 +76,10 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,6 +141,9 @@ public class JobApplicataionService {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -1051,6 +1058,16 @@ public class JobApplicataionService {
             }
             addApplicationCountAtCompany(applierId, employeeDO.getCompanyId(), userApplyCount);
 
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("employeeId", employeeDO.getId());
+            jsonObject.put("companyId", employeeDO.getCompanyId());
+
+            jsonObject.put("berecomUserId", applierId);
+
+            jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
+            MessageProperties mp = new MessageProperties();
+            mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
+            mp.setReceivedExchange("user_action_topic_exchange");
             for (ApplicationSaveResultVO resultVO : applyIdList) {
                 tp.startTast(() -> {
                     logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}",
@@ -1058,6 +1075,17 @@ public class JobApplicataionService {
                     try {
                         chatService.updateApplyStatus(resultVO.getApplierId(), resultVO.getPositionId());
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    try {
+                        hrOperationRecordDao.addRecord(resultVO.getApplicationId(), resultVO.getSubmitTime(),
+                                Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
+                        jsonObject.put("positionId", resultVO.getPositionId());
+                        jsonObject.put("applicationId", resultVO.getApplicationId());
+                        jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+                        amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                                MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+                    } catch (AmqpException e) {
                         logger.error(e.getMessage(), e);
                     }
 

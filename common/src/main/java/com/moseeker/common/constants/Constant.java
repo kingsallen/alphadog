@@ -91,7 +91,7 @@ public final class Constant {
     public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
-    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;    // 工上传人才简历
+    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,
