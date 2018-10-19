@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -2126422599;
+    private static final long serialVersionUID = -1870706671;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -171,9 +171,9 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, Byte> TALENTPOOL_STATUS = createField("talentpool_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "人才库状态表 0未开启，1开启普通人才库，2开启高端人才库");
 
     /**
-     * The column <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c端简历导入开关 0：未开启，1：开启
+     * The column <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
      */
-    public final TableField<HrCompanyConfRecord, Byte> VERYEAST_SWITCH = createField("veryeast_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "最佳东方c端简历导入开关 0：未开启，1：开启");
+    public final TableField<HrCompanyConfRecord, Byte> VERYEAST_SWITCH = createField("veryeast_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "最佳东方c 端简 导入开关 0：未开启，1：开启");
 
     /**
      * The column <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启

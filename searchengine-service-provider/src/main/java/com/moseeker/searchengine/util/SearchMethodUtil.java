@@ -212,13 +212,19 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(city)){
-            searchUtil.handleTerms(city,query,"city");
+            searchUtil.handleTerm(city,query,"city");
+
         } else if(StringUtils.isNotBlank(cities) ) {
-            searchUtil.handleTerms(cities,query,"city");
+            List<String> citys = searchUtil.stringConvertList(city);
+            List<String> fieldList=new ArrayList<>();
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            searchUtil.shouldTermsQueryString(fieldList,citys,query);
         }
 
         if(StringUtils.isNotBlank(occupation)){
-            searchUtil.handleTerm(occupation,query,"search_data.occupation");
+            String filterOccupation = com.moseeker.common.util.StringUtils.filterStringForSearch(occupation);
+            searchUtil.handleTerm(filterOccupation,query,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(teamName)){
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
@@ -292,4 +298,5 @@ public class SearchMethodUtil {
 //
 //        searchUtil.handleShouldMatchFilter(params,query);
 //    }
+
 }

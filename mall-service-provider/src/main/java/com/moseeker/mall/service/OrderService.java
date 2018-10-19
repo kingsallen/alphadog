@@ -2,6 +2,7 @@ package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
+import com.moseeker.baseorm.dao.malldb.MallGoodsInfoDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -10,10 +11,13 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
+import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.OrderEnum;
+import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
@@ -46,6 +50,9 @@ public class OrderService {
 
     @Autowired
     private HistoryUserEmployeeDao historyUserEmployeeDao;
+
+    @Autowired
+    private GoodsService goodsService;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -153,10 +160,73 @@ public class OrderService {
      * @date  2018/10/16
      */
     @OnlyEmployee
+    @Transactional(rollbackFor = Exception.class)
     public void confirmOrder(OrderForm orderForm) throws BIZException {
         // todo redis防止重复提交
+//        checkDuplicateCommit();
+        UserEmployeeDO userEmployeeDO = userEmployeeDao.getUserEmployeeForUpdate(orderForm.getEmployee_id());
+
+        MallGoodsInfoDO mallGoodsInfoDO = goodsService.getUpshelfGoodById(orderForm.getGoods_id(), orderForm.getCompany_id());
+        int payCredit = orderForm.getCount() * mallGoodsInfoDO.getCredit();
+        int count = orderForm.getCount();
+        int stock = mallGoodsInfoDO.getStock();
+        if(count > stock){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_LACK);
+        }
+        int award = userEmployeeDO.getAward();
+        if(payCredit > award){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_AWARD_LACK);
+        }
+        insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
+        minusStockByLock(mallGoodsInfoDO, count);
+        minusAward(userEmployeeDO, -payCredit);
+//        insertAwardRecord();
+//        sendAwardTemplate();
 
     }
+
+    private void minusAward(UserEmployeeDO userEmployeeDO, int payCredit) throws BIZException {
+        minusAwardByLock(userEmployeeDO, payCredit, 1);
+    }
+
+    private void minusAwardByLock(UserEmployeeDO userEmployeeDO, int payCredit, int retryTimes) throws BIZException {
+        DbUtils.checkRetryTimes(retryTimes);
+        int row = userEmployeeDao.addAward(userEmployeeDO.getId(), userEmployeeDO.getAward() + payCredit, userEmployeeDO.getAward());
+        if(row == 0){
+            minusAwardByLock(userEmployeeDO, payCredit, ++retryTimes);
+        }
+    }
+
+    /**
+     * 乐观锁减库存
+     * @param mallGoodsInfoDO 商品信息
+     * @param count 订单商品数量
+     * @author  cjm
+     * @date  2018/10/19
+     */
+    private void minusStockByLock(MallGoodsInfoDO mallGoodsInfoDO, int count) throws BIZException {
+        goodsService.updateGoodStockByLock(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id(), -count, GoodsEnum.UPSHELF.getState(), 1);
+    }
+
+    private MallOrderDO insertOrder(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm) {
+        MallOrderDO mallOrderDO = initOrderDO(mallGoodsInfoDO, userEmployeeDO, orderForm);
+        return orderDao.addData(mallOrderDO);
+    }
+
+    private MallOrderDO initOrderDO(MallGoodsInfoDO mallGoodsInfoDO, UserEmployeeDO userEmployeeDO, OrderForm orderForm) {
+        MallOrderDO mallOrderDO = new MallOrderDO();
+//        int orderId = createOrderId();
+//        mallOrderDO.setOrder_id(orderId);
+        mallOrderDO.setEmployee_id(userEmployeeDO.getId());
+        mallOrderDO.setGoods_id(mallGoodsInfoDO.getId());
+        mallOrderDO.setCompany_id(mallGoodsInfoDO.getCompany_id());
+        mallOrderDO.setCredit(mallGoodsInfoDO.getCredit());
+        mallOrderDO.setTitle(mallGoodsInfoDO.getTitle());
+        mallOrderDO.setPic_url(mallGoodsInfoDO.getPic_url());
+        mallOrderDO.setCount(orderForm.getCount());
+        return mallOrderDO;
+    }
+
 
     /**
      * 确认发放或不发放 todo 做防止重复提交限制 消息模板
@@ -178,7 +248,7 @@ public class OrderService {
             }
         }else {
             // todo 不发放请求，需要返回积分
-
+//        insertOperationRecord();
         }
 
 

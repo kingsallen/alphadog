@@ -121,7 +121,7 @@ public class HrWxHrChatDao extends JooqCrudImpl<HrWxHrChatDO, HrWxHrChatRecord> 
                 HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL, HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.CHATLIST_ID,
                 HrWxHrChat.HR_WX_HR_CHAT.SPEAKER, HrWxHrChat.HR_WX_HR_CHAT.ORIGIN, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID,
                 HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.LOCAL_URL,
-                HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT,HrWxHrChat.HR_WX_HR_CHAT.STATS)
+                HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT)
                 .from(HrWxHrChat.HR_WX_HR_CHAT)
                 .leftJoin(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE)
                 .on(HrWxHrChat.HR_WX_HR_CHAT.ID.eq(HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.CHAT_ID))
