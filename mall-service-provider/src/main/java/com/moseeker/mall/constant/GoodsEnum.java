@@ -10,11 +10,11 @@ public enum GoodsEnum {
     /**
      * 未上架
      */
-    UPSHELF(1),
+    DOWNSHELF(1),
     /**
      * 上架中
      */
-    DOWNSHELF(2),
+    UPSHELF(2),
     /**
      * 获取商品列表时表示获取全部商品
      */

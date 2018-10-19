@@ -2,10 +2,8 @@ package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.malldb.MallGoodsInfoDao;
-import com.moseeker.baseorm.db.malldb.tables.records.MallGoodsInfoRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallGoodsInfoVO;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +44,8 @@ public class GoodsService {
      * @return 商品信息
      */
     public MallGoodsInfoVO getGoodDetail(MallGoodsIdForm mallGoodsIdForm) throws BIZException {
-        MallGoodsInfoDO mallGoodsInfoDO = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsIdForm.getGood_id(), mallGoodsIdForm.getCompany_id());
+        logger.info("=================mallGoodsIdForm:{}", mallGoodsIdForm);
+        MallGoodsInfoDO mallGoodsInfoDO = getGoodDetailByGoodIdAndCompanyId(mallGoodsIdForm.getGood_id(), mallGoodsIdForm.getCompany_id());
         checkGoodsExist(mallGoodsInfoDO);
         MallGoodsInfoVO mallGoodsInfoVO = new MallGoodsInfoVO();
         BeanUtils.copyProperties(mallGoodsInfoDO, mallGoodsInfoVO);
@@ -57,22 +55,24 @@ public class GoodsService {
     @OnlySuperAccount
     @Transactional(rollbackFor = Exception.class)
     public int updateGoodStock(MallGoodsStockForm mallGoodsStockForm) throws BIZException {
-        MallGoodsInfoDO mallGoodsInfoDO = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsStockForm.getGood_id(), mallGoodsStockForm.getCompany_id());
-        return updateGoodStockByLock(mallGoodsInfoDO, mallGoodsStockForm.getStock(), 1);
+        logger.info("=================mallGoodsStockForm:{}", mallGoodsStockForm);
+        return updateGoodStockOnDownshelfState(mallGoodsStockForm.getGood_id(), mallGoodsStockForm.getCompany_id(), mallGoodsStockForm.getStock());
     }
 
     @OnlySuperAccount
     @Transactional(rollbackFor = Exception.class)
     public List<Integer> updateGoodState(MallGoodsStateForm mallGoodsStateForm) throws BIZException {
+        logger.info("=================mallGoodsStateForm:{}", mallGoodsStateForm);
         return updateGoodStateByIds(mallGoodsStateForm);
     }
 
     @OnlySuperAccount
     @Transactional(rollbackFor = Exception.class)
     public void editGood(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException {
+        logger.info("=================mallGoodsInfoForm:{}", mallGoodsInfoForm);
         MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
         BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
-        checkGoodsState(mallGoodsInfoDO);
+        checkGoodsState(mallGoodsInfoDO, GoodsEnum.DOWNSHELF.getState());
         int row = mallGoodsInfoDao.editGood(mallGoodsInfoDO);
         if(row == 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_UNEXISTS);
@@ -81,17 +81,15 @@ public class GoodsService {
 
     @OnlySuperAccount
     @Transactional(rollbackFor = Exception.class)
-    public void addGood(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException{
-        try {
-            MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
-            BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
-            mallGoodsInfoDao.addData(mallGoodsInfoDO);
-        }catch (Exception e){
-            throw new BIZException(1232131, e.getMessage());
-        }
+    public void addGood(MallGoodsInfoForm mallGoodsInfoForm){
+        logger.info("=================mallGoodsInfoForm:{}", mallGoodsInfoForm);
+        MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
+        BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
+        mallGoodsInfoDao.addData(mallGoodsInfoDO);
     }
 
     public Map<String,String> getGoodsList(GoodSearchForm goodSearchForm) {
+        logger.info("=================goodSearchForm:{}", goodSearchForm);
         int goodState = goodSearchForm.getState();
         if(GoodsEnum.ALL.getState() == goodState){
             return getAllGoodsMap(goodSearchForm);
@@ -100,7 +98,7 @@ public class GoodsService {
         }
     }
 
-    public int updateGoodStateByCompanyId(int companyId, int state) throws BIZException {
+    public int updateGoodStateByCompanyId(int companyId, int state) {
         return mallGoodsInfoDao.updateStateByCompanyId(companyId, (byte)state);
     }
 
@@ -146,28 +144,41 @@ public class GoodsService {
     }
 
     /**
+     * 在下架状态下更新库存
+     * @param goodId 商品id
+     * @param companyId 公司id
+     * @param updateStock 要更新的库存
+     * @author  cjm
+     * @date  2018/10/19
+     * @return 返回当前商品剩余库存
+     */
+    private int updateGoodStockOnDownshelfState(int goodId, int companyId, int updateStock) throws BIZException {
+        return updateGoodStockByLock(goodId, companyId, updateStock, GoodsEnum.DOWNSHELF.getState(), 1);
+    }
+
+    /**
      * 乐观锁更新商品库存
-     * @param mallGoodsInfoDO 当前商品信息
-     * @param updatedStock 要更新的库存数
+     * @param goodId 商品id
+     * @param companyId 公司id
+     * @param updateStock 要更新的库存
      * @param retryTimes 重试次数 不大于三次
      * @author  cjm
      * @date  2018/10/18
      * @return 返回当前商品剩余库存
      */
-    private int updateGoodStockByLock(MallGoodsInfoDO mallGoodsInfoDO, int updatedStock, int retryTimes) throws BIZException {
+    public int updateGoodStockByLock(int goodId, int companyId, int updateStock, int state, int retryTimes) throws BIZException {
         checkRetryTimes(retryTimes);
-        checkGoodsExist(mallGoodsInfoDO);
-        checkGoodsState(mallGoodsInfoDO);
-        int row = mallGoodsInfoDao.updateGoodStock(mallGoodsInfoDO, updatedStock);
+        MallGoodsInfoDO mallGoodsInfoDO = getGoodById(goodId, companyId, state);
+        int row = mallGoodsInfoDao.updateGoodStock(mallGoodsInfoDO, updateStock);
         if(row == 0){
-            mallGoodsInfoDO = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
-            return updateGoodStockByLock(mallGoodsInfoDO, updatedStock, ++retryTimes);
+            return updateGoodStockByLock(goodId, companyId, updateStock, state, ++retryTimes);
         }else {
-            MallGoodsInfoDO updatedGoods = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
+            MallGoodsInfoDO updatedGoods = getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
             // 商品库存在0~99999之间
             if(updatedGoods.getStock() < 0 || updatedGoods.getStock() > 99999){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_STOCK_LIMIT);
             }
+            System.out.println("更新成功");
             return updatedGoods.getStock();
         }
 
@@ -195,8 +206,8 @@ public class GoodsService {
         }
     }
 
-    private void checkGoodsState(MallGoodsInfoDO mallGoodsInfoDO) throws BIZException {
-        if(mallGoodsInfoDO.getState() == GoodsEnum.UPSHELF.getState()){
+    private void checkGoodsState(MallGoodsInfoDO mallGoodsInfoDO, int state) throws BIZException {
+        if(mallGoodsInfoDO.getState() != state){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_NEED_DOWNSHELF);
         }
     }
@@ -206,4 +217,37 @@ public class GoodsService {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
         }
     }
+
+    /**
+     * 获取有效的商品
+     * @param goodId 商品id
+     * @param companyId 公司id
+     * @author  cjm
+     * @date  2018/10/18
+     * @return 商品信息实体
+     */
+    public MallGoodsInfoDO getUpshelfGoodById(int goodId, int companyId) throws BIZException {
+        return getGoodById(goodId, companyId, GoodsEnum.UPSHELF.getState());
+    }
+
+    /**
+     * 获取指定状态的商品
+     * @param goodId 商品id
+     * @param companyId 公司id
+     * @param state 商品上下架状态
+     * @author  cjm
+     * @date  2018/10/18
+     * @return 商品信息实体
+     */
+    private MallGoodsInfoDO getGoodById(int goodId, int companyId, int state) throws BIZException {
+        MallGoodsInfoDO mallGoodsInfoDO = getGoodDetailByGoodIdAndCompanyId(goodId, companyId);
+        checkGoodsExist(mallGoodsInfoDO);
+        checkGoodsState(mallGoodsInfoDO, state);
+        return mallGoodsInfoDO;
+    }
+
+    private MallGoodsInfoDO getGoodDetailByGoodIdAndCompanyId(int goodId, int companyId) {
+        return mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(goodId, companyId);
+    }
+
 }

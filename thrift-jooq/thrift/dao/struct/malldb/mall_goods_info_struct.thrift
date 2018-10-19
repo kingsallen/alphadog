@@ -13,7 +13,7 @@ struct MallGoodsInfoDO {
 	9: optional string detail,	//商品详情
 	10: optional i8 state,	//商品上架状态
 	11: optional string rule,	//商品领取规则
-	12: optional string createTime,	//创建时间
-	13: optional string updateTime	//更新时间
+	12: optional string create_time,	//创建时间
+	13: optional string update_time	//更新时间
 
 }
