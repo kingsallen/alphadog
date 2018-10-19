@@ -72,6 +72,7 @@ public class Keys {
     public static final Identity<LogCronjobRecord, Integer> IDENTITY_LOG_CRONJOB = Identities0.IDENTITY_LOG_CRONJOB;
     public static final Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = Identities0.IDENTITY_LOG_DEAD_LETTER;
     public static final Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = Identities0.IDENTITY_LOG_EMAIL_SENDRECORD;
+    public static final Identity<LogEmployeeOperationLogRecord, Integer> IDENTITY_LOG_EMPLOYEE_OPERATION_LOG = Identities0.IDENTITY_LOG_EMPLOYEE_OPERATION_LOG;
     public static final Identity<LogHrloginRecordRecord, Integer> IDENTITY_LOG_HRLOGIN_RECORD = Identities0.IDENTITY_LOG_HRLOGIN_RECORD;
     public static final Identity<LogHrOperationRecordRecord, Integer> IDENTITY_LOG_HR_OPERATION_RECORD = Identities0.IDENTITY_LOG_HR_OPERATION_RECORD;
     public static final Identity<LogJbEmailparseRecordRecord, Integer> IDENTITY_LOG_JB_EMAILPARSE_RECORD = Identities0.IDENTITY_LOG_JB_EMAILPARSE_RECORD;
@@ -128,6 +129,7 @@ public class Keys {
         public static Identity<LogCronjobRecord, Integer> IDENTITY_LOG_CRONJOB = createIdentity(LogCronjob.LOG_CRONJOB, LogCronjob.LOG_CRONJOB.ID);
         public static Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = createIdentity(LogDeadLetter.LOG_DEAD_LETTER, LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = createIdentity(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
+        public static Identity<LogEmployeeOperationLogRecord, Integer> IDENTITY_LOG_EMPLOYEE_OPERATION_LOG = createIdentity(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG, LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.ID);
         public static Identity<LogHrloginRecordRecord, Integer> IDENTITY_LOG_HRLOGIN_RECORD = createIdentity(LogHrloginRecord.LOG_HRLOGIN_RECORD, LogHrloginRecord.LOG_HRLOGIN_RECORD.ID);
         public static Identity<LogHrOperationRecordRecord, Integer> IDENTITY_LOG_HR_OPERATION_RECORD = createIdentity(LogHrOperationRecord.LOG_HR_OPERATION_RECORD, LogHrOperationRecord.LOG_HR_OPERATION_RECORD.ID);
         public static Identity<LogJbEmailparseRecordRecord, Integer> IDENTITY_LOG_JB_EMAILPARSE_RECORD = createIdentity(LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD, LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD.ID);
