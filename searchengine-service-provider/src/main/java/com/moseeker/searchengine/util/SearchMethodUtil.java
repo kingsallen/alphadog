@@ -221,7 +221,8 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(occupation)){
-            searchUtil.handleTerm(occupation,query,"search_data.occupation");
+            String filterOccupation = com.moseeker.common.util.StringUtils.filterStringForSearch(occupation);
+            searchUtil.handleTerm(filterOccupation,query,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(teamName)){
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
