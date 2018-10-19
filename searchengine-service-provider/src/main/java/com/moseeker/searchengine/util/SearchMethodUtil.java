@@ -214,8 +214,9 @@ public class SearchMethodUtil {
         if(StringUtils.isNotBlank(city)){
             searchUtil.handleTerm(city,query,"city");
 
-        } else if(StringUtils.isNotBlank(cities) ) {
-            List<String> citys = searchUtil.stringConvertList(city);
+        }
+        if(StringUtils.isNotBlank(cities) ) {
+            List<String> citys = searchUtil.stringConvertList(cities);
             List<String> fieldList=new ArrayList<>();
             fieldList.add("search_data.city_list");
             fieldList.add("search_data.ecity_list");
