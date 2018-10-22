@@ -81,6 +81,9 @@ public class UserEmployeeServiceImpl {
     @Autowired
     PositionEntity positionEntity;
 
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
     @Autowired
     private EmployeeBatchHandler employeeBatchHandler;
 
