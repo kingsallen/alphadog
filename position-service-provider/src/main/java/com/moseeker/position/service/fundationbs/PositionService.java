@@ -352,6 +352,7 @@ public class PositionService {
             jobPositionPojo.position_feature = positionFeature;
         }
         jobPositionPojo.feature = this.getFeatureString(positionFeature);
+
         return ResponseUtils.success(jobPositionPojo);
     }
 

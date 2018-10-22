@@ -67,7 +67,7 @@ public class TalentpoolNewController {
     }
 
     /*
-    获取企业标签列表
+    删除企业标签列表
    */
     @RequestMapping(value = "/api/talentpool/companytag", method = RequestMethod.DELETE)
     @ResponseBody
@@ -101,8 +101,8 @@ public class TalentpoolNewController {
 
 
     /*
-   获取企业标签信息
-  */
+     获取具体的企业标签信息
+    */
     @RequestMapping(value = "/api/talentpool/companytag", method = RequestMethod.GET)
     @ResponseBody
     public String getCompanyTag(HttpServletRequest request) throws Exception {

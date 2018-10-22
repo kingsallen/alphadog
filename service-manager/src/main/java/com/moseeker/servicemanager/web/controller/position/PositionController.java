@@ -117,15 +117,15 @@ public class PositionController {
             query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
             query.setCities((String) map.getOrDefault("cities", ""));
             query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
-            query.setOccupations(StringUtils.filterStringForSearch((String) map.getOrDefault("occupations", "")));
+            query.setOccupations((String) map.getOrDefault("occupations", ""));
             query.setScale((String) map.getOrDefault("scale", ""));
             query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
             query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
             query.setExperience((String) map.getOrDefault("experience", ""));
             query.setSalary((String) map.getOrDefault("salary", ""));
-            query.setDegree(StringUtils.filterStringForSearch((String) map.getOrDefault("degree", "")));
-            query.setDepartment(StringUtils.filterStringForSearch((String) map.getOrDefault("department", "")));
-            query.setCustom(StringUtils.filterStringForSearch((String) map.getOrDefault("custom", "")));
+            query.setDegree((String) map.getOrDefault("degree", ""));
+            query.setDepartment((String) map.getOrDefault("department", ""));
+            query.setCustom((String) map.getOrDefault("custom", ""));
             query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
 
             String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
