@@ -224,8 +224,8 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(occupation)){
-            String filterOccupation = com.moseeker.common.util.StringUtils.filterStringForSearch(occupation);
-            searchUtil.handleTerm(filterOccupation,query,"search_data.occupation");
+            //String filterOccupation = com.moseeker.common.util.StringUtils.filterStringForSearch(occupation);
+            searchUtil.handleTerm(occupation,query,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(teamName)){
             searchUtil.handleTerm(teamName,query,"search_data.team_name");
@@ -248,8 +248,8 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(custom)){
-            String filterCustom = com.moseeker.common.util.StringUtils.filterStringForSearch(custom);
-            searchUtil.handleTerm(filterCustom,query,"search_data.custom");
+            //String filterCustom = com.moseeker.common.util.StringUtils.filterStringForSearch(custom);
+            searchUtil.handleTerm(custom,query,"search_data.custom");
         }
         if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
