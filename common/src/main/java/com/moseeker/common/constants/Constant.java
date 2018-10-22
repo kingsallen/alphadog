@@ -63,6 +63,9 @@ public final class Constant {
     public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_register_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_register_routingkey.first_register";
 
+    public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "employee_first_register_add_redpacket_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_first_register_add_redpacket_routingkey";
+
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";

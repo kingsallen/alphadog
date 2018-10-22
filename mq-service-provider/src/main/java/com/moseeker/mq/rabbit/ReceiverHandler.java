@@ -1,5 +1,6 @@
 package com.moseeker.mq.rabbit;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.common.constants.Constant;
@@ -9,7 +10,9 @@ import com.moseeker.common.log.ReqParams;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
+import com.moseeker.entity.RedPacketEntity;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
+import com.moseeker.entity.pojo.readpacket.RedPacketData;
 import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
@@ -21,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +67,9 @@ public class ReceiverHandler {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
+    @Autowired
+    private RedPacketEntity redPacketEntity;
+
     @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void employeeFirstRegister(Message message) {
@@ -72,7 +79,11 @@ public class ReceiverHandler {
                 String msgBody = new String(message.getBody(), "UTF-8");
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 log.info("bonusNotice jsonObject:{}", jsonObject);
-
+                RedPacketData redPacketData = redPacketEntity.fetchRadPacketDataByEmployeeId(jsonObject.getInteger("id"));
+                amqpTemplate.send(Constant.EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE,
+                        Constant.EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY,
+                        MessageBuilder.withBody(JSON.toJSONString(redPacketData).getBytes())
+                        .build());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

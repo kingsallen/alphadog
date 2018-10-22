@@ -174,6 +174,7 @@ public abstract class EmployeeBinder {
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
      * todo 需要优化  代码过长
+     * todo 积分添加也需要移动到队列里
      * @param useremployee
      * @return
      * @throws TException
