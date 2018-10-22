@@ -866,7 +866,7 @@ public class EmployeeEntity {
             List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
             for(UserEmployeeDO employee : userEmployeeList){
                 UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
-                record.insert();
+                record = employeeDao.addRecord(record);
                 employeeDOS.add(record);
             }
             // ES 索引更新
