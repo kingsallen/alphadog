@@ -47,6 +47,12 @@ public class EmployeeBizTool {
         }
     }
 
+    public static void addNotEmployeeIds(QueryBuilder defaultquery, List<Integer> employeeIds, SearchUtil searchUtil){
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(employeeIds)){
+            searchUtil.handlerNotTerms(employeeIds, defaultquery, "id");
+        }
+    }
+
     /**
      * 解析公司参数
      * @param defaultquery 查询工具

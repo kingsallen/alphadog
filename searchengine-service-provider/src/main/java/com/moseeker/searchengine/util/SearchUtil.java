@@ -724,6 +724,7 @@ public class SearchUtil {
         return null;
     }
 
+
     //将xx,xx,xx格式的字符串转化为list
     public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {
