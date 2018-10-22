@@ -248,7 +248,8 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(custom)){
-            searchUtil.handleTerm(custom,query,"search_data.custom");
+            String filterCustom = com.moseeker.common.util.StringUtils.filterStringForSearch(custom);
+            searchUtil.handleTerm(filterCustom,query,"search_data.custom");
         }
         if(StringUtils.isNotBlank(isReferral)){
             searchUtil.handleTerm(isReferral,query,"is_referral");
