@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
@@ -48,7 +49,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1406102383;
+    private static final long serialVersionUID = 1487774170;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -94,6 +95,11 @@ public class Logdb extends SchemaImpl {
      * 第三方简历回流email解析日志
      */
     public final LogJbEmailparseRecord LOG_JB_EMAILPARSE_RECORD = com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD;
+
+    /**
+     * 记录meetmobot的推荐日志
+     */
+    public final LogMeetmobotRecom LOG_MEETMOBOT_RECOM = com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom.LOG_MEETMOBOT_RECOM;
 
     /**
      * The table <code>logdb.log_resume_record</code>.
@@ -183,6 +189,7 @@ public class Logdb extends SchemaImpl {
             LogHrloginRecord.LOG_HRLOGIN_RECORD,
             LogHrOperationRecord.LOG_HR_OPERATION_RECORD,
             LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD,
+            LogMeetmobotRecom.LOG_MEETMOBOT_RECOM,
             LogResumeRecord.LOG_RESUME_RECORD,
             LogScraperRecord.LOG_SCRAPER_RECORD,
             LogSmsSendrecord.LOG_SMS_SENDRECORD,

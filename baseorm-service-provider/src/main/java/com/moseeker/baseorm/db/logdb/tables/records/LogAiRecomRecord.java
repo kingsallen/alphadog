@@ -145,28 +145,28 @@ public class LogAiRecomRecord extends UpdatableRecordImpl<LogAiRecomRecord> impl
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.wx_id</code>. 微信id
+     * Setter for <code>logdb.log_ai_recom.wx_id</code>.
      */
     public void setWxId(Integer value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.wx_id</code>. 微信id
+     * Getter for <code>logdb.log_ai_recom.wx_id</code>.
      */
     public Integer getWxId() {
         return (Integer) get(8);
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.is_send</code>. 消息是否发送 0未发送 1已发送
+     * Setter for <code>logdb.log_ai_recom.is_send</code>.
      */
     public void setIsSend(Byte value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.is_send</code>. 消息是否发送 0未发送 1已发送
+     * Getter for <code>logdb.log_ai_recom.is_send</code>.
      */
     public Byte getIsSend() {
         return (Byte) get(9);

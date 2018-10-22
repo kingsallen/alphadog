@@ -262,7 +262,9 @@ public final class Constant {
     //简历列表的索引名称
     public static final String ES_INDEX="users";
     public static final String ES_TYPE="users";
-
+    //职位列表索引
+    public static final String ES_POSITION_INDEX="index";
+    public static final String ES_POSITION_TYPE="fulltext";
     //talentpool邮件的config_id
     public static final int TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS = 70;
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;
