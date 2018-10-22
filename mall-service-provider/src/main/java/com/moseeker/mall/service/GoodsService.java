@@ -6,6 +6,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.utils.DbUtils;
+import com.moseeker.mall.utils.HtmlFilterUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallGoodsInfoVO;
 import com.moseeker.mall.constant.GoodsEnum;
@@ -69,6 +70,7 @@ public class GoodsService {
     @Transactional(rollbackFor = Exception.class)
     public void editGood(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException {
         logger.info("=================mallGoodsInfoForm:{}", mallGoodsInfoForm);
+        mallGoodsInfoForm.setDetail(HtmlFilterUtils.filterSafe(mallGoodsInfoForm.getDetail()));
         MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
         BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
         checkGoodsState(mallGoodsInfoDO, GoodsEnum.DOWNSHELF.getState());
@@ -82,6 +84,7 @@ public class GoodsService {
     @Transactional(rollbackFor = Exception.class)
     public void addGood(MallGoodsInfoForm mallGoodsInfoForm){
         logger.info("=================mallGoodsInfoForm:{}", mallGoodsInfoForm);
+        mallGoodsInfoForm.setDetail(HtmlFilterUtils.filterSafe(mallGoodsInfoForm.getDetail()));
         MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
         BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
         mallGoodsInfoDao.addData(mallGoodsInfoDO);
@@ -242,4 +245,12 @@ public class GoodsService {
         return mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(goodId, companyId);
     }
 
+    public void updateStockAndExchangeNumByLock(MallGoodsInfoDO mallGoodsInfoDO, int count, int state, int retryTimes) throws BIZException {
+        DbUtils.checkRetryTimes(retryTimes);
+        int row = mallGoodsInfoDao.updateStockAndExchangeNum(mallGoodsInfoDO, count, state);
+        if(row == 0){
+            mallGoodsInfoDO = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
+            updateStockAndExchangeNumByLock(mallGoodsInfoDO, count, state, ++retryTimes);
+        }
+    }
 }

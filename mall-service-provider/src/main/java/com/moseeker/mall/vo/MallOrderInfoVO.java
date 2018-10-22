@@ -11,7 +11,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
  **/
 public class MallOrderInfoVO{
     private Integer id;
-    private Integer order_id;
+    private String order_id;
     private Integer good_id;
     private Integer credit;
     private String mobile;
@@ -33,11 +33,11 @@ public class MallOrderInfoVO{
         this.id = id;
     }
 
-    public Integer getOrder_id() {
+    public String getOrder_id() {
         return order_id;
     }
 
-    public void setOrder_id(Integer order_id) {
+    public void setOrder_id(String order_id) {
         this.order_id = order_id;
     }
 
@@ -152,5 +152,25 @@ public class MallOrderInfoVO{
         setMobile(userEmployeeDO.getMobile());
         setEmail(userEmployeeDO.getEmail());
         setCustom(userEmployeeDO.getCustomFieldValues());
+    }
+
+    @Override
+    public String toString() {
+        return "MallOrderInfoVO{" +
+                "id=" + id +
+                ", order_id='" + order_id + '\'' +
+                ", good_id=" + good_id +
+                ", credit=" + credit +
+                ", mobile='" + mobile + '\'' +
+                ", email='" + email + '\'' +
+                ", custom='" + custom + '\'' +
+                ", title='" + title + '\'' +
+                ", pic_url='" + pic_url + '\'' +
+                ", count=" + count +
+                ", order_state=" + order_state +
+                ", employee_state=" + employee_state +
+                ", assign_time='" + assign_time + '\'' +
+                ", create_time='" + create_time + '\'' +
+                '}';
     }
 }

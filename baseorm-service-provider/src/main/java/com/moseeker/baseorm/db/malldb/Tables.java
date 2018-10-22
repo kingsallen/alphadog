@@ -6,7 +6,7 @@ package com.moseeker.baseorm.db.malldb;
 
 import com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo;
 import com.moseeker.baseorm.db.malldb.tables.MallOrder;
-import com.moseeker.baseorm.db.malldb.tables.MallOrderHrOperation;
+import com.moseeker.baseorm.db.malldb.tables.MallOrderOperation;
 
 import javax.annotation.Generated;
 
@@ -27,15 +27,15 @@ public class Tables {
     /**
      * 商品信息表
      */
-    public static final MallGoodsInfo MALL_GOODS_INFO = com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo.MALL_GOODS_INFO;
+    public static final MallGoodsInfo MALL_GOODS_INFO = MallGoodsInfo.MALL_GOODS_INFO;
 
     /**
      * 商品申请记录
      */
-    public static final MallOrder MALL_ORDER = com.moseeker.baseorm.db.malldb.tables.MallOrder.MALL_ORDER;
+    public static final MallOrder MALL_ORDER = MallOrder.MALL_ORDER;
 
     /**
      * 商品发放hr操作记录
      */
-    public static final MallOrderHrOperation MALL_ORDER_HR_OPERATION = com.moseeker.baseorm.db.malldb.tables.MallOrderHrOperation.MALL_ORDER_HR_OPERATION;
+    public static final MallOrderOperation MALL_ORDER_OPERATION = MallOrderOperation.MALL_ORDER_OPERATION;
 }

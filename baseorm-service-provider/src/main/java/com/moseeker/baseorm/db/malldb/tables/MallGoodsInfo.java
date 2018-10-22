@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallGoodsInfo extends TableImpl<MallGoodsInfoRecord> {
 
-    private static final long serialVersionUID = -803909209;
+    private static final long serialVersionUID = -1359253125;
 
     /**
      * The reference instance of <code>malldb.mall_goods_info</code>
@@ -99,7 +99,7 @@ public class MallGoodsInfo extends TableImpl<MallGoodsInfoRecord> {
     /**
      * The column <code>malldb.mall_goods_info.state</code>. 1 未上架  2 上架中 
      */
-    public final TableField<MallGoodsInfoRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "1 未上架  2 上架中 ");
+    public final TableField<MallGoodsInfoRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1 未上架  2 上架中 ");
 
     /**
      * The column <code>malldb.mall_goods_info.rule</code>. 领取规则
