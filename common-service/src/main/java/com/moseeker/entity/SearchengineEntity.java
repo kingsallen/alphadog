@@ -92,6 +92,9 @@ public class SearchengineEntity {
     @Autowired
     private UserWxUserDao userWxUserDao;
 
+    @Autowired
+
+
     /**
      * 获取ES连接
      *

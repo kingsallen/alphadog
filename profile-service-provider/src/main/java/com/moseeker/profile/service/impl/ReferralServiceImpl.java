@@ -430,7 +430,8 @@ public class ReferralServiceImpl implements ReferralService {
             }
 
             com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(application, Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
+            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
+                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

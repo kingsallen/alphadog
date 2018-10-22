@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
@@ -33,6 +34,8 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -44,6 +47,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -90,6 +96,9 @@ public abstract class EmployeeBinder {
 
     @Autowired
     protected ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
@@ -169,6 +178,7 @@ public abstract class EmployeeBinder {
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
      * todo 需要优化  代码过长
+     * todo 积分添加也需要移动到队列里
      * @param useremployee
      * @return
      * @throws TException
@@ -192,7 +202,7 @@ public abstract class EmployeeBinder {
             if (useremployee.getAuthMethod() == 1 &&
                     org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
                 log.info("自定义添加积分！");
-                employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
+                employeeFirstRegister(useremployee.getId(), useremployee.getCompanyId(), currentTime.getMillis());
             }
             employeeId = useremployee.getId();
         } else {
@@ -230,7 +240,7 @@ public abstract class EmployeeBinder {
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                             .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
                     if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                        employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                        employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
                     }
                     useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
                     unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
@@ -244,7 +254,7 @@ public abstract class EmployeeBinder {
                 log.info("executeResult :{}", JSON.toJSONString(executeResult));
                 if (executeResult.getExecute() > 0) {
                     log.info("employee add award");
-                    employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
                 }
             }
         }
@@ -321,6 +331,22 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         return response;
+    }
+
+    /**
+     * 初次注册成为员工，添加积分与红包
+     * @param employeeId 员工编号
+     * @param companyId 公司编号
+     * @param bindingTime 员工注册时间
+     */
+    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime) {
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", employeeId);
+        jsonObject.put("binding_time", bindingTime);
+        amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
+                EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                        .build());
     }
     /*
         员工认证成功时，需要将潜在候选人置为无效

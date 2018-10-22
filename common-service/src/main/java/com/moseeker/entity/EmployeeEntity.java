@@ -207,6 +207,7 @@ public class EmployeeEntity {
                 return;
             }
         }
+        // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         employeeDao.getUserEmployeeForUpdate(employeeId);
         logger.info("addAwardHandler 锁表");
         Query.QueryBuilder query = new Query.QueryBuilder();

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2018/9/28
  */
 @Component
-public class ApplicaitonStateChangeSender {
+public class ApplicationStateChangeSender {
 
     private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
     private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";

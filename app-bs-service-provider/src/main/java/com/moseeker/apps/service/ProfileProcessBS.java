@@ -7,7 +7,7 @@ import com.moseeker.apps.bean.RecruitmentResult;
 import com.moseeker.apps.bean.RewardsToBeAddBean;
 import com.moseeker.apps.constants.TemplateMs;
 import com.moseeker.apps.constants.TemplateMs.MsInfo;
-import com.moseeker.apps.service.biztools.ApplicaitonStateChangeSender;
+import com.moseeker.apps.service.biztools.ApplicationStateChangeSender;
 import com.moseeker.apps.service.vo.StateInfo;
 import com.moseeker.apps.utils.BusinessUtil;
 import com.moseeker.apps.utils.ProcessUtils;
@@ -142,7 +142,7 @@ public class ProfileProcessBS {
     private EmployeeEntity employeeEntity;
 
     @Autowired
-    private ApplicaitonStateChangeSender applicaitonStateChangeSender;
+    private ApplicationStateChangeSender applicaitonStateChangeSender;
 
     @Resource(name = "cacheClient")
     private RedisClient client;

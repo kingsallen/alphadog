@@ -6,17 +6,17 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import java.util.Set;
-import javax.annotation.Resource;
-
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.mq.service.impl.TemlateMsgHttp;
+import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+import java.util.Set;
 
 /**
  * 
@@ -36,7 +36,7 @@ public class Schedule {
     private RedisClient redisClient;
 
 	@Autowired
-    private TemlateMsgHttp temlateMsgHttp;
+    private TemplateMsgHttp temlateMsgHttp;
 
 	@Autowired
     private ClearUpVote clearUpVote;

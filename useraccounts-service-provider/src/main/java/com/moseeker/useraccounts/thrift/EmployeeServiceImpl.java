@@ -14,7 +14,6 @@ import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService.Iface;
 import com.moseeker.thrift.gen.employee.struct.*;
-import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import com.moseeker.useraccounts.service.impl.EmployeeService;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralPositionInfo;
@@ -23,13 +22,13 @@ import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -224,7 +223,12 @@ public class EmployeeServiceImpl implements Iface {
         return service.setCacheEmployeeCustomInfo(userId, companyId, customValues);
     }
 
-    @Override
+	@Override
+	public void patchEmployeeCustomFieldValues(int userId, int companyId, Map<Integer, List<String>> customValues) throws TException {
+		service.patchEmployeeCustomFieldValues(userId, companyId, customValues);
+	}
+
+	@Override
     public void upsertCompanyReferralConf(HrCompanyReferralConfDO conf) throws BIZException, TException {
         try {
              service.upsertCompanyReferralConf(conf);
