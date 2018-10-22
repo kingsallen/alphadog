@@ -2,6 +2,8 @@ package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.log.ELKLog;
@@ -33,6 +35,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+
+import static com.alibaba.fastjson.serializer.SerializerFeature.*;
+import static com.alibaba.fastjson.serializer.SerializerFeature.WriteMapNullValue;
+import static com.alibaba.fastjson.serializer.SerializerFeature.WriteNullNumberAsZero;
 
 /**
  * Created by lucky8987 on 17/8/3.
@@ -70,6 +76,12 @@ public class ReceiverHandler {
     @Autowired
     private RedPacketEntity redPacketEntity;
 
+    private SerializeConfig config = new SerializeConfig();
+
+    public ReceiverHandler() {
+        config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
     @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void employeeFirstRegister(Message message) {
@@ -82,7 +94,14 @@ public class ReceiverHandler {
                 RedPacketData redPacketData = redPacketEntity.fetchRadPacketDataByEmployeeId(jsonObject.getInteger("id"));
                 amqpTemplate.send(Constant.EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE,
                         Constant.EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY,
-                        MessageBuilder.withBody(JSON.toJSONString(redPacketData).getBytes())
+                        MessageBuilder.withBody(JSON.toJSONString(redPacketData,
+                                config,
+                                WriteNullListAsEmpty,
+                                WriteNullStringAsEmpty,
+                                WriteNullNumberAsZero,
+                                WriteNullBooleanAsFalse,
+                                WriteMapNullValue,
+                                WriteNullNumberAsZero).getBytes())
                         .build());
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
