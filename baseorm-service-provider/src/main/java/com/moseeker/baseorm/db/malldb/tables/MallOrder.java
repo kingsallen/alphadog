@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallOrder extends TableImpl<MallOrderRecord> {
 
-    private static final long serialVersionUID = 1220180999;
+    private static final long serialVersionUID = 162184455;
 
     /**
      * The reference instance of <code>malldb.mall_order</code>
@@ -59,7 +59,7 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     /**
      * The column <code>malldb.mall_order.order_id</code>. 订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如1809270001
      */
-    public final TableField<MallOrderRecord, Integer> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如1809270001");
+    public final TableField<MallOrderRecord, String> ORDER_ID = createField("order_id", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "订单id 订单号生成规则「年份后两位」+「4位月日」+「5位自增」，形如1809270001");
 
     /**
      * The column <code>malldb.mall_order.employee_id</code>. 员工id
@@ -97,14 +97,14 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     public final TableField<MallOrderRecord, Integer> COUNT = createField("count", org.jooq.impl.SQLDataType.INTEGER, this, "兑换商品数量");
 
     /**
-     * The column <code>malldb.mall_order.state</code>. 0 未发放  1 已发放  2 已拒绝
+     * The column <code>malldb.mall_order.state</code>. 0 未发放  1 已发放  2 已拒绝 9 在订单查询时表示全部状态的订单
      */
-    public final TableField<MallOrderRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0 未发放  1 已发放  2 已拒绝");
+    public final TableField<MallOrderRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0 未发放  1 已发放  2 已拒绝 9 在订单查询时表示全部状态的订单");
 
     /**
      * The column <code>malldb.mall_order.assign_time</code>. 发放时间
      */
-    public final TableField<MallOrderRecord, Timestamp> ASSIGN_TIME = createField("assign_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "发放时间");
+    public final TableField<MallOrderRecord, Timestamp> ASSIGN_TIME = createField("assign_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "发放时间");
 
     /**
      * The column <code>malldb.mall_order.create_time</code>.

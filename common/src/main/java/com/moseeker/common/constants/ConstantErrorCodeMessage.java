@@ -49,7 +49,9 @@ public final class ConstantErrorCodeMessage {
     public static final String USER_NOTEXIST = "{'status':10036,'message':'员工信息不存在!'}";
     public static final String MALL_STOCK_LIMIT = "{'status':10037,'message':'库存范围是1~99999，不能超出此范围!'}";
     public static final String MALL_STOCK_LACK = "{'status':10038,'message':'库存不足!'}";
-    public static final String MALL_AWARD_LACK = "{'status':10038,'message':'余额不足!'}";
+    public static final String MALL_AWARD_LACK = "{'status':10039,'message':'余额不足!'}";
+    public static final String MALL_ORDER_REPEATED_COMMIT = "{'status':10040,'message':'订单处理中，请勿重复提交!'}";
+    public static final String MALL_ORDER_UNSUPPORTED_STATE = "{'status':10041,'message':'不支持的订单处理状态!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 

@@ -91,7 +91,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
     public List<MallGoodsInfoDO> getGoodsListByPage(int companyId, int startIndex, int pageSize) {
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
-                .orderBy(MALL_GOODS_INFO.UPDATE_TIME.desc())
+                .orderBy(MALL_GOODS_INFO.STATE.desc(), MALL_GOODS_INFO.UPDATE_TIME.desc())
                 .limit(startIndex, pageSize)
                 .fetchInto(MallGoodsInfoDO.class);
     }
@@ -100,8 +100,27 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
         return create.selectFrom(MALL_GOODS_INFO)
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)state))
-                .orderBy(MALL_GOODS_INFO.UPDATE_TIME.desc())
+                .orderBy(MALL_GOODS_INFO.STATE.desc(), MALL_GOODS_INFO.UPDATE_TIME.desc())
                 .limit(startIndex, pageSize)
                 .fetchInto(MallGoodsInfoDO.class);
+    }
+
+    /**
+     * 下单时，商品已兑换次数+1，已兑换数量+兑换数，扣库存
+     * @param mallGoodsInfoDO 当前商品信息
+     * @param count 兑换数量
+     * @param state  商品上下架状态
+     * @author  cjm
+     * @date  2018/10/21
+     * @return 是否更新成功
+     */
+    public int updateStockAndExchangeNum(MallGoodsInfoDO mallGoodsInfoDO, int count, int state) {
+        return create.update(MALL_GOODS_INFO)
+                .set(MALL_GOODS_INFO.STOCK, mallGoodsInfoDO.getStock() + count)
+                .set(MALL_GOODS_INFO.EXCHANGE_ORDER, mallGoodsInfoDO.getExchange_order() + 1)
+                .set(MALL_GOODS_INFO.EXCHANGE_NUM, mallGoodsInfoDO.getExchange_num() + Math.abs(count))
+                .where(MALL_GOODS_INFO.STOCK.eq(mallGoodsInfoDO.getStock()))
+                .and(MALL_GOODS_INFO.STATE.eq((byte)state))
+                .execute();
     }
 }

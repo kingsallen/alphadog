@@ -3,7 +3,7 @@ namespace java com.moseeker.thrift.gen.dao.struct.malldb
 struct MallOrderDO {
 
 	1: optional i32 id,	//主key
-	2: optional i32 order_id,	//订单编号
+	2: optional string order_id,	//订单编号
 	3: optional i32 employee_id,	//员工id
 	4: optional i32 goods_id,	//商品id
 	5: optional i32 company_id,	//商品id
