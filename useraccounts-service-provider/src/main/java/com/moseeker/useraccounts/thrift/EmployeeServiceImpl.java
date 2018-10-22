@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -222,7 +223,12 @@ public class EmployeeServiceImpl implements Iface {
         return service.setCacheEmployeeCustomInfo(userId, companyId, customValues);
     }
 
-    @Override
+	@Override
+	public void patchEmployeeCustomFieldValues(int userId, int companyId, Map<Integer, List<String>> customValues) throws TException {
+		service.patchEmployeeCustomFieldValues(userId, companyId, customValues);
+	}
+
+	@Override
     public void upsertCompanyReferralConf(HrCompanyReferralConfDO conf) throws BIZException, TException {
         try {
              service.upsertCompanyReferralConf(conf);

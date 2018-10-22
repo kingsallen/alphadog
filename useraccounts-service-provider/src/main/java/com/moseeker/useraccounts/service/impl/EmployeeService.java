@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -45,6 +46,7 @@ import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import com.moseeker.useraccounts.service.impl.employee.EmployeeExtInfoTool;
 import com.moseeker.useraccounts.service.impl.pojos.City;
 import com.moseeker.useraccounts.service.impl.pojos.LeaderBoardInfo;
 import com.moseeker.useraccounts.service.impl.pojos.ReferralCard;
@@ -884,5 +886,42 @@ public class EmployeeService {
 
 
         return employeeInfoVO;
+    }
+
+    public void patchEmployeeCustomFieldValues(int userId, int companyId,  Map<Integer, List<String>> customValues)
+            throws UserAccountException {
+
+        log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
+        Result response = new Result();
+
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("company_id", String.valueOf(companyId));
+
+        List<HrEmployeeCustomFields> confs = hrEmployeeCustomFieldsDao.getEmployeeExtConfByCompanyId(companyId);
+
+        if (!EmployeeExtInfoTool.verifyCustomFieldInfo(customValues, confs)) {
+            throw UserAccountException.ERMPLOYEE_EXTINFO_PARAM_ERROR;
+        }
+
+        JSONArray jsonArray = new JSONArray();
+        customValues.forEach((key, value) -> {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put(key.toString(), value);
+            jsonArray.add(jsonObject);
+        });
+        //查询已经认证的员工
+        UserEmployeeRecord userEmployee = employeeDao.getActiveEmployee(userId,companyId);
+        if (userEmployee != null) {
+            userEmployee.setCustomFieldValues(jsonArray.toJSONString());
+            employeeDao.updateRecord(userEmployee);
+        }
+
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
+        if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
+            UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
+            employeeDO.setCustomFieldValues(jsonArray.toJSONString());
+            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId), JSONObject.toJSONString(employeeDO));
+        }
+
     }
 }

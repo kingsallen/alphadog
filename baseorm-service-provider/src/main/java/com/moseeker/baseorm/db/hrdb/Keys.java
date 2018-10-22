@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
@@ -66,7 +67,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAccountApplicationNotifyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
@@ -75,6 +75,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsMediaRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsModuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCmsPagesRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountCopyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyCsRecord;
@@ -129,7 +130,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrWxRuleRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxTemplateMessageRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatNoticeSyncStatusRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.LogEmployeeOperationLogRecord;
 
 import javax.annotation.Generated;
 
@@ -215,7 +215,6 @@ public class Keys {
     public static final Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = Identities0.IDENTITY_HR_WX_TEMPLATE_MESSAGE;
     public static final Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = Identities0.IDENTITY_HR_WX_WECHAT;
     public static final Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = Identities0.IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS;
-    public static final Identity<LogEmployeeOperationLogRecord, Integer> IDENTITY_LOG_EMPLOYEE_OPERATION_LOG = Identities0.IDENTITY_LOG_EMPLOYEE_OPERATION_LOG;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -231,6 +230,7 @@ public class Keys {
     public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = UniqueKeys0.KEY_HR_CMS_PAGES_PRIMARY;
     public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_PRIMARY;
     public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_PRIMARY;
+    public static final UniqueKey<HrCompanyAccountCopyRecord> KEY_HR_COMPANY_ACCOUNT_COPY_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_ACCOUNT_COPY_PRIMARY;
     public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CONF_PRIMARY;
     public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_PRIMARY = UniqueKeys0.KEY_HR_COMPANY_CS_PRIMARY;
     public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_COMPANY_CS_ID = UniqueKeys0.KEY_HR_COMPANY_CS_COMPANY_CS_ID;
@@ -292,7 +292,6 @@ public class Keys {
     public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = UniqueKeys0.KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY;
     public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_PRIMARY;
     public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = UniqueKeys0.KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY;
-    public static final UniqueKey<LogEmployeeOperationLogRecord> KEY_LOG_EMPLOYEE_OPERATION_LOG_PRIMARY = UniqueKeys0.KEY_LOG_EMPLOYEE_OPERATION_LOG_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -363,7 +362,6 @@ public class Keys {
         public static Identity<HrWxTemplateMessageRecord, Integer> IDENTITY_HR_WX_TEMPLATE_MESSAGE = createIdentity(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static Identity<HrWxWechatRecord, Integer> IDENTITY_HR_WX_WECHAT = createIdentity(HrWxWechat.HR_WX_WECHAT, HrWxWechat.HR_WX_WECHAT.ID);
         public static Identity<HrWxWechatNoticeSyncStatusRecord, Integer> IDENTITY_HR_WX_WECHAT_NOTICE_SYNC_STATUS = createIdentity(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
-        public static Identity<LogEmployeeOperationLogRecord, Integer> IDENTITY_LOG_EMPLOYEE_OPERATION_LOG = createIdentity(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG, LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -377,6 +375,7 @@ public class Keys {
         public static final UniqueKey<HrCmsPagesRecord> KEY_HR_CMS_PAGES_PRIMARY = createUniqueKey(HrCmsPages.HR_CMS_PAGES, "KEY_hr_cms_pages_PRIMARY", HrCmsPages.HR_CMS_PAGES.ID);
         public static final UniqueKey<HrCompanyRecord> KEY_HR_COMPANY_PRIMARY = createUniqueKey(HrCompany.HR_COMPANY, "KEY_hr_company_PRIMARY", HrCompany.HR_COMPANY.ID);
         public static final UniqueKey<HrCompanyAccountRecord> KEY_HR_COMPANY_ACCOUNT_PRIMARY = createUniqueKey(HrCompanyAccount.HR_COMPANY_ACCOUNT, "KEY_hr_company_account_PRIMARY", HrCompanyAccount.HR_COMPANY_ACCOUNT.ACCOUNT_ID);
+        public static final UniqueKey<HrCompanyAccountCopyRecord> KEY_HR_COMPANY_ACCOUNT_COPY_PRIMARY = createUniqueKey(HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY, "KEY_hr_company_account_copy_PRIMARY", HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY.ACCOUNT_ID);
         public static final UniqueKey<HrCompanyConfRecord> KEY_HR_COMPANY_CONF_PRIMARY = createUniqueKey(HrCompanyConf.HR_COMPANY_CONF, "KEY_hr_company_conf_PRIMARY", HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID);
         public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_PRIMARY = createUniqueKey(HrCompanyCs.HR_COMPANY_CS, "KEY_hr_company_cs_PRIMARY", HrCompanyCs.HR_COMPANY_CS.ID);
         public static final UniqueKey<HrCompanyCsRecord> KEY_HR_COMPANY_CS_COMPANY_CS_ID = createUniqueKey(HrCompanyCs.HR_COMPANY_CS, "KEY_hr_company_cs_company_cs_id", HrCompanyCs.HR_COMPANY_CS.COMPANY_ID, HrCompanyCs.HR_COMPANY_CS.CS_ID);
@@ -438,6 +437,5 @@ public class Keys {
         public static final UniqueKey<HrWxTemplateMessageRecord> KEY_HR_WX_TEMPLATE_MESSAGE_PRIMARY = createUniqueKey(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE, "KEY_hr_wx_template_message_PRIMARY", HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.ID);
         public static final UniqueKey<HrWxWechatRecord> KEY_HR_WX_WECHAT_PRIMARY = createUniqueKey(HrWxWechat.HR_WX_WECHAT, "KEY_hr_wx_wechat_PRIMARY", HrWxWechat.HR_WX_WECHAT.ID);
         public static final UniqueKey<HrWxWechatNoticeSyncStatusRecord> KEY_HR_WX_WECHAT_NOTICE_SYNC_STATUS_PRIMARY = createUniqueKey(HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS, "KEY_hr_wx_wechat_notice_sync_status_PRIMARY", HrWxWechatNoticeSyncStatus.HR_WX_WECHAT_NOTICE_SYNC_STATUS.ID);
-        public static final UniqueKey<LogEmployeeOperationLogRecord> KEY_LOG_EMPLOYEE_OPERATION_LOG_PRIMARY = createUniqueKey(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG, "KEY_log_employee_operation_log_PRIMARY", LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.ID);
     }
 }

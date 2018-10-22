@@ -60,7 +60,7 @@ import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NO
  */
 
 @Service
-public class TemlateMsgHttp {
+public class TemplateMsgHttp {
     @Autowired
     private HrWxNoticeMessageDao wxNoticeMessageDao;
     @Autowired

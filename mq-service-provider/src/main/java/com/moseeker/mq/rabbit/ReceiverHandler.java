@@ -10,7 +10,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
-import com.moseeker.mq.service.impl.TemlateMsgHttp;
+import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -57,7 +58,28 @@ public class ReceiverHandler {
     private PersonaRecomEntity personaRecomEntity;
 
     @Autowired
-    private TemlateMsgHttp temlateMsgHttp;
+    private TemplateMsgHttp templateMsgHttp;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void employeeFirstRegister(Message message) {
+        try {
+            //todo 组装红包发放所需数据，向约定的exchange发送消息
+            try {
+                String msgBody = new String(message.getBody(), "UTF-8");
+                JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                log.info("bonusNotice jsonObject:{}", jsonObject);
+
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     @RabbitListener(queues = "#{bonusNoticeQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -66,7 +88,7 @@ public class ReceiverHandler {
             String msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             log.info("bonusNotice jsonObject:{}", jsonObject);
-            temlateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
+            templateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
                     jsonObject.getLong("operationTime"), jsonObject.getInteger("nextStage"));
         } catch (Exception e) {
             log.error(e.getMessage(), e);
