@@ -248,8 +248,8 @@ public class PositionService {
             if (hrTeamRecord != null) {
                 jobPositionPojo.department = hrTeamRecord.getName();
                 jobPositionPojo.team_name = hrTeamRecord.getName();
-                searchData.setTeam_name(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
-                searchData.setDepartment(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
+                searchData.setTeam_name(hrTeamRecord.getName());
+                searchData.setDepartment(hrTeamRecord.getName());
             }
         }
 
@@ -275,7 +275,7 @@ public class PositionService {
             String degreeName = getDictConstantJson(2101, jobPositionPojo.degree);
             jobPositionPojo.degree_name = degreeName;
         }
-        searchData.setDegree_name(StringUtils.filterStringForSearch(jobPositionPojo.degree_name));
+        searchData.setDegree_name(jobPositionPojo.degree_name);
         // 工作性质
         jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.employment_type);
 
@@ -304,8 +304,8 @@ public class PositionService {
                jobPositionPojo.custom = "";
                jobPositionPojo.occupation = "";
              }
-        searchData.setCustom(StringUtils.filterStringForSearch(jobPositionPojo.custom));
-        searchData.setOccupation(StringUtils.filterStringForSearch(jobPositionPojo.occupation));
+        searchData.setCustom(jobPositionPojo.custom);
+        searchData.setOccupation(jobPositionPojo.occupation);
 
     // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,

@@ -105,21 +105,21 @@ public class SearchengineController {
             String keywords = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
             String cities =BeanUtils.converToString(reqParams.get("cities"));
             String industries =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("industries")));
-            String occupations = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("occupations")));
+            String occupations = BeanUtils.converToString(reqParams.get("occupations"));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
             String employment_type = BeanUtils.converToString(reqParams.get("employment_type"));
             String candidate_source = BeanUtils.converToString(reqParams.get("candidate_source"));
             String experience = BeanUtils.converToString(reqParams.get("experience"));
-            String degree = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("degree")));
+            String degree = BeanUtils.converToString(reqParams.get("degree"));
             String salary = BeanUtils.converToString(reqParams.get("salary"));
             String company_id = BeanUtils.converToString(reqParams.get("company_id"));
             int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
             int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
             String child_company_id = BeanUtils.converToString(reqParams.get("child_company_id"));
             //由于department废弃，查询部门时使用team_name
-            String department = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("team_name")));
+            String department = BeanUtils.converToString(reqParams.get("team_name"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
-            String custom = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("custom")));
+            String custom = BeanUtils.converToString(reqParams.get("custom"));
             
             logger.info(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
