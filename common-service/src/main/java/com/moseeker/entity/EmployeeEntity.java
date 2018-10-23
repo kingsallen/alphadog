@@ -34,10 +34,12 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRec
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -65,6 +67,7 @@ import com.moseeker.thrift.gen.employee.struct.BonusVO;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
+import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,6 +157,10 @@ public class EmployeeEntity {
 
     @Autowired
     private AmqpTemplate amqpTemplate;
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
     private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
@@ -633,6 +640,7 @@ public class EmployeeEntity {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
+        Map<Integer, List<Integer>> params = this.handerUserEmployee(userEmployeeDOList);
         logger.info("=====取消认证2=======" + JSON.toJSONString(userEmployeeDOList));
         if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
             for (UserEmployeeDO DO : userEmployeeDOList) {
@@ -646,13 +654,38 @@ public class EmployeeEntity {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
                 // 更新ES中useremployee信息
                 searchengineEntity.deleteEmployeeDO(employeeIds);
-
+                if(params != null){
+                    Set<Integer> entry = params.keySet();
+                    for(Integer companyId : entry){
+                        List<Integer> list = params.get(companyId);
+                        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(),
+                                String.valueOf(companyId),  JSON.toJSONString(list));
+                    }
+                }
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
             }
         }
         return false;
+    }
+
+    private Map<Integer, List<Integer>> handerUserEmployee(List<UserEmployeeDO> employees){
+
+        if(!StringUtils.isEmptyList(employees)){
+            Map<Integer, List<Integer>> params = new HashMap<>();
+            for(UserEmployeeDO employee : employees){
+                Integer companyId = employee.getCompanyId();
+                List<Integer> list = params.get(companyId);
+                if(list == null){
+                    list = new ArrayList<>();
+                }
+                list.add(employee.getId());
+                params.put(companyId, list);
+            }
+            return params;
+        }
+        return null;
     }
 
     protected void convertCandidatePerson(int userId, int companyId) {

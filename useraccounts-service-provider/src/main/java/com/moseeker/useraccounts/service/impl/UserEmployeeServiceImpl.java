@@ -81,13 +81,14 @@ public class UserEmployeeServiceImpl {
     @Autowired
     PositionEntity positionEntity;
 
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
     @Autowired
     private EmployeeBatchHandler employeeBatchHandler;
 
     private ThreadPool threadPool = ThreadPool.Instance;
 
-    @Resource(name = "cacheClient")
-    private RedisClient client;
 
     public Response getUserEmployee(CommonQuery query) throws TException {
         return getResource(query);
@@ -237,8 +238,8 @@ public class UserEmployeeServiceImpl {
             if(employeeDOS.size() == 0){
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
             }
-
-            employeeEntity.removeEmployee(employeeDOS.stream().map(item->item.getId()).collect(Collectors.toList()));
+            List<Integer> employeeIds = employeeDOS.stream().map(item->item.getId()).collect(Collectors.toList());
+            employeeEntity.removeEmployee(employeeIds);
 
             return ResponseUtils.success(true);
         } catch (Exception e) {

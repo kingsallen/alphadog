@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogScraperRecord extends TableImpl<LogScraperRecordRecord> {
 
-    private static final long serialVersionUID = -1110285362;
+    private static final long serialVersionUID = -1277840880;
 
     /**
      * The reference instance of <code>logdb.log_scraper_record</code>
@@ -57,9 +57,9 @@ public class LogScraperRecord extends TableImpl<LogScraperRecordRecord> {
     public final TableField<LogScraperRecordRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>logdb.log_scraper_record.channel</code>. 1   51job， 2 liepin， 3 zhaopin，4 linkedin , 5 最佳东方 ， 8 jobsdb
+     * The column <code>logdb.log_scraper_record.channel</code>. 1   51job， 2 liepin， 3 zhaopin，4 linkedin
      */
-    public final TableField<LogScraperRecordRecord, Integer> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "1   51job， 2 liepin， 3 zhaopin，4 linkedin , 5 最佳东方 ， 8 jobsdb");
+    public final TableField<LogScraperRecordRecord, Integer> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "1   51job， 2 liepin， 3 zhaopin，4 linkedin");
 
     /**
      * The column <code>logdb.log_scraper_record.request</code>.

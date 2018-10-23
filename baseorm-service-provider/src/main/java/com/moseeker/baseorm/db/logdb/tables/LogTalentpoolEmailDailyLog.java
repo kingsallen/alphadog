@@ -62,7 +62,7 @@ public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDail
     public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司id");
 
     /**
-     * The column <code>logdb.log_talentpool_email_daily_log.lost</code>. 本次使用点数或者充值点数
+     * The column <code>logdb.log_talentpool_email_daily_log.lost</code>. 本日使用点数
      */
     public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> LOST = createField("lost", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本日使用点数");
 
