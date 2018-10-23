@@ -2,6 +2,7 @@ package com.moseeker.searchengine.service.impl.tools;
 
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.searchengine.SearchEngineException;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
@@ -149,6 +150,8 @@ public class EmployeeBizTool {
         logger.info("addPagination pageNum:{}, pageSize:{}", pageNumber, pageSize);
         if (pageNumber > 0 && pageSize > 0) {
             searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
+        } else {
+            searchRequestBuilder.setFrom(0).setSize(Constant.MAX_SIZE);
         }
     }
 
