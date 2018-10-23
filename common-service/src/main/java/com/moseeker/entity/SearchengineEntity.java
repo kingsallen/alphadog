@@ -849,7 +849,7 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        UpdateResponse response = client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx)
+        UpdateResponse response = client.prepareUpdate(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
         if(response.getGetResult() == null) {
@@ -876,7 +876,7 @@ public class SearchengineEntity {
                     .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
-            bulkRequest.add(client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx).setDoc(builder));
+            bulkRequest.add(client.prepareUpdate(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setDoc(builder));
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
