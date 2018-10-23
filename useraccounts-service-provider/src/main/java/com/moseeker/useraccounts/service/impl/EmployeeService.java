@@ -897,9 +897,6 @@ public class EmployeeService {
     public void patchEmployeeCustomFieldValues(int userId, int companyId,  Map<Integer, List<String>> customValues)
             throws UserAccountException {
 
-        log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
-        Result response = new Result();
-
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", String.valueOf(companyId));
 
