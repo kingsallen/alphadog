@@ -126,7 +126,6 @@ public class ProfileServicesImpl implements Iface {
             throws BIZException, TException {
         try {
             com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
-//                    referralService.parseFileProfile(employeeId, fileName, fileData);
                     profileService.parseFileProfile(employeeId, fileName, fileData);
             ProfileParseResult profileParseResult = new ProfileParseResult();
             BeanUtils.copyProperties(result, profileParseResult);

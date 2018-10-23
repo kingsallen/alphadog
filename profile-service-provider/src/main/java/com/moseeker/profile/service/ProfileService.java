@@ -21,7 +21,7 @@ public interface ProfileService {
      * @return 简历编号
      * @throws CommonException 业务异常
      */
-    public int upsertProfile(int userId, String profileParameter) throws CommonException;
+     int upsertProfile(int userId, String profileParameter) throws CommonException;
 
     /**
      * 手机确认提交简历
@@ -42,7 +42,7 @@ public interface ProfileService {
      * @return  简历id
      * @throws ProfileException 业务异常
      */
-    public int employeeReferralProfile(int id, String name, String mobile, int position);
+     int employeeReferralProfile(int id, String name, String mobile, int position);
 
 
 }

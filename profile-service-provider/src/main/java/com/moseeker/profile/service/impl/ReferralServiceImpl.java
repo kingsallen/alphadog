@@ -29,6 +29,7 @@ import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
+import com.moseeker.profile.service.impl.resumefileupload.iface.AbstractResumeFileParser;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
@@ -88,8 +89,8 @@ public class ReferralServiceImpl implements ReferralService {
     @Autowired
     private JobApplicationDao applicationDao;
 
-    @Autowired
-    private ReferralProfileParser referralProfileParser;
+    @Resource(type=ReferralProfileParser.class)
+    private AbstractResumeFileParser abstractResumeFileParser;
 
 
     @Autowired
@@ -117,7 +118,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @throws ProfileException 业务异常
      */
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
-        return referralProfileParser.parseResume(employeeId,fileName,fileData);
+        return abstractResumeFileParser.parseResume(employeeId,fileName,fileData);
 //        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
 //
 //        if (!ProfileDocCheckTool.checkFileName(fileName)) {

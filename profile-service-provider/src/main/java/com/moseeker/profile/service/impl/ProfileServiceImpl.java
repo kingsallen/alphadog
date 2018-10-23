@@ -54,10 +54,8 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
     UserUserDao userUserDao;
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
-    @Autowired
-    ReferralProfileParser referralProfileParser;
-    @Autowired
-    UserProfileParser userProfileParser;
+    @Resource(type=UserProfileParser.class)
+    AbstractResumeFileParser abstractResumeFileParser;
     @Autowired
     PositionEntity positionEntity;
     @Autowired
@@ -112,7 +110,7 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
     }
     @Override
     public ProfileDocParseResult parseFileProfile(int id, String fileName, ByteBuffer fileData) throws ProfileException {
-        return userProfileParser.parseResume(id,fileName,fileData);
+        return abstractResumeFileParser.parseResume(id,fileName,fileData);
     }
 
 
