@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.moseeker.thrift.gen.company.struct.TalentpoolHrAutomaticTagDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -210,5 +212,24 @@ public class TalentpoolNewController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    @RequestMapping(value = "/api/talentpool/hr/automatic/tag", method = RequestMethod.POST)
+    @ResponseBody
+    public String addHrActomaticTag(HttpServletRequest request,
+                                    HttpServletResponse response) {
+        try {
+            Params<String, Object> data = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(data.get("hr_id"));
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            TalentpoolHrAutomaticTagDO hrAutomaticTagDO = ParamUtils.initModelForm(data, TalentpoolHrAutomaticTagDO.class);
 
+//            Response result = service.addCompanyTag(companyTagDO, Integer.parseInt(hrId));
+//            return ResponseLogNotification.success(request, result);
+            return null;
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

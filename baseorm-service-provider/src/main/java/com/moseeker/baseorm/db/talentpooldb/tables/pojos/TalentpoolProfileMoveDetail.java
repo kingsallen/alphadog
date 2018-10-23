@@ -24,40 +24,44 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetail implements Serializable {
 
-    private static final long serialVersionUID = -1123148094;
+    private static final long serialVersionUID = -683295296;
 
     private Integer   id;
     private Long      mobile;
-    private Integer   profileMoveId;
+    private Integer   profileMoveRecordId;
     private Byte      profileMoveStatus;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   hrId;
 
     public TalentpoolProfileMoveDetail() {}
 
     public TalentpoolProfileMoveDetail(TalentpoolProfileMoveDetail value) {
         this.id = value.id;
         this.mobile = value.mobile;
-        this.profileMoveId = value.profileMoveId;
+        this.profileMoveRecordId = value.profileMoveRecordId;
         this.profileMoveStatus = value.profileMoveStatus;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.hrId = value.hrId;
     }
 
     public TalentpoolProfileMoveDetail(
         Integer   id,
         Long      mobile,
-        Integer   profileMoveId,
+        Integer   profileMoveRecordId,
         Byte      profileMoveStatus,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   hrId
     ) {
         this.id = id;
         this.mobile = mobile;
-        this.profileMoveId = profileMoveId;
+        this.profileMoveRecordId = profileMoveRecordId;
         this.profileMoveStatus = profileMoveStatus;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.hrId = hrId;
     }
 
     public Integer getId() {
@@ -76,12 +80,12 @@ public class TalentpoolProfileMoveDetail implements Serializable {
         this.mobile = mobile;
     }
 
-    public Integer getProfileMoveId() {
-        return this.profileMoveId;
+    public Integer getProfileMoveRecordId() {
+        return this.profileMoveRecordId;
     }
 
-    public void setProfileMoveId(Integer profileMoveId) {
-        this.profileMoveId = profileMoveId;
+    public void setProfileMoveRecordId(Integer profileMoveRecordId) {
+        this.profileMoveRecordId = profileMoveRecordId;
     }
 
     public Byte getProfileMoveStatus() {
@@ -108,16 +112,25 @@ public class TalentpoolProfileMoveDetail implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getHrId() {
+        return this.hrId;
+    }
+
+    public void setHrId(Integer hrId) {
+        this.hrId = hrId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("TalentpoolProfileMoveDetail (");
 
         sb.append(id);
         sb.append(", ").append(mobile);
-        sb.append(", ").append(profileMoveId);
+        sb.append(", ").append(profileMoveRecordId);
         sb.append(", ").append(profileMoveStatus);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(hrId);
 
         sb.append(")");
         return sb.toString();

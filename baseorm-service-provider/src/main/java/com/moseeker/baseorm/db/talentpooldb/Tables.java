@@ -10,6 +10,8 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
@@ -67,6 +69,16 @@ public class Tables {
      * 具体执行规则配置表
      */
     public static final TalentpoolExecute TALENTPOOL_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE;
+
+    /**
+     * hr自动标签
+     */
+    public static final TalentpoolHrAutomaticTag TALENTPOOL_HR_AUTOMATIC_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag.TALENTPOOL_HR_AUTOMATIC_TAG;
+
+    /**
+     * hr自动标签和人才关系表
+     */
+    public static final TalentpoolHrAutomaticTagUser TALENTPOOL_HR_AUTOMATIC_TAG_USER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser.TALENTPOOL_HR_AUTOMATIC_TAG_USER;
 
     /**
      * 人才库人收藏记录

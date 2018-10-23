@@ -23,11 +23,10 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveRecord implements Serializable {
 
-    private static final long serialVersionUID = -1355586252;
+    private static final long serialVersionUID = -1141313915;
 
     private Integer   id;
     private Integer   profileMoveId;
-    private Integer   thirdpartyCompanyId;
     private Byte      crawlType;
     private Integer   crawlNum;
     private Byte      status;
@@ -41,7 +40,6 @@ public class TalentpoolProfileMoveRecord implements Serializable {
     public TalentpoolProfileMoveRecord(TalentpoolProfileMoveRecord value) {
         this.id = value.id;
         this.profileMoveId = value.profileMoveId;
-        this.thirdpartyCompanyId = value.thirdpartyCompanyId;
         this.crawlType = value.crawlType;
         this.crawlNum = value.crawlNum;
         this.status = value.status;
@@ -54,7 +52,6 @@ public class TalentpoolProfileMoveRecord implements Serializable {
     public TalentpoolProfileMoveRecord(
         Integer   id,
         Integer   profileMoveId,
-        Integer   thirdpartyCompanyId,
         Byte      crawlType,
         Integer   crawlNum,
         Byte      status,
@@ -65,7 +62,6 @@ public class TalentpoolProfileMoveRecord implements Serializable {
     ) {
         this.id = id;
         this.profileMoveId = profileMoveId;
-        this.thirdpartyCompanyId = thirdpartyCompanyId;
         this.crawlType = crawlType;
         this.crawlNum = crawlNum;
         this.status = status;
@@ -89,14 +85,6 @@ public class TalentpoolProfileMoveRecord implements Serializable {
 
     public void setProfileMoveId(Integer profileMoveId) {
         this.profileMoveId = profileMoveId;
-    }
-
-    public Integer getThirdpartyCompanyId() {
-        return this.thirdpartyCompanyId;
-    }
-
-    public void setThirdpartyCompanyId(Integer thirdpartyCompanyId) {
-        this.thirdpartyCompanyId = thirdpartyCompanyId;
     }
 
     public Byte getCrawlType() {
@@ -161,7 +149,6 @@ public class TalentpoolProfileMoveRecord implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(profileMoveId);
-        sb.append(", ").append(thirdpartyCompanyId);
         sb.append(", ").append(crawlType);
         sb.append(", ").append(crawlNum);
         sb.append(", ").append(status);

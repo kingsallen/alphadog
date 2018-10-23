@@ -10,6 +10,8 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
@@ -46,7 +48,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Talentpooldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 572530928;
+    private static final long serialVersionUID = 718729235;
 
     /**
      * The reference instance of <code>talentpooldb</code>
@@ -82,6 +84,16 @@ public class Talentpooldb extends SchemaImpl {
      * 具体执行规则配置表
      */
     public final TalentpoolExecute TALENTPOOL_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE;
+
+    /**
+     * hr自动标签
+     */
+    public final TalentpoolHrAutomaticTag TALENTPOOL_HR_AUTOMATIC_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag.TALENTPOOL_HR_AUTOMATIC_TAG;
+
+    /**
+     * hr自动标签和人才关系表
+     */
+    public final TalentpoolHrAutomaticTagUser TALENTPOOL_HR_AUTOMATIC_TAG_USER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser.TALENTPOOL_HR_AUTOMATIC_TAG_USER;
 
     /**
      * 人才库人收藏记录
@@ -170,6 +182,8 @@ public class Talentpooldb extends SchemaImpl {
             TalentpoolCompanyTagUser.TALENTPOOL_COMPANY_TAG_USER,
             TalentpoolEmail.TALENTPOOL_EMAIL,
             TalentpoolExecute.TALENTPOOL_EXECUTE,
+            TalentpoolHrAutomaticTag.TALENTPOOL_HR_AUTOMATIC_TAG,
+            TalentpoolHrAutomaticTagUser.TALENTPOOL_HR_AUTOMATIC_TAG_USER,
             TalentpoolHrTalent.TALENTPOOL_HR_TALENT,
             TalentpoolPast.TALENTPOOL_PAST,
             TalentpoolProfileFilter.TALENTPOOL_PROFILE_FILTER,
