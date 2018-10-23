@@ -22,6 +22,7 @@ public final class Constant {
     public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
     public static final String POINTS_CONF_REFINE_CANDIDATE= "完善被推荐人信息";
     public static final String EMPLOYEE_PARSE_PROFILE_DOCUMENT = "员工简历简历数据";
+    public static int MAX_SIZE = 60000;
 
     private Constant() throws AssertionError {
         throw new AssertionError();
