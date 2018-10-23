@@ -153,7 +153,7 @@ public class SearchMethodUtil {
         String candidateSourceName=params.get("candidate_source_name");
         String city=params.get("city");
         String cities=params.get("cities");
-        String occupation=params.get("occupation");
+        String occupation=params.get("occupations");
         String teamName=params.get("team_name");
         String employmentType=params.get("employment_type");
         String employmentTypeName=params.get("employment_type_name");
@@ -208,16 +208,23 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(department)){
-            searchUtil.handleTerm(department,query,"department");
+            searchUtil.handleTerm(department,query,"search_data.team_name");
         }
 
         if(StringUtils.isNotBlank(city)){
-            searchUtil.handleTerms(city,query,"city");
-        } else if(StringUtils.isNotBlank(cities) ) {
-            searchUtil.handleTerms(cities,query,"city");
+            searchUtil.handleTerm(city,query,"city");
+
+        }
+        if(StringUtils.isNotBlank(cities) ) {
+            List<String> citys = searchUtil.stringConvertList(cities);
+            List<String> fieldList=new ArrayList<>();
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            searchUtil.shouldTermsQueryString(fieldList,citys,query);
         }
 
         if(StringUtils.isNotBlank(occupation)){
+            //String filterOccupation = com.moseeker.common.util.StringUtils.filterStringForSearch(occupation);
             searchUtil.handleTerm(occupation,query,"search_data.occupation");
         }
         if(StringUtils.isNotBlank(teamName)){
@@ -241,6 +248,7 @@ public class SearchMethodUtil {
         }
 
         if(StringUtils.isNotBlank(custom)){
+            //String filterCustom = com.moseeker.common.util.StringUtils.filterStringForSearch(custom);
             searchUtil.handleTerm(custom,query,"search_data.custom");
         }
         if(StringUtils.isNotBlank(isReferral)){
@@ -292,4 +300,5 @@ public class SearchMethodUtil {
 //
 //        searchUtil.handleShouldMatchFilter(params,query);
 //    }
+
 }
