@@ -181,7 +181,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         boolean haskey=false;
         if(StringUtils.isNotBlank(keywords)){
@@ -231,7 +231,7 @@ public class SearchengineService {
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
@@ -394,9 +394,9 @@ public class SearchengineService {
     private QueryBuilder handlerCommonCity(String citys){
         if(StringUtils.isNotBlank(citys)){
             List<String> fieldList=new ArrayList<>();
-            fieldList.add("city");
-            fieldList.add("city_ename");
-            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,citys);
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            QueryBuilder keyand=searchUtil.shouldTermsQuery(fieldList,citys);
             return keyand;
         }
         return null;
@@ -510,7 +510,7 @@ public class SearchengineService {
         TransportClient client = null;
         try {
             client=searchUtil.getEsClient();
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
+            IndexResponse response = client.prepareIndex(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setSource(position).execute().actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
