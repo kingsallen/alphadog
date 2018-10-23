@@ -23,4 +23,26 @@ public interface ProfileService {
      */
     public int upsertProfile(int userId, String profileParameter) throws CommonException;
 
+    /**
+     * 手机确认提交简历
+     * @param id 用户id（内推为employeeid）
+     * @param fileName 文件名
+     * @param fileData 文件
+     * @return  ProfileDocParseResult
+     * @throws ProfileException 业务异常
+     */
+    ProfileDocParseResult parseFileProfile(int id, String fileName, ByteBuffer fileData) throws ProfileException;
+
+    /**
+     * 手机确认提交简历
+     * @param id 用户id（内推为employeeid）
+     * @param name 用户名
+     * @param mobile 手机
+     * @param position 职位id
+     * @return  简历id
+     * @throws ProfileException 业务异常
+     */
+    public int employeeReferralProfile(int id, String name, String mobile, int position);
+
+
 }

@@ -28,6 +28,7 @@ import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
+import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
@@ -88,6 +89,10 @@ public class ReferralServiceImpl implements ReferralService {
     private JobApplicationDao applicationDao;
 
     @Autowired
+    private ReferralProfileParser referralProfileParser;
+
+
+    @Autowired
     public ReferralServiceImpl(EmployeeEntity employeeEntity, ProfileEntity profileEntity, ResumeEntity resumeEntity,
                                UserAccountEntity userAccountEntity, ProfileParseUtil profileParseUtil,
                                PositionEntity positionEntity, ReferralEntity referralEntity,
@@ -112,24 +117,25 @@ public class ReferralServiceImpl implements ReferralService {
      * @throws ProfileException 业务异常
      */
     public ProfileDocParseResult parseFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws ProfileException {
-        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
-
-        if (!ProfileDocCheckTool.checkFileName(fileName)) {
-            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
-        }
-
-        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
-        if (employeeDO == null || employeeDO.getId() <= 0) {
-            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
-        }
-
-        byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
-        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
-        FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
-        profileDocParseResult.setFile(fileNameData.getFileName());
-        fileNameData.setOriginName(fileName);
-
-        return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
+        return referralProfileParser.parseResume(employeeId,fileName,fileData);
+//        ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
+//
+//        if (!ProfileDocCheckTool.checkFileName(fileName)) {
+//            throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
+//        }
+//
+//        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
+//        if (employeeDO == null || employeeDO.getId() <= 0) {
+//            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+//        }
+//
+//        byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
+//        String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
+//        FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
+//        profileDocParseResult.setFile(fileNameData.getFileName());
+//        fileNameData.setOriginName(fileName);
+//
+//        return parseResult(employeeId, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
 
         /*// 调用SDK得到结果
         ResumeObj resumeObj;

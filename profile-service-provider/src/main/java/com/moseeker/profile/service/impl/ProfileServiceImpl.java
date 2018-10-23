@@ -1,14 +1,28 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.exception.ApplicationException;
+import com.moseeker.profile.constants.ProfileSource;
 import com.moseeker.profile.exception.ProfileException;
+import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
+import com.moseeker.profile.service.impl.resumefileupload.UserProfileParser;
+import com.moseeker.profile.service.impl.resumefileupload.iface.AbstractResumeFileParser;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -18,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.nio.ByteBuffer;
 import java.util.UUID;
 
@@ -39,6 +54,20 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
     UserUserDao userUserDao;
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+    @Autowired
+    ReferralProfileParser referralProfileParser;
+    @Autowired
+    UserProfileParser userProfileParser;
+    @Autowired
+    PositionEntity positionEntity;
+    @Autowired
+    private ProfileParseUtil profileParseUtil;
+    @Autowired
+    UserAccountEntity userAccountEntity;
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
+
 
     @Override
     public int upsertProfile(int userId, String profileParameter) throws CommonException {
@@ -81,5 +110,71 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
             return profileProfileDO.getId();
         }
     }
+    @Override
+    public ProfileDocParseResult parseFileProfile(int id, String fileName, ByteBuffer fileData) throws ProfileException {
+        return userProfileParser.parseResume(id,fileName,fileData);
+    }
 
+
+    /**
+     * 产生虚拟用户、简历、申请记录
+     * @param id 用户id
+     * @param mobile 手机号码
+     * @param position 职位编号
+     * @return 简历ID
+     * @throws ProfileException
+     */
+    @Override
+    public int employeeReferralProfile(int id, String name, String mobile, int position) throws ProfileException {
+
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(USER_USER.ID.getName(), id);
+        UserUserDO userUserDO = userUserDao.getData(queryBuilder.buildQuery());
+        if (userUserDO == null) {
+            throw PROFILE_USER_NOTEXIST;
+        }
+
+        JobPositionRecord positionRecord = positionEntity.getPositionByID(position);
+        if (positionRecord == null || positionRecord.getStatus() != PositionStatus.ACTIVED.getValue()) {
+            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+        }
+
+        String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.WECHAT_UPLOAD_RESUME_FILE.toString(), String.valueOf(id));
+
+        if (StringUtils.isBlank(profilePojoStr)) {
+            throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
+        } else {
+            client.del(AppId.APPID_ALPHADOG.getValue(),
+                    KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(id));
+        }
+
+        JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
+
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
+        profilePojo.getUserRecord().setName(name);
+        profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
+        ProfileProfileDO profileProfileDO = profileEntity.getProfileByUserId(id);
+        logger.info("开始执行插入操作================");
+        if (profileProfileDO == null) {
+            ProfileProfileRecord profileProfileRecord = new ProfileProfileRecord();
+            profileProfileRecord.setUserId(id);
+            profileProfileRecord.setDisable((byte) (Constant.ENABLE));
+            profileProfileRecord.setUuid(UUID.randomUUID().toString());
+            int source = ProfileSource.MOBILEReferral.getValue();
+            if (profilePojo.getProfileRecord() != null) {
+                if (profilePojo.getProfileRecord().getSource() != null) {
+                    source = profilePojo.getProfileRecord().getSource();
+                }
+            }
+            profileProfileRecord.setSource(source);
+            profilePojo.setProfileRecord(profileProfileRecord);
+            logger.info("开始保存的参数=====");
+            int profileId = profileEntity.createProfile(profilePojo, userUserDO);
+            return profileId;
+        } else {
+            profileEntity.updateProfile(profilePojo, profileProfileDO);
+            return profileProfileDO.getId();
+        }
+    }
 }
