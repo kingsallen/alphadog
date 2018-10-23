@@ -638,7 +638,7 @@ public class EmployeeEntity {
                     Set<Integer> entry = params.keySet();
                     for(Integer companyId : entry){
                         List<Integer> list = params.get(companyId);
-                        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(),
+                        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(),
                                 String.valueOf(companyId),  JSON.toJSONString(list));
                     }
                 }
