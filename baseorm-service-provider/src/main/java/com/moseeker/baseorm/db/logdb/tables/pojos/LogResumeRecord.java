@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogResumeRecord implements Serializable {
 
-    private static final long serialVersionUID = 1979279147;
+    private static final long serialVersionUID = -1040465802;
 
     private Integer   id;
     private Integer   userId;
@@ -32,7 +32,6 @@ public class LogResumeRecord implements Serializable {
     private String    fieldValue;
     private String    resultData;
     private Timestamp createTime;
-    private String    uuid;
     private String    text;
 
     public LogResumeRecord() {}
@@ -45,7 +44,6 @@ public class LogResumeRecord implements Serializable {
         this.fieldValue = value.fieldValue;
         this.resultData = value.resultData;
         this.createTime = value.createTime;
-        this.uuid = value.uuid;
         this.text = value.text;
     }
 
@@ -57,7 +55,6 @@ public class LogResumeRecord implements Serializable {
         String    fieldValue,
         String    resultData,
         Timestamp createTime,
-        String    uuid,
         String    text
     ) {
         this.id = id;
@@ -67,7 +64,6 @@ public class LogResumeRecord implements Serializable {
         this.fieldValue = fieldValue;
         this.resultData = resultData;
         this.createTime = createTime;
-        this.uuid = uuid;
         this.text = text;
     }
 
@@ -127,14 +123,6 @@ public class LogResumeRecord implements Serializable {
         this.createTime = createTime;
     }
 
-    public String getUuid() {
-        return this.uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
-
     public String getText() {
         return this.text;
     }
@@ -154,7 +142,6 @@ public class LogResumeRecord implements Serializable {
         sb.append(", ").append(fieldValue);
         sb.append(", ").append(resultData);
         sb.append(", ").append(createTime);
-        sb.append(", ").append(uuid);
         sb.append(", ").append(text);
 
         sb.append(")");

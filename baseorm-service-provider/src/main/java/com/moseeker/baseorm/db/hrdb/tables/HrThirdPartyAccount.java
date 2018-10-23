@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = -1056279571;
+    private static final long serialVersionUID = 242282826;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -129,7 +129,7 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     /**
      * The column <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段，目前是由于猎聘登录时会返回token和usereid（用户在猎聘的id）两个字段，分别使用ext存储usereid和ext2存储token
      */
-    public final TableField<HrThirdPartyAccountRecord, String> EXT2 = createField("ext2", org.jooq.impl.SQLDataType.VARCHAR.length(200).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段，目前是由于猎聘登录时会返回token和usereid（用户在猎聘的id）两个字段，分别使用ext存储usereid和ext2存储token");
+    public final TableField<HrThirdPartyAccountRecord, String> EXT2 = createField("ext2", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段，目前是由于猎聘登录时会返回token和usereid（用户在猎聘的id）两个字段，分别使用ext存储usereid和ext2存储token");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference
