@@ -113,8 +113,6 @@ public class TalentPoolService {
     private RedisClient redisClient;
     @Autowired
     private TalentPoolEmailEntity talentPoolEmailEntity;
-    @Autowired
-    private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 

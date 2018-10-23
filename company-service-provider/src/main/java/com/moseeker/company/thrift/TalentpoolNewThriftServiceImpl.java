@@ -13,6 +13,8 @@ import com.moseeker.thrift.gen.company.service.TalentpoolNewServices.Iface;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import java.util.List;
 import java.util.Map;
+
+import com.moseeker.thrift.gen.company.struct.TalentpoolHrAutomaticTagDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
