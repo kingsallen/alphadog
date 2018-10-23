@@ -212,24 +212,105 @@ public class TalentpoolNewController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
-    @RequestMapping(value = "/api/talentpool/hr/automatic/tag", method = RequestMethod.POST)
+    /*
+       添加hr自动标签
+      */
+    @RequestMapping(value = "/api/talentpool/hr/autotag", method = RequestMethod.POST)
     @ResponseBody
-    public String addHrActomaticTag(HttpServletRequest request,
+    public String addHrAutoTag(HttpServletRequest request,
                                     HttpServletResponse response) {
         try {
-            Params<String, Object> data = ParamUtils.parseRequestParam(request);
-            String hrId=String.valueOf(data.get("hr_id"));
-            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String companyId=String.valueOf(params.get("company_id"));
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
                 return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
             }
-            TalentpoolHrAutomaticTagDO hrAutomaticTagDO = ParamUtils.initModelForm(data, TalentpoolHrAutomaticTagDO.class);
-
-//            Response result = service.addCompanyTag(companyTagDO, Integer.parseInt(hrId));
-//            return ResponseLogNotification.success(request, result);
-            return null;
-        }catch(Exception e){
-            logger.error(e.getMessage(),e);
+            TalentpoolHrAutomaticTagDO tagDO = ParamUtils.initModelForm(params, TalentpoolHrAutomaticTagDO.class);
+            Response res = service.addHrAutoMaticTag(tagDO, Integer.parseInt(companyId));
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    /*
+      更新hr自动标签
+     */
+    @RequestMapping(value = "/api/talentpool/hr/autotag", method = RequestMethod.PUT)
+    @ResponseBody
+    public String updateHrAutoTag(HttpServletRequest request,
+                               HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String companyId=String.valueOf(params.get("company_id"));
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(companyId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            TalentpoolHrAutomaticTagDO tagDO = ParamUtils.initModelForm(params, TalentpoolHrAutomaticTagDO.class);
+            Response res = service.updateHrAutoMaticTag(tagDO, Integer.parseInt(companyId));
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+      删除hr自动标签列表
+     */
+    @RequestMapping(value = "/api/talentpool/hr/autotag", method = RequestMethod.DELETE)
+    @ResponseBody
+    public String deleteHrAutoTag(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(params.get("tags") ==null ){
+                return ResponseLogNotification.fail(request,"tags不可以为空");
+            }
+            String  tags = (String)params.get("tags");
+            List<Integer> tagList = ParamUtils.convertIntList(tags);
+            if(tagList.size()<1){
+                return ResponseLogNotification.fail(request,"ctags长度不可以为0");
+            }
+
+            Response result = service.deleteHrAutoMaticTagByIds(Integer.parseInt(hrId),Integer.parseInt(companyId),tagList);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+    /*
+      获取hr自动标签列表
+     */
+    @RequestMapping(value = "/api/talent/companytag/list", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrAutoTagList(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            int page_number = params.getInt("page_number", 1);
+            int page_size = params.getInt("page_size",10);
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.getHrAutoMaticTagList(Integer.parseInt(hrId),Integer.parseInt(companyId), page_number, page_size);
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }
