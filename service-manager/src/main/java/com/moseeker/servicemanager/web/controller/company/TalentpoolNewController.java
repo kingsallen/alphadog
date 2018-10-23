@@ -290,7 +290,7 @@ public class TalentpoolNewController {
     /*
       获取hr自动标签列表
      */
-    @RequestMapping(value = "/api/talent/companytag/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/talentpool/hr/autotag", method = RequestMethod.GET)
     @ResponseBody
     public String getHrAutoTagList(HttpServletRequest request) throws Exception {
         try {
