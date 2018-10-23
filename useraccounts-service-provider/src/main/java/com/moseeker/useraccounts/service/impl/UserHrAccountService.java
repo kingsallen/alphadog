@@ -80,6 +80,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -1231,6 +1232,7 @@ public class UserHrAccountService {
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Response response;
         try {
+            logger.info("getEmployees pageNum:{}, pageSize:{}", pageNumber, pageSize);
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
                     pageSize, pageNumber,balanceType);
         } catch (Exception e) {
