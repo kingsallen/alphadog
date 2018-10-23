@@ -161,8 +161,8 @@ public class EmployeeEntity {
 
     ThreadPool tp =ThreadPool.Instance;
 
-    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
-    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_queue";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";
 
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
