@@ -37,6 +37,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.company.bean.*;
+import com.moseeker.company.constant.TalentpoolTagStatus;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
 import com.moseeker.company.utils.ValidateUtils;
@@ -47,6 +48,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
+import com.moseeker.thrift.gen.company.struct.TalentpoolHrAutomaticTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -58,9 +60,13 @@ import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.*;
 
 /**
  * Created by zztaiwll on 17/12/4.
@@ -68,7 +74,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class TalentPoolService {
     Logger logger = LoggerFactory.getLogger(this.getClass());
-
     private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
     public TalentPoolService(){
@@ -113,6 +118,8 @@ public class TalentPoolService {
     private TalentpoolPastDao talentpoolPastDao;
     @Autowired
     private TalentpoolCompanyTagDao talentpoolCompanyTagDao;
+    @Autowired
+    private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
     @Autowired
     private HrCompanyDao hrCompanyDao;
     @Resource(name = "cacheClient")
@@ -1216,6 +1223,38 @@ public class TalentPoolService {
         return result;
     }
 
+    public Response getHrAutoTagList(int hrId,int companyId, int pageNumber, int pageSize) throws TException {
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }
+        Map<String, Object> tagListInfo = new HashMap<>();
+        List<Map<String,Object>> dataList=talentpoolHrAutomaticTagDao.getHrAutomaticTagMapListByHrIdPage(hrId,pageNumber,pageSize);
+        int total=talentpoolHrAutomaticTagDao.getHrAutomaticTagCountByHrId(hrId);
+        if(!StringUtils.isEmptyList(dataList)){
+            List<Map<String, Object>> result=new ArrayList<>();
+            for(Map<String,Object> data:dataList){
+                Map<String,Object> dataResult=new HashMap<>();
+                int tagId=(int)data.get("id");
+                int totalNum=tagService.getTagtalentNum(hrId,companyId,tagId);
+                dataResult.put("person_num",totalNum);
+                //从redis获取正在执行
+                boolean  isEXecute=tagService.getHtAutoTagIsExcute(tagId);
+                dataResult.put("is_execute",isEXecute);
+                //此处预估时间统一2h
+                dataResult.put("expire_time",2);
+                dataResult.put("tag_data",data);
+                result.add(dataResult);
+            }
+            tagListInfo.put("data",result);
+        }
+        tagListInfo.put("total",total);
+
+        return ResponseUtils.success(tagListInfo);
+    }
+
     @CounterIface
     public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size) throws TException {
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
@@ -1328,7 +1367,27 @@ public class TalentPoolService {
         }
         return ResponseUtils.success("");
     }
-
+    @Transactional
+    public Response deleteHrAutoTags(int hrId, int companyId, List<Integer> tag_ids){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }
+        talentpoolHrAutomaticTagDao.deleteByIdList(tag_ids);
+        try {
+            tp.startTast(() -> {
+                tagService.handlerHrAutomaticTag(tag_ids, TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue(), null);
+                return 0;
+            });
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+        }
+        return ResponseUtils.success("");
+    }
     /**
      * 获取企业标签信息
      * @param hrId          hr编号
@@ -1414,7 +1473,97 @@ public class TalentPoolService {
         }
         return ResponseUtils.fail(1, "请稍后重试");
     }
+    /*
+     添加hr的自动标签
+     */
+    @CounterIface
+    public Response addHrAutomaticTag(TalentpoolHrAutomaticTagDO data,int companyId ){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(data.getHr_id(),companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }
+        String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
+        if (StringUtils.isNullOrEmpty(info)) {
+            redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
+            //todo 这里应该考虑如何解耦,这个方法非常不好，需要和TalentpoolCompanyTagDO解耦，但是先这么做着
+            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data),TalentpoolCompanyTagDO.class));
+            if (StringUtils.isNullOrEmpty(filterString)) {
+                int id=this.addHrAutomaticData(data);
+                List<Integer> idList = new ArrayList<>();
+                idList.add(id);
+                //ES更新
+                try {
+                    tp.startTast(() -> {
+                        Map<String, Object> map = JSON.parseObject(JSON.toJSONString(data));
+                        if(data.isSetKeyword_list()){
+                            String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+                            map.put("keywords", keyword);
+                        }
+                        tagService.handlerCompanyTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
+                        return 0;
+                    });
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                return ResponseUtils.success("");
+            }else{
+                return ResponseUtils.fail(1,filterString);
+            }
+        }
+        return ResponseUtils.fail(1,"请不要重复执行");
+    }
 
+    private int addHrAutomaticData(TalentpoolHrAutomaticTagDO data){
+        TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
+        record=talentpoolHrAutomaticTagDao.addRecord(record);
+        return record.getId();
+    }
+    /*
+     更新hr自动标签
+     */
+    @CounterIface
+    public Response updateHrAutoTag(TalentpoolHrAutomaticTagDO data,int companyId ){
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(data.getHr_id(),companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }else if(flag == -3){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_CONF_TALENTPOOL_NOT);
+        }
+        if(data.getId()==0){
+            ResponseUtils.fail(1,"标签id不能为空");
+        }
+        String result=talentPoolEntity.validateHrTalentPoolV3ByTagName(data.getName(),data.getHr_id(),data.getId());
+        if("OK".equals(result)){
+            String filterString=talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data),TalentpoolCompanyTagDO.class));
+            String statusString=talentpoolHrAutomaticTagDao.validateTagStatusById(data.getId());
+            String resultString=filterString+"   "+statusString;
+            if(StringUtils.isNullOrEmpty(resultString)){
+                talentpoolHrAutomaticTagDao.updateRecord( com.moseeker.baseorm.util.BeanUtils.structToDBAll(data, TalentpoolHrAutomaticTagRecord.class));
+                List<Integer> idList = new ArrayList<>();
+                idList.add(data.getId());
+                //ES更新
+                try {
+                    tp.startTast(() -> {
+                        Map<String, Object> tag = this.handlerHrAutoData(data.getId(), data);
+                        tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue(), tag);
+                        return 0;
+                    });
+                }catch(Exception e){
+                    logger.error(e.getMessage(),e);
+                }
+                return  ResponseUtils.success("");
+            }else{
+                return ResponseUtils.fail(1, resultString);
+            }
+        }
+        return ResponseUtils.fail(1, result);
+    }
     @Transactional
     public Response updateCompanyTag(TalentpoolCompanyTagDO companyTagDO, int hr_id){
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hr_id,companyTagDO.getCompany_id());
@@ -1464,6 +1613,14 @@ public class TalentPoolService {
         }
         return map;
     }
+
+    private Map<String,Object> handlerHrAutoData(int id,TalentpoolHrAutomaticTagDO tagData){
+        Map<String,Object> map=talentpoolHrAutomaticTagDao.getSingleDataById(id);
+        if(!StringUtils.isEmptyMap(map)){
+            combineHrAutoData(map,tagData);
+        }
+        return map;
+    }
     /*
       根据标签id获取企业标签的信息
      */
@@ -1476,6 +1633,54 @@ public class TalentPoolService {
      处理数据，将新旧数据合并
      */
     private void combineData(Map<String,Object> map,TalentpoolCompanyTagDO companyTagDO){
+
+        if(companyTagDO.isSetOrigins()){
+            map.put("origins",companyTagDO.getOrigins());
+        }
+        if(companyTagDO.isSetWork_years()){
+            map.put("work_years",companyTagDO.getWork_years());
+        }
+        if(companyTagDO.isSetCity_name()){
+            map.put("city_name",companyTagDO.getCity_name());
+        }
+        if(companyTagDO.isSetDegree()){
+            map.put("degree",companyTagDO.getDegree());
+        }
+        if(companyTagDO.isSetPast_position()){
+            map.put("past_position",companyTagDO.getPast_position());
+        }
+        if(companyTagDO.isSetIn_last_job_search_position()){
+            map.put("in_last_job_search_position",companyTagDO.getIn_last_job_search_position());
+        }
+        if(companyTagDO.isSetMin_age()){
+            map.put("min_age",companyTagDO.getMin_age());
+        }
+        if(companyTagDO.isSetMax_age()){
+            map.put("max_age",companyTagDO.getMax_age());
+        }
+        if(companyTagDO.isSetIntention_city_name()){
+            map.put("intention_city_name",companyTagDO.getIntention_city_name());
+        }
+        if(companyTagDO.isSetIntention_salary_code()){
+            map.put("intention_salary_code",companyTagDO.getIntention_salary_code());
+        }
+        if(companyTagDO.isSetSex()){
+            map.put("sex",companyTagDO.getSex());
+        }
+        if(companyTagDO.isSetIs_recommend()){
+            map.put("is_recommend",companyTagDO.getIs_recommend());
+        }
+        if(companyTagDO.isSetCompany_name()){
+            map.put("company_name",companyTagDO.getCompany_name());
+        }
+        if(companyTagDO.isSetIn_last_job_search_company()){
+            map.put("in_last_job_search_company",companyTagDO.getIn_last_job_search_company());
+        }
+    }
+    /*
+     合并hr自动标签数据
+     */
+    private void combineHrAutoData(Map<String,Object> map,TalentpoolHrAutomaticTagDO companyTagDO){
 
         if(companyTagDO.isSetOrigins()){
             map.put("origins",companyTagDO.getOrigins());

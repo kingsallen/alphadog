@@ -130,5 +130,45 @@ public class TalentpoolNewThriftServiceImpl implements Iface {
     public Response addProfileContent(int userId, int accountId, String content) throws BIZException, TException {
         return service.addProfileComment(userId, accountId, content);
     }
+
+    @Override
+    public Response deleteHrAutoMaticTagByIds(int hr_id, int company_id, List<Integer> tag_ids) throws BIZException, TException {
+        try{
+            return service.deleteHrAutoTags(hr_id,company_id,tag_ids);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response addHrAutoMaticTag(TalentpoolHrAutomaticTagDO hrAutoTagDO, int company_id) throws BIZException, TException {
+        try{
+            return service.addHrAutomaticTag(hrAutoTagDO,company_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response updateHrAutoMaticTag(TalentpoolHrAutomaticTagDO hrAutoTagDO, int company_id) throws BIZException, TException {
+        try{
+            return service.updateHrAutoTag(hrAutoTagDO,company_id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getHrAutoMaticTagList(int hr_id, int company_id, int page_number, int page_size) throws BIZException, TException {
+        try{
+            return service.getHrAutoTagList(hr_id,company_id,page_number,page_size);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
 

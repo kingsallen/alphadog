@@ -94,6 +94,8 @@ public class TalentPoolEntity {
     private JobPositionProfileFilterDao jobPositionProfileFilterDao;
     @Autowired
     private TalentpoolExecuteDao talentpoolExcuteDao;
+    @Autowired
+    private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
 
     /*
         验证hr操作user_id是否合法
@@ -173,6 +175,23 @@ public class TalentPoolEntity {
                         .and(new Condition(com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag.TALENTPOOL_COMPANY_TAG.ID.getName(), id, ValueOp.NEQ))
                         .buildQuery();
             int count = talentpoolCompanyTagDao.getCount(query);
+            if(count > 0){
+                result = "标签名称重复";
+            }else{
+                return "OK";
+            }
+        }
+
+        return result;
+    }
+
+    public String validateHrTalentPoolV3ByTagName(String name, int hrId, int id){
+        ValidateUtil vu = new ValidateUtil();
+        vu.addRequiredStringValidate("标签名称", name, null,null);
+        vu.addStringLengthValidate("标签名称", name, null, null, 1, 41);
+        String result = vu.validate();
+        if(!StringUtils.isNotNullOrEmpty(result)) {
+            int count = talentpoolHrAutomaticTagDao.getTagNameCount(hrId,name,id);
             if(count > 0){
                 result = "标签名称重复";
             }else{
@@ -819,6 +838,7 @@ public class TalentPoolEntity {
         int count = talentpoolCompanyTagDao.getCount(query);
         return count;
     }
+
     /*
    通过CompanyId获取企业筛选规则数量
    */
@@ -882,11 +902,11 @@ public class TalentPoolEntity {
     }
 
     /*
-    通过标签编号获取每个标签下面的人才数量
+     处理数据
     */
     public List<Map<String, Object>> handlerTagCountByTagIdList(List<Map<String, Object>> companyTagList){
         List<Integer> tagIds = companyTagList.stream().map(m -> (Integer)m.get("id")).collect(Collectors.toList());
-        Map<Integer, Integer> tagRecordList = talentpoolCompanyTagUserDao.getTagCountByTagIdList(tagIds);
+//        Map<Integer, Integer> tagRecordList = talentpoolCompanyTagUserDao.getTagCountByTagIdList(tagIds);
         List<Map<String, Object>> companyTagMapList = new ArrayList<>();
         for(Map<String, Object> companyTag : companyTagList){
             Map<String, Object> tagMap = new HashMap<>();

@@ -894,6 +894,14 @@ public class SearchUtil {
         }
     }
 
+    public void handlerHrAutoTag(String hrAutoTag,QueryBuilder builder){
+        List<String> tagIdList=this.stringConvertList(hrAutoTag);
+        if(tagIdList != null && tagIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.hr_auto_tag.id",tagIdList);
+            ((BoolQueryBuilder) builder).must(query2);
+        }
+    }
+
     public void matchPhrasePrefixQuery(List<String> fieldList,String condition ,QueryBuilder query){
         if (fieldList!=null&&fieldList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
