@@ -912,15 +912,17 @@ public class EmployeeService {
         //查询已经认证的员工
         UserEmployeeRecord userEmployee = employeeDao.getActiveEmployee(userId,companyId);
         if (userEmployee != null) {
-            userEmployee.setCustomFieldValues(jsonArray.toJSONString());
+            userEmployee.setCustomFieldValues(EmployeeExtInfoTool.mergeCustomFieldValue(userEmployee.getCustomFieldValues(), customValues));
             employeeDao.updateRecord(userEmployee);
         }
 
-        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId));
+        String pendingEmployee = client.get(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,
+                employeeEntity.getAuthInfoKey(userId, companyId));
         if(StringUtils.isNotNullOrEmpty(pendingEmployee)) {
             UserEmployeeDO employeeDO = JSONObject.parseObject(pendingEmployee, UserEmployeeDO.class);
-            employeeDO.setCustomFieldValues(jsonArray.toJSONString());
-            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO, employeeEntity.getAuthInfoKey(userId, companyId), JSONObject.toJSONString(employeeDO));
+            employeeDO.setCustomFieldValues(EmployeeExtInfoTool.mergeCustomFieldValue(employeeDO.getCustomFieldValues(), customValues));
+            client.set(Constant.APPID_ALPHADOG, Constant.EMPLOYEE_AUTH_INFO,
+                    employeeEntity.getAuthInfoKey(userId, companyId), JSONObject.toJSONString(employeeDO));
         }
 
     }
