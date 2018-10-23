@@ -5,6 +5,7 @@ import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -207,6 +208,7 @@ public class ReferralServiceImpl implements ReferralService {
         String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
 
+        logger.info("ReferralServiceImpl employeeReferralProfile profilePojoStr:{}", profilePojoStr);
         if (StringUtils.isBlank(profilePojoStr)) {
             throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
         } else {
@@ -217,6 +219,16 @@ public class ReferralServiceImpl implements ReferralService {
         JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
 
         ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
+        if (profilePojo.getAttachmentRecords() != null) {
+            logger.info("ReferralServiceImpl employeeReferralProfile profilePojo.attachments:{}", profilePojo
+                    .getAttachmentRecords()
+                    .stream()
+                    .map(ProfileAttachmentRecord::toString)
+                    .collect(Collectors.joining(";")));
+        } else {
+            logger.info("ReferralServiceImpl employeeReferralProfile profilePojo.attachments is null");
+        }
+
         profilePojo.getUserRecord().setName(name);
         profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
 
@@ -462,6 +474,7 @@ public class ReferralServiceImpl implements ReferralService {
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
+        logger.info("ReferralServiceImpl parseResult profilePojo:{}", profilePojo.toJson());
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId),
                 "", profilePojo.toJson(), 24*60*60);
         return profileDocParseResult;
