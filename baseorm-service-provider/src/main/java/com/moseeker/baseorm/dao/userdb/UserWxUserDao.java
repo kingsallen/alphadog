@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.userdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.StringUtils;
@@ -50,6 +51,19 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
             return create.selectFrom(UserWxUser.USER_WX_USER)
                     .where(UserWxUser.USER_WX_USER.SYSUSER_ID.eq(userId))
                     .fetch();
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser> getWXUsersByUserIdAndCompanyId(int userId, int companyId) {
+        if (userId > 0) {
+            return create.select(UserWxUser.USER_WX_USER.fields())
+                    .from(UserWxUser.USER_WX_USER).innerJoin(HrWxWechat.HR_WX_WECHAT)
+                    .on(UserWxUser.USER_WX_USER.WECHAT_ID.eq(HrWxWechat.HR_WX_WECHAT.ID))
+                    .where(UserWxUser.USER_WX_USER.SYSUSER_ID.eq(userId))
+                    .and(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.eq(companyId))
+                    .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserWxUser.class);
         } else {
             return new ArrayList<>();
         }

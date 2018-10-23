@@ -8,34 +8,42 @@ import com.moseeker.baseorm.db.logdb.tables.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogHrloginRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogJbEmailparseRecord;
+import com.moseeker.baseorm.db.logdb.tables.LogMeetmobotRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogResumeRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogScraperRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
+import com.moseeker.baseorm.db.logdb.tables.LogUserEmployee;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
+import com.moseeker.baseorm.db.logdb.tables.LogWxWechatMenuDailyRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogAiRecomRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogCronjobRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogDeadLetterRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogEmailSendrecordRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogEmployeeOperationLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogHrOperationRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogHrloginRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogJbEmailparseRecordRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogMeetmobotRecomRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogResumeRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogScraperRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailDailyLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolEmailLogRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogUserEmployeeRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMenuRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxMessageRecordRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogWxTemplateMessageSendrecordRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogWxWechatMenuDailyRecordRecord;
 
 import javax.annotation.Generated;
 
@@ -66,18 +74,22 @@ public class Keys {
     public static final Identity<LogCronjobRecord, Integer> IDENTITY_LOG_CRONJOB = Identities0.IDENTITY_LOG_CRONJOB;
     public static final Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = Identities0.IDENTITY_LOG_DEAD_LETTER;
     public static final Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = Identities0.IDENTITY_LOG_EMAIL_SENDRECORD;
+    public static final Identity<LogEmployeeOperationLogRecord, Integer> IDENTITY_LOG_EMPLOYEE_OPERATION_LOG = Identities0.IDENTITY_LOG_EMPLOYEE_OPERATION_LOG;
     public static final Identity<LogHrloginRecordRecord, Integer> IDENTITY_LOG_HRLOGIN_RECORD = Identities0.IDENTITY_LOG_HRLOGIN_RECORD;
     public static final Identity<LogHrOperationRecordRecord, Integer> IDENTITY_LOG_HR_OPERATION_RECORD = Identities0.IDENTITY_LOG_HR_OPERATION_RECORD;
     public static final Identity<LogJbEmailparseRecordRecord, Integer> IDENTITY_LOG_JB_EMAILPARSE_RECORD = Identities0.IDENTITY_LOG_JB_EMAILPARSE_RECORD;
+    public static final Identity<LogMeetmobotRecomRecord, Integer> IDENTITY_LOG_MEETMOBOT_RECOM = Identities0.IDENTITY_LOG_MEETMOBOT_RECOM;
     public static final Identity<LogResumeRecordRecord, Integer> IDENTITY_LOG_RESUME_RECORD = Identities0.IDENTITY_LOG_RESUME_RECORD;
     public static final Identity<LogScraperRecordRecord, Integer> IDENTITY_LOG_SCRAPER_RECORD = Identities0.IDENTITY_LOG_SCRAPER_RECORD;
     public static final Identity<LogSmsSendrecordRecord, Integer> IDENTITY_LOG_SMS_SENDRECORD = Identities0.IDENTITY_LOG_SMS_SENDRECORD;
     public static final Identity<LogTalentpoolEmailDailyLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_DAILY_LOG = Identities0.IDENTITY_LOG_TALENTPOOL_EMAIL_DAILY_LOG;
     public static final Identity<LogTalentpoolEmailLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_LOG = Identities0.IDENTITY_LOG_TALENTPOOL_EMAIL_LOG;
     public static final Identity<LogTalentpoolProfileFilterLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_PROFILE_FILTER_LOG = Identities0.IDENTITY_LOG_TALENTPOOL_PROFILE_FILTER_LOG;
+    public static final Identity<LogUserEmployeeRecord, Integer> IDENTITY_LOG_USER_EMPLOYEE = Identities0.IDENTITY_LOG_USER_EMPLOYEE;
     public static final Identity<LogWxMenuRecordRecord, Integer> IDENTITY_LOG_WX_MENU_RECORD = Identities0.IDENTITY_LOG_WX_MENU_RECORD;
     public static final Identity<LogWxMessageRecordRecord, Integer> IDENTITY_LOG_WX_MESSAGE_RECORD = Identities0.IDENTITY_LOG_WX_MESSAGE_RECORD;
     public static final Identity<LogWxTemplateMessageSendrecordRecord, Integer> IDENTITY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = Identities0.IDENTITY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD;
+    public static final Identity<LogWxWechatMenuDailyRecordRecord, Integer> IDENTITY_LOG_WX_WECHAT_MENU_DAILY_RECORD = Identities0.IDENTITY_LOG_WX_WECHAT_MENU_DAILY_RECORD;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -87,10 +99,12 @@ public class Keys {
     public static final UniqueKey<LogCronjobRecord> KEY_LOG_CRONJOB_PRIMARY = UniqueKeys0.KEY_LOG_CRONJOB_PRIMARY;
     public static final UniqueKey<LogDeadLetterRecord> KEY_LOG_DEAD_LETTER_PRIMARY = UniqueKeys0.KEY_LOG_DEAD_LETTER_PRIMARY;
     public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_EMAIL_SENDRECORD_PRIMARY;
+    public static final UniqueKey<LogEmployeeOperationLogRecord> KEY_LOG_EMPLOYEE_OPERATION_LOG_PRIMARY = UniqueKeys0.KEY_LOG_EMPLOYEE_OPERATION_LOG_PRIMARY;
     public static final UniqueKey<LogHrloginRecordRecord> KEY_LOG_HRLOGIN_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_HRLOGIN_RECORD_PRIMARY;
     public static final UniqueKey<LogHrloginRecordRecord> KEY_LOG_HRLOGIN_RECORD_HR_ID = UniqueKeys0.KEY_LOG_HRLOGIN_RECORD_HR_ID;
     public static final UniqueKey<LogHrOperationRecordRecord> KEY_LOG_HR_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_HR_OPERATION_RECORD_PRIMARY;
     public static final UniqueKey<LogJbEmailparseRecordRecord> KEY_LOG_JB_EMAILPARSE_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_JB_EMAILPARSE_RECORD_PRIMARY;
+    public static final UniqueKey<LogMeetmobotRecomRecord> KEY_LOG_MEETMOBOT_RECOM_PRIMARY = UniqueKeys0.KEY_LOG_MEETMOBOT_RECOM_PRIMARY;
     public static final UniqueKey<LogResumeRecordRecord> KEY_LOG_RESUME_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_RESUME_RECORD_PRIMARY;
     public static final UniqueKey<LogScraperRecordRecord> KEY_LOG_SCRAPER_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_SCRAPER_RECORD_PRIMARY;
     public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_SMS_SENDRECORD_PRIMARY;
@@ -98,9 +112,12 @@ public class Keys {
     public static final UniqueKey<LogTalentpoolEmailDailyLogRecord> KEY_LOG_TALENTPOOL_EMAIL_DAILY_LOG_LOG_TALENTPOOL_EMAIL_DAILY_LOG_DAILY_UNIQUE = UniqueKeys0.KEY_LOG_TALENTPOOL_EMAIL_DAILY_LOG_LOG_TALENTPOOL_EMAIL_DAILY_LOG_DAILY_UNIQUE;
     public static final UniqueKey<LogTalentpoolEmailLogRecord> KEY_LOG_TALENTPOOL_EMAIL_LOG_PRIMARY = UniqueKeys0.KEY_LOG_TALENTPOOL_EMAIL_LOG_PRIMARY;
     public static final UniqueKey<LogTalentpoolProfileFilterLogRecord> KEY_LOG_TALENTPOOL_PROFILE_FILTER_LOG_PRIMARY = UniqueKeys0.KEY_LOG_TALENTPOOL_PROFILE_FILTER_LOG_PRIMARY;
+    public static final UniqueKey<LogUserEmployeeRecord> KEY_LOG_USER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_LOG_USER_EMPLOYEE_PRIMARY;
     public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MENU_RECORD_PRIMARY;
     public static final UniqueKey<LogWxMessageRecordRecord> KEY_LOG_WX_MESSAGE_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_MESSAGE_RECORD_PRIMARY;
     public static final UniqueKey<LogWxTemplateMessageSendrecordRecord> KEY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD_PRIMARY;
+    public static final UniqueKey<LogWxWechatMenuDailyRecordRecord> KEY_LOG_WX_WECHAT_MENU_DAILY_RECORD_PRIMARY = UniqueKeys0.KEY_LOG_WX_WECHAT_MENU_DAILY_RECORD_PRIMARY;
+    public static final UniqueKey<LogWxWechatMenuDailyRecordRecord> KEY_LOG_WX_WECHAT_MENU_DAILY_RECORD_WECHAT_ID = UniqueKeys0.KEY_LOG_WX_WECHAT_MENU_DAILY_RECORD_WECHAT_ID;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -116,18 +133,22 @@ public class Keys {
         public static Identity<LogCronjobRecord, Integer> IDENTITY_LOG_CRONJOB = createIdentity(LogCronjob.LOG_CRONJOB, LogCronjob.LOG_CRONJOB.ID);
         public static Identity<LogDeadLetterRecord, Integer> IDENTITY_LOG_DEAD_LETTER = createIdentity(LogDeadLetter.LOG_DEAD_LETTER, LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static Identity<LogEmailSendrecordRecord, Integer> IDENTITY_LOG_EMAIL_SENDRECORD = createIdentity(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
+        public static Identity<LogEmployeeOperationLogRecord, Integer> IDENTITY_LOG_EMPLOYEE_OPERATION_LOG = createIdentity(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG, LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.ID);
         public static Identity<LogHrloginRecordRecord, Integer> IDENTITY_LOG_HRLOGIN_RECORD = createIdentity(LogHrloginRecord.LOG_HRLOGIN_RECORD, LogHrloginRecord.LOG_HRLOGIN_RECORD.ID);
         public static Identity<LogHrOperationRecordRecord, Integer> IDENTITY_LOG_HR_OPERATION_RECORD = createIdentity(LogHrOperationRecord.LOG_HR_OPERATION_RECORD, LogHrOperationRecord.LOG_HR_OPERATION_RECORD.ID);
         public static Identity<LogJbEmailparseRecordRecord, Integer> IDENTITY_LOG_JB_EMAILPARSE_RECORD = createIdentity(LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD, LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD.ID);
+        public static Identity<LogMeetmobotRecomRecord, Integer> IDENTITY_LOG_MEETMOBOT_RECOM = createIdentity(LogMeetmobotRecom.LOG_MEETMOBOT_RECOM, LogMeetmobotRecom.LOG_MEETMOBOT_RECOM.ID);
         public static Identity<LogResumeRecordRecord, Integer> IDENTITY_LOG_RESUME_RECORD = createIdentity(LogResumeRecord.LOG_RESUME_RECORD, LogResumeRecord.LOG_RESUME_RECORD.ID);
         public static Identity<LogScraperRecordRecord, Integer> IDENTITY_LOG_SCRAPER_RECORD = createIdentity(LogScraperRecord.LOG_SCRAPER_RECORD, LogScraperRecord.LOG_SCRAPER_RECORD.ID);
         public static Identity<LogSmsSendrecordRecord, Integer> IDENTITY_LOG_SMS_SENDRECORD = createIdentity(LogSmsSendrecord.LOG_SMS_SENDRECORD, LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
         public static Identity<LogTalentpoolEmailDailyLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_DAILY_LOG = createIdentity(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG, LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.ID);
         public static Identity<LogTalentpoolEmailLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_EMAIL_LOG = createIdentity(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG, LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.ID);
         public static Identity<LogTalentpoolProfileFilterLogRecord, Integer> IDENTITY_LOG_TALENTPOOL_PROFILE_FILTER_LOG = createIdentity(LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG, LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG.ID);
+        public static Identity<LogUserEmployeeRecord, Integer> IDENTITY_LOG_USER_EMPLOYEE = createIdentity(LogUserEmployee.LOG_USER_EMPLOYEE, LogUserEmployee.LOG_USER_EMPLOYEE.ID);
         public static Identity<LogWxMenuRecordRecord, Integer> IDENTITY_LOG_WX_MENU_RECORD = createIdentity(LogWxMenuRecord.LOG_WX_MENU_RECORD, LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
         public static Identity<LogWxMessageRecordRecord, Integer> IDENTITY_LOG_WX_MESSAGE_RECORD = createIdentity(LogWxMessageRecord.LOG_WX_MESSAGE_RECORD, LogWxMessageRecord.LOG_WX_MESSAGE_RECORD.ID);
         public static Identity<LogWxTemplateMessageSendrecordRecord, Integer> IDENTITY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD = createIdentity(LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD, LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD.ID);
+        public static Identity<LogWxWechatMenuDailyRecordRecord, Integer> IDENTITY_LOG_WX_WECHAT_MENU_DAILY_RECORD = createIdentity(LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD, LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -135,10 +156,12 @@ public class Keys {
         public static final UniqueKey<LogCronjobRecord> KEY_LOG_CRONJOB_PRIMARY = createUniqueKey(LogCronjob.LOG_CRONJOB, "KEY_log_cronjob_PRIMARY", LogCronjob.LOG_CRONJOB.ID);
         public static final UniqueKey<LogDeadLetterRecord> KEY_LOG_DEAD_LETTER_PRIMARY = createUniqueKey(LogDeadLetter.LOG_DEAD_LETTER, "KEY_log_dead_letter_PRIMARY", LogDeadLetter.LOG_DEAD_LETTER.ID);
         public static final UniqueKey<LogEmailSendrecordRecord> KEY_LOG_EMAIL_SENDRECORD_PRIMARY = createUniqueKey(LogEmailSendrecord.LOG_EMAIL_SENDRECORD, "KEY_log_email_sendrecord_PRIMARY", LogEmailSendrecord.LOG_EMAIL_SENDRECORD.ID);
+        public static final UniqueKey<LogEmployeeOperationLogRecord> KEY_LOG_EMPLOYEE_OPERATION_LOG_PRIMARY = createUniqueKey(LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG, "KEY_log_employee_operation_log_PRIMARY", LogEmployeeOperationLog.LOG_EMPLOYEE_OPERATION_LOG.ID);
         public static final UniqueKey<LogHrloginRecordRecord> KEY_LOG_HRLOGIN_RECORD_PRIMARY = createUniqueKey(LogHrloginRecord.LOG_HRLOGIN_RECORD, "KEY_log_hrlogin_record_PRIMARY", LogHrloginRecord.LOG_HRLOGIN_RECORD.ID);
         public static final UniqueKey<LogHrloginRecordRecord> KEY_LOG_HRLOGIN_RECORD_HR_ID = createUniqueKey(LogHrloginRecord.LOG_HRLOGIN_RECORD, "KEY_log_hrlogin_record_hr_id", LogHrloginRecord.LOG_HRLOGIN_RECORD.HR_ID, LogHrloginRecord.LOG_HRLOGIN_RECORD.LOGIN_DATE);
         public static final UniqueKey<LogHrOperationRecordRecord> KEY_LOG_HR_OPERATION_RECORD_PRIMARY = createUniqueKey(LogHrOperationRecord.LOG_HR_OPERATION_RECORD, "KEY_log_hr_operation_record_PRIMARY", LogHrOperationRecord.LOG_HR_OPERATION_RECORD.ID);
         public static final UniqueKey<LogJbEmailparseRecordRecord> KEY_LOG_JB_EMAILPARSE_RECORD_PRIMARY = createUniqueKey(LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD, "KEY_log_jb_emailparse_record_PRIMARY", LogJbEmailparseRecord.LOG_JB_EMAILPARSE_RECORD.ID);
+        public static final UniqueKey<LogMeetmobotRecomRecord> KEY_LOG_MEETMOBOT_RECOM_PRIMARY = createUniqueKey(LogMeetmobotRecom.LOG_MEETMOBOT_RECOM, "KEY_log_meetmobot_recom_PRIMARY", LogMeetmobotRecom.LOG_MEETMOBOT_RECOM.ID);
         public static final UniqueKey<LogResumeRecordRecord> KEY_LOG_RESUME_RECORD_PRIMARY = createUniqueKey(LogResumeRecord.LOG_RESUME_RECORD, "KEY_log_resume_record_PRIMARY", LogResumeRecord.LOG_RESUME_RECORD.ID);
         public static final UniqueKey<LogScraperRecordRecord> KEY_LOG_SCRAPER_RECORD_PRIMARY = createUniqueKey(LogScraperRecord.LOG_SCRAPER_RECORD, "KEY_log_scraper_record_PRIMARY", LogScraperRecord.LOG_SCRAPER_RECORD.ID);
         public static final UniqueKey<LogSmsSendrecordRecord> KEY_LOG_SMS_SENDRECORD_PRIMARY = createUniqueKey(LogSmsSendrecord.LOG_SMS_SENDRECORD, "KEY_log_sms_sendrecord_PRIMARY", LogSmsSendrecord.LOG_SMS_SENDRECORD.ID);
@@ -146,8 +169,11 @@ public class Keys {
         public static final UniqueKey<LogTalentpoolEmailDailyLogRecord> KEY_LOG_TALENTPOOL_EMAIL_DAILY_LOG_LOG_TALENTPOOL_EMAIL_DAILY_LOG_DAILY_UNIQUE = createUniqueKey(LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG, "KEY_log_talentpool_email_daily_log_log_talentpool_email_daily_log_daily_unique", LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.COMPANY_ID, LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG.DATE);
         public static final UniqueKey<LogTalentpoolEmailLogRecord> KEY_LOG_TALENTPOOL_EMAIL_LOG_PRIMARY = createUniqueKey(LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG, "KEY_log_talentpool_email_log_PRIMARY", LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG.ID);
         public static final UniqueKey<LogTalentpoolProfileFilterLogRecord> KEY_LOG_TALENTPOOL_PROFILE_FILTER_LOG_PRIMARY = createUniqueKey(LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG, "KEY_log_talentpool_profile_filter_log_PRIMARY", LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG.ID);
+        public static final UniqueKey<LogUserEmployeeRecord> KEY_LOG_USER_EMPLOYEE_PRIMARY = createUniqueKey(LogUserEmployee.LOG_USER_EMPLOYEE, "KEY_log_user_employee_PRIMARY", LogUserEmployee.LOG_USER_EMPLOYEE.ID);
         public static final UniqueKey<LogWxMenuRecordRecord> KEY_LOG_WX_MENU_RECORD_PRIMARY = createUniqueKey(LogWxMenuRecord.LOG_WX_MENU_RECORD, "KEY_log_wx_menu_record_PRIMARY", LogWxMenuRecord.LOG_WX_MENU_RECORD.ID);
         public static final UniqueKey<LogWxMessageRecordRecord> KEY_LOG_WX_MESSAGE_RECORD_PRIMARY = createUniqueKey(LogWxMessageRecord.LOG_WX_MESSAGE_RECORD, "KEY_log_wx_message_record_PRIMARY", LogWxMessageRecord.LOG_WX_MESSAGE_RECORD.ID);
         public static final UniqueKey<LogWxTemplateMessageSendrecordRecord> KEY_LOG_WX_TEMPLATE_MESSAGE_SENDRECORD_PRIMARY = createUniqueKey(LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD, "KEY_log_wx_template_message_sendrecord_PRIMARY", LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD.ID);
+        public static final UniqueKey<LogWxWechatMenuDailyRecordRecord> KEY_LOG_WX_WECHAT_MENU_DAILY_RECORD_PRIMARY = createUniqueKey(LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD, "KEY_log_wx_wechat_menu_daily_record_PRIMARY", LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD.ID);
+        public static final UniqueKey<LogWxWechatMenuDailyRecordRecord> KEY_LOG_WX_WECHAT_MENU_DAILY_RECORD_WECHAT_ID = createUniqueKey(LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD, "KEY_log_wx_wechat_menu_daily_record_wechat_id", LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD.WECHAT_ID, LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD.COMPANY_ID, LogWxWechatMenuDailyRecord.LOG_WX_WECHAT_MENU_DAILY_RECORD.CREATE_DATE);
     }
 }

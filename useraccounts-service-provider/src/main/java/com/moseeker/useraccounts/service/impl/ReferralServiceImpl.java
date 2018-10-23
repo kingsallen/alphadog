@@ -54,18 +54,18 @@ public class ReferralServiceImpl implements ReferralService {
     private ReferralEntity referralEntity;
 
     @Override
-    public RedPackets getRedPackets(int id, int pageNum, int pageSize) throws UserAccountException {
+    public RedPackets getRedPackets(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException {
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             throw UserAccountException.PROGRAM_FETCH_TOO_MUCH;
         }
         RedPackets redPackets = new RedPackets();
-        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(id);
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId,companyId);
         if (userEmployeeDO != null) {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             redPackets.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
         }
 
-        List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(id);
+        List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
 
             List<Integer> wxUserIdList = wxUserRecords
@@ -73,12 +73,12 @@ public class ReferralServiceImpl implements ReferralService {
                     .map(userWxUserRecord -> userWxUserRecord.getId().intValue())
                     .collect(Collectors.toList());
             //计算红包总额
-            redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList));
+            redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList, companyId));
 
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
-            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, pageUtil.getIndex(),
-                    pageUtil.getSize());
+            List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, companyId,
+                    pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
                 HBData data = referralEntity.fetchHBData(itemsRecords);
@@ -94,12 +94,12 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public BonusList getBonus(int userId, int pageNum, int pageSize) throws UserAccountException {
+    public BonusList getBonus(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException {
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             throw UserAccountException.PROGRAM_FETCH_TOO_MUCH;
         }
         BonusList bonusList = new BonusList();
-        UserEmployeeDO userEmployeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        UserEmployeeDO userEmployeeDO = employeeEntity.getCompanyEmployee(userId,companyId);
         if (userEmployeeDO != null) {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             bonusList.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
@@ -126,7 +126,7 @@ public class ReferralServiceImpl implements ReferralService {
                     .stream()
                     .map(UserWxUserRecord::getSysuserId)
                     .collect(Collectors.toList());
-            double count = itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList);
+            double count = itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList, companyId);
             bonusList.setTotalRedpackets(count);
         }
         return bonusList;

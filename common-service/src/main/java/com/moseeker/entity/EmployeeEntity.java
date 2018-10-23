@@ -182,7 +182,7 @@ public class EmployeeEntity {
         companyIds.add(companyId);
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
                 .and("disable", "0")
-                .and(USER_EMPLOYEE.ACTIVATION.getName(), "0");
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState());
         return employeeDao.getData(query.buildQuery());
     }
 
@@ -863,7 +863,12 @@ public class EmployeeEntity {
      */
     public List<UserEmployeeDO> addEmployeeList(List<UserEmployeeDO> userEmployeeList) throws CommonException {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
-            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(BeanUtils.structToDB(userEmployeeList, UserEmployeeRecord.class));
+            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
+            for(UserEmployeeDO employee : userEmployeeList){
+                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                record = employeeDao.addRecord(record);
+                employeeDOS.add(record);
+            }
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);

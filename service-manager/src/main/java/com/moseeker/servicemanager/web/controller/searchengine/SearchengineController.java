@@ -447,4 +447,24 @@ public class SearchengineController {
         }
     }
 
+    @RequestMapping(value = "/api/mobot/search", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchMobotPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
+            }
+            Response res=searchengineServices.mobotSearchPosition(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 }
