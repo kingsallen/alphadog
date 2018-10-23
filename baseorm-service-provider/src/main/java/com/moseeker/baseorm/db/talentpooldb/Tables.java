@@ -10,6 +10,8 @@ import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolEmail;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolPast;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilter;
@@ -44,7 +46,7 @@ public class Tables {
     public static final TalentpoolApplication TALENTPOOL_APPLICATION = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolApplication.TALENTPOOL_APPLICATION;
 
     /**
-     * 人才库人HR与备注的关系
+     * 人才库人HR与标签的关系
      */
     public static final TalentpoolComment TALENTPOOL_COMMENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolComment.TALENTPOOL_COMMENT;
 
@@ -69,6 +71,16 @@ public class Tables {
     public static final TalentpoolExecute TALENTPOOL_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolExecute.TALENTPOOL_EXECUTE;
 
     /**
+     * hr自动标签
+     */
+    public static final TalentpoolHrAutomaticTag TALENTPOOL_HR_AUTOMATIC_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag.TALENTPOOL_HR_AUTOMATIC_TAG;
+
+    /**
+     * hr自动标签和人才关系表
+     */
+    public static final TalentpoolHrAutomaticTagUser TALENTPOOL_HR_AUTOMATIC_TAG_USER = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser.TALENTPOOL_HR_AUTOMATIC_TAG_USER;
+
+    /**
      * 人才库人收藏记录
      */
     public static final TalentpoolHrTalent TALENTPOOL_HR_TALENT = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrTalent.TALENTPOOL_HR_TALENT;
@@ -89,7 +101,7 @@ public class Tables {
     public static final TalentpoolProfileFilterExecute TALENTPOOL_PROFILE_FILTER_EXECUTE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileFilterExecute.TALENTPOOL_PROFILE_FILTER_EXECUTE;
 
     /**
-     * 简历搬家hr操作记录表
+     * The table <code>talentpooldb.talentpool_profile_move</code>.
      */
     public static final TalentpoolProfileMove TALENTPOOL_PROFILE_MOVE = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMove.TALENTPOOL_PROFILE_MOVE;
 
@@ -100,7 +112,7 @@ public class Tables {
     public static final TalentpoolProfileMoveDetail TALENTPOOL_PROFILE_MOVE_DETAIL = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL;
 
     /**
-     * 简历搬家chaos请求操作记录表
+     * 简历搬家操作记录表
      */
     public static final TalentpoolProfileMoveRecord TALENTPOOL_PROFILE_MOVE_RECORD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolProfileMoveRecord.TALENTPOOL_PROFILE_MOVE_RECORD;
 
@@ -120,7 +132,7 @@ public class Tables {
     public static final TalentpoolUpload TALENTPOOL_UPLOAD = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUpload.TALENTPOOL_UPLOAD;
 
     /**
-     * 人才库人人才与标签的关系
+     * 人才标签表
      */
     public static final TalentpoolUserTag TALENTPOOL_USER_TAG = com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolUserTag.TALENTPOOL_USER_TAG;
 }

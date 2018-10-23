@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
- * 人才库人人才与标签的关系
+ * 人才标签表
  */
 @Generated(
     value = {
@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolUserTagRecord extends UpdatableRecordImpl<TalentpoolUserTagRecord> implements Record4<Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 910191311;
+    private static final long serialVersionUID = -902771459;
 
     /**
      * Setter for <code>talentpooldb.talentpool_user_tag.user_id</code>. 用户编号

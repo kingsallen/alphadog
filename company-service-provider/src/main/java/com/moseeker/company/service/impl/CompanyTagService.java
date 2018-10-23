@@ -3,13 +3,19 @@ package com.moseeker.company.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagUserDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrAutomaticTagDao;
+import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrAutomaticTagUserDao;
+import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrAutomaticTagUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.constant.TalentpoolTagStatus;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -44,7 +50,10 @@ public class CompanyTagService {
     private TalentPoolEntity talentPoolEntity;
     @Autowired
     private CompanyFilterTagValidation companyFilterTagValidation;
-
+    @Autowired
+    private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
+    @Autowired
+    private TalentpoolHrAutomaticTagUserDao talentpoolHrAutomaticTagUserDao;
     /*
       type=0 新增标签
       type=1 修改标签
@@ -53,35 +62,24 @@ public class CompanyTagService {
     @CounterIface
     public void handlerCompanyTag(List<Integer> tagIdList, int type,Map<String,Object> map){
         try {
-            if (type == 2) {//删除标签只需要执行删除操作即可
+            if (type == TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()) {//删除标签只需要执行删除操作即可
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
-                this.refrushCompantTag(tagIdList,type,null);
+                this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
             } else {
                 //新增标签，不用调用删除原有表中的标签和人才的对应关系，只需要增加就可以
                 //Map<String, Object> map = JSON.parseObject(JSON.toJSONString(DO));//talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
                 if (map != null && !map.isEmpty()) {
-                    Map<String,String> params=new HashMap<>();
-                    for(String key:map.keySet()){
-                        params.put(key,String.valueOf(map.get(key)));
-                    }
-                    params.put("size","0");
-                    int total=service.queryCompanyTagUserIdListCount(params);
-                    logger.info("总条数为"+total+"=============================");
-                    //测试时为100，注意线上为1000
-                    int totalPage=(int)Math.ceil((double)total/500.0);
-                    logger.info("总页数为"+totalPage+"=============================");
-                    /*
-                     type==1是更新状态，需要把库中的关心先删除，然后把新的标签和人才关系入库
-                     */
-                    if(type == 1){
+                    double pageSize=500.0;
+                    int totalPage=this.getDataTotalPage(map,pageSize);
+                    if(type == TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()){
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
                     if(totalPage == 0){
-                        this.refrushCompantTag(tagIdList,type,new ArrayList<>());
+                        this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
                     }else {
                         for (int i = 1; i <= totalPage; i++) {
                             logger.info("执行第" + i + "页");
-                            this.handlerUserIdList(tagIdList, type, map, i, 500);
+                            this.handlerUserIdList(tagIdList, type, map, i, (int)pageSize);
                         }
                     }
                 }
@@ -92,8 +90,123 @@ public class CompanyTagService {
         }
 
     }
+    @CounterIface
+    public  void handlerHrAutomaticTag(List<Integer> tagIdList, int type,Map<String,Object> map) throws Exception {
+        if(type == TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()){
+            this.deleteHrAutomaticTagUserList(tagIdList);
+            this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
+        }else{
+            if (map != null && !map.isEmpty()) {
+                double pageSize=500.0;
+                int totalPage=this.getDataTotalPage(map,pageSize);
+                if(totalPage == 0){
+                    this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+                }else{
+                    for (int i = 1; i <= totalPage; i++) {
+                        logger.info("执行第" + i + "页");
+                        this.handlerUserIdList(tagIdList, type, map, i, (int)pageSize);
+                    }
+                }
+            }
+        }
+
+    }
+    /*
+     处理获取的hr自定义的标签的数据
+     */
+    private void handlerHrUserIdList(List<Integer>tagIdList,int type,Map<String,Object> map,int page,int pageSize) throws TException {
+        List<Integer> userIdList=this.getUseridList(page,pageSize,map);
+        this.handlerHrAutoTag(tagIdList,type,userIdList);
+    }
+    /*
+     处理标签与数据的对应关系
+     */
+    private void handlerHrAutoTag(List<Integer>tagIdList,int type,List<Integer> userIdList){
+        if(!StringUtils.isEmptyList(userIdList)){
+            if(type==TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue()){
+                List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
+                for (Integer userId : userIdList) {
+                    for(Integer tagId:tagIdList){
+                        TalentpoolHrAutomaticTagUserRecord record = new TalentpoolHrAutomaticTagUserRecord();
+                        record.setTagId(tagIdList.get(0));
+                        record.setUserId(userId);
+                        list.add(record);
+                    }
+                }
+                talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+            }else if(type==TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()){
+                this.deleteHrAutomaticTagUserList(tagIdList);
+                List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
+                for (Integer userId : userIdList) {
+                    for(Integer tagId:tagIdList){
+                        TalentpoolHrAutomaticTagUserRecord record = new TalentpoolHrAutomaticTagUserRecord();
+                        record.setTagId(tagIdList.get(0));
+                        record.setUserId(userId);
+                        list.add(record);
+                    }
+
+                }
+                talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+            }
+        }
+        this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
+    }
+    /*
+     删除标签对应的数据关系
+     */
+    private  void deleteHrAutomaticTagUserList(List<Integer> tagIdList){
+        if(!StringUtils.isEmptyList(tagIdList)){
+            talentpoolHrAutomaticTagUserDao.deleteByTagIdList(tagIdList);
+        }
+
+    }
+    /*
+     获取要查询的标签的总页数
+     */
+    private int getDataTotalPage(Map<String,Object> map,double pageSize) throws TException {
+        Map<String,String> params=new HashMap<>();
+        for(String key:map.keySet()){
+            params.put(key,String.valueOf(map.get(key)));
+        }
+        params.put("size","0");
+        int total=service.queryCompanyTagUserIdListCount(params);
+        logger.info("总条数为"+total+"=============================");
+        //测试时为100，注意线上为1000
+        int totalPage=(int)Math.ceil((double)total/pageSize);
+        logger.info("总页数为"+totalPage+"=============================");
+        return totalPage;
+    }
 
     private void handlerUserIdList(List<Integer> tagIdList,int type,Map<String,Object> map,int page,int pageSize) throws TException {
+        List<Integer> userIdList=this.getUseridList(page,pageSize,map);
+        if (type == TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue()) {
+            if (!StringUtils.isEmptyList(userIdList)) {
+                List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+                for (Integer userId : userIdList) {
+                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                    record.setTagId(tagIdList.get(0));
+                    record.setUserId(userId);
+                    list.add(record);
+                }
+                talentpoolCompanyTagUserDao.addTagAndUser(list);
+            }
+        } else if (type == TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()) {//修改标签需要把表中原有的数据全部删除，
+            if (!StringUtils.isEmptyList(userIdList)) {
+                List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
+                for (Integer userId : userIdList) {
+                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
+                    record.setTagId(tagIdList.get(0));
+                    record.setUserId(userId);
+                    list.add(record);
+                }
+                talentpoolCompanyTagUserDao.addTagAndUser(list);
+            }
+
+        }
+        this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.COMPANYTAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+
+    }
+    private List<Integer> getUseridList(int page,int pageSize,Map<String,Object> map) throws TException {
         Map<String, String> params = new HashMap<>();
         for (String key : map.keySet()) {
             params.put(key, String.valueOf(map.get(key)));
@@ -104,37 +217,12 @@ public class CompanyTagService {
         logger.info("=========================");
         logger.info(JSON.toJSONString(userIdList));
         logger.info("=========================");
-        if (type == 0) {
-            if (!StringUtils.isEmptyList(userIdList)) {
-                List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
-                for (Integer userId : userIdList) {
-                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                    record.setTagId(tagIdList.get(0));
-                    record.setUserId(userId);
-                    list.add(record);
-                }
-                talentpoolCompanyTagUserDao.addTagAndUser(list);
-            }
-        } else if (type == 1) {//修改标签需要把表中原有的数据全部删除，
-            if (!StringUtils.isEmptyList(userIdList)) {
-                List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
-                for (Integer userId : userIdList) {
-                    TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
-                    record.setTagId(tagIdList.get(0));
-                    record.setUserId(userId);
-                    list.add(record);
-                }
-                talentpoolCompanyTagUserDao.addTagAndUser(list);
-            }
-
-        }
-        this.refrushCompantTag(tagIdList,type,userIdList);
-
+        return userIdList;
     }
     /*
-    刷新公司tag
+      通过redis队列，刷新es中标签的索引
      */
-    private void refrushCompantTag(List<Integer> tagIdList,int type,List<Integer> userIdList){
+    private void refrushCompantTag(List<Integer> tagIdList,int type,List<Integer> userIdList,String statusKey,String redisKey){
         //更新es中tag_id和人才的关系
         if (!StringUtils.isEmptyList(tagIdList)) {
             for (Integer tagId : tagIdList) {
@@ -147,7 +235,7 @@ public class CompanyTagService {
                 client.set(Constant.APPID_ALPHADOG, COMPANYTAG_ES_STATUS,
                         String.valueOf(tagId), String.valueOf(0));
                 client.lpush(Constant.APPID_ALPHADOG,
-                        "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
+                        redisKey, JSON.toJSONString(result));
                 logger.info(JSON.toJSONString("======================================="));
                 logger.info(JSON.toJSONString(result));
                 logger.info(JSON.toJSONString("======================================="));
@@ -171,7 +259,7 @@ public class CompanyTagService {
                 for (Integer userId : idList) {
                     logger.info("handlerCompanyTagTalent userId:{}",userId);
                     for (Map<String, Object> tag : tagList) {
-                        logger.info("handlerCompanyTagTalent tag:{}",tag);
+                        logger.info("handlerCompanyTagTalent tagId:"+tag.get("id"));
                         TalentpoolCompanyTagUser delRecord=new TalentpoolCompanyTagUser();
                         delRecord.setUserId(userId);
                         delRecord.setTagId((Integer) tag.get("id"));
@@ -186,7 +274,7 @@ public class CompanyTagService {
                             params.put("size", "0");
                             params.put("user_id", String.valueOf(userId));
                             int total = service.queryCompanyTagUserIdListCount(params);
-                            logger.info("handlerCompanyTagTalent total:{}",total);
+                            logger.info("handlerCompanyTagTalent total:"+total);
                             if(total>0){
                                 TalentpoolCompanyTagUserRecord record = new TalentpoolCompanyTagUserRecord();
                                 record.setUserId(userId);
@@ -195,7 +283,6 @@ public class CompanyTagService {
                                 list.add(record);
                             }
                         }
-
                     }
                 }
             }
@@ -209,10 +296,9 @@ public class CompanyTagService {
                     Map<String, Object> result = new HashMap<>();
                     result.put("user_id", userId);
                     result.put("tag_ids",tagIdList);
-                    logger.info("handlerCompanyTagTalent result:{}",result);
                     client.lpush(Constant.APPID_ALPHADOG,
                             "ES_UPDATE_INDEX_COMPANYTAG_ID", JSON.toJSONString(result));
-
+                    logger.info("handlerCompanyTagTalent redis result:{}", result);
                 }
             }
         }catch(Exception e){
