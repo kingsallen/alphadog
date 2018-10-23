@@ -115,7 +115,7 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
 
 
     /**
-     * 产生虚拟用户、简历、申请记录
+     * 产生简历、申请记录
      * @param id 用户id
      * @param mobile 手机号码
      * @param position 职位编号
@@ -123,7 +123,7 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
      * @throws ProfileException
      */
     @Override
-    public int employeeReferralProfile(int id, String name, String mobile, int position) throws ProfileException {
+    public int updateUserProfile(int id, String name, String mobile, int position) throws ProfileException {
 
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(USER_USER.ID.getName(), id);

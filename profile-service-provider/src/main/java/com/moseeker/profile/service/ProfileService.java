@@ -42,7 +42,7 @@ public interface ProfileService {
      * @return  简历id
      * @throws ProfileException 业务异常
      */
-     int employeeReferralProfile(int id, String name, String mobile, int position);
+     int updateUserProfile(int id, String name, String mobile, int position);
 
 
 }

@@ -316,4 +316,14 @@ public class ProfileServicesImpl implements Iface {
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
         }
     }
+
+    @Override
+    public int updateUserProfile(int id, String name, String mobile,
+                                       int position) throws BIZException, TException {
+        try {
+            return profileService.updateUserProfile(id, name, mobile, position);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }
