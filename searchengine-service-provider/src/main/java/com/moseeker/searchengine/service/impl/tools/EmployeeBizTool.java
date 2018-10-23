@@ -140,13 +140,9 @@ public class EmployeeBizTool {
      * @param pageSize 分页
      */
     public static void addPagination(SearchRequestBuilder searchRequestBuilder, int pageNumber, int pageSize) {
-        if (pageNumber <= 0) {
-            pageNumber = 1;
+        if (pageNumber > 0 && pageSize > 0) {
+            searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
         }
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-        searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
     }
 
     /**
