@@ -14,6 +14,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -120,6 +121,26 @@ public class CandidateThriftService implements CandidateService.Iface {
     public RecentPosition getRecentPosition(int hrId, int userId) throws BIZException, TException {
         try {
             return candidate.getRecentPosition(hrId, userId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response addApplicationPsc(int applicationId, int pscId) throws BIZException, TException {
+        try {
+            candidate.addApplicationPsc(applicationId, pscId);
+            return ResponseUtils.success("");
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getApplicationPsc(int applicationId) throws BIZException, TException {
+        try {
+            CandidateApplicationPscDO psc = candidate.getApplicationPscByApplication(applicationId);
+            return ResponseUtils.success(psc);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

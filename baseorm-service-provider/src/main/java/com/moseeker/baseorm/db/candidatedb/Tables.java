@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.candidatedb;
 
 
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
@@ -27,6 +28,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * 申请时员工一度的链路
+     */
+    public static final CandidateApplicationPsc CANDIDATE_APPLICATION_PSC = com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC;
 
     /**
      * 候选人表
