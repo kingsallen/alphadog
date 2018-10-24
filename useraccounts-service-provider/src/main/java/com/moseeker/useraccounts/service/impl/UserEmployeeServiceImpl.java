@@ -239,7 +239,7 @@ public class UserEmployeeServiceImpl {
                 return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DEL_FAILED);
             }
             List<Integer> employeeIds = employeeDOS.stream().map(item->item.getId()).collect(Collectors.toList());
-            employeeEntity.removtpeEmployee(employeeIds);
+            employeeEntity.removeEmployee(employeeIds);
 
             return ResponseUtils.success(true);
         } catch (Exception e) {
