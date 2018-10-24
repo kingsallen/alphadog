@@ -16,6 +16,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
@@ -661,7 +662,13 @@ public class EmployeeEntity {
             int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
             if (Arrays.stream(rows).sum() > 0) {
-                historyUserEmployeeDao.addAllData(userEmployeeDOList);
+                List<HistoryUserEmployeeRecord> historyUserEmployeeRecords = userEmployeeDOList.stream()
+                        .map(userEmployeeDO -> {
+                            HistoryUserEmployeeRecord record = new HistoryUserEmployeeRecord();
+                            org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, record);
+                            return record;
+                        }).collect(Collectors.toList());
+                historyUserEmployeeDao.addAllRecord(historyUserEmployeeRecords);
                 tp.startTast(() -> {
                     // 更新ES中useremployee信息
                     this.deleteEsEmployee(employeeIds);
