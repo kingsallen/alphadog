@@ -415,4 +415,32 @@ public class HistoryUserEmployeeDao extends DAOImpl<HistoryUserEmployeeRecord, c
     public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByCustomFieldValues(String... values) {
         return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.CUSTOM_FIELD_VALUES, values);
     }
+
+    /**
+     * Fetch records that have <code>team_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByTeamId(Integer... values) {
+        return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.TEAM_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>job_grade IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByJobGrade(Byte... values) {
+        return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.JOB_GRADE, values);
+    }
+
+    /**
+     * Fetch records that have <code>city_code IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByCityCode(Integer... values) {
+        return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.CITY_CODE, values);
+    }
+
+    /**
+     * Fetch records that have <code>degree IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByDegree(Byte... values) {
+        return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.DEGREE, values);
+    }
 }
