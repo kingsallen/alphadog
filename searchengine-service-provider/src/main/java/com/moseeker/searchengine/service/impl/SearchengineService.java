@@ -776,7 +776,7 @@ public class SearchengineService {
                 }
             }
         }
-        searchUtil.handleTermDouble(0, query, "disable");
+        searchUtil.handleTerm(String.valueOf(0), query, "disable");
         EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
@@ -870,7 +870,7 @@ public class SearchengineService {
                     EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                 }
             }
-            searchUtil.handleTermDouble(0, query, "disable");
+            searchUtil.handleTerm(String.valueOf(0), query, "disable");
             EmployeeBizTool.addKeywords(query, keywords, searchUtil);
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
