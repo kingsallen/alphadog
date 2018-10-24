@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserWxUser extends TableImpl<UserWxUserRecord> {
 
-    private static final long serialVersionUID = -1783000586;
+    private static final long serialVersionUID = 1837613200;
 
     /**
      * The reference instance of <code>historydb.user_wx_user</code>
@@ -84,7 +84,7 @@ public class UserWxUser extends TableImpl<UserWxUserRecord> {
     /**
      * The column <code>historydb.user_wx_user.nickname</code>. 用户昵称
      */
-    public final TableField<UserWxUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("(未知)", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户昵称");
+    public final TableField<UserWxUserRecord, String> NICKNAME = createField("nickname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户昵称");
 
     /**
      * The column <code>historydb.user_wx_user.sex</code>. 用户性别 0:未知 1:男性 2:女性

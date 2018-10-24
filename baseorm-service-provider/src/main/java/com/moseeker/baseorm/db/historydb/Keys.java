@@ -4,29 +4,39 @@
 package com.moseeker.baseorm.db.historydb;
 
 
-import com.moseeker.baseorm.db.historydb.tables.ConfigSysCvTpl;
+import com.moseeker.baseorm.db.historydb.tables.HistoryCampaignBaiduUsers;
 import com.moseeker.baseorm.db.historydb.tables.HistoryCampaignPersonaRecom;
+import com.moseeker.baseorm.db.historydb.tables.HistoryHrChildCompany;
 import com.moseeker.baseorm.db.historydb.tables.HistoryHrCompany;
-import com.moseeker.baseorm.db.historydb.tables.HistoryHrOperationRecord;
+import com.moseeker.baseorm.db.historydb.tables.HistoryHrMedia;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplication;
+import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationConf;
+import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplicationStatusBeisen;
+import com.moseeker.baseorm.db.historydb.tables.HistoryJobOccupationRel;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition;
+import com.moseeker.baseorm.db.historydb.tables.HistoryProfileWorkexp;
 import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
 import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployeeUpvote;
-import com.moseeker.baseorm.db.historydb.tables.ProfileEducation;
-import com.moseeker.baseorm.db.historydb.tables.ProfileProjectexp;
-import com.moseeker.baseorm.db.historydb.tables.ProfileWorkexp;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBak;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatListBakBak;
 import com.moseeker.baseorm.db.historydb.tables.UserWxUser;
-import com.moseeker.baseorm.db.historydb.tables.records.ConfigSysCvTplRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryCampaignBaiduUsersRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryCampaignPersonaRecomRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryHrChildCompanyRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryHrCompanyRecord;
-import com.moseeker.baseorm.db.historydb.tables.records.HistoryHrOperationRecordRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryHrMediaRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationConfRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationStatusBeisenRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobOccupationRelRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobPositionRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryProfileWorkexpRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeUpvoteRecord;
-import com.moseeker.baseorm.db.historydb.tables.records.ProfileEducationRecord;
-import com.moseeker.baseorm.db.historydb.tables.records.ProfileProjectexpRecord;
-import com.moseeker.baseorm.db.historydb.tables.records.ProfileWorkexpRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HrWxHrChatListBakBakRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HrWxHrChatListBakRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.baseorm.db.historydb.tables.records.UserWxUserRecord;
 
 import javax.annotation.Generated;
@@ -54,31 +64,42 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<ConfigSysCvTplRecord, Integer> IDENTITY_CONFIG_SYS_CV_TPL = Identities0.IDENTITY_CONFIG_SYS_CV_TPL;
+    public static final Identity<HistoryCampaignBaiduUsersRecord, Integer> IDENTITY_HISTORY_CAMPAIGN_BAIDU_USERS = Identities0.IDENTITY_HISTORY_CAMPAIGN_BAIDU_USERS;
     public static final Identity<HistoryCampaignPersonaRecomRecord, Integer> IDENTITY_HISTORY_CAMPAIGN_PERSONA_RECOM = Identities0.IDENTITY_HISTORY_CAMPAIGN_PERSONA_RECOM;
+    public static final Identity<HistoryHrChildCompanyRecord, Integer> IDENTITY_HISTORY_HR_CHILD_COMPANY = Identities0.IDENTITY_HISTORY_HR_CHILD_COMPANY;
     public static final Identity<HistoryHrCompanyRecord, Integer> IDENTITY_HISTORY_HR_COMPANY = Identities0.IDENTITY_HISTORY_HR_COMPANY;
-    public static final Identity<HistoryHrOperationRecordRecord, Integer> IDENTITY_HISTORY_HR_OPERATION_RECORD = Identities0.IDENTITY_HISTORY_HR_OPERATION_RECORD;
+    public static final Identity<HistoryHrMediaRecord, Integer> IDENTITY_HISTORY_HR_MEDIA = Identities0.IDENTITY_HISTORY_HR_MEDIA;
+    public static final Identity<HistoryJobApplicationConfRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_CONF = Identities0.IDENTITY_HISTORY_JOB_APPLICATION_CONF;
+    public static final Identity<HistoryJobApplicationStatusBeisenRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_STATUS_BEISEN = Identities0.IDENTITY_HISTORY_JOB_APPLICATION_STATUS_BEISEN;
     public static final Identity<HistoryJobPositionRecord, Integer> IDENTITY_HISTORY_JOB_POSITION = Identities0.IDENTITY_HISTORY_JOB_POSITION;
-    public static final Identity<ProfileEducationRecord, Integer> IDENTITY_PROFILE_EDUCATION = Identities0.IDENTITY_PROFILE_EDUCATION;
-    public static final Identity<ProfileProjectexpRecord, Integer> IDENTITY_PROFILE_PROJECTEXP = Identities0.IDENTITY_PROFILE_PROJECTEXP;
-    public static final Identity<ProfileWorkexpRecord, Integer> IDENTITY_PROFILE_WORKEXP = Identities0.IDENTITY_PROFILE_WORKEXP;
+    public static final Identity<HistoryProfileWorkexpRecord, Integer> IDENTITY_HISTORY_PROFILE_WORKEXP = Identities0.IDENTITY_HISTORY_PROFILE_WORKEXP;
+    public static final Identity<HrWxHrChatListRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST = Identities0.IDENTITY_HR_WX_HR_CHAT_LIST;
+    public static final Identity<HrWxHrChatListBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK = Identities0.IDENTITY_HR_WX_HR_CHAT_LIST_BAK;
+    public static final Identity<HrWxHrChatListBakBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK_BAK = Identities0.IDENTITY_HR_WX_HR_CHAT_LIST_BAK_BAK;
     public static final Identity<UserWxUserRecord, Long> IDENTITY_USER_WX_USER = Identities0.IDENTITY_USER_WX_USER;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<ConfigSysCvTplRecord> KEY_CONFIG_SYS_CV_TPL_PRIMARY = UniqueKeys0.KEY_CONFIG_SYS_CV_TPL_PRIMARY;
+    public static final UniqueKey<HistoryCampaignBaiduUsersRecord> KEY_HISTORY_CAMPAIGN_BAIDU_USERS_PRIMARY = UniqueKeys0.KEY_HISTORY_CAMPAIGN_BAIDU_USERS_PRIMARY;
+    public static final UniqueKey<HistoryCampaignBaiduUsersRecord> KEY_HISTORY_CAMPAIGN_BAIDU_USERS_USER_ID = UniqueKeys0.KEY_HISTORY_CAMPAIGN_BAIDU_USERS_USER_ID;
+    public static final UniqueKey<HistoryCampaignBaiduUsersRecord> KEY_HISTORY_CAMPAIGN_BAIDU_USERS_UID = UniqueKeys0.KEY_HISTORY_CAMPAIGN_BAIDU_USERS_UID;
     public static final UniqueKey<HistoryCampaignPersonaRecomRecord> KEY_HISTORY_CAMPAIGN_PERSONA_RECOM_PRIMARY = UniqueKeys0.KEY_HISTORY_CAMPAIGN_PERSONA_RECOM_PRIMARY;
+    public static final UniqueKey<HistoryHrChildCompanyRecord> KEY_HISTORY_HR_CHILD_COMPANY_PRIMARY = UniqueKeys0.KEY_HISTORY_HR_CHILD_COMPANY_PRIMARY;
     public static final UniqueKey<HistoryHrCompanyRecord> KEY_HISTORY_HR_COMPANY_PRIMARY = UniqueKeys0.KEY_HISTORY_HR_COMPANY_PRIMARY;
-    public static final UniqueKey<HistoryHrOperationRecordRecord> KEY_HISTORY_HR_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_HISTORY_HR_OPERATION_RECORD_PRIMARY;
+    public static final UniqueKey<HistoryHrMediaRecord> KEY_HISTORY_HR_MEDIA_PRIMARY = UniqueKeys0.KEY_HISTORY_HR_MEDIA_PRIMARY;
     public static final UniqueKey<HistoryJobApplicationRecord> KEY_HISTORY_JOB_APPLICATION_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_APPLICATION_PRIMARY;
+    public static final UniqueKey<HistoryJobApplicationConfRecord> KEY_HISTORY_JOB_APPLICATION_CONF_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_APPLICATION_CONF_PRIMARY;
+    public static final UniqueKey<HistoryJobApplicationStatusBeisenRecord> KEY_HISTORY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY;
+    public static final UniqueKey<HistoryJobOccupationRelRecord> KEY_HISTORY_JOB_OCCUPATION_REL_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_OCCUPATION_REL_PRIMARY;
     public static final UniqueKey<HistoryJobPositionRecord> KEY_HISTORY_JOB_POSITION_PRIMARY = UniqueKeys0.KEY_HISTORY_JOB_POSITION_PRIMARY;
+    public static final UniqueKey<HistoryProfileWorkexpRecord> KEY_HISTORY_PROFILE_WORKEXP_PRIMARY = UniqueKeys0.KEY_HISTORY_PROFILE_WORKEXP_PRIMARY;
     public static final UniqueKey<HistoryUserEmployeeRecord> KEY_HISTORY_USER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_HISTORY_USER_EMPLOYEE_PRIMARY;
     public static final UniqueKey<HistoryUserEmployeeUpvoteRecord> KEY_HISTORY_USER_EMPLOYEE_UPVOTE_PRIMARY = UniqueKeys0.KEY_HISTORY_USER_EMPLOYEE_UPVOTE_PRIMARY;
-    public static final UniqueKey<ProfileEducationRecord> KEY_PROFILE_EDUCATION_PRIMARY = UniqueKeys0.KEY_PROFILE_EDUCATION_PRIMARY;
-    public static final UniqueKey<ProfileProjectexpRecord> KEY_PROFILE_PROJECTEXP_PRIMARY = UniqueKeys0.KEY_PROFILE_PROJECTEXP_PRIMARY;
-    public static final UniqueKey<ProfileWorkexpRecord> KEY_PROFILE_WORKEXP_PRIMARY = UniqueKeys0.KEY_PROFILE_WORKEXP_PRIMARY;
+    public static final UniqueKey<HrWxHrChatListRecord> KEY_HR_WX_HR_CHAT_LIST_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_LIST_PRIMARY;
+    public static final UniqueKey<HrWxHrChatListBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_LIST_BAK_PRIMARY;
+    public static final UniqueKey<HrWxHrChatListBakBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_BAK_PRIMARY = UniqueKeys0.KEY_HR_WX_HR_CHAT_LIST_BAK_BAK_PRIMARY;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = UniqueKeys0.KEY_USER_WX_USER_PRIMARY;
     public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = UniqueKeys0.KEY_USER_WX_USER_WECHAT_ID;
 
@@ -92,29 +113,40 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<ConfigSysCvTplRecord, Integer> IDENTITY_CONFIG_SYS_CV_TPL = createIdentity(ConfigSysCvTpl.CONFIG_SYS_CV_TPL, ConfigSysCvTpl.CONFIG_SYS_CV_TPL.ID);
+        public static Identity<HistoryCampaignBaiduUsersRecord, Integer> IDENTITY_HISTORY_CAMPAIGN_BAIDU_USERS = createIdentity(HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS, HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS.ID);
         public static Identity<HistoryCampaignPersonaRecomRecord, Integer> IDENTITY_HISTORY_CAMPAIGN_PERSONA_RECOM = createIdentity(HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM, HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM.ID);
+        public static Identity<HistoryHrChildCompanyRecord, Integer> IDENTITY_HISTORY_HR_CHILD_COMPANY = createIdentity(HistoryHrChildCompany.HISTORY_HR_CHILD_COMPANY, HistoryHrChildCompany.HISTORY_HR_CHILD_COMPANY.ID);
         public static Identity<HistoryHrCompanyRecord, Integer> IDENTITY_HISTORY_HR_COMPANY = createIdentity(HistoryHrCompany.HISTORY_HR_COMPANY, HistoryHrCompany.HISTORY_HR_COMPANY.ID);
-        public static Identity<HistoryHrOperationRecordRecord, Integer> IDENTITY_HISTORY_HR_OPERATION_RECORD = createIdentity(HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD, HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD.ID);
+        public static Identity<HistoryHrMediaRecord, Integer> IDENTITY_HISTORY_HR_MEDIA = createIdentity(HistoryHrMedia.HISTORY_HR_MEDIA, HistoryHrMedia.HISTORY_HR_MEDIA.ID);
+        public static Identity<HistoryJobApplicationConfRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_CONF = createIdentity(HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF, HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF.ID);
+        public static Identity<HistoryJobApplicationStatusBeisenRecord, Integer> IDENTITY_HISTORY_JOB_APPLICATION_STATUS_BEISEN = createIdentity(HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN, HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN.ID);
         public static Identity<HistoryJobPositionRecord, Integer> IDENTITY_HISTORY_JOB_POSITION = createIdentity(HistoryJobPosition.HISTORY_JOB_POSITION, HistoryJobPosition.HISTORY_JOB_POSITION.ID);
-        public static Identity<ProfileEducationRecord, Integer> IDENTITY_PROFILE_EDUCATION = createIdentity(ProfileEducation.PROFILE_EDUCATION, ProfileEducation.PROFILE_EDUCATION.ID);
-        public static Identity<ProfileProjectexpRecord, Integer> IDENTITY_PROFILE_PROJECTEXP = createIdentity(ProfileProjectexp.PROFILE_PROJECTEXP, ProfileProjectexp.PROFILE_PROJECTEXP.ID);
-        public static Identity<ProfileWorkexpRecord, Integer> IDENTITY_PROFILE_WORKEXP = createIdentity(ProfileWorkexp.PROFILE_WORKEXP, ProfileWorkexp.PROFILE_WORKEXP.ID);
+        public static Identity<HistoryProfileWorkexpRecord, Integer> IDENTITY_HISTORY_PROFILE_WORKEXP = createIdentity(HistoryProfileWorkexp.HISTORY_PROFILE_WORKEXP, HistoryProfileWorkexp.HISTORY_PROFILE_WORKEXP.ID);
+        public static Identity<HrWxHrChatListRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST = createIdentity(HrWxHrChatList.HR_WX_HR_CHAT_LIST, HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID);
+        public static Identity<HrWxHrChatListBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK = createIdentity(HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK, HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK.ID);
+        public static Identity<HrWxHrChatListBakBakRecord, Integer> IDENTITY_HR_WX_HR_CHAT_LIST_BAK_BAK = createIdentity(HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK, HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK.ID);
         public static Identity<UserWxUserRecord, Long> IDENTITY_USER_WX_USER = createIdentity(UserWxUser.USER_WX_USER, UserWxUser.USER_WX_USER.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<ConfigSysCvTplRecord> KEY_CONFIG_SYS_CV_TPL_PRIMARY = createUniqueKey(ConfigSysCvTpl.CONFIG_SYS_CV_TPL, "KEY_config_sys_cv_tpl_PRIMARY", ConfigSysCvTpl.CONFIG_SYS_CV_TPL.ID);
+        public static final UniqueKey<HistoryCampaignBaiduUsersRecord> KEY_HISTORY_CAMPAIGN_BAIDU_USERS_PRIMARY = createUniqueKey(HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS, "KEY_history_campaign_baidu_users_PRIMARY", HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS.ID);
+        public static final UniqueKey<HistoryCampaignBaiduUsersRecord> KEY_HISTORY_CAMPAIGN_BAIDU_USERS_USER_ID = createUniqueKey(HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS, "KEY_history_campaign_baidu_users_user_id", HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS.USER_ID);
+        public static final UniqueKey<HistoryCampaignBaiduUsersRecord> KEY_HISTORY_CAMPAIGN_BAIDU_USERS_UID = createUniqueKey(HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS, "KEY_history_campaign_baidu_users_uid", HistoryCampaignBaiduUsers.HISTORY_CAMPAIGN_BAIDU_USERS.UID);
         public static final UniqueKey<HistoryCampaignPersonaRecomRecord> KEY_HISTORY_CAMPAIGN_PERSONA_RECOM_PRIMARY = createUniqueKey(HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM, "KEY_history_campaign_persona_recom_PRIMARY", HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM.ID);
+        public static final UniqueKey<HistoryHrChildCompanyRecord> KEY_HISTORY_HR_CHILD_COMPANY_PRIMARY = createUniqueKey(HistoryHrChildCompany.HISTORY_HR_CHILD_COMPANY, "KEY_history_hr_child_company_PRIMARY", HistoryHrChildCompany.HISTORY_HR_CHILD_COMPANY.ID);
         public static final UniqueKey<HistoryHrCompanyRecord> KEY_HISTORY_HR_COMPANY_PRIMARY = createUniqueKey(HistoryHrCompany.HISTORY_HR_COMPANY, "KEY_history_hr_company_PRIMARY", HistoryHrCompany.HISTORY_HR_COMPANY.ID);
-        public static final UniqueKey<HistoryHrOperationRecordRecord> KEY_HISTORY_HR_OPERATION_RECORD_PRIMARY = createUniqueKey(HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD, "KEY_history_hr_operation_record_PRIMARY", HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD.ID);
+        public static final UniqueKey<HistoryHrMediaRecord> KEY_HISTORY_HR_MEDIA_PRIMARY = createUniqueKey(HistoryHrMedia.HISTORY_HR_MEDIA, "KEY_history_hr_media_PRIMARY", HistoryHrMedia.HISTORY_HR_MEDIA.ID);
         public static final UniqueKey<HistoryJobApplicationRecord> KEY_HISTORY_JOB_APPLICATION_PRIMARY = createUniqueKey(HistoryJobApplication.HISTORY_JOB_APPLICATION, "KEY_history_job_application_PRIMARY", HistoryJobApplication.HISTORY_JOB_APPLICATION.ID);
+        public static final UniqueKey<HistoryJobApplicationConfRecord> KEY_HISTORY_JOB_APPLICATION_CONF_PRIMARY = createUniqueKey(HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF, "KEY_history_job_application_conf_PRIMARY", HistoryJobApplicationConf.HISTORY_JOB_APPLICATION_CONF.ID);
+        public static final UniqueKey<HistoryJobApplicationStatusBeisenRecord> KEY_HISTORY_JOB_APPLICATION_STATUS_BEISEN_PRIMARY = createUniqueKey(HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN, "KEY_history_job_application_status_beisen_PRIMARY", HistoryJobApplicationStatusBeisen.HISTORY_JOB_APPLICATION_STATUS_BEISEN.ID);
+        public static final UniqueKey<HistoryJobOccupationRelRecord> KEY_HISTORY_JOB_OCCUPATION_REL_PRIMARY = createUniqueKey(HistoryJobOccupationRel.HISTORY_JOB_OCCUPATION_REL, "KEY_history_job_occupation_rel_PRIMARY", HistoryJobOccupationRel.HISTORY_JOB_OCCUPATION_REL.PID);
         public static final UniqueKey<HistoryJobPositionRecord> KEY_HISTORY_JOB_POSITION_PRIMARY = createUniqueKey(HistoryJobPosition.HISTORY_JOB_POSITION, "KEY_history_job_position_PRIMARY", HistoryJobPosition.HISTORY_JOB_POSITION.ID);
+        public static final UniqueKey<HistoryProfileWorkexpRecord> KEY_HISTORY_PROFILE_WORKEXP_PRIMARY = createUniqueKey(HistoryProfileWorkexp.HISTORY_PROFILE_WORKEXP, "KEY_history_profile_workexp_PRIMARY", HistoryProfileWorkexp.HISTORY_PROFILE_WORKEXP.ID);
         public static final UniqueKey<HistoryUserEmployeeRecord> KEY_HISTORY_USER_EMPLOYEE_PRIMARY = createUniqueKey(HistoryUserEmployee.HISTORY_USER_EMPLOYEE, "KEY_history_user_employee_PRIMARY", HistoryUserEmployee.HISTORY_USER_EMPLOYEE.ID);
         public static final UniqueKey<HistoryUserEmployeeUpvoteRecord> KEY_HISTORY_USER_EMPLOYEE_UPVOTE_PRIMARY = createUniqueKey(HistoryUserEmployeeUpvote.HISTORY_USER_EMPLOYEE_UPVOTE, "KEY_history_user_employee_upvote_PRIMARY", HistoryUserEmployeeUpvote.HISTORY_USER_EMPLOYEE_UPVOTE.ID);
-        public static final UniqueKey<ProfileEducationRecord> KEY_PROFILE_EDUCATION_PRIMARY = createUniqueKey(ProfileEducation.PROFILE_EDUCATION, "KEY_profile_education_PRIMARY", ProfileEducation.PROFILE_EDUCATION.ID);
-        public static final UniqueKey<ProfileProjectexpRecord> KEY_PROFILE_PROJECTEXP_PRIMARY = createUniqueKey(ProfileProjectexp.PROFILE_PROJECTEXP, "KEY_profile_projectexp_PRIMARY", ProfileProjectexp.PROFILE_PROJECTEXP.ID);
-        public static final UniqueKey<ProfileWorkexpRecord> KEY_PROFILE_WORKEXP_PRIMARY = createUniqueKey(ProfileWorkexp.PROFILE_WORKEXP, "KEY_profile_workexp_PRIMARY", ProfileWorkexp.PROFILE_WORKEXP.ID);
+        public static final UniqueKey<HrWxHrChatListRecord> KEY_HR_WX_HR_CHAT_LIST_PRIMARY = createUniqueKey(HrWxHrChatList.HR_WX_HR_CHAT_LIST, "KEY_hr_wx_hr_chat_list_PRIMARY", HrWxHrChatList.HR_WX_HR_CHAT_LIST.ID);
+        public static final UniqueKey<HrWxHrChatListBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_PRIMARY = createUniqueKey(HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK, "KEY_hr_wx_hr_chat_list_bak_PRIMARY", HrWxHrChatListBak.HR_WX_HR_CHAT_LIST_BAK.ID);
+        public static final UniqueKey<HrWxHrChatListBakBakRecord> KEY_HR_WX_HR_CHAT_LIST_BAK_BAK_PRIMARY = createUniqueKey(HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK, "KEY_hr_wx_hr_chat_list_bak_bak_PRIMARY", HrWxHrChatListBakBak.HR_WX_HR_CHAT_LIST_BAK_BAK.ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_PRIMARY = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_PRIMARY", UserWxUser.USER_WX_USER.ID);
         public static final UniqueKey<UserWxUserRecord> KEY_USER_WX_USER_WECHAT_ID = createUniqueKey(UserWxUser.USER_WX_USER, "KEY_user_wx_user_wechat_id", UserWxUser.USER_WX_USER.WECHAT_ID, UserWxUser.USER_WX_USER.OPENID);
     }
