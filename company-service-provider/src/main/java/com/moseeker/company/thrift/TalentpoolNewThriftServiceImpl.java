@@ -170,5 +170,17 @@ public class TalentpoolNewThriftServiceImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getHrAutoMaticTagSingle(int hr_id, int company_id, int id) throws BIZException, TException {
+        try{
+            return service.getHrAutoTagListById(hr_id,company_id,id);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+
 }
 

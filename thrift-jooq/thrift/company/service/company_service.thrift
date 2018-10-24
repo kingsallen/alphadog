@@ -193,4 +193,6 @@ service TalentpoolNewServices {
     common_struct.Response updateHrAutoMaticTag(1:talentpool_struct.TalentpoolHrAutomaticTagDO hrAutoTagDO, 2:i32 company_id) throws (1: common_struct.BIZException e)
 
     common_struct.Response getHrAutoMaticTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
+
+    common_struct.Response getHrAutoMaticTagSingle(1:i32 hr_id,2:i32 company_id,3:i32 id) throws (1: common_struct.BIZException e)
 }

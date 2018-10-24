@@ -290,7 +290,7 @@ public class TalentpoolNewController {
     /*
       获取hr自动标签列表
      */
-    @RequestMapping(value = "/api/talent/companytag/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/api/talentpool/hr/autotag/list", method = RequestMethod.GET)
     @ResponseBody
     public String getHrAutoTagList(HttpServletRequest request) throws Exception {
         try {
@@ -312,5 +312,35 @@ public class TalentpoolNewController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    /*
+     获取hr自动标签的具体内容
+    */
+    @RequestMapping(value = "/api/talentpool/hr/autotag", method = RequestMethod.GET)
+    @ResponseBody
+    public String getHrAutoTagSingle(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String hrId=String.valueOf(params.get("hr_id"));
+            String companyId=String.valueOf(params.get("company_id"));
+            String id=String.valueOf(params.get("id"));
 
+            if(StringUtils.isNullOrEmpty(hrId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"hr_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            if(StringUtils.isNullOrEmpty(id)||"0".equals(id)){
+                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+            }
+            Response result = service.getHrAutoMaticTagSingle(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(id));
+            return ResponseLogNotification.success(request, result);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
