@@ -12,19 +12,21 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolPast;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolTag;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -1229,7 +1231,17 @@ public class TalentPoolService {
 
         return ResponseUtils.success(tagListInfo);
     }
-
+    @CounterIface
+    public Response getHrAutoTagListById(int hrId,int companyId, int id) throws TException {
+        int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
+        if(flag == -1){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.COMPANY_STATUS_NOT_AUTHORITY);
+        }else if(flag == -2){
+            return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
+        }
+        TalentpoolHrAutomaticTag result=talentpoolHrAutomaticTagDao.getHrAutomaticTagCountById(id);
+        return ResponseUtils.success(result);
+    }
     @CounterIface
     public Response getCompanyTagList(int hrId,int companyId, int page_number, int page_size) throws TException {
         int flag=talentPoolEntity.validateCompanyTalentPoolV3(hrId,companyId);
