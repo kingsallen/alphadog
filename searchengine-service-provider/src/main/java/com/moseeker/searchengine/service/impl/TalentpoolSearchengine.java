@@ -800,10 +800,12 @@ public class TalentpoolSearchengine {
         return query;
     }
     public QueryBuilder queryTalentNest(Map<String,String> params){
-        int companyId=Integer.parseInt(params.get("company_id"));
+        String companyId=params.get("company_id");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        this.queryByNestCompanyId(companyId,query);
+        if(StringUtils.isNotNullOrEmpty(companyId)){
+            this.queryByNestCompanyId(Integer.parseInt(companyId),query);
+        }
         String hrId=params.get("hr_id");
         if(StringUtils.isNotNullOrEmpty(hrId)){
             String account_type=params.get("account_type");
