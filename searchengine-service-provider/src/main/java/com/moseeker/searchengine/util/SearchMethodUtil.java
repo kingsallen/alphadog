@@ -80,7 +80,7 @@ public class SearchMethodUtil {
         searchUtil.handleKeyWordForPrefix(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
         logger.info("searchPrefix   query : {}", query);
-        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_INDEX)
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)
@@ -101,7 +101,7 @@ public class SearchMethodUtil {
         list.add("title");
         searchUtil.handleKeyWordforQueryString(keyWord, false, query, list);
         this.handlerCommonSuggest(params,query);
-        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_INDEX)
+        SearchRequestBuilder responseBuilder=client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query)
                 .setFrom((page-1)*pageSize)
                 .setSize(pageSize)

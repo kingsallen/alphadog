@@ -232,7 +232,7 @@ public class TalentpoolSearchengine {
             }
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
-            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
 //                   .addAggregation(this.handleAllcountAgg(params))
                     .addAggregation(this.handleAggInfo(params,"all_count_app","",1))//所有申请的数量
