@@ -68,6 +68,7 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
     public List<R> addAllRecord(List<R> rs) {
 
         create.execute("set names utf8mb4");
+        logger.info("JooqCrudImpl addAllRecord rs:{}", rs);
         InsertSetStep<R> insertSetStep = create.insertInto(table);
         InsertSetMoreStep<R> insertSetMoreStep = null;
         for (int i = 0; i< rs.size(); i++) {
