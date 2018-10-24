@@ -15,6 +15,9 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.EmployeeOperationEntrance;
+import com.moseeker.common.constants.EmployeeOperationIsSuccess;
+import com.moseeker.common.constants.EmployeeOperationType;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -70,6 +73,9 @@ public class ProfileEntity {
 
     @Autowired
     private ProfileMailUtil profileMailUtil;
+
+    @Autowired
+    LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
 
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
@@ -638,7 +644,7 @@ public class ProfileEntity {
      * @return 用户编号
      */
     @Transactional
-    public UserUserRecord storeChatBotUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source)
+    public UserUserRecord storeChatBotUser(ProfilePojo profilePojo, int reference, int companyId, UserSource source,int appid)
             throws ProfileException {
 
         UserEmployeeRecord employeeRecord = employeeDao.getActiveEmployeeByUserId(reference);
@@ -653,7 +659,7 @@ public class ProfileEntity {
                     profilePojo.getUserRecord().getMobile(),
                             ReferralScene.ChatBot);
 
-            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, source);
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, source,appid,companyId,reference);
             if (referralRecordRecord != null && userUserRecord1 != null) {
                 referralRecordRecord.setUserId(userUserRecord1.getId());
                 userReferralRecordDao.updateRecord(referralRecordRecord);
@@ -671,7 +677,7 @@ public class ProfileEntity {
                 companyId, profilePojo.getUserRecord().getMobile(),
                 ReferralScene.Referral);
         if (referralRecordRecord != null) {
-            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL);
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL,null,null,null);
             if (referralRecordRecord != null && userUserRecord1 != null) {
                 referralRecordRecord.setUserId(userUserRecord1.getId());
                 userReferralRecordDao.updateRecord(referralRecordRecord);
@@ -682,7 +688,7 @@ public class ProfileEntity {
         }
     }
 
-    private UserUserRecord storeUserRecord(ProfilePojo profilePojo, UserSource source) {
+    private UserUserRecord storeUserRecord(ProfilePojo profilePojo, UserSource source,Integer appid,Integer referenceId,Integer companyId) {
         if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
             profilePojo.getUserRecord().setPassword("");
         }
@@ -696,7 +702,10 @@ public class ProfileEntity {
         logger.info("mergeProfile userId:{}", userUserRecord.getId());
         profilePojo.setUserRecord(userUserRecord);
         profilePojo.getProfileRecord().setUserId(userUserRecord.getId());
-        storeProfile(profilePojo);
+        int profileId = storeProfile(profilePojo);
+        if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+            logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(), EmployeeOperationIsSuccess.SUCCESS.getKey(),companyId,profileId);
+        }
 
         return userUserRecord;
     }

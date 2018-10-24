@@ -10,6 +10,7 @@ public class FormCheck {
 
 	private static String MOBILE_EXP = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
 	private static String EMAIL_EXP = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
+	private static String URL_EXP = "[a-zA-z]+://[^\\s]*";
 
 	public static String getMobileExp() {
 		return MOBILE_EXP;
@@ -17,6 +18,10 @@ public class FormCheck {
 
 	public static String getEmailExp() {
 		return EMAIL_EXP;
+	}
+
+	public static String getUrlExp() {
+		return URL_EXP;
 	}
 
 	/**
@@ -107,8 +112,7 @@ public class FormCheck {
 		if (str == null || str.trim().equals("")) {
 			throw new ParamNullException();
 		}
-		String regEx = "[a-zA-z]+://[^\\s]*";
-		Pattern p = Pattern.compile(regEx);
+		Pattern p = Pattern.compile(URL_EXP);
 		Matcher m = p.matcher(str);
 		return m.find();
 	}

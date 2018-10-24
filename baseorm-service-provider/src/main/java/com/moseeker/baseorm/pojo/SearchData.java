@@ -1,5 +1,7 @@
 package com.moseeker.baseorm.pojo;
 
+import java.util.List;
+
 /**
  * Created by zztaiwll on 18/1/22.
  */
@@ -10,6 +12,8 @@ public class SearchData {
     private String custom;
     private String department;
     private String title;
+    private List<String> city_list;
+    private List<String> ecity_list;
 
     public String getTitle() {
         return title;
@@ -57,5 +61,21 @@ public class SearchData {
 
     public void setCustom(String custom) {
         this.custom = custom;
+    }
+
+    public List<String> getCity_list() {
+        return city_list;
+    }
+
+    public void setCity_list(List<String> city_list) {
+        this.city_list = city_list;
+    }
+
+    public List<String> getEcity_list() {
+        return ecity_list;
+    }
+
+    public void setEcity_list(List<String> ecity_list) {
+        this.ecity_list = ecity_list;
     }
 }

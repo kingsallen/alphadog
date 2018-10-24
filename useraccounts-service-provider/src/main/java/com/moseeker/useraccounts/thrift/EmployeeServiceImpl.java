@@ -100,9 +100,9 @@ public class EmployeeServiceImpl implements Iface {
 	 * 员工绑定
 	 */
 	@Override
-	public Result bind(BindingParams bindingParams) throws TException {
+	public Result bind(BindingParams bindingParams,int bindSource) throws TException {
 		try {
-			return service.bind(bindingParams);
+			return service.bind(bindingParams,bindSource);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {
@@ -191,9 +191,9 @@ public class EmployeeServiceImpl implements Iface {
 	}
 
 	@Override
-	public Result emailActivation(String activationCode) throws TException {
+	public Result emailActivation(String activationCode,int bindEmailSource) throws TException {
 		try {
-			return employeeBindByEmail.emailActivation(activationCode);
+			return employeeBindByEmail.emailActivation(activationCode,bindEmailSource);
 		} catch (CommonException e) {
 			throw ExceptionConvertUtil.convertCommonException(e);
 		} catch (Exception e) {

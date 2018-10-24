@@ -268,3 +268,14 @@ struct CandidateInfo {
     7: optional string job,
     8: optional list<string> reasons
 }
+
+struct LogEmployeeOperationLog{
+    1: optional i32   id;
+    2: optional i32   userId;
+    3: optional i32      type;
+    4: optional i32      operationType;
+    5: optional i32      isSuccess;
+    6: optional i32   companyId;
+    7: optional i32   profileId;
+    8: optional Timestamp createTime;
+}

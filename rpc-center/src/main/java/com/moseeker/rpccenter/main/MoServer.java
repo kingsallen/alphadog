@@ -16,8 +16,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 服务管理中心。主要提供thrift服务创建和服务注册功能
@@ -77,8 +75,23 @@ public class MoServer {
      * 停止服务并释放资源
      */
     public void stopServer() {
+        logger.info("stopServer start unRegisterServer");
         unRegisterServer();
+        logger.info("stopServer end unRegisterServer");
+        try {
+            logger.info("stopServer start sleep 30s");
+            Thread.sleep(30000);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage());
+        } finally {
+            logger.info("stopServer sleep ok");
+        }
+
+        logger.info("stopServer start destroyServer");
         destroyServer();
+        logger.info("stopServer end destroyServer");
+
+
     }
 
     /**

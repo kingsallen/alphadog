@@ -5,7 +5,10 @@ import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.service.impl.JobApplicataionService;
 import com.moseeker.application.service.impl.vo.ApplicationRecord;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -26,6 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,7 +45,8 @@ public class JobApplicataionServicesImpl implements Iface {
     Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private JobApplicataionService service;
-
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
     /**
      * 创建申请
      *
@@ -53,8 +58,14 @@ public class JobApplicataionServicesImpl implements Iface {
         try{
             return service.postApplication(jobApplication);
         } catch (CommonException e) {
+            // todo redis删除
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             return new Response(e.getCode(), e.getMessage());
         } catch(Exception e){
+            // todo redis删除
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             logger.error(e.getMessage(),e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
@@ -214,6 +225,10 @@ public class JobApplicataionServicesImpl implements Iface {
         try {
             return service.employeeProxyApply(referenceId, applierId, positionIdList);
         } catch (Exception e) {
+            for(Integer position : positionIdList){
+                redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                        applierId + "", position + "");
+            }
             throw ExceptionUtils.convertException(e);
         }
     }

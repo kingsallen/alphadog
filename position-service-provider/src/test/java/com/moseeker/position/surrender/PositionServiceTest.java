@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.jobdb.JobPositionExtDao;
 import com.moseeker.position.service.third.ThirdPositionService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -26,6 +27,14 @@ import com.moseeker.thrift.gen.common.struct.Response;
 public class PositionServiceTest {
 	@Autowired
 	private PositionService service;
+
+	@Autowired
+	JobPositionExtDao jobPositionExtDao;
+
+	@Test
+	public void getDatasByPids() throws Exception {
+		System.out.println(JSON.toJSONString(jobPositionExtDao.getDatasByPids(Arrays.asList(127232,127235))));
+	}
 	//@Test
 	public void getRecommendedPositionsTest(){
 		Response res=service.getRecommendedPositions(106002);

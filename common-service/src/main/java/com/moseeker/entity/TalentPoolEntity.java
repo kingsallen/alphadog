@@ -38,15 +38,16 @@ import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by zztaiwll on 17/12/1.
@@ -612,13 +613,6 @@ public class TalentPoolEntity {
         int userPubliccount=this.getPublicTalentUserCount(companyId,userId);
         if(userPubliccount>0){
             return 1;
-        }
-        List<TalentpoolTalentRecord> list=getTalentpoolTalentByCompanyId(companyId);
-        Set<Integer> userIdList=getUserIdListByTalentpoolTalent(list);
-        if(!StringUtils.isEmptySet(userIdList)){
-            if(userIdList.contains(userId)){
-                return 1;
-            }
         }
         return 0;
     }

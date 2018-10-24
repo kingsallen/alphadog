@@ -151,7 +151,15 @@ public class MandrillMailListConsumer {
 
 	}
 
-
+    /*
+     *
+     * 发邮件时把\n换成<br>
+     *
+     * */
+    public String replaceHTMLEnterToBr(String oldString){
+        String newString = oldString.replaceAll("\\n","<br>");
+        return newString;
+    }
 
 
 }

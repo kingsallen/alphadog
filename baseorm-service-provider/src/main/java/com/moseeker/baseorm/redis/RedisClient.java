@@ -6,11 +6,6 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.StringUtils;
-
-import java.net.ConnectException;
-import java.util.List;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +14,9 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 
-import javax.management.StringValueExp;
+import java.net.ConnectException;
+import java.util.List;
+import java.util.Set;
 
 public abstract class RedisClient {
 
@@ -742,5 +739,38 @@ public abstract class RedisClient {
 		}
 
 		return 0;
+	}
+
+	/**
+	 *
+	 * redisClient.setnx 用来设置关键词对应的字符串，并设置在给定的时间之后超时
+	 * SETNX mykey value
+	 * EXPIRE mykey seconds
+	 * @param appId 调用方项目编号
+	 * @param key_identifier config_cacheconfig_rediskey.key_identifier 关键词标识符
+	 * @param str 关键词
+	 * @param str1 关键词
+	 * @param value 关键词对应的字符串
+	 * @return 原子性操作，set成功返回1，若key已存在即为失败返回0
+	 * @throws CacheConfigNotExistException 不存在的前缀
+	 * @throws RedisException redis异常
+	 */
+	public long setnx(int appId, String key_identifier, String str, String str1, String value)
+			throws CacheConfigNotExistException,RedisException {
+		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
+		String cacheKey = String.format(redisKey.getPattern(), str, str1);
+		try {
+			long result = redisCluster.setnx(cacheKey, value);
+			if(exists(cacheKey)) {
+				long updateCount = redisCluster.expire(cacheKey, redisKey.getTtl());
+				logger.info("setnx key:{} expire:{} update:{}",cacheKey,redisKey.getTtl(),updateCount);
+			}
+			return result;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			del(appId, key_identifier, str);
+			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);
+		} finally {
+		}
 	}
 }

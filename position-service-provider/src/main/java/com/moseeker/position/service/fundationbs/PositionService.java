@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignRecomPositionlistRecord;
@@ -69,6 +70,7 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.*;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobOccupationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.position.struct.*;
@@ -163,6 +165,8 @@ public class PositionService {
     @Autowired
     LiePinReceiverHandler receiverHandler;
 
+    @Autowired
+    ReferralPositionBonusDao referralPositionBonusDao;
 
 
     private ThreadPool pool = ThreadPool.Instance;
@@ -241,8 +245,8 @@ public class PositionService {
             if (hrTeamRecord != null) {
                 jobPositionPojo.department = hrTeamRecord.getName();
                 jobPositionPojo.team_name = hrTeamRecord.getName();
-                searchData.setTeam_name(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
-                searchData.setDepartment(StringUtils.filterStringForSearch(hrTeamRecord.getName()));
+                searchData.setTeam_name(hrTeamRecord.getName());
+                searchData.setDepartment(hrTeamRecord.getName());
             }
         }
 
@@ -268,7 +272,7 @@ public class PositionService {
             String degreeName = getDictConstantJson(2101, jobPositionPojo.degree);
             jobPositionPojo.degree_name = degreeName;
         }
-        searchData.setDegree_name(StringUtils.filterStringForSearch(jobPositionPojo.degree_name));
+        searchData.setDegree_name(jobPositionPojo.degree_name);
         // 工作性质
         jobPositionPojo.employment_type_name = getDictConstantJson(2103, jobPositionPojo.employment_type);
 
@@ -297,8 +301,8 @@ public class PositionService {
                jobPositionPojo.custom = "";
                jobPositionPojo.occupation = "";
              }
-        searchData.setCustom(StringUtils.filterStringForSearch(jobPositionPojo.custom));
-        searchData.setOccupation(StringUtils.filterStringForSearch(jobPositionPojo.occupation));
+        searchData.setCustom(jobPositionPojo.custom);
+        searchData.setOccupation(jobPositionPojo.occupation);
 
     // 修改更新时间
         jobPositionPojo.publish_date_view = DateUtils.dateToPattern(jobPositionPojo.publish_date,
@@ -317,11 +321,19 @@ public class PositionService {
             jobPositionPojo.province = sb.toString();
         }
         List<DictCityDO> dictList= commonPositionUtils.handlerCity(positionId);
+
         String citynames=commonPositionUtils.getPositionCityName(dictList);
         String cityEnames=commonPositionUtils.getPositionCityEname(dictList);
         logger.info("job_position_city的city信息是＝＝＝＝＝＝＝＝＝＝＝＝＝" + citynames);
         if (StringUtils.isNotNullOrEmpty(citynames)) {
             jobPositionPojo.city = citynames;
+            List<String> cityList=StringUtils.stringToList(citynames,",");
+            List<String> eCityList=StringUtils.stringToList(cityEnames,",");
+            searchData.setCity_list(cityList);
+            searchData.setEcity_list(eCityList);
+        }else{
+            List<String> cityList=StringUtils.stringToList(jobPositionPojo.city,",");
+            searchData.setCity_list(cityList);
         }
         jobPositionPojo.city_ename=cityEnames;
         if ("全国".equals(jobPositionPojo.city)) {
@@ -522,6 +534,16 @@ public class PositionService {
         positionFeature.setSource(obj.getSource());
 
         return positionFeature;
+    }
+
+    /**
+     * 根据职位ID批量获取position_ext数据
+     * @param ids
+     * @return
+     */
+    public List<JobPositionExtDO> getPositionExtList(List<Integer> ids) {
+
+        return jobPositionExtDao.getDatasByPids(ids);
     }
 
     private enum DBOperation {
@@ -1227,6 +1249,7 @@ public class PositionService {
                     .and("source", 9)
                     .and("source_id", sourceId)
                     .and("jobnumber", jobnumber)
+                    .and("status", PositionStatus.ACTIVED.getValue())
                     .buildQuery();
             jobPositionRecord = jobPositionDao.getRecord(queryUtil);
         } else {
@@ -1955,6 +1978,9 @@ public class PositionService {
             hrTeamMap.put(hrTeamDO.getId(), hrTeamDO);
         }
 
+        // 获取职位的内推奖金
+        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(jdIdList);
+
         //拼装 company 和 publisher 相关内容
         dataList = dataList.stream().map(s -> {
             s.setCompany_abbr(publisherCompanyMap.get(s.getPublisher()) == null ? "" : publisherCompanyMap.get(s.getPublisher()).getAbbreviation());
@@ -1968,7 +1994,10 @@ public class PositionService {
                 s.setDepartment(hrTeamMap.get(s.getTeam_id()) == null ? "" : hrTeamMap.get(s.getTeam_id()).getName());
             }
 
-
+            //添加内推奖金信息
+            if(refBonusMap !=null) {
+                s.setTotal_bonus(refBonusMap.get(s.getId()) == null? null:(refBonusMap.get(s.getId()).getPosition_bonus()).getTotal_bonus());
+            }
             return s;
         }).collect(Collectors.toList());
 
@@ -2723,6 +2752,13 @@ public class PositionService {
             // do nothing
         }
         return dataList;
+    }
+
+    private List<ReferralPositionBonusVO> getReferralBonusVO(List<Integer> pid) {
+
+
+
+        return null;
     }
 
 }

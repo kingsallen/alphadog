@@ -19,9 +19,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.UserSource;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -128,6 +126,11 @@ public class ProfileService {
 
     @Autowired
     private EmployeeEntity employeeEntity;
+
+    @Autowired
+    private LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+
+
 
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
@@ -796,6 +799,7 @@ public class ProfileService {
      * @return
      */
     public Response otherFieldsCheck(int profielId, String fields) {
+
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", profielId);
         ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
@@ -892,7 +896,7 @@ public class ProfileService {
      * @return 用户编号
      * @throws ProfileException
      */
-    public int parseText(String profile, int referenceId) throws ProfileException {
+    public int parseText(String profile, int referenceId,int appid) throws ProfileException {
 
         UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(referenceId);
         if (employeeDO == null) {
@@ -904,6 +908,10 @@ public class ProfileService {
             file = FileUtil.createFile("employee_proxy_apply.txt", profile);
         } catch (IOException e) {
             logger.error(this.getClass().getName()+" parseText error", e);
+            //判断请求来源是否为我是员工
+            if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.FAIL.getKey(),employeeDO.getCompanyId(),null);
+            }
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
         byte[] fileBytes;
@@ -911,6 +919,10 @@ public class ProfileService {
             fileBytes = FileUtil.convertToBytes(file);
         } catch (IOException e) {
             logger.error(this.getClass().getName()+" parseText error", e);
+            //判断请求来源是否为我是员工
+            if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.FAIL.getKey(),employeeDO.getCompanyId(),null);
+            }
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
         String data = new String(org.apache.commons.codec.binary.Base64.encodeBase64(fileBytes), Consts.UTF_8);
@@ -920,6 +932,10 @@ public class ProfileService {
         try {
             resumeObj = profileEntity.profileParserAdaptor(file.getName(), data);
         } catch (TException | IOException e) {
+            //判断请求来源是否为我是员工
+            if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.FAIL.getKey(),employeeDO.getCompanyId(),null);
+            }
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
         logger.info("profileParser resumeObj:{}", JSON.toJSONString(resumeObj));
@@ -927,6 +943,10 @@ public class ProfileService {
         ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
 
         if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
+            //判断请求来源是否为我是员工
+            if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.FAIL.getKey(),employeeDO.getCompanyId(),null);
+            }
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
         resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
@@ -941,20 +961,35 @@ public class ProfileService {
         UserUserRecord userRecord = userAccountEntity.getCompanyUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
+        int profileId;
         if (userRecord != null) {
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (profilePojo.getProfileRecord() != null) {
                 profilePojo.getProfileRecord().setUserId(userRecord.getId());
             }
-            profileEntity.mergeProfile(profilePojo, userRecord.getId());
+            profileId = profileEntity.mergeProfile(profilePojo, userRecord.getId());
             profileCompanyTagService.handlerCompanyTagByUserId(userRecord.getId());
+            //判断请求来源是否为我是员工
+            if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),employeeDO.getCompanyId(),profileId);
+            }
         } else {
             resumeEntity.fillDefault(profilePojo);
-            userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT);
+            try {
+                userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT, appid);
+            }catch (Exception e){
+                if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                    logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.FAIL.getKey(),employeeDO.getCompanyId(),null);
+                }
+            }
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
             profileCompanyTagService.handlerCompanyTagByUserId(userId);
+            //判断请求来源是否为我是员工
+            if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
+                logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),employeeDO.getCompanyId(),null);
+            }
         }
 
         return userId;
