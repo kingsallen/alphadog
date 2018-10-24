@@ -4,6 +4,8 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrAutomaticTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrAutomaticTagUserRecord;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,6 +14,7 @@ import static com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticT
 /**
  * Created by zztaiwll on 18/10/22.
  */
+@Repository
 public class TalentpoolHrAutomaticTagUserDao  extends JooqCrudImpl<TalentpoolHrAutomaticTagUser,TalentpoolHrAutomaticTagUserRecord> {
     public TalentpoolHrAutomaticTagUserDao(){
         super(TALENTPOOL_HR_AUTOMATIC_TAG_USER,TalentpoolHrAutomaticTagUser.class);
