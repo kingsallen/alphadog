@@ -60,6 +60,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -615,11 +616,11 @@ public class SearchengineEntity {
         logger.info(list.size() + "");
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
-                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time());
+                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 logger.info("award:{}", employeePointsRecordPojo.getAward());
                 logger.info("timespan:{}", employeePointsRecordPojo.getTimespan());
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
@@ -862,7 +863,7 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        UpdateResponse response = client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx)
+        UpdateResponse response = client.prepareUpdate(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
         if(response.getGetResult() == null) {
@@ -889,7 +890,7 @@ public class SearchengineEntity {
                     .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
-            bulkRequest.add(client.prepareUpdate(Constant.POSITION_WX_INDEX, Constant.POSITION_WX_TYPE, idx).setDoc(builder));
+            bulkRequest.add(client.prepareUpdate(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setDoc(builder));
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
