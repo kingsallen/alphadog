@@ -90,7 +90,10 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).filter(cityfilter);
         }
     }
-
+    public void handleTermDouble(double condition,QueryBuilder query,String conditionField){
+        QueryBuilder disable = QueryBuilders.termsQuery(conditionField, condition);
+        ((BoolQueryBuilder) query).must(disable);
+    }
     /*
      * 拼接city
      */

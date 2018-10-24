@@ -41,7 +41,9 @@ import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -67,6 +69,8 @@ import com.moseeker.thrift.gen.employee.struct.BonusVO;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
+import com.moseeker.thrift.gen.warn.struct.WarnBean;
+import java.net.ConnectException;
 import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -74,6 +78,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,6 +100,9 @@ public class EmployeeEntity {
 
     @Autowired
     private UserEmployeeDao employeeDao;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private HrGroupCompanyRelDao hrGroupCompanyRelDao;
@@ -160,6 +168,8 @@ public class EmployeeEntity {
 
     @Resource(name = "cacheClient")
     private RedisClient client;
+
+    ThreadPool tp = ThreadPool.Instance;
 
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
@@ -632,8 +642,11 @@ public class EmployeeEntity {
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
             if (Arrays.stream(rows).sum() > 0) {
                 historyUserEmployeeDao.addAllData(userEmployeeDOList);
-                // 更新ES中useremployee信息
-                searchengineEntity.deleteEmployeeDO(employeeIds);
+                tp.startTast(() -> {
+                    // 更新ES中useremployee信息
+                    this.deleteEsEmployee(employeeIds);
+                    return 0;
+                });
                 if(params != null){
                     Set<Integer> entry = params.keySet();
                     for(Integer companyId : entry){
@@ -648,6 +661,21 @@ public class EmployeeEntity {
             }
         }
         return false;
+    }
+
+    private void deleteEsEmployee(List<Integer> employeeIds)   {
+        Response result = searchengineEntity.deleteEmployeeDO(employeeIds);
+        if(Constant.OK != result.getStatus()){
+            logger.error("批量删除员工信息ES部分失败，员工编号:{}",employeeIds);
+            WarnBean warn = new WarnBean(String.valueOf(Constant.APPID_ALPHADOG),Constant.EMPLOYEE_BATCH_DELETE_FAILED,
+                    null, StringUtils.listToString(employeeIds,","), "");
+            try {
+                String client = HttpClient.sendPost(env.getProperty("http.api.url")+"sendWarn", JSON.toJSONString(warn));
+            } catch (ConnectException e) {
+                logger.error("sendOperator error:", e);
+            }
+
+        }
     }
 
     private Map<Integer, List<Integer>> handerUserEmployee(List<UserEmployeeDO> employees){
