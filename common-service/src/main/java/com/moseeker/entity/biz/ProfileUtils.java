@@ -432,7 +432,7 @@ public class ProfileUtils {
 										&& positionRecord.getPositionCode().intValue() != 0)
 										|| StringUtils.isNotBlank(positionRecord.getPositionName()))) {
 									record.getPositions().add(positionRecord);
-									break;
+//									break;
 								}
 							}
 						}
@@ -448,7 +448,7 @@ public class ProfileUtils {
 										&& industryRecord.getIndustryCode().intValue() != 0)
 										|| StringUtils.isNotBlank(industryRecord.getIndustryName()))) {
 									record.getIndustries().add(industryRecord);
-									break;
+//									break;
 								}
 							}
 						}
