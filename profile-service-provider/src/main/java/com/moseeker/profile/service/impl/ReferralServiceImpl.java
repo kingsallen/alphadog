@@ -221,10 +221,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
         if (profilePojo.getAttachmentRecords() != null) {
             logger.info("ReferralServiceImpl employeeReferralProfile profilePojo.attachments:{}", profilePojo
-                    .getAttachmentRecords()
-                    .stream()
-                    .map(ProfileAttachmentRecord::toString)
-                    .collect(Collectors.joining(";")));
+                    .getAttachmentRecords());
         } else {
             logger.info("ReferralServiceImpl employeeReferralProfile profilePojo.attachments is null");
         }

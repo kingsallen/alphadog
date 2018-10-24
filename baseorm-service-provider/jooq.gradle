@@ -37,14 +37,12 @@ def xml = new groovy.xml.MarkupBuilder(writer)
         user('daqi')
         password('5F51692091B4031640E18E7C27430E071BC878C8')
     }
-//    generator() {
-//        database() {
-//            inputSchema("hrdb")
     generator() {
         database() {
-            inputSchema("talentpooldb")
+            inputSchema("historydb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
+
 
         }
 
@@ -57,7 +55,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.talentpooldb')
+            packageName('com.moseeker.baseorm.db.historydb')
             directory('src/main/java')
         }
     }
