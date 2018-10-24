@@ -309,4 +309,6 @@ public final class Constant {
             "works.description";
 
     public static final String USERNAME_IS_NULL="未填写";
+
+    public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";
 }
