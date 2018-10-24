@@ -616,9 +616,6 @@ public class SearchengineEntity {
         logger.info(list.size() + "");
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
-                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
-                logger.info("award:{}", employeePointsRecordPojo.getAward());
-                logger.info("timespan:{}", employeePointsRecordPojo.getTimespan());
                 JSONObject a = new JSONObject();
                 a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());

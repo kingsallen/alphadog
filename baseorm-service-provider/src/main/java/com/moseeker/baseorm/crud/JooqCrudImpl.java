@@ -5,12 +5,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
-import org.jooq.Field;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.UpdatableRecord;
-import org.jooq.UpdateSetFirstStep;
-import org.jooq.UpdateSetMoreStep;
+import org.jooq.*;
 import org.jooq.impl.DefaultDSLContext;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,10 +66,18 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public List<R> addAllRecord(List<R> rs) {
+
         create.execute("set names utf8mb4");
-        create.attach(rs);
-        create.batchInsert(rs).execute();
-        return rs;
+        InsertSetStep<R> insertSetStep = create.insertInto(table);
+        InsertSetMoreStep<R> insertSetMoreStep = null;
+        for (int i = 0; i< rs.size(); i++) {
+            if (i == 0) {
+                insertSetMoreStep = insertSetStep.set(rs.get(i));
+            } else {
+                insertSetMoreStep = insertSetMoreStep.newRecord().set(rs.get(i));
+            }
+        }
+        return insertSetMoreStep.returning().fetch();
     }
 
     @Override
