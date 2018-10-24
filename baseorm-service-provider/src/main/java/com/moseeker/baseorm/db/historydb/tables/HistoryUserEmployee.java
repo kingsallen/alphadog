@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserEmployee extends TableImpl<HistoryUserEmployeeRecord> {
 
-    private static final long serialVersionUID = 328400613;
+    private static final long serialVersionUID = -1489565557;
 
     /**
      * The reference instance of <code>historydb.history_user_employee</code>
@@ -325,6 +325,11 @@ public class HistoryUserEmployee extends TableImpl<HistoryUserEmployeeRecord> {
      * The column <code>historydb.history_user_employee.degree</code>. 学历
      */
     public final TableField<HistoryUserEmployeeRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "学历");
+
+    /**
+     * The column <code>historydb.history_user_employee.bonus</code>. 员工当前的奖金总额
+     */
+    public final TableField<HistoryUserEmployeeRecord, Integer> BONUS = createField("bonus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工当前的奖金总额");
 
     /**
      * Create a <code>historydb.history_user_employee</code> table reference
