@@ -668,7 +668,7 @@ public class EmployeeEntity {
         if(Constant.OK != result.getStatus()){
             logger.error("批量删除员工信息ES部分失败，员工编号:{}",employeeIds);
             WarnBean warn = new WarnBean(String.valueOf(Constant.APPID_ALPHADOG),Constant.EMPLOYEE_BATCH_DELETE_FAILED,
-                    null, StringUtils.listToString(employeeIds,","), "");
+                    null, "批量删除员工信息ES部分失败，员工编号"+StringUtils.listToString(employeeIds,","), "");
             try {
                 String client = HttpClient.sendPost(env.getProperty("http.api.url")+"sendWarn", JSON.toJSONString(warn));
             } catch (ConnectException e) {
