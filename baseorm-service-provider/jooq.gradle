@@ -43,6 +43,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
 
+
         }
 
         // Watch out for this caveat when using MarkupBuilder with "reserved names"
