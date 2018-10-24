@@ -443,4 +443,11 @@ public class HistoryUserEmployeeDao extends DAOImpl<HistoryUserEmployeeRecord, c
     public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByDegree(Byte... values) {
         return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.DEGREE, values);
     }
+
+    /**
+     * Fetch records that have <code>bonus IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployee> fetchByBonus(Integer... values) {
+        return fetch(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.BONUS, values);
+    }
 }
