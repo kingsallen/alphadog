@@ -135,3 +135,9 @@ struct CandidateRecomRecordSortingDO {
     1: optional i32 postUserId,                 // 转发者编号
     2: optional i32 count                       // 转发者编号
 }
+
+struct CandidateApplicationPscDO {
+    1: optional i32 id,
+    2: optional i32 applicationId,
+    3: optional i32 pscId
+}

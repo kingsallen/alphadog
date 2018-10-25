@@ -76,4 +76,49 @@ public class CandidateController {
             return ResponseLogNotification.failJson(request, e);
         }
     }
+
+    @RequestMapping(value = "/v1/candidate/application/psc", method = RequestMethod.POST)
+    @ResponseBody
+    public String addAppliationPscInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer applicationId = params.getInt("application_id");
+            Integer pscId = params.getInt("psc_id");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("申请编号", applicationId, null, null);
+            vu.addRequiredValidate("psc编号", pscId, null, null);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                Response result = candidateService.addApplicationPsc(applicationId, pscId);
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+
+    @RequestMapping(value = "/v1/candidate/application/psc", method = RequestMethod.GET)
+    @ResponseBody
+    public String getAppliationPscInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer applicationId = params.getInt("application_id");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("申请编号", applicationId, null, null);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                Response result = candidateService.getApplicationPsc(applicationId);
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
 }

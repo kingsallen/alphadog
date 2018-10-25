@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationPscDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -51,6 +52,7 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -129,6 +131,9 @@ public class EmployeeEntity {
 
     @Autowired
     private CandidateCompanyDao candidateCompanyDao;
+
+    @Autowired
+    CandidateApplicationPscDao applicationPscDao;
     @Autowired
     private UserWxUserDao userWxUserDao;
 
@@ -161,8 +166,8 @@ public class EmployeeEntity {
 
     ThreadPool tp =ThreadPool.Instance;
 
-    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "application_state_change_exchange";
-    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "application_state_change_routingkey.change_state";
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_queue";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";
 
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
@@ -1103,14 +1108,15 @@ public class EmployeeEntity {
                 ReferralApplicationStatusCountRecord statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 if(statusCount == null){
-
+                    CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("applicationId", jobApplication.getId());
-                    jsonObject.put("recomId", userId);
-                    jsonObject.put("nextStage", nextStage);
-                    jsonObject.put("positionId", jobPositionRecord.getId());
-                    jsonObject.put("companyId", jobPositionRecord.getCompanyId());
-                    jsonObject.put("userId", jobApplication.getApplierId());
+                    jsonObject.put("application_id", jobApplication.getId());
+                    jsonObject.put("be_recom_user_id", userId);
+                    jsonObject.put("next_stage", nextStage);
+                    jsonObject.put("position_id", jobPositionRecord.getId());
+                    jsonObject.put("company_id", jobPositionRecord.getCompanyId());
+                    jsonObject.put("user_id", jobApplication.getApplierId());
+                    jsonObject.put("psc", psc.getPscId());
                     amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                             APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                     .build());

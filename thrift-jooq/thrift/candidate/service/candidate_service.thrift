@@ -25,5 +25,10 @@ service CandidateService {
     common_struct.Response getCandidateInfo(1: i32 hrId, 2: i32 userId, 3: i32 positionId) throws (1: common_struct.BIZException e);
     //查找候选人最近浏览的职位
     candidate_struct.RecentPosition getRecentPosition(1:i32 hrId, 2:i32 userId) throws (1: common_struct.BIZException e);
+    //申请时增加员工一度链路编号
+    common_struct.Response addApplicationPsc(1: i32 applicationId, 2: i32 pscId) throws (1: common_struct.BIZException e);
+    //根据申请查询员工一度链路信息
+    common_struct.Response getApplicationPsc(1: i32 applicationId) throws (1: common_struct.BIZException e);
+
 }
 
