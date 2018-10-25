@@ -63,8 +63,8 @@ public class TalentpoolHrAutomaticTagDao extends JooqCrudImpl<TalentpoolHrAutoma
         return result;
     }
 
-    public TalentpoolHrAutomaticTag getHrAutomaticTagCountById(int id){
-        TalentpoolHrAutomaticTag result= create.selectCount().from(TALENTPOOL_HR_AUTOMATIC_TAG)
+    public TalentpoolHrAutomaticTag getHrAutomaticTagById(int id){
+        TalentpoolHrAutomaticTag result= create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG)
                 .where(TALENTPOOL_HR_AUTOMATIC_TAG.ID.eq(id)).and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
                 .fetchOneInto(TalentpoolHrAutomaticTag.class);
         return result;

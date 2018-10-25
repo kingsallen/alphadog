@@ -330,11 +330,8 @@ public class TalentpoolNewController {
             if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
                 return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
             }
-            if(StringUtils.isNullOrEmpty(companyId)||"0".equals(hrId)){
-                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
-            }
             if(StringUtils.isNullOrEmpty(id)||"0".equals(id)){
-                return ResponseLogNotification.fail(request,"company_id不可以为空或者为0");
+                return ResponseLogNotification.fail(request,"id不可以为空或者为0");
             }
             Response result = service.getHrAutoMaticTagSingle(Integer.parseInt(hrId),Integer.parseInt(companyId),Integer.parseInt(id));
             return ResponseLogNotification.success(request, result);
