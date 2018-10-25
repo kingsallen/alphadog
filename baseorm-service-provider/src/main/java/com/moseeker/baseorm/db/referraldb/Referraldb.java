@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.EmployeeReferralRecord;
 import com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
@@ -39,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1832029516;
+    private static final long serialVersionUID = 806261348;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -55,6 +56,11 @@ public class Referraldb extends SchemaImpl {
      * The table <code>referraldb.history_referral_position_rel</code>.
      */
     public final HistoryReferralPositionRel HISTORY_REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL;
+
+    /**
+     * 红包活动职位申请状态统计
+     */
+    public final ReferralApplicationStatusCount REFERRAL_APPLICATION_STATUS_COUNT = com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount.REFERRAL_APPLICATION_STATUS_COUNT;
 
     /**
      * The table <code>referraldb.referral_company_conf</code>.
@@ -123,6 +129,7 @@ public class Referraldb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             EmployeeReferralRecord.EMPLOYEE_REFERRAL_RECORD,
             HistoryReferralPositionRel.HISTORY_REFERRAL_POSITION_REL,
+            ReferralApplicationStatusCount.REFERRAL_APPLICATION_STATUS_COUNT,
             ReferralCompanyConf.REFERRAL_COMPANY_CONF,
             ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD,
             ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG,

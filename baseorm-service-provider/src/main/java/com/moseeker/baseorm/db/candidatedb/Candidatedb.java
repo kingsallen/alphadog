@@ -4,6 +4,7 @@
 package com.moseeker.baseorm.db.candidatedb;
 
 
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
@@ -36,12 +37,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-    private static final long serialVersionUID = 659437624;
+    private static final long serialVersionUID = -1354332598;
 
     /**
      * The reference instance of <code>candidatedb</code>
      */
     public static final Candidatedb CANDIDATEDB = new Candidatedb();
+
+    /**
+     * 申请时员工一度的链路
+     */
+    public final CandidateApplicationPsc CANDIDATE_APPLICATION_PSC = com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC;
 
     /**
      * 候选人表
@@ -103,6 +109,7 @@ public class Candidatedb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC,
             CandidateCompany.CANDIDATE_COMPANY,
             CandidatePosition.CANDIDATE_POSITION,
             CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD,

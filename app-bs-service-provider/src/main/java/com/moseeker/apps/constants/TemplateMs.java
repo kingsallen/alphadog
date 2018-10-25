@@ -23,7 +23,7 @@ public enum TemplateMs {
 				    mi = new MsInfo(32,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=32","你好，你的简历已通过初筛", "初筛通过", "点击查看求职进度详情");
 				    break;
 				case 10:
-					mi = new MsInfo(45,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=45","您好，您的简历已通过面试", "面试通过", "点击查看求职进度详情");
+					mi = new MsInfo(45,"{0}m/app/usercenter/applyrecords/{2}?wechat_signature={1}&from_template_message=45","您好，您已通过面试", "面试通过", "点击查看求职进度详情");
 			}
 			return mi;
 		}
@@ -76,7 +76,7 @@ public enum TemplateMs {
                     mi = new MsInfo(76,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=76",MessageFormat.format("您好，您推荐的候选人简历已通过初筛", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
                     break;
                 case 10:
-                    mi = new MsInfo(77,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=77", MessageFormat.format("您好，您推荐的候选人简历已通过面试", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
+                    mi = new MsInfo(77,"{0}m/app/employee/recommends?wechat_signature={1}&from_template_message=77", MessageFormat.format("您好，您推荐的候选人已通过面试", args), "日期", "感谢您对公司人才招聘的贡献，欢迎继续推荐！");
                     break;
             }
             return mi;

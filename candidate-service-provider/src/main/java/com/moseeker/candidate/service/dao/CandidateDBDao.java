@@ -81,6 +81,9 @@ public class CandidateDBDao {
     CandidateRecomRecordDao candidateRecomRecordDao;
 
     @Autowired
+    CandidateApplicationPscDao applicationPscDao;
+
+    @Autowired
     HrPointsConfDao hrPointsConfDao;
 
 
@@ -558,5 +561,23 @@ public class CandidateDBDao {
      */
     public CandidatePositionRecord fetchRecentViewedPosition(int userId, List<Integer> positionIdList) {
         return candidatePositionDao.fetchRecentViewedPosition(userId, positionIdList);
+    }
+
+    /**
+     * 增加申请的链路信息
+     * @param applicationId 申请编号
+     * @param psc_id    candidate_share_chain.id
+     */
+    public void  addApplicationPsc(int applicationId, int psc_id){
+        applicationPscDao.addDataIgnoreDuplicate(applicationId, psc_id);
+    }
+
+    /**
+     * 根据申请编号获取申请时的链路信息
+     * @param applicationId
+     * @return
+     */
+    public CandidateApplicationPscDO getApplicationPscByApplicationId(int applicationId){
+        return applicationPscDao.getApplicationPscByApplication(applicationId);
     }
 }
