@@ -964,6 +964,7 @@ public class EmployeeEntity {
             List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
             for(UserEmployeeDO employee : userEmployeeList){
                 UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
                 record = employeeDao.addRecord(record);
                 employeeDOS.add(record);
             }
