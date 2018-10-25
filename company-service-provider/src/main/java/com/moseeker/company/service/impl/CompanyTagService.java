@@ -1,13 +1,11 @@
 package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolCompanyTagUserDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrAutomaticTagDao;
-import com.moseeker.baseorm.dao.talentpooldb.TalentpoolHrAutomaticTagUserDao;
+import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrAutomaticTag;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrAutomaticTagUser;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrAutomaticTagUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -49,6 +47,8 @@ public class CompanyTagService {
     private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
     @Autowired
     private TalentpoolHrAutomaticTagUserDao talentpoolHrAutomaticTagUserDao;
+    @Autowired
+    private TalentpoolHrTalentDao talentpoolHrTalentDao;
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -182,12 +182,12 @@ public class CompanyTagService {
     }
 
     //增量添加hr自动标签
-    public void handlerUserIdAndHrTag(List<Integer> userIdList,int hrId) throws TException {
+    public void handlerUserIdAndHrTag(Set<Integer> userIdList,int hrId) throws TException {
         List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
         List<Integer> tagIdList=new ArrayList<>();
         List<TalentpoolHrAutomaticTagUserRecord> deleList=new ArrayList<>();
         List<Map<String,Object>> tagList=talentpoolHrAutomaticTagDao.getHrAutomaticTagMapListByHrId( hrId);
-        if(!StringUtils.isEmptyList(userIdList)){
+        if(!StringUtils.isEmptySet(userIdList)){
             for(Integer userId:userIdList){
                 logger.info("handlerUserIdAndHrTag userId:{}",userId);
                 if(!StringUtils.isEmptyList(tagList)){
@@ -295,6 +295,23 @@ public class CompanyTagService {
             }
         }catch(Exception e){
             logger.warn(e.getMessage(),e);
+        }
+    }
+    /*
+     处理自定义标签
+     */
+    public void handlerHrAutomaticData(Set<Integer> userIdset){
+        try{
+            List<TalentpoolHrTalent> list=talentpoolHrTalentDao.getDataByUserId(userIdset);
+            if(!StringUtils.isEmptyList(list)){
+                for(TalentpoolHrTalent data:list){
+                    Set<Integer> userIdList=new HashSet<>();
+                    userIdList.add(data.getUserId());
+                    this.handlerUserIdAndHrTag(userIdList,data.getHrId());
+                }
+            }
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
         }
     }
 

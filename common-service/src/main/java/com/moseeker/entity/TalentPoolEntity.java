@@ -20,14 +20,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolExecute;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilterExecute;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -100,6 +98,8 @@ public class TalentPoolEntity {
     private TalentpoolExecuteDao talentpoolExcuteDao;
     @Autowired
     private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
+    @Autowired
+    private TalentpoolHrAutomaticTagUserDao talentpoolHrAutomaticTagUserDao;
 
     /*
         验证hr操作user_id是否合法
@@ -1718,6 +1718,7 @@ public class TalentPoolEntity {
         this.handlerPublicTag(idList,companyId);
         //删除企业标签
         this.handlerCompanyTag(idList,companyId);
+        this.handlerHrAutotag(idList,hrId);
     }
 
     /*
@@ -1728,6 +1729,7 @@ public class TalentPoolEntity {
         logger.debug("执行实时更新的id========="+idList.toString());
         this.realTimeUpload(idList,flag);
     }
+
 
 
     /*
@@ -1756,6 +1758,18 @@ public class TalentPoolEntity {
         result.put("user_id",userIdList);
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
+    }
+
+
+    public void realTimeUpdateHrAutoTag(List<Integer> userIdList){
+        if(!StringUtils.isEmptyList(userIdList)){
+            Map<String,Object> result=new HashMap<>();
+            result.put("tableName","talentpool_hr_auto_tag");
+            result.put("user_id",userIdList);
+            client.lpush(Constant.APPID_ALPHADOG,
+                    KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString(), JSON.toJSONString(result));
+        }
+
     }
     public void realTimeUpdateUploadDel(List<Integer> userIdList){
 
@@ -1921,6 +1935,30 @@ public class TalentPoolEntity {
 
     }
 
+    public void handlerHrAutotag(Set<Integer> userIds,int hrId){
+        //获取hr下所有的自动标签
+        List<Integer> tagIdList=this.getHrAutoTagIdList(hrId);
+        if(!StringUtils.isEmptyList(tagIdList)){
+            List<TalentpoolHrAutomaticTagUserRecord> dataList=talentpoolHrAutomaticTagUserDao.getDataByTagIdAndUserId(tagIdList,userIds);
+            if(!StringUtils.isEmptyList(dataList)){
+                talentpoolHrAutomaticTagUserDao.deleteRecords(dataList);
+                //暂时不用处理，处理人才更新时会自动处理
+                //this.realTimeUpdateHrAutoTag(StringUtils.convertSetToList(userIds));
+            }
+        }
+
+    }
+    public List<Integer> getHrAutoTagIdList(int hrId){
+        List<TalentpoolHrAutomaticTag> dataList=talentpoolHrAutomaticTagDao.getHrAutomaticTagListByHrId(hrId);
+        if(!StringUtils.isEmptyList(dataList)){
+            List<Integer> tagIdList=new ArrayList<>();
+            for(TalentpoolHrAutomaticTag data:dataList){
+                tagIdList.add(data.getId());
+            }
+            return tagIdList;
+        }
+        return null;
+    }
     private List<TalentpoolCompanyTagUserRecord> getHandlerCompanyTagData(Set<Integer> userIds,int companyId){
         if(StringUtils.isEmptySet(userIds)){
             return null;
