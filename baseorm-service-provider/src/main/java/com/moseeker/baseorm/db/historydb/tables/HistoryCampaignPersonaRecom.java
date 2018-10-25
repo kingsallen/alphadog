@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPersonaRecomRecord> {
 
-    private static final long serialVersionUID = -1664904776;
+    private static final long serialVersionUID = -1343688588;
 
     /**
      * The reference instance of <code>historydb.history_campaign_persona_recom</code>
@@ -93,9 +93,9 @@ public class HistoryCampaignPersonaRecom extends TableImpl<HistoryCampaignPerson
     public final TableField<HistoryCampaignPersonaRecomRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间\n");
 
     /**
-     * The column <code>historydb.history_campaign_persona_recom.type</code>. 0：粉丝 1：员工
+     * The column <code>historydb.history_campaign_persona_recom.type</code>.
      */
-    public final TableField<HistoryCampaignPersonaRecomRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0：粉丝 1：员工");
+    public final TableField<HistoryCampaignPersonaRecomRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * Create a <code>historydb.history_campaign_persona_recom</code> table reference
