@@ -16,4 +16,6 @@ service OrderService {
 
    void updateOrder(1: mall_struct.MallGoodsOrderUpdateForm updateForm) throws (1: common_struct.BIZException e);
 
+   string exportOrder(1: mall_struct.BaseMallForm baseMallForm) throws (1: common_struct.BIZException e);
+
 }

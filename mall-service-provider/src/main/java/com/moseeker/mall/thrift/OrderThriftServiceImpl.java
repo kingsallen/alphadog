@@ -67,4 +67,13 @@ public class OrderThriftServiceImpl implements Iface{
             throw e;
         }
     }
+
+    @Override
+    public String exportOrder(BaseMallForm baseMallForm) throws BIZException, TException {
+        try {
+            return orderService.exportOrder(baseMallForm);
+        }catch (Exception e){
+            throw e;
+        }
+    }
 }

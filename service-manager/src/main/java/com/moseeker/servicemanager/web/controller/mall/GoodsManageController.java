@@ -113,7 +113,7 @@ public class GoodsManageController {
             MallGoodsInfoForm mallGoodsInfoForm = ParamUtils.initModelForm(request, MallGoodsInfoForm.class);
             ValidateUtil vu = validateRequireInfo(mallGoodsInfoForm);
             vu.addRequiredValidate("商品id", mallGoodsInfoForm.getId());
-            vu.addIntTypeValidate("商品id", mallGoodsInfoForm.getId(), null, null, 0, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("商品id", mallGoodsInfoForm.getId(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 goodsService.editGood(mallGoodsInfoForm);
@@ -206,6 +206,7 @@ public class GoodsManageController {
             vu.addIntTypeValidate("商品id", goodId, null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
+                mallGoodsIdForm.setGood_id(goodId);
                 return ResponseLogNotification.successJson(request, goodsService.getGoodDetail(mallGoodsIdForm));
             } else {
                 return ResponseLogNotification.fail(request, message);

@@ -2,6 +2,7 @@ package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.malldb.MallGoodsInfoDao;
+import com.moseeker.baseorm.db.malldb.tables.records.MallGoodsInfoRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.mall.annotation.OnlySuperAccount;
@@ -12,6 +13,7 @@ import com.moseeker.mall.vo.MallGoodsInfoVO;
 import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
+import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.mall.struct.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author cjm
@@ -71,10 +75,10 @@ public class GoodsService {
     public void editGood(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException {
         logger.info("=================mallGoodsInfoForm:{}", mallGoodsInfoForm);
         mallGoodsInfoForm.setDetail(HtmlFilterUtils.filterSafe(mallGoodsInfoForm.getDetail()));
-        MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
-        BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
+        MallGoodsInfoDO mallGoodsInfoDO = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoForm.getId(), mallGoodsInfoForm.getCompany_id());
+        checkGoodsExist(mallGoodsInfoDO);
         checkGoodsState(mallGoodsInfoDO, GoodsEnum.DOWNSHELF.getState());
-        int row = mallGoodsInfoDao.editGood(mallGoodsInfoDO);
+        int row = mallGoodsInfoDao.editGood(mallGoodsInfoForm);
         if(row == 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_UNEXISTS);
         }
@@ -87,6 +91,7 @@ public class GoodsService {
         mallGoodsInfoForm.setDetail(HtmlFilterUtils.filterSafe(mallGoodsInfoForm.getDetail()));
         MallGoodsInfoDO mallGoodsInfoDO = new MallGoodsInfoDO();
         BeanUtils.copyProperties(mallGoodsInfoForm, mallGoodsInfoDO);
+        mallGoodsInfoDO.setState((byte)GoodsEnum.DOWNSHELF.getState());
         mallGoodsInfoDao.addData(mallGoodsInfoDO);
     }
 
@@ -113,7 +118,7 @@ public class GoodsService {
      */
     private Map<String, String> getSpecificStateGoodsMap(GoodSearchForm goodSearchForm) {
         int totalRows = mallGoodsInfoDao.getTotalRowsByCompanyIdAndState(goodSearchForm.getCompany_id(), goodSearchForm.getState());
-        int startIndex = PaginationUtils.getStartIndex(goodSearchForm.getPage_size(), goodSearchForm.getPage_number(), totalRows);
+        int startIndex = (goodSearchForm.getPage_number() - 1) * goodSearchForm.getPage_size();
         List<MallGoodsInfoDO> goodsList = mallGoodsInfoDao.getGoodsListByPageAndState(goodSearchForm.getCompany_id(),
                 startIndex, goodSearchForm.getPage_size(), goodSearchForm.getState());
         Map<String, String> resultMap = new HashMap<>(1 >> 4);
@@ -252,5 +257,38 @@ public class GoodsService {
             mallGoodsInfoDO = mallGoodsInfoDao.getGoodDetailByGoodIdAndCompanyId(mallGoodsInfoDO.getId(), mallGoodsInfoDO.getCompany_id());
             updateStockAndExchangeNumByLock(mallGoodsInfoDO, count, state, ++retryTimes);
         }
+    }
+
+    public void batchUpdateGoodInfo(List<MallOrderDO> orderList, int retryTimes) throws BIZException {
+        DbUtils.checkRetryTimes(retryTimes);
+        List<Integer> goodsId = orderList.stream().map(MallOrderDO::getGoods_id).collect(Collectors.toList());
+        List<MallGoodsInfoRecord> mallGoodsInfoRecords = mallGoodsInfoDao.getGoodsListByIds(goodsId);
+        Map<Integer, MallGoodsInfoRecord> idGoodMap = getIdGoodsMap(mallGoodsInfoRecords);
+        int[] rows = mallGoodsInfoDao.batchUpdateGoodInfo(orderList, idGoodMap);
+        List<MallOrderDO> failedList = new ArrayList<>();
+        for(int i=0; i<rows.length; i++){
+            if(rows[i] == 0){
+                failedList.add(orderList.get(i));
+            }
+        }
+        if(failedList.size() > 0){
+            batchUpdateGoodInfo(failedList, ++ retryTimes);
+        }
+    }
+
+    /**
+     * 获取商品id和商品的map
+     * @param   mallGoodsInfoRecords 商品集合信息
+     * @author  cjm
+     * @date  2018/10/22
+     * @return  商品id和商品的map
+     */
+    private Map<Integer, MallGoodsInfoRecord> getIdGoodsMap(List<MallGoodsInfoRecord> mallGoodsInfoRecords){
+        Map<Integer, MallGoodsInfoRecord> idGoodMap = new HashMap<>(1 >> 4);
+        for(MallGoodsInfoRecord record : mallGoodsInfoRecords){
+            // record.id是主键，不会重复
+            idGoodMap.put(record.getId(), record);
+        }
+        return idGoodMap;
     }
 }

@@ -2,16 +2,22 @@ package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
+import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
 import com.moseeker.baseorm.dao.malldb.MallOrderOperationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
 import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.GoodsEnum;
@@ -19,7 +25,11 @@ import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
+import com.moseeker.mall.vo.TemplateBaseVO;
+import com.moseeker.mall.vo.TemplateDataValueVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderOperationDO;
@@ -38,6 +48,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.net.ConnectException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,32 +66,51 @@ public class OrderService {
 
     private Logger logger = LoggerFactory.getLogger(OrderService.class);
 
-    @Autowired
-    private MallGoodsOrderDao orderDao;
+    private final MallGoodsOrderDao orderDao;
+
+    private final UserEmployeeDao userEmployeeDao;
+
+    private final HistoryUserEmployeeDao historyUserEmployeeDao;
+
+    private final GoodsService goodsService;
+
+    private final MallOrderOperationDao orderOperationDao;
+
+    private final UserEmployeePointsDao userEmployeePointsDao;
 
     @Autowired
-    private UserEmployeeDao userEmployeeDao;
+    private UserWxUserDao userWxUserDao;
 
     @Autowired
-    private HistoryUserEmployeeDao historyUserEmployeeDao;
+    private TemplateService templateService;
 
     @Autowired
-    private GoodsService goodsService;
-
-    @Autowired
-    private MallOrderOperationDao orderOperationDao;
-
-    @Autowired
-    private UserEmployeePointsDao userEmployeePointsDao;
+    private HrWxTemplateMessageDao hrWxTemplateMessageDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
     private static final String CONFIRM_REASON = "积分商城兑换商品消费积分";
     private static final String REFUSE_REASON = "积分商城拒绝兑换商品返还积分";
+    private static final String CONSUME_REMARK = "点击查看详细兑换记录";
+    private static final String CONSUME_TYPE = "兑换成功，扣除积分";
+    private static final String REFUSE_REMARK = "点击查看积分明细";
+    private static final String REFUSE_TYPE = "积分退回";
+    private static final String CREDIT = "积分";
+
+
+    @Autowired
+    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao, GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao) {
+        this.orderDao = orderDao;
+        this.userEmployeeDao = userEmployeeDao;
+        this.historyUserEmployeeDao = historyUserEmployeeDao;
+        this.goodsService = goodsService;
+        this.orderOperationDao = orderOperationDao;
+        this.userEmployeePointsDao = userEmployeePointsDao;
+    }
 
     /**
-     * hr获取公司下的订单 todo 关键词搜索还没做，并且需要数据组装
+     * hr获取公司下的订单
      * @param  orderSearchForm 订单搜索实体
      * @author  cjm
      * @date  2018/10/16
@@ -89,27 +121,39 @@ public class OrderService {
         int state = orderSearchForm.getState();
         List<MallOrderDO> orderList;
         Map<String, String> resultMap = new HashMap<>(1 >> 4);
+        String keyWord = orderSearchForm.getKeyword();
         int totalRows;
-        if(state == OrderEnum.All.getState()){
-            totalRows = orderDao.getTotalRowsByCompanyId(orderSearchForm.getCompany_id());
-            int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
-            orderList = orderDao.getOrdersListByPage(orderSearchForm.getCompany_id(), startIndex, orderSearchForm.getPage_size());
-        }else {
-            totalRows = orderDao.getTotalRowsByCompanyIdAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState());
-            int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
-            if(StringUtils.isNullOrEmpty(orderSearchForm.getKeyword())){
-
+        if(StringUtils.isNullOrEmpty(keyWord)){
+            if(state == OrderEnum.All.getState()){
+                totalRows = orderDao.getTotalRowsByCompanyId(orderSearchForm.getCompany_id());
+                int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
+                orderList = orderDao.getOrdersListByPage(orderSearchForm.getCompany_id(), startIndex, orderSearchForm.getPage_size());
             }else {
-                // todo 关键字查询
+                totalRows = orderDao.getTotalRowsByCompanyIdAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState());
+                int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
+                orderList = orderDao.getOrdersListByPageAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState(), startIndex, orderSearchForm.getPage_size());
             }
-            orderList = orderDao.getOrdersListByPageAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState(), startIndex, orderSearchForm.getPage_size());
+        }else {
+            if(state == OrderEnum.All.getState()){
+                totalRows = orderDao.getTotalRowsByCompanyIdAndKeyword(orderSearchForm.getCompany_id(), keyWord);
+                int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
+                orderList = orderDao.getOrdersListByPageAndKeyword(orderSearchForm, startIndex);
+            }else {
+                totalRows = orderDao.getTotalRowsByCompanyIdAndStateAndKeyword(orderSearchForm.getCompany_id(), orderSearchForm.getState(), keyWord);
+                int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
+                orderList = orderDao.getOrdersListByPageAndStateAndKeyword(orderSearchForm, startIndex);
+            }
         }
         Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
-        Map<Integer, UserEmployeeDO> employeeMap = getEmployeeMap(employeeIds);
-        List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeMap, employeeIds);
+        List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
+        List<UserEmployeeDO> historyEmployeeDOS = new ArrayList<>();
+        if(employeeDOS.size() != employeeIds.size()){
+            historyEmployeeDOS = historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds);
+        }
+        List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds);
         resultMap.put("total_row", totalRows + "");
-        resultMap.put("orders", JSON.toJSONString(mallOrderInfoVOS));
+        resultMap.put("list", JSON.toJSONString(mallOrderInfoVOS));
         return resultMap;
     }
 
@@ -125,10 +169,14 @@ public class OrderService {
     public String getEmployeeOrderList(BaseMallForm baseMallForm) throws BIZException {
         List<MallOrderDO> orderList = orderDao.getOrdersListByEmployeeId(baseMallForm.getEmployee_id());
         UserEmployeeDO userEmployeeDO = getUserEmployeeById(baseMallForm.getEmployee_id());
+        UserEmployeeDO historyUserEmployeeDO = null;
+        if(userEmployeeDO == null){
+            historyUserEmployeeDO = historyUserEmployeeDao.getUserEmployeeById(baseMallForm.getEmployee_id());
+        }
         List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
         for(MallOrderDO mallOrderDO : orderList){
             MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
-            mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO);
+            mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO, historyUserEmployeeDO);
             mallOrderInfoVOS.add(mallOrderInfoVO);
         }
         return JSON.toJSONString(mallOrderInfoVOS);
@@ -149,7 +197,7 @@ public class OrderService {
             delOrderRedisLock(orderForm);
             throw e;
         }
-
+        System.out.println("执行结束");
     }
 
     /**
@@ -169,41 +217,49 @@ public class OrderService {
         }
     }
 
+
+    @OnlySuperAccount
+    public String exportOrder(BaseMallForm baseMallForm) {
+        List<MallOrderDO> orderList = orderDao.getAllOrderByCompanyId(baseMallForm.getCompany_id());
+        Map<Integer, List<MallOrderDO>> employeeOrderMap = getEmployeeOrderMap(orderList);
+        List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).distinct().collect(Collectors.toList());
+        List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
+        List<UserEmployeeDO> historyEmployeeDOS = new ArrayList<>();
+        if(employeeDOS.size() != employeeIds.size()){
+            historyEmployeeDOS = historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds);
+        }
+        List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds);
+        return JSON.toJSONString(mallOrderInfoVOS);
+    }
+
     /**
      * 组装订单记录数据
      * @param   employeeOrderMap 员工ID-订单map
-     * @param   employeeMap 员工ID-员工map
+     * @param   employeeDOS 员工dos
+     * @param   historyEmployeeDOS 历史表员工dos
      * @param   employeeIds 员工IDS
      * @author  cjm
      * @date  2018/10/16
      * @return   mallOrderInfoVOS
      */
-    private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, Map<Integer, UserEmployeeDO> employeeMap, List<Integer> employeeIds) {
+    private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, List<UserEmployeeDO> employeeDOS, List<UserEmployeeDO> historyEmployeeDOS, List<Integer> employeeIds) {
         List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
+        Map<Integer,UserEmployeeDO> idEmployeeMap = employeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
+        Map<Integer,UserEmployeeDO> historyIdEmployeeMap = historyEmployeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
         for(Integer employeeId : employeeIds){
             List<MallOrderDO> tempList = employeeOrderMap.get(employeeId);
             for(MallOrderDO mallOrderDO : tempList){
                 MallOrderInfoVO mallOrderInfoVO = new MallOrderInfoVO();
-                mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, employeeMap.get(employeeId));
+                UserEmployeeDO userEmployeeDO = idEmployeeMap.get(employeeId);
+                UserEmployeeDO historyIdEmployee = null;
+                if(userEmployeeDO == null){
+                    historyIdEmployee = historyIdEmployeeMap.get(employeeId);
+                }
+                mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO, historyIdEmployee);
                 mallOrderInfoVOS.add(mallOrderInfoVO);
             }
         }
         return mallOrderInfoVOS;
-    }
-
-    /**
-     *  员工ID-员工  map
-     * @param   employeeIds 员工IDS
-     * @author  cjm
-     * @date  2018/10/16
-     * @return map
-     */
-    private Map<Integer,UserEmployeeDO> getEmployeeMap(List<Integer> employeeIds) {
-        List<UserEmployeeDO> employeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
-        if(employeeDOS.size() != employeeIds.size()){
-            employeeDOS.addAll(historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds));
-        }
-        return employeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
     }
 
     /**
@@ -248,11 +304,55 @@ public class OrderService {
         // 插入积分明细
         UserEmployeePointsRecordDO userEmployeePointsDO = insertAwardRecord(mallOrderDO, OrderEnum.CONFIRM.getState());
         // 插入订单操作记录
-        insertOperationRecord(mallOrderDO.getId(), orderForm.getEmployee_id(), userEmployeePointsDO.getId());
-        // todo 发送消息模板
-//        sendAwardTemplate();
+        insertOperationRecord(mallOrderDO.getId(), userEmployeePointsDO.getId());
+        // 发送消息模板
+//        String templateTile = "您已成功兑换" + mallGoodsInfoDO.getTitle();
+//        String url = "www.baidu.com";
+//        sendAwardTemplate(userEmployeeDO, mallOrderDO.getCredit(), userEmployeeDO.getAward() - payCredit,
+//                templateTile, CONSUME_TYPE, "消费", CONSUME_REMARK, url);
         //  删除redis锁
         delOrderRedisLock(orderForm);
+    }
+
+    private void sendAwardTemplate(UserEmployeeDO userEmployeeDO, int payCredit, int amount, String title, String type, String creditChange, String remark, String url) {
+        TemplateDataValueVO templateDataValueVO = new TemplateDataValueVO();
+        try {
+            DateTime dateTime = DateTime.now();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy年mm月dd日 HH:mm:ss");
+            templateDataValueVO.setTime(dateFormat.format(dateTime));
+            // employeeId 查手机号，手机没有则用sysuserid查nickname
+            UserWxUserRecord userWxUserRecord = userWxUserDao.getWXUserByUserId(userEmployeeDO.getSysuserId());
+            templateDataValueVO.setAccount(getAccount(userEmployeeDO, userWxUserRecord));
+            templateDataValueVO.setType(type);
+            templateDataValueVO.setCreditChange(creditChange);
+            templateDataValueVO.setCreditName("积分");
+            templateDataValueVO.setRemark(remark);
+            templateDataValueVO.setNumber(payCredit + "");
+            templateDataValueVO.setFirst(title);
+            templateDataValueVO.setAmount(amount + "");
+            Map<String, TemplateBaseVO> templateValueMap = templateService.sendCreditUpdateTemplate(templateDataValueVO, userWxUserRecord.getOpenid(), url);
+            // todo 插入模板消息发送记录
+//        insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
+        } catch (ConnectException e){
+            logger.info("=========================积分消息模板发送超时：templateDataValueVO:{}", templateDataValueVO);
+        }
+
+    }
+
+    /**
+     * 手机没有则用sysuserid查nickname 代替消息模板中的account
+     * @param userEmployeeDO 员工信息
+     * @param userWxUserRecord 员工微信信息
+     * @author  cjm
+     * @date  2018/10/24
+     * @return 返回手机号或微信昵称
+     */
+    private String getAccount(UserEmployeeDO userEmployeeDO, UserWxUserRecord userWxUserRecord) {
+        String account = userEmployeeDO.getMobile();
+        if(StringUtils.isNullOrEmpty(account)){
+            account = userWxUserRecord.getNickname();
+        }
+        return account;
     }
 
     private void delOrderRedisLock(OrderForm orderForm) {
@@ -263,6 +363,7 @@ public class OrderService {
     private void checkEmployeeDuplicateCommit(int goodId, int employeeId) throws BIZException {
         long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER.toString(),
                 String.valueOf(goodId), String.valueOf(employeeId),  "1");
+        System.out.println("flag:" + flag);
         if(flag == 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_REPEATED_COMMIT);
         }
@@ -290,39 +391,69 @@ public class OrderService {
         return payCredit;
     }
 
-    private void insertOperationRecord(int orderId, int employeeId, int pointRecordId) {
-        MallOrderOperationDO mallOrderOperationDO = new MallOrderOperationDO();
-        mallOrderOperationDO.setEmployee_id(employeeId);
-        mallOrderOperationDO.setOrder_id(orderId);
-        mallOrderOperationDO.setPoint_record_id(pointRecordId);
+    /**
+     * 插入订单操作记录
+     * @param  orderId 订单id
+     * @param  pointRecordId 积分明细id
+     * @author  cjm
+     * @date  2018/10/23
+     */
+    private void insertOperationRecord(int orderId, int pointRecordId) {
+        MallOrderOperationDO mallOrderOperationDO = initOperationRecord(pointRecordId, orderId, 0);
         orderOperationDao.addData(mallOrderOperationDO);
     }
 
-    private List<UserEmployeePointsRecordDO> batchInsertAwardRecord(List<MallOrderDO> orderList, int orderState) throws BIZException {
-        List<UserEmployeePointsRecordDO> recordDOS = new ArrayList<>();
+    /**
+     * 初始化订单操作记录DO
+     * @param  pointRecordId 积分明细id
+     * @param  orderId 订单id
+     * @param  state 订单状态
+     * @author  cjm
+     * @date  2018/10/23
+     * @return  返回订单操作记录DO
+     */
+    private MallOrderOperationDO initOperationRecord(int pointRecordId, int orderId, int state){
+       return initOperationRecord(pointRecordId, orderId, 0, state);
+    }
+
+    private MallOrderOperationDO initOperationRecord(int pointRecordId, int orderId, int hrId, int state){
+        MallOrderOperationDO mallOrderOperationDO = new MallOrderOperationDO();
+        mallOrderOperationDO.setOrder_id(orderId);
+        mallOrderOperationDO.setHr_id(hrId);
+        mallOrderOperationDO.setPoint_record_id(pointRecordId);
+        mallOrderOperationDO.setOperation_state((byte)state);
+        return mallOrderOperationDO;
+    }
+
+    private Map<Integer, UserEmployeePointsRecordDO> batchInsertAwardRecord(List<MallOrderDO> orderList, int orderState) throws BIZException {
+        Map<Integer, UserEmployeePointsRecordDO> map = new HashMap<>(1 >> 4);
         for(MallOrderDO mallOrderDO : orderList){
             UserEmployeePointsRecordDO userEmployeePointsDO = new UserEmployeePointsRecordDO();
-            if(orderState == OrderEnum.CONFIRM.getState() || orderState == OrderEnum.REFUSED.getState()){
-                userEmployeePointsDO.setAward(orderState == OrderEnum.CONFIRM.getState() ? mallOrderDO.getCredit() : -mallOrderDO.getCredit());
+            if(orderState == OrderEnum.REFUSED.getState()){
+                userEmployeePointsDO.setAward(mallOrderDO.getCredit());
                 userEmployeePointsDO.setEmployeeId(mallOrderDO.getEmployee_id());
-                userEmployeePointsDO.setReason(orderState == OrderEnum.CONFIRM.getState() ? CONFIRM_REASON : REFUSE_REASON);
-                recordDOS.add(userEmployeePointsDO);
-            }else {
+                userEmployeePointsDO.setReason(REFUSE_REASON);
+                userEmployeePointsDO = userEmployeePointsDao.addData(userEmployeePointsDO);
+                map.put(mallOrderDO.getId(), userEmployeePointsDO);
+            }else if(orderState != OrderEnum.CONFIRM.getState()) {
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
             }
         }
-        recordDOS = userEmployeePointsDao.addAllData(recordDOS);
-        if(recordDOS.size() != orderList.size()){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
-        }
-        return recordDOS;
+        return map;
     }
 
     private UserEmployeePointsRecordDO insertAwardRecord(MallOrderDO mallOrderDO, int orderState) throws BIZException {
-        List<MallOrderDO> orderList = new ArrayList<>();
-        orderList.add(mallOrderDO);
-        List<UserEmployeePointsRecordDO> recordDOS = batchInsertAwardRecord(orderList, orderState);
-        return recordDOS.get(0);
+        UserEmployeePointsRecordDO userEmployeePointsDO = new UserEmployeePointsRecordDO();
+        if(orderState == OrderEnum.CONFIRM.getState() || orderState == OrderEnum.REFUSED.getState()){
+            int award = mallOrderDO.getCredit() * mallOrderDO.getCount();
+            userEmployeePointsDO.setAward(orderState == OrderEnum.CONFIRM.getState() ?  -award: award);
+            userEmployeePointsDO.setEmployeeId(mallOrderDO.getEmployee_id());
+            userEmployeePointsDO.setReason(orderState == OrderEnum.CONFIRM.getState() ? CONFIRM_REASON : REFUSE_REASON);
+        }else {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
+        }
+
+        return userEmployeePointsDao.addData(userEmployeePointsDO);
     }
 
 
@@ -334,7 +465,7 @@ public class OrderService {
         DbUtils.checkRetryTimes(retryTimes);
         int row = userEmployeeDao.addAward(employeeId, oldAward + payCredit, oldAward);
         if(row == 0){
-            UserEmployeeDO userEmployeeDO = userEmployeeDao.getUserEmployeeForUpdate(employeeId);
+            UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(employeeId);
             updateAwardByLock(userEmployeeDO.getId(), userEmployeeDO.getAward(), payCredit, ++retryTimes);
         }
     }
@@ -360,6 +491,7 @@ public class OrderService {
         String orderId = createOrderId();
         mallOrderDO.setOrder_id(orderId);
         mallOrderDO.setEmployee_id(userEmployeeDO.getId());
+        mallOrderDO.setName(userEmployeeDO.getCname());
         mallOrderDO.setGoods_id(mallGoodsInfoDO.getId());
         mallOrderDO.setCompany_id(mallGoodsInfoDO.getCompany_id());
         mallOrderDO.setCredit(mallGoodsInfoDO.getCredit());
@@ -382,10 +514,10 @@ public class OrderService {
         long expireTime = new Duration(dateTime, allDay).getStandardSeconds();
         String current = redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER_ID.toString(), null);
         if(StringUtils.isNullOrEmpty(current)){
-            current = redisClient.incr(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER_ID.toString(), null) + "";
+            current = redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER_ID.toString(), null) + "";
             redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER_ID.toString(), null, (int)expireTime);
         }else {
-            current = redisClient.incr(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER_ID.toString(), null) + "";
+            current = redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER_ID.toString(), null) + "";
         }
         int year = dateTime.getYear() % 100;
         int month = dateTime.getMonthOfYear();
@@ -395,42 +527,91 @@ public class OrderService {
     }
 
     private void handleUpdatedOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException {
+        // 检验重复提交
         batchCheckHrDuplicateCommit(updateForm);
+        // 检验需要修改的订单状态是否是合法状态
         checkOrderOperationState(updateForm.getState());
+        // 获取所有订单
         List<MallOrderDO> orderList = orderDao.getOrdersByIds(updateForm.getIds());
-        checkOrderLimit(orderList, updateForm.getCompany_id());
-        if(updateForm.getState() == OrderEnum.CONFIRM.getState()){
-            int rows = orderDao.updateOrderStateByIdAndCompanyId(updateForm.getIds(), updateForm.getCompany_id(), updateForm.getState());
-            if(rows != updateForm.getIds().size()){
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
-            }
-        }else if(updateForm.getState() == OrderEnum.REFUSED.getState()){
-            // 插入积分变更记录
-            List<UserEmployeePointsRecordDO> recordDOS = batchInsertAwardRecord(orderList, OrderEnum.REFUSED.getState());
-            // 返还积分
-            batchUpdateAward(orderList);
-            // 商品信息修改，例如兑换次数，兑换数量
-            batchUpdateGoodInfo(orderList);
-            // 发送消息模板
-            // sendAwardTemplate();
-        }else {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
+        // 检验订单修改前的状态和要修改的状态
+        checkOrderLimit(orderList, updateForm);
+        // 更新订单状态
+        int rows = orderDao.updateOrderStateByIdAndCompanyId(updateForm);
+        if(rows != updateForm.getIds().size()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.DB_UPDATE_FAILED);
         }
+        // 处理不发放订单
+        Map<Integer, UserEmployeePointsRecordDO> recordDOMap = handleRefuseOrder(updateForm, orderList);
         // 插入hr操作记录
-//        batchInsertOperationRecord();
+        batchInsertOperationRecord(recordDOMap, updateForm);
+        // 删除redis锁
         batchDelOrderRedisLock(updateForm.getIds(), updateForm.getHr_id());
     }
 
-    private void batchUpdateGoodInfo(List<MallOrderDO> orderList) {
-
+    private Map<Integer,UserEmployeePointsRecordDO> handleRefuseOrder(MallGoodsOrderUpdateForm updateForm, List<MallOrderDO> orderList) throws BIZException {
+        Map<Integer, UserEmployeePointsRecordDO> recordDOMap = new HashMap<>(1 >> 4);
+        if(updateForm.getState() == OrderEnum.REFUSED.getState()){
+            // 插入积分变更记录
+            recordDOMap = batchInsertAwardRecord(orderList, OrderEnum.REFUSED.getState());
+            // 商品信息修改，例如兑换次数，兑换数量
+            goodsService.batchUpdateGoodInfo(orderList, 1);
+            // 返还积分
+            batchUpdateAward(orderList);
+        }else if(updateForm.getState() != OrderEnum.CONFIRM.getState()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
+        }
+        return recordDOMap;
     }
 
-    private void batchUpdateAward(List<MallOrderDO> orderList) throws BIZException {
-        // todo 暂时循环处理
-        for(MallOrderDO orderDO : orderList){
-            UserEmployeeDO userEmployeeDO = userEmployeeDao.getUserEmployeeForUpdate(orderDO.getEmployee_id());
-            updateAwardByLock(orderDO.getEmployee_id(), userEmployeeDO.getAward(), orderDO.getCredit(), 1);
+    private void batchInsertOperationRecord(Map<Integer, UserEmployeePointsRecordDO> recordDOS, MallGoodsOrderUpdateForm updateForm) {
+        if(recordDOS.size() == 0){
+            List<MallOrderOperationDO> orderOperationDOS = new ArrayList<>();
+            updateForm.getIds().forEach(id -> orderOperationDOS.add(initOperationRecord(0, id, updateForm.getHr_id(), updateForm.getState())));
+            orderOperationDao.addAllData(orderOperationDOS);
+            return;
         }
+        List<MallOrderOperationDO> orderOperationDOS = new ArrayList<>();
+        updateForm.getIds().forEach(id -> orderOperationDOS.add(initOperationRecord(recordDOS.get(id).getId(), id, updateForm.getHr_id(), updateForm.getState())));
+        orderOperationDao.addAllData(orderOperationDOS);
+    }
+
+    /**
+     * 目前只想到了循环更新积分
+     * @param orderList 订单信息
+     * @author  cjm
+     * @date  2018/10/22
+     */
+    private void batchUpdateAward(List<MallOrderDO> orderList) throws BIZException {
+        List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).collect(Collectors.toList());
+        // 获取历史库和员工库的所有员工信息
+        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
+        List<UserEmployeeDO> historyUserEmployeeDOS = new ArrayList<>();
+        if(employeeIds.size() != userEmployeeDOS.size()){
+            historyUserEmployeeDOS = historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds);
+        }
+        Map<Integer, UserEmployeeDO> userEmployeeDOMap = getIdEmployeeMap(userEmployeeDOS);
+        Map<Integer, UserEmployeeDO> historyEmployeeDOMap = getIdEmployeeMap(historyUserEmployeeDOS);
+        for(MallOrderDO orderDO : orderList){
+            UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(orderDO.getEmployee_id());
+            if(userEmployeeDO == null){
+                userEmployeeDO = historyEmployeeDOMap.get(orderDO.getEmployee_id());
+            }
+            updateAwardByLock(orderDO.getEmployee_id(), userEmployeeDO.getAward(), orderDO.getCredit(), 1);
+            // 发送积分变动消息模板
+//            String templateTile = "您兑换的" + orderDO.getTitle() + "，未成功发放，积分已退还到您的账户";
+//            String url = "www.baidu.com";
+//            sendAwardTemplate(userEmployeeDO, orderDO.getCredit(), userEmployeeDO.getAward() - orderDO.getCredit(),
+//                    templateTile, REFUSE_TYPE, "到账", REFUSE_REMARK, url);
+        }
+    }
+
+    private Map<Integer, UserEmployeeDO> getIdEmployeeMap(List<UserEmployeeDO> userEmployeeDOS){
+        Map<Integer, UserEmployeeDO> idEmployeeMap = new HashMap<>(1 >> 4);
+        for(UserEmployeeDO userEmployeeDO : userEmployeeDOS){
+            // record.id是主键，不会重复
+            idEmployeeMap.put(userEmployeeDO.getId(), userEmployeeDO);
+        }
+        return idEmployeeMap;
     }
 
     private void batchDelOrderRedisLock(List<Integer> orderIds, int hrId) {
@@ -455,12 +636,20 @@ public class OrderService {
     /**
      * 检验操作的订单是否是本公司下的订单
      * @param   orderList  订单list
-     * @param   companyId  公司id
+     * @param   updateForm  发放、不发放请求提交信息
      * @author  cjm
      * @date  2018/10/16
      */
-    private void checkOrderLimit(List<MallOrderDO> orderList, int companyId) throws BIZException {
-        List<Integer> companyIdList = orderList.stream().map(MallOrderDO::getCompany_id).distinct().collect(Collectors.toList());
+    private void checkOrderLimit(List<MallOrderDO> orderList, MallGoodsOrderUpdateForm updateForm) throws BIZException {
+        List<Integer> companyIdList = new ArrayList<>();
+        for(MallOrderDO mallOrderDO : orderList){
+            companyIdList.add(mallOrderDO.getCompany_id());
+            // 如果订单状态不是未确认，hr不能操作
+            if(mallOrderDO.getState() != OrderEnum.UNCONFIRM.getState()){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
+            }
+        }
+        int companyId = updateForm.getCompany_id();
         for (Integer id : companyIdList) {
             if(id != companyId){
                 throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_OPERATION_LIMIT);

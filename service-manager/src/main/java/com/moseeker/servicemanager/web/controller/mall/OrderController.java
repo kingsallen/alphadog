@@ -147,4 +147,33 @@ public class OrderController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 导出兑换记录
+     * @author  cjm
+     * @date  2018/10/23
+     */
+    @RequestMapping(value = "/manage/order/excel", method = RequestMethod.GET)
+    @ResponseBody
+    public String exportOrder(HttpServletRequest request) {
+        try {
+            BaseMallForm baseMallForm = ParamUtils.initModelForm(request, BaseMallForm.class);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("company_id", baseMallForm.getCompany_id());
+            vu.addRequiredValidate("hr_id", baseMallForm.getHr_id());
+            vu.addIntTypeValidate("company_id", baseMallForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+            vu.addIntTypeValidate("hr_id", baseMallForm.getHr_id(), null, null, 1, Integer.MAX_VALUE);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                return ResponseLogNotification.successJson(request, orderService.exportOrder(baseMallForm));
+            } else {
+                return ResponseLogNotification.fail(request, message);
+            }
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 }
