@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.userdb.*;
-import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyReferralConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrEmployeeCustomFields;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
@@ -902,11 +901,15 @@ public class EmployeeService {
         return employeeInfoVO;
     }
 
+    /**
+     * 修改员工补填信息
+     * @param userId 员工编号
+     * @param companyId 公司编号
+     * @param customValues 自定义信息
+     * @throws UserAccountException 异常信息
+     */
     public void patchEmployeeCustomFieldValues(int userId, int companyId,  Map<Integer, List<String>> customValues)
             throws UserAccountException {
-
-        log.info("setCacheEmployeeCustomInfo param: userId={}, companyId={}", userId, companyId, customValues);
-        Result response = new Result();
 
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", String.valueOf(companyId));

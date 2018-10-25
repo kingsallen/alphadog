@@ -1083,6 +1083,9 @@ public class JobApplicataionService {
                         jsonObject.put("positionId", resultVO.getPositionId());
                         jsonObject.put("applicationId", resultVO.getApplicationId());
                         jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+                        jsonObject.put("employeeId", employeeDO.getId());
+                        jsonObject.put("companyId", employeeDO.getCompanyId());
+                        jsonObject.put("berecomUserId", applierId);
                         amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                                 MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
                     } catch (AmqpException e) {
