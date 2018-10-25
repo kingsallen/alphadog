@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallOrder extends TableImpl<MallOrderRecord> {
 
-    private static final long serialVersionUID = 162184455;
+    private static final long serialVersionUID = 1339330584;
 
     /**
      * The reference instance of <code>malldb.mall_order</code>
@@ -77,6 +77,11 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     public final TableField<MallOrderRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
+     * The column <code>malldb.mall_order.name</code>.
+     */
+    public final TableField<MallOrderRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
+
+    /**
      * The column <code>malldb.mall_order.credit</code>. 下单时兑换所需积分
      */
     public final TableField<MallOrderRecord, Integer> CREDIT = createField("credit", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "下单时兑换所需积分");
@@ -89,7 +94,7 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     /**
      * The column <code>malldb.mall_order.pic_url</code>. 下单时商品的主图url
      */
-    public final TableField<MallOrderRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(16).nullable(false), this, "下单时商品的主图url");
+    public final TableField<MallOrderRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(2000).nullable(false), this, "下单时商品的主图url");
 
     /**
      * The column <code>malldb.mall_order.count</code>. 兑换商品数量
@@ -99,7 +104,7 @@ public class MallOrder extends TableImpl<MallOrderRecord> {
     /**
      * The column <code>malldb.mall_order.state</code>. 0 未发放  1 已发放  2 已拒绝 9 在订单查询时表示全部状态的订单
      */
-    public final TableField<MallOrderRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0 未发放  1 已发放  2 已拒绝 9 在订单查询时表示全部状态的订单");
+    public final TableField<MallOrderRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 未发放  1 已发放  2 已拒绝 9 在订单查询时表示全部状态的订单");
 
     /**
      * The column <code>malldb.mall_order.assign_time</code>. 发放时间

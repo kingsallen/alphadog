@@ -1,5 +1,6 @@
 package com.moseeker.mall.vo;
 
+import com.moseeker.mall.constant.OrderUserEmployeeEnum;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
@@ -14,6 +15,7 @@ public class MallOrderInfoVO{
     private String order_id;
     private Integer good_id;
     private Integer credit;
+    private String name;
     private String mobile;
     private String email;
     private String custom;
@@ -137,7 +139,24 @@ public class MallOrderInfoVO{
         this.custom = custom;
     }
 
-    public void cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO){
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 根据订单信息，员工信息组装页面显示的订单信息
+     * @param mallOrderDO 订单信息
+     * @param userEmployeeDO 员工信息
+     * @param historyUserEmployeeDO 历史表员工信息
+     * @author  cjm
+     * @date  2018/10/23
+     */
+    public void cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO, UserEmployeeDO historyUserEmployeeDO){
+
         setId(mallOrderDO.getId());
         setAssign_time(mallOrderDO.getAssign_time());
         setCount(mallOrderDO.getCount());
@@ -147,11 +166,22 @@ public class MallOrderInfoVO{
         setOrder_id(mallOrderDO.getOrder_id());
         setPic_url(mallOrderDO.getPic_url());
         setOrder_state(mallOrderDO.getState());
-        setEmployee_state((byte)userEmployeeDO.getStatus());
         setTitle(mallOrderDO.getTitle());
+        if(userEmployeeDO != null){
+            setEmployee_state(userEmployeeDO.getActivation() == 0 ?
+                    (byte)OrderUserEmployeeEnum.VERTIFIED.getState() :
+                    (byte)OrderUserEmployeeEnum.UNVERTIFIED.getState());
+        }else {
+            if(historyUserEmployeeDO == null){
+                return;
+            }
+            userEmployeeDO = historyUserEmployeeDO;
+            setEmployee_state((byte)OrderUserEmployeeEnum.DELETED.getState());
+        }
         setMobile(userEmployeeDO.getMobile());
         setEmail(userEmployeeDO.getEmail());
         setCustom(userEmployeeDO.getCustomFieldValues());
+        setName(userEmployeeDO.getCname());
     }
 
     @Override

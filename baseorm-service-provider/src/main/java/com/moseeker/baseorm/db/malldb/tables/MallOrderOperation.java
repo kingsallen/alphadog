@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MallOrderOperation extends TableImpl<MallOrderOperationRecord> {
 
-    private static final long serialVersionUID = 11046589;
+    private static final long serialVersionUID = -2085842964;
 
     /**
      * The reference instance of <code>malldb.mall_order_operation</code>
@@ -59,12 +59,7 @@ public class MallOrderOperation extends TableImpl<MallOrderOperationRecord> {
     /**
      * The column <code>malldb.mall_order_operation.hr_id</code>.
      */
-    public final TableField<MallOrderOperationRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
-     * The column <code>malldb.mall_order_operation.employee_id</code>.
-     */
-    public final TableField<MallOrderOperationRecord, Integer> EMPLOYEE_ID = createField("employee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<MallOrderOperationRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>malldb.mall_order_operation.order_id</code>. 商品兑换id mall_goods_order.id

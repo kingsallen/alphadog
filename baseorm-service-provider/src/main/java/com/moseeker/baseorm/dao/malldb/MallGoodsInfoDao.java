@@ -1,12 +1,20 @@
 package com.moseeker.baseorm.dao.malldb;
 
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
+import com.moseeker.baseorm.db.malldb.Tables;
 import com.moseeker.baseorm.db.malldb.tables.records.MallGoodsInfoRecord;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
+import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
+import com.moseeker.thrift.gen.mall.struct.MallGoodsInfoForm;
+import org.jooq.InsertQuery;
+import org.jooq.UpdateQuery;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.moseeker.baseorm.db.malldb.tables.MallGoodsInfo.MALL_GOODS_INFO;
 /**
@@ -61,14 +69,14 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .execute();
     }
 
-    public int editGood(MallGoodsInfoDO mallGoodsInfoDO) {
+    public int editGood(MallGoodsInfoForm mallGoodsInfoForm) {
         return create.update(MALL_GOODS_INFO)
-                .set(MALL_GOODS_INFO.PIC_URL, mallGoodsInfoDO.getPic_url())
-                .set(MALL_GOODS_INFO.TITLE, mallGoodsInfoDO.getTitle())
-                .set(MALL_GOODS_INFO.CREDIT, mallGoodsInfoDO.getCredit())
-                .set(MALL_GOODS_INFO.DETAIL, mallGoodsInfoDO.getDetail())
-                .set(MALL_GOODS_INFO.RULE, mallGoodsInfoDO.getRule())
-                .where(MALL_GOODS_INFO.ID.eq(mallGoodsInfoDO.getId()))
+                .set(MALL_GOODS_INFO.PIC_URL, mallGoodsInfoForm.getPic_url())
+                .set(MALL_GOODS_INFO.TITLE, mallGoodsInfoForm.getTitle())
+                .set(MALL_GOODS_INFO.CREDIT, mallGoodsInfoForm.getCredit())
+                .set(MALL_GOODS_INFO.DETAIL, mallGoodsInfoForm.getDetail())
+                .set(MALL_GOODS_INFO.RULE, mallGoodsInfoForm.getRule())
+                .where(MALL_GOODS_INFO.ID.eq(mallGoodsInfoForm.getId()))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)1))
                 .execute();
     }
@@ -122,5 +130,33 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .where(MALL_GOODS_INFO.STOCK.eq(mallGoodsInfoDO.getStock()))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)state))
                 .execute();
+    }
+
+    public List<MallGoodsInfoRecord> getGoodsListByIds(List<Integer> goodsId) {
+        return create.selectFrom(MALL_GOODS_INFO)
+                .where(MALL_GOODS_INFO.ID.in(goodsId))
+                .fetchInto(MallGoodsInfoRecord.class);
+    }
+
+    /**
+     * 订单在批量拒绝时将库存、兑换数量、兑换次数返还
+     * @param orderList 订单list
+     * @param idGoodsMap id/商品 map
+     * @author  cjm
+     * @date  2018/10/22
+     * @return 执行结果，0 执行失败 1 执行成功
+     */
+    public int[] batchUpdateGoodInfo(List<MallOrderDO> orderList, Map<Integer, MallGoodsInfoRecord> idGoodsMap) {
+        List<UpdateQuery<MallGoodsInfoRecord>> batchUpdate = new ArrayList<>();
+        for(MallOrderDO mallOrderDO : orderList){
+            MallGoodsInfoRecord record  = idGoodsMap.get(mallOrderDO.getGoods_id());
+            UpdateQuery<MallGoodsInfoRecord> tempQuery = create.updateQuery(Tables.MALL_GOODS_INFO);
+            tempQuery.addConditions(MALL_GOODS_INFO.ID.eq(record.getId()), MALL_GOODS_INFO.STOCK.eq(record.getStock()));
+            tempQuery.addValue(MALL_GOODS_INFO.EXCHANGE_NUM, record.getExchangeNum() - mallOrderDO.getCount());
+            tempQuery.addValue(MALL_GOODS_INFO.EXCHANGE_ORDER, record.getExchangeOrder() - 1);
+            tempQuery.addValue(MALL_GOODS_INFO.STOCK, record.getStock() + mallOrderDO.getCount());
+            batchUpdate.add(tempQuery);
+        }
+        return create.batch(batchUpdate).execute();
     }
 }
