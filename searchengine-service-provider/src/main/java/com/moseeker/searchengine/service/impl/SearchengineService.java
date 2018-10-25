@@ -13,9 +13,11 @@ import com.moseeker.baseorm.db.logdb.tables.records.LogMeetmobotRecomRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConverTools;
@@ -24,8 +26,8 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.SearchEngineException;
+import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.service.impl.tools.EmployeeBizTool;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
@@ -33,6 +35,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -54,15 +57,13 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -94,6 +95,8 @@ public class SearchengineService {
     @Autowired
     private LogMeetmobotRecomDao logMeetmobotRecomDao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     @CounterIface
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -181,7 +184,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         boolean haskey=false;
         if(StringUtils.isNotBlank(keywords)){
@@ -231,7 +234,7 @@ public class SearchengineService {
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
@@ -394,9 +397,9 @@ public class SearchengineService {
     private QueryBuilder handlerCommonCity(String citys){
         if(StringUtils.isNotBlank(citys)){
             List<String> fieldList=new ArrayList<>();
-            fieldList.add("city");
-            fieldList.add("city_ename");
-            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,citys);
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            QueryBuilder keyand=searchUtil.shouldTermsQuery(fieldList,citys);
             return keyand;
         }
         return null;
@@ -510,7 +513,7 @@ public class SearchengineService {
         TransportClient client = null;
         try {
             client=searchUtil.getEsClient();
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
+            IndexResponse response = client.prepareIndex(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setSource(position).execute().actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -628,6 +631,7 @@ public class SearchengineService {
                     jsonObject.put("award", userEmployeeDO.getAward());
                     jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
+                    jsonObject.put("disable", userEmployeeDO.getDisable());
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -690,7 +694,7 @@ public class SearchengineService {
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
@@ -762,7 +766,16 @@ public class SearchengineService {
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
-
+        for(Integer companyId : companyIds){
+            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), String.valueOf(companyId));
+            if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(result)){
+                List<Integer> employees = JSON.parseArray(result, Integer.class);
+                if(!com.moseeker.common.util.StringUtils.isEmptyList(employees)){
+                    searchUtil.handlerNotTerms(employees,query,"id");
+                }
+            }
+        }
+        searchUtil.handleTerm(String.valueOf(0), query, "disable");
         EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
@@ -849,6 +862,14 @@ public class SearchengineService {
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
             EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
             EmployeeBizTool.addFilter(query, filter, searchUtil);
+            for(Integer companyId : companyIds){
+                String str = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
+                if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(str)){
+                    List<Integer> employees = JSON.parseArray(str, Integer.class);
+                    EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+                }
+            }
+            searchUtil.handleTerm(String.valueOf(0), query, "disable");
             EmployeeBizTool.addKeywords(query, keywords, searchUtil);
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);

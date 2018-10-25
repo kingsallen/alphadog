@@ -5,7 +5,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
-
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.ResultOrRows;
@@ -18,7 +17,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by jack on 11/04/2017.
@@ -146,6 +144,4 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
         logger.info(recordPojos.size() + "");
         return recordPojos;
     }
-
-
 }
