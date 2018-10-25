@@ -40,9 +40,9 @@ public class TalentpoolHrAutomaticTagDao extends JooqCrudImpl<TalentpoolHrAutoma
         return list;
     }
 
-    public List<TalentpoolHrAutomaticTag> getHrAutomaticTagListByHrIdAndUserId(int hrId,Set<Integer> userSet){
+    public List<TalentpoolHrAutomaticTag> getHrAutomaticTagListByHrIdList(List<Integer> hrIdList){
         List<TalentpoolHrAutomaticTag> list= create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG)
-                .where(TALENTPOOL_HR_AUTOMATIC_TAG.HR_ID.eq(hrId)).and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
+                .where(TALENTPOOL_HR_AUTOMATIC_TAG.HR_ID.in(hrIdList)).and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
                 .orderBy(TALENTPOOL_HR_AUTOMATIC_TAG.UPDATE_TIME.desc())
                 .fetchInto(TalentpoolHrAutomaticTag.class);
         return list;

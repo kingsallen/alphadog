@@ -371,7 +371,6 @@ public class TalentPoolEntity {
      * @return
      */
     public Map<String, Object> getProfileFilterInfo(int companyId, int filter_id){
-
         TalentpoolProfileFilter filter = getTalentpoolProfileFilterByIdAndCompanyId(companyId, filter_id);
         if(filter == null){
             return null;
@@ -417,28 +416,6 @@ public class TalentPoolEntity {
 
         return params;
     }
-
-    private TalentpoolProfileFilter getTalentpoolProfileFilterByIdAndCompanyId(int companyId, int filter_id){
-        List<Integer> disable = new ArrayList<>();
-        disable.add(1);
-        disable.add(2);
-        List<TalentpoolProfileFilter> filter = talentpoolProfileFilterDao.getTalentpoolProfileFilterByIdAndCompanyId(companyId, disable, filter_id);
-        if(filter != null && filter.size()==1){
-            return filter.get(0);
-        }
-        return null;
-    }
-    private List<TalentpoolProfileFilterExecute> getTalentpoolProfileFilterExecuteByFilterId( int filter_id){
-        List<Integer> filterIdList = new ArrayList<>();
-        filterIdList.add(filter_id);
-        List<TalentpoolProfileFilterExecute> filterExecuteList = talentpoolProfileFilterExcuteDao.getFilterExecuteByfilterIdList(filterIdList);
-        return filterExecuteList;
-    }
-    private List<TalentpoolExecute> getTalentpoolExecuteByExcuteId( List<Integer> excureIds){
-        List<TalentpoolExecute> filterExecuteList = talentpoolExcuteDao.getTalentpoolExecuteByExcuteId(excureIds);
-        return filterExecuteList;
-    }
-
 
     /**
      *获取企业标签信息
@@ -1326,6 +1303,12 @@ public class TalentPoolEntity {
         int count=talentpoolTalentDao.getCount(query);
         return count;
     }
+    public List<Map<String,Object>> getPublicTalentGT(int companyId,List<Integer> userIdList,int num){
+        Query query=new Query.QueryBuilder().where("company_id",companyId).and(new Condition("public_num",1,ValueOp.GT)).and(new Condition("user_id",userIdList.toArray(),ValueOp.IN)).buildQuery();
+        List<Map<String,Object>> result=talentpoolTalentDao.getMaps(query);
+        return result;
+    }
+
 
     /*
       获取公司下所有公开的人才
@@ -1728,9 +1711,13 @@ public class TalentPoolEntity {
         //取消收藏时删除标签，并且计算标签数
 //            this.handleCancleTag(hrId,idList);
         this.handlerPublicTag(idList,companyId);
+        //获取公司下所有hr
+        List<Map<String, Object>> htList=this.getCompanyHrList(companyId);
+        Set<Integer> hrSet = this.getIdListByUserHrAccountList(htList);
         //删除企业标签
-        this.handlerCompanyTag(idList,companyId);
-        this.handlerHrAutotag(idList,hrId);
+        this.handlerCompanyTag(idList,companyId,hrSet);
+        //删除hr自动标签与人才的关系
+        this.handlerHrAutotag(idList,companyId,hrSet);
     }
 
     /*
@@ -1902,22 +1889,7 @@ public class TalentPoolEntity {
         return record;
     }
 
-    /*
-     处理usersuserrecord和talentpoolTalentRecord，获取user
-     */
-    private UserUserRecord handleTalentAndUser(TalentpoolTalentRecord record,List<UserUserRecord> list){
-        if(record==null||StringUtils.isEmptyList(list)){
-            return null;
-        }
-        int userId=record.getUserId();
-        for(UserUserRecord userRecord:list){
-            int id=userRecord.getId();
-            if(id==userId){
-                return userRecord;
-            }
-        }
-        return null;
-    }
+
     /*
      取消时处理标签
      */
@@ -1935,39 +1907,61 @@ public class TalentPoolEntity {
     /*
      取消时处理标签
      */
-    public void handlerCompanyTag(Set<Integer> userIds,int companyId){
-        userIds=this.getNoCollectionUserId(userIds,companyId);
+    public void handlerCompanyTag(Set<Integer> userIds,int companyId,Set<Integer> hrSet){
+        userIds=this.getNoCollectionUserId(userIds,companyId,hrSet);
         List<TalentpoolCompanyTagUserRecord> data=this.getHandlerCompanyTagData(userIds,companyId);
         if(!StringUtils.isEmptyList(data)){
             int result=talentpoolCompanyTagUserDao.batchDeleteTagAndUser(data);
         }
 
     }
-
-    public void handlerHrAutotag(Set<Integer> userIds,int hrId){
+    /*
+     逻辑整理：
+       1，获取公司下所有的hr
+       2，将还是公开的人才从列表中过滤出去
+       3，获取所有的自动标签
+       4，根据人才和hr的标签，获取所有的还被收藏的记录
+       5，过滤数据
+          【1】根据userid，获取还收藏这个人的hr列表
+          【2】如果自动标签的hr在这个列表中，说明这个自动标签可能还有效，不能组装删除数据，否则组装删除数据
+          【3】删除对应关系
+     */
+    public void handlerHrAutotag(Set<Integer> userIds,int companyId,Set<Integer> hrSet){
         //获取hr下所有的自动标签
-        List<Integer> tagIdList=this.getHrAutoTagIdList(hrId);
-        if(!StringUtils.isEmptyList(tagIdList)){
-            List<TalentpoolHrAutomaticTagUserRecord> dataList=talentpoolHrAutomaticTagUserDao.getDataByTagIdAndUserId(tagIdList,userIds);
-            if(!StringUtils.isEmptyList(dataList)){
-                talentpoolHrAutomaticTagUserDao.deleteRecords(dataList);
-                //暂时不用处理，处理人才更新时会自动处理
-                //this.realTimeUpdateHrAutoTag(StringUtils.convertSetToList(userIds));
+        if(!StringUtils.isEmptySet(userIds)){
+            List<TalentpoolHrAutomaticTag> tagList=talentpoolHrAutomaticTagDao.getHrAutomaticTagListByHrIdList(StringUtils.convertSetToList(hrSet));
+            Set<Integer> dataIdSet=this.getNoPublicUserId(userIds,companyId);
+            if(!StringUtils.isEmptySet(dataIdSet)){
+                //这个人还被其他人收藏
+                List<TalentpoolHrTalent> talentList=talentpoolHrTalentDao.getDataByUserIdAndHrId(dataIdSet,hrSet);
+                List<TalentpoolHrAutomaticTagUserRecord> result=new ArrayList<>();
+                for(Integer userId:dataIdSet){
+                    List<Integer> talentHrIdList=new ArrayList<>();
+                    if(!StringUtils.isEmptyList(talentList)){
+                        for(TalentpoolHrTalent talent:talentList){
+                            if(talent.getUserId()==userId.intValue()){
+                                talentHrIdList.add(talent.getHrId());
+                            }
+                        }
+                    }
+                    for(TalentpoolHrAutomaticTag tag:tagList){
+                        if(!talentHrIdList.contains(tag.getHrId())){
+                            TalentpoolHrAutomaticTagUserRecord record=new TalentpoolHrAutomaticTagUserRecord();
+                            record.setUserId(userId);
+                            record.setTagId(tag.getId());
+                        }
+                    }
+                }
+                if(!StringUtils.isEmptyList(result)){
+                    talentpoolHrAutomaticTagUserDao.deleteRecords(result);
+                }
             }
+
         }
 
     }
-    public List<Integer> getHrAutoTagIdList(int hrId){
-        List<TalentpoolHrAutomaticTag> dataList=talentpoolHrAutomaticTagDao.getHrAutomaticTagListByHrId(hrId);
-        if(!StringUtils.isEmptyList(dataList)){
-            List<Integer> tagIdList=new ArrayList<>();
-            for(TalentpoolHrAutomaticTag data:dataList){
-                tagIdList.add(data.getId());
-            }
-            return tagIdList;
-        }
-        return null;
-    }
+
+
     private List<TalentpoolCompanyTagUserRecord> getHandlerCompanyTagData(Set<Integer> userIds,int companyId){
         if(StringUtils.isEmptySet(userIds)){
             return null;
@@ -2165,9 +2159,7 @@ public class TalentPoolEntity {
     /*
      过滤掉还有收藏关系的人才
      */
-    private Set<Integer> getNoCollectionUserId(Set<Integer> userIds,int companyId){
-        List<Map<String, Object>> htList=this.getCompanyHrList(companyId);
-        Set<Integer> hrSet = this.getIdListByUserHrAccountList(htList);
+    private Set<Integer> getNoCollectionUserId(Set<Integer> userIds,int companyId,Set<Integer> hrSet){
         List<TalentpoolHrTalentRecord> pubList=getCompanyByCompanyAndUserId(userIds,hrSet);
         Set<Integer> collectionUserSet = getUserIdForCollection(pubList);
         Set<Integer> result=filterUserIdForNoPublic(collectionUserSet,userIds);
@@ -2402,5 +2394,42 @@ public class TalentPoolEntity {
             return result;
         }
         return "";
+    }
+
+    /*
+     处理usersuserrecord和talentpoolTalentRecord，获取user
+     */
+    private UserUserRecord handleTalentAndUser(TalentpoolTalentRecord record,List<UserUserRecord> list){
+        if(record==null||StringUtils.isEmptyList(list)){
+            return null;
+        }
+        int userId=record.getUserId();
+        for(UserUserRecord userRecord:list){
+            int id=userRecord.getId();
+            if(id==userId){
+                return userRecord;
+            }
+        }
+        return null;
+    }
+    private TalentpoolProfileFilter getTalentpoolProfileFilterByIdAndCompanyId(int companyId, int filter_id){
+        List<Integer> disable = new ArrayList<>();
+        disable.add(1);
+        disable.add(2);
+        List<TalentpoolProfileFilter> filter = talentpoolProfileFilterDao.getTalentpoolProfileFilterByIdAndCompanyId(companyId, disable, filter_id);
+        if(filter != null && filter.size()==1){
+            return filter.get(0);
+        }
+        return null;
+    }
+    private List<TalentpoolProfileFilterExecute> getTalentpoolProfileFilterExecuteByFilterId( int filter_id){
+        List<Integer> filterIdList = new ArrayList<>();
+        filterIdList.add(filter_id);
+        List<TalentpoolProfileFilterExecute> filterExecuteList = talentpoolProfileFilterExcuteDao.getFilterExecuteByfilterIdList(filterIdList);
+        return filterExecuteList;
+    }
+    private List<TalentpoolExecute> getTalentpoolExecuteByExcuteId( List<Integer> excureIds){
+        List<TalentpoolExecute> filterExecuteList = talentpoolExcuteDao.getTalentpoolExecuteByExcuteId(excureIds);
+        return filterExecuteList;
     }
 }

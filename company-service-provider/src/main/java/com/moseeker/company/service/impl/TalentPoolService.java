@@ -931,7 +931,12 @@ public class TalentPoolService {
         talentpoolHrTalentDao.updateRecords(list);
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,1,0);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
+        tagService.handlerHrAutoTagCancelPublic(userIdList,companyId);
+        tagService.handlerHrAutoTagAddPublic(userIdList,companyId,hrId);
         talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
+
+        //处理hr自动标签
+
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
@@ -1236,7 +1241,7 @@ public class TalentPoolService {
             for(Map<String,Object> data:dataList){
                 Map<String,Object> dataResult=new HashMap<>();
                 int tagId=(int)data.get("id");
-                int totalNum=tagService.getTagtalentNum(hrId,companyId,tagId);
+                int totalNum=tagService.getHrTagtalentNum(hrId,companyId,tagId);
                 dataResult.put("person_num",totalNum);
                 //从redis获取正在执行
                 boolean  isEXecute=tagService.getHtAutoTagIsExcute(tagId);
