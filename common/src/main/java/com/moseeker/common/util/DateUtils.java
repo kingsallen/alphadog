@@ -27,6 +27,8 @@ public class DateUtils {
     private static final SimpleDateFormat shotTimeSDF = new SimpleDateFormat(SHOT_TIME);
     private static final SimpleDateFormat longTimeSDF = new SimpleDateFormat(LONG_TIME);
 
+    public static final DateTimeFormatter SHOT_TIME_DTF = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     public static String dateToPattern(Date date, String pattern) {
         DateTime dt = new DateTime(date);
         return dt.toString(pattern);

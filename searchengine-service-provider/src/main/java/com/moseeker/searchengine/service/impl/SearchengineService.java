@@ -26,8 +26,8 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.SearchEngineException;
+import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.service.impl.tools.EmployeeBizTool;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
@@ -57,15 +57,13 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -186,7 +184,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         boolean haskey=false;
         if(StringUtils.isNotBlank(keywords)){
@@ -236,7 +234,7 @@ public class SearchengineService {
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
@@ -399,9 +397,9 @@ public class SearchengineService {
     private QueryBuilder handlerCommonCity(String citys){
         if(StringUtils.isNotBlank(citys)){
             List<String> fieldList=new ArrayList<>();
-            fieldList.add("city");
-            fieldList.add("city_ename");
-            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,citys);
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            QueryBuilder keyand=searchUtil.shouldTermsQuery(fieldList,citys);
             return keyand;
         }
         return null;
@@ -515,7 +513,7 @@ public class SearchengineService {
         TransportClient client = null;
         try {
             client=searchUtil.getEsClient();
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
+            IndexResponse response = client.prepareIndex(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setSource(position).execute().actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -695,7 +693,7 @@ public class SearchengineService {
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
