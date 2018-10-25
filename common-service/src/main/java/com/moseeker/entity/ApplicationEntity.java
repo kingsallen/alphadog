@@ -115,7 +115,7 @@ public class ApplicationEntity {
         List<ApplicationSaveResultVO> applyIdList = new ArrayList<>();
         for (Integer positionId : positionList) {
             JobApplicationRecord jobApplicationRecord = new JobApplicationRecord();
-            jobApplicationRecord.setAppTplId(Constant.RECRUIT_STATUS_APPLY);
+            jobApplicationRecord.setAppTplId(Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
             jobApplicationRecord.setCompanyId(companyId);
             jobApplicationRecord.setAtsStatus(0);
             jobApplicationRecord.setRecommenderUserId(referenceId);
