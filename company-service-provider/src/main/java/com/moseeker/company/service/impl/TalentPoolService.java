@@ -1239,7 +1239,10 @@ public class TalentPoolService {
         }else if(flag == -2){
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }
-        TalentpoolHrAutomaticTag result=talentpoolHrAutomaticTagDao.getHrAutomaticTagCountById(id);
+        TalentpoolHrAutomaticTag result=talentpoolHrAutomaticTagDao.getHrAutomaticTagById(id);
+        logger.info(JSON.toJSONString("======================================"));
+        logger.info(JSON.toJSONString(result));
+        logger.info(JSON.toJSONString("======================================"));
         return ResponseUtils.success(result);
     }
     @CounterIface
