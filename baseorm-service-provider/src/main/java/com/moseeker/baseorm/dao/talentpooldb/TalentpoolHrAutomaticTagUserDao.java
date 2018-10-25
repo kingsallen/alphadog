@@ -4,14 +4,17 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrAutomaticTagUser;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrAutomaticTagUserRecord;
 import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTagUser.TALENTPOOL_HR_AUTOMATIC_TAG_USER;
 
 /**
  * Created by zztaiwll on 18/10/22.
  */
+@Repository
 public class TalentpoolHrAutomaticTagUserDao  extends JooqCrudImpl<TalentpoolHrAutomaticTagUser,TalentpoolHrAutomaticTagUserRecord> {
     public TalentpoolHrAutomaticTagUserDao(){
         super(TALENTPOOL_HR_AUTOMATIC_TAG_USER,TalentpoolHrAutomaticTagUser.class);
@@ -24,5 +27,9 @@ public class TalentpoolHrAutomaticTagUserDao  extends JooqCrudImpl<TalentpoolHrA
         int result=create.deleteFrom(TALENTPOOL_HR_AUTOMATIC_TAG_USER).where(TALENTPOOL_HR_AUTOMATIC_TAG_USER.TAG_ID.in(tagIdList)).execute();
         return result;
     }
-
+    public List<TalentpoolHrAutomaticTagUserRecord> getDataByTagIdAndUserId(List<Integer> tagIdList,Set<Integer> userIdSet){
+        List<TalentpoolHrAutomaticTagUserRecord> list=create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG_USER).where(TALENTPOOL_HR_AUTOMATIC_TAG_USER.TAG_ID.in(tagIdList))
+                .and(TALENTPOOL_HR_AUTOMATIC_TAG_USER.USER_ID.in(userIdSet)).fetchInto(TalentpoolHrAutomaticTagUserRecord.class);
+        return list;
+    }
 }

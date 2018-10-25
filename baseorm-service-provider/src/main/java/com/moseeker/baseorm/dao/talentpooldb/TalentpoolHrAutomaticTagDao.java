@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.moseeker.baseorm.db.talentpooldb.tables.TalentpoolHrAutomaticTag.TALENTPOOL_HR_AUTOMATIC_TAG;
 
@@ -32,6 +33,14 @@ public class TalentpoolHrAutomaticTagDao extends JooqCrudImpl<TalentpoolHrAutoma
     }
 
     public List<TalentpoolHrAutomaticTag> getHrAutomaticTagListByHrId(int hrId){
+        List<TalentpoolHrAutomaticTag> list= create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG)
+                .where(TALENTPOOL_HR_AUTOMATIC_TAG.HR_ID.eq(hrId)).and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
+                .orderBy(TALENTPOOL_HR_AUTOMATIC_TAG.UPDATE_TIME.desc())
+                .fetchInto(TalentpoolHrAutomaticTag.class);
+        return list;
+    }
+
+    public List<TalentpoolHrAutomaticTag> getHrAutomaticTagListByHrIdAndUserId(int hrId,Set<Integer> userSet){
         List<TalentpoolHrAutomaticTag> list= create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG)
                 .where(TALENTPOOL_HR_AUTOMATIC_TAG.HR_ID.eq(hrId)).and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
                 .orderBy(TALENTPOOL_HR_AUTOMATIC_TAG.UPDATE_TIME.desc())
