@@ -318,10 +318,9 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int updateUserProfile(int id, String name, String mobile,
-                                       int position) throws BIZException, TException {
+    public int updateUserProfile(int id, String name, String mobile) throws BIZException, TException {
         try {
-            return profileService.updateUserProfile(id, name, mobile, position);
+            return profileService.updateUserProfile(id, name, mobile);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

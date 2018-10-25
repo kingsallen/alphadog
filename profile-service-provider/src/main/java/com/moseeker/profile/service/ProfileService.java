@@ -38,11 +38,10 @@ public interface ProfileService {
      * @param id 用户id（内推为employeeid）
      * @param name 用户名
      * @param mobile 手机
-     * @param position 职位id
      * @return  简历id
      * @throws ProfileException 业务异常
      */
-     int updateUserProfile(int id, String name, String mobile, int position);
+     int updateUserProfile(int id, String name, String mobile);
 
 
 }

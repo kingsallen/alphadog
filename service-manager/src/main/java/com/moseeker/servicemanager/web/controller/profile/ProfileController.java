@@ -770,13 +770,12 @@ public class ProfileController {
         validateUtil.addRegExpressValidate("手机", userProfileForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", userProfileForm.getName());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
-        validateUtil.addIntTypeValidate("职位", userProfileForm.getPosition(), 1, null);
         validateUtil.addIntTypeValidate("appid", userProfileForm.getAppid(), 0, null);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int profileId = service.updateUserProfile(id, userProfileForm.getName(),
-                    userProfileForm.getMobile(), userProfileForm.getPosition()
+                    userProfileForm.getMobile()
                    );
             return Result.success(profileId).toJson();
         } else {

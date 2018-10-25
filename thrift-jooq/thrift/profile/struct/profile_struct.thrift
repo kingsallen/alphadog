@@ -254,7 +254,8 @@ struct UserProfile {
 struct ProfileParseResult {
     1: optional string file,
     2: optional string name,
-    3: optional string mobile
+    3: optional string mobile,
+    4: optional bool mobileeditable
 }
 
 //候选人关键信息

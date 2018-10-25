@@ -118,12 +118,11 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
      * 产生简历、申请记录
      * @param id 用户id
      * @param mobile 手机号码
-     * @param position 职位编号
      * @return 简历ID
      * @throws ProfileException
      */
     @Override
-    public int updateUserProfile(int id, String name, String mobile, int position) throws ProfileException {
+    public int updateUserProfile(int id, String name, String mobile) throws ProfileException {
 
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(USER_USER.ID.getName(), id);
@@ -131,12 +130,6 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
         if (userUserDO == null) {
             throw PROFILE_USER_NOTEXIST;
         }
-
-        JobPositionRecord positionRecord = positionEntity.getPositionByID(position);
-        if (positionRecord == null || positionRecord.getStatus() != PositionStatus.ACTIVED.getValue()) {
-            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
-        }
-
         String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.WECHAT_UPLOAD_RESUME_FILE.toString(), String.valueOf(id));
 
