@@ -29,7 +29,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserHrAccountRecord extends TableRecordImpl<HistoryUserHrAccountRecord> implements Record20<Integer, Integer, String, String, Integer, String, String, Integer, Byte, Integer, Timestamp, String, Timestamp, String, Integer, Integer, String, Timestamp, Timestamp, String> {
 
-    private static final long serialVersionUID = 1492002924;
+    private static final long serialVersionUID = -234884894;
 
     /**
      * Setter for <code>historydb.history_user_hr_account.id</code>.
@@ -144,14 +144,14 @@ public class HistoryUserHrAccountRecord extends TableRecordImpl<HistoryUserHrAcc
     }
 
     /**
-     * Setter for <code>historydb.history_user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活; 2:确认中
+     * Setter for <code>historydb.history_user_hr_account.activation</code>. 子账号邀请使用，账号是否激活，1：激活；0：未激活
      */
     public void setActivation(Byte value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>historydb.history_user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活; 2:确认中
+     * Getter for <code>historydb.history_user_hr_account.activation</code>. 子账号邀请使用，账号是否激活，1：激活；0：未激活
      */
     public Byte getActivation() {
         return (Byte) get(8);
