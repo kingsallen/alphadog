@@ -1190,12 +1190,17 @@ public class EmployeeEntity {
 
     public void publishInitalScreenHbEvent(JobApplication jobApplication, JobPositionRecord jobPositionRecord,
                                            Integer userId, Integer nextStage){
+        logger.info("publishInitalScreenHbEvent  jobApplication {}",jobApplication);
+        logger.info("publishInitalScreenHbEvent  jobPositionRecord {}",jobPositionRecord);
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
+            logger.info("publishInitalScreenHbEvent  nextStage {}",nextStage);
+            logger.info("publishInitalScreenHbEvent  bool {}",((hbStatus >> 2) & 1) == 1);
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
                 ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplByRecruitOrder(nextStage);
                 ReferralApplicationStatusCountRecord statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
+                logger.info("publishInitalScreenHbEvent  statusCount {}",statusCount);
                 if(statusCount == null){
                     CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     JSONObject jsonObject = new JSONObject();
@@ -1206,6 +1211,7 @@ public class EmployeeEntity {
                     jsonObject.put("company_id", jobPositionRecord.getCompanyId());
                     jsonObject.put("user_id", jobApplication.getApplierId());
                     jsonObject.put("psc", psc.getPscId());
+                    logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
                     amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                             APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                     .build());
