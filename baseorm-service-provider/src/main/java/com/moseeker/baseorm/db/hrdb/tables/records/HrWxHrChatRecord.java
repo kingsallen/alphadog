@@ -61,14 +61,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
+     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
      */
     public void setContent(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
+     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
      */
     public String getContent() {
         return (String) get(2);
@@ -145,14 +145,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
      */
     public String getMsgType() {
         return (String) get(8);

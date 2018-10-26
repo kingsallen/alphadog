@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = 1880993027;
+    private static final long serialVersionUID = -841400061;
 
     private Integer   id;
     private String    name;
@@ -55,10 +55,10 @@ public class HrSearchCondition implements Serializable {
     private String    favoriteHrs;
     private String    cityCode;
     private String    intentionCityCode;
+    private Integer   positionStatus;
     private String    positionKeyWord;
     private String    pastPositionKeyWord;
     private String    pastCompanyKeyWord;
-    private Integer   positionStatus;
 
     public HrSearchCondition() {}
 
@@ -93,10 +93,10 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = value.favoriteHrs;
         this.cityCode = value.cityCode;
         this.intentionCityCode = value.intentionCityCode;
+        this.positionStatus = value.positionStatus;
         this.positionKeyWord = value.positionKeyWord;
         this.pastPositionKeyWord = value.pastPositionKeyWord;
         this.pastCompanyKeyWord = value.pastCompanyKeyWord;
-        this.positionStatus = value.positionStatus;
     }
 
     public HrSearchCondition(
@@ -130,10 +130,10 @@ public class HrSearchCondition implements Serializable {
         String    favoriteHrs,
         String    cityCode,
         String    intentionCityCode,
+        Integer   positionStatus,
         String    positionKeyWord,
         String    pastPositionKeyWord,
-        String    pastCompanyKeyWord,
-        Integer   positionStatus
+        String    pastCompanyKeyWord
     ) {
         this.id = id;
         this.name = name;
@@ -165,10 +165,10 @@ public class HrSearchCondition implements Serializable {
         this.favoriteHrs = favoriteHrs;
         this.cityCode = cityCode;
         this.intentionCityCode = intentionCityCode;
+        this.positionStatus = positionStatus;
         this.positionKeyWord = positionKeyWord;
         this.pastPositionKeyWord = pastPositionKeyWord;
         this.pastCompanyKeyWord = pastCompanyKeyWord;
-        this.positionStatus = positionStatus;
     }
 
     public Integer getId() {
@@ -411,6 +411,14 @@ public class HrSearchCondition implements Serializable {
         this.intentionCityCode = intentionCityCode;
     }
 
+    public Integer getPositionStatus() {
+        return this.positionStatus;
+    }
+
+    public void setPositionStatus(Integer positionStatus) {
+        this.positionStatus = positionStatus;
+    }
+
     public String getPositionKeyWord() {
         return this.positionKeyWord;
     }
@@ -433,14 +441,6 @@ public class HrSearchCondition implements Serializable {
 
     public void setPastCompanyKeyWord(String pastCompanyKeyWord) {
         this.pastCompanyKeyWord = pastCompanyKeyWord;
-    }
-
-    public Integer getPositionStatus() {
-        return this.positionStatus;
-    }
-
-    public void setPositionStatus(Integer positionStatus) {
-        this.positionStatus = positionStatus;
     }
 
     @Override
@@ -477,10 +477,10 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(favoriteHrs);
         sb.append(", ").append(cityCode);
         sb.append(", ").append(intentionCityCode);
+        sb.append(", ").append(positionStatus);
         sb.append(", ").append(positionKeyWord);
         sb.append(", ").append(pastPositionKeyWord);
         sb.append(", ").append(pastCompanyKeyWord);
-        sb.append(", ").append(positionStatus);
 
         sb.append(")");
         return sb.toString();

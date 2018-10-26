@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 81463068;
+    private static final long serialVersionUID = -1219091366;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -72,14 +72,14 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
+     * Setter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
      */
     public void setChannel(Short value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
+     * Getter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
      */
     public Short getChannel() {
         return (Short) get(3);
@@ -324,30 +324,30 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
-     */
-    public void setPracticeSalaryUnit(Byte value) {
-        set(21, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
-     */
-    public Byte getPracticeSalaryUnit() {
-        return (Byte) get(21);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
      */
     public void setPracticePerWeek(Byte value) {
-        set(22, value);
+        set(21, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_third_party_position.practice_per_week</code>. 每周实习天数
      */
     public Byte getPracticePerWeek() {
+        return (Byte) get(21);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
+     */
+    public void setPracticeSalaryUnit(Byte value) {
+        set(22, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_third_party_position.practice_salary_unit</code>. 实习薪资单位，0：元/月，1：元/天
+     */
+    public Byte getPracticeSalaryUnit() {
         return (Byte) get(22);
     }
 
@@ -450,28 +450,28 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息，多个福利特色用,隔开
+     * Setter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息，多个福利特色用','隔开
      */
     public void setFeature(String value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息，多个福利特色用,隔开
+     * Getter for <code>hrdb.hr_third_party_position.feature</code>. 职位特色，每个特色不超过8个字，总特色数不超过16个，用于回显猎聘第三方补填页面福利特色，由于猎聘职位福利特色可以编辑，且不影响仟寻职位福利特色，因此加了这个字段保存福利特色相关信息，多个福利特色用','隔开
      */
     public String getFeature() {
         return (String) get(30);
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用，暂时只有51使用
+     * Setter for <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用
      */
     public void setInternship(Byte value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用，暂时只有51使用
+     * Getter for <code>hrdb.hr_third_party_position.internship</code>. 是否使用实习职位的额度,0：不使用，1：使用
      */
     public Byte getInternship() {
         return (Byte) get(31);
@@ -503,7 +503,7 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     /**
      * Create a detached, initialised HrThirdPartyPositionRecord
      */
-    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practiceSalaryUnit, Byte practicePerWeek, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature, Byte internship) {
+    public HrThirdPartyPositionRecord(Integer id, Integer positionId, String thirdPartPositionId, Short channel, Short isSynchronization, Short isRefresh, Timestamp syncTime, Timestamp refreshTime, Timestamp updateTime, String address, String occupation, String syncFailReason, Short useCompanyAddress, Integer thirdPartyAccountId, String department, Integer salaryMonth, Integer feedbackPeriod, Short salaryDiscuss, Integer salaryBottom, Integer salaryTop, Integer practiceSalary, Byte practicePerWeek, Byte practiceSalaryUnit, Integer companyId, Integer addressId, Integer departmentId, String companyName, String addressName, String departmentName, Integer count, String feature, Byte internship) {
         super(HrThirdPartyPosition.HR_THIRD_PARTY_POSITION);
 
         set(0, id);
@@ -527,8 +527,8 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
         set(18, salaryBottom);
         set(19, salaryTop);
         set(20, practiceSalary);
-        set(21, practiceSalaryUnit);
-        set(22, practicePerWeek);
+        set(21, practicePerWeek);
+        set(22, practiceSalaryUnit);
         set(23, companyId);
         set(24, addressId);
         set(25, departmentId);
