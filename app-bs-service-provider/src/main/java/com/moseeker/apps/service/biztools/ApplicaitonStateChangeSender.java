@@ -41,7 +41,8 @@ public class ApplicaitonStateChangeSender {
                 "applierId:{}, positionId:{}, move:{}, operationTime:{}",
                 appId, stage, nextStage, applierId, positionId, move,
                 operationTime.toString("yyyy-MM-dd HH:mm:ss"));
-        if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED) {
+        if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED
+                || nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("applicationId", appId);
             jsonObject.put("nowStage", stage);
