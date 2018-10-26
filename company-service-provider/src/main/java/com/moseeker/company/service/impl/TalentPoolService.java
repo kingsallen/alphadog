@@ -1504,30 +1504,36 @@ public class TalentPoolService {
         }
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
         if (StringUtils.isNullOrEmpty(info)) {
-            redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
-            //todo 这里应该考虑如何解耦,这个方法非常不好，需要和TalentpoolCompanyTagDO解耦，但是先这么做着
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data),TalentpoolCompanyTagDO.class));
-            if (StringUtils.isNullOrEmpty(filterString)) {
-                int id=this.addHrAutomaticData(data);
-                List<Integer> idList = new ArrayList<>();
-                idList.add(id);
-                //ES更新
-                try {
-                    tp.startTast(() -> {
-                        Map<String, Object> map = JSON.parseObject(JSON.toJSONString(data));
-                        if(data.isSetKeyword_list()){
-                            String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
-                            map.put("keywords", keyword);
-                        }
-                        tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
-                        return 0;
-                    });
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+            try {
+                redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
+                //todo 这里应该考虑如何解耦,这个方法非常不好，需要和TalentpoolCompanyTagDO解耦，但是先这么做着
+                String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data), TalentpoolCompanyTagDO.class));
+                if (StringUtils.isNullOrEmpty(filterString)) {
+                    int id = this.addHrAutomaticData(data);
+                    List<Integer> idList = new ArrayList<>();
+                    idList.add(id);
+                    //ES更新
+                    try {
+                        tp.startTast(() -> {
+                            Map<String, Object> map = JSON.parseObject(JSON.toJSONString(data));
+                            if (data.isSetKeyword_list()) {
+                                String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+                                map.put("keywords", keyword);
+                            }
+                            tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
+                            return 0;
+                        });
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
+                    return ResponseUtils.success("");
+                } else {
+                    return ResponseUtils.fail(1, filterString);
                 }
-                return ResponseUtils.success("");
-            }else{
-                return ResponseUtils.fail(1,filterString);
+            }catch(Exception e){
+                logger.error(e.getMessage(),e);
+                redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
             }
         }
         return ResponseUtils.fail(1,"请不要重复执行");
