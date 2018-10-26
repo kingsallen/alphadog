@@ -1286,7 +1286,10 @@ public class TalentPoolService {
         }else if(flag == -2){
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }
-        TalentpoolHrAutomaticTag result=talentpoolHrAutomaticTagDao.getHrAutomaticTagById(id);
+        Map<String,Object> result=talentpoolHrAutomaticTagDao.getSingleDataById(id);
+        boolean  isEXecute=tagService.getHtAutoTagIsExcute(id);
+        result.put("is_execute",isEXecute);
+        result.put("expire_time",2);
         logger.info(JSON.toJSONString("======================================"));
         logger.info(JSON.toJSONString(result));
         logger.info(JSON.toJSONString("======================================"));
