@@ -1116,7 +1116,11 @@ public class EmployeeEntity {
                     jsonObject.put("position_id", jobPositionRecord.getId());
                     jsonObject.put("company_id", jobPositionRecord.getCompanyId());
                     jsonObject.put("user_id", jobApplication.getApplierId());
-                    jsonObject.put("psc", psc.getPscId());
+                    int pscId = 0;
+                    if(psc != null){
+                        pscId = psc.getPscId();
+                    }
+                    jsonObject.put("psc", pscId);
                     amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                             APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                     .build());
