@@ -1536,6 +1536,7 @@ public class TalentPoolService {
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
                 redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
+                return ResponseUtils.fail(1,e.getMessage());
             }
         }
         return ResponseUtils.fail(1,"请不要重复执行");
