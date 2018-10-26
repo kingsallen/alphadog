@@ -166,7 +166,7 @@ public class EmployeeEntity {
 
     ThreadPool tp =ThreadPool.Instance;
 
-    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_queue";
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_exchange";
     private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";
 
 
@@ -180,7 +180,7 @@ public class EmployeeEntity {
      *
      * @param userId
      * @param companyId 如果公司属于集团公司，需验证用户是否在集团下的所有公司中认证过员工
-     * @return
+     * @redpacket_exchange
      */
     public boolean isEmployee(int userId, int companyId) {
         UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
