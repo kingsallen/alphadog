@@ -160,14 +160,11 @@ public class Hrdb extends SchemaImpl {
     public final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
 
     /**
-<<<<<<< HEAD
      * The table <code>hrdb.hr_hb_items_backup</code>.
      */
     public final HrHbItemsBackup HR_HB_ITEMS_BACKUP = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup.HR_HB_ITEMS_BACKUP;
 
     /**
-=======
->>>>>>> master
      * 红包配置和职位绑定表
      */
     public final HrHbPositionBinding HR_HB_POSITION_BINDING = com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding.HR_HB_POSITION_BINDING;
