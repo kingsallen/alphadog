@@ -94,6 +94,9 @@ public class CompanyTagService {
                 map.put("account_type","1");//查询时因为需要hr账号类型取查询人才库，所以注意
                 double pageSize=500.0;
                 int totalPage=this.getDataTotalPage(map,pageSize);
+                if(TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()==type){
+                    this.deleteHrAutomaticTagUserList(tagIdList);
+                }
                 if(totalPage == 0){
                     this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
                 }else{
@@ -422,7 +425,7 @@ public class CompanyTagService {
                 }
                 talentpoolHrAutomaticTagUserDao.addAllRecord(list);
             }else if(type==TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()){
-                this.deleteHrAutomaticTagUserList(tagIdList);
+
                 List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
                 for (Integer userId : userIdList) {
                     for(Integer tagId:tagIdList){
