@@ -2,7 +2,6 @@ package com.moseeker.mq.service.impl;
 
 import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxNoticeMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -49,7 +48,7 @@ public class TemplateMsgProducer {
     private HrWxNoticeMessageDao noticeMessageDao;
 
     @Autowired
-	TemlateMsgHttp temlateMsgHttp;
+    TemplateMsgHttp temlateMsgHttp;
 
 	/**
 	 * 消息模板通知接口

@@ -10,7 +10,7 @@ import java.util.Set;
 import javax.annotation.Resource;
 
 import com.moseeker.common.thread.ThreadPool;
-import com.moseeker.mq.service.impl.TemlateMsgHttp;
+import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,7 +34,7 @@ public class Schedule {
     private RedisClient redisClient;
 
 	@Autowired
-    private TemlateMsgHttp temlateMsgHttp;
+    private TemplateMsgHttp temlateMsgHttp;
 
 	@Autowired
     private ClearUpVote clearUpVote;
