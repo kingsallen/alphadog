@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserEmployeeRecord extends UpdatableRecordImpl<HistoryUserEmployeeRecord> {
 
-    private static final long serialVersionUID = 12026603;
+    private static final long serialVersionUID = 230111832;
 
     /**
      * Setter for <code>historydb.history_user_employee.id</code>.
@@ -744,6 +744,76 @@ public class HistoryUserEmployeeRecord extends UpdatableRecordImpl<HistoryUserEm
         return (String) get(50);
     }
 
+    /**
+     * Setter for <code>historydb.history_user_employee.team_id</code>. 团队id
+     */
+    public void setTeamId(Integer value) {
+        set(51, value);
+    }
+
+    /**
+     * Getter for <code>historydb.history_user_employee.team_id</code>. 团队id
+     */
+    public Integer getTeamId() {
+        return (Integer) get(51);
+    }
+
+    /**
+     * Setter for <code>historydb.history_user_employee.job_grade</code>. 职级
+     */
+    public void setJobGrade(Byte value) {
+        set(52, value);
+    }
+
+    /**
+     * Getter for <code>historydb.history_user_employee.job_grade</code>. 职级
+     */
+    public Byte getJobGrade() {
+        return (Byte) get(52);
+    }
+
+    /**
+     * Setter for <code>historydb.history_user_employee.city_code</code>. 城市code
+     */
+    public void setCityCode(Integer value) {
+        set(53, value);
+    }
+
+    /**
+     * Getter for <code>historydb.history_user_employee.city_code</code>. 城市code
+     */
+    public Integer getCityCode() {
+        return (Integer) get(53);
+    }
+
+    /**
+     * Setter for <code>historydb.history_user_employee.degree</code>. 学历
+     */
+    public void setDegree(Byte value) {
+        set(54, value);
+    }
+
+    /**
+     * Getter for <code>historydb.history_user_employee.degree</code>. 学历
+     */
+    public Byte getDegree() {
+        return (Byte) get(54);
+    }
+
+    /**
+     * Setter for <code>historydb.history_user_employee.bonus</code>. 员工当前的奖金总额
+     */
+    public void setBonus(Integer value) {
+        set(55, value);
+    }
+
+    /**
+     * Getter for <code>historydb.history_user_employee.bonus</code>. 员工当前的奖金总额
+     */
+    public Integer getBonus() {
+        return (Integer) get(55);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -770,7 +840,7 @@ public class HistoryUserEmployeeRecord extends UpdatableRecordImpl<HistoryUserEm
     /**
      * Create a detached, initialised HistoryUserEmployeeRecord
      */
-    public HistoryUserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, Integer hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod, String customFieldValues) {
+    public HistoryUserEmployeeRecord(Integer id, String employeeid, Integer companyId, Integer roleId, Integer wxuserId, Byte sex, String ename, String efname, String cname, String cfname, String password, Byte isAdmin, Integer status, String companybody, String departmentname, String groupname, String position, Date employdate, String managername, String city, Date birthday, Date retiredate, String education, String address, String idcard, String mobile, Integer award, Timestamp bindingTime, String email, Byte activation, String activationCode, Byte disable, Timestamp createTime, Timestamp updateTime, Byte authLevel, Timestamp registerTime, String registerIp, Timestamp lastLoginTime, String lastLoginIp, Long loginCount, Byte source, String downloadToken, Integer hrWxuserId, String customField, Byte isRpSent, Integer sysuserId, Integer positionId, Integer sectionId, Byte emailIsvalid, Byte authMethod, String customFieldValues, Integer teamId, Byte jobGrade, Integer cityCode, Byte degree, Integer bonus) {
         super(HistoryUserEmployee.HISTORY_USER_EMPLOYEE);
 
         set(0, id);
@@ -824,5 +894,10 @@ public class HistoryUserEmployeeRecord extends UpdatableRecordImpl<HistoryUserEm
         set(48, emailIsvalid);
         set(49, authMethod);
         set(50, customFieldValues);
+        set(51, teamId);
+        set(52, jobGrade);
+        set(53, cityCode);
+        set(54, degree);
+        set(55, bonus);
     }
 }

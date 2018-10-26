@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserEmployeeUpvote extends TableImpl<HistoryUserEmployeeUpvoteRecord> {
 
-    private static final long serialVersionUID = -558989669;
+    private static final long serialVersionUID = 1149277389;
 
     /**
      * The reference instance of <code>historydb.history_user_employee_upvote</code>
@@ -73,7 +73,7 @@ public class HistoryUserEmployeeUpvote extends TableImpl<HistoryUserEmployeeUpvo
     /**
      * The column <code>historydb.history_user_employee_upvote.upvote_time</code>. 点赞时间
      */
-    public final TableField<HistoryUserEmployeeUpvoteRecord, Timestamp> UPVOTE_TIME = createField("upvote_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "点赞时间");
+    public final TableField<HistoryUserEmployeeUpvoteRecord, Timestamp> UPVOTE_TIME = createField("upvote_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "点赞时间");
 
     /**
      * The column <code>historydb.history_user_employee_upvote.cancel</code>. 是否可用, 0 表示 点赞，1表示取消点赞
@@ -83,7 +83,7 @@ public class HistoryUserEmployeeUpvote extends TableImpl<HistoryUserEmployeeUpvo
     /**
      * The column <code>historydb.history_user_employee_upvote.cancel_time</code>. 取消时间
      */
-    public final TableField<HistoryUserEmployeeUpvoteRecord, Timestamp> CANCEL_TIME = createField("cancel_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0000-00-00 00:00:00", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "取消时间");
+    public final TableField<HistoryUserEmployeeUpvoteRecord, Timestamp> CANCEL_TIME = createField("cancel_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "取消时间");
 
     /**
      * The column <code>historydb.history_user_employee_upvote.create_time</code>. 创建时间

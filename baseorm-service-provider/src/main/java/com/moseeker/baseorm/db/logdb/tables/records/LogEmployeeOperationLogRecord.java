@@ -89,14 +89,14 @@ public class LogEmployeeOperationLogRecord extends UpdatableRecordImpl<LogEmploy
     }
 
     /**
-     * Setter for <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 0：成功，1：失败
+     * Setter for <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 1：成功，0：失败
      */
     public void setIsSuccess(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 0：成功，1：失败
+     * Getter for <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 1：成功，0：失败
      */
     public Byte getIsSuccess() {
         return (Byte) get(4);

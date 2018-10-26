@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserHrAccount extends TableImpl<HistoryUserHrAccountRecord> {
 
-    private static final long serialVersionUID = -1849203551;
+    private static final long serialVersionUID = -1771797009;
 
     /**
      * The reference instance of <code>historydb.history_user_hr_account</code>
@@ -87,9 +87,9 @@ public class HistoryUserHrAccount extends TableImpl<HistoryUserHrAccountRecord> 
     public final TableField<HistoryUserHrAccountRecord, Integer> ACCOUNT_TYPE = createField("account_type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.INTEGER)), this, "0 超级账号；1：子账号; 2：普通账号");
 
     /**
-     * The column <code>historydb.history_user_hr_account.activation</code>. 账号是否激活，1：激活；0：未激活; 2:确认中
+     * The column <code>historydb.history_user_hr_account.activation</code>. 子账号邀请使用，账号是否激活，1：激活；0：未激活
      */
-    public final TableField<HistoryUserHrAccountRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "账号是否激活，1：激活；0：未激活; 2:确认中");
+    public final TableField<HistoryUserHrAccountRecord, Byte> ACTIVATION = createField("activation", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "子账号邀请使用，账号是否激活，1：激活；0：未激活");
 
     /**
      * The column <code>historydb.history_user_hr_account.disable</code>. 1：可用账号；0禁用账号 ） 遵循数据库整体的设计习惯，1表示可用，0表示不可用
