@@ -1,15 +1,19 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrEmployeeCertConfDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
+import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.useraccounts.service.EmployeeBinder;
+import org.apache.thrift.TException;
+import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by lucky8987 on 17/6/29.
