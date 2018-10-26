@@ -1405,7 +1405,18 @@ public class TalentPoolService {
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
+        this.delRediskey(tag_ids);
         return ResponseUtils.success("");
+    }
+    private void delRediskey(List<Integer> tagIdList){
+        List<Map<String,Object>> list=talentpoolHrAutomaticTagDao.getDataByIdList(tagIdList);
+        if(!StringUtils.isEmptyList(list)){
+            for(Map<String,Object> data:list){
+              int id=(int)data.get("id")  ;
+              String name=(String)data.get("name");
+                redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), id + "", name);
+            }
+        }
     }
     /**
      * 获取企业标签信息
@@ -1510,7 +1521,6 @@ public class TalentPoolService {
         logger.info("===========================");
         logger.info(info);
         logger.info("===========================");
-        data.setColor("#FFD060");
         if (StringUtils.isNullOrEmpty(info)) {
             try {
             redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
