@@ -11,7 +11,9 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.UserAccountEntity;
@@ -130,6 +132,9 @@ public class ProfileServiceImpl implements com.moseeker.profile.service.ProfileS
         if (userUserDO == null) {
             throw PROFILE_USER_NOTEXIST;
         }
+        userUserDO.setName(name);
+        userUserDO.setMobile(Long.parseLong(mobile));
+        userUserDao.updateData(userUserDO);
         String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
                 KeyIdentifier.WECHAT_UPLOAD_RESUME_FILE.toString(), String.valueOf(id));
 
