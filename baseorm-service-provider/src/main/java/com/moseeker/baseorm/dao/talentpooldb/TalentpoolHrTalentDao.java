@@ -83,4 +83,12 @@ public class TalentpoolHrTalentDao extends JooqCrudImpl<com.moseeker.baseorm.db.
                 .where(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.USER_ID.in(userIdSet)).fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent.class);
         return list;
     }
+
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent> getDataByUserIdAndHrId(Set<Integer> userIdSet,Set<Integer> hrIdSet){
+        List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent> list=create.selectFrom(TalentpoolHrTalent.TALENTPOOL_HR_TALENT)
+                .where(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.USER_ID.in(userIdSet))
+                .and(TalentpoolHrTalent.TALENTPOOL_HR_TALENT.HR_ID.in(hrIdSet))
+                .fetchInto(com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent.class);
+        return list;
+    }
 }
