@@ -1139,7 +1139,7 @@ public class EmployeeEntity {
                         int count = statusCount.getCount();
                         statusCount.setCount(count+1);
                         int result = referralApplicationStatusCountDao.updateReferralApplicationStatusCount(statusCount);
-                        if(result == 1){
+                        if(result > 0){
                             break;
                         }
                         i++;
