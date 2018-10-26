@@ -180,7 +180,7 @@ public class EmployeeEntity {
 
     ThreadPool tp = ThreadPool.Instance;
 
-    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_queue";
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_exchange";
     private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
@@ -193,7 +193,7 @@ public class EmployeeEntity {
      *
      * @param userId
      * @param companyId 如果公司属于集团公司，需验证用户是否在集团下的所有公司中认证过员工
-     * @return
+     * @redpacket_exchange
      */
     public boolean isEmployee(int userId, int companyId) {
         UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
@@ -1198,36 +1198,47 @@ public class EmployeeEntity {
             logger.info("publishInitalScreenHbEvent  bool {}",((hbStatus >> 2) & 1) == 1);
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
                 ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplByRecruitOrder(nextStage);
-                ReferralApplicationStatusCountRecord statusCount = referralApplicationStatusCountDao
+                ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 logger.info("publishInitalScreenHbEvent  statusCount {}",statusCount);
                 if(statusCount == null){
                     CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("application_id", jobApplication.getId());
-                    jsonObject.put("be_recom_user_id", userId);
-                    jsonObject.put("next_stage", nextStage);
-                    jsonObject.put("position_id", jobPositionRecord.getId());
-                    jsonObject.put("company_id", jobPositionRecord.getCompanyId());
-                    jsonObject.put("user_id", jobApplication.getApplierId());
-                    int pscId = 0;
-                    if(psc != null){
-                        pscId = psc.getPscId();
-                    }
-                    jsonObject.put("psc", pscId);
-                    logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
-                    amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
-                            APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
-                                    .build());
-                    statusCount = new ReferralApplicationStatusCountRecord();
+                    statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
                     statusCount.setCount(1);
-                    statusCount.insert();
+                    int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
+                    if(result >0 ){
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("application_id", jobApplication.getId());
+                        jsonObject.put("be_recom_user_id", userId);
+                        jsonObject.put("next_stage", nextStage);
+                        jsonObject.put("position_id", jobPositionRecord.getId());
+                        jsonObject.put("company_id", jobPositionRecord.getCompanyId());
+                        jsonObject.put("user_id", jobApplication.getApplierId());
+                        int pscId = 0;
+                        if(psc != null){
+                            pscId = psc.getPscId();
+                        }
+                        jsonObject.put("psc", pscId);
+                        logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
+                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
+                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                        .build());
+                    }
                 }else{
-                    int count = statusCount.getCount();
-                    statusCount.setCount(count+1);
-                    statusCount.update();
+                    int i =0;
+                    while (i<3){
+                        statusCount = referralApplicationStatusCountDao
+                                .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
+                        int count = statusCount.getCount();
+                        statusCount.setCount(count+1);
+                        int result = referralApplicationStatusCountDao.updateReferralApplicationStatusCount(statusCount);
+                        if(result > 0){
+                            break;
+                        }
+                        i++;
+                    }
                 }
             }
         }
