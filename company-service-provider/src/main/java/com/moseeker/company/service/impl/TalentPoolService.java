@@ -34,6 +34,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.company.bean.*;
+import com.moseeker.company.constant.TalentStateEnum;
 import com.moseeker.company.constant.TalentpoolTagStatus;
 import com.moseeker.company.utils.ValidateTalent;
 import com.moseeker.company.utils.ValidateTalentTag;
@@ -692,7 +693,7 @@ public class TalentPoolService {
         }
         Map<String,Object> result=new HashMap<>();
 
-        if(type==0){
+        if(type== TalentStateEnum.TALENTPOOL_SEARCH_ALL.getValue()){
             int talentNum=this.getAllHrTalent(hrId);
             int companyPublicNum=talentPoolEntity.getPublicTalentCount(companyId);
             int hrPublicNum=this.getHrPublicTalentCount(hrId);
@@ -704,20 +705,28 @@ public class TalentPoolService {
             result.put("tag",list);
             result.put("alltalent",allTalentNum);
             result.put("company_tag",getCompanyTagList(companyId));
-        }else if(type==1){
+            result.put("hr_auto_tag",this.getHrAutoTagList(hrId));
+        }else if(type==TalentStateEnum.TALENTPOOL_SEARCH_PUBLIC.getValue()){
             int hrPublicNum=this.getHrPublicTalentCount(hrId);
             result.put("hrpublic",hrPublicNum);
-        }else if(type==2){
+        }else if(type==TalentStateEnum.TALENTPOOL_SEARCH_ALL_TALENT.getValue()){
             int talentNum=this.getAllHrTalent(hrId);
             result.put("talent",talentNum);
-        }else if(type==3) {
+        }else if(type==TalentStateEnum.TALENTPOOL_SEARCH_ALL_PUBLIC.getValue()) {
             int companyPublicNum = talentPoolEntity.getPublicTalentCount(companyId);
             result.put("allpublic", companyPublicNum);
-        }else if(type==4){
+        }else if(type==TalentStateEnum.TALENTPOOL_SEARCH_HR_TAG.getValue()){
             List<Map<String,Object>> list=talentPoolEntity.getTagByHr(hrId,0,Integer.MAX_VALUE);
             result.put("tag",list);
+        }else if(type==TalentStateEnum.TALENTPOOL_SEARCH_HR_AUTO_TAG.getValue()){
+            result.put("hr_auto_tag",getHrAutoTagList(hrId));
         }
         return ResponseUtils.success(result);
+    }
+
+    private List<Map<String,Object>> getHrAutoTagList(int hrId){
+        List<Map<String,Object>> list=talentpoolHrAutomaticTagDao.getHrAutomaticTagMapListByHrId(hrId);
+        return  list;
     }
 
     //分页获取标签
@@ -1213,7 +1222,20 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }
         Map<String, Object> tagListInfo = new HashMap<>();
-        List<Map<String,Object>> dataList=talentpoolHrAutomaticTagDao.getHrAutomaticTagMapListByHrIdPage(hrId,pageNumber,pageSize);
+        PageInfo info = new PageInfo();
+        if(flag == 2 || flag == 0) {
+            info = this.getLimitStart( pageNumber, pageSize);
+        }else{
+            if(pageNumber == 0){
+                pageNumber = 1;
+            }
+            if(pageSize == 0){
+                pageSize = 8;
+            }
+            info.setLimit((pageNumber-1)*pageSize);
+            info.setPageSize(pageSize);
+        }
+        List<Map<String,Object>> dataList=talentpoolHrAutomaticTagDao.getHrAutomaticTagMapListByHrIdPage(hrId,info.getLimit(), info.getPageSize());
         int total=talentpoolHrAutomaticTagDao.getHrAutomaticTagCountByHrId(hrId);
         if(!StringUtils.isEmptyList(dataList)){
             List<Map<String, Object>> result=new ArrayList<>();
@@ -1233,7 +1255,8 @@ public class TalentPoolService {
             tagListInfo.put("data",result);
         }
         tagListInfo.put("total",total);
-
+        tagListInfo.put("page_number", pageNumber);
+        tagListInfo.put("page_size", info.getPageSize());
         return ResponseUtils.success(tagListInfo);
     }
     @CounterIface

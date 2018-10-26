@@ -403,12 +403,12 @@ public class CompanyTagService {
      */
     private void handlerHrUserIdList(List<Integer>tagIdList,int type,Map<String,Object> map,int page,int pageSize) throws TException {
         List<Integer> userIdList=this.getUseridList(page,pageSize,map);
-        this.handlerHrAutoTag(tagIdList,type,userIdList);
+        this.handlerHrAutoTag(tagIdList,type,userIdList, page);
     }
     /*
      处理标签与数据的对应关系
      */
-    private void handlerHrAutoTag(List<Integer>tagIdList,int type,List<Integer> userIdList){
+    private void handlerHrAutoTag(List<Integer>tagIdList,int type,List<Integer> userIdList,int page){
         if(!StringUtils.isEmptyList(userIdList)){
             if(type==TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue()){
                 List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
@@ -436,7 +436,7 @@ public class CompanyTagService {
                 talentpoolHrAutomaticTagUserDao.addAllRecord(list);
             }
         }
-        this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
+        this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString(),page);
     }
     /*
      删除标签对应的数据关系
@@ -509,6 +509,36 @@ public class CompanyTagService {
     /*
       通过redis队列，刷新es中标签的索引
      */
+    private void refrushCompantTag(List<Integer> tagIdList,int type,List<Integer> userIdList,String statusKey,String redisKey,int page){
+        //更新es中tag_id和人才的关系
+        if (!StringUtils.isEmptyList(tagIdList)) {
+            for (Integer tagId : tagIdList) {
+                Map<String, Object> result = new HashMap<>();
+                result.put("tag_id", tagId);
+                result.put("type", type);
+                if(type!=TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()&&!StringUtils.isEmptyList(userIdList)){
+                    result.put("user_ids",userIdList );
+                }
+                if(type==TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()){
+                    if(page==1){
+                        result.put("is_start",true);
+                    }else{
+                        result.put("is_start",false);
+                    }
+                }
+                client.setNoTime(Constant.APPID_ALPHADOG, statusKey,
+                        String.valueOf(tagId), String.valueOf(0));
+                client.lpush(Constant.APPID_ALPHADOG,
+                        redisKey, JSON.toJSONString(result));
+                logger.info(JSON.toJSONString("======================================="));
+                logger.info(JSON.toJSONString(result));
+                logger.info(JSON.toJSONString("======================================="));
+                //将这个的tag置位更新状态0是更新 1是更新完成
+            }
+
+        }
+
+    }
     private void refrushCompantTag(List<Integer> tagIdList,int type,List<Integer> userIdList,String statusKey,String redisKey){
         //更新es中tag_id和人才的关系
         if (!StringUtils.isEmptyList(tagIdList)) {
@@ -516,7 +546,7 @@ public class CompanyTagService {
                 Map<String, Object> result = new HashMap<>();
                 result.put("tag_id", tagId);
                 result.put("type", type);
-                if(type!=2&&!StringUtils.isEmptyList(userIdList)){
+                if(type!=TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()&&!StringUtils.isEmptyList(userIdList)){
                     result.put("user_ids",userIdList );
                 }
                 client.setNoTime(Constant.APPID_ALPHADOG, statusKey,
