@@ -214,13 +214,17 @@ public abstract class EmployeeBinder {
                 }
                 unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
                 log.info("doneBind unActiveEmployee update record");
-                unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                        .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
                 if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
                     employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
                 }
-                useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
+                    unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
+                            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+                } else {
+                    useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
+                    unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
+                }
                 unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
                 employeeDao.updateRecord(unActiveEmployee);
 
