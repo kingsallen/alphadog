@@ -184,7 +184,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE)
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         boolean haskey=false;
         if(StringUtils.isNotBlank(keywords)){

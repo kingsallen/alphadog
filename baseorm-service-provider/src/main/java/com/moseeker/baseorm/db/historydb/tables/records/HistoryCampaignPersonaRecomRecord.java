@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryCampaignPersonaRecomRecord extends UpdatableRecordImpl<HistoryCampaignPersonaRecomRecord> implements Record9<Integer, Integer, Integer, Integer, Timestamp, Timestamp, Byte, Timestamp, Byte> {
 
-    private static final long serialVersionUID = 1392011447;
+    private static final long serialVersionUID = 11890759;
 
     /**
      * Setter for <code>historydb.history_campaign_persona_recom.id</code>.
@@ -147,14 +147,14 @@ public class HistoryCampaignPersonaRecomRecord extends UpdatableRecordImpl<Histo
     }
 
     /**
-     * Setter for <code>historydb.history_campaign_persona_recom.type</code>. 0：粉丝 1：员工
+     * Setter for <code>historydb.history_campaign_persona_recom.type</code>.
      */
     public void setType(Byte value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>historydb.history_campaign_persona_recom.type</code>. 0：粉丝 1：员工
+     * Getter for <code>historydb.history_campaign_persona_recom.type</code>.
      */
     public Byte getType() {
         return (Byte) get(8);
