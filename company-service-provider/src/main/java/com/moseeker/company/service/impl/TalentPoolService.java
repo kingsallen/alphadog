@@ -1558,6 +1558,7 @@ public class TalentPoolService {
         TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
         String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
         record.setKeywords(keyword);
+        data.setColor("#FFD060");
         talentpoolHrAutomaticTagDao.updateRecord(record);
     }
     /*
