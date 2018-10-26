@@ -1109,26 +1109,28 @@ public class EmployeeEntity {
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 if(statusCount == null){
                     CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("application_id", jobApplication.getId());
-                    jsonObject.put("be_recom_user_id", userId);
-                    jsonObject.put("next_stage", nextStage);
-                    jsonObject.put("position_id", jobPositionRecord.getId());
-                    jsonObject.put("company_id", jobPositionRecord.getCompanyId());
-                    jsonObject.put("user_id", jobApplication.getApplierId());
-                    int pscId = 0;
-                    if(psc != null){
-                        pscId = psc.getPscId();
-                    }
-                    jsonObject.put("psc", pscId);
-                    amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
-                            APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
-                                    .build());
                     statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
                     statusCount.setCount(1);
-                    referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
+                    int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
+                    if(result >0 ){
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("application_id", jobApplication.getId());
+                        jsonObject.put("be_recom_user_id", userId);
+                        jsonObject.put("next_stage", nextStage);
+                        jsonObject.put("position_id", jobPositionRecord.getId());
+                        jsonObject.put("company_id", jobPositionRecord.getCompanyId());
+                        jsonObject.put("user_id", jobApplication.getApplierId());
+                        int pscId = 0;
+                        if(psc != null){
+                            pscId = psc.getPscId();
+                        }
+                        jsonObject.put("psc", pscId);
+                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
+                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                        .build());
+                    }
                 }else{
                     int i =0;
                     while (i<3){

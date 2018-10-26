@@ -22,8 +22,8 @@ public class ReferralApplicationStatusCountDao extends com.moseeker.baseorm.db.r
         super(configuration);
     }
 
-    public void addReferralApplicationStatusCount(ReferralApplicationStatusCount statusCount){
-        using(configuration())
+    public int addReferralApplicationStatusCount(ReferralApplicationStatusCount statusCount){
+        return using(configuration())
                 .insertInto(REFERRAL_APPLICATION_STATUS_COUNT)
                 .columns(REFERRAL_APPLICATION_STATUS_COUNT.APPLICATION_ID, REFERRAL_APPLICATION_STATUS_COUNT.APPICATION_TPL_STATUS,
                         REFERRAL_APPLICATION_STATUS_COUNT.COUNT)
