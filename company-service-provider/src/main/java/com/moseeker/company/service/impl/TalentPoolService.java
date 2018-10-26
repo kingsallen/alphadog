@@ -910,7 +910,12 @@ public class TalentPoolService {
         talentpoolHrTalentDao.updateRecords(list);
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,1,0);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
+        tagService.handlerHrAutoTagCancelPublic(userIdList,companyId);
+        tagService.handlerHrAutoTagAddPublic(userIdList,companyId,hrId);
         talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
+
+        //处理hr自动标签
+
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
@@ -1215,7 +1220,7 @@ public class TalentPoolService {
             for(Map<String,Object> data:dataList){
                 Map<String,Object> dataResult=new HashMap<>();
                 int tagId=(int)data.get("id");
-                int totalNum=tagService.getTagtalentNum(hrId,companyId,tagId);
+                int totalNum=tagService.getHrTagtalentNum(hrId,companyId,tagId);
                 dataResult.put("person_num",totalNum);
                 //从redis获取正在执行
                 boolean  isEXecute=tagService.getHtAutoTagIsExcute(tagId);
@@ -1507,8 +1512,16 @@ public class TalentPoolService {
 
     private int addHrAutomaticData(TalentpoolHrAutomaticTagDO data){
         TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
+        String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+        record.setKeywords(keyword);
         record=talentpoolHrAutomaticTagDao.addRecord(record);
         return record.getId();
+    }
+    private void updateHrAutomaticData(TalentpoolHrAutomaticTagDO data){
+        TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
+        String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+        record.setKeywords(keyword);
+        talentpoolHrAutomaticTagDao.updateRecord(record);
     }
     /*
      更新hr自动标签
@@ -1532,7 +1545,7 @@ public class TalentPoolService {
             String statusString=talentpoolHrAutomaticTagDao.validateTagStatusById(data.getId());
             String resultString=filterString+"   "+statusString;
             if(StringUtils.isNullOrEmpty(resultString)){
-                talentpoolHrAutomaticTagDao.updateRecord( com.moseeker.baseorm.util.BeanUtils.structToDBAll(data, TalentpoolHrAutomaticTagRecord.class));
+                this.updateHrAutomaticData(data);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(data.getId());
                 //ES更新

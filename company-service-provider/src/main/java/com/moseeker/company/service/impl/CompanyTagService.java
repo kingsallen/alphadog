@@ -167,19 +167,7 @@ public class CompanyTagService {
                redisKey, JSON.toJSONString(result));
         logger.info("handlerCompanyTagTalent redis result:{}", result);
     }
-    /*
-     根据标签内容和user_id查询是否属于这个标签
-     */
-    private int  getNumByTagAndUser(Map<String,Object> tagMap,int userId) throws TException {
-        Map<String, String> params = new HashMap<>();
-        for (String key : tagMap.keySet()) {
-            params.put(key, String.valueOf(tagMap.get(key)));
-        }
-        params.put("size", "0");
-        params.put("user_id", String.valueOf(userId));
-        int total = service.queryCompanyTagUserIdListCount(params);
-        return total;
-    }
+
 
     //增量添加hr自动标签
     public void handlerUserIdAndHrTag(Set<Integer> userIdList,int hrId) throws TException {
@@ -313,6 +301,100 @@ public class CompanyTagService {
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
+    }
+    /*
+     公开时处理非这个hr下的所有的标签
+     逻辑：
+       1，去掉第二次公开的人才
+       2，获取公司下所有的hr信息
+       3，查询hr是否从收藏这个人才
+       4，根据userid获取需要执行的hr和userid
+     */
+    public  void  handlerHrAutoTagAddPublic(Set<Integer> userIdSet,int companyId,int hrId) throws TException {
+        userIdSet=this.filterAlreadyPub(companyId,userIdSet,1);
+        if(!StringUtils.isEmptySet(userIdSet)){
+            List<Map<String, Object>> htList=talentPoolEntity.getCompanyHrList(companyId);
+            Set<Integer> hrSet = talentPoolEntity.getIdListByUserHrAccountList(htList);
+            if(!StringUtils.isEmptySet(hrSet)){
+                hrSet.remove(hrId);
+                if(!StringUtils.isEmptySet(hrSet)){
+                    //获取hr下收藏的人才
+                    List<TalentpoolHrTalent> talentList=talentpoolHrTalentDao.getDataByUserIdAndHrId(userIdSet,hrSet);
+                    Map<Integer,Set<Integer>> result=new HashMap<>();
+                    for(Integer userId:userIdSet){
+                        List<Integer> hrIdList=new ArrayList<>();
+                        if(!StringUtils.isEmptyList(talentList)){
+                            for(TalentpoolHrTalent talent:talentList){
+                                if(talent.getUserId()==userId.intValue()){
+                                    hrIdList.add(talent.getHrId());
+                                }
+                            }
+                        }
+                        for(Integer item:hrSet){
+                            if(!hrIdList.contains(item)){
+                                if(result.get(item)==null){
+                                    Set<Integer> dataSet=new HashSet<>();
+                                    dataSet.add(userId);
+                                    result.put(item,dataSet);
+                                }else{
+                                    Set<Integer> dataSet=result.get(item);
+                                    dataSet.add(userId);
+                                    result.put(item,dataSet);
+                                }
+                            }
+                        }
+
+                    }
+                    if(!StringUtils.isEmptyMap(result)){
+                        for(Integer key:result.keySet()){
+                            Set<Integer> userDataSet=result.get(key);
+                            this.handlerUserIdAndHrTag(userDataSet,key);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    /*
+     取消公开时处理自动标签
+     */
+    public void handlerHrAutoTagCancelPublic(Set<Integer> userIdSet,int companyId){
+        if(!StringUtils.isEmptySet(userIdSet)){
+            List<Map<String, Object>> htList=talentPoolEntity.getCompanyHrList(companyId);
+            Set<Integer> hrSet = talentPoolEntity.getIdListByUserHrAccountList(htList);
+            if(!StringUtils.isEmptySet(hrSet)){
+               talentPoolEntity.handlerHrAutotag(userIdSet,companyId,hrSet);
+            }
+        }
+    }
+    /*
+     过滤掉第二次公开的userid
+     */
+    private Set<Integer> filterAlreadyPub(int companyId,Set<Integer> userIdSet,int num){
+        List<Map<String,Object>> list=talentPoolEntity.getPublicTalentGT(companyId,StringUtils.convertSetToList(userIdSet),num);
+        if(!StringUtils.isEmptyList(list)){
+            Set<Integer> result=new HashSet<>();
+            for(Integer userId:userIdSet){
+                boolean flag=true;
+                for(Map<String,Object> data:list){
+                    int id=(int)data.get("user_id");
+                    if(id==userId){
+                        flag=false;
+                    }
+                }
+                if(flag){
+                    result.add(userId);
+                }
+            }
+            return result;
+        }
+        return userIdSet;
+    }
+
+    private List<Integer> getUserIdListPubNum(Set<Integer> userSet,int companyId){
+
+        return null;
     }
 
     /*
@@ -448,6 +530,19 @@ public class CompanyTagService {
 
         }
 
+    }
+    /*
+    根据标签内容和user_id查询是否属于这个标签
+    */
+    private int  getNumByTagAndUser(Map<String,Object> tagMap,int userId) throws TException {
+        Map<String, String> params = new HashMap<>();
+        for (String key : tagMap.keySet()) {
+            params.put(key, String.valueOf(tagMap.get(key)));
+        }
+        params.put("size", "0");
+        params.put("user_id", String.valueOf(userId));
+        int total = service.queryCompanyTagUserIdListCount(params);
+        return total;
     }
 
 }
