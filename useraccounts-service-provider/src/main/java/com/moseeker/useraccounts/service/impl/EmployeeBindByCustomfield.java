@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -30,6 +31,7 @@ public class EmployeeBindByCustomfield extends EmployeeBinder {
         query.where(new Condition("company_id", employeeEntity.getCompanyIds(bindingParams.getCompanyId()), ValueOp.IN))
                 .and("cname", bindingParams.getName())
                 .and("custom_field", bindingParams.getCustomField())
+                .and("activation", EmployeeActiveState.Init.getState())
                 .and("disable", "0");
 
         employeeThreadLocal.set(employeeDao.getData(query.buildQuery()));
