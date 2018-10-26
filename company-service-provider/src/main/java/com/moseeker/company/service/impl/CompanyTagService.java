@@ -99,7 +99,7 @@ public class CompanyTagService {
                 }else{
                     for (int i = 1; i <= totalPage; i++) {
                         logger.info("执行第" + i + "页");
-                        this.handlerUserIdList(tagIdList, type, map, i, (int)pageSize);
+                        this.handlerHrUserIdList(tagIdList, type, map, i, (int)pageSize);
                     }
                 }
             }
