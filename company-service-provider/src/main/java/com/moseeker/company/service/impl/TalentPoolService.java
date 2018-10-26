@@ -1535,8 +1535,16 @@ public class TalentPoolService {
 
     private int addHrAutomaticData(TalentpoolHrAutomaticTagDO data){
         TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
+        String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+        record.setKeywords(keyword);
         record=talentpoolHrAutomaticTagDao.addRecord(record);
         return record.getId();
+    }
+    private void updateHrAutomaticData(TalentpoolHrAutomaticTagDO data){
+        TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
+        String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
+        record.setKeywords(keyword);
+        talentpoolHrAutomaticTagDao.updateRecord(record);
     }
     /*
      更新hr自动标签
@@ -1560,7 +1568,7 @@ public class TalentPoolService {
             String statusString=talentpoolHrAutomaticTagDao.validateTagStatusById(data.getId());
             String resultString=filterString+"   "+statusString;
             if(StringUtils.isNullOrEmpty(resultString)){
-                talentpoolHrAutomaticTagDao.updateRecord( com.moseeker.baseorm.util.BeanUtils.structToDBAll(data, TalentpoolHrAutomaticTagRecord.class));
+                this.updateHrAutomaticData(data);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(data.getId());
                 //ES更新
