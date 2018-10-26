@@ -1506,6 +1506,7 @@ public class TalentPoolService {
         logger.info("===========================");
         logger.info(info);
         logger.info("===========================");
+        data.setColor("#FFD060");
         if (StringUtils.isNullOrEmpty(info)) {
             try {
                 redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
