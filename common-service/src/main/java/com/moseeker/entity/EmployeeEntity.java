@@ -1247,11 +1247,13 @@ public class EmployeeEntity {
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
         Integer userId = jobApplication.getRecommenderUserId();
-
-         tp.startTast(()->{
-            this.publishInitalScreenHbEvent(jobApplication,jobPositionRecord, userId,nextStage);
-             return 0;
-         });
+        if(nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
+            tp.startTast(() -> {
+                this.publishInitalScreenHbEvent(jobApplication, jobPositionRecord, userId, nextStage);
+                return 0;
+            });
+            return;
+        }
         //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
         if(jobPositionRecord == null || Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)) {
             logger.info("addReferralBonus 不是内推职位 不发内推奖金 positionId {}  isReferral {} ",positionId,jobPositionRecord.getIsReferral());
