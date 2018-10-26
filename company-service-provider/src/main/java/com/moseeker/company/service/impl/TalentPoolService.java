@@ -1496,7 +1496,7 @@ public class TalentPoolService {
                             String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
                             map.put("keywords", keyword);
                         }
-                        tagService.handlerCompanyTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
+                        tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
                         return 0;
                     });
                 } catch (Exception e) {
