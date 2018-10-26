@@ -60,7 +60,7 @@ public class TalentpoolHrAutomaticTagDao extends JooqCrudImpl<TalentpoolHrAutoma
         List<Map<String,Object>> list= create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG)
                 .where(TALENTPOOL_HR_AUTOMATIC_TAG.HR_ID.eq(hrId)).and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
                 .orderBy(TALENTPOOL_HR_AUTOMATIC_TAG.UPDATE_TIME.desc())
-                .limit((page-1)*pageSize,pageSize)
+                .limit(page,pageSize)
                 .fetchMaps();;
         return list;
     }
