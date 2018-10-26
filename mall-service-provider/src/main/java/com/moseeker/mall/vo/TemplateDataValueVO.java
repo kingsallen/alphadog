@@ -9,14 +9,13 @@ package com.moseeker.mall.vo;
 public class TemplateDataValueVO {
 
     private String first;
-    private String account;
-    private String time;
-    private String type;
-    private String creditChange;
-    private String creditName;
+    private String keyWord1;
+    private String keyWord2;
+    private String keyWord3;
+    private String keyWord4;
     private String remark;
-    private String number;
-    private String amount;
+    private Integer companyId;
+    private Integer templateId;
 
     public String getFirst() {
         return first;
@@ -26,44 +25,36 @@ public class TemplateDataValueVO {
         this.first = first;
     }
 
-    public String getAccount() {
-        return account;
+    public String getKeyWord1() {
+        return keyWord1;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public void setKeyWord1(String keyWord1) {
+        this.keyWord1 = keyWord1;
     }
 
-    public String getTime() {
-        return time;
+    public String getKeyWord2() {
+        return keyWord2;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public void setKeyWord2(String keyWord2) {
+        this.keyWord2 = keyWord2;
     }
 
-    public String getType() {
-        return type;
+    public String getKeyWord3() {
+        return keyWord3;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setKeyWord3(String keyWord3) {
+        this.keyWord3 = keyWord3;
     }
 
-    public String getCreditChange() {
-        return creditChange;
+    public String getKeyWord4() {
+        return keyWord4;
     }
 
-    public void setCreditChange(String creditChange) {
-        this.creditChange = creditChange;
-    }
-
-    public String getCreditName() {
-        return creditName;
-    }
-
-    public void setCreditName(String creditName) {
-        this.creditName = creditName;
+    public void setKeyWord4(String keyWord4) {
+        this.keyWord4 = keyWord4;
     }
 
     public String getRemark() {
@@ -74,34 +65,34 @@ public class TemplateDataValueVO {
         this.remark = remark;
     }
 
-    public String getNumber() {
-        return number;
+    public Integer getTemplateId() {
+        return templateId;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setTemplateId(Integer templateId) {
+        this.templateId = templateId;
     }
 
-    public String getAmount() {
-        return amount;
+    public Integer getCompanyId() {
+        return companyId;
     }
 
-    public void setAmount(String amount) {
-        this.amount = amount;
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     @Override
     public String toString() {
         return "TemplateDataValueVO{" +
                 "first='" + first + '\'' +
-                ", account='" + account + '\'' +
-                ", time='" + time + '\'' +
-                ", type='" + type + '\'' +
-                ", creditChange='" + creditChange + '\'' +
-                ", creditName='" + creditName + '\'' +
+                ", keyWord1='" + keyWord1 + '\'' +
+                ", keyWord2='" + keyWord2 + '\'' +
+                ", keyWord3='" + keyWord3 + '\'' +
+                ", keyWord4='" + keyWord4 + '\'' +
                 ", remark='" + remark + '\'' +
-                ", number='" + number + '\'' +
-                ", amount='" + amount + '\'' +
+                ", companyId=" + companyId +
+                ", templateId=" + templateId +
                 '}';
     }
 }
+
