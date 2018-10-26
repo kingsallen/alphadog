@@ -1105,7 +1105,7 @@ public class EmployeeEntity {
             int hbStatus = jobPositionRecord.getHbStatus();
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
                 ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplByRecruitOrder(nextStage);
-                ReferralApplicationStatusCountRecord statusCount = referralApplicationStatusCountDao
+                ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 if(statusCount == null){
                     CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
@@ -1124,15 +1124,24 @@ public class EmployeeEntity {
                     amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                             APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                     .build());
-                    statusCount = new ReferralApplicationStatusCountRecord();
+                    statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
                     statusCount.setCount(1);
-                    statusCount.insert();
+                    referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
                 }else{
-                    int count = statusCount.getCount();
-                    statusCount.setCount(count+1);
-                    statusCount.update();
+                    int i =0;
+                    while (i<3){
+                        statusCount = referralApplicationStatusCountDao
+                                .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
+                        int count = statusCount.getCount();
+                        statusCount.setCount(count+1);
+                        int result = referralApplicationStatusCountDao.updateReferralApplicationStatusCount(statusCount);
+                        if(result == 1){
+                            break;
+                        }
+                        i++;
+                    }
                 }
             }
         }
