@@ -48,8 +48,6 @@ import com.moseeker.thrift.gen.company.struct.ActionForm;
 import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolHrAutomaticTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
 import java.util.*;
@@ -1527,18 +1525,19 @@ public class TalentPoolService {
         }
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
         if (StringUtils.isNullOrEmpty(info)) {
+            try {
             redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
             //todo 这里应该考虑如何解耦,这个方法非常不好，需要和TalentpoolCompanyTagDO解耦，但是先这么做着
-            String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data),TalentpoolCompanyTagDO.class));
+                String filterString = talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data), TalentpoolCompanyTagDO.class));
             if (StringUtils.isNullOrEmpty(filterString)) {
-                int id=this.addHrAutomaticData(data);
+                    int id = this.addHrAutomaticData(data);
                 List<Integer> idList = new ArrayList<>();
                 idList.add(id);
                 //ES更新
                 try {
                     tp.startTast(() -> {
                         Map<String, Object> map = JSON.parseObject(JSON.toJSONString(data));
-                        if(data.isSetKeyword_list()){
+                            if (data.isSetKeyword_list()) {
                             String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
                             map.put("keywords", keyword);
                         }
@@ -1548,9 +1547,14 @@ public class TalentPoolService {
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
+                    redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
                 return ResponseUtils.success("");
-            }else{
-                return ResponseUtils.fail(1,filterString);
+                } else {
+                    return ResponseUtils.fail(1, filterString);
+            }
+            }catch(Exception e){
+                logger.error(e.getMessage(),e);
+                redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
             }
         }
         return ResponseUtils.fail(1,"请不要重复执行");
@@ -1638,6 +1642,7 @@ public class TalentPoolService {
                 try {
                     tp.startTast(() -> {
                         Map<String, Object> tag = handlerCompanyData(id, companyTagDO);
+                        logger.info("==============tag:{}",JSON.toJSONString(tag));
                         tagService.handlerCompanyTag(idList, 1, tag);
                         return 0;
                     });
