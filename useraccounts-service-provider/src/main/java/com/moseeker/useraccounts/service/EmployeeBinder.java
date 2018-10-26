@@ -238,6 +238,7 @@ public abstract class EmployeeBinder {
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
                     employeeDao.deleteData(useremployee);
+                    searchengineEntity.deleteEmployeeDO(new ArrayList<Integer>(){{add(useremployee.getId());}});
                 }
             }
         } else {
