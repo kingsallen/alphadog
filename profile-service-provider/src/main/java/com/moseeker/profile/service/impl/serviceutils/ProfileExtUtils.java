@@ -153,4 +153,44 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 			}
 		}
 	}
+	/**
+	 * 设置用户信息
+	 * @param jsonObject 简历数据
+	 * @param name 姓名
+	 * @param mobile 手机号码
+	 */
+	public static void createUserProfile(JSONObject jsonObject, String name, String mobile) {
+		JSONObject user = new JSONObject();
+		user.put("name", name);
+		user.put("mobile", mobile);
+		user.put("source", UserSource.TALENT_UPLOAD.getValue());
+		jsonObject.put("user", user);
+	}
+
+	/**
+	 * 将简历解析的结果转成用户简历json格式数据
+	 * 在转换过程中，会添加profile_profile信息
+	 * @param profileObj 简历
+	 * @return json格式的简历数据
+	 */
+	public static JSONObject convertToUserProfileJson(ProfileObj profileObj) {
+		JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
+		JSONObject profileProfile = createUserProfileData();
+		profileProfile.put("user_id", profileObj.getUser().getUid());
+		jsonObject.put("profile", profileProfile);
+		return jsonObject;
+	}
+
+	/**
+	 * 生成手机上创来源的profile_profile数据
+	 * @return profile_profile的json格式数据
+	 */
+	public static JSONObject createUserProfileData() {
+		JSONObject profileProfile = new JSONObject();
+		profileProfile.put("source", com.moseeker.profile.constants.ProfileSource.MOBILEReferral.getValue()); //手机上传
+		profileProfile.put("uuid", UUID.randomUUID().toString());
+		profileProfile.put("disable", 1);
+		return profileProfile;
+	}
+
 }
