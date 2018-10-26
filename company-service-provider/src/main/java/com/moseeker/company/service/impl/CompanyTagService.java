@@ -91,6 +91,7 @@ public class CompanyTagService {
             this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
         }else{
             if (map != null && !map.isEmpty()) {
+                map.put("account_type","1");//查询时因为需要hr账号类型取查询人才库，所以注意
                 double pageSize=500.0;
                 int totalPage=this.getDataTotalPage(map,pageSize);
                 if(totalPage == 0){
@@ -539,6 +540,7 @@ public class CompanyTagService {
         for (String key : tagMap.keySet()) {
             params.put(key, String.valueOf(tagMap.get(key)));
         }
+        params.put("account_type","1");//查询时因为需要hr账号类型取查询人才库，所以注意
         params.put("size", "0");
         params.put("user_id", String.valueOf(userId));
         int total = service.queryCompanyTagUserIdListCount(params);
