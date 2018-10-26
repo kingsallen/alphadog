@@ -519,7 +519,7 @@ public class CompanyTagService {
                 if(type!=2&&!StringUtils.isEmptyList(userIdList)){
                     result.put("user_ids",userIdList );
                 }
-                client.set(Constant.APPID_ALPHADOG, statusKey,
+                client.setNoTime(Constant.APPID_ALPHADOG, statusKey,
                         String.valueOf(tagId), String.valueOf(0));
                 client.lpush(Constant.APPID_ALPHADOG,
                         redisKey, JSON.toJSONString(result));
