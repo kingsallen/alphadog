@@ -2,6 +2,7 @@ package com.moseeker.searchengine.service.impl.tools;
 
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.searchengine.SearchEngineException;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.commons.lang.StringUtils;
@@ -44,6 +45,12 @@ public class EmployeeBizTool {
             if (StringUtils.isNotBlank(activation)) {
                 searchUtil.handleTerms(activation, defaultquery, "activation");
             }
+        }
+    }
+
+    public static void addNotEmployeeIds(QueryBuilder defaultquery, List<Integer> employeeIds, SearchUtil searchUtil){
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(employeeIds)){
+            searchUtil.handlerNotTerms(employeeIds, defaultquery, "id");
         }
     }
 
@@ -140,13 +147,11 @@ public class EmployeeBizTool {
      * @param pageSize 分页
      */
     public static void addPagination(SearchRequestBuilder searchRequestBuilder, int pageNumber, int pageSize) {
-        if (pageNumber <= 0) {
-            pageNumber = 1;
+        if (pageNumber > 0 && pageSize > 0) {
+            searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
+        } else {
+            searchRequestBuilder.setFrom(0).setSize(Constant.MAX_SIZE);
         }
-        if (pageSize <= 0) {
-            pageSize = 10;
-        }
-        searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
     }
 
     /**

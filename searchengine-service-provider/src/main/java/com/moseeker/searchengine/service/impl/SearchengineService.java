@@ -13,9 +13,11 @@ import com.moseeker.baseorm.db.logdb.tables.records.LogMeetmobotRecomRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConverTools;
@@ -33,6 +35,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -92,6 +95,8 @@ public class SearchengineService {
     @Autowired
     private LogMeetmobotRecomDao logMeetmobotRecomDao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     @CounterIface
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -626,6 +631,7 @@ public class SearchengineService {
                     jsonObject.put("award", userEmployeeDO.getAward());
                     jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
+                    jsonObject.put("disable", userEmployeeDO.getDisable());
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -760,7 +766,16 @@ public class SearchengineService {
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
-
+        for(Integer companyId : companyIds){
+            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), String.valueOf(companyId));
+            if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(result)){
+                List<Integer> employees = JSON.parseArray(result, Integer.class);
+                if(!com.moseeker.common.util.StringUtils.isEmptyList(employees)){
+                    searchUtil.handlerNotTerms(employees,query,"id");
+                }
+            }
+        }
+        searchUtil.handleTerm(String.valueOf(0), query, "disable");
         EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
@@ -847,6 +862,14 @@ public class SearchengineService {
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
             EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
             EmployeeBizTool.addFilter(query, filter, searchUtil);
+            for(Integer companyId : companyIds){
+                String str = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
+                if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(str)){
+                    List<Integer> employees = JSON.parseArray(str, Integer.class);
+                    EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+                }
+            }
+            searchUtil.handleTerm(String.valueOf(0), query, "disable");
             EmployeeBizTool.addKeywords(query, keywords, searchUtil);
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);

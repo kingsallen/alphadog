@@ -24,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserEmployee implements Serializable {
 
-    private static final long serialVersionUID = 857193938;
+    private static final long serialVersionUID = -1675650415;
 
     private Integer   id;
     private String    employeeid;
@@ -77,6 +77,11 @@ public class HistoryUserEmployee implements Serializable {
     private Byte      emailIsvalid;
     private Byte      authMethod;
     private String    customFieldValues;
+    private Integer   teamId;
+    private Byte      jobGrade;
+    private Integer   cityCode;
+    private Byte      degree;
+    private Integer   bonus;
 
     public HistoryUserEmployee() {}
 
@@ -132,6 +137,11 @@ public class HistoryUserEmployee implements Serializable {
         this.emailIsvalid = value.emailIsvalid;
         this.authMethod = value.authMethod;
         this.customFieldValues = value.customFieldValues;
+        this.teamId = value.teamId;
+        this.jobGrade = value.jobGrade;
+        this.cityCode = value.cityCode;
+        this.degree = value.degree;
+        this.bonus = value.bonus;
     }
 
     public HistoryUserEmployee(
@@ -185,7 +195,12 @@ public class HistoryUserEmployee implements Serializable {
         Integer   sectionId,
         Byte      emailIsvalid,
         Byte      authMethod,
-        String    customFieldValues
+        String    customFieldValues,
+        Integer   teamId,
+        Byte      jobGrade,
+        Integer   cityCode,
+        Byte      degree,
+        Integer   bonus
     ) {
         this.id = id;
         this.employeeid = employeeid;
@@ -238,6 +253,11 @@ public class HistoryUserEmployee implements Serializable {
         this.emailIsvalid = emailIsvalid;
         this.authMethod = authMethod;
         this.customFieldValues = customFieldValues;
+        this.teamId = teamId;
+        this.jobGrade = jobGrade;
+        this.cityCode = cityCode;
+        this.degree = degree;
+        this.bonus = bonus;
     }
 
     public Integer getId() {
@@ -648,6 +668,46 @@ public class HistoryUserEmployee implements Serializable {
         this.customFieldValues = customFieldValues;
     }
 
+    public Integer getTeamId() {
+        return this.teamId;
+    }
+
+    public void setTeamId(Integer teamId) {
+        this.teamId = teamId;
+    }
+
+    public Byte getJobGrade() {
+        return this.jobGrade;
+    }
+
+    public void setJobGrade(Byte jobGrade) {
+        this.jobGrade = jobGrade;
+    }
+
+    public Integer getCityCode() {
+        return this.cityCode;
+    }
+
+    public void setCityCode(Integer cityCode) {
+        this.cityCode = cityCode;
+    }
+
+    public Byte getDegree() {
+        return this.degree;
+    }
+
+    public void setDegree(Byte degree) {
+        this.degree = degree;
+    }
+
+    public Integer getBonus() {
+        return this.bonus;
+    }
+
+    public void setBonus(Integer bonus) {
+        this.bonus = bonus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HistoryUserEmployee (");
@@ -703,6 +763,11 @@ public class HistoryUserEmployee implements Serializable {
         sb.append(", ").append(emailIsvalid);
         sb.append(", ").append(authMethod);
         sb.append(", ").append(customFieldValues);
+        sb.append(", ").append(teamId);
+        sb.append(", ").append(jobGrade);
+        sb.append(", ").append(cityCode);
+        sb.append(", ").append(degree);
+        sb.append(", ").append(bonus);
 
         sb.append(")");
         return sb.toString();
