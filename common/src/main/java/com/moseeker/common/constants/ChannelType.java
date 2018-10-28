@@ -268,6 +268,17 @@ public enum ChannelType {
             }
             return result;
         }
+    },JOB58(35, "58.com", "58同城", "common_retrieval_flow"){
+        @Override
+        public String getOrigin(String origin) {
+            String result;
+            if (StringUtils.isNullOrEmpty(origin)) {
+                result = "10000000000000000000000000000000000";
+            } else {
+                result = getResult(origin, 34);
+            }
+            return result;
+        }
     };
 
     ChannelType(int value, String name, String alias, String retriveName) {
