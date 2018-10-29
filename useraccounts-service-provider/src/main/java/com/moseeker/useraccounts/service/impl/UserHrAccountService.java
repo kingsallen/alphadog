@@ -1062,6 +1062,7 @@ public class UserHrAccountService {
      * @param pageSize   每页的条数
      */
     public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan,String emailValidate) throws CommonException {
+        logger.info("UserHrAccountService employeeList filter:{}, order:{}, asc:{}, pageNumber:{}, pageSize:{}, timespan:{}, keyword:{}", filter, order, asc, pageNumber, pageSize, timespan, keyword);
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1168,13 +1169,14 @@ public class UserHrAccountService {
         userEmployeeVOPageVO.setTotalRow(counts);
         // 员工列表，不需要取排行榜
         if (StringUtils.isNullOrEmpty(timespan)) {
-            logger.info("timespan:{}", timespan);
+            logger.info("UserHrAccountService employeeList timespan:{}", timespan);
             userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
             return userEmployeeVOPageVO;
         }
         // 员工列表，从ES中获取积分月，季，年榜单数据
         Response response = null;
         try {
+            logger.info("UserHrAccountService employeeList queryAwardRanking companyIds:{}, timespan:{}, pageSize:{}, pageNumber:{}, keyword:{}, filter:{}", companyIds, timespan, pageSize, pageNumber, keyword, filter);
             response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber, keyword, filter);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;

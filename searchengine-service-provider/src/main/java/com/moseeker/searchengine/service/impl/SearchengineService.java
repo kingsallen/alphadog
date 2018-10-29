@@ -800,7 +800,7 @@ public class SearchengineService {
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
-        logger.info(searchRequestBuilder.toString());
+        logger.info("SearchengineService getSearchRequestBuilder:{}", searchRequestBuilder.toString());
         return searchRequestBuilder;
     }
 
@@ -827,7 +827,7 @@ public class SearchengineService {
     }
     @CounterIface
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
-        logger.info("queryAwardRanking filter:{}", filter);
+        logger.info("queryAwardRanking filter:{}, pageNum:{}, pageSize:{}", filter, pageNum, pageSize);
         Map<String, Object> object = new HashMap<>();
         TransportClient searchClient =null;
         try {
