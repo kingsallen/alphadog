@@ -1607,6 +1607,7 @@ public class TalentPoolService {
         if(data.getId()==0){
             ResponseUtils.fail(1,"标签id不能为空");
         }
+        data.setColor("#FFD060");
         String result=talentPoolEntity.validateHrTalentPoolV3ByTagName(data.getName(),data.getHr_id(),data.getId());
         if("OK".equals(result)){
             String filterString=talentPoolEntity.validateCompanyTalentPoolV3ByFilter(JSON.parseObject(JSON.toJSONString(data),TalentpoolCompanyTagDO.class));
