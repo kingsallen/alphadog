@@ -831,16 +831,8 @@ public class SearchengineService {
         TransportClient searchClient =null;
         try {
             searchClient=searchUtil.getEsClient();
-            StringBuffer activation = new StringBuffer();
-            if (filter == 0) {
-                activation.append("");
-            } else if (filter == 1) {
-                activation.append("0");
-            } else if (filter == 2) {
-                activation.append("1,2,3,4");
-            }
-
             SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, filter, pageSize, pageNum, timespan, keyword);
+            logger.info("queryAwardRanking ES SQL:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());
