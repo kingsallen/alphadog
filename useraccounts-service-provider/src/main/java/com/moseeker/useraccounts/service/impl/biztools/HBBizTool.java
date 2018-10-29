@@ -34,6 +34,7 @@ public class HBBizTool {
             case 1 : return "推荐评价红包";
             case 2 : return "转发被点击红包";
             case 3 : return "转发被申请红包";
+            case 4 : return "推荐通过初筛红包";
             default:
                 return "";
         }
