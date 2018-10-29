@@ -117,6 +117,8 @@ public class TalentPoolService {
     @Autowired
     private TalentpoolHrAutomaticTagDao talentpoolHrAutomaticTagDao;
     @Autowired
+    private TalentpoolHrAutomaticTagUserDao talentpoolHrAutomaticTagUserDao;
+    @Autowired
     private HrCompanyDao hrCompanyDao;
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -1164,6 +1166,7 @@ public class TalentPoolService {
                         String name=(String)map1.get("name");
                         if(id==tagId){
                             map.put("name",name);
+                            map.put("type","hr_tag");
                         }
                     }
                     tagList.add(map);
@@ -1184,13 +1187,53 @@ public class TalentPoolService {
                         if(id==tagId){
                             map.put("name",name);
                             map.put("color",map1.get("color"));
+                            map.put("type","company_tag");
                         }
                     }
                     tagList.add(map);
                 }
             }
         }
+        //添加hr自动标签
+        List<TalentpoolHrAutomaticTag> hrAutoTagList=talentpoolHrAutomaticTagDao.getHrAutomaticTagListByHrId(hrId);
+        if(!StringUtils.isEmptyList(hrAutoTagList)){
+            List<Integer> tagIdList=this.getHrAutoTagIdList(hrAutoTagList);
+            if(!StringUtils.isEmptyList(tagIdList)){
+                List<TalentpoolHrAutomaticTagUser> dataList=talentpoolHrAutomaticTagUserDao.getDataByTagIdAndUserId(tagIdList,userId);
+                if(!StringUtils.isEmptyList(dataList)){
+                    for(TalentpoolHrAutomaticTagUser data:dataList){
+                        int tagId=data.getTagId();
+                        Map<String,Object> tagData=new HashMap<>();
+                        for(TalentpoolHrAutomaticTag tag:hrAutoTagList){
+                            if(tagId==tag.getId()){
+                                String name=tag.getName();
+                                tagData.put("name",name);
+                                tagData.put("type","hr_auto_tag");
+                                tagData.put("hr_id",hrId);
+                                tagData.put("tag_id",tagId);
+                                tagData.put("user_id",data.getUserId());
+                                break;
+                            }
+                        }
+                        tagList.add(tagData);
+                    }
+                }
+            }
+        }
         return  ResponseUtils.success(tagList);
+    }
+    /*
+     获取hr自动标签的id
+     */
+    private List<Integer> getHrAutoTagIdList( List<TalentpoolHrAutomaticTag> hrAutoTagList){
+        if(StringUtils.isEmptyList(hrAutoTagList)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(TalentpoolHrAutomaticTag data:hrAutoTagList){
+            result.add(data.getId());
+        }
+        return result;
     }
     /*
      获取user集合下所有的收藏的和公开的hr
