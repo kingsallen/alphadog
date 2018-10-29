@@ -1340,6 +1340,10 @@ public class TalentpoolSearchengine {
                 tagIds="talent";
             }
         }
+        String hrAutoTag=params.get("hr_auto_tag");
+        if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
+            tagIds="talent,allpublic";
+        }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
