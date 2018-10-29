@@ -2051,7 +2051,7 @@ public class PositionService {
         } else {
             return result;
         }
-        Condition condition = new Condition("type", new Object[]{2, 3}, ValueOp.IN);
+        Condition condition = new Condition("type", new Object[]{2, 3, 4}, ValueOp.IN);
         // 获取正在运行的转发类红包活动集合
         Query qu = new Query.QueryBuilder()
                 .where("status", "3")

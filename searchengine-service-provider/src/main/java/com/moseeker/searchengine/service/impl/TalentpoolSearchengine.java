@@ -1039,7 +1039,7 @@ public class TalentpoolSearchengine {
         String hrAutoTag=params.get("hr_auto_tag");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
-        if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord) ){
+        if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag) ){
             if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
                 if(!intentionCityCode.contains("111111")){
                     intentionCityCode=intentionCityCode+",111111";
@@ -1067,11 +1067,11 @@ public class TalentpoolSearchengine {
      判断是否继续执行查询操作
      */
     private boolean validateCommon(String keyword,String cityName,String companyName,String pastPosition,String intentionCity,String companyTag,
-                                   String pastPositionKeyWord,String pastCompanyKeyWord){
+                                   String pastPositionKeyWord,String pastCompanyKeyWord,String hrAutoTag){
         return StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
                 StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||
                 StringUtils.isNotNullOrEmpty(intentionCity)||StringUtils.isNotNullOrEmpty(companyTag)||
-                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||StringUtils.isNotNullOrEmpty(pastCompanyKeyWord);
+                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||StringUtils.isNotNullOrEmpty(pastCompanyKeyWord)||StringUtils.isNotNullOrEmpty(hrAutoTag);
     }
     /*
      处理现居住地
@@ -1339,6 +1339,11 @@ public class TalentpoolSearchengine {
             }else{
                 tagIds="talent";
             }
+        }
+        //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
+        String hrAutoTag=params.get("hr_auto_tag");
+        if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
+            tagIds="talent,allpublic";
         }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
