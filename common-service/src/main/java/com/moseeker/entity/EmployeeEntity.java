@@ -1217,7 +1217,9 @@ public class EmployeeEntity {
                         jsonObject.put("position_id", jobPositionRecord.getId());
                         jsonObject.put("company_id", jobPositionRecord.getCompanyId());
                         jsonObject.put("user_id", jobApplication.getApplierId());
-                        jsonObject.put("wechat_id", wechat.getId());
+                        if(wechat != null){
+                            jsonObject.put("wechat_id", wechat.getId());
+                        }
                         int pscId = 0;
                         if(psc != null){
                             pscId = psc.getPscId();
