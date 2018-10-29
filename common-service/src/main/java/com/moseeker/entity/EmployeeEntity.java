@@ -1212,11 +1212,11 @@ public class EmployeeEntity {
                         HrWxWechatDO wechat = wechatDao.getHrWxWechatByCompanyId(jobPositionRecord.getCompanyId());
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("application_id", jobApplication.getId());
-                        jsonObject.put("be_recom_user_id", userId);
+                        jsonObject.put("be_recom_user_id", jobApplication.getApplierId());
                         jsonObject.put("next_stage", nextStage);
                         jsonObject.put("position_id", jobPositionRecord.getId());
                         jsonObject.put("company_id", jobPositionRecord.getCompanyId());
-                        jsonObject.put("user_id", jobApplication.getApplierId());
+                        jsonObject.put("user_id", userId);
                         if(wechat != null){
                             jsonObject.put("wechat_id", wechat.getId());
                         }
