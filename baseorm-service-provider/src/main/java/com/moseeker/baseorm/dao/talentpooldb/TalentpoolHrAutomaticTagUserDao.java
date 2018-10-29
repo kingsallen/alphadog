@@ -32,4 +32,9 @@ public class TalentpoolHrAutomaticTagUserDao  extends JooqCrudImpl<TalentpoolHrA
                 .and(TALENTPOOL_HR_AUTOMATIC_TAG_USER.USER_ID.in(userIdSet)).fetchInto(TalentpoolHrAutomaticTagUserRecord.class);
         return list;
     }
+    public List<TalentpoolHrAutomaticTagUser> getDataByTagIdAndUserId(List<Integer> tagIdList,int userId){
+        List<TalentpoolHrAutomaticTagUser> list=create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG_USER).where(TALENTPOOL_HR_AUTOMATIC_TAG_USER.TAG_ID.in(tagIdList))
+                .and(TALENTPOOL_HR_AUTOMATIC_TAG_USER.USER_ID.eq(userId)).fetchInto(TalentpoolHrAutomaticTagUser.class);
+        return list;
+    }
 }

@@ -87,7 +87,7 @@ public class TalentpoolHrAutomaticTagDao extends JooqCrudImpl<TalentpoolHrAutoma
         return count;
     }
     public String validateTagStatusById(int tagId){
-        int count=create.selectCount().from(TALENTPOOL_HR_AUTOMATIC_TAG).where(TALENTPOOL_HR_AUTOMATIC_TAG.ID.notEqual(tagId))
+        int count=create.selectCount().from(TALENTPOOL_HR_AUTOMATIC_TAG).where(TALENTPOOL_HR_AUTOMATIC_TAG.ID.eq(tagId))
                 .and(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
                 .fetchOne().value1();
         if(count==0){
