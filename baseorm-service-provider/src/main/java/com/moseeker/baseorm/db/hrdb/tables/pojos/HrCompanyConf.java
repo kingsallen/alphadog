@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -1678397726;
+    private static final long serialVersionUID = 1470468862;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -50,10 +50,6 @@ public class HrCompanyConf implements Serializable {
     private String    displayLocale;
     private Byte      talentpoolStatus;
     private Byte      veryeastSwitch;
-    private Byte      job51SalaryDiscuss;
-    private Byte      mallSwitch;
-    private String    mallGoodsMethod;
-    private Byte      mallGoodsMethodState;
 
     public HrCompanyConf() {}
 
@@ -83,10 +79,6 @@ public class HrCompanyConf implements Serializable {
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
         this.veryeastSwitch = value.veryeastSwitch;
-        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
-        this.mallSwitch = value.mallSwitch;
-        this.mallGoodsMethod = value.mallGoodsMethod;
-        this.mallGoodsMethodState = value.mallGoodsMethodState;
     }
 
     public HrCompanyConf(
@@ -114,11 +106,7 @@ public class HrCompanyConf implements Serializable {
         String    employeeSlug,
         String    displayLocale,
         Byte      talentpoolStatus,
-        Byte      veryeastSwitch,
-        Byte      job51SalaryDiscuss,
-        Byte      mallSwitch,
-        String    mallGoodsMethod,
-        Byte      mallGoodsMethodState
+        Byte      veryeastSwitch
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -145,10 +133,6 @@ public class HrCompanyConf implements Serializable {
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
         this.veryeastSwitch = veryeastSwitch;
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
-        this.mallSwitch = mallSwitch;
-        this.mallGoodsMethod = mallGoodsMethod;
-        this.mallGoodsMethodState = mallGoodsMethodState;
     }
 
     public Integer getCompanyId() {
@@ -351,38 +335,6 @@ public class HrCompanyConf implements Serializable {
         this.veryeastSwitch = veryeastSwitch;
     }
 
-    public Byte getJob51SalaryDiscuss() {
-        return this.job51SalaryDiscuss;
-    }
-
-    public void setJob51SalaryDiscuss(Byte job51SalaryDiscuss) {
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
-    }
-
-    public Byte getMallSwitch() {
-        return this.mallSwitch;
-    }
-
-    public void setMallSwitch(Byte mallSwitch) {
-        this.mallSwitch = mallSwitch;
-    }
-
-    public String getMallGoodsMethod() {
-        return this.mallGoodsMethod;
-    }
-
-    public void setMallGoodsMethod(String mallGoodsMethod) {
-        this.mallGoodsMethod = mallGoodsMethod;
-    }
-
-    public Byte getMallGoodsMethodState() {
-        return this.mallGoodsMethodState;
-    }
-
-    public void setMallGoodsMethodState(Byte mallGoodsMethodState) {
-        this.mallGoodsMethodState = mallGoodsMethodState;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompanyConf (");
@@ -412,10 +364,6 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
         sb.append(", ").append(veryeastSwitch);
-        sb.append(", ").append(job51SalaryDiscuss);
-        sb.append(", ").append(mallSwitch);
-        sb.append(", ").append(mallGoodsMethod);
-        sb.append(", ").append(mallGoodsMethodState);
 
         sb.append(")");
         return sb.toString();

@@ -74,7 +74,7 @@ public class EmployeeServiceTest {
         bp.setType(BindType.EMAIL);
         bp.setUserId(2376);
         bp.setName("fly");
-        Result result = service.bind(bp, 0);
+        Result result = service.bind(bp,1);
         System.out.println(result);
     }
 
@@ -106,7 +106,7 @@ public class EmployeeServiceTest {
 
     @Test
     public void emailActivation() throws Exception {
-        Result result = bindByEmail.emailActivation("b9122ca1f6254e74e69f64708a182b53a857b397", 0);
+        Result result = bindByEmail.emailActivation("b9122ca1f6254e74e69f64708a182b53a857b397",1);
         System.out.println(result);
     }
 
