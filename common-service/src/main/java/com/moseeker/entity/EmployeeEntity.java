@@ -1104,7 +1104,7 @@ public class EmployeeEntity {
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
-                ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplByRecruitOrder(nextStage);
+                ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplById(nextStage);
                 ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 if(statusCount == null){
