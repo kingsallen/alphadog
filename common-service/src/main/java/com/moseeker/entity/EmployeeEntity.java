@@ -1204,7 +1204,7 @@ public class EmployeeEntity {
                 if(statusCount == null){
                     CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     statusCount = new ReferralApplicationStatusCount();
-                    statusCount.setAppicationTplStatus(Constant.RECRUIT_STATUS_CVPASSED);
+                    statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
                     statusCount.setCount(1);
                     int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
