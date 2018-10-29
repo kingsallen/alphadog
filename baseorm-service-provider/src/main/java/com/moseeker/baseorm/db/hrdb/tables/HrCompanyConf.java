@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1021639983;
+    private static final long serialVersionUID = -1803058035;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -174,6 +174,26 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
      * The column <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
      */
     public final TableField<HrCompanyConfRecord, Byte> VERYEAST_SWITCH = createField("veryeast_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "最佳东方c 端简 导入开关 0：未开启，1：开启");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
+     */
+    public final TableField<HrCompanyConfRecord, Byte> MALL_SWITCH = createField("mall_switch", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商城开关  0从未开通 1 已开通 2 开通过目前停用");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
+     */
+    public final TableField<HrCompanyConfRecord, String> MALL_GOODS_METHOD = createField("mall_goods_method", org.jooq.impl.SQLDataType.VARCHAR.length(200), this, "商城商品领取规则");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+     */
+    public final TableField<HrCompanyConfRecord, Byte> MALL_GOODS_METHOD_STATE = createField("mall_goods_method_state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则");
+
+    /**
+     * The column <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
+     */
+    public final TableField<HrCompanyConfRecord, Byte> JOB51_SALARY_DISCUSS = createField("job51_salary_discuss", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "51薪资面议开关 0：未开启，1：开启");
 
     /**
      * Create a <code>hrdb.hr_company_conf</code> table reference
