@@ -1115,6 +1115,7 @@ public class EmployeeEntity {
                     statusCount.setCount(1);
                     int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
                     if(result >0 ){
+                        HrWxWechatDO wechat = wechatDao.getHrWxWechatByCompanyId(jobPositionRecord.getCompanyId());
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("application_id", jobApplication.getId());
                         jsonObject.put("be_recom_user_id", userId);
@@ -1122,6 +1123,9 @@ public class EmployeeEntity {
                         jsonObject.put("position_id", jobPositionRecord.getId());
                         jsonObject.put("company_id", jobPositionRecord.getCompanyId());
                         jsonObject.put("user_id", jobApplication.getApplierId());
+                        if(wechat != null){
+                            jsonObject.put("wechat_id", wechat.getId());
+                        }
                         int pscId = 0;
                         if(psc != null){
                             pscId = psc.getPscId();
