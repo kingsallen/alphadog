@@ -767,7 +767,7 @@ public class SearchengineService {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
         for(Integer companyId : companyIds){
-            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), String.valueOf(companyId));
+            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
             if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(result)){
                 List<Integer> employees = JSON.parseArray(result, Integer.class);
                 if(!com.moseeker.common.util.StringUtils.isEmptyList(employees)){
