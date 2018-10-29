@@ -1197,7 +1197,7 @@ public class EmployeeEntity {
             logger.info("publishInitalScreenHbEvent  nextStage {}",nextStage);
             logger.info("publishInitalScreenHbEvent  bool {}",((hbStatus >> 2) & 1) == 1);
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
-                ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplByRecruitOrder(nextStage);
+                ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplById(nextStage);
                 ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 logger.info("publishInitalScreenHbEvent  statusCount {}",statusCount);
