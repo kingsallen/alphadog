@@ -77,6 +77,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -1226,9 +1227,10 @@ public class EmployeeEntity {
                         }
                         jsonObject.put("psc", pscId);
                         logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
-                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
+                        Message message = amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                         .build());
+                        logger.info("publishInitalScreenHbEvent message:{}", message);
                     }
                 }else{
                     int i =0;
