@@ -1101,6 +1101,7 @@ public class UserHrAccountService {
                     add((int)EmployeeActiveState.MigrateToOtherCompany.getState());
                     add((int)EmployeeActiveState.UnFollow.getState());
                 }};
+                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
             }
         }
         if(StringUtils.isNotNullOrEmpty(emailValidate)){
