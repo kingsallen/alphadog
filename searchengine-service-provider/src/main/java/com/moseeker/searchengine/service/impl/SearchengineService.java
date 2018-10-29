@@ -774,7 +774,7 @@ public class SearchengineService {
                         EmployeeActiveState.UnFollow.getState();
             }
             if (StringUtils.isNotBlank(activation)) {
-                searchUtil.handleTerms(activation, defaultquery, "activation");
+                searchUtil.handleTerms(activation, query, "activation");
             }
         }
         if (employeeId != null) {
