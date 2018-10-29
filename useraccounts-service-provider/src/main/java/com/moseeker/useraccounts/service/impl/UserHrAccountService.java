@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -1081,15 +1082,17 @@ public class UserHrAccountService {
         // 过滤条件
         if (filter != 0) {
             if (filter == 1) {
-                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState());
             } else if (filter == 2) {
-                List<Integer> filters = new ArrayList<>();
-                filters.add(1);
-                filters.add(2);
-                filters.add(3);
-                filters.add(4);
-                filters.add(5);
-                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Init.getState());
+            } else if(filter == 3) {
+                List<Integer> activations = new ArrayList<Integer>(){{
+                    add((int)EmployeeActiveState.Cancel.getState());
+                    add((int)EmployeeActiveState.Failure.getState());
+                    add((int)EmployeeActiveState.MigrateToOtherCompany.getState());
+                    add((int)EmployeeActiveState.UnFollow.getState());
+                }};
+                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
             }
         }
         if(StringUtils.isNotNullOrEmpty(emailValidate)){

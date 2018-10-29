@@ -3,6 +3,7 @@ package com.moseeker.searchengine.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.logdb.LogMeetmobotRecomDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -756,12 +757,25 @@ public class SearchengineService {
     }
 
 
-    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan, String keyword) {
+    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, int filter, int pageSize, int pageNum, String timespan, String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-        if (activation != null) {
-            searchUtil.handleTerms(activation, query, "activation");
+        if (filter > 0) {
+            String activation = "";
+            if (filter == 1) {
+                activation = String.valueOf(EmployeeActiveState.Actived.getState());
+            } else if (filter == 2) {
+                activation = String.valueOf(EmployeeActiveState.Init.getState());
+            } else if ((filter == 3)) {
+                activation = EmployeeActiveState.Cancel.getState()+", "+
+                        EmployeeActiveState.Failure.getState()+", "+
+                        EmployeeActiveState.MigrateToOtherCompany.getState()+", "+
+                        EmployeeActiveState.UnFollow.getState();
+            }
+            if (StringUtils.isNotBlank(activation)) {
+                searchUtil.handleTerms(activation, query, "activation");
+            }
         }
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
@@ -825,7 +839,8 @@ public class SearchengineService {
             } else if (filter == 2) {
                 activation.append("1,2,3,4");
             }
-            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, activation.toString(), pageSize, pageNum, timespan, keyword);
+
+            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, filter, pageSize, pageNum, timespan, keyword);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());
