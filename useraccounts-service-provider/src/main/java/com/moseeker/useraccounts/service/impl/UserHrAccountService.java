@@ -950,8 +950,11 @@ public class UserHrAccountService {
         if (employeeMap != null && employeeMap.size() > 0) {
             reward = true;
         }
+        Query query = queryBuilder.buildQuery();
+        logger.info("UserHrAccountService employeeList query:{}", query);
         // 员工数据
         userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        logger.info("UserHrAccountService employeeList userEmployeeDOS:{}", JSONArray.toJSONString(userEmployeeDOS));
 
         if (userEmployeeDOS != null && userEmployeeDOS.size() > 0) {
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
