@@ -827,6 +827,7 @@ public class SearchengineService {
     }
     @CounterIface
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
+        logger.info("queryAwardRanking filter:{}", filter);
         Map<String, Object> object = new HashMap<>();
         TransportClient searchClient =null;
         try {
