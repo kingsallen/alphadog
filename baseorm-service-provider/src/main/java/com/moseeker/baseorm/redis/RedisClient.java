@@ -255,6 +255,9 @@ public abstract class RedisClient {
 		RedisConfigRedisKey redisKey = readRedisKey(appId, key_identifier);
 		String cacheKey = String.format(redisKey.getPattern(), str1, str2);
 		try {
+			logger.info("===========rediskey===============");
+			logger.info(cacheKey);
+			logger.info("====================================");
 			return redisCluster.get(cacheKey);
 		} catch (Exception e) {
 			throw new RedisException(e, Constant.REDIS_CONNECT_ERROR_APPID, className, Constant.REDIS_CONNECT_ERROR_EVENTKEY);

@@ -106,5 +106,12 @@ public class TalentpoolHrAutomaticTagDao extends JooqCrudImpl<TalentpoolHrAutoma
         }
         return list.get(0);
     }
+    public List<Map<String,Object>> getDataByIdList( List<Integer> idList){
+        List<Map<String,Object>> list= create.selectFrom(TALENTPOOL_HR_AUTOMATIC_TAG)
+                .where(TALENTPOOL_HR_AUTOMATIC_TAG.DISABLE.eq(1))
+                .and(TALENTPOOL_HR_AUTOMATIC_TAG.ID.in(idList))
+                .fetchMaps();
+        return list;
+    }
 
 }
