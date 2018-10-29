@@ -1340,6 +1340,7 @@ public class TalentpoolSearchengine {
                 tagIds="talent";
             }
         }
+        //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
         String hrAutoTag=params.get("hr_auto_tag");
         if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
             tagIds="talent,allpublic";
