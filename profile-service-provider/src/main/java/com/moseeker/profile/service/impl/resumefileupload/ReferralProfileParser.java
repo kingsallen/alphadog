@@ -1,13 +1,9 @@
 package com.moseeker.profile.service.impl.resumefileupload;
 
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.profile.User;
 import com.moseeker.profile.exception.ProfileException;
@@ -16,20 +12,25 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
 @Component
 public class ReferralProfileParser extends AbstractResumeFileParser {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     EmployeeEntity employeeEntity;
 
     @Override
     protected boolean checkUser(Integer id) {
+
+        logger.info("ReferralProfileParser checkUser id:{}", id);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(id);
+        logger.info("ReferralProfileParser checkUser employeeDO:{}", employeeDO);
         if (employeeDO == null || employeeDO.getId() <= 0) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
