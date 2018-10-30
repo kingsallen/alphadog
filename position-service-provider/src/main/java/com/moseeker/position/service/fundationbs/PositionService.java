@@ -2131,7 +2131,6 @@ public class PositionService {
 
     @CounterIface
     public List<RpExtInfo> getNewPositionListRpExt(List<Integer> pids){
-        logger.info("getNewPositionListRpExt pids:{}",pids);
         if(StringUtils.isEmptyList(pids)){
             return new ArrayList<>();
         }
@@ -2139,7 +2138,6 @@ public class PositionService {
          获取配置红包的职位
          */
         List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList=jobPositionDao.getJobPositionByIdListAndHbStatus(pids);
-        logger.info("getNewPositionListRpExt positionList:{}",positionList);
         if(StringUtils.isEmptyList(positionList)){
             return new ArrayList<>();
         }
@@ -2148,7 +2146,6 @@ public class PositionService {
          获取公司下配置的红包
          */
         List<HrHbConfig> hrHbList=this.getHrHbList(companyId,3);
-        logger.info("getNewPositionListRpExt hrHbList:{}",hrHbList);
         if(StringUtils.isEmptyList(hrHbList)){
             return new ArrayList<>();
         }
@@ -2157,12 +2154,10 @@ public class PositionService {
          获取红包和公司的绑定罐系列表
          */
         List<HrHbPositionBinding> bindingList=hrHbPositionBindingDao.getHrHbPositionBindingListByPidListAndHbConfigList(pids,hrHbIdList);
-        logger.info("getNewPositionListRpExt bindingList:{}",bindingList);
         if(StringUtils.isEmptyList(bindingList)){
             return new ArrayList<>();
         }
         List<Integer> bindingIdList=this.getHrHbPositionBindingIdList(bindingList);
-        logger.info("getNewPositionListRpExt bindingIdList:{}",bindingIdList);
         if(StringUtils.isEmptyList(bindingList)){
             return new ArrayList<>();
         }
@@ -2170,12 +2165,10 @@ public class PositionService {
          获取具体的绑定项
          */
         List<HrHbItems> hrHbItemsList=hrHbItemsDao.getHbItemsListBybindingIdList(bindingIdList,0);
-        logger.info("getNewPositionListRpExt hrHbItemsList:{}",hrHbItemsList);
         if(StringUtils.isEmptyList(hrHbItemsList)){
             return new ArrayList<>();
         }
         List<RpExtInfo> result=this.handlerPositionListRpExt(positionList,bindingList,hrHbItemsList,hrHbList);
-        logger.info("getNewPositionListRpExt result:{}",result);
         return result;
     }
     /*
