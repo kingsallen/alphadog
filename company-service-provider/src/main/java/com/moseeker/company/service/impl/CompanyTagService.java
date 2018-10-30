@@ -428,6 +428,10 @@ public class CompanyTagService {
             Set<Integer> hrSet = talentPoolEntity.getIdListByUserHrAccountList(htList);
             if(!StringUtils.isEmptySet(hrSet)){
                talentPoolEntity.handlerHrAutotag(userIdSet,companyId,hrSet);
+               for(Integer userId:userIdSet){
+                   this.addRedisRefreshEs(userId,new ArrayList<>(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
+               }
+
             }
         }
     }
