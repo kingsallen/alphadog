@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -447,7 +448,7 @@ public class ReferralController {
             if(idReasons.get("state") == null){
                 return Result.success(idReasons).toJson();
             }else {
-                return Result.fail(JSON.toJSONString(idReasons)).toJson();
+                return new Result(-1, "failed", idReasons).toJson();
             }
 
         } else {
@@ -482,8 +483,8 @@ public class ReferralController {
                 return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
             }
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-            String parseResult = profileService.parseMobotFileProfile(employeeId, params.getString("file_name"), byteBuffer);
-            return Result.success(parseResult).toJson();
+            String parseResultStr = profileService.parseMobotFileProfile(employeeId, params.getString("file_name"), byteBuffer);
+            return Result.success(JSONObject.parseObject(parseResultStr)).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }

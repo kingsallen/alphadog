@@ -80,27 +80,6 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
 
     }
 
-    private int getUserId(Map<String, Object> map) {
-        Object obj = map.get("UserEmployeeDO");
-        if(obj == null){
-            UserUserRecord record = (UserUserRecord)map.get("UserUserRecord");
-            return record.getId();
-        }else {
-            UserEmployeeDO userEmployeeDO = (UserEmployeeDO)obj;
-            return userEmployeeDO.getSysuserId();
-        }
-    }
-
-    private int getCompanyId(Map<String, Object> map) {
-        Object obj = map.get("UserEmployeeDO");
-        if(obj == null){
-            return 0;
-        }else {
-            UserEmployeeDO userEmployeeDO = (UserEmployeeDO)obj;
-            return userEmployeeDO.getCompanyId();
-        }
-    }
-
     @Override
     public  ProfileDocParseResult parseResume(Integer id, String fileName, ByteBuffer fileData) {
         return parseResume(id, fileName, fileData, false);
@@ -144,6 +123,28 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
             profileDocParseResult.setUserId(userRecord.getId());
         }
         profileDocParseResult.setCompanyId(companyId);
+    }
+
+
+    private int getUserId(Map<String, Object> map) {
+        Object obj = map.get("UserEmployeeDO");
+        if(obj == null){
+            UserUserRecord record = (UserUserRecord)map.get("UserUserRecord");
+            return record.getId();
+        }else {
+            UserEmployeeDO userEmployeeDO = (UserEmployeeDO)obj;
+            return userEmployeeDO.getSysuserId();
+        }
+    }
+
+    private int getCompanyId(Map<String, Object> map) {
+        Object obj = map.get("UserEmployeeDO");
+        if(obj == null){
+            return 0;
+        }else {
+            UserEmployeeDO userEmployeeDO = (UserEmployeeDO)obj;
+            return userEmployeeDO.getCompanyId();
+        }
     }
 
 }

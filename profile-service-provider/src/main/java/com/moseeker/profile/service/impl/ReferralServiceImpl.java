@@ -216,8 +216,8 @@ public class ReferralServiceImpl implements ReferralService {
             for(Integer positionId : ids){
                 tp.startTast(() -> {
                     try {
-                        int referralId = employeeReferralProfile(employeeId, name,
-                                mobile, referralReasons, positionId, (byte)1);
+                        int referralId = employeeReferralProfileNoReferralReasons(employeeId, name,
+                                mobile, referralReasons, positionId, (byte)1, true);
                         referralResultMap.put(positionId + "", referralId + "");
                     }catch (Exception e){
                         referralResultMap.put(positionId + "", e.getMessage());
@@ -272,26 +272,21 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     /**
-     * 员工推荐
-     * 产生虚拟用户、简历、申请记录
-     * @param employeeId 员工编号
-     * @param name 推荐者名称
-     * @param mobile 手机号码
-     * @param referralReasons 推荐理由
-     * @param position 职位编号
-     * @param referralType 推荐方式
-     * @return 推荐记录编号
-     * @throws ProfileException
+     * 控制是否验证推荐原因
+     * @param
+     * @author  cjm
+     * @date  2018/10/30
+     * @return
      */
-    @Override
-    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
-                                       int position, byte referralType) throws ProfileException {
-
+    public int employeeReferralProfileNoReferralReasons(int employeeId, String name, String mobile, List<String> referralReasons,
+                                                        int position, byte referralType, boolean isMobot){
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
-        if (referralReasons != null) {
-            String reasons = referralReasons.stream().collect(Collectors.joining(","));
-            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+        if(!isMobot){
+            validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
+            if (referralReasons != null) {
+                String reasons = referralReasons.stream().collect(Collectors.joining(","));
+                validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+            }
         }
         validateUtil.addRequiredStringValidate("候选人姓名", name);
         validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
@@ -323,8 +318,7 @@ public class ReferralServiceImpl implements ReferralService {
             throw ApplicationException.NO_PERMISSION_EXCEPTION;
         }
 
-        String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
-                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        String profilePojoStr = getProfilePojoStr(employeeId, isMobot);
 
         if (StringUtils.isBlank(profilePojoStr)) {
             throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
@@ -348,7 +342,40 @@ public class ReferralServiceImpl implements ReferralService {
         String email = StringUtils.defaultIfBlank(profilePojo.getUserRecord().getEmail(), "");
 
         return recommend(profilePojo, employeeDO, positionRecord, name, mobile, referralReasons,
-                genderType, email, type);
+                genderType, email, type, isMobot);
+    }
+
+    private String getProfilePojoStr(int employeeId, boolean isMobot) {
+        if(!isMobot){
+            return client.get(AppId.APPID_ALPHADOG.getValue(),
+                    KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        }else {
+            String profileStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+                    KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+            if(StringUtils.isBlank(profileStr)){
+                profileStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+                        KeyIdentifier.WECHAT_UPLOAD_RESUME_FILE.toString(), String.valueOf(employeeId));
+            }
+            return profileStr;
+        }
+    }
+
+    /**
+     * 员工推荐
+     * 产生虚拟用户、简历、申请记录
+     * @param employeeId 员工编号
+     * @param name 推荐者名称
+     * @param mobile 手机号码
+     * @param referralReasons 推荐理由
+     * @param position 职位编号
+     * @param referralType 推荐方式
+     * @return 推荐记录编号
+     * @throws ProfileException
+     */
+    @Override
+    public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
+                                       int position, byte referralType) throws ProfileException {
+        return employeeReferralProfileNoReferralReasons(employeeId, name, mobile, referralReasons, position, referralType, false);
     }
 
     /**
@@ -410,7 +437,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
 
         return recommend(profilePojo, employeeDO, positionRecord, candidate.getName(), candidate.getMobile(),
-                candidate.getReasons(), genderType, candidate.getEmail(), ReferralType.PostInfo);
+                candidate.getReasons(), genderType, candidate.getEmail(), ReferralType.PostInfo, false);
 
     }
 
@@ -429,11 +456,11 @@ public class ReferralServiceImpl implements ReferralService {
      */
     private int recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, JobPositionRecord positionRecord,
                           String name, String mobile, List<String> referralReasons, GenderType gender, String email,
-                          ReferralType referralType)
+                          ReferralType referralType, boolean isMobot)
             throws ProfileException {
 
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
-                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
+                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId(), isMobot);
         int userId;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
