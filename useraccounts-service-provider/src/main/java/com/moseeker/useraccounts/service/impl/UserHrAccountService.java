@@ -1219,18 +1219,18 @@ public class UserHrAccountService {
 
     /**
      * 员工列表
-     *
-     * @param keyword    关键字搜索
+     *  @param keyword    关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
+     * @param timeSpan   时间区间
      */
     public UserEmployeeVOPageVO getEmployees(String keyword, Integer companyId, Integer filter, String order, String asc,
                                              Integer pageNumber, Integer pageSize, String emailValidate,
-                                             Integer balanceType) throws CommonException {
+                                             Integer balanceType, String timeSpan) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1242,7 +1242,7 @@ public class UserHrAccountService {
         try {
             logger.info("getEmployees pageNum:{}, pageSize:{}", pageNumber, pageSize);
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
-                    pageSize, pageNumber,balanceType);
+                    pageSize, pageNumber,balanceType, timeSpan);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }

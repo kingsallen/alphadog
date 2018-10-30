@@ -9,6 +9,9 @@ import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.script.Script;
+import org.elasticsearch.search.sort.ScriptSortBuilder;
+import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,9 +106,10 @@ public class EmployeeBizTool {
      * @param searchRequestBuilder 查询工具
      * @param order 排序字段，多个字段使用","隔开
      * @param asc 升序降序字段，多个使用","隔开
+     * @param timeSpan
      * @throws SearchEngineException
      */
-    public static void addOrder(SearchRequestBuilder searchRequestBuilder, String order, String asc) throws SearchEngineException {
+    public static void addOrder(SearchRequestBuilder searchRequestBuilder, String order, String asc, String timeSpan) throws SearchEngineException {
         if (StringUtils.isNotBlank(order)) {
             // 多个条件
             if (order.indexOf(",") > -1 && asc.indexOf(",") > -1) {
@@ -119,25 +123,43 @@ public class EmployeeBizTool {
                 for (int i = 0; i < orders.length; i++) {
                     // 首先判断排序的条件是否正确
                     if (UserEmployee.USER_EMPLOYEE.field(orders[i]) != null) {
-                        if (Integer.valueOf(ascs[i]).intValue() == 1) {   //升序
-                            searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), SortOrder.ASC);
-                        } else if (Integer.valueOf(ascs[i]).intValue() == 0) {// 倒序
-                            searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), SortOrder.DESC);
-                        }
+                        addOrder(searchRequestBuilder, UserEmployee.USER_EMPLOYEE.field(orders[i]).getName(), Integer.valueOf(ascs[i]), timeSpan);
                     }
                 }
             } else {
                 // 首先判断排序的条件是否正确
                 if (UserEmployee.USER_EMPLOYEE.field(order) != null) {
-                    if (Integer.valueOf(asc).intValue() == 0) {  // 倒序
-                        searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(order).getName(), SortOrder.DESC);
-                    } else if (Integer.valueOf(asc).intValue() == 1) { //升序
-                        searchRequestBuilder.addSort(UserEmployee.USER_EMPLOYEE.field(order).getName(), SortOrder.ASC);
-                    }
+                    addOrder(searchRequestBuilder, UserEmployee.USER_EMPLOYEE.field(order).getName(), Integer.valueOf(asc), timeSpan);
                 }
             }
 
         }
+    }
+
+    private static void addOrder(SearchRequestBuilder searchRequestBuilder, String field, int asc, String timeSpan) {
+        SortOrder sortOrder = asc == 0 ? SortOrder.DESC : SortOrder.ASC;
+        if (StringUtils.isNotBlank(timeSpan)) {
+            searchRequestBuilder.addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC));
+        } else {
+            searchRequestBuilder.addSort(field, sortOrder);
+        }
+    }
+
+    /**
+     * todo searchengine-service依赖 common-service，并依赖 SearchengineEntity的buildSrtScript代码
+     * @param timspanc
+     * @param field
+     * @param sortOrder
+     * @return
+     */
+    public static SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("double score=0; awards=_source.awards;times=awards['" + timspanc + "'];if(times){award=doc['awards." + timspanc + "." + field + "'].value;if(award){score=award}}; return score");
+        String scripts = sb.toString();
+        Script script = new Script(scripts);
+        ScriptSortBuilder builder = new ScriptSortBuilder(script, "number").order(sortOrder);
+        return builder;
     }
 
     /**
