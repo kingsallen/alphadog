@@ -1944,6 +1944,10 @@ public class TalentPoolEntity {
                         }
                     }
                 }
+                //需要删除的记录
+                logger.info("==============================");
+
+                logger.info("==============================");
                 if(!StringUtils.isEmptyList(result)){
                     talentpoolHrAutomaticTagUserDao.deleteList(result);
                 }
