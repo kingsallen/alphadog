@@ -545,16 +545,19 @@ public class UserHrAccountServiceImpl implements Iface {
      * @param pageNumber 页码
      * @param pageSize 每页数量
      * @param email_validate 邮箱认证条件
+     * @param timeSpan 时间
      * @return 员工列表
      * @throws BIZException 业务异常
      * @throws TException rpc异常
      */
     @Override
     public UserEmployeeVOPageVO getEmployees(String keyword, int companyId, int filter, String order, String asc,
-                                             int pageNumber, int pageSize, String email_validate,int balanceType)
+                                             int pageNumber, int pageSize, String email_validate,int balanceType,
+                                             String timeSpan)
             throws BIZException, TException {
         try {
-            return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate,balanceType);
+            return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate,
+                    balanceType, timeSpan);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

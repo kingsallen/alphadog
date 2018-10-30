@@ -893,8 +893,9 @@ public class UserHrAccountController {
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
             int balanceType = params.getInt("balanceType",0);
+            String timespan = params.getString("timespan", "");
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
-                    order, asc, pageNumber, pageSize, email_isvalid,balanceType);
+                    order, asc, pageNumber, pageSize, email_isvalid,balanceType, timespan);
             return ResponseLogNotification.success(request,
                     ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
