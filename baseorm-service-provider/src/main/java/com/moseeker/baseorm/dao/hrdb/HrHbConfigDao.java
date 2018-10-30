@@ -28,4 +28,11 @@ public class HrHbConfigDao extends JooqCrudImpl<HrHbConfigDO, HrHbConfigRecord> 
                 .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbConfig.class);
         return list;
     }
+
+    public List<HrHbConfigRecord> fetchByIdList(List<Integer> configIdList) {
+        return create
+                .selectFrom(HrHbConfig.HR_HB_CONFIG)
+                .where(HrHbConfig.HR_HB_CONFIG.ID.in(configIdList))
+                .fetch();
+    }
 }

@@ -38,7 +38,7 @@ public class ProfileImportServicesTest{
 	public void postResources() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
-		profileImport.setAccount_id("test add imports");
+		profileImport.setAccount_id("resumeFileParser add imports");
 		response = service.postResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
@@ -46,7 +46,7 @@ public class ProfileImportServicesTest{
 	public void putResources() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
-		profileImport.setAccount_id("test update imports");
+		profileImport.setAccount_id("resumeFileParser update imports");
 		response = service.putResources(new ArrayList<ProfileImport>(){{add(profileImport);}});
 	}
 
@@ -68,7 +68,7 @@ public class ProfileImportServicesTest{
 	public void postResource() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
-		profileImport.setAccount_id("test add imports");
+		profileImport.setAccount_id("resumeFileParser add imports");
 		response = service.postResource(profileImport);
 	}
 
@@ -76,7 +76,7 @@ public class ProfileImportServicesTest{
 	public void putResource() throws TException {
 		ProfileImport profileImport = new ProfileImport();
 		profileImport.setProfile_id(170);
-		profileImport.setAccount_id("test add imports");
+		profileImport.setAccount_id("resumeFileParser add imports");
 		response = service.putResource(profileImport);
 	}
 

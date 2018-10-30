@@ -103,23 +103,23 @@ public class SearchengineController {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             logger.info(JSON.toJSONString(reqParams)+"=============");
             String keywords = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
-            String cities =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("cities")));
+            String cities = BeanUtils.converToString(reqParams.get("cities"));
             String industries =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("industries")));
-            String occupations = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("occupations")));
+            String occupations = BeanUtils.converToString(reqParams.get("occupations"));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
             String employment_type = BeanUtils.converToString(reqParams.get("employment_type"));
             String candidate_source = BeanUtils.converToString(reqParams.get("candidate_source"));
             String experience = BeanUtils.converToString(reqParams.get("experience"));
-            String degree = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("degree")));
+            String degree = BeanUtils.converToString(reqParams.get("degree"));
             String salary = BeanUtils.converToString(reqParams.get("salary"));
             String company_id = BeanUtils.converToString(reqParams.get("company_id"));
             int page_from = BeanUtils.converToInteger(reqParams.get("page_from"));
             int page_size = BeanUtils.converToInteger(reqParams.get("page_size"));
             String child_company_id = BeanUtils.converToString(reqParams.get("child_company_id"));
             //由于department废弃，查询部门时使用team_name
-            String department = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("team_name")));
+            String department = BeanUtils.converToString(reqParams.get("team_name"));
             boolean order_by_priority = BeanUtils.convertToBoolean(reqParams.get("order_by_priority"));
-            String custom = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("custom")));
+            String custom = BeanUtils.converToString(reqParams.get("custom"));
             
             logger.info(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
@@ -440,6 +440,26 @@ public class SearchengineController {
                 params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
             }
             Response res=searchengineServices.searchpastCompany(params);
+            return ResponseLogNotification.success(request,res);
+        }catch(Exception e){
+            logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/mobot/search", method = RequestMethod.GET)
+    @ResponseBody
+    public String searchMobotPosition(HttpServletRequest request, HttpServletResponse response){
+        try{
+            Map<String,Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String,String> params=new HashMap<>();
+            if(reqParams==null||reqParams.isEmpty()){
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for(String key:reqParams.keySet()){
+                params.put(key,StringUtils.filterStringForSearch((String)reqParams.get(key)));
+            }
+            Response res=searchengineServices.mobotSearchPosition(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){
             logger.info(e.getMessage(),e);

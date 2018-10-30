@@ -1,6 +1,8 @@
 package com.moseeker.entity;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
@@ -11,25 +13,38 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
+import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
-import com.moseeker.baseorm.db.userdb.tables.*;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
+import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
+import com.moseeker.baseorm.db.userdb.tables.UserUser;
+import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
@@ -40,6 +55,8 @@ import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.exception.ExceptionCategory;
 import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -49,17 +66,26 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.*;
+import com.moseeker.thrift.gen.employee.struct.BonusVO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.thrift.gen.warn.struct.WarnBean;
+import java.net.ConnectException;
+import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -77,6 +103,9 @@ public class EmployeeEntity {
     private UserEmployeeDao employeeDao;
 
     @Autowired
+    private Environment env;
+
+    @Autowired
     private HrGroupCompanyRelDao hrGroupCompanyRelDao;
 
     @Autowired
@@ -84,9 +113,6 @@ public class EmployeeEntity {
 
     @Autowired
     private UserEmployeePointsRecordDao ueprDao;
-
-    @Autowired
-    private JobApplicationDao applicationDao;
 
     @Autowired
     private JobPositionDao positionDao;
@@ -123,6 +149,33 @@ public class EmployeeEntity {
     @Autowired
     private ReferralCompanyConfDao referralCompanyConfDao;
 
+    @Autowired
+    private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
+
+    @Autowired
+    private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+
+    @Autowired
+    private ReferralPositionBonusStageDetailDao referralPositionBonusStageDetailDao;
+
+    @Autowired
+    JobApplicationDao applicationDao;
+
+    @Autowired
+    JobPositionDao jobPositionDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Resource(name = "cacheClient")
+    private RedisClient client;
+
+    ThreadPool tp = ThreadPool.Instance;
+
+
+    private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
+    private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
+
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
@@ -147,7 +200,7 @@ public class EmployeeEntity {
         companyIds.add(companyId);
         query.where(new Condition("company_id", companyIds, ValueOp.IN)).and("sysuser_id", String.valueOf(userId))
                 .and("disable", "0")
-                .and(USER_EMPLOYEE.ACTIVATION.getName(), "0");
+                .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState());
         return employeeDao.getData(query.buildQuery());
     }
 
@@ -155,7 +208,7 @@ public class EmployeeEntity {
     @Transactional
     public void addAwardBefore(int employeeId, int companyId, int positionId, int templateId, int berecomUserId,
                                int applicationId) throws Exception {
-        // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
+
         ReferralCompanyConf companyConf = referralCompanyConfDao.fetchOneByCompanyId(companyId);
         if (companyConf != null && companyConf.getPositionPointsFlag() != null
                 && companyConf.getPositionPointsFlag() == 1) {
@@ -165,6 +218,7 @@ public class EmployeeEntity {
                 return;
             }
         }
+        // for update 对employeee信息加行锁 避免多个端同时对同一个用户加积分
         employeeDao.getUserEmployeeForUpdate(employeeId);
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where("company_id", companyId).and("template_id", templateId);
@@ -267,6 +321,13 @@ public class EmployeeEntity {
         return true;
     }
 
+    /**
+     * 员工认证，新增员工认证积分并且修改认证时间
+     * @param employeeId 员工编号
+     * @param companyId 公司编号
+     * @return true 修改成功；false 修改失败
+     * @throws EmployeeException
+     */
     public boolean addRewardByEmployeeVerified(int employeeId, int companyId) throws EmployeeException {
 
         HrPointsConfRecord record = hrPointsConfDao.getEmployeeVerified(companyId);
@@ -505,12 +566,27 @@ public class EmployeeEntity {
      * @param employeeIds
      * @return
      */
+    @Transactional
     public boolean unbind(Collection<Integer> employeeIds) throws CommonException {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.and(new Condition("id", employeeIds, ValueOp.IN))
                 .and(USER_EMPLOYEE.ACTIVATION.getName(), 0);
         List<UserEmployeeDO> employeeDOList = employeeDao.getDatas(query.buildQuery());
-        return unbind(employeeDOList);
+        boolean result = unbind(employeeDOList);
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        List<ReferralEmployeeRegisterLog> logs = employeeIds
+                .stream()
+                .distinct()
+                .map(integer -> {
+                    ReferralEmployeeRegisterLog log = new ReferralEmployeeRegisterLog();
+                    log.setEmployeeId(integer);
+                    log.setRegister((byte)0);
+                    log.setOperateTime(timestamp);
+                    return log;
+                })
+                .collect(Collectors.toList());
+        referralEmployeeRegisterLogDao.insert(logs);
+        return result;
     }
 
     /**
@@ -519,6 +595,7 @@ public class EmployeeEntity {
      * @param employees
      * @return
      */
+
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
             String now = DateUtils.dateToShortTime(new Date());
@@ -528,13 +605,12 @@ public class EmployeeEntity {
                 e.setCustomFieldValues("[]");
                 e.setUpdateTime(now);
             });
-            for(UserEmployeeDO DO:employees){
-                int userId=DO.getSysuserId();
-                int companyId=DO.getCompanyId();
-                convertCandidatePerson(userId,companyId);
+            for (UserEmployeeDO DO : employees) {
+                int userId = DO.getSysuserId();
+                int companyId = DO.getCompanyId();
+                convertCandidatePerson(userId, companyId);
             }
             int[] rows = employeeDao.updateDatas(employees);
-
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
                 searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
@@ -556,20 +632,37 @@ public class EmployeeEntity {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.where(new Condition("id", employeeIds, ValueOp.IN));
         List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
-        logger.info("=====取消认证2======="+JSON.toJSONString(userEmployeeDOList));
+        Map<Integer, List<Integer>> params = this.handerUserEmployee(userEmployeeDOList);
+        logger.info("=====取消认证2=======" + JSON.toJSONString(userEmployeeDOList));
         if (userEmployeeDOList != null && userEmployeeDOList.size() > 0) {
-            for(UserEmployeeDO DO:userEmployeeDOList){
-                int userId=DO.getSysuserId();
-                int companyId=DO.getCompanyId();
-                convertCandidatePerson(userId,companyId);
+            for (UserEmployeeDO DO : userEmployeeDOList) {
+                int userId = DO.getSysuserId();
+                int companyId = DO.getCompanyId();
+                convertCandidatePerson(userId, companyId);
             }
             int[] rows = employeeDao.deleteDatas(userEmployeeDOList);
             // 受影响行数大于零，说明删除成功， 将数据copy到history_user_employee中
             if (Arrays.stream(rows).sum() > 0) {
-                historyUserEmployeeDao.addAllData(userEmployeeDOList);
-                // 更新ES中useremployee信息
-                searchengineEntity.deleteEmployeeDO(employeeIds);
-
+                List<HistoryUserEmployeeRecord> historyUserEmployeeRecords = userEmployeeDOList.stream()
+                        .map(userEmployeeDO -> {
+                            HistoryUserEmployeeRecord record = new HistoryUserEmployeeRecord();
+                            org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, record);
+                            return record;
+                        }).collect(Collectors.toList());
+                historyUserEmployeeDao.addAllRecord(historyUserEmployeeRecords);
+                tp.startTast(() -> {
+                    // 更新ES中useremployee信息
+                    this.deleteEsEmployee(employeeIds);
+                    return 0;
+                });
+                if(params != null){
+                    Set<Integer> entry = params.keySet();
+                    for(Integer companyId : entry){
+                        List<Integer> list = params.get(companyId);
+                        client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(),
+                                String.valueOf(companyId),  JSON.toJSONString(list));
+                    }
+                }
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_HASBEENDELETEOR);
@@ -577,12 +670,46 @@ public class EmployeeEntity {
         }
         return false;
     }
-    protected void convertCandidatePerson(int userId,int companyId){
-        Query query=new Query.QueryBuilder().where("sys_user_id",userId).and("company_id",companyId).and("status",0).buildQuery();
-        List<CandidateCompanyDO> list=candidateCompanyDao.getDatas(query);
-        logger.info("CandidateCompanyDO====="+JSON.toJSONString(list));
-        if(!StringUtils.isEmptyList(list)){
-            for(CandidateCompanyDO DO:list){
+
+    private void deleteEsEmployee(List<Integer> employeeIds)   {
+        Response result = searchengineEntity.deleteEmployeeDO(employeeIds);
+        if(Constant.OK != result.getStatus()){
+            logger.error("批量删除员工信息ES部分失败，员工编号:{}",employeeIds);
+            WarnBean warn = new WarnBean(String.valueOf(Constant.APPID_ALPHADOG),Constant.EMPLOYEE_BATCH_DELETE_FAILED,
+                    null, "批量删除员工信息ES部分失败，员工编号"+StringUtils.listToString(employeeIds,","), "");
+            try {
+                String client = HttpClient.sendPost(env.getProperty("http.api.url")+"sendWarn", JSON.toJSONString(warn));
+            } catch (ConnectException e) {
+                logger.error("sendOperator error:", e);
+            }
+
+        }
+    }
+
+    private Map<Integer, List<Integer>> handerUserEmployee(List<UserEmployeeDO> employees){
+
+        if(!StringUtils.isEmptyList(employees)){
+            Map<Integer, List<Integer>> params = new HashMap<>();
+            for(UserEmployeeDO employee : employees){
+                Integer companyId = employee.getCompanyId();
+                List<Integer> list = params.get(companyId);
+                if(list == null){
+                    list = new ArrayList<>();
+                }
+                list.add(employee.getId());
+                params.put(companyId, list);
+            }
+            return params;
+        }
+        return null;
+    }
+
+    protected void convertCandidatePerson(int userId, int companyId) {
+        Query query = new Query.QueryBuilder().where("sys_user_id", userId).and("company_id", companyId).and("status", 0).buildQuery();
+        List<CandidateCompanyDO> list = candidateCompanyDao.getDatas(query);
+        logger.info("CandidateCompanyDO=====" + JSON.toJSONString(list));
+        if (!StringUtils.isEmptyList(list)) {
+            for (CandidateCompanyDO DO : list) {
                 DO.setStatus(1);
             }
             candidateCompanyDao.updateDatas(list);
@@ -740,9 +867,10 @@ public class EmployeeEntity {
 
     /**
      * 分页获取有效员工数据
+     *
      * @param companyIdList 公司集合
-     * @param pageNum 页码
-     * @param pageSize 每页数量
+     * @param pageNum       页码
+     * @param pageSize      每页数量
      * @return 员工集合
      */
     public List<UserEmployeeDO> getActiveEmployeeDOList(List<Integer> companyIdList, int pageNum, int pageSize) {
@@ -759,6 +887,7 @@ public class EmployeeEntity {
 
     /**
      * 查找指定公司下的有效员工数量
+     *
      * @param companyIdList 公司编号集合
      * @return 有效员工数量
      */
@@ -803,7 +932,13 @@ public class EmployeeEntity {
      */
     public List<UserEmployeeDO> addEmployeeList(List<UserEmployeeDO> userEmployeeList) throws CommonException {
         if (userEmployeeList != null && userEmployeeList.size() > 0) {
-            List<UserEmployeeRecord> employeeDOS = employeeDao.addAllRecord(BeanUtils.structToDB(userEmployeeList, UserEmployeeRecord.class));
+            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
+            for(UserEmployeeDO employee : userEmployeeList){
+                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
+                record = employeeDao.addRecord(record);
+                employeeDOS.add(record);
+            }
             // ES 索引更新
             searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
             return BeanUtils.DBToStruct(UserEmployeeDO.class, employeeDOS);
@@ -895,28 +1030,29 @@ public class EmployeeEntity {
     }
 
     /**
-     *  获取员工认证信息的redisKey <br/>
-     *  集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
+     * 获取员工认证信息的redisKey <br/>
+     * 集团公司： key=userId_groupId, 非集团公司：key=userId-companyId
      */
     public final String getAuthInfoKey(int userId, int companyId) {
         int groupId = getGroupIdByCompanyId(companyId);
         return userId + (groupId == 0 ? "-" + companyId : "_" + groupId);
     }
 
-    public Map<Integer,Integer> getEmployeeAwardSum(Date date){
+    public Map<Integer, Integer> getEmployeeAwardSum(Date date) {
         return ueprcrDao.handerEmployeeAwards(date);
     }
 
-    public Map<Integer,Integer> getEmployeeNum(List<Integer> companyIds){
+    public Map<Integer, Integer> getEmployeeNum(List<Integer> companyIds) {
         return employeeDao.getEmployeeNum(companyIds);
     }
 
-    public List<UserEmployeeDO> getUserEmployeeByIdList(Set<Integer> idList){
+    public List<UserEmployeeDO> getUserEmployeeByIdList(Set<Integer> idList) {
         return employeeDao.getUserEmployeeForidList(idList);
     }
 
     /**
      * 根据用户编号查找用户的员工信息
+     *
      * @param userId 用户编号
      * @return 员工信息
      */
@@ -945,8 +1081,12 @@ public class EmployeeEntity {
         if (wxWechatDO.getCompanyId() != employeeDO.getCompanyId()) {
             throw EmployeeException.NODATA_EXCEPTION;
         }
-        employeeDao.followWechat(employeeDO.getId(), employeeDO.getSysuserId());
-        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeDO.getId());}});
+        DateTime currentDateTime = new DateTime(subscribeTime);
+        employeeDao.followWechat(employeeDO.getId(), employeeDO.getSysuserId(), currentDateTime.toString("yyyy-MM-dd HH:mm:ss"));
+        referralEmployeeRegisterLogDao.addRegisterLog(employeeDO.getId(), new DateTime(subscribeTime));
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
+            add(employeeDO.getId());
+        }});
 
     }
 
@@ -963,11 +1103,15 @@ public class EmployeeEntity {
             throw EmployeeException.NODATA_EXCEPTION;
         }
         employeeDao.unFollowWechat(employeeDO.getId());
-        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeDO.getId());}});
+        referralEmployeeRegisterLogDao.addCancelLog(employeeDO.getId(), new DateTime(subscribeTime));
+        searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>() {{
+            add(employeeDO.getId());
+        }});
     }
 
     /**
      * 查找员工信息。员工姓名 cname > user_user.name > user_user.nickname > user_wx_user.nickname
+     *
      * @param id 员工编号
      * @return 员工信息
      */
@@ -1014,4 +1158,326 @@ public class EmployeeEntity {
         employeeInfo.setHeadImg(headImg);
         return employeeInfo;
     }
+
+
+    /**
+     *
+     * @param applicationId
+     * @param nowStage
+     * @param nextStage
+     * @param move
+     * @param positionId
+     * @param applierId
+     * @throws Exception
+     */
+    @Transactional
+    public void addReferralBonus(Integer applicationId, Integer nowStage, Integer nextStage, Integer move,Integer positionId,Integer applierId) throws Exception {
+
+        JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
+
+        JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+        //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
+        if(jobPositionRecord == null || Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)) {
+            logger.info("addReferralBonus 不是内推职位 不发内推奖金 positionId {}  isReferral {} ",positionId,jobPositionRecord.getIsReferral());
+            return;
+        }
+        //现在节点奖金主数据
+        ReferralPositionBonusStageDetail nowStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nowStage);
+
+        //下个节点奖金主数据
+        ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
+
+        Integer userId = jobApplication.getRecommenderUserId();
+        UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
+        if(userEmployeeRecord == null) {
+
+            logger.info("addReferralBonus 不是已认证员工,不能发内推奖金 employeeId {}",userId);
+            throw new BIZException(-1, userId +" 不是已认证员工,不能发内推奖金");
+        }
+        Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
+
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        ReferralEmployeeBonusRecord referralEmployeeBonusRecord = new ReferralEmployeeBonusRecord();
+        UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
+        Integer employeeBonus =  userEmployeeDO.getBonus();
+
+        logger.info("addReferralBonus params  applicationId {} nowStage {} nextStage {} move {} positionId {}  employeeId {} userId {} employeeBonus {} applierId{}",
+                applicationId,nowStage,nextStage,move,positionId,employeeId,userId,employeeBonus,applierId);
+
+        //添加奖金
+        if(nextStageDetail !=null && move == 1 ) {
+
+            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nextStageDetail.getId(),applicationId);
+            //取id最大的一条,如果此节点已经有一条最新的增加奖金记录 直接返回
+            if(latestOne != null && latestOne.getBonus() > 0 ) {
+                return;
+            }
+
+            Integer stageBonus  = nextStageDetail.getStageBonus();
+
+            Integer newBonus  = employeeBonus + stageBonus;
+
+            if(newBonus >=0) {
+                try{
+                    //更新员工总奖金
+                    userEmployeeDO.setBonus(newBonus);
+                    userEmployeeDO.setUpdateTime(new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+                    employeeDao.updateData(userEmployeeDO);
+
+                    //ES更新员工总奖金
+                    Response response  = searchengineEntity.updateEmployeeBonus(Lists.newArrayList(employeeId),newBonus);
+                    logger.info("addReferralBonus es response {}",JSON.toJSONString(response));
+                    // 添加员工发放奖金记录
+                    referralEmployeeBonusRecord.setBonusStageDetailId(nextStageDetail.getId());
+                    referralEmployeeBonusRecord.setBonus(stageBonus);
+                    referralEmployeeBonusRecord.setEmployeeId(employeeId);
+                    referralEmployeeBonusRecord.setApplicationId(applicationId);
+                    referralEmployeeBonusRecord.setClaim((byte)0);
+                    referralEmployeeBonusRecord.setCreateTime(Timestamp.valueOf(localDateTime));
+                    referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                    referralEmployeeBonusRecord.setDisable(0);
+                    referralEmployeeBonusRecordDao.insert(referralEmployeeBonusRecord);
+                    DateTime dateTime = new DateTime();
+                    publishAddBonusChangeEvent(applicationId,nowStage,nextStage,applierId,positionId,move.byteValue(),dateTime);
+                    }catch (Exception e) {
+                        logger.error(e.getClass().getName(),e);
+                    }
+
+            }
+        }
+
+        //减少奖金
+        if( move == 0 &&  nowStageDetail!=null) {
+
+            ReferralEmployeeBonusRecord latestOne = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdLastOne(employeeId, nowStageDetail.getId(),applicationId);
+            //取id最大的一条 如果此节点已经有一条最新的扣减记录 直接返回
+            if(latestOne != null && latestOne.getBonus() < 0 ) {
+                return;
+            }
+
+            //获取用户当前节点发放的奖金,
+            ReferralEmployeeBonusRecord recordGTZero = referralEmployeeBonusRecordDao.fetchByEmployeeIdStageDetailIdGTZero(employeeId, nowStageDetail.getId(),applicationId);
+
+            //如果有该节点发放奖金,复制一条，将奖金设为负存入DB
+            if(recordGTZero !=null) {
+                ReferralEmployeeBonusRecord newRecord = new ReferralEmployeeBonusRecord();
+
+                Integer stageBonus = recordGTZero.getBonus()* -1;
+                Integer newBonus  =employeeBonus + stageBonus;
+
+                //更新员工总奖金
+                userEmployeeDO.setBonus(newBonus);
+                employeeDao.updateData(userEmployeeDO);
+
+                //ES更新员工总奖金
+                searchengineEntity.updateEmployeeBonus(Lists.newArrayList(employeeId),newBonus);
+
+                // 添加员工扣减奖金记录
+                newRecord.setBonusStageDetailId(recordGTZero.getBonusStageDetailId());
+                newRecord.setBonus(recordGTZero.getBonus() * -1);
+                newRecord.setEmployeeId(recordGTZero.getEmployeeId());
+                newRecord.setApplicationId(recordGTZero.getApplicationId());
+                newRecord.setClaim((byte)1);
+                newRecord.setCreateTime(Timestamp.valueOf(localDateTime));
+                newRecord.setUpdateTime(Timestamp.valueOf(localDateTime));
+                newRecord.setDisable(0);
+                referralEmployeeBonusRecordDao.insert(newRecord);
+
+                // 将上笔添加入职奖金设置为不可领取disable=1
+                recordGTZero.setDisable(1);
+                recordGTZero.setUpdateTime(Timestamp.valueOf(localDateTime));
+                referralEmployeeBonusRecordDao.update(recordGTZero);
+            }
+        }
+
+
+    }
+
+
+    /**
+     * 奖金列表
+     *
+     * @param employeeId
+     * @return
+     */
+    public BonusVOPageVO getEmployeeBonusRecords(Integer employeeId, Integer pageNumber, Integer pageSize) throws CommonException {
+        BonusVOPageVO bonusVOPageVO = new BonusVOPageVO();
+        List<BonusVO> bonusVOList = new ArrayList<>();
+
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        int totalRow = referralEmployeeBonusRecordDao.countByEmployeeId(employeeId);
+        // 总条数
+        bonusVOPageVO.setTotalRow(totalRow);
+        bonusVOPageVO.setPageNumber(pageNumber);
+        bonusVOPageVO.setPageSize(pageSize);
+
+        if (totalRow > 0) {
+            List<ReferralEmployeeBonusRecord> referralEmployeeBonusRecordList = referralEmployeeBonusRecordDao.fetchByEmployeeId(employeeId,pageNumber,pageSize);
+
+            // 申请记录信息
+            Map<Integer, JobApplicationDO> appMap = new HashMap<>();
+            // 申请的职位信息
+            Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            // 职位发布的HR信息
+            Map<Integer, UserHrAccountDO> userHrAccountDOMap = new HashMap<>();
+            // 员工信息
+            Map<Integer, UserEmployeeDO> userEmployeeDOMap = new HashMap<>();
+            // 被推荐人信息
+            Map<Integer, UserUserDO> userUserDOSMap = new HashMap<>();
+            // 申请信息ID
+            List<Integer> applicationIds = referralEmployeeBonusRecordList.stream().filter(m -> m.getApplicationId() != 0).map(m -> new Double(m.getApplicationId()).intValue()).collect(Collectors.toList());
+
+            query.clear();
+            query.where(new Condition("id", applicationIds, ValueOp.IN));
+            List<JobApplicationDO> applications = applicationDao.getDatas(query.buildQuery());
+            if (!StringUtils.isEmptyList(applications)) {
+                appMap.putAll(applications.stream().collect(Collectors.toMap(JobApplicationDO::getId, Function.identity())));
+            }
+            // 职位信息Id
+            List<Integer> positionIds = applications.stream().filter(m -> m.getPositionId() != 0).map(m -> m.getPositionId()).collect(Collectors.toList());
+            // 查询职位信息
+            query.clear();
+            query.where(new Condition("id", positionIds, ValueOp.IN));
+            List<JobPositionDO> positions = positionDao.getPositions(query.buildQuery());
+
+            // 获取被推荐人信息
+            Set<Integer> berecomIds = applications.stream().filter(m -> m.getApplierId() != 0).map(m -> new Double(m.getApplierId()).intValue()).collect(Collectors.toSet());
+
+            if (!StringUtils.isEmptyList(positionIds)) {
+                positionMap.putAll(positions.stream().collect(Collectors.toMap(JobPositionDO::getId, Function.identity())));
+                // 获取职位发布者Id
+                List<Integer> hrIds = positions.stream().map(position -> position.getPublisher()).collect(Collectors.toList());
+                query.clear();
+                query.where(new Condition(UserHrAccount.USER_HR_ACCOUNT.ID.getName(), hrIds, ValueOp.IN));
+                List<UserHrAccountDO> userHrAccountDOS = userHrAccountDao.getDatas(query.buildQuery());
+                userHrAccountDOMap.putAll(userHrAccountDOS.stream().collect(Collectors.toMap(UserHrAccountDO::getId, Function.identity())));
+            }
+            query.clear();
+            query.where("id", employeeId);
+            UserEmployeeDO userEmployeeDOTemp = employeeDao.getEmployee(query.buildQuery());
+            List<Integer> companyIds = getCompanyIdsByUserId(userEmployeeDOTemp.getSysuserId());
+            query.clear();
+            query.where(new Condition(USER_EMPLOYEE.SYSUSER_ID.getName(), berecomIds, ValueOp.IN))
+                    .and(USER_EMPLOYEE.ACTIVATION.getName(), 0)
+                    .and(new Condition(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds, ValueOp.IN));
+            List<UserEmployeeDO> userEmployeeDOList = employeeDao.getDatas(query.buildQuery());
+            if (!StringUtils.isEmptyList(userEmployeeDOList)) {
+                userEmployeeDOMap.putAll(userEmployeeDOList.stream().collect(Collectors.toMap(UserEmployeeDO::getSysuserId, Function.identity())));
+            }
+
+            query.clear();
+            query.where(new Condition(UserUser.USER_USER.ID.getName(), berecomIds, ValueOp.IN));
+            List<UserUserDO> userUserDOS = userUserDao.getDatas(query.buildQuery());
+            if (!StringUtils.isEmptyList(userUserDOS)) {
+                userUserDOSMap.putAll(userUserDOS.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity())));
+            }
+
+            for (ReferralEmployeeBonusRecord bonusRecord : referralEmployeeBonusRecordList) {
+
+                JobApplicationDO jobApplicationDO = appMap.get(bonusRecord.getApplicationId());
+                Integer bonusStageDetailId = bonusRecord.getBonusStageDetailId();
+                ReferralPositionBonusStageDetail referralPositionBonusStageDetail = referralPositionBonusStageDetailDao.findById(bonusStageDetailId);
+                // 拼装数据
+                BonusVO bonusVO = new BonusVO();
+                // 加奖金时间
+                bonusVO.setUpdateTime(new DateTime(bonusRecord.getCreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                // 职位ID
+                bonusVO.setPositionId(jobApplicationDO.getPositionId());
+                //被推荐人ID
+                bonusVO.setBerecomId(jobApplicationDO.getApplierId());
+                bonusVO.setType(referralPositionBonusStageDetail.getStageType());
+                bonusVO.setBonus(new BigDecimal(bonusRecord.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
+                bonusVO.setDisable(bonusRecord.getDisable());
+                JobPositionDO jobPositionDO = positionMap.get(bonusVO.getPositionId());
+                if (jobPositionDO != null) {
+                    // 职位名称
+                    bonusVO.setPositionName(jobPositionDO.getTitle());
+                    // 发布职位的hrID
+                    bonusVO.setPublisherId(jobPositionDO.getPublisher());
+                    // 发布职位的HR姓名
+                    UserHrAccountDO userHrAccountDO = userHrAccountDOMap.get(bonusVO.getPublisherId());
+                    if (userHrAccountDO != null) {
+                        bonusVO.setPublisherName(userHrAccountDOMap.get(bonusVO.getPublisherId()).getUsername());
+                    } else {
+                        bonusVO.setPublisherName("");
+                    }
+                } else {
+                    bonusVO.setPositionName("");
+                    // 发布职位的hrID
+                    bonusVO.setPublisherId(0);
+                }
+                UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(bonusVO.getBerecomId());
+                if (userEmployeeDO != null) {
+                    bonusVO.setEmployeeId(userEmployeeDO.getId());
+                    bonusVO.setEmployeeName(userEmployeeDO.getCname());
+                }
+
+                if (userUserDOSMap.containsKey(bonusVO.getBerecomId())) {
+                    UserUserDO userUserDO = userUserDOSMap.get(bonusVO.getBerecomId());
+                    if (userUserDO.getName() != null && !userUserDO.getName().equals("")) {
+                        bonusVO.setBerecomName(userUserDO.getName());
+                    } else if (userUserDO.getName() == null || userUserDO.getName().equals("")) {
+                        if (userUserDO.getNickname() != null && !userUserDO.getNickname().equals("")) {
+                            bonusVO.setBerecomName(userUserDO.getNickname());
+                        }
+                    }
+                }
+                if (bonusVO.getBerecomName() == null) {
+                    query.clear();
+                    query.where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(), bonusVO.getBerecomId());
+                    UserWxUserDO userWxUserDO = userWxUserDao.getData(query.buildQuery());
+                    if (userWxUserDO != null && org.apache.commons.lang.StringUtils.isNotBlank(userWxUserDO.getNickname())) {
+                        bonusVO.setBerecomName(userWxUserDO.getNickname());
+                    }
+                }
+                if(new BigDecimal(bonusVO.getBonus()).doubleValue()>0) {
+                    bonusVO.setCancel(0);
+                } else {
+                    bonusVO.setCancel(1);
+                }
+                bonusVOList.add(bonusVO);
+            }
+            bonusVOPageVO.setData(bonusVOList);
+        }
+        return bonusVOPageVO;
+    }
+
+    /**
+     * 添加奖金成功后,推送MQ消息,微信端发送入职奖金消息通知
+     * @param appId
+     * @param stage
+     * @param nextStage
+     * @param applierId
+     * @param positionId
+     * @param move
+     * @param operationTime
+     */
+    @Transactional
+    public void publishAddBonusChangeEvent(int appId, int stage, int nextStage, int applierId, int positionId, byte move, DateTime operationTime) {
+
+        logger.info("publishAddBonusChangeEvent appId:{}, stage:{}, nextStage:{}, " +
+                        "applierId:{}, positionId:{}, move:{}, operationTime:{}",
+                appId, stage, nextStage, applierId, positionId, move,
+                operationTime.toString("yyyy-MM-dd HH:mm:ss"));
+        if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("applicationId", appId);
+            jsonObject.put("nowStage", stage);
+            jsonObject.put("nextStage", nextStage);
+            jsonObject.put("applierId", applierId);
+            jsonObject.put("positionId", positionId);
+            jsonObject.put("move", move);
+            jsonObject.put("operationTime", operationTime.getMillis());
+
+            logger.info("publishAddBonusChangeEventstage change: {} -> {}",
+                    stage, nextStage);
+
+            amqpTemplate.sendAndReceive(ADD_BONUS_CHANGE_EXCHNAGE,
+                    ADD_BONUS_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                            .build());
+        }
+    }
+
 }
+

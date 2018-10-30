@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -59,6 +60,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -91,6 +93,9 @@ public class SearchengineEntity {
     @Autowired
     private UserWxUserDao userWxUserDao;
 
+    @Autowired
+
+
     /**
      * 获取ES连接
      *
@@ -99,8 +104,6 @@ public class SearchengineEntity {
     private TransportClient getTransportClient() {
         return EsClientInstance.getClient();
     }
-
-
 
     /**
      * 更新员工积分
@@ -175,6 +178,7 @@ public class SearchengineEntity {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
                     jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("bonus", userEmployeeDO.getBonus());
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -212,8 +216,9 @@ public class SearchengineEntity {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
-
+                    jsonObject.put("disable", userEmployeeDO.getDisable());
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -326,6 +331,9 @@ public class SearchengineEntity {
                     jsonObject.put("last_login_ip", userEmployeeDO.getLastLoginIp());
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("position_id", userEmployeeDO.getPositionId());
+                    jsonObject.put("position", userEmployeeDO.getPosition());
+                    jsonObject.put("bonus", userEmployeeDO.getBonus());
+
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -363,7 +371,9 @@ public class SearchengineEntity {
                     jsonObject.put("cfname", userEmployeeDO.getCfname());
                     jsonObject.put("efname", userEmployeeDO.getEfname());
                     jsonObject.put("award", userEmployeeDO.getAward());
+                    jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
+                    jsonObject.put("disable", userEmployeeDO.getDisable());
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -415,12 +425,16 @@ public class SearchengineEntity {
                 return ResponseUtils.fail(9999, "更新的数据为空！");
             }
             JSONObject jsonObject = new JSONObject();
+            int employeeAward = 0;
             // 积分信息
             JSONObject awards = new JSONObject();
             GetResponse response = client.prepareGet("awards", "award", userEmployeeId + "").execute().actionGet();
             // ES中的积分数据
             Map<String, Object> mapTemp = response.getSource();
             if (mapTemp != null) {
+                if (mapTemp.get("award") != null) {
+                    employeeAward = (Integer)mapTemp.get("award");
+                }
                 // 积分信息
                 Map<String, Object> awardsMap = (Map) mapTemp.get("awards");
                 String lastUpdateTime = userEmployeePointsRecordDO.getUpdateTime();
@@ -438,6 +452,7 @@ public class SearchengineEntity {
                 hashMap.put(month, point);
                 // 更新ES信息
                 if (awardsMap != null && awardsMap.size() > 0) {
+                    boolean updateAward = false;
                     for (Map.Entry<String, Object> entry : awardsMap.entrySet()) {
                         JSONObject object = new JSONObject();
                         Map awardMap = (Map) entry.getValue();
@@ -450,6 +465,7 @@ public class SearchengineEntity {
                             awards.put(entry.getKey(), object);
                             hashMap.remove(entry.getKey());
                         }
+
                     }
                 }
                 // 新追加的积分信息
@@ -462,7 +478,10 @@ public class SearchengineEntity {
                         awards.put(entry.getKey(), object);
                     }
                 }
+
             }
+
+            jsonObject.put("award", employeeAward + userEmployeePointsRecordDO.getAward());
             jsonObject.put("awards", awards);
             logger.info(JSONObject.toJSONString(jsonObject));
             // 更新ES
@@ -595,11 +614,8 @@ public class SearchengineEntity {
         logger.info(list.size() + "");
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
-                logger.info("last_update_time:{}", employeePointsRecordPojo.getLast_update_time());
-                logger.info("award:{}", employeePointsRecordPojo.getAward());
-                logger.info("timespan:{}", employeePointsRecordPojo.getTimespan());
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
@@ -836,7 +852,7 @@ public class SearchengineEntity {
         if (client == null) {
             return ResponseUtils.fail(9999, "ES连接失败！");
         }
-        UpdateResponse response = client.prepareUpdate("index", "fulltext", idx)
+        UpdateResponse response = client.prepareUpdate(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx)
                 .setScript(new Script("ctx._source.is_referral = " + isReferral))
                 .get();
         if(response.getGetResult() == null) {
@@ -863,7 +879,7 @@ public class SearchengineEntity {
                     .field("update_time",nowDate.getMillis()).field("update_time_view",nowDate.toString("yyyy-MM-dd HH:mm:ss"))
                     .endObject();
 
-            bulkRequest.add(client.prepareUpdate("index", "fulltext", idx).setDoc(builder));
+            bulkRequest.add(client.prepareUpdate(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setDoc(builder));
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
@@ -880,4 +896,41 @@ public class SearchengineEntity {
             return ResponseUtils.success(bulkResponse);
         }
     }
+
+
+    /**
+     * 更新员工总奖金
+     * @param employeeIds
+     * @param bonus
+     * @return
+     * @throws Exception
+     */
+    @Transactional
+    public Response updateEmployeeBonus(List<Integer> employeeIds,Integer bonus) throws Exception{
+        LocalDateTime nowDate = LocalDateTime.now();
+
+        TransportClient client = getTransportClient();
+        if (client == null) {
+            return ResponseUtils.fail(9999, "ES连接失败！");
+        }
+        BulkRequestBuilder bulkRequest = client.prepareBulk();
+        for(Integer employeeId: employeeIds) {
+            String idx = "" + employeeId;
+            XContentBuilder builder = XContentFactory.jsonBuilder()
+                    .startObject()
+                    .field("bonus", bonus)
+                    .field("update_time",nowDate)
+                    .endObject();
+            bulkRequest.add(client.prepareUpdate("awards", "award", idx).setDoc(builder));
+
+        }
+        BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+        if(bulkResponse.hasFailures()) {
+            return  ResponseUtils.fail(9999,bulkResponse.buildFailureMessage());
+        } else {
+            return ResponseUtils.success(bulkResponse);
+        }
+    }
+
+
 }

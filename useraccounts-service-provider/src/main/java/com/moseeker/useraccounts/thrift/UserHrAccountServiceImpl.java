@@ -16,21 +16,22 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService.Iface;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionCategory;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
-import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
 import com.moseeker.useraccounts.service.thirdpartyaccount.ThirdPartyAccountService;
-import java.util.List;
-import java.util.Map;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * HR账号服务
@@ -528,13 +529,35 @@ public class UserHrAccountServiceImpl implements Iface {
     public UserEmployeeVOPageVO employeeList(String keyword, int companyId, int filter, String order, String asc, int pageNumber, int pageSize, String timeSpan,String email_validate) throws BIZException, TException {
         try {
             return service.employeeList(keyword, companyId, filter, order, asc, pageNumber, pageSize, timeSpan,email_validate);
-        } catch (CommonException e) {
-            throw ExceptionConvertUtil.convertCommonException(e);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw new SysBIZException();
+            throw ExceptionUtils.convertException(e);
         }
 
+    }
+
+    /**
+     * 员工列表
+     * @param keyword 关键词
+     * @param companyId 公司编号
+     * @param filter 过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
+     * @param order 排序字段
+     * @param asc 升序降序
+     * @param pageNumber 页码
+     * @param pageSize 每页数量
+     * @param email_validate 邮箱认证条件
+     * @return 员工列表
+     * @throws BIZException 业务异常
+     * @throws TException rpc异常
+     */
+    @Override
+    public UserEmployeeVOPageVO getEmployees(String keyword, int companyId, int filter, String order, String asc,
+                                             int pageNumber, int pageSize, String email_validate,int balanceType)
+            throws BIZException, TException {
+        try {
+            return service.getEmployees(keyword, companyId, filter, order, asc, pageNumber, pageSize, email_validate,balanceType);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     /**
@@ -718,5 +741,20 @@ public class UserHrAccountServiceImpl implements Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public Response setApplicationNotify(int hrAccountId, boolean flag) throws BIZException, TException {
+        return service.setApplicationNotify(hrAccountId,flag);
+    }
+
+    @Override
+    public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
+        return service.getApplicationNotify(hrAccountId);
+    }
+
+    @Override
+    public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
+        return service.getEmployeeBonus(employeeId,companyId,pageNumber,pageSize);
     }
 }

@@ -40,7 +40,7 @@ public class ProfileLanguageServicesImplTest {
             Language language = new Language();
             language.setProfile_id(170);
             language.setLevel(Short.valueOf("1"));
-            language.setName("test postResources");
+            language.setName("resumeFileParser postResources");
             response = service.postResources(new ArrayList<Language>(){{add(language);add(language);}});
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,11 +55,11 @@ public class ProfileLanguageServicesImplTest {
 
             Language language = new Language();
             language.setId(108611);
-            language.setName("test putResources");
+            language.setName("resumeFileParser putResources");
 
             Language language2 = new Language();
             language2.setId(108612);
-            language2.setName("test putResources2");
+            language2.setName("resumeFileParser putResources2");
 
             response = service.putResources(new ArrayList<Language>(){{add(language);add(language2);}});
         } catch (Exception e) {
@@ -90,7 +90,7 @@ public class ProfileLanguageServicesImplTest {
             Language language = new Language();
             language.setProfile_id(170);
             language.setLevel(Short.valueOf("1"));
-            language.setName("test postResource");
+            language.setName("resumeFileParser postResource");
             response = service.postResource(language);
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,7 +104,7 @@ public class ProfileLanguageServicesImplTest {
         try {
             Language language = new Language();
             language.setId(108613);
-            language.setName("test putResource");
+            language.setName("resumeFileParser putResource");
             response = service.putResource(language);
         } catch (Exception e) {
             e.printStackTrace();

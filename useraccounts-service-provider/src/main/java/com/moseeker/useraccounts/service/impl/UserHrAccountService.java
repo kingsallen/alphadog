@@ -3,21 +3,26 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeRegisterLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrSearchConditionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
@@ -46,6 +51,7 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.exception.HRException;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
@@ -54,24 +60,20 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.thrift.gen.employee.struct.BonusVO;
+import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.thrift.gen.useraccounts.struct.UserHrAccount;
 import com.moseeker.useraccounts.constant.HRAccountStatus;
 import com.moseeker.useraccounts.constant.ResultMessage;
 import com.moseeker.useraccounts.exception.UserAccountException;
-import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
-import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
+import com.moseeker.useraccounts.pojo.EmployeeList;
 import com.moseeker.useraccounts.pojo.EmployeeRank;
 import com.moseeker.useraccounts.pojo.EmployeeRankObj;
-import java.sql.Timestamp;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static com.moseeker.useraccounts.exception.UserAccountException.HR_UPDATEMOBILE_FAILED;
+import static com.moseeker.useraccounts.exception.UserAccountException.ILLEGAL_MOBILE;
 
 /**
  * HR账号服务
@@ -175,6 +189,11 @@ public class UserHrAccountService {
     @Autowired
     private HrWxHrChatListDao chatListDao;
 
+    @Autowired
+    private HrAccountApplicationNotifyDao hrAccountApplicationNotifyDao;
+
+    @Autowired
+    private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
     /**
      * 修改手机号码
      *
@@ -831,20 +850,10 @@ public class UserHrAccountService {
      * @return
      */
     private Query.QueryBuilder getQueryBuilder(Query.QueryBuilder queryBuilder, String keyWord, Integer companyId) throws CommonException {
-        List<UserEmployeeDO> userEmployeeDOList = employeeEntity.getActiveEmployeeDOList(companyId);
-        List<Integer> sysIdsTemp = userEmployeeDOList.stream().filter(userEmployeeDO -> userEmployeeDO.getSysuserId() > 0)
-                .map(userEmployeeDO -> userEmployeeDO.getSysuserId()).collect(Collectors.toList());
-        Condition sysuserId = new Condition(UserUser.USER_USER.ID.getName(), sysIdsTemp, ValueOp.IN);
-        Condition nickName = new Condition(UserUser.USER_USER.NICKNAME.getName(), keyWord, ValueOp.LIKE);
-
-        Query.QueryBuilder nicknameCondition = new Query.QueryBuilder();
-        nicknameCondition.where(sysuserId).and(nickName);
-        List<UserUserDO> userUserDOList = userUserDao.getDatas(nicknameCondition.buildQuery());
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("%");
         stringBuffer.append(keyWord);
         stringBuffer.append("%");
-        List<Integer> sysIds = userUserDOList.stream().map(userUserDO -> userUserDO.getId()).collect(Collectors.toList());
         // 名字
         Condition cname = new Condition(UserEmployee.USER_EMPLOYEE.CNAME.getName(), stringBuffer.toString(), ValueOp.LIKE);
         // 自定义字段
@@ -855,14 +864,6 @@ public class UserHrAccountService {
         Condition mobile = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), stringBuffer.toString(), ValueOp.LIKE);
 
         queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile);
-
-        if (!StringUtils.isEmptyList(userEmployeeDOList)) {
-            Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
-            queryBuilder.or(sysIdsCon);
-        }
-        // sysuser_id
-        Condition sysIdsCon = new Condition(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.getName(), sysIds, ValueOp.IN);
-        queryBuilder.andInnerCondition(cname).or(customField).or(email).or(mobile).or(sysIdsCon);
         return queryBuilder;
     }
 
@@ -903,7 +904,7 @@ public class UserHrAccountService {
             queryBuilder.groupBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName());
             // 查询
             List<Map<String, Object>> result = userEmployeeDao.getMaps(queryBuilder.buildQuery());
-            int unCount=0;
+            int cancelCount=0;
             if (!StringUtils.isEmptyList(result)) {
                 logger.info("=======================");
                 logger.info(JSON.toJSONString(result));
@@ -914,15 +915,15 @@ public class UserHrAccountService {
                             userEmployeeNumStatistic.setRegcount((Integer) map.get("activation_count"));
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
-                                || (Byte) map.get("activation") == 3
                                 || (Byte) map.get("activation") == 4
                                 || (Byte) map.get("activation") == 5) {
-                            unCount+=(Integer) map.get("activation_count");
-//                            userEmployeeNumStatistic.setUnregcount(userEmployeeNumStatistic.getUnregcount() + (Integer) map.get("activation_count"));
+                            cancelCount+=(Integer) map.get("activation_count");
+                        } else if ((Byte) map.get("activation") == 3) {
+                            userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
                 }
-                userEmployeeNumStatistic.setUnregcount(unCount);
+                userEmployeeNumStatistic.setCancelcount(cancelCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -946,6 +947,7 @@ public class UserHrAccountService {
         }
         // 员工数据
         userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+
         if (userEmployeeDOS != null && userEmployeeDOS.size() > 0) {
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
                     .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
@@ -995,6 +997,8 @@ public class UserHrAccountService {
                             } else if (flag.intValue() == 1) {
                                 userEmployeeVO.setAward(0);
                             }
+                            userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
+                            userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
                             userEmployeeVOS.add(userEmployeeVO);
                         } else {
                             continue;
@@ -1030,6 +1034,7 @@ public class UserHrAccountService {
                         userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
                     }
                     userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+                    userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
                     userEmployeeVOS.add(userEmployeeVO);
                 }
             }
@@ -1077,15 +1082,17 @@ public class UserHrAccountService {
         // 过滤条件
         if (filter != 0) {
             if (filter == 1) {
-                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState());
             } else if (filter == 2) {
-                List<Integer> filters = new ArrayList<>();
-                filters.add(1);
-                filters.add(2);
-                filters.add(3);
-                filters.add(4);
-                filters.add(5);
-                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Init.getState());
+            } else if(filter == 3) {
+                List<Integer> activations = new ArrayList<Integer>(){{
+                    add((int)EmployeeActiveState.Cancel.getState());
+                    add((int)EmployeeActiveState.Failure.getState());
+                    add((int)EmployeeActiveState.MigrateToOtherCompany.getState());
+                    add((int)EmployeeActiveState.UnFollow.getState());
+                }};
+                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
             }
         }
         if(StringUtils.isNotNullOrEmpty(emailValidate)){
@@ -1142,9 +1149,9 @@ public class UserHrAccountService {
                 }
                 queryBuilder.setPageNum(pageNumber);
             } else {
-            queryBuilder.setPageNum(pageNumber);
-            queryBuilder.setPageSize(pageSize);
-        }
+                queryBuilder.setPageNum(pageNumber);
+                queryBuilder.setPageSize(pageSize);
+            }
         }
 
         // 不管ES中有没有数据，员工的分页数据用于一样
@@ -1193,6 +1200,54 @@ public class UserHrAccountService {
                 // ES没取到数据，从数据库中取数据，但是不设置任何积分
                 logger.info("ES ThirdPartyInfoData is empty!!!!");
                 userEmployeeVOPageVO.setData(employeeList(queryBuilder, 1, companyIds, null));
+            }
+        } else {
+            throw UserAccountException.SEARCH_ES_ERROR;
+        }
+        return userEmployeeVOPageVO;
+    }
+
+    /**
+     * 员工列表
+     *
+     * @param keyword    关键字搜索
+     * @param companyId  公司ID
+     * @param filter     过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
+     * @param order      排序条件
+     * @param asc        正序，倒序 0: 正序,1:倒序 默认
+     * @param pageNumber 第几页
+     * @param pageSize   每页的条数
+     */
+    public UserEmployeeVOPageVO getEmployees(String keyword, Integer companyId, Integer filter, String order, String asc,
+                                             Integer pageNumber, Integer pageSize, String emailValidate,
+                                             Integer balanceType) throws CommonException {
+        UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
+        // 公司ID未设置
+        if (companyId == 0) {
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+        // 取公司ID
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        Response response;
+        try {
+            response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
+                    pageSize, pageNumber,balanceType);
+        } catch (Exception e) {
+            throw UserAccountException.SEARCH_ES_ERROR;
+        }
+        logger.info("ES date:{}", response.getData());
+        logger.info("ES date:{}", response.getStatus());
+        // ES取到数据
+        if (response.getStatus() == 0) {
+            logger.info("ES date:{}", response.getData());
+            EmployeeList rankObj = JSONObject.parseObject(response.getData(), EmployeeList.class);
+            List<UserEmployeeDO> employees = rankObj.getData();
+            if (employees != null && employees.size() > 0) {
+                logger.info("ES Data Size:{}", employees.size());
+                // 根据totalHits 条件命中条数重新设置分页信息
+                userEmployeeVOPageVO.setTotalRow(rankObj.getTotal());
+                // 封装查询条件
+                userEmployeeVOPageVO.setData(packageEmployeeVOs(employees, companyIds));
             }
         } else {
             throw UserAccountException.SEARCH_ES_ERROR;
@@ -1495,6 +1550,9 @@ public class UserHrAccountService {
         org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeDetailVO);
         userEmployeeDetailVO.setUsername(userEmployeeDO.getCname());
         userEmployeeDetailVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+        userEmployeeDetailVO.setAuthMethod(new Integer(userEmployeeDO.getAuthMethod()).intValue());
+        userEmployeeDetailVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
+
         if (userEmployeeDO.getCustomFieldValues() != null) {
             List customFieldValues = JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class);
             userEmployeeDetailVO.setCustomFieldValues(customFieldValues);
@@ -1519,6 +1577,14 @@ public class UserHrAccountService {
                 userEmployeeDetailVO.setCompanyAbbreviation(hrCompanyDO.getAbbreviation() != null ? hrCompanyDO.getAbbreviation() : "");
 
             }
+        }
+
+        // 设置解绑时间
+        ReferralEmployeeRegisterLog referralEmployeeRegisterLog = referralEmployeeRegisterLogDao.getRegisterLogByEmployeeId(userEmployeeId, 0);
+        if(referralEmployeeRegisterLog!=null) {
+            Timestamp timestamp = referralEmployeeRegisterLog.getOperateTime();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            userEmployeeDetailVO.setUnbindingTime(df.format(timestamp));
         }
 
         return userEmployeeDetailVO;
@@ -1598,6 +1664,7 @@ public class UserHrAccountService {
             int i = userEmployeeDao.updateData(userEmployeeDO);
             if (i > 0) {
                 response = ResultMessage.SUCCESS.toResponse();
+                searchengineEntity.updateEmployeeAwards(Lists.newArrayList(userEmployeeId));
             } else {
                 response = ResultMessage.PROGRAM_EXCEPTION.toResponse();
             }
@@ -1938,4 +2005,145 @@ public class UserHrAccountService {
         hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
         hrInfo.setCompany(hrCompanyDO.getName());
     }
+
+    /**
+     * 员工数据转成管理的列表数据
+     * @param employees 员工数据
+     * @param companyIds 公司编号集合（集团公司存在多个公司编号）
+     * @return 员工管理的列表数据
+     */
+    private List<UserEmployeeVO> packageEmployeeVOs(List<UserEmployeeDO> employees, List<Integer> companyIds) {
+        List<UserEmployeeVO> userEmployeeVOS = new ArrayList<>();
+        if (employees != null && employees.size() > 0) {
+            Set<Integer> sysuserId = employees.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
+                    .map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.clear();
+            queryBuilder.where(new Condition(UserUser.USER_USER.ID.getName(), sysuserId, ValueOp.IN));
+            // 查询微信昵称
+            List<UserUserDO> userUserDOList = userUserDao.getDatas(queryBuilder.buildQuery());
+            Map<Integer, UserUserDO> userMap = userUserDOList.stream().collect(Collectors.toMap(UserUserDO::getId, Function.identity()));
+
+            queryBuilder.clear();
+            queryBuilder.where(new Condition(HrCompany.HR_COMPANY.ID.getName(), companyIds, ValueOp.IN));
+            List<HrCompanyDO> companyList = hrCompanyDao.getDatas(queryBuilder.buildQuery());
+            // 查询公司信息
+            Map<Integer, HrCompanyDO> companyMap = companyList.stream().collect(Collectors.toMap(HrCompanyDO::getId, Function.identity()));
+            for (UserEmployeeDO userEmployeeDO : employees) {
+                UserEmployeeVO userEmployeeVO = new UserEmployeeVO();
+                org.springframework.beans.BeanUtils.copyProperties(userEmployeeDO, userEmployeeVO);
+                userEmployeeVO.setUsername(userEmployeeDO.getCname());
+                //将绑定时间2018-10-09T18:09:09.766+08:00格式化成2018-10-09 18:09:09
+                if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
+                    userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
+                }
+                List customFieldValues = new ArrayList();
+                if (userEmployeeDO.getCustomFieldValues() != null) {
+                    customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
+                }
+                userEmployeeVO.setCustomFieldValues(customFieldValues);
+                // 微信昵称
+                if (userMap.size() > 0 && userMap.get(userEmployeeDO.getSysuserId()) != null) {
+                    userEmployeeVO.setNickName(userMap.get(userEmployeeDO.getSysuserId()).getNickname());
+                } else {
+                    userEmployeeVO.setNickName("未知");
+                }
+                // 公司名称
+                if (companyMap.size() > 0 && companyMap.get(userEmployeeDO.getCompanyId()) != null) {
+                    HrCompanyDO hrCompanyDOTemp = companyMap.get(userEmployeeDO.getCompanyId());
+                    userEmployeeVO.setCompanyName(hrCompanyDOTemp.getName() != null ? hrCompanyDOTemp.getName() : "");
+                    userEmployeeVO.setCompanyAbbreviation(hrCompanyDOTemp.getAbbreviation() != null ? hrCompanyDOTemp.getAbbreviation() : "");
+                }
+                userEmployeeVO.setActivation((new Double(userEmployeeDO.getActivation())).intValue());
+                userEmployeeVO.setBonus(new BigDecimal(userEmployeeDO.getBonus()).divide(new BigDecimal(100),2,BigDecimal.ROUND_HALF_UP).toPlainString().replace(".00",""));
+                userEmployeeVO.setAuthMethod(userEmployeeDO.getAuthMethod());
+                userEmployeeVOS.add(userEmployeeVO);
+            }
+        }
+        return userEmployeeVOS;
+    }
+
+
+    /**
+     *
+     * @param hrAccountId
+     * @param flag
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Transactional
+    public Response setApplicationNotify(int hrAccountId, boolean flag) throws BIZException, TException {
+
+       com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
+       LocalDateTime now = LocalDateTime.now();
+       if(hrAccountApplicationNotify == null)  {
+
+           hrAccountApplicationNotify = new com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify();
+           hrAccountApplicationNotify.setFlag((flag?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setHrAccountId(hrAccountId);
+           hrAccountApplicationNotify.setCreateTime(Timestamp.valueOf(now));
+           hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+
+           hrAccountApplicationNotifyDao.insert(hrAccountApplicationNotify);
+       }else {
+           hrAccountApplicationNotify.setFlag((flag?(byte)1:(byte)0));
+           hrAccountApplicationNotify.setUpdateTime(Timestamp.valueOf(now));
+           hrAccountApplicationNotifyDao.update(hrAccountApplicationNotify);
+       }
+       return ResponseUtils.success(true);
+    }
+
+    /**
+     *
+     *
+     *
+     * @param hrAccountId
+     * @return
+     * @throws BIZException
+     * @throws TException
+     */
+    @Transactional
+    public Response getApplicationNotify(int hrAccountId) throws BIZException, TException {
+
+        com.moseeker.baseorm.db.hrdb.tables.pojos.HrAccountApplicationNotify hrAccountApplicationNotify = hrAccountApplicationNotifyDao.fetchOne(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.HR_ACCOUNT_ID,hrAccountId);
+
+        if(hrAccountApplicationNotify  != null && hrAccountApplicationNotify.getFlag() == (byte)0) {
+            return ResponseUtils.success(false);
+
+        } else {
+            return ResponseUtils.success(true);
+        }
+    }
+
+    @Transactional
+    public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
+        BonusVOPageVO bonusVOPageVO = employeeEntity.getEmployeeBonusRecords(employeeId, pageNumber, pageSize);
+        /**
+         * 查询公司下候选人信息，如果候选人不存在则将berecomID 置为0，用以通知前端不需要拼接潜在候选人的url链接。
+         */
+        if (bonusVOPageVO.getData() != null && bonusVOPageVO.getData().size() > 0) {
+            List<Integer> beRecomIDList = bonusVOPageVO.getData().stream().filter(m -> m.getBerecomId() != 0)
+                    .map(m -> m.getBerecomId()).collect(Collectors.toList());
+            if (beRecomIDList != null && beRecomIDList.size() > 0) {
+                List<CandidateCompanyDO> candidateCompanyDOList = candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, beRecomIDList);
+                if (candidateCompanyDOList != null && candidateCompanyDOList.size() > 0) {
+                    Map<Integer, CandidateCompanyDO> userUserDOSMap =
+                            candidateCompanyDOList.stream().collect(Collectors.toMap(CandidateCompanyDO::getSysUserId,
+                                    Function.identity()));
+                    for (BonusVO bonusVO : bonusVOPageVO.getData()) {
+                        if (userUserDOSMap.get(bonusVO.getBerecomId()) == null) {
+                            bonusVO.setBerecomId(0);
+                        }
+                    }
+                } else {
+                    for (BonusVO bonusVO : bonusVOPageVO.getData()) {
+                        bonusVO.setBerecomId(0);
+                    }
+                }
+            }
+        }
+        return bonusVOPageVO;
+    }
+
 }

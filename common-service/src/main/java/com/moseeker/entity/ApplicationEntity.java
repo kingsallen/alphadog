@@ -18,17 +18,13 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.exception.ApplicationException;
-import com.moseeker.entity.exception.ProfileException;
-import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.mq.service.MqService;
 import org.apache.commons.lang.StringUtils;
 import org.jooq.Record2;
 import org.jooq.Result;
@@ -119,7 +115,7 @@ public class ApplicationEntity {
         List<ApplicationSaveResultVO> applyIdList = new ArrayList<>();
         for (Integer positionId : positionList) {
             JobApplicationRecord jobApplicationRecord = new JobApplicationRecord();
-            jobApplicationRecord.setAppTplId(Constant.RECRUIT_STATUS_APPLY);
+            jobApplicationRecord.setAppTplId(Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
             jobApplicationRecord.setCompanyId(companyId);
             jobApplicationRecord.setAtsStatus(0);
             jobApplicationRecord.setRecommenderUserId(referenceId);

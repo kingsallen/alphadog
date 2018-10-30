@@ -1,9 +1,13 @@
 package com.moseeker.position.thrift;
 
+import com.alibaba.fastjson.JSONObject;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.position.service.fundationbs.ReferralPositionService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -57,4 +61,26 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
     public Response getPointsConfig(int companyId) throws TException {
         return referralPositionService.getPointsConfig(companyId);
     }
+
+    @Override
+    public Response putReferralPositionBonus(ReferralPositionBonusVO referralPositionBonusVO) throws TException {
+        try {
+            referralPositionService.putReferralPositionBonus(referralPositionBonusVO);
+
+            return ResponseUtils.success(new JSONObject());
+
+        }catch (Exception e) {
+            logger.error(e.getClass().getName(),e);
+            return ResponseUtils
+                    .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+
+        }
+    }
+
+    @Override
+    public ReferralPositionBonusVO getReferralPositionBonus(int positionId) throws TException {
+        ReferralPositionBonusVO vo =  referralPositionService.getReferralPositionBonus(positionId);
+        return vo;
+    }
+
 }

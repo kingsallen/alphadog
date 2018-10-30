@@ -172,26 +172,27 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
         queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0)
 				.and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
         .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
-        JobApplicationDO applicationDO = getData(queryBuilder.buildQuery());
-		resultVO.setApplicationId(applicationDO.getId());
-		resultVO.setPositionId(applicationDO.getPositionId());
-		resultVO.setApplierId(applicationDO.getApplierId());
+        JobApplicationRecord application = getRecord(queryBuilder.buildQuery());
+		resultVO.setApplicationId(application.getId());
+		resultVO.setPositionId(application.getPositionId());
+		resultVO.setApplierId(application.getApplierId());
+		resultVO.setSubmitTime(application.getSubmitTime().getTime());
 
         //如果不是新增申请，那么合并申请来源
-		logger.info("addIfNotExists applicationDO:{}", applicationDO);
+		logger.info("addIfNotExists applicationDO:{}", application);
 		logger.info("addIfNotExists result:{}", result);
 		if (result == 0 && record.getOrigin() != null && record.getOrigin() > 0
-					&& record.getOrigin().intValue() != applicationDO.getOrigin()) {
+					&& record.getOrigin().intValue() != application.getOrigin()) {
 
 				logger.info("addIfNotExists record.origin:{}", record.getOrigin());
 
-				logger.info("addIfNotExists applicationDO.origin:{}", applicationDO.getOrigin());
-				int origin = record.getOrigin().intValue() | applicationDO.getOrigin();
+				logger.info("addIfNotExists applicationDO.origin:{}", application.getOrigin());
+				int origin = record.getOrigin().intValue() | application.getOrigin();
 				logger.info("addIfNotExists origin:{}", origin);
 				create.update(JobApplication.JOB_APPLICATION)
 						.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
                         .set(JobApplication.JOB_APPLICATION.UPDATE_TIME, new Timestamp(new Date().getTime()))
-						.where(JobApplication.JOB_APPLICATION.ID.eq(applicationDO.getId()))
+						.where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
 						.execute();
 		}
 
@@ -340,4 +341,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 		return execute == 1;
 	}
+
+	/**
+	 * 根据申请编号集合查找申请记录集合
+	 * @param idList 申请编号集合
+	 * @return
+	 */
+    public List<JobApplicationRecord> fetchByIdList(List<Integer> idList) {
+		return create
+				.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.ID.in(idList))
+				.fetch();
+    }
 }

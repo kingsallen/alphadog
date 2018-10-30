@@ -269,6 +269,13 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>position_status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(Integer... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_STATUS, values);
+    }
+
+    /**
      * Fetch records that have <code>position_key_word IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionKeyWord(String... values) {
@@ -287,12 +294,5 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPastCompanyKeyWord(String... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.PAST_COMPANY_KEY_WORD, values);
-    }
-
-    /**
-     * Fetch records that have <code>position_status IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(Integer... values) {
-        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_STATUS, values);
     }
 }

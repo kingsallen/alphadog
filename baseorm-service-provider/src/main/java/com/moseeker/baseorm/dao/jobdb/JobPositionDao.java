@@ -745,4 +745,22 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
 
     }
+
+    /**
+     * 查找职位信息
+     * @param idList 职位编号集合
+     * @return 职位集合
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchPosition(List<Integer> idList) {
+
+        Result<JobPositionRecord> records = create
+                .selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.in(idList))
+                .fetch();
+        if (records != null && records.size() > 0) {
+            return records.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

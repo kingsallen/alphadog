@@ -59,7 +59,7 @@ public class ProfileOtherThriftServiceImplTest {
     public void postResources() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(171);
-        profileOtherDO.setOther("test postResources");
+        profileOtherDO.setOther("resumeFileParser postResources");
 
         response = service.postResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
 
@@ -69,7 +69,7 @@ public class ProfileOtherThriftServiceImplTest {
     public void postResource() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
-        profileOtherDO.setOther("test postResource");
+        profileOtherDO.setOther("resumeFileParser postResource");
 
         response = service.postResource(profileOtherDO);
     }
@@ -78,7 +78,7 @@ public class ProfileOtherThriftServiceImplTest {
     public void putResources() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
-        profileOtherDO.setOther("test putResources");
+        profileOtherDO.setOther("resumeFileParser putResources");
         response = service.putResources(new ArrayList<ProfileOtherDO>(){{add(profileOtherDO);}});
     }
 
@@ -86,7 +86,7 @@ public class ProfileOtherThriftServiceImplTest {
     public void putResource() throws TException {
         ProfileOtherDO profileOtherDO = new ProfileOtherDO();
         profileOtherDO.setProfileId(170);
-        profileOtherDO.setOther("test putResource");
+        profileOtherDO.setOther("resumeFileParser putResource");
         response = service.putResource(profileOtherDO);
     }
 

@@ -13,6 +13,8 @@ dependencies {
     compile deps["spring-core"]
     compile deps["spring-context"]
     testCompile deps["spring-test"]
+
+    compile deps["spring-rabbit"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
@@ -20,6 +22,10 @@ dependencies {
 task copyJars(type: Copy) {
   from configurations.runtime
   into 'build/libs' // 目标位置
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
 
 jar {

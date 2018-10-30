@@ -1,15 +1,6 @@
 package com.moseeker.searchengine.util;
 
-import java.math.BigInteger;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.alibaba.fastjson.JSON;
+import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.EsClientInstance;
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.search.SearchResponse;
@@ -32,7 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.moseeker.common.util.ConfigPropertiesUtil;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class SearchUtil {
@@ -105,10 +100,28 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(cityfilter);
         }
     }
+    public void handleTermShould(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).should(cityfilter);
+        }
+    }
+    public void handlerNotTerms(List<Integer> list,QueryBuilder query,String conditionField){
+        if(list!=null&&list.size()>0){
+            QueryBuilder cityfilter = QueryBuilders.termsQuery(conditionField,list);
+            ((BoolQueryBuilder) query).mustNot(cityfilter);
+        }
+    }
     public void handleMatchParse(String condition,QueryBuilder query,String conditionField){
         if (StringUtils.isNotEmpty(condition)) {
             QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery(conditionField, condition);
             ((BoolQueryBuilder) query).must(cityfilter);
+        }
+    }
+    public void handleMatchParseShould(String condition,QueryBuilder query,String conditionField){
+        if (StringUtils.isNotEmpty(condition)) {
+            QueryBuilder cityfilter = QueryBuilders.matchPhraseQuery(conditionField, condition);
+            ((BoolQueryBuilder) query).should(cityfilter);
         }
     }
     /*
@@ -171,6 +184,14 @@ public class SearchUtil {
     }
     public void hanleRange(int conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+    }
+    public void handlerRangeLess(int conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).lte(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+    }
+    public void handlerRangeMore(int conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gte(conditions);
         ((BoolQueryBuilder) query).must(cityfilter);
     }
 
@@ -589,6 +610,21 @@ public class SearchUtil {
         }
         return null;
     }
+    public QueryBuilder shouldMatchParseQuery(List<String> fieldsList,List<String>dataIdList) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                for(String condition: dataIdList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(fields, condition);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            return keyand;
+        }
+        return null;
+    }
     public void shouldMatchQuery(List<String> fieldList,String condition ,QueryBuilder query){
         if (fieldList!=null&&fieldList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
@@ -617,6 +653,77 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldMatchParseQueryShould(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).should(keyand);
+        }
+    }
+    public void shouldMatchParseQueryShould(String field,String condition ,QueryBuilder query){
+        if (StringUtils.isNotBlank(condition)) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).should(keyand);
+        }
+    }
+
+    public void shouldMatchParseQuery(String field,String condition ,QueryBuilder query){
+        if (StringUtils.isNotBlank(condition)) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+    public QueryBuilder shouldMatchParseQuery(List<String> fieldList,String condition ){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            return keyand;
+        }
+        return null;
+    }
+
+    public QueryBuilder shouldTermsQuery(List<String> fieldList,String condition ){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.termQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            return keyand;
+        }
+        return null;
+    }
+
     //将xx,xx,xx格式的字符串转化为list
     public List<String> stringConvertList(String keyWords) {
         if (StringUtils.isNotEmpty(keyWords)) {
@@ -803,5 +910,30 @@ public class SearchUtil {
         }
     }
 
+    public void matchPhrasePrefixQuery(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
 
+    public void shouldTermsQueryString(List<String> fieldsList,List<String>dataIdList, QueryBuilder query) {
+        if (fieldsList!=null&&fieldsList.size()>0&&dataIdList!=null&&dataIdList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldsList) {
+                QueryBuilder fullf = QueryBuilders.termsQuery(fields, dataIdList);
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
 }

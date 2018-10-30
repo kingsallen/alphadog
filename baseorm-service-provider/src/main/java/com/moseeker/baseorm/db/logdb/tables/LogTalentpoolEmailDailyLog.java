@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 邮件额度每天使用日志
+ * 邮件额度每天消耗日志
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDailyLogRecord> {
 
-    private static final long serialVersionUID = 800796795;
+    private static final long serialVersionUID = 460596425;
 
     /**
      * The reference instance of <code>logdb.log_talentpool_email_daily_log</code>
@@ -62,14 +62,14 @@ public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDail
     public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司id");
 
     /**
-     * The column <code>logdb.log_talentpool_email_daily_log.lost</code>. 本次使用点数或者充值点数
+     * The column <code>logdb.log_talentpool_email_daily_log.lost</code>. 本日使用点数
      */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> LOST = createField("lost", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本次使用点数或者充值点数");
+    public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> LOST = createField("lost", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本日使用点数");
 
     /**
-     * The column <code>logdb.log_talentpool_email_daily_log.date</code>.
+     * The column <code>logdb.log_talentpool_email_daily_log.date</code>. 使用时间
      */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Date> DATE = createField("date", org.jooq.impl.SQLDataType.DATE, this, "");
+    public final TableField<LogTalentpoolEmailDailyLogRecord, Date> DATE = createField("date", org.jooq.impl.SQLDataType.DATE, this, "使用时间");
 
     /**
      * Create a <code>logdb.log_talentpool_email_daily_log</code> table reference
@@ -90,7 +90,7 @@ public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDail
     }
 
     private LogTalentpoolEmailDailyLog(String alias, Table<LogTalentpoolEmailDailyLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "邮件额度每天使用日志");
+        super(alias, null, aliased, parameters, "邮件额度每天消耗日志");
     }
 
     /**

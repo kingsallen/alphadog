@@ -45,6 +45,10 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException ERMPLOYEE_REFERRAL_ALREADY_CLAIMED = new UserAccountException(42036, "已经被认领!");
     public static final UserAccountException ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED = new UserAccountException(42037, "推荐人无法自己认领!");
     public static final UserAccountException ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM = new UserAccountException(42038, "重复认领!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_BONUS_NOT_EXIST = new UserAccountException(42039, "内推奖金记录不存在!");
+    public static final UserAccountException ERMPLOYEE_REFERRAL_BONUS__REPEAT_CLAIM = new UserAccountException(42040, "重复认领!");
+    public static final UserAccountException ERMPLOYEE_EXTINFO_PARAM_ERROR = new UserAccountException(42041, "补填信息不符合要求!");
+
 
     public static final UserAccountException INVALID_SMS_CODE = new UserAccountException(10011, "无效验证码！");
 

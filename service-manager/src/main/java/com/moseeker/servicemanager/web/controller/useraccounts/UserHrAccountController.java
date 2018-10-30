@@ -876,7 +876,7 @@ public class UserHrAccountController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/hraccount/employees", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/employees", method = RequestMethod.GET)
     @ResponseBody
     public String employeeList(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -886,10 +886,44 @@ public class UserHrAccountController {
             int filter = params.getInt("filter", 0);
             String order = params.getString("order", "");
             String asc = params.getString("asc", "");
-            String timeSpan = params.getString("timeSpan", "");
             String email_isvalid = params.getString("email_isvalid", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
+            int balanceType = params.getInt("balanceType",0);
+            UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.getEmployees(keyWord, companyId, filter,
+                    order, asc, pageNumber, pageSize, email_isvalid,balanceType);
+            return ResponseLogNotification.success(request,
+                    ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    /**
+     * 员工列表
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/hraccount/employees", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEmployees(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String keyWord = params.getString("keyword", "");
+            int companyId = params.getInt("companyId", 0);
+            int filter = params.getInt("filter", 0);
+            String order = params.getString("order", "");
+            String asc = params.getString("asc", "");
+            String timeSpan = params.getString("timespan", "");
+            String email_isvalid = params.getString("email_isvalid", "");
+            int pageNumber = params.getInt("pageNumber", 0);
+            int pageSize = params.getInt("pageSize", 0);
+            logger.info("UserHrAccountController getEmployees timeSpan:{}", timeSpan);
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize, timeSpan, email_isvalid);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {
@@ -900,16 +934,16 @@ public class UserHrAccountController {
         }
     }
 
-
     /**
      * 员工信息导出
-     *
+     * warnings:目前发现没有调用方调用该接口。员工导出接口调用的是@UserHrAccountController.employeeList接口用于获取员工数据
      * @param request
      * @param response
      * @return
      */
     @RequestMapping(value = "/hraccount/employee/export", method = RequestMethod.POST)
     @ResponseBody
+    @Deprecated
     public String employeeExport(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
@@ -1251,5 +1285,55 @@ public class UserHrAccountController {
     public String getHR(@PathVariable int id) throws Exception {
         HRInfo hrInfo = hrService.getHR(id);
         return Result.success(hrInfo).toJson();
+    }
+
+
+    /**
+     * 招聘管理-查询是否需要二次提醒
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/v1/hr/application/notice", method = RequestMethod.GET)
+    @ResponseBody
+    public String getApplicationNotice(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("hr_account_id", 0);
+            Response res = userHrAccountService.getApplicationNotify(account_id);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    /**
+     * 招聘管理-设置是否需要二次提醒
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/v1/hr/application/notice", method = RequestMethod.PUT)
+    @ResponseBody
+    public String putApplicationNotice(HttpServletRequest request) {
+        try {
+            ValidateUtil vu = new ValidateUtil();
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int account_id = params.getInt("hr_account_id", 0);
+            boolean flag = params.getBoolean("flag", true);
+
+            Response res = userHrAccountService.setApplicationNotify(account_id,flag);
+            return ResponseLogNotification.success(request, res);
+        } catch (BIZException e) {
+            return ResponseLogNotification.fail(request, ResponseUtils.fail(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
     }
 }

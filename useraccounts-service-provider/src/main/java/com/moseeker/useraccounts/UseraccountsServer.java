@@ -23,6 +23,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class UseraccountsServer {
 
+
     private static Logger LOGGER = LoggerFactory.getLogger(UseraccountsServer.class);
 
     public static void main(String[] args) {
@@ -38,6 +39,7 @@ public class UseraccountsServer {
                     acac.getBean(ThirdPartyUserServiceImpl.class),
                     acac.getBean(UserEmployeeThriftService.class),
                     acac.getBean(EmployeeServiceImpl.class),
+                    acac.getBean(ReferralThriftServiceImpl.class),
                     acac.getBean(UserQxServiceImpl.class));
 //                    acac.getBean(RefreshLiepinTokenSchedule.class));
             server.startServer();

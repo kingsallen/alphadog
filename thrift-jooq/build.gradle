@@ -20,7 +20,9 @@ jar {
     //    configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
     //}
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 project.description = '''
     thrfit IDL definitions & jooq configs
 '''

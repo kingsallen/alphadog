@@ -118,6 +118,7 @@ struct WechatPositionListData {
     30: optional i32 experience_above;
     31: optional string experience;
     32: optional i32 team_id;
+    33: optional string total_bonus;
 }
 
 // 微信端职位列表的附加红包信息
@@ -286,7 +287,8 @@ struct JobPostrionObj{
     50:string thirdParty_position,
     51:i8 priority,  //是否置顶
     52:list<string> ccmail, //抄送邮箱
-    53: optional bool profile_cc_mail_enabled  //简历申请是否抄送邮箱,不传默认false
+    53: optional bool profile_cc_mail_enabled,  //简历申请是否抄送邮箱,不传默认false
+    54: optional bool is_referral  //职位是否内推
 }
 
 struct City{
@@ -442,4 +444,25 @@ struct ReferralPositionUpdateDataDO{
     8:optional i32 employment_type,
     9:optional string keyWord,
     10:optional string is_referral
+}
+
+struct ReferralPositionBonusVO {
+   1:ReferralPositionBonusDO position_bonus;
+   2:list<ReferralPositionBonusStageDetailDO> bonus_details;
+}
+
+struct ReferralPositionBonusDO {
+    1:optional i32 id,
+    2:optional i32 position_id,
+    3:optional string total_bonus
+}
+
+struct ReferralPositionBonusStageDetailDO {
+    1:optional i32 id,
+    2:optional i32 referral_position_bonus_id,
+    3:optional i32 position_id,
+    4:optional string stage_bonus,
+    5:optional i32 stage_proportion,
+    6:optional i32 stage_type
+
 }

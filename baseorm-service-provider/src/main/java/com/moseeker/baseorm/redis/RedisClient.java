@@ -6,11 +6,6 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.util.StringUtils;
-
-import java.net.ConnectException;
-import java.util.List;
-import java.util.Set;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +14,9 @@ import redis.clients.jedis.JedisCluster;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.params.sortedset.ZAddParams;
 
-import javax.management.StringValueExp;
+import java.net.ConnectException;
+import java.util.List;
+import java.util.Set;
 
 public abstract class RedisClient {
 

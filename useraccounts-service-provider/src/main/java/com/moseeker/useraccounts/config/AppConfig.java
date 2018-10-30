@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.config;
 
+import com.moseeker.common.util.query.Query;
 import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ import org.springframework.retry.support.RetryTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
 
 /**
  * Created by lucky8987 on 17/5/12.
@@ -193,6 +196,38 @@ public class AppConfig {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(clearUnViewdUpVoteQueue()).to(clearUnViewdUpVoteExchange())
                     .with("employee_view_leader_board_routing_key"));
+        }};
+    }
+
+    @Bean
+    public Queue addBonusQueue() {
+        Queue queue = new Queue("add_bonus_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange addBonusExchange() {
+        TopicExchange topicExchange = new TopicExchange("application_state_change_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public TopicExchange employeeRegisterExchange() {
+        return new TopicExchange("employee_first_register_exchange", true, false);
+    }
+
+    @Autowired
+    public Queue employeeRegisterQueue() {
+        return new Queue("add_redpacket_queue", true, false, false);
+    }
+
+    @Bean
+    public List<Binding> bindBonus() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
+                    .with("application_state_change_routingkey.change_state"));
+            add(BindingBuilder.bind(employeeRegisterQueue()).to(employeeRegisterExchange())
+                    .with(EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY));
         }};
     }
 }
