@@ -212,7 +212,7 @@ public abstract class EmployeeBinder {
                 unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
                 log.info("doneBind unActiveEmployee update record");
                 if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                    employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
                 }
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
                     unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
@@ -234,7 +234,7 @@ public abstract class EmployeeBinder {
             ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
             employeeId = executeResult.getId();
             if (executeResult.getExecute() > 0) {
-                employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
+                employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
             }
         }
         referralEmployeeRegisterLogDao.addRegisterLog(employeeId, currentTime);
