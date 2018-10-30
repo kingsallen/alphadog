@@ -1940,11 +1940,12 @@ public class TalentPoolEntity {
                             TalentpoolHrAutomaticTagUserRecord record=new TalentpoolHrAutomaticTagUserRecord();
                             record.setUserId(userId);
                             record.setTagId(tag.getId());
+                            result.add(record);
                         }
                     }
                 }
                 if(!StringUtils.isEmptyList(result)){
-                    talentpoolHrAutomaticTagUserDao.deleteRecords(result);
+                    talentpoolHrAutomaticTagUserDao.deleteList(result);
                 }
             }
 
