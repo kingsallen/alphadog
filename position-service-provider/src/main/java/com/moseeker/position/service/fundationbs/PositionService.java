@@ -2235,6 +2235,7 @@ public class PositionService {
         List<Integer> typeList=new ArrayList<>();
         typeList.add(2);
         typeList.add(3);
+        typeList.add(4);
         List<HrHbConfig> hrHbList=hrHbConfigDao.getHrHbConfigByCompanyId(companyId,status,typeList);
         return hrHbList;
     }
