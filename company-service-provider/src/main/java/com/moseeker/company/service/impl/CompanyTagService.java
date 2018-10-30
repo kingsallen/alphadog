@@ -2,10 +2,7 @@ package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.talentpooldb.*;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolCompanyTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrAutomaticTag;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrAutomaticTagUser;
-import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolHrTalent;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrAutomaticTagUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -49,6 +46,8 @@ public class CompanyTagService {
     private TalentpoolHrAutomaticTagUserDao talentpoolHrAutomaticTagUserDao;
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
+    @Autowired
+    private TalentpoolTalentDao talentpoolTalentDao;
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -169,12 +168,12 @@ public class CompanyTagService {
         result.put("tag_ids",tagIdList);
         client.lpush(Constant.APPID_ALPHADOG,
                redisKey, JSON.toJSONString(result));
-        logger.info("handlerCompanyTagTalent redis result:{}", result);
+        logger.info(" redis 队列中的内容为  result:{}", result);
     }
 
 
     //增量添加hr自动标签
-    public void handlerUserIdAndHrTag(Set<Integer> userIdList,int hrId) throws TException {
+    public void handlerUserIdAndHrTag(Set<Integer> userIdList,int hrId,int companyId) throws TException {
         List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
         List<Integer> tagIdList=new ArrayList<>();
         List<TalentpoolHrAutomaticTagUserRecord> deleList=new ArrayList<>();
@@ -184,8 +183,12 @@ public class CompanyTagService {
                 logger.info("handlerUserIdAndHrTag userId:{}",userId);
                 if(!StringUtils.isEmptyList(tagList)){
                     for(Map<String,Object> tagMap:tagList){
+                        tagMap.put("company_id",companyId);
                         deleList.add(this.getTalentpoolHrAutomaticTagUserRecord((int)tagMap.get("id"),userId));
                         int total=this.getNumByTagAndUser(tagMap,userId);
+                        logger.info("===============total====================");
+                        logger.info(total+"");
+                        logger.info("=====================================");
                         if(total>0){
                           list.add(this.getTalentpoolHrAutomaticTagUserRecord((int)tagMap.get("id"),userId))  ;
                           tagIdList.add((int)tagMap.get("id"));
@@ -195,6 +198,9 @@ public class CompanyTagService {
 
             }
         }
+        logger.info("===============total====================");
+        logger.info(JSON.toJSONString(tagIdList));
+        logger.info("=====================================");
         if(!StringUtils.isEmptyList(deleList)){
             talentpoolHrAutomaticTagUserDao.deleteRecords(deleList);
         }
@@ -295,6 +301,8 @@ public class CompanyTagService {
     public void handlerHrAutomaticData(Set<Integer> userIdset){
         try{
             List<TalentpoolHrTalent> list=talentpoolHrTalentDao.getDataByUserId(userIdset);
+            List<TalentpoolTalent> dataList=talentpoolTalentDao.getTalents(userIdset);
+            //需要获取company_id
             if(!StringUtils.isEmptyList(list)){
                 for(TalentpoolHrTalent data:list){
                     Set<Integer> userIdList=new HashSet<>();
@@ -306,6 +314,7 @@ public class CompanyTagService {
             logger.error(e.getMessage(),e);
         }
     }
+
     /*
      公开时处理非这个hr下的所有的标签
      逻辑：
@@ -352,7 +361,7 @@ public class CompanyTagService {
                     if(!StringUtils.isEmptyMap(result)){
                         for(Integer key:result.keySet()){
                             Set<Integer> userDataSet=result.get(key);
-                            this.handlerUserIdAndHrTag(userDataSet,key);
+                            this.handlerUserIdAndHrTag(userDataSet,key,companyId);
                         }
                     }
                 }
