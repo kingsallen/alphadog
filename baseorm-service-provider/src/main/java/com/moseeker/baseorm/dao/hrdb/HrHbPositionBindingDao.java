@@ -22,6 +22,14 @@ public class HrHbPositionBindingDao extends JooqCrudImpl<HrHbPositionBindingDO, 
         super(table, hrHbPositionBindingDOClass);
     }
 
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding> getHrHbPositionBindingListByPidListAndHbConfigList(List<Integer> pidList,List<Integer> hrHbIdList){
+        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding> list=create.selectFrom(HrHbPositionBinding.HR_HB_POSITION_BINDING)
+                .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.POSITION_ID.in(pidList))
+                .and(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.in(hrHbIdList))
+                .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding.class);
+        return list;
+    }
+
     public List<Record2<Integer, String>> fetchPositionTitle(List<Integer> positionBindingIdList) {
 
         return create.select(HrHbPositionBinding.HR_HB_POSITION_BINDING.ID, JobPosition.JOB_POSITION.TITLE)
@@ -30,13 +38,5 @@ public class HrHbPositionBindingDao extends JooqCrudImpl<HrHbPositionBindingDO, 
                 .on(HrHbPositionBinding.HR_HB_POSITION_BINDING.POSITION_ID.eq(JobPosition.JOB_POSITION.ID))
                 .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.ID.in(positionBindingIdList))
                 .fetch();
-    }
-
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding> getHrHbPositionBindingListByPidListAndHbConfigList(List<Integer> pidList,List<Integer> hrHbIdList){
-        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding> list=create.selectFrom(HrHbPositionBinding.HR_HB_POSITION_BINDING)
-                .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.POSITION_ID.in(pidList))
-                .and(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.in(hrHbIdList))
-                .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbPositionBinding.class);
-        return list;
     }
 }

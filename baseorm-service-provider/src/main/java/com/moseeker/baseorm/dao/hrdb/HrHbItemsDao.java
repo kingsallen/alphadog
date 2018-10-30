@@ -13,6 +13,8 @@ import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -128,4 +130,5 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         }
         return 0;
     }
+
 }
