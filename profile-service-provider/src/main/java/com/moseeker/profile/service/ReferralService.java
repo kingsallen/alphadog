@@ -3,9 +3,11 @@ package com.moseeker.profile.service;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jack
@@ -64,4 +66,16 @@ public interface ReferralService {
      * @throws ProfileException 异常信息
      */
     void employeeDeleteReferralProfile(int employeeId) throws ProfileException;
+
+    /**
+     * 员工推荐简历，mobot上传简历使用，走内推的员工推荐逻辑
+     * @param employeeId 员工编号
+     * @param mobile 被推荐人手机号
+     * @param name 被推荐人姓名
+     * @param ids 推荐职位ids
+     * @return 推荐结果
+     * @author  cjm
+     * @date  2018/10/29
+     */
+    Map<String, String> saveMobotReferralProfile(int employeeId, String mobile, String name, List<Integer> ids) throws BIZException, InterruptedException;
 }

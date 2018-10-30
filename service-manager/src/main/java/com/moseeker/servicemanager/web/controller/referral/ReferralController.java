@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -12,10 +13,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
-import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
-import com.moseeker.servicemanager.web.controller.referral.form.ClaimForm;
-import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
-import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
+import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
@@ -38,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -425,4 +424,68 @@ public class ReferralController {
         }
     }
 
+    /**
+     * 员工推荐简历，mobot上传简历使用，走内推的员工推荐逻辑
+     * @param id 员工编号
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral/confirm", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveMobotReferralProfile(@PathVariable int id, @RequestBody ReferralPositionForm referralForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机", referralForm.getMobile());
+        validateUtil.addRequiredValidate("姓名", referralForm.getName());
+        validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addRequiredOneValidate("推荐职位ids", referralForm.getIds());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getMobile(), referralForm.getName(), referralForm.getIds());
+            if(idReasons.get("state") == null){
+                return Result.success(idReasons).toJson();
+            }else {
+                return Result.fail(JSON.toJSONString(idReasons)).toJson();
+            }
+
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 员工上传简历，mobot使用，走内推的简历上传逻辑，加入生成虚拟用户逻辑
+     * @param file 文件
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/file-parser/mobot", method = RequestMethod.POST)
+    @ResponseBody
+    public String parseMobotFileProfile(@RequestParam(value = "file", required = false) MultipartFile file,
+                                        HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        int employeeId = params.getInt("employee", 0);
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("简历", file);
+        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addIntTypeValidate("员工", employeeId, 1, null);
+        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
+            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+            }
+            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
+            String parseResult = profileService.parseMobotFileProfile(employeeId, params.getString("file_name"), byteBuffer);
+            return Result.success(parseResult).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
 }

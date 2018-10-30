@@ -20,20 +20,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ReferralProfileParser extends AbstractResumeFileParser {
 
-    @Autowired
-    EmployeeEntity employeeEntity;
-
     @Override
-    protected boolean checkUser(Integer id) {
+    protected Map<String, Object> checkUser(Integer id) {
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(id);
         if (employeeDO == null || employeeDO.getId() <= 0) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
-        return true;
+        Map<String, Object> map = new HashMap<>(1 >> 4);
+        map.put("UserEmployeeDO", employeeDO);
+        return map;
     }
 
     @Override

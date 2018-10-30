@@ -1,18 +1,24 @@
 package com.moseeker.profile.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
@@ -20,6 +26,7 @@ import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.*;
+import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
@@ -35,9 +42,11 @@ import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import com.moseeker.profile.service.impl.vo.ReferralInfoCacheDTO;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
@@ -56,8 +65,14 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -88,6 +103,12 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private JobApplicationDao applicationDao;
+
+    @Autowired
+    private ApplicationEntity applicationEntity;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     @Resource(type=ReferralProfileParser.class)
     private AbstractResumeFileParser abstractResumeFileParser;
@@ -179,6 +200,75 @@ public class ReferralServiceImpl implements ReferralService {
         client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(),
                 String.valueOf(employeeId),
                 "");
+    }
+
+
+    @Override
+    public Map<String, String> saveMobotReferralProfile(int employeeId, String mobile, String name, List<Integer> ids) throws BIZException, InterruptedException {
+        Map<String, String> applyLimit = checkCompanyApply(employeeId, mobile, ids);
+        if(applyLimit.get("state") != null){
+            return applyLimit;
+        }
+        Map<String, String> referralResultMap = new HashMap<>(1 >> 4);
+        try{
+            CountDownLatch countDownLatch = new CountDownLatch(ids.size());
+            List<String> referralReasons = new ArrayList<>();
+            for(Integer positionId : ids){
+                tp.startTast(() -> {
+                    try {
+                        int referralId = employeeReferralProfile(employeeId, name,
+                                mobile, referralReasons, positionId, (byte)1);
+                        referralResultMap.put(positionId + "", referralId + "");
+                    }catch (Exception e){
+                        referralResultMap.put(positionId + "", e.getMessage());
+                    }
+                    countDownLatch.countDown();
+                    return 0;
+                });
+            }
+            countDownLatch.await(60, TimeUnit.SECONDS);
+            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId), mobile);
+        }catch (Exception e){
+            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId), mobile);
+            throw e;
+        }
+        return referralResultMap;
+    }
+
+    /**
+     * 检验投递次数
+     * @param employeeId 员工id
+     * @param mobile 手机号
+     * @param ids 职位ids
+     * @author  cjm
+     * @date  2018/10/29
+     */
+    private Map<String, String> checkCompanyApply(int employeeId, String mobile, List<Integer> ids) throws BIZException {
+        Map<String, String> applyLimitMap = new HashMap<>(1 >> 4);
+        String str = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_VIRTUAL_USER.toString(),
+                employeeId + "", mobile);
+        ProfileDocParseResult parseResult = JSONObject.parseObject(str, ProfileDocParseResult.class);
+        UserApplyCount userApplyCount = applicationEntity.getApplyCount(parseResult.getUserId(), parseResult.getCompanyId());
+        UserApplyCount conf = applicationEntity.getApplicationCountLimit(parseResult.getCompanyId());
+        List<JobPosition>  jobPositions = jobPositionDao.getJobPositionByIdList(ids);
+        int schoolApply = 0;
+        int socialApply = 0;
+        for(JobPosition jobPosition : jobPositions){
+            if(jobPosition.getCandidateSource() == 0){
+                socialApply ++;
+            }else {
+                schoolApply ++;
+            }
+        }
+        if ((userApplyCount.getSocialApplyCount() + socialApply) > conf.getSocialApplyCount()) {
+            applyLimitMap.put("social_apply_limit", (conf.getSocialApplyCount() - userApplyCount.getSocialApplyCount()) + "");
+            applyLimitMap.put("state", "-1");
+        }
+        if ((userApplyCount.getSchoolApplyCount() + schoolApply) > conf.getSchoolApplyCount()) {
+            applyLimitMap.put("school_apply_limit", (conf.getSchoolApplyCount() - userApplyCount.getSchoolApplyCount()) + "");
+            applyLimitMap.put("state", "-1");
+        }
+        return applyLimitMap;
     }
 
     /**
