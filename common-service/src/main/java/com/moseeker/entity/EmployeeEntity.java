@@ -613,7 +613,21 @@ public class EmployeeEntity {
             int[] rows = employeeDao.updateDatas(employees);
             if (Arrays.stream(rows).sum() > 0) {
                 // 更新ES中useremployee信息
-                searchengineEntity.updateEmployeeAwards(employees.stream().map(m -> m.getId()).collect(Collectors.toList()));
+                List<Integer> employeeIdList = employees
+                        .stream()
+                        .map(UserEmployeeDO::getId).filter(id -> id > 0)
+                        .collect(Collectors.toList());
+                searchengineEntity.updateEmployeeAwards(employeeIdList);
+                List<Integer> companyIdList = employees
+                        .stream()
+                        .map(UserEmployeeDO::getCompanyId).distinct().filter(id -> id > 0)
+                        .collect(Collectors.toList());
+
+                companyIdList.forEach(companyId -> {
+                    client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(),
+                            String.valueOf(companyId),  JSON.toJSONString(employeeIdList));
+                });
+
                 return true;
             } else {
                 throw ExceptionFactory.buildException(ExceptionCategory.EMPLOYEE_IS_UNBIND);
