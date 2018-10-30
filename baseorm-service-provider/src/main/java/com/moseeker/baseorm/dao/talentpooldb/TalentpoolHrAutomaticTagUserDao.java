@@ -37,4 +37,18 @@ public class TalentpoolHrAutomaticTagUserDao  extends JooqCrudImpl<TalentpoolHrA
                 .and(TALENTPOOL_HR_AUTOMATIC_TAG_USER.USER_ID.eq(userId)).fetchInto(TalentpoolHrAutomaticTagUser.class);
         return list;
     }
+
+    public void deleteList(List<TalentpoolHrAutomaticTagUserRecord> list){
+        for(TalentpoolHrAutomaticTagUserRecord record:list){
+            create.deleteFrom(TALENTPOOL_HR_AUTOMATIC_TAG_USER).where(TALENTPOOL_HR_AUTOMATIC_TAG_USER.TAG_ID.eq(record.getTagId()))
+                    .and(TALENTPOOL_HR_AUTOMATIC_TAG_USER.USER_ID.eq(record.getUserId())).execute();
+        }
+    }
+    public int addList(List<TalentpoolHrAutomaticTagUserRecord> list){
+        for(TalentpoolHrAutomaticTagUserRecord record:list){
+            create.insertInto(TALENTPOOL_HR_AUTOMATIC_TAG_USER).columns(TALENTPOOL_HR_AUTOMATIC_TAG_USER.TAG_ID,TALENTPOOL_HR_AUTOMATIC_TAG_USER.USER_ID)
+                    .values(record.getTagId(),record.getUserId()).execute();
+        }
+        return 1;
+    }
 }

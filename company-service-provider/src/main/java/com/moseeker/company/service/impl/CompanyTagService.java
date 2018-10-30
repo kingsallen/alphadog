@@ -202,14 +202,21 @@ public class CompanyTagService {
 
             }
         }
-        logger.info("===============total====================");
+        logger.info("===============tagIdList====================");
         logger.info(JSON.toJSONString(tagIdList));
         logger.info("=====================================");
+        logger.info("===============list====================");
+        logger.info(list.toString());
+        logger.info("=====================================");
         if(!StringUtils.isEmptyList(deleList)){
-            talentpoolHrAutomaticTagUserDao.deleteRecords(deleList);
+            talentpoolHrAutomaticTagUserDao.deleteList(deleList);
+            logger.info("=========delete success==============");
         }
         if(!StringUtils.isEmptyList(list)){
-            talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+            int result=talentpoolHrAutomaticTagUserDao.addList(list);
+            logger.info("===============TalentpoolHrAutomaticTagUserRecord====================");
+            logger.info(result+"");
+            logger.info("=====================================");
             for (Integer userId : userIdList) {
                 this.addRedisRefreshEs(userId,tagIdList, KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
             }
@@ -475,7 +482,7 @@ public class CompanyTagService {
                         list.add(record);
                     }
                 }
-                talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+                talentpoolHrAutomaticTagUserDao.addList(list);
             }else if(type==TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()){
 
                 List<TalentpoolHrAutomaticTagUserRecord> list = new ArrayList<>();
@@ -488,7 +495,7 @@ public class CompanyTagService {
                     }
 
                 }
-                talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+                talentpoolHrAutomaticTagUserDao.addList(list);
             }
         }
         this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString(),page);
