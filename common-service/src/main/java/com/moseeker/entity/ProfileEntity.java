@@ -90,13 +90,7 @@ public class ProfileEntity {
      * @return 格式化的简历信息
      */
     public ProfilePojo parseProfile(String profileParameter) {
-        Map<String, Object> paramMap = null;
-        try {
-            paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
-        } catch (Exception e) {
-            logger.info("ProfileEntity parseProfile failed! profileParameter:{}", profileParameter);
-            logger.error(e.getMessage(), e);
-        }
+        Map<String, Object> paramMap = EmojiFilter.filterEmoji(profileParameter);
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
