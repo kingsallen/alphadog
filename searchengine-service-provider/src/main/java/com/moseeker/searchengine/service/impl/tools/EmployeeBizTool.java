@@ -139,8 +139,9 @@ public class EmployeeBizTool {
     private static void addOrder(SearchRequestBuilder searchRequestBuilder, String field, int asc, String timeSpan) {
         SortOrder sortOrder = asc == 0 ? SortOrder.DESC : SortOrder.ASC;
         if (StringUtils.isNotBlank(timeSpan)) {
-            searchRequestBuilder.addSort(buildSortScript(timeSpan, "award", SortOrder.DESC))
-                    .addSort(buildSortScript(timeSpan, "last_update_time", SortOrder.ASC));
+
+            searchRequestBuilder.addSort(buildSortScript(timeSpan, "award", sortOrder))
+                    .addSort(buildSortScript(timeSpan, "last_update_time", sortOrder));
         } else {
             searchRequestBuilder.addSort(field, sortOrder);
         }
