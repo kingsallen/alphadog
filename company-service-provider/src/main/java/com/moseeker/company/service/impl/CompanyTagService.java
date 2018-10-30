@@ -206,7 +206,7 @@ public class CompanyTagService {
         logger.info(JSON.toJSONString(tagIdList));
         logger.info("=====================================");
         logger.info("===============list====================");
-        logger.info(JSON.toJSONString(list));
+        logger.info(list.toString());
         logger.info("=====================================");
         if(!StringUtils.isEmptyList(deleList)){
             int [] result=talentpoolHrAutomaticTagUserDao.deleteRecords(deleList);
@@ -215,7 +215,7 @@ public class CompanyTagService {
         if(!StringUtils.isEmptyList(list)){
             List<TalentpoolHrAutomaticTagUserRecord> result1=talentpoolHrAutomaticTagUserDao.addAllRecord(list);
             logger.info("===============TalentpoolHrAutomaticTagUserRecord====================");
-            logger.info(JSON.toJSONString(result1));
+            logger.info(list.toString());
             logger.info("=====================================");
             for (Integer userId : userIdList) {
                 this.addRedisRefreshEs(userId,tagIdList, KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
