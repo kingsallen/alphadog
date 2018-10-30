@@ -940,10 +940,19 @@ public class TalentPoolService {
         talentpoolHrTalentDao.updateRecords(list);
         talentpoolTalentDao.batchUpdateNum(new ArrayList<>(userIdList),companyId,1,0);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
-        tagService.handlerHrAutoTagCancelPublic(userIdList,companyId);
-        tagService.handlerHrAutoTagAddPublic(userIdList,companyId,hrId);
-        talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
+//        tagService.handlerHrAutoTagCancelPublic(userIdList,companyId);
 
+        talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
+        thread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    tagService.handlerHrAutoTagAddPublic(userIdList,companyId,hrId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },80000);
         //处理hr自动标签
 
         if(result==null||result.isEmpty()){
@@ -1013,6 +1022,16 @@ public class TalentPoolService {
         talentPoolEntity.handlerPublicTag(userIdList,companyId);
         Map<Integer,Object> result=this.handlePublicTalentData(userIdList,companyId);
         talentPoolEntity.realTimePublicUpdate(talentPoolEntity.converSetToList(userIdList));
+        thread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    tagService.handlerHrAutoTagCancelPublic(userIdList,companyId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },80000);
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
