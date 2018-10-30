@@ -254,7 +254,8 @@ struct UserProfile {
 struct ProfileParseResult {
     1: optional string file,
     2: optional string name,
-    3: optional string mobile
+    3: optional string mobile,
+    4: optional bool mobileeditable
 }
 
 //候选人关键信息
@@ -267,4 +268,15 @@ struct CandidateInfo {
     6: optional string company,
     7: optional string job,
     8: optional list<string> reasons
+}
+
+struct LogEmployeeOperationLog{
+    1: optional i32   id;
+    2: optional i32   userId;
+    3: optional i32      type;
+    4: optional i32      operationType;
+    5: optional i32      isSuccess;
+    6: optional i32   companyId;
+    7: optional i32   profileId;
+    8: optional Timestamp createTime;
 }

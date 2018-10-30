@@ -25,6 +25,7 @@ import com.moseeker.thrift.gen.dao.struct.CampaignHeadImageVO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPcReportedDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import com.moseeker.thrift.gen.position.service.PositionATSServices;
 import com.moseeker.thrift.gen.position.service.PositionServices;
@@ -114,17 +115,17 @@ public class PositionController {
 
             query.setUser_id(Integer.valueOf((String) map.getOrDefault("user_id", "0")));
             query.setKeywords(StringUtils.filterStringForSearch((String) map.getOrDefault("keywords", "")));
-            query.setCities(StringUtils.filterStringForSearch((String) map.getOrDefault("cities", "")));
+            query.setCities((String) map.getOrDefault("cities", ""));
             query.setIndustries(StringUtils.filterStringForSearch((String) map.getOrDefault("industries", "")));
-            query.setOccupations(StringUtils.filterStringForSearch((String) map.getOrDefault("occupations", "")));
+            query.setOccupations((String) map.getOrDefault("occupations", ""));
             query.setScale((String) map.getOrDefault("scale", ""));
             query.setCandidate_source((String) map.getOrDefault("candidate_source", ""));
             query.setEmployment_type((String) map.getOrDefault("employment_type", ""));
             query.setExperience((String) map.getOrDefault("experience", ""));
             query.setSalary((String) map.getOrDefault("salary", ""));
-            query.setDegree(StringUtils.filterStringForSearch((String) map.getOrDefault("degree", "")));
-            query.setDepartment(StringUtils.filterStringForSearch((String) map.getOrDefault("department", "")));
-            query.setCustom(StringUtils.filterStringForSearch((String) map.getOrDefault("custom", "")));
+            query.setDegree((String) map.getOrDefault("degree", ""));
+            query.setDepartment((String) map.getOrDefault("department", ""));
+            query.setCustom((String) map.getOrDefault("custom", ""));
             query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
 
             String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
@@ -138,6 +139,32 @@ public class PositionController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    /**
+     * 获取职位列表
+     *
+     * @param request  request
+     * @param response response
+     * @return 职位列表数据
+     */
+    @RequestMapping(value = "/position_ext/list", method = RequestMethod.POST)
+    @ResponseBody
+    public String getPositionExtList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try{
+            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+
+            List<Integer> ids = (List<Integer>) map.get("ids");
+
+            List<JobPositionExtDO> positionExtList = positonServices.getPositionExtList(ids);
+            Response res = ResponseUtils.success(positionExtList);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
 
     @RequestMapping(value = "/positions/verifyCustomize", method = RequestMethod.GET)
     @ResponseBody

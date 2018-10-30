@@ -5,7 +5,7 @@ package com.moseeker.profile.constants;
  * @Date: 2018/9/6
  */
 public enum ProfileSource {
-    ChatBotReferral(221, "员工主动上传"),EmployeeReferral(222, "内推");
+    ChatBotReferral(221, "员工主动上传"),EmployeeReferral(222, "内推"),MOBILEReferral(223,"手机上传");;
 
     ProfileSource(int value, String name) {
         this.value = value;

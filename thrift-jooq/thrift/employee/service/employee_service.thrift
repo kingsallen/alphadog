@@ -19,7 +19,7 @@ service EmployeeService {
 
 
     // 员工绑定操作
-    employee_struct.Result bind(1: employee_struct.BindingParams bindingParams);
+    employee_struct.Result bind(1: employee_struct.BindingParams bindingParams,2: i32 bindSource);
 
     // 员工解绑操作
     employee_struct.Result unbind(1: i32 employeeId, 2: i32 companyId, 3: i32 userId);
@@ -37,13 +37,16 @@ service EmployeeService {
     list<employee_struct.RecomInfo> getEmployeeRecoms(1: i32 recomId);
 
     // 员工绑定(邮箱激活)
-    employee_struct.Result emailActivation(1: string activationCodee);
+    employee_struct.Result emailActivation(1: string activationCodee,2: i32 bindEmailSource);
 
     // 积分排行榜
     employee_struct.Pagination awardRanking(1: i32 employeeId, 2: i32 companyId, 3: employee_struct.Timespan timespan, 4: i32 pageNum, 5:i32 pageSize) throws (1: common_struct.BIZException e);
 
     // 员工填写认证自定义字段（更新redis中员工记录）
     employee_struct.Result setCacheEmployeeCustomInfo(1: i32 userId, 2: i32 companyId, 3: string customValues);
+    
+    //更新员工自定义字段
+    void patchEmployeeCustomFieldValues(1: i32 userId, 2: i32 companyId, 3: map<i32, list<string>> customValues);
 
     //插入更新公司内推政策数据
     void upsertCompanyReferralConf(1:hr_company_referral_conf_struct.HrCompanyReferralConfDO conf)throws (1: common_struct.BIZException e)

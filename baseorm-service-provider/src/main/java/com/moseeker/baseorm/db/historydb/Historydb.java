@@ -4,18 +4,44 @@
 package com.moseeker.baseorm.db.historydb;
 
 
+import com.moseeker.baseorm.db.historydb.tables.CampaignBaiduUsers_20170612;
+import com.moseeker.baseorm.db.historydb.tables.ConfigCronjobs_20180509;
 import com.moseeker.baseorm.db.historydb.tables.ConfigSysCvTpl;
+import com.moseeker.baseorm.db.historydb.tables.ConfigSysCvTpl180726;
 import com.moseeker.baseorm.db.historydb.tables.HistoryCampaignPersonaRecom;
+import com.moseeker.baseorm.db.historydb.tables.HistoryConfigSysCvTpl_171117;
+import com.moseeker.baseorm.db.historydb.tables.HistoryDictCountry;
 import com.moseeker.baseorm.db.historydb.tables.HistoryHrCompany;
-import com.moseeker.baseorm.db.historydb.tables.HistoryHrOperationRecord;
+import com.moseeker.baseorm.db.historydb.tables.HistoryHrWxHrChat_180313;
+import com.moseeker.baseorm.db.historydb.tables.HistoryHrWxWechat;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplication;
+import com.moseeker.baseorm.db.historydb.tables.HistoryJobApplication_161122;
 import com.moseeker.baseorm.db.historydb.tables.HistoryJobPosition;
 import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
 import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployeeUpvote;
 import com.moseeker.baseorm.db.historydb.tables.HistoryUserHrAccount;
-import com.moseeker.baseorm.db.historydb.tables.ProfileEducation;
+import com.moseeker.baseorm.db.historydb.tables.HistorydbProfileAttachment;
+import com.moseeker.baseorm.db.historydb.tables.HrAppCvConf180726;
+import com.moseeker.baseorm.db.historydb.tables.HrAppCvConf_171117;
+import com.moseeker.baseorm.db.historydb.tables.HrAppExportFields180726;
+import com.moseeker.baseorm.db.historydb.tables.HrChildCompany_20170612;
+import com.moseeker.baseorm.db.historydb.tables.HrCompanyAccount_161111bk;
+import com.moseeker.baseorm.db.historydb.tables.HrCompanyBk161218;
+import com.moseeker.baseorm.db.historydb.tables.HrMedia_20170612;
+import com.moseeker.baseorm.db.historydb.tables.HrThirdPartyPosition_20180428;
+import com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList;
+import com.moseeker.baseorm.db.historydb.tables.JobApplication0517;
+import com.moseeker.baseorm.db.historydb.tables.JobApplicationConf_20170612;
+import com.moseeker.baseorm.db.historydb.tables.JobApplicationStatusBeisen_20170612;
+import com.moseeker.baseorm.db.historydb.tables.JobOccupationRel_20170612;
+import com.moseeker.baseorm.db.historydb.tables.JobPosition0517;
+import com.moseeker.baseorm.db.historydb.tables.JobResumeBasic_20170612;
+import com.moseeker.baseorm.db.historydb.tables.ProfileOther180726;
 import com.moseeker.baseorm.db.historydb.tables.ProfileProjectexp;
-import com.moseeker.baseorm.db.historydb.tables.ProfileWorkexp;
+import com.moseeker.baseorm.db.historydb.tables.SchemaMigrations_20170612;
+import com.moseeker.baseorm.db.historydb.tables.StatsPosShareApply;
+import com.moseeker.baseorm.db.historydb.tables.StatsRecomRecord;
+import com.moseeker.baseorm.db.historydb.tables.StatsUserOpenidResume;
 import com.moseeker.baseorm.db.historydb.tables.UserWxUser;
 
 import java.util.ArrayList;
@@ -42,7 +68,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Historydb extends SchemaImpl {
 
-    private static final long serialVersionUID = -870858022;
+    private static final long serialVersionUID = 638090964;
 
     /**
      * The reference instance of <code>historydb</code>
@@ -50,9 +76,29 @@ public class Historydb extends SchemaImpl {
     public static final Historydb HISTORYDB = new Historydb();
 
     /**
+     * 百度用户关联表
+     */
+    public final CampaignBaiduUsers_20170612 CAMPAIGN_BAIDU_USERS_20170612 = com.moseeker.baseorm.db.historydb.tables.CampaignBaiduUsers_20170612.CAMPAIGN_BAIDU_USERS_20170612;
+
+    /**
+     * The table <code>historydb.config_cronjobs_20180509</code>.
+     */
+    public final ConfigCronjobs_20180509 CONFIG_CRONJOBS_20180509 = com.moseeker.baseorm.db.historydb.tables.ConfigCronjobs_20180509.CONFIG_CRONJOBS_20180509;
+
+    /**
      * 简历模板库
      */
     public final ConfigSysCvTpl CONFIG_SYS_CV_TPL = com.moseeker.baseorm.db.historydb.tables.ConfigSysCvTpl.CONFIG_SYS_CV_TPL;
+
+    /**
+     * 简历模板库
+     */
+    public final ConfigSysCvTpl180726 CONFIG_SYS_CV_TPL180726 = com.moseeker.baseorm.db.historydb.tables.ConfigSysCvTpl180726.CONFIG_SYS_CV_TPL180726;
+
+    /**
+     * Profile的简历附件
+     */
+    public final HistorydbProfileAttachment HISTORYDB_PROFILE_ATTACHMENT = com.moseeker.baseorm.db.historydb.tables.HistorydbProfileAttachment.HISTORYDB_PROFILE_ATTACHMENT;
 
     /**
      * 推送职位历史表
@@ -60,20 +106,39 @@ public class Historydb extends SchemaImpl {
     public final HistoryCampaignPersonaRecom HISTORY_CAMPAIGN_PERSONA_RECOM = com.moseeker.baseorm.db.historydb.tables.HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM;
 
     /**
+     * 简历模板库
+     */
+    public final HistoryConfigSysCvTpl_171117 HISTORY_CONFIG_SYS_CV_TPL_171117 = com.moseeker.baseorm.db.historydb.tables.HistoryConfigSysCvTpl_171117.HISTORY_CONFIG_SYS_CV_TPL_171117;
+
+    /**
+     * 城市字典表
+     */
+    public final HistoryDictCountry HISTORY_DICT_COUNTRY = com.moseeker.baseorm.db.historydb.tables.HistoryDictCountry.HISTORY_DICT_COUNTRY;
+
+    /**
      * 公司表归档表
      */
     public final HistoryHrCompany HISTORY_HR_COMPANY = com.moseeker.baseorm.db.historydb.tables.HistoryHrCompany.HISTORY_HR_COMPANY;
 
     /**
-     * 15年的一批hr申请状态操作记录老数据，在进行数据处理时，其中一些数据目前无法处理，暂时移到历史表中，这些数据中包括申请状态是hr操作记录包括1的，
-hr申请记录无法梳理出合理的流程的记录
+     * IM聊天
      */
-    public final HistoryHrOperationRecord HISTORY_HR_OPERATION_RECORD = com.moseeker.baseorm.db.historydb.tables.HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD;
+    public final HistoryHrWxHrChat_180313 HISTORY_HR_WX_HR_CHAT_180313 = com.moseeker.baseorm.db.historydb.tables.HistoryHrWxHrChat_180313.HISTORY_HR_WX_HR_CHAT_180313;
+
+    /**
+     * 微信公众号表
+     */
+    public final HistoryHrWxWechat HISTORY_HR_WX_WECHAT = com.moseeker.baseorm.db.historydb.tables.HistoryHrWxWechat.HISTORY_HR_WX_WECHAT;
 
     /**
      * 申请记录归档表
      */
     public final HistoryJobApplication HISTORY_JOB_APPLICATION = com.moseeker.baseorm.db.historydb.tables.HistoryJobApplication.HISTORY_JOB_APPLICATION;
+
+    /**
+     * The table <code>historydb.history_job_application_161122</code>.
+     */
+    public final HistoryJobApplication_161122 HISTORY_JOB_APPLICATION_161122 = com.moseeker.baseorm.db.historydb.tables.HistoryJobApplication_161122.HISTORY_JOB_APPLICATION_161122;
 
     /**
      * 职位归档表
@@ -96,9 +161,84 @@ hr申请记录无法梳理出合理的流程的记录
     public final HistoryUserHrAccount HISTORY_USER_HR_ACCOUNT = com.moseeker.baseorm.db.historydb.tables.HistoryUserHrAccount.HISTORY_USER_HR_ACCOUNT;
 
     /**
-     * Profile的教育经历
+     * 企业申请简历校验配置
      */
-    public final ProfileEducation PROFILE_EDUCATION = com.moseeker.baseorm.db.historydb.tables.ProfileEducation.PROFILE_EDUCATION;
+    public final HrAppCvConf180726 HR_APP_CV_CONF180726 = com.moseeker.baseorm.db.historydb.tables.HrAppCvConf180726.HR_APP_CV_CONF180726;
+
+    /**
+     * 企业申请简历校验配置
+     */
+    public final HrAppCvConf_171117 HR_APP_CV_CONF_171117 = com.moseeker.baseorm.db.historydb.tables.HrAppCvConf_171117.HR_APP_CV_CONF_171117;
+
+    /**
+     * 自定义简历模板导出字段表
+     */
+    public final HrAppExportFields180726 HR_APP_EXPORT_FIELDS180726 = com.moseeker.baseorm.db.historydb.tables.HrAppExportFields180726.HR_APP_EXPORT_FIELDS180726;
+
+    /**
+     * 子公司表
+     */
+    public final HrChildCompany_20170612 HR_CHILD_COMPANY_20170612 = com.moseeker.baseorm.db.historydb.tables.HrChildCompany_20170612.HR_CHILD_COMPANY_20170612;
+
+    /**
+     * 账号公司关联记录
+     */
+    public final HrCompanyAccount_161111bk HR_COMPANY_ACCOUNT_161111BK = com.moseeker.baseorm.db.historydb.tables.HrCompanyAccount_161111bk.HR_COMPANY_ACCOUNT_161111BK;
+
+    /**
+     * The table <code>historydb.hr_company_bk161218</code>.
+     */
+    public final HrCompanyBk161218 HR_COMPANY_BK161218 = com.moseeker.baseorm.db.historydb.tables.HrCompanyBk161218.HR_COMPANY_BK161218;
+
+    /**
+     * 模板媒体表，存储模板渲染的媒体信息
+     */
+    public final HrMedia_20170612 HR_MEDIA_20170612 = com.moseeker.baseorm.db.historydb.tables.HrMedia_20170612.HR_MEDIA_20170612;
+
+    /**
+     * 第三方渠道同步的职位
+     */
+    public final HrThirdPartyPosition_20180428 HR_THIRD_PARTY_POSITION_20180428 = com.moseeker.baseorm.db.historydb.tables.HrThirdPartyPosition_20180428.HR_THIRD_PARTY_POSITION_20180428;
+
+    /**
+     * IM聊天人关系
+     */
+    public final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.historydb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
+
+    /**
+     * The table <code>historydb.job_application0517</code>.
+     */
+    public final JobApplication0517 JOB_APPLICATION0517 = com.moseeker.baseorm.db.historydb.tables.JobApplication0517.JOB_APPLICATION0517;
+
+    /**
+     * 部门申请配置表
+     */
+    public final JobApplicationConf_20170612 JOB_APPLICATION_CONF_20170612 = com.moseeker.baseorm.db.historydb.tables.JobApplicationConf_20170612.JOB_APPLICATION_CONF_20170612;
+
+    /**
+     * 申请状态记录（ats北森）
+     */
+    public final JobApplicationStatusBeisen_20170612 JOB_APPLICATION_STATUS_BEISEN_20170612 = com.moseeker.baseorm.db.historydb.tables.JobApplicationStatusBeisen_20170612.JOB_APPLICATION_STATUS_BEISEN_20170612;
+
+    /**
+     * 职位与职能关系表
+     */
+    public final JobOccupationRel_20170612 JOB_OCCUPATION_REL_20170612 = com.moseeker.baseorm.db.historydb.tables.JobOccupationRel_20170612.JOB_OCCUPATION_REL_20170612;
+
+    /**
+     * The table <code>historydb.job_position0517</code>.
+     */
+    public final JobPosition0517 JOB_POSITION0517 = com.moseeker.baseorm.db.historydb.tables.JobPosition0517.JOB_POSITION0517;
+
+    /**
+     * 申请简历简述表
+     */
+    public final JobResumeBasic_20170612 JOB_RESUME_BASIC_20170612 = com.moseeker.baseorm.db.historydb.tables.JobResumeBasic_20170612.JOB_RESUME_BASIC_20170612;
+
+    /**
+     * 用户profile导入记录信息
+     */
+    public final ProfileOther180726 PROFILE_OTHER180726 = com.moseeker.baseorm.db.historydb.tables.ProfileOther180726.PROFILE_OTHER180726;
 
     /**
      * Profile的项目经验
@@ -106,9 +246,24 @@ hr申请记录无法梳理出合理的流程的记录
     public final ProfileProjectexp PROFILE_PROJECTEXP = com.moseeker.baseorm.db.historydb.tables.ProfileProjectexp.PROFILE_PROJECTEXP;
 
     /**
-     * Profile的工作经历
+     * The table <code>historydb.schema_migrations_20170612</code>.
      */
-    public final ProfileWorkexp PROFILE_WORKEXP = com.moseeker.baseorm.db.historydb.tables.ProfileWorkexp.PROFILE_WORKEXP;
+    public final SchemaMigrations_20170612 SCHEMA_MIGRATIONS_20170612 = com.moseeker.baseorm.db.historydb.tables.SchemaMigrations_20170612.SCHEMA_MIGRATIONS_20170612;
+
+    /**
+     * 分享贡献表
+     */
+    public final StatsPosShareApply STATS_POS_SHARE_APPLY = com.moseeker.baseorm.db.historydb.tables.StatsPosShareApply.STATS_POS_SHARE_APPLY;
+
+    /**
+     * 推荐记录表
+     */
+    public final StatsRecomRecord STATS_RECOM_RECORD = com.moseeker.baseorm.db.historydb.tables.StatsRecomRecord.STATS_RECOM_RECORD;
+
+    /**
+     * The table <code>historydb.stats_user_openid_resume</code>.
+     */
+    public final StatsUserOpenidResume STATS_USER_OPENID_RESUME = com.moseeker.baseorm.db.historydb.tables.StatsUserOpenidResume.STATS_USER_OPENID_RESUME;
 
     /**
      * 微信用户表
@@ -140,18 +295,44 @@ hr申请记录无法梳理出合理的流程的记录
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            CampaignBaiduUsers_20170612.CAMPAIGN_BAIDU_USERS_20170612,
+            ConfigCronjobs_20180509.CONFIG_CRONJOBS_20180509,
             ConfigSysCvTpl.CONFIG_SYS_CV_TPL,
+            ConfigSysCvTpl180726.CONFIG_SYS_CV_TPL180726,
+            HistorydbProfileAttachment.HISTORYDB_PROFILE_ATTACHMENT,
             HistoryCampaignPersonaRecom.HISTORY_CAMPAIGN_PERSONA_RECOM,
+            HistoryConfigSysCvTpl_171117.HISTORY_CONFIG_SYS_CV_TPL_171117,
+            HistoryDictCountry.HISTORY_DICT_COUNTRY,
             HistoryHrCompany.HISTORY_HR_COMPANY,
-            HistoryHrOperationRecord.HISTORY_HR_OPERATION_RECORD,
+            HistoryHrWxHrChat_180313.HISTORY_HR_WX_HR_CHAT_180313,
+            HistoryHrWxWechat.HISTORY_HR_WX_WECHAT,
             HistoryJobApplication.HISTORY_JOB_APPLICATION,
+            HistoryJobApplication_161122.HISTORY_JOB_APPLICATION_161122,
             HistoryJobPosition.HISTORY_JOB_POSITION,
             HistoryUserEmployee.HISTORY_USER_EMPLOYEE,
             HistoryUserEmployeeUpvote.HISTORY_USER_EMPLOYEE_UPVOTE,
             HistoryUserHrAccount.HISTORY_USER_HR_ACCOUNT,
-            ProfileEducation.PROFILE_EDUCATION,
+            HrAppCvConf180726.HR_APP_CV_CONF180726,
+            HrAppCvConf_171117.HR_APP_CV_CONF_171117,
+            HrAppExportFields180726.HR_APP_EXPORT_FIELDS180726,
+            HrChildCompany_20170612.HR_CHILD_COMPANY_20170612,
+            HrCompanyAccount_161111bk.HR_COMPANY_ACCOUNT_161111BK,
+            HrCompanyBk161218.HR_COMPANY_BK161218,
+            HrMedia_20170612.HR_MEDIA_20170612,
+            HrThirdPartyPosition_20180428.HR_THIRD_PARTY_POSITION_20180428,
+            HrWxHrChatList.HR_WX_HR_CHAT_LIST,
+            JobApplication0517.JOB_APPLICATION0517,
+            JobApplicationConf_20170612.JOB_APPLICATION_CONF_20170612,
+            JobApplicationStatusBeisen_20170612.JOB_APPLICATION_STATUS_BEISEN_20170612,
+            JobOccupationRel_20170612.JOB_OCCUPATION_REL_20170612,
+            JobPosition0517.JOB_POSITION0517,
+            JobResumeBasic_20170612.JOB_RESUME_BASIC_20170612,
+            ProfileOther180726.PROFILE_OTHER180726,
             ProfileProjectexp.PROFILE_PROJECTEXP,
-            ProfileWorkexp.PROFILE_WORKEXP,
+            SchemaMigrations_20170612.SCHEMA_MIGRATIONS_20170612,
+            StatsPosShareApply.STATS_POS_SHARE_APPLY,
+            StatsRecomRecord.STATS_RECOM_RECORD,
+            StatsUserOpenidResume.STATS_USER_OPENID_RESUME,
             UserWxUser.USER_WX_USER);
     }
 }

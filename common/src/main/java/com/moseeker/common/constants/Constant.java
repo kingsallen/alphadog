@@ -22,6 +22,8 @@ public final class Constant {
     public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
     public static final String POINTS_CONF_REFINE_CANDIDATE= "完善被推荐人信息";
     public static final String EMPLOYEE_PARSE_PROFILE_DOCUMENT = "员工简历简历数据";
+    public static final String USER_PARSE_PROFILE_DOCUMENT = "用户简历数据";
+    public static int MAX_SIZE = 60000;
 
     private Constant() throws AssertionError {
         throw new AssertionError();
@@ -60,6 +62,12 @@ public final class Constant {
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
+    public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_register_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_register_routingkey.first_register";
+
+    public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
+
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";
@@ -88,7 +96,7 @@ public final class Constant {
     public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
-    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;    // 工上传人才简历
+    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,
@@ -152,7 +160,7 @@ public final class Constant {
 	
 	
 	public static final String THRIFT_CONNECTION_LOST = "thrift 失去连接";
-	
+
 	public static final String EXCEPTION_USERRECORD_LOST = "计算用户帐号完整度时，用户帐号信息不能为空";
 	public static final String EXCEPTION_PROFILEBASIC_LOST = "计算用户基本信息完整度时，用户基本信息不能为空";
 	public static final String EXCEPTION_PROFILEWORKEXP_LOST = "计算工作经历完整度时，工作经历不能为空";
@@ -184,7 +192,9 @@ public final class Constant {
 	public static final int EVENT_TYPE_EMPLOYEE_AUTH = 2; 						//员工认证邮件模板
 	public static final int EVENT_TYPE_RECOMMEND_VALID_EMAIL = 3;               //推荐职位时验证邮箱
 	public static final int EVENT_TYPE_RECOMMEND_POSITION_EMAIL = 4;              //推荐职位邮箱
-	
+
+    public static final byte AUTH_METHON_TYPE_CUSTOMIZE = 1;
+
 	public static final String MQ_MESSAGE_EMAIL_BIZ = "MQ_MESSAGE_EMAIL_BIZ";	//业务邮件消息队列的key_identifier
 	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
 	
@@ -262,7 +272,9 @@ public final class Constant {
     //简历列表的索引名称
     public static final String ES_INDEX="users";
     public static final String ES_TYPE="users";
-
+    //职位列表索引
+    public static final String ES_POSITION_INDEX="index";
+    public static final String ES_POSITION_TYPE="fulltext";
     //talentpool邮件的config_id
     public static final int TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS = 70;
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;
@@ -294,4 +306,8 @@ public final class Constant {
             "other_workexps.position_name;other_workexps.achievement;other_workexps.description;credentials.name;credentials.organization;credentials.url;" +
             "attachments.name;attachment.description;skills.name;imports.user_name;imports.data;imports.account_id;awards.name;languages.name;works.name;works.url;" +
             "works.description";
+
+    public static final String USERNAME_IS_NULL="未填写";
+
+    public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";
 }

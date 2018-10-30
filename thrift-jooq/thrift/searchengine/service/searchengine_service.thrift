@@ -62,4 +62,7 @@ service SearchengineServices {
 
     //获取曾任职位
     common_struct.Response searchpastCompany(1: map<string,string> params) throws (1: common_struct.BIZException e);
+
+    //mobot查询职位
+    common_struct.Response mobotSearchPosition(1: map<string,string> params) throws (1: common_struct.BIZException e);
 }

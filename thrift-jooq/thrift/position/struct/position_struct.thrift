@@ -124,7 +124,7 @@ struct WechatPositionListData {
 // 微信端职位列表的附加红包信息
 struct RpExtInfo {
     1: optional i32 pid,
-    2: optional i32 remain,
+    2: optional double remain,
     3: optional bool employee_only
 }
 
@@ -144,7 +144,7 @@ struct WechatRpPositionListData {
     12: optional string company_logo,
     13: optional string company_name,
     14: optional bool is_new
-    15: optional i32 remain,
+    15: optional double remain,
     16: optional bool employee_only,
     17: optional string city,
     18: optional i32 candidate_source,
@@ -287,7 +287,8 @@ struct JobPostrionObj{
     50:string thirdParty_position,
     51:i8 priority,  //是否置顶
     52:list<string> ccmail, //抄送邮箱
-    53: optional bool profile_cc_mail_enabled  //简历申请是否抄送邮箱,不传默认false
+    53: optional bool profile_cc_mail_enabled,  //简历申请是否抄送邮箱,不传默认false
+    54: optional bool is_referral  //职位是否内推
 }
 
 struct City{

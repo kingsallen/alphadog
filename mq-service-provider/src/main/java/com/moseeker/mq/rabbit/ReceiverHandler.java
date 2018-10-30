@@ -1,6 +1,9 @@
 package com.moseeker.mq.rabbit;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.PropertyNamingStrategy;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.log.ELKLog;
@@ -9,8 +12,10 @@ import com.moseeker.common.log.ReqParams;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.MessageTemplateEntity;
 import com.moseeker.entity.PersonaRecomEntity;
+import com.moseeker.entity.RedPacketEntity;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
-import com.moseeker.mq.service.impl.TemlateMsgHttp;
+import com.moseeker.entity.pojo.readpacket.RedPacketData;
+import com.moseeker.mq.service.impl.TemplateMsgHttp;
 import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
@@ -19,7 +24,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +35,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+
+import static com.alibaba.fastjson.serializer.SerializerFeature.*;
+import static com.alibaba.fastjson.serializer.SerializerFeature.WriteMapNullValue;
+import static com.alibaba.fastjson.serializer.SerializerFeature.WriteNullNumberAsZero;
 
 /**
  * Created by lucky8987 on 17/8/3.
@@ -57,7 +68,48 @@ public class ReceiverHandler {
     private PersonaRecomEntity personaRecomEntity;
 
     @Autowired
-    private TemlateMsgHttp temlateMsgHttp;
+    private TemplateMsgHttp templateMsgHttp;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Autowired
+    private RedPacketEntity redPacketEntity;
+
+    private SerializeConfig config = new SerializeConfig();
+
+    public ReceiverHandler() {
+        config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
+
+    @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void employeeFirstRegister(Message message) {
+        try {
+            //todo 组装红包发放所需数据，向约定的exchange发送消息
+            try {
+                String msgBody = new String(message.getBody(), "UTF-8");
+                JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                log.info("bonusNotice jsonObject:{}", jsonObject);
+                RedPacketData redPacketData = redPacketEntity.fetchRadPacketDataByEmployeeId(jsonObject.getInteger("id"));
+                amqpTemplate.send(Constant.EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE,
+                        Constant.EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY,
+                        MessageBuilder.withBody(JSON.toJSONString(redPacketData,
+                                config,
+                                WriteNullListAsEmpty,
+                                WriteNullStringAsEmpty,
+                                WriteNullNumberAsZero,
+                                WriteNullBooleanAsFalse,
+                                WriteMapNullValue,
+                                WriteNullNumberAsZero).getBytes())
+                        .build());
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     @RabbitListener(queues = "#{bonusNoticeQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -66,7 +118,7 @@ public class ReceiverHandler {
             String msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             log.info("bonusNotice jsonObject:{}", jsonObject);
-            temlateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
+            templateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
                     jsonObject.getLong("operationTime"), jsonObject.getInteger("nextStage"));
         } catch (Exception e) {
             log.error(e.getMessage(), e);

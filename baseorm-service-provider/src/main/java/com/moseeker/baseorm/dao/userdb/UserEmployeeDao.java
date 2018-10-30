@@ -15,6 +15,7 @@ import org.jooq.*;
 import org.jooq.impl.DSL;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -215,6 +216,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 " and u.id = "+ id + " and ut.id is null");
     }
 
+    @Transactional
     public ExecuteResult registerEmployee(UserEmployeeDO useremployee) {
 
         ExecuteResult executeResult = new ExecuteResult();
@@ -356,4 +358,5 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .limit(1)
                 .fetchOne();
     }
+
 }
