@@ -2041,6 +2041,7 @@ public class PositionService {
     public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
         List<RpExtInfo> result = new ArrayList<>();
         // 获取 company_id
+        logger.info("getPositionListRpExt pids:{},size:{}",pids,pids.size());
         int company_id = 0;
         if (pids.size() > 0) {
             Query qus = new Query.QueryBuilder()

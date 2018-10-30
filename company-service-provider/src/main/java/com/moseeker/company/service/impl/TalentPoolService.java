@@ -49,6 +49,10 @@ import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolHrAutomaticTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +76,8 @@ public class TalentPoolService {
         serializeConfig.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
     private ThreadPool tp = ThreadPool.Instance;
+
+    ScheduledThread thread=ScheduledThread.Instance;
     @Autowired
     private CompanyTagService tagService;
     @Autowired
@@ -173,10 +179,23 @@ public class TalentPoolService {
         if(result==null||result.isEmpty()){
             return  ResponseUtils.success("");
         }
-        tp.startTast(() -> {
+
+        thread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                try {
             tagService.handlerCompanyTagTalent(idList, companyId);
-            return 0;
-        });
+                    tagService.handlerUserIdAndHrTag(idList,hrId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },80000);
+
+//        tp.startTast(() -> {
+//            tagService.handlerCompanyTagTalent(idList, companyId);
+//            return 0;
+//        });
         return ResponseUtils.success(result);
     }
     /*
@@ -1350,8 +1369,8 @@ public class TalentPoolService {
 
             if(!StringUtils.isEmptyList(tagProfileList)){
                 for(Map<String, Object> map:tagProfileList){
-                    TalentpoolCompanyTag companyTag= JSON.parseObject(JSON.toJSONString(map.get("company_tag")),TalentpoolCompanyTag.class) ;
-                    int id=companyTag.getId();
+                    Map<String, Object> companyTag= (Map<String, Object>) map.get("company_tag");
+                    int id=(Integer)companyTag.get("id");
                     //获取企业标签下人数
                     int totalNum=tagService.getTagtalentNum(hrId,companyId,id);
                     map.put("person_num",totalNum);
@@ -1371,6 +1390,8 @@ public class TalentPoolService {
         tagListInfo.put("page_size", info.getPageSize());
         String result=JSON.toJSONString(tagListInfo,serializeConfig);
         return ResponseUtils.successWithoutStringify(result);
+
+
     }
 
     /**
@@ -1431,6 +1452,16 @@ public class TalentPoolService {
         return ResponseUtils.success("");
     }
 
+    private void delRediskey(List<Integer> tagIdList){
+        List<Map<String,Object>> list=talentpoolHrAutomaticTagDao.getDataByIdList(tagIdList);
+        if(!StringUtils.isEmptyList(list)){
+            for(Map<String,Object> data:list){
+                int id=(int)data.get("id")  ;
+                String name=(String)data.get("name");
+                redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), id + "", name);
+            }
+        }
+    }
 
     @Transactional
     public Response deleteHrAutoTags(int hrId, int companyId, List<Integer> tag_ids){
@@ -1453,16 +1484,6 @@ public class TalentPoolService {
         }
         this.delRediskey(tag_ids);
         return ResponseUtils.success("");
-    }
-    private void delRediskey(List<Integer> tagIdList){
-        List<Map<String,Object>> list=talentpoolHrAutomaticTagDao.getDataByIdList(tagIdList);
-        if(!StringUtils.isEmptyList(list)){
-            for(Map<String,Object> data:list){
-              int id=(int)data.get("id")  ;
-              String name=(String)data.get("name");
-                redisClient.del(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), id + "", name);
-            }
-        }
     }
     /**
      * 获取企业标签信息
@@ -1564,9 +1585,6 @@ public class TalentPoolService {
         }
         data.setColor("#FFD060");
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName());
-        logger.info("===========================");
-        logger.info(info);
-        logger.info("===========================");
         if (StringUtils.isNullOrEmpty(info)) {
             try {
             redisClient.setNoTime(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_HR_AUTOMATIC_TAG_ADD.toString(), data.getHr_id() + "", data.getName(), "true");
@@ -1608,7 +1626,6 @@ public class TalentPoolService {
         TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
         String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
         record.setKeywords(keyword);
-        data.setColor("#FFD060");
         record=talentpoolHrAutomaticTagDao.addRecord(record);
         return record.getId();
     }
@@ -1616,7 +1633,6 @@ public class TalentPoolService {
         TalentpoolHrAutomaticTagRecord record=com.moseeker.baseorm.util.BeanUtils.structToDBAll(data,TalentpoolHrAutomaticTagRecord.class);
         String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
         record.setKeywords(keyword);
-        data.setColor("#FFD060");
         talentpoolHrAutomaticTagDao.updateRecord(record);
     }
     /*
