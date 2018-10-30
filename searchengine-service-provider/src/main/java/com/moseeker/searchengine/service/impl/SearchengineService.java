@@ -69,6 +69,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.moseeker.searchengine.service.impl.tools.EmployeeBizTool.buildSortScript;
+
 @Service
 @CounterIface
 public class SearchengineService {
@@ -703,23 +705,6 @@ public class SearchengineService {
         }
     }
 
-
-    /**
-     * todo searchengine-service依赖 common-service，并依赖 SearchengineEntity的buildSrtScript代码
-     * @param timspanc
-     * @param field
-     * @param sortOrder
-     * @return
-     */
-    private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("double score=0; awards=_source.awards;times=awards['" + timspanc + "'];if(times){award=doc['awards." + timspanc + "." + field + "'].value;if(award){score=award}}; return score");
-        String scripts = sb.toString();
-        Script script = new Script(scripts);
-        ScriptSortBuilder builder = new ScriptSortBuilder(script, "number").order(sortOrder);
-        return builder;
-    }
-
     /**
      * 查找制定用户积分
      * @param searchClient
@@ -867,7 +852,8 @@ public class SearchengineService {
     }
 
     public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-                                   String emailValidate, int pageSize, int pageNumber,int balanceType) throws SearchEngineException {
+                                   String emailValidate, int pageSize, int pageNumber, int balanceType, String timeSpan)
+            throws SearchEngineException {
         TransportClient searchClient;
         try {
             searchClient = searchUtil.getEsClient();
@@ -889,13 +875,20 @@ public class SearchengineService {
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
             SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
-            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
+            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
             EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             result.put("total", response.getHits().getTotalHits());
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                if (StringUtils.isNotBlank(timeSpan)) {
+                    if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timeSpan)) {
+                        jsonObject.put("award", jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getIntValue("award"));
+                    } else {
+                        jsonObject.put("award", 0);
+                    }
+                }
                 data.add(jsonObject);
             }
             logger.info("==================================");
