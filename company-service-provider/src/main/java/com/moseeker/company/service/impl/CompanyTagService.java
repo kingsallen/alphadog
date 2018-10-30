@@ -2,14 +2,17 @@ package com.moseeker.company.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.talentpooldb.*;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolCompanyTagUserRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolHrAutomaticTagUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.bean.TalentUserHrCompany;
 import com.moseeker.company.constant.TalentpoolTagStatus;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
@@ -47,7 +50,8 @@ public class CompanyTagService {
     @Autowired
     private TalentpoolHrTalentDao talentpoolHrTalentDao;
     @Autowired
-    private TalentpoolTalentDao talentpoolTalentDao;
+    private UserHrAccountDao userHrAccountDao;
+
 
     SearchengineServices.Iface service = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -300,19 +304,58 @@ public class CompanyTagService {
      */
     public void handlerHrAutomaticData(Set<Integer> userIdset){
         try{
-            List<TalentpoolHrTalent> list=talentpoolHrTalentDao.getDataByUserId(userIdset);
-            List<TalentpoolTalent> dataList=talentpoolTalentDao.getTalents(userIdset);
+            List<TalentUserHrCompany> list=this.getUserTalentCompanyMapData(userIdset);
             //需要获取company_id
             if(!StringUtils.isEmptyList(list)){
-                for(TalentpoolHrTalent data:list){
+                for(TalentUserHrCompany data:list){
                     Set<Integer> userIdList=new HashSet<>();
                     userIdList.add(data.getUserId());
-                    this.handlerUserIdAndHrTag(userIdList,data.getHrId());
+                    this.handlerUserIdAndHrTag(userIdList,data.getHrId(),data.getCompanyId());
                 }
             }
         }catch(Exception e){
             logger.error(e.getMessage(),e);
         }
+    }
+    //获取user和公司之间的关系
+    private List<TalentUserHrCompany> getUserTalentCompanyMapData(Set<Integer> userIdset){
+        List<TalentpoolHrTalent> list=talentpoolHrTalentDao.getDataByUserId(userIdset);
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> hrIdList=this.getHrIdList(list);
+        if(StringUtils.isEmptyList(hrIdList)){
+            return null;
+        }
+        List<UserHrAccount> dataList=userHrAccountDao.getAccountByIdList(hrIdList);
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        List<TalentUserHrCompany> result=new ArrayList<>();
+        for(TalentpoolHrTalent talent:list){
+            int hrId=talent.getHrId();
+            int userid=talent.getUserId();
+            for(UserHrAccount userHrAccount:dataList){
+                if(hrId==userHrAccount.getId()){
+                    int companyId=userHrAccount.getCompanyId();
+                    TalentUserHrCompany data=new TalentUserHrCompany(userid,hrId,companyId);
+                    result.add(data);
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    private List<Integer> getHrIdList( List<TalentpoolHrTalent> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(TalentpoolHrTalent talent:list){
+            result.add(talent.getHrId());
+        }
+        return result;
     }
 
     /*
