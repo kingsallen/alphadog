@@ -202,14 +202,18 @@ public class CompanyTagService {
 
             }
         }
-        logger.info("===============total====================");
+        logger.info("===============tagIdList====================");
         logger.info(JSON.toJSONString(tagIdList));
         logger.info("=====================================");
         if(!StringUtils.isEmptyList(deleList)){
-            talentpoolHrAutomaticTagUserDao.deleteRecords(deleList);
+            int [] result=talentpoolHrAutomaticTagUserDao.deleteRecords(deleList);
+            logger.info(JSON.toJSONString(result));
         }
         if(!StringUtils.isEmptyList(list)){
-            talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+            List<TalentpoolHrAutomaticTagUserRecord> result1=talentpoolHrAutomaticTagUserDao.addAllRecord(list);
+            logger.info("===============TalentpoolHrAutomaticTagUserRecord====================");
+            logger.info(JSON.toJSONString(result1));
+            logger.info("=====================================");
             for (Integer userId : userIdList) {
                 this.addRedisRefreshEs(userId,tagIdList, KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
             }
