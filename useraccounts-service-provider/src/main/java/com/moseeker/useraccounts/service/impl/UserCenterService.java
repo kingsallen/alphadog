@@ -220,7 +220,7 @@ public class UserCenterService {
      */
     @SuppressWarnings("unchecked")
     public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws CommonException {
-        logger.info("getRecommendations userId:{}, type:{}, pageNo:{}, pageSize:{}", userId, type, pageNo, pageSize);
+        logger.info("UserCenterService getRecommendations userId:{}, type:{}, pageNo:{}, pageSize:{}", userId, type, pageNo, pageSize);
         RecommendationVO recommendationForm = new RecommendationVO();
         try {
 
@@ -231,7 +231,7 @@ public class UserCenterService {
             /** 并行查找三个统计信息 */
 
             List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
-            logger.info("getRecommendations positionIdList:{}", positionIdList);
+            logger.info("UserCenterService getRecommendations positionIdList:{}", positionIdList);
             if (positionIdList == null) {
                 return recommendationForm;
             }
@@ -250,8 +250,11 @@ public class UserCenterService {
             scoreVO.setLink_viewed_count(totalCount);
             recommendationForm.setScore(scoreVO);
 
+
+            logger.info("UserCenterService getRecommendations before listCandidateRecomRecords userId:{}, type:{}, positionIdList:{}, presenteeUserIdList:{}, pageNo:{}, pageSize:{}", userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
             /** 分页查找相关职位转发记录 */
             List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
+            logger.info("UserCenterService getRecommendations recomRecordDOList.size():{}, recomRecordDOList:{}", recomRecordDOList.size(), recomRecordDOList);
             if (recomRecordDOList.size() > 0) {
                 recommendationForm.setHasRecommends(true);
 
