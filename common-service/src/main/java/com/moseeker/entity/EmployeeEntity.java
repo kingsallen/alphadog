@@ -176,10 +176,10 @@ public class EmployeeEntity {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
+    ThreadPool tp =ThreadPool.Instance;
+
     @Resource(name = "cacheClient")
     private RedisClient client;
-
-    ThreadPool tp = ThreadPool.Instance;
 
     private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_exchange";
     private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";

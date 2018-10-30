@@ -866,7 +866,7 @@ public class SearchengineService {
                 if (filter == 1) {
                     String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
                     if(StringUtils.isNotBlank(str1)){
-                        List<Integer> employees = JSON.parseArray(str, Integer.class);
+                        List<Integer> employees = JSON.parseArray(str1, Integer.class);
                         EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                     }
                 }
