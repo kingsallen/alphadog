@@ -405,7 +405,7 @@ public class CompanyTagService {
      处理获取的hr自定义的标签的数据
      */
     private void handlerHrUserIdList(List<Integer>tagIdList,int type,Map<String,Object> map,int page,int pageSize) throws TException {
-        List<Integer> userIdList=this.getUseridList(page,pageSize,map);
+        List<Integer> userIdList=this.getUserIdList(page,pageSize,map);
         this.handlerHrAutoTag(tagIdList,type,userIdList, page);
     }
     /*
@@ -468,7 +468,7 @@ public class CompanyTagService {
     }
 
     private void handlerUserIdList(List<Integer> tagIdList,int type,Map<String,Object> map,int page,int pageSize) throws TException {
-        List<Integer> userIdList=this.getUseridList(page,pageSize,map);
+        List<Integer> userIdList=this.getUserIdList(page,pageSize,map);
         if (type == TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue()) {
             if (!StringUtils.isEmptyList(userIdList)) {
                 List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
@@ -496,7 +496,7 @@ public class CompanyTagService {
         this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.COMPANYTAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
 
     }
-    private List<Integer> getUseridList(int page,int pageSize,Map<String,Object> map) throws TException {
+    private List<Integer> getUserIdList(int page,int pageSize,Map<String,Object> map) throws TException {
         Map<String, String> params = new HashMap<>();
         for (String key : map.keySet()) {
             params.put(key, String.valueOf(map.get(key)));

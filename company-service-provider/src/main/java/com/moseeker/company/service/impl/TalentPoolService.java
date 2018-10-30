@@ -1583,6 +1583,7 @@ public class TalentPoolService {
                             if (data.isSetKeyword_list()) {
                             String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
                             map.put("keywords", keyword);
+                            map.put("company_id",companyId);
                         }
                         tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
                         return 0;
@@ -1648,6 +1649,7 @@ public class TalentPoolService {
                 try {
                     tp.startTast(() -> {
                         Map<String, Object> tag = this.handlerHrAutoData(data.getId(), data);
+                        tag.put("company_id",companyId);
                         tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue(), tag);
                         return 0;
                     });
