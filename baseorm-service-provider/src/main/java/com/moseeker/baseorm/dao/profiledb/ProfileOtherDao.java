@@ -39,4 +39,7 @@ public class ProfileOtherDao extends JooqCrudImpl<ProfileOtherDO, ProfileOtherRe
         return result == null ? "" : result.get(selectColumn);
     }
 
+    public com.moseeker.baseorm.db.profiledb.tables.pojos.ProfileOther getProfileOtherByProfileId(Integer profileId) {
+        return create.selectFrom(ProfileOther.PROFILE_OTHER).where(ProfileOther.PROFILE_OTHER.PROFILE_ID.eq(profileId)).fetchOneInto(com.moseeker.baseorm.db.profiledb.tables.pojos.ProfileOther.class);
+    }
 }

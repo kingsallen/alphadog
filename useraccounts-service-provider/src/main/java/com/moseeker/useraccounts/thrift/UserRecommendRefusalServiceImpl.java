@@ -2,7 +2,6 @@ package com.moseeker.useraccounts.thrift;
 
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserRecommendRefusalDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserRecommendRefusalService.Iface;
 import com.moseeker.useraccounts.service.impl.UserRecommendRefusalService;

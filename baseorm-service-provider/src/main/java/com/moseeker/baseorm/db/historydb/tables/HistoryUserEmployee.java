@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HistoryUserEmployee extends TableImpl<HistoryUserEmployeeRecord> {
 
-    private static final long serialVersionUID = 676568220;
+    private static final long serialVersionUID = -1489565557;
 
     /**
      * The reference instance of <code>historydb.history_user_employee</code>
@@ -305,6 +305,31 @@ public class HistoryUserEmployee extends TableImpl<HistoryUserEmployeeRecord> {
      * The column <code>historydb.history_user_employee.custom_field_values</code>. 自定 义字段键值, 结构[{&lt;id&gt;: "&lt;value&gt;"},{...},...]
      */
     public final TableField<HistoryUserEmployeeRecord, String> CUSTOM_FIELD_VALUES = createField("custom_field_values", org.jooq.impl.SQLDataType.VARCHAR.length(4096).nullable(false).defaultValue(org.jooq.impl.DSL.inline("[]", org.jooq.impl.SQLDataType.VARCHAR)), this, "自定 义字段键值, 结构[{<id>: \"<value>\"},{...},...]");
+
+    /**
+     * The column <code>historydb.history_user_employee.team_id</code>. 团队id
+     */
+    public final TableField<HistoryUserEmployeeRecord, Integer> TEAM_ID = createField("team_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "团队id");
+
+    /**
+     * The column <code>historydb.history_user_employee.job_grade</code>. 职级
+     */
+    public final TableField<HistoryUserEmployeeRecord, Byte> JOB_GRADE = createField("job_grade", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "职级");
+
+    /**
+     * The column <code>historydb.history_user_employee.city_code</code>. 城市code
+     */
+    public final TableField<HistoryUserEmployeeRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "城市code");
+
+    /**
+     * The column <code>historydb.history_user_employee.degree</code>. 学历
+     */
+    public final TableField<HistoryUserEmployeeRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "学历");
+
+    /**
+     * The column <code>historydb.history_user_employee.bonus</code>. 员工当前的奖金总额
+     */
+    public final TableField<HistoryUserEmployeeRecord, Integer> BONUS = createField("bonus", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "员工当前的奖金总额");
 
     /**
      * Create a <code>historydb.history_user_employee</code> table reference

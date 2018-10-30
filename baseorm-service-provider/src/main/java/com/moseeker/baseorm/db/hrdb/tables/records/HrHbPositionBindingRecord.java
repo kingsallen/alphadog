@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbPositionBindingRecord extends UpdatableRecordImpl<HrHbPositionBindingRecord> implements Record8<Integer, Integer, Integer, Byte, BigDecimal, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1486750594;
+    private static final long serialVersionUID = -1941290270;
 
     /**
      * Setter for <code>hrdb.hr_hb_position_binding.id</code>.
@@ -76,14 +76,14 @@ public class HrHbPositionBindingRecord extends UpdatableRecordImpl<HrHbPositionB
     }
 
     /**
-     * Setter for <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
+     * Setter for <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请 3=推荐候选人初筛通过
      */
     public void setTriggerWay(Byte value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
+     * Getter for <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请 3=推荐候选人初筛通过
      */
     public Byte getTriggerWay() {
         return (Byte) get(3);

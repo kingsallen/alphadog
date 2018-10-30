@@ -23,6 +23,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class UseraccountsServer {
 
+
     private static Logger LOGGER = LoggerFactory.getLogger(UseraccountsServer.class);
 
     public static void main(String[] args) {

@@ -20,6 +20,15 @@ public class HrHbConfigDao extends JooqCrudImpl<HrHbConfigDO, HrHbConfigRecord> 
         super(table, hrHbConfigDOClass);
     }
 
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbConfig> getHrHbConfigByCompanyId(int companyId,int status,List<Integer> typeList){
+        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbConfig> list=create.selectFrom(HrHbConfig.HR_HB_CONFIG)
+                .where(HrHbConfig.HR_HB_CONFIG.COMPANY_ID.eq(companyId))
+                .and(HrHbConfig.HR_HB_CONFIG.STATUS.eq((byte)status))
+                .and(HrHbConfig.HR_HB_CONFIG.TYPE.in(typeList))
+                .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbConfig.class);
+        return list;
+    }
+
     public List<HrHbConfigRecord> fetchByIdList(List<Integer> configIdList) {
         return create
                 .selectFrom(HrHbConfig.HR_HB_CONFIG)
