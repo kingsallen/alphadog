@@ -185,7 +185,7 @@ public class TalentPoolService {
             public void run() {
                 try {
             tagService.handlerCompanyTagTalent(idList, companyId);
-                    tagService.handlerUserIdAndHrTag(idList,hrId);
+                    tagService.handlerUserIdAndHrTag(idList,hrId,companyId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
