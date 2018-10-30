@@ -205,6 +205,9 @@ public class CompanyTagService {
         logger.info("===============tagIdList====================");
         logger.info(JSON.toJSONString(tagIdList));
         logger.info("=====================================");
+        logger.info("===============list====================");
+        logger.info(JSON.toJSONString(list));
+        logger.info("=====================================");
         if(!StringUtils.isEmptyList(deleList)){
             int [] result=talentpoolHrAutomaticTagUserDao.deleteRecords(deleList);
             logger.info(JSON.toJSONString(result));
