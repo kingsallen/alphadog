@@ -2,14 +2,11 @@ package com.moseeker.mall.service;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.malldb.MallGoodsOrderDao;
 import com.moseeker.baseorm.dao.malldb.MallOrderOperationDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
-import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
@@ -17,7 +14,6 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.GoodsEnum;
@@ -25,11 +21,8 @@ import com.moseeker.mall.constant.OrderEnum;
 import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
-import com.moseeker.mall.vo.TemplateBaseVO;
-import com.moseeker.mall.vo.TemplateDataValueVO;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderOperationDO;
@@ -48,7 +41,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.net.ConnectException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -78,14 +70,9 @@ public class OrderService {
 
     private final UserEmployeePointsDao userEmployeePointsDao;
 
-    @Autowired
-    private UserWxUserDao userWxUserDao;
+    private final HrCompanyDao hrCompanyDao;
 
-    @Autowired
-    private TemplateService templateService;
-
-    @Autowired
-    private HrWxTemplateMessageDao hrWxTemplateMessageDao;
+    private final TemplateService templateService;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -93,20 +80,20 @@ public class OrderService {
     private static final String CONFIRM_REASON = "积分商城兑换商品消费积分";
     private static final String REFUSE_REASON = "积分商城拒绝兑换商品返还积分";
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
-    private static final String CONSUME_TYPE = "兑换成功，扣除积分";
     private static final String REFUSE_REMARK = "点击查看积分明细";
-    private static final String REFUSE_TYPE = "积分退回";
-    private static final String CREDIT = "积分";
-
 
     @Autowired
-    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao, GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao) {
+    public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao,
+                        GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao,
+                        HrCompanyDao hrCompanyDao, TemplateService templateService) {
         this.orderDao = orderDao;
         this.userEmployeeDao = userEmployeeDao;
         this.historyUserEmployeeDao = historyUserEmployeeDao;
         this.goodsService = goodsService;
         this.orderOperationDao = orderOperationDao;
         this.userEmployeePointsDao = userEmployeePointsDao;
+        this.hrCompanyDao = hrCompanyDao;
+        this.templateService = templateService;
     }
 
     /**
@@ -197,7 +184,6 @@ public class OrderService {
             delOrderRedisLock(orderForm);
             throw e;
         }
-        System.out.println("执行结束");
     }
 
     /**
@@ -306,54 +292,23 @@ public class OrderService {
         // 插入订单操作记录
         insertOperationRecord(mallOrderDO.getId(), userEmployeePointsDO.getId());
         // 发送消息模板
-//        String templateTile = "您已成功兑换" + mallGoodsInfoDO.getTitle();
-//        String url = "www.baidu.com";
-//        sendAwardTemplate(userEmployeeDO, mallOrderDO.getCredit(), userEmployeeDO.getAward() - payCredit,
-//                templateTile, CONSUME_TYPE, "消费", CONSUME_REMARK, url);
-        //  删除redis锁
+        sendAwardTemplate(orderForm.getCompany_id(), mallOrderDO.getCredit(), userEmployeeDO.getSysuserId(), mallGoodsInfoDO.getTitle());
+        // 删除redis锁
         delOrderRedisLock(orderForm);
     }
 
-    private void sendAwardTemplate(UserEmployeeDO userEmployeeDO, int payCredit, int amount, String title, String type, String creditChange, String remark, String url) {
-        TemplateDataValueVO templateDataValueVO = new TemplateDataValueVO();
-        try {
-            DateTime dateTime = DateTime.now();
-            DateFormat dateFormat = new SimpleDateFormat("yyyy年mm月dd日 HH:mm:ss");
-            templateDataValueVO.setTime(dateFormat.format(dateTime));
-            // employeeId 查手机号，手机没有则用sysuserid查nickname
-            UserWxUserRecord userWxUserRecord = userWxUserDao.getWXUserByUserId(userEmployeeDO.getSysuserId());
-            templateDataValueVO.setAccount(getAccount(userEmployeeDO, userWxUserRecord));
-            templateDataValueVO.setType(type);
-            templateDataValueVO.setCreditChange(creditChange);
-            templateDataValueVO.setCreditName("积分");
-            templateDataValueVO.setRemark(remark);
-            templateDataValueVO.setNumber(payCredit + "");
-            templateDataValueVO.setFirst(title);
-            templateDataValueVO.setAmount(amount + "");
-            Map<String, TemplateBaseVO> templateValueMap = templateService.sendCreditUpdateTemplate(templateDataValueVO, userWxUserRecord.getOpenid(), url);
-            // todo 插入模板消息发送记录
-//        insertLogWxMessageRecord(hrWxWechatDO, template, openId, link, colMap ,params);
-        } catch (ConnectException e){
-            logger.info("=========================积分消息模板发送超时：templateDataValueVO:{}", templateDataValueVO);
-        }
-
+    private void sendAwardTemplate(int companyId, int returnCredit, int sysUserId, String goodTitle){
+        DateTime dateTime = DateTime.now();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
+        String current = dateFormat.format(dateTime.toDate());
+        String templateTile = "您已成功兑换【" + goodTitle + "】";
+        String url = "www.baidu.com";
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(companyId);
+        String shopName = hrCompanyDO.getName() + "积分商城";
+        templateService.sendAwardTemplate(sysUserId, companyId, Constant.TEMPLATES_AWARD_CONSUME_NOTICE_TPL, templateTile,
+                current, "0",  returnCredit+ "", shopName, CONSUME_REMARK, url);
     }
 
-    /**
-     * 手机没有则用sysuserid查nickname 代替消息模板中的account
-     * @param userEmployeeDO 员工信息
-     * @param userWxUserRecord 员工微信信息
-     * @author  cjm
-     * @date  2018/10/24
-     * @return 返回手机号或微信昵称
-     */
-    private String getAccount(UserEmployeeDO userEmployeeDO, UserWxUserRecord userWxUserRecord) {
-        String account = userEmployeeDO.getMobile();
-        if(StringUtils.isNullOrEmpty(account)){
-            account = userWxUserRecord.getNickname();
-        }
-        return account;
-    }
 
     private void delOrderRedisLock(OrderForm orderForm) {
         redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.MALL_ORDER.toString(),
@@ -458,16 +413,19 @@ public class OrderService {
 
 
     private void updateAward(UserEmployeeDO userEmployeeDO, int payCredit) throws BIZException {
-        updateAwardByLock(userEmployeeDO.getId(), userEmployeeDO.getAward(), payCredit, 1);
+        updateAwardByLock(userEmployeeDO, payCredit, 1);
     }
 
-    private void updateAwardByLock(int employeeId, int oldAward, int payCredit, int retryTimes) throws BIZException {
+    private UserEmployeeDO updateAwardByLock(UserEmployeeDO userEmployeeDO, int payCredit, int retryTimes) throws BIZException {
         DbUtils.checkRetryTimes(retryTimes);
+        int employeeId = userEmployeeDO.getId();
+        int oldAward = userEmployeeDO.getAward();
         int row = userEmployeeDao.addAward(employeeId, oldAward + payCredit, oldAward);
         if(row == 0){
-            UserEmployeeDO userEmployeeDO = userEmployeeDao.getEmployeeById(employeeId);
-            updateAwardByLock(userEmployeeDO.getId(), userEmployeeDO.getAward(), payCredit, ++retryTimes);
+            userEmployeeDO = userEmployeeDao.getEmployeeById(employeeId);
+            return updateAwardByLock(userEmployeeDO, payCredit, ++retryTimes);
         }
+        return userEmployeeDO;
     }
 
     /**
@@ -564,12 +522,14 @@ public class OrderService {
     }
 
     private void batchInsertOperationRecord(Map<Integer, UserEmployeePointsRecordDO> recordDOS, MallGoodsOrderUpdateForm updateForm) {
+        // 批量确认订单
         if(recordDOS.size() == 0){
             List<MallOrderOperationDO> orderOperationDOS = new ArrayList<>();
             updateForm.getIds().forEach(id -> orderOperationDOS.add(initOperationRecord(0, id, updateForm.getHr_id(), updateForm.getState())));
             orderOperationDao.addAllData(orderOperationDOS);
             return;
         }
+        // 批量拒绝订单
         List<MallOrderOperationDO> orderOperationDOS = new ArrayList<>();
         updateForm.getIds().forEach(id -> orderOperationDOS.add(initOperationRecord(recordDOS.get(id).getId(), id, updateForm.getHr_id(), updateForm.getState())));
         orderOperationDao.addAllData(orderOperationDOS);
@@ -596,12 +556,12 @@ public class OrderService {
             if(userEmployeeDO == null){
                 userEmployeeDO = historyEmployeeDOMap.get(orderDO.getEmployee_id());
             }
-            updateAwardByLock(orderDO.getEmployee_id(), userEmployeeDO.getAward(), orderDO.getCredit(), 1);
+            userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCredit(), 1);
             // 发送积分变动消息模板
-//            String templateTile = "您兑换的" + orderDO.getTitle() + "，未成功发放，积分已退还到您的账户";
-//            String url = "www.baidu.com";
-//            sendAwardTemplate(userEmployeeDO, orderDO.getCredit(), userEmployeeDO.getAward() - orderDO.getCredit(),
-//                    templateTile, REFUSE_TYPE, "到账", REFUSE_REMARK, url);
+            String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
+            String url = "www.baidu.com";
+            templateService.sendAwardTemplate(userEmployeeDO.getSysuserId(), userEmployeeDO.getCompanyId(), Constant.TEMPLATES_AWARD_RETURN_NOTICE_TPL, templateTile,
+                    "0", orderDO.getCredit() + "", "0", userEmployeeDO.getAward() + orderDO.getCredit() + "", REFUSE_REMARK, url);
         }
     }
 

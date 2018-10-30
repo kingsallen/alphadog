@@ -33,19 +33,9 @@ import java.util.Map;
 @RequestMapping("api/mall/visit")
 public class GoodsShowController {
 
-    private final MallController mallController;
-
-    private final GoodsManageController manageController;
-
     GoodsService.Iface goodsService = ServiceManager.SERVICEMANAGER.getService(GoodsService.Iface.class);
 
     private Logger logger = LoggerFactory.getLogger(GoodsShowController.class);
-
-    @Autowired
-    public GoodsShowController(MallController mallController, GoodsManageController manageController) {
-        this.mallController = mallController;
-        this.manageController = manageController;
-    }
 
     /**
      * 获取商品列表
