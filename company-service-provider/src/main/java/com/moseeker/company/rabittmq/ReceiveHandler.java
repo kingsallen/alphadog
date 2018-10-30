@@ -50,6 +50,7 @@ public class ReceiveHandler {
                 log.info(JSON.toJSONString(companyIdSet));
                 log.info("===========================");
                 companyTagService.handlerProfileCompanyIds(convert(userIdSet),convert(companyIdSet));
+                companyTagService.handlerHrAutomaticData(convert(userIdSet));
             }
 
         } catch (Exception e) {
