@@ -1949,11 +1949,16 @@ public class TalentPoolEntity {
                             TalentpoolHrAutomaticTagUserRecord record=new TalentpoolHrAutomaticTagUserRecord();
                             record.setUserId(userId);
                             record.setTagId(tag.getId());
+                            result.add(record);
                         }
                     }
                 }
+                //需要删除的记录
+                logger.info("==============================");
+                logger.info(result.toString());
+                logger.info("==============================");
                 if(!StringUtils.isEmptyList(result)){
-                    talentpoolHrAutomaticTagUserDao.deleteRecords(result);
+                    talentpoolHrAutomaticTagUserDao.deleteList(result);
                 }
             }
 
