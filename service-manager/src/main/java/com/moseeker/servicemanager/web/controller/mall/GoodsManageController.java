@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -226,7 +227,7 @@ public class GoodsManageController {
      * @date  2018/10/12
      * @return 返回校验信息
      */
-    private ValidateUtil validateRequireInfo(MallGoodsInfoForm mallGoodsInfoForm){
+    private ValidateUtil validateRequireInfo(MallGoodsInfoForm mallGoodsInfoForm) {
 
         ValidateUtil vu = new ValidateUtil();
         vu.addRequiredValidate("主图url", mallGoodsInfoForm.getPic_url());
@@ -238,10 +239,32 @@ public class GoodsManageController {
 
         vu.addIntTypeValidate("积分", mallGoodsInfoForm.getCredit(), null, null, 0, Integer.MAX_VALUE);
         vu.addIntTypeValidate("公司id", mallGoodsInfoForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
-        vu.addStringLengthValidate("标题", mallGoodsInfoForm.getTitle(), null, null, 1, 16);
-        vu.addStringLengthValidate("主图url", mallGoodsInfoForm.getPic_url(), null, null, 1, 2000);
-        vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 2000);
-        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 1, 200);
+        vu.addIntTypeValidate("标题", getStringLength(mallGoodsInfoForm.getTitle()), null, null, 1, 33);
+        vu.addStringLengthValidate("主图url", mallGoodsInfoForm.getPic_url(), null, null, 1, 2001);
+        vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 2001);
+        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 0, 201);
         return vu;
+    }
+
+    /**
+     * 获取商品标题长度，一个汉字等于两个字母
+     * @param str 商品标题
+     * @author  cjm
+     * @date  2018/10/30
+     * @return 标题长度
+     */
+    private int getStringLength(String str){
+        if(StringUtils.isNullOrEmpty(str)){
+            return 0;
+        }
+        int len = 0;
+        for (int i=0; i<str.length(); i++) {
+            if (str.charAt(i)>127 || str.charAt(i)==94) {
+                len += 2;
+            } else {
+                len ++;
+            }
+        }
+        return len;
     }
 }
