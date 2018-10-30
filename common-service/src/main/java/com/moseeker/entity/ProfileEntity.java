@@ -83,7 +83,7 @@ public class ProfileEntity {
      * @return 格式化的简历信息
      */
     public ProfilePojo parseProfile(String profileParameter) {
-        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
+        Map<String, Object> paramMap = EmojiFilter.filterEmoji(profileParameter);
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
