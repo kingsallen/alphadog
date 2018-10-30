@@ -254,6 +254,9 @@ public class GoodsManageController {
      * @return 标题长度
      */
     private int getStringLength(String str){
+        if(StringUtils.isNullOrEmpty(str)){
+            return 0;
+        }
         int len = 0;
         for (int i=0; i<str.length(); i++) {
             if (str.charAt(i)>127 || str.charAt(i)==94) {
