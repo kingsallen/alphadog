@@ -774,14 +774,14 @@ public class SearchengineService {
                         EmployeeActiveState.UnFollow.getState();
             }
             if (StringUtils.isNotBlank(activation)) {
-                searchUtil.handleTerms(activation, defaultquery, "activation");
+                searchUtil.handleTerms(activation, query, "activation");
             }
         }
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
         for(Integer companyId : companyIds){
-            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), String.valueOf(companyId));
+            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
             if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(result)){
                 List<Integer> employees = JSON.parseArray(result, Integer.class);
                 if(!com.moseeker.common.util.StringUtils.isEmptyList(employees)){
@@ -800,7 +800,7 @@ public class SearchengineService {
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
-        logger.info(searchRequestBuilder.toString());
+        logger.info("SearchengineService getSearchRequestBuilder:{}", searchRequestBuilder.toString());
         return searchRequestBuilder;
     }
 
@@ -827,20 +827,13 @@ public class SearchengineService {
     }
     @CounterIface
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
+        logger.info("queryAwardRanking filter:{}, pageNum:{}, pageSize:{}", filter, pageNum, pageSize);
         Map<String, Object> object = new HashMap<>();
         TransportClient searchClient =null;
         try {
             searchClient=searchUtil.getEsClient();
-            StringBuffer activation = new StringBuffer();
-            if (filter == 0) {
-                activation.append("");
-            } else if (filter == 1) {
-                activation.append("0");
-            } else if (filter == 2) {
-                activation.append("1,2,3,4");
-            }
-
             SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, filter, pageSize, pageNum, timespan, keyword);
+            logger.info("queryAwardRanking ES SQL:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());

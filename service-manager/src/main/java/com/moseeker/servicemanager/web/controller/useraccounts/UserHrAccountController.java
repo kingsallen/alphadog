@@ -926,6 +926,7 @@ public class UserHrAccountController {
             String email_isvalid = params.getString("email_isvalid", "");
             int pageNumber = params.getInt("pageNumber", 0);
             int pageSize = params.getInt("pageSize", 0);
+            logger.info("UserHrAccountController getEmployees timeSpan:{}", timeSpan);
             UserEmployeeVOPageVO userEmployeeVOPageVO = userHrAccountService.employeeList(keyWord, companyId, filter, order, asc, pageNumber, pageSize, timeSpan, email_isvalid);
             return ResponseLogNotification.success(request, ResponseUtils.successWithoutStringify(BeanUtils.convertStructToJSON(userEmployeeVOPageVO)));
         } catch (BIZException e) {

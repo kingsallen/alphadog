@@ -950,8 +950,11 @@ public class UserHrAccountService {
         if (employeeMap != null && employeeMap.size() > 0) {
             reward = true;
         }
+        Query query = queryBuilder.buildQuery();
+        logger.info("UserHrAccountService employeeList query:{}", query);
         // 员工数据
         userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        logger.info("UserHrAccountService employeeList userEmployeeDOS:{}", JSONArray.toJSONString(userEmployeeDOS));
 
         if (userEmployeeDOS != null && userEmployeeDOS.size() > 0) {
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
@@ -1062,6 +1065,7 @@ public class UserHrAccountService {
      * @param pageSize   每页的条数
      */
     public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan,String emailValidate) throws CommonException {
+        logger.info("UserHrAccountService employeeList filter:{}, order:{}, asc:{}, pageNumber:{}, pageSize:{}, timespan:{}, keyword:{}", filter, order, asc, pageNumber, pageSize, timespan, keyword);
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1097,6 +1101,7 @@ public class UserHrAccountService {
                     add((int)EmployeeActiveState.MigrateToOtherCompany.getState());
                     add((int)EmployeeActiveState.UnFollow.getState());
                 }};
+                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
             }
         }
         if(StringUtils.isNotNullOrEmpty(emailValidate)){
@@ -1168,13 +1173,14 @@ public class UserHrAccountService {
         userEmployeeVOPageVO.setTotalRow(counts);
         // 员工列表，不需要取排行榜
         if (StringUtils.isNullOrEmpty(timespan)) {
-            logger.info("timespan:{}", timespan);
+            logger.info("UserHrAccountService employeeList timespan:{}", timespan);
             userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
             return userEmployeeVOPageVO;
         }
         // 员工列表，从ES中获取积分月，季，年榜单数据
         Response response = null;
         try {
+            logger.info("UserHrAccountService employeeList queryAwardRanking companyIds:{}, timespan:{}, pageSize:{}, pageNumber:{}, keyword:{}, filter:{}", companyIds, timespan, pageSize, pageNumber, keyword, filter);
             response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber, keyword, filter);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
