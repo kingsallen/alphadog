@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.mall;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.util.StringUtils;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -48,7 +50,10 @@ public class OrderController {
     public String getCompanyOrderList(HttpServletRequest request) {
         try {
             OrderSearchForm orderSearchForm = ParamUtils.initModelForm(request, OrderSearchForm.class);
-            Map<String, String> resultMap = orderService.getCompanyOrderList(orderSearchForm);
+            Map<String, String> orderMap = orderService.getCompanyOrderList(orderSearchForm);
+            Map<String, Object> resultMap = new HashMap<>(1 >> 4);
+            resultMap.put("total_row", orderMap.get("total_row"));
+            resultMap.put("list", JSONArray.parseArray(orderMap.get("list")));
             return ResponseLogNotification.successJson(request, resultMap);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -73,7 +78,7 @@ public class OrderController {
             vu.addIntTypeValidate("employeeId", baseMallForm.getEmployee_id(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                return ResponseLogNotification.successJson(request, orderService.getEmployeeOrderList(baseMallForm));
+                return ResponseLogNotification.successJson(request, JSONArray.parseArray(orderService.getEmployeeOrderList(baseMallForm)));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }

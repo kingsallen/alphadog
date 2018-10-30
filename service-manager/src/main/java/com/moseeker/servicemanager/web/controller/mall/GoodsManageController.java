@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.mall;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -207,7 +208,8 @@ public class GoodsManageController {
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 mallGoodsIdForm.setGood_id(goodId);
-                return ResponseLogNotification.successJson(request, goodsService.getGoodDetail(mallGoodsIdForm));
+                String goodStr = goodsService.getGoodDetail(mallGoodsIdForm);
+                return ResponseLogNotification.successJson(request, JSONObject.parseObject(goodStr));
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
