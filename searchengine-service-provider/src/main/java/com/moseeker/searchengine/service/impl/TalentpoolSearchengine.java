@@ -755,9 +755,9 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(companyId)){
                 sb.append("val.company_id=="+companyId+"&&");
             }
-//            if(StringUtils.isNotNullOrEmpty(hrId)){
-//                sb.append("val.publisher=="+hrId+"&&");
-//            }
+            if(StringUtils.isNotNullOrEmpty(hrId)){
+                sb.append("val.publisher=="+hrId+"&&");
+            }
             if(StringUtils.isNotNullOrEmpty(submitTime)){
                 String longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
