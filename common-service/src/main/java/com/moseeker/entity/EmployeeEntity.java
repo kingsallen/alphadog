@@ -1084,6 +1084,9 @@ public class EmployeeEntity {
     }
 
     public void followWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+        if(userId <= 0 || wechatId <= 0){
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
         HrWxWechatDO wxWechatDO = wechatDao.fetchWechat(wechatId);
         if (wxWechatDO == null) {
             throw EmployeeException.NODATA_EXCEPTION;
@@ -1105,6 +1108,9 @@ public class EmployeeEntity {
     }
 
     public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+        if(userId <= 0 || wechatId <= 0){
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
         HrWxWechatDO wxWechatDO = wechatDao.fetchWechat(wechatId);
         if (wxWechatDO == null) {
             throw EmployeeException.NODATA_EXCEPTION;
