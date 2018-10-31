@@ -248,7 +248,9 @@ public class TalentPoolEntity {
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_city_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getIntention_salary_code())
                 || companyTagDO.getSex() !=0 || StringUtils.isNotNullOrEmpty(companyTagDO.getCompany_name()) || companyTagDO.getIs_recommend() == 1
-                ){
+                || !StringUtils.isEmptyList(companyTagDO.getKeyword_list())
+        ){
+            String result = "";
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("名称", companyTagDO.getName());
             if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins())){
@@ -288,8 +290,14 @@ public class TalentPoolEntity {
                 vu.addStringSplitLengthValidate("就职公司", companyTagDO.getCompany_name(),"最多选择10个",null, 1, 11, ",");
                 vu.addStringLengthValidate("就职公司", companyTagDO.getCompany_name(),null,null, 0, 1024);
             }
-
-            String result = vu.validate();
+            if(!StringUtils.isEmptyList(companyTagDO.getKeyword_list())){
+                if(companyTagDO.getKeyword_list().size()>10){
+                    result = "关键词不能超过10个";
+                }
+                String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+                vu.addStringLengthValidate("关键词", keyword,null,null, 0, 512);
+            }
+            result = result + vu.validate();
             return result;
         }
         return "标签全为默认值;";
@@ -441,8 +449,11 @@ public class TalentPoolEntity {
     @Transactional
     public int addCompanyTag(TalentpoolCompanyTagDO companyTagDO){
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
+        String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
+        tagRecord.setKeywords(keyword);
         talentpoolCompanyTagDao.addRecord(tagRecord);
         return tagRecord.getId();
+
     }
 
 

@@ -184,7 +184,7 @@ public class TalentPoolService {
             @Override
             public void run() {
                 try {
-            tagService.handlerCompanyTagTalent(idList, companyId);
+                    tagService.handlerCompanyTagTalent(idList, companyId);
                     tagService.handlerUserIdAndHrTag(idList,hrId,companyId);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -947,7 +947,7 @@ public class TalentPoolService {
             @Override
             public void run() {
                 try {
-                    tagService.handlerHrAutoTagAddPublic(userIdList,companyId,hrId);
+        tagService.handlerHrAutoTagAddPublic(userIdList,companyId,hrId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1568,7 +1568,6 @@ public class TalentPoolService {
                                     String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
                                     map.put("keywords", keyword);
                                 }
-
                                 tagService.handlerCompanyTag(idList, 0, map);
                                 return 0;
                             });
