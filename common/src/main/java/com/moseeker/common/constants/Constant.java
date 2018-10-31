@@ -304,4 +304,8 @@ public final class Constant {
             "educations.description;projectexps.name;projectexps.company_name;projectexps.role;projectexps.description;" +
             "languages.name;skills.name;awards.name;credentials.name;" +
             "others.other;basic.company_name;basic.industry_name;basic.current_job;basic.position_name;";
+
+    public static final String USERNAME_IS_NULL="未填写";
+
+    public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";
 }
