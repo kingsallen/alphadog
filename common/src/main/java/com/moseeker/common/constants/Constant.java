@@ -284,8 +284,9 @@ public final class Constant {
 
 
     public static final String PROFILE_SEARCH_KEYWORD_COLUMS="recent_job.company_name;recent_job_company_new_name;recent_job.company_name_data;recent_job.position_name;recent_job.description;" +
-            "other_workexps.company_name_data;other_workexps.company_name;other_workexps.company_new_name;other_workexps.position_name;other_workexps.description;educations.major_name;" +
+            "recent_job.job;recent_job.job_name;recent_job.job_name_data;other_workexps.company_name_data;other_workexps.company_name;other_workexps.company_new_name;other_workexps.position_name;" +
+            "other_workexps.description;educations.major_name;other_workexps.job_name;other_workexps.job;other_workexps.job_name_data;" +
             "educations.description_data;projectexps.name_data;projectexps.company_name;projectexps.role;projectexps.description_data;" +
-            "languages.name;skills.name_data;awards.name;credentials.name;" +
+            "languages.name;skills.name_data;awards.name;credentials.name_data;" +
             "others.other;basic.company_name;basic.industry_name;basic.current_job;basic.position_name;";
 }
