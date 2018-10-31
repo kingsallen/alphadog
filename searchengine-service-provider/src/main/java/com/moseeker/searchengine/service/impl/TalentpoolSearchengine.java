@@ -472,12 +472,31 @@ public class TalentpoolSearchengine {
     private void searchPastCommon(SearchPast searchPast,QueryBuilder query){
         String publisher=searchPast.getPublisher();
         String companyId=searchPast.getCompanyId();
+        String isTalent=searchPast.getIsTalent();
         if(StringUtils.isNotNullOrEmpty(publisher)){
             searchUtil.handleTerms(publisher,query,"user.applications.publisher");
         }
         if(StringUtils.isNotNullOrEmpty(companyId)){
             searchUtil.handleTerms(companyId,query,"user.applications.company_id");
         }
+        if(StringUtils.isNotNullOrEmpty(isTalent)){
+            String tagIds="talent,allpublic";
+            QueryBuilder queryNest=this.handlerPastNest(tagIds,companyId,publisher);
+            if(queryNest!=null){
+                ((BoolQueryBuilder) query).filter(queryNest);
+            }
+        }
+    }
+
+    private QueryBuilder handlerPastNest(String tagIds,String companyId,String hrId){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.queryByNestCompanyId(Integer.parseInt(companyId),query);
+        if(StringUtils.isNotNullOrEmpty(tagIds)){
+            this.queryByTagId(tagIds,hrId,query);
+        }
+        query=QueryBuilders.nestedQuery("user.talent_pool",query);
+        return query;
     }
     /*
      查询字段是否存在
