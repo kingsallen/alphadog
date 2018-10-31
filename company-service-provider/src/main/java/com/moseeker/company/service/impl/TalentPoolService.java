@@ -1349,6 +1349,11 @@ public class TalentPoolService {
             return ResponseUtils.fail(ConstantErrorCodeMessage.HR_NOT_IN_COMPANY);
         }
         Map<String,Object> result=talentpoolHrAutomaticTagDao.getSingleDataById(id);
+        Map<String, Object> params = new HashMap<>();
+        if(result.get("keywords")!= null && !"".equals((String)result.get("keywords"))){
+            List<String> keywords = StringUtils.stringToList((String)result.get("keywords"), ";");
+            result.put("keyword_list", keywords);
+        }
         boolean  isEXecute=tagService.getHtAutoTagIsExcute(id);
         result.put("is_execute",isEXecute);
         result.put("expire_time",2);
