@@ -1,7 +1,5 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -436,19 +434,16 @@ public class ReferralController {
     @ResponseBody
     public String saveMobotReferralProfile(@PathVariable int id, @RequestBody ReferralPositionForm referralForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("手机", referralForm.getMobile());
-        validateUtil.addRequiredValidate("姓名", referralForm.getName());
-        validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
         validateUtil.addRequiredOneValidate("推荐职位ids", referralForm.getIds());
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getMobile(), referralForm.getName(), referralForm.getIds());
+            Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getIds());
             if(idReasons.get("state") == null){
                 return Result.success(idReasons).toJson();
             }else {
-                return new Result(-1, "failed", idReasons).toJson();
+                return new Result(-1, "apply_limit", idReasons).toJson();
             }
 
         } else {
@@ -456,37 +451,51 @@ public class ReferralController {
         }
     }
 
+
     /**
-     * 员工上传简历，mobot使用，走内推的简历上传逻辑，加入生成虚拟用户逻辑
-     * @param file 文件
+     * 员工推荐简历，mobot上传简历使用，将推荐信息放到redis中，无插库操作
+     * @param id 员工编号
+     * @param referralForm 推荐表单
      * @return 推荐结果
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/referral/file-parser/mobot", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/employee/{id}/referral/cache", method = RequestMethod.POST)
     @ResponseBody
-    public String parseMobotFileProfile(@RequestParam(value = "file", required = false) MultipartFile file,
-                                        HttpServletRequest request) throws Exception {
-        Params<String, Object> params = ParamUtils.parseequestParameter(request);
-        int employeeId = params.getInt("employee", 0);
+    public String saveMobotReferralProfileCache(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("简历", file);
-        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
-        validateUtil.addIntTypeValidate("员工", employeeId, 1, null);
-        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        validateUtil.addRequiredValidate("手机", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", referralForm.getName());
+        validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
-                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
-            }
-            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
-                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
-            }
-            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-            String parseResultStr = profileService.parseMobotFileProfile(employeeId, params.getString("file_name"), byteBuffer);
-            return Result.success(JSONObject.parseObject(parseResultStr)).toJson();
+            int userId = profileService.saveMobotReferralProfileCache(id, referralForm.getName(),
+                    referralForm.getMobile(), referralForm.getReferralReasons(), (byte) referralForm.getReferralType());
+            return Result.success(userId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    @RequestMapping(value = "/v1/referral/claim/batch", method = RequestMethod.POST)
+    @ResponseBody
+    public String batchClaimReferralCard(@RequestBody BatchClaimForm claimForm) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("用户", claimForm.getUser(), 1, null);
+        validateUtil.addRequiredOneValidate("推荐卡片", claimForm.getReferralRecordIds());
+        validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            return Result.success(true).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
         }
     }
 }

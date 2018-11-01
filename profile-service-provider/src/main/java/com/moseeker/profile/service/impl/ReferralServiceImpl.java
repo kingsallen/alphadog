@@ -6,16 +6,14 @@ import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.AppId;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -61,6 +59,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -91,6 +90,9 @@ public class ReferralServiceImpl implements ReferralService {
     private RedisClient client;
 
     private ThreadPool tp = ThreadPool.Instance;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -204,20 +206,24 @@ public class ReferralServiceImpl implements ReferralService {
 
 
     @Override
-    public Map<String, String> saveMobotReferralProfile(int employeeId, String mobile, String name, List<Integer> ids) throws BIZException, InterruptedException {
-        Map<String, String> applyLimit = checkCompanyApply(employeeId, mobile, ids);
+    public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException {
+        Map<String, String> applyLimit = checkCompanyApply(employeeId, ids);
         if(applyLimit.get("state") != null){
             return applyLimit;
         }
         Map<String, String> referralResultMap = new HashMap<>(1 >> 4);
+        String dataStr = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId));
+        if(StringUtils.isNotBlank(dataStr)){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_OVERTIME);
+        }
+        ReferralInfoCacheDTO referralInfoCacheDTO = JSONObject.parseObject(dataStr, ReferralInfoCacheDTO.class);
         try{
             CountDownLatch countDownLatch = new CountDownLatch(ids.size());
-            List<String> referralReasons = new ArrayList<>();
             for(Integer positionId : ids){
                 tp.startTast(() -> {
                     try {
-                        int referralId = employeeReferralProfileNoReferralReasons(employeeId, name,
-                                mobile, referralReasons, positionId, (byte)1, true);
+                        int referralId = employeeReferralProfileIfMobot(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
+                                referralInfoCacheDTO.getReferralReasons(), positionId, referralInfoCacheDTO.getReferralType(), true);
                         referralResultMap.put(positionId + "", referralId + "");
                     }catch (Exception e){
                         referralResultMap.put(positionId + "", e.getMessage());
@@ -227,30 +233,68 @@ public class ReferralServiceImpl implements ReferralService {
                 });
             }
             countDownLatch.await(60, TimeUnit.SECONDS);
-            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId), mobile);
+            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId));
         }catch (Exception e){
-            client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId), mobile);
             throw e;
         }
         return referralResultMap;
     }
 
+    @Override
+    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType) throws BIZException {
+        UserEmployeeDO userEmployeeDO = userEmployeeDao.getUserEmployeeForUpdate(employeeId);
+        if(userEmployeeDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USEREMPLOYEE_NONEXIST);
+        }
+        String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+        JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
+        if (StringUtils.isBlank(profilePojoStr)) {
+            throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
+        }
+        ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
+        profilePojo.getUserRecord().setName(name);
+        profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
+        // todo 生成虚拟用户
+        ReferralInfoCacheDTO referralInfoCacheDTO = new ReferralInfoCacheDTO(employeeId, userEmployeeDO.getCompanyId(), name, mobile, referralReasons, referralType);
+        UserUserRecord userRecord = userAccountEntity.getCompanyUser(mobile, userEmployeeDO.getCompanyId());
+        if(userRecord == null){
+            referralInfoCacheDTO.setEmployee(false);
+            userRecord = profileEntity.storeChatBotUser(profilePojo, userEmployeeDO.getSysuserId(), userEmployeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT, 0);
+        }else {
+            referralInfoCacheDTO.setEmployee(true);
+        }
+        referralInfoCacheDTO.setUserId(userRecord.getId());
+        String dataStr = JSON.toJSONString(referralInfoCacheDTO);
+        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId), dataStr);
+        return userRecord.getId();
+    }
+
     /**
      * 检验投递次数
      * @param employeeId 员工id
-     * @param mobile 手机号
      * @param ids 职位ids
      * @author  cjm
      * @date  2018/10/29
      */
-    private Map<String, String> checkCompanyApply(int employeeId, String mobile, List<Integer> ids) throws BIZException {
+    private Map<String, String> checkCompanyApply(int employeeId, List<Integer> ids) throws BIZException {
+        String str = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), employeeId + "");
+        ReferralInfoCacheDTO referralInfoCacheDTO = JSONObject.parseObject(str, ReferralInfoCacheDTO.class);
+        int companyId = referralInfoCacheDTO.getCompanyId();
+        UserApplyCount userApplyCount = applicationEntity.getApplyCount(referralInfoCacheDTO.getUserId(), companyId);
+        UserApplyCount conf = applicationEntity.getApplicationCountLimit(companyId);
+        List<JobPosition> jobPositions = jobPositionDao.getJobPositionByIdList(ids);
+        List<Integer> companyIdList = jobPositions.stream().map(JobPosition::getCompanyId).collect(Collectors.toList());
+        for(int id : companyIdList){
+           if(id != companyId){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_APPLY_FAILED);
+           }
+        }
+        return getApplyLimitMap(userApplyCount, conf, jobPositions);
+    }
+
+    private Map<String,String> getApplyLimitMap(UserApplyCount userApplyCount, UserApplyCount conf, List<JobPosition> jobPositions) {
         Map<String, String> applyLimitMap = new HashMap<>(1 >> 4);
-        String str = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_VIRTUAL_USER.toString(),
-                employeeId + "", mobile);
-        ProfileDocParseResult parseResult = JSONObject.parseObject(str, ProfileDocParseResult.class);
-        UserApplyCount userApplyCount = applicationEntity.getApplyCount(parseResult.getUserId(), parseResult.getCompanyId());
-        UserApplyCount conf = applicationEntity.getApplicationCountLimit(parseResult.getCompanyId());
-        List<JobPosition>  jobPositions = jobPositionDao.getJobPositionByIdList(ids);
         int schoolApply = 0;
         int socialApply = 0;
         for(JobPosition jobPosition : jobPositions){
@@ -273,20 +317,25 @@ public class ReferralServiceImpl implements ReferralService {
 
     /**
      * 控制是否验证推荐原因
-     * @param
+     * @param employeeId 员工编号
+     * @param name 推荐者名称
+     * @param mobile 手机号码
+     * @param referralReasons 推荐理由
+     * @param position 职位编号
+     * @param referralType 推荐方式
+     * @param isMobot 是否为mobot推荐朋友
      * @author  cjm
      * @date  2018/10/30
-     * @return
+     * @return 推荐记录编号
      */
-    public int employeeReferralProfileNoReferralReasons(int employeeId, String name, String mobile, List<String> referralReasons,
+    @Transactional(rollbackFor = Exception.class)
+    public int employeeReferralProfileIfMobot(int employeeId, String name, String mobile, List<String> referralReasons,
                                                         int position, byte referralType, boolean isMobot){
         ValidateUtil validateUtil = new ValidateUtil();
-        if(!isMobot){
-            validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
-            if (referralReasons != null) {
-                String reasons = referralReasons.stream().collect(Collectors.joining(","));
-                validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
-            }
+        validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
+        if (referralReasons != null) {
+            String reasons = referralReasons.stream().collect(Collectors.joining(","));
+            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
         }
         validateUtil.addRequiredStringValidate("候选人姓名", name);
         validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
@@ -318,7 +367,8 @@ public class ReferralServiceImpl implements ReferralService {
             throw ApplicationException.NO_PERMISSION_EXCEPTION;
         }
 
-        String profilePojoStr = getProfilePojoStr(employeeId, isMobot);
+        String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
 
         if (StringUtils.isBlank(profilePojoStr)) {
             throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
@@ -345,21 +395,6 @@ public class ReferralServiceImpl implements ReferralService {
                 genderType, email, type, isMobot);
     }
 
-    private String getProfilePojoStr(int employeeId, boolean isMobot) {
-        if(!isMobot){
-            return client.get(AppId.APPID_ALPHADOG.getValue(),
-                    KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
-        }else {
-            String profileStr = client.get(AppId.APPID_ALPHADOG.getValue(),
-                    KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
-            if(StringUtils.isBlank(profileStr)){
-                profileStr = client.get(AppId.APPID_ALPHADOG.getValue(),
-                        KeyIdentifier.WECHAT_UPLOAD_RESUME_FILE.toString(), String.valueOf(employeeId));
-            }
-            return profileStr;
-        }
-    }
-
     /**
      * 员工推荐
      * 产生虚拟用户、简历、申请记录
@@ -375,7 +410,8 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte referralType) throws ProfileException {
-        return employeeReferralProfileNoReferralReasons(employeeId, name, mobile, referralReasons, position, referralType, false);
+
+        return employeeReferralProfileIfMobot(employeeId, name, mobile, referralReasons, position, referralType, false);
     }
 
     /**

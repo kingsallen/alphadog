@@ -70,12 +70,23 @@ public interface ReferralService {
     /**
      * 员工推荐简历，mobot上传简历使用，走内推的员工推荐逻辑
      * @param employeeId 员工编号
-     * @param mobile 被推荐人手机号
-     * @param name 被推荐人姓名
      * @param ids 推荐职位ids
      * @return 推荐结果
      * @author  cjm
      * @date  2018/10/29
      */
-    Map<String, String> saveMobotReferralProfile(int employeeId, String mobile, String name, List<Integer> ids) throws BIZException, InterruptedException;
+    Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException;
+
+    /**
+     * 将推荐理由员工信息等存在redis中，生成虚拟用户并返回虚拟用户id
+     * @param employeeId 员工编号
+     * @param mobile 被推荐人手机号
+     * @param name 被推荐人姓名
+     * @param referralReasons 推荐理由
+     * @param referralType 推荐类型
+     * @author  cjm
+     * @date  2018/10/31
+     * @return  虚拟用户或真实用户id
+     */
+    int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType) throws BIZException;
 }

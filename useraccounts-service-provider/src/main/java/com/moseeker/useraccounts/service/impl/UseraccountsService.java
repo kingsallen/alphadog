@@ -28,6 +28,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
@@ -70,6 +71,9 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -126,6 +130,8 @@ public class UseraccountsService {
     private RedisClient redisClient;
 
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+
+    ThreadPool pool = ThreadPool.Instance;
 
     /**
      * 账号换绑操作
@@ -1216,7 +1222,7 @@ public class UseraccountsService {
      * 认领员工推荐卡片
      * @param claimForm 参数
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void claimReferralCard(ClaimForm claimForm) throws UserAccountException {
         if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
@@ -1303,5 +1309,35 @@ public class UseraccountsService {
         referralEmployeeBonusRecord.setClaimTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
+    }
+
+
+    /**
+     * 批量认领
+     * @param userId 用户id
+     * @param name 用户name
+     * @param mobile 手机号
+     * @param vcode 验证码
+     * @param referralRecordIds
+     * @author  cjm
+     * @date  2018/10/31
+     * @return
+     */
+    public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws InterruptedException {
+        CountDownLatch countDownLatch = new CountDownLatch(referralRecordIds.size());
+        for(Integer referralId : referralRecordIds){
+            pool.startTast(() -> {
+                ClaimForm claimForm = new ClaimForm();
+                claimForm.setUserId(userId);
+                claimForm.setName(name);
+                claimForm.setMobile(mobile);
+                claimForm.setReferralRecordId(referralId);
+                claimForm.setVerifyCode(vcode);
+                claimReferralCard(claimForm);
+                countDownLatch.countDown();
+                return 0;
+            });
+        }
+        countDownLatch.await(30, TimeUnit.SECONDS);
     }
 }

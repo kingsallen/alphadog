@@ -8,8 +8,6 @@ public class ProfileDocParseResult {
     private String file;
     private String name;
     private String mobile;
-    private Integer userId;
-    private Integer companyId;
     private boolean mobileeditable = true;
 
     public String getFile() {
@@ -42,21 +40,5 @@ public class ProfileDocParseResult {
 
     public void setMobileeditable(boolean mobileeditable) {
         this.mobileeditable = mobileeditable;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
     }
 }

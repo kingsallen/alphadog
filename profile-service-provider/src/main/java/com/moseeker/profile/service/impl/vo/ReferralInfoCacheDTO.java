@@ -11,6 +11,7 @@ import java.util.List;
 public class ReferralInfoCacheDTO {
 
     private Integer employeeId;
+    private Integer companyId;
     private String name;
     private String mobile;
     private List<String> referralReasons;
@@ -18,8 +19,9 @@ public class ReferralInfoCacheDTO {
     private Boolean employee;
     private Integer userId;
 
-    public ReferralInfoCacheDTO(Integer employeeId, String name, String mobile, List<String> referralReasons, Byte referralType) {
+    public ReferralInfoCacheDTO(Integer employeeId, Integer companyId, String name, String mobile, List<String> referralReasons, Byte referralType) {
         this.employeeId = employeeId;
+        this.companyId = companyId;
         this.name = name;
         this.mobile = mobile;
         this.referralReasons = referralReasons;
@@ -80,6 +82,14 @@ public class ReferralInfoCacheDTO {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     @Override

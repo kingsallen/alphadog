@@ -203,22 +203,18 @@ public class ProfileServicesImpl implements Iface {
 
 
     @Override
-    public Map<String, String> saveMobotReferralProfile(int employeeId, String mobile, String name, List<Integer> ids) throws BIZException, TException {
+    public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, TException {
         try {
-            return referralService.saveMobotReferralProfile(employeeId, mobile, name, ids);
+            return referralService.saveMobotReferralProfile(employeeId, ids);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public String parseMobotFileProfile(int employeeId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType) throws BIZException, TException {
         try {
-            AbstractResumeFileParser abstractResumeFileParser = resumeFileParserFactory.getResumeFileParserByEmployeeId(employeeId);
-            ProfileDocParseResult parseResult = abstractResumeFileParser.parseResume(employeeId,fileName,fileData, true);
-            redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_VIRTUAL_USER.toString(),
-                    employeeId + "", parseResult.getMobile(), JSON.toJSONString(parseResult));
-            return JSON.toJSONString(parseResult);
+            return referralService.saveMobotReferralProfileCache(employeeId, name, mobile, referralReasons, referralType);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

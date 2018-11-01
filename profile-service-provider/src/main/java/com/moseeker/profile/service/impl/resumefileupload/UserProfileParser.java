@@ -24,8 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 @Component
@@ -38,14 +36,12 @@ public class UserProfileParser extends AbstractResumeFileParser {
     private RedisClient client;
 
     @Override
-    public Map<String, Object> checkUser(Integer id) {
+    public boolean checkUser(Integer id) {
         UserUserRecord userRecord = userAccountEntity.getUserRecordbyId(id);
         if (userRecord == null || userRecord.getId() <= 0) {
             throw ProfileException.PROFILE_USER_NOTEXIST;
         }
-        Map<String, Object> map = new HashMap<>(1 >> 4);
-        map.put("UserUserRecord", userRecord);
-        return map;
+        return true;
     }
 
     @Override

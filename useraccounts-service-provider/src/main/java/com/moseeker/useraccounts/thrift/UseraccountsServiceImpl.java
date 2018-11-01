@@ -19,6 +19,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 用户登陆， 注册，合并等api的实现
  *
@@ -576,6 +578,15 @@ public class UseraccountsServiceImpl implements Iface {
 	public void claimReferralBonus(int bonus_record_id) throws BIZException, TException {
 		try {
 			service.claimReferralBonus(bonus_record_id);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws BIZException, TException {
+		try {
+			service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds);
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}

@@ -10,11 +10,7 @@ import java.util.List;
  **/
 public class ReferralPositionForm {
     private List<Integer> ids;
-    private Integer employeeId;
-    private String mobile;
     private Integer appid;
-    private String name;
-    private Integer userId;
 
     public List<Integer> getIds() {
         return ids;
@@ -22,22 +18,6 @@ public class ReferralPositionForm {
 
     public void setIds(List<Integer> ids) {
         this.ids = ids;
-    }
-
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
     }
 
     public Integer getAppid() {
@@ -48,31 +28,12 @@ public class ReferralPositionForm {
         this.appid = appid;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     @Override
     public String toString() {
         return "ReferralPositionForm{" +
                 "ids=" + ids +
-                ", employeeId=" + employeeId +
-                ", mobile='" + mobile + '\'' +
                 ", appid=" + appid +
-                ", name='" + name + '\'' +
-                ", userId=" + userId +
                 '}';
     }
 }
