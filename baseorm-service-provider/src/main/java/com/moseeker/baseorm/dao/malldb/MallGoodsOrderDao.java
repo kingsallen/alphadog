@@ -8,6 +8,7 @@ import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import static com.moseeker.baseorm.db.malldb.tables.MallOrder.MALL_ORDER;
@@ -49,11 +50,21 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
     }
 
     public int updateOrderStateByIdAndCompanyId(MallGoodsOrderUpdateForm updateForm) {
-        return create.update(MALL_ORDER)
-                .set(MALL_ORDER.STATE, (byte)updateForm.getState())
-                .where(MALL_ORDER.ID.in(updateForm.getIds()))
-                .and(MALL_ORDER.COMPANY_ID.eq(updateForm.getCompany_id()))
-                .execute();
+        if(updateForm.getState() == 0){
+            return create.update(MALL_ORDER)
+                    .set(MALL_ORDER.STATE, (byte)updateForm.getState())
+                    .where(MALL_ORDER.ID.in(updateForm.getIds()))
+                    .and(MALL_ORDER.COMPANY_ID.eq(updateForm.getCompany_id()))
+                    .execute();
+        }else {
+            return create.update(MALL_ORDER)
+                    .set(MALL_ORDER.STATE, (byte)updateForm.getState())
+                    .set(MALL_ORDER.ASSIGN_TIME, new Timestamp(System.currentTimeMillis()))
+                    .where(MALL_ORDER.ID.in(updateForm.getIds()))
+                    .and(MALL_ORDER.COMPANY_ID.eq(updateForm.getCompany_id()))
+                    .execute();
+        }
+
     }
 
     public List<MallOrderDO> getOrdersByIds(List<Integer> ids) {
