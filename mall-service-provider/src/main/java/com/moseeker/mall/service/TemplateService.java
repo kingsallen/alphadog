@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.mall.vo.TemplateBaseVO;
@@ -24,6 +25,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.net.ConnectException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -147,13 +149,17 @@ public class TemplateService {
         messageRecord.setWechatId(wechatId);
         messageRecord.setTopcolor(String.valueOf(templateValueMap.get("topcolor")));
         Map<String, Object> response = (Map<String, Object>)templateValueMap.get("response");
-        if("0".equals(String.valueOf(response.get("errcode")))){
+        String errcode = String.valueOf(response.get("errcode"));
+        if("0".equals(errcode)){
             messageRecord.setSendstatus("success");
             messageRecord.setMsgid(Long.parseLong(String.valueOf(response.get("msgid"))));
         }else {
             messageRecord.setSendstatus("failed");
         }
-        messageRecord.setErrcode(Integer.parseInt(String.valueOf(response.get("errcode"))));
+        messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
+        messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
+        messageRecord.setSendtype(0);
+        messageRecord.setErrcode(Integer.parseInt(errcode));
         messageRecord.setErrmsg(String.valueOf(response.get("errmsg")));
         wxMessageRecordDao.addData(messageRecord);
     }
