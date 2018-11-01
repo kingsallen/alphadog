@@ -746,7 +746,7 @@ public class ProfileController {
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
 
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
-                    service.parseFileProfile(userId, params.getString("file_name"), byteBuffer);
+                    service.parseUserFileProfile(userId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();
             org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
             return Result.success(parseResult).toJson();
