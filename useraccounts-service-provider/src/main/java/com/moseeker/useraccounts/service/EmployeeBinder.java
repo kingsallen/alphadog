@@ -185,53 +185,56 @@ public abstract class EmployeeBinder {
 
         DateTime currentTime = new DateTime();
         int employeeId;
-        if (useremployee.getId() != 0) {
-            useremployee.setUpdateTime(null);
-            String bindTime = useremployee.getBindingTime();
-            useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
-            employeeDao.updateData(useremployee);
-            if (useremployee.getAuthMethod() == 1 &&
-                    org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
-                employeeFirstRegister(useremployee.getId(), useremployee.getCompanyId(), currentTime.getMillis());
-            }
-            employeeId = useremployee.getId();
-        } else {
-            log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
-            log.info("doneBind persist employee:{}", useremployee);
+        log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
+        log.info("doneBind persist employee:{}", useremployee);
 
-
-            UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
-                    useremployee.getCompanyId());
-            if (unActiveEmployee != null) {
-                employeeId = unActiveEmployee.getId();
-                if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
-                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getEmail())) {
-                        unActiveEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
-                    }
-                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getMobile())) {
-                        unActiveEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
-                    }
-                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getCname())) {
-                        unActiveEmployee.setCname(useremployee.getCname());
-                    }
-                    if ((org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getCustomFieldValues())
-                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(unActiveEmployee.getCustomFieldValues()))
-                            && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
-                        unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
-                    }
-                    unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
-                    log.info("doneBind unActiveEmployee update record");
+        UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
+                useremployee.getCompanyId());
+        if (unActiveEmployee != null) {
+            employeeId = unActiveEmployee.getId();
+            if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
+                    unActiveEmployee.setEmail(useremployee.getEmail());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getMobile())) {
+                    unActiveEmployee.setMobile(useremployee.getMobile());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
+                    unActiveEmployee.setCname(useremployee.getCname());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomField())) {
+                    unActiveEmployee.setCustomField(useremployee.getCustomField());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
+                        !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
+                    unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+                }
+                unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                log.info("doneBind unActiveEmployee update record");
+                if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
                     unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                             .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
-                    if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                        employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
-                    }
+                } else {
                     useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
-                    unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
-                    employeeDao.updateRecord(unActiveEmployee);
-
+                    unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
                 }
+                unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+                employeeDao.updateRecord(unActiveEmployee);
+
+                if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
+                    employeeDao.deleteData(useremployee);
+                    searchengineEntity.deleteEmployeeDO(new ArrayList<Integer>(){{add(useremployee.getId());}});
+                }
+            }
+        } else {
+            if (useremployee.getId() > 0) {
+                employeeDao.updateData(useremployee);
+                employeeId = useremployee.getId();
+                employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
             } else {
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
                 employeeId = executeResult.getId();

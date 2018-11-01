@@ -195,7 +195,7 @@ public class UserAccountEntity {
      * @param companyId 公司编号
      * @return 用户信息
      */
-    public UserUserRecord getReferralUser(String phone, int companyId, boolean isMobot) {
+    public UserUserRecord getReferralUser(String phone, int companyId, ReferralScene referralScene) {
 
         UserUserRecord userUserRecord = null;
         String countryCode="86";
@@ -205,12 +205,12 @@ public class UserAccountEntity {
             phone=phoneArray[1];
         }
         short source = (short) UserSource.EMPLOYEE_REFERRAL.getValue();
-        if(isMobot){
+        if(referralScene.getScene() == ReferralScene.ChatBot.getScene()){
             source = (short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue();
         }
         List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode, source);
         if (list != null && list.size() > 0) {
-            userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.Referral);
+            userUserRecord = findEmployeeReferral(list, companyId, referralScene);
         }
         return userUserRecord;
     }

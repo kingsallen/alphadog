@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountActivationType;
 import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -1081,15 +1082,17 @@ public class UserHrAccountService {
         // 过滤条件
         if (filter != 0) {
             if (filter == 1) {
-                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), 0);
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState());
             } else if (filter == 2) {
-                List<Integer> filters = new ArrayList<>();
-                filters.add(1);
-                filters.add(2);
-                filters.add(3);
-                filters.add(4);
-                filters.add(5);
-                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), filters, ValueOp.IN));
+                queryBuilder.and(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Init.getState());
+            } else if(filter == 3) {
+                List<Integer> activations = new ArrayList<Integer>(){{
+                    add((int)EmployeeActiveState.Cancel.getState());
+                    add((int)EmployeeActiveState.Failure.getState());
+                    add((int)EmployeeActiveState.MigrateToOtherCompany.getState());
+                    add((int)EmployeeActiveState.UnFollow.getState());
+                }};
+                queryBuilder.and(new Condition(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), activations, ValueOp.IN));
             }
         }
         if(StringUtils.isNotNullOrEmpty(emailValidate)){
@@ -1206,18 +1209,18 @@ public class UserHrAccountService {
 
     /**
      * 员工列表
-     *
-     * @param keyword    关键字搜索
+     *  @param keyword    关键字搜索
      * @param companyId  公司ID
      * @param filter     过滤条件，0：全部，1：已认证，2：未认证， 3 撤销认证,默认：0
      * @param order      排序条件
      * @param asc        正序，倒序 0: 正序,1:倒序 默认
      * @param pageNumber 第几页
      * @param pageSize   每页的条数
+     * @param timeSpan   时间区间
      */
     public UserEmployeeVOPageVO getEmployees(String keyword, Integer companyId, Integer filter, String order, String asc,
                                              Integer pageNumber, Integer pageSize, String emailValidate,
-                                             Integer balanceType) throws CommonException {
+                                             Integer balanceType, String timeSpan) throws CommonException {
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1228,7 +1231,7 @@ public class UserHrAccountService {
         Response response;
         try {
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
-                    pageSize, pageNumber,balanceType);
+                    pageSize, pageNumber,balanceType, timeSpan);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
         }

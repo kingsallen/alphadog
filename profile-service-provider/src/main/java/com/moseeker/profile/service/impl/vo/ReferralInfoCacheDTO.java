@@ -28,6 +28,9 @@ public class ReferralInfoCacheDTO {
         this.referralType = referralType;
     }
 
+    public ReferralInfoCacheDTO() {
+    }
+
     public Integer getEmployeeId() {
         return employeeId;
     }

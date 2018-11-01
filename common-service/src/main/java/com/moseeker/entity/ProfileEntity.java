@@ -83,7 +83,7 @@ public class ProfileEntity {
      * @return 格式化的简历信息
      */
     public ProfilePojo parseProfile(String profileParameter) {
-        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
+        Map<String, Object> paramMap = EmojiFilter.filterEmoji(profileParameter);
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
@@ -671,13 +671,14 @@ public class ProfileEntity {
         }
     }
 
-    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
+    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId, ReferralScene referralScene) throws ProfileException {
 
+        UserSource userSource = referralScene.getScene() == ReferralScene.Referral.getScene() ? UserSource.EMPLOYEE_REFERRAL : UserSource.EMPLOYEE_REFERRAL_CHATBOT;
         UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
                 companyId, profilePojo.getUserRecord().getMobile(),
-                ReferralScene.Referral);
+                referralScene, userSource);
         if (referralRecordRecord != null) {
-            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL,null,null,null);
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, userSource,null,null,null);
             if (referralRecordRecord != null && userUserRecord1 != null) {
                 referralRecordRecord.setUserId(userUserRecord1.getId());
                 userReferralRecordDao.updateRecord(referralRecordRecord);
