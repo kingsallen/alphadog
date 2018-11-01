@@ -505,9 +505,9 @@ public class ReferralEntity {
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds){
         ReferralProfileData data = new ReferralProfileData();
         Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
-                () -> employeeDao.getAllEmployeeBycompanyIds(companyIds));
+                () -> employeeDao.getEmployeeBycompanyIds(companyIds));
         Future<List<HistoryUserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
-                () -> historyUserEmployeeDao.getAllHistoryEmployeeByCompanyIds(companyIds));
+                () -> historyUserEmployeeDao.getHistoryEmployeeByCompanyIds(companyIds));
         List<Integer> employeeIds = new ArrayList<>();
         try {
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
@@ -541,9 +541,9 @@ public class ReferralEntity {
         Future<List<JobPositionDO>> positionListFuture = threadPool.startTast(
                 () -> positionDao.getPositionList(positionIds));
         Future<List<UserEmployeeDO>> empListFuture  = threadPool.startTast(
-                () -> employeeDao.getAllEmployeeByIds(empolyeeReferralIds));
+                () -> employeeDao.getEmployeeByIds(empolyeeReferralIds));
         Future<List<HistoryUserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
-                () -> historyUserEmployeeDao.getAllHistoryEmployeeByIds(empolyeeReferralIds));
+                () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
         try {
             List<ProfileProfileDO> profileList = profileListFuture.get();
             if(StringUtils.isEmptyList(profileList)){

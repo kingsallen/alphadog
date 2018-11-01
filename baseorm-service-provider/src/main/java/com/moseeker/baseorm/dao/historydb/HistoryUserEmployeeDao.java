@@ -26,7 +26,7 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
    }
 
 
-   public List<HistoryUserEmployeeDO> getAllHistoryEmployeeByCompanyIds(List<Integer> compantIds){
+   public List<HistoryUserEmployeeDO> getHistoryEmployeeByCompanyIds(List<Integer> compantIds){
         List<HistoryUserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)
                 .where(HISTORY_USER_EMPLOYEE.COMPANY_ID.in(compantIds))
                 .fetchInto(HistoryUserEmployeeDO.class);
@@ -37,7 +37,7 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
 
    }
 
-    public List<HistoryUserEmployeeDO> getAllHistoryEmployeeByIds(List<Integer> ids){
+    public List<HistoryUserEmployeeDO> getHistoryEmployeeByIds(List<Integer> ids){
         List<HistoryUserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)
                 .where(HISTORY_USER_EMPLOYEE.ID.in(ids))
                 .fetchInto(HistoryUserEmployeeDO.class);
