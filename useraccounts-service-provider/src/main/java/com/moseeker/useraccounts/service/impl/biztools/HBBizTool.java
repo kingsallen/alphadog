@@ -135,7 +135,7 @@ public class HBBizTool {
      */
     public static ReferralProfileTab packageReferralTab(ReferralLog log, ReferralProfileData profileData) {
         ReferralProfileTab tab = new ReferralProfileTab();
-        tab.setUploadTime(log.getClaimTime());
+        tab.setUploadTime(log.getCreateTime());
         if(profileData.getPositionTitleMap().get(log.getPositionId()) != null){
             tab.setPositionTitle(profileData.getPositionTitleMap().get(log.getPositionId()));
         }
