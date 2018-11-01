@@ -37,6 +37,7 @@ import org.joda.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,6 +75,8 @@ public class OrderService {
 
     private final TemplateService templateService;
 
+    private final Environment environment;
+
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
@@ -85,7 +88,7 @@ public class OrderService {
     @Autowired
     public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao,
                         GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao,
-                        HrCompanyDao hrCompanyDao, TemplateService templateService) {
+                        HrCompanyDao hrCompanyDao, TemplateService templateService, Environment environment) {
         this.orderDao = orderDao;
         this.userEmployeeDao = userEmployeeDao;
         this.historyUserEmployeeDao = historyUserEmployeeDao;
@@ -94,6 +97,7 @@ public class OrderService {
         this.userEmployeePointsDao = userEmployeePointsDao;
         this.hrCompanyDao = hrCompanyDao;
         this.templateService = templateService;
+        this.environment = environment;
     }
 
     /**
@@ -302,11 +306,23 @@ public class OrderService {
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         String current = dateFormat.format(dateTime.toDate());
         String templateTile = "您已成功兑换【" + goodTitle + "】";
-        String url = "www.baidu.com";
+        String url = getTemplateJumpUrlByKey("mall.charge.template.url");
         HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(companyId);
         String shopName = hrCompanyDO.getName() + "积分商城";
         templateService.sendAwardTemplate(sysUserId, companyId, Constant.TEMPLATES_AWARD_CONSUME_NOTICE_TPL, templateTile,
                 current, "0",  returnCredit+ "", shopName, CONSUME_REMARK, url);
+    }
+
+    /**
+     * 获取消息模板的跳转页面url
+     * @param key key
+     * @author  cjm
+     * @date  2018/11/1
+     * @return value
+     */
+    private String getTemplateJumpUrlByKey(String key) {
+        String value = environment.getProperty(key);
+        return value != null ? value : "";
     }
 
 
@@ -559,7 +575,7 @@ public class OrderService {
             userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCredit(), 1);
             // 发送积分变动消息模板
             String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
-            String url = "www.baidu.com";
+            String url = getTemplateJumpUrlByKey("mall.refund.template.url");
             templateService.sendAwardTemplate(userEmployeeDO.getSysuserId(), userEmployeeDO.getCompanyId(), Constant.TEMPLATES_AWARD_RETURN_NOTICE_TPL, templateTile,
                     "0", orderDO.getCredit() + "", "0", userEmployeeDO.getAward() + orderDO.getCredit() + "", REFUSE_REMARK, url);
         }

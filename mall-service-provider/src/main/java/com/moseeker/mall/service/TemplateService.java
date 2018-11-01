@@ -111,18 +111,19 @@ public class TemplateService {
      * @return 微信返回的模板消息发送发送结果
      */
     private Map<String, Object> sendCreditUpdateTemplate(TemplateDataValueVO templateDataValueVO, String openId, String url) throws ConnectException, BIZException {
-        logger.info("====================templateDataValueVO:{}", templateDataValueVO);
         //仟寻招聘助手（复制的老代码）
-        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOBySignature(templateDataValueVO.getCompanyId());
+        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOByCompanyId(templateDataValueVO.getCompanyId());
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, templateDataValueVO.getTemplateId());
         String requestUrl = getAwardTemplateUrl(hrWxWechatDO);
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
         Map<String, TemplateBaseVO> dataMap = createDataMap(templateDataValueVO);
+        url = url.replace("{}", hrWxWechatDO.getSignature());
         requestMap.put("data", dataMap);
         requestMap.put("touser", openId);
         requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
         requestMap.put("url", url);
         requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
+        logger.info("====================requestMap:{}", requestMap);
         String result = HttpClient.sendPost(requestUrl, JSON.toJSONString(requestMap));
         Map<String, Object> params = JSON.parseObject(result);
         requestMap.put("response", params);
@@ -164,7 +165,7 @@ public class TemplateService {
         wxMessageRecordDao.addData(messageRecord);
     }
 
-    private HrWxWechatDO getHrwxWechatDOBySignature(int companyId) {
+    private HrWxWechatDO getHrwxWechatDOByCompanyId(int companyId) {
         return hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyId).buildQuery());
     }
 
