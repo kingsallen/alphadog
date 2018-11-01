@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSONArray;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -441,7 +442,7 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getIds());
             if(idReasons.get("state") == null){
-                return Result.success(idReasons).toJson();
+                return Result.success(JSONArray.parseArray(idReasons.get("list"))).toJson();
             }else {
                 return new Result(-1, "apply_limit", idReasons).toJson();
             }

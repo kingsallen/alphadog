@@ -37,10 +37,7 @@ import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
 import com.moseeker.profile.service.impl.resumefileupload.iface.AbstractResumeFileParser;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
-import com.moseeker.profile.service.impl.vo.CandidateInfo;
-import com.moseeker.profile.service.impl.vo.FileNameData;
-import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
-import com.moseeker.profile.service.impl.vo.ReferralInfoCacheDTO;
+import com.moseeker.profile.service.impl.vo.*;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -208,10 +205,11 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException {
         Map<String, String> applyLimit = checkCompanyApply(employeeId, ids);
+        Map<String, String> referralResultMap = new HashMap<>(1 >> 4);
         if(applyLimit.get("state") != null){
             return applyLimit;
         }
-        Map<String, String> referralResultMap = new HashMap<>(1 >> 4);
+        List<MobotReferralResultVO> resultVOS = new ArrayList<>();
         String dataStr = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId));
         if(StringUtils.isNotBlank(dataStr)){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_OVERTIME);
@@ -221,18 +219,23 @@ public class ReferralServiceImpl implements ReferralService {
             CountDownLatch countDownLatch = new CountDownLatch(ids.size());
             for(Integer positionId : ids){
                 tp.startTast(() -> {
+                    MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
                     try {
                         int referralId = employeeReferralProfileIfMobot(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
                                 referralInfoCacheDTO.getReferralReasons(), positionId, referralInfoCacheDTO.getReferralType(), true);
-                        referralResultMap.put(positionId + "", referralId + "");
+                        referralResultVO.setId(referralId);
+                        referralResultVO.setSuccess(true);
                     }catch (Exception e){
-                        referralResultMap.put(positionId + "", e.getMessage());
+                        referralResultVO.setSuccess(false);
+                        referralResultVO.setReason(e.getMessage());
                     }
+                    resultVOS.add(referralResultVO);
                     countDownLatch.countDown();
                     return 0;
                 });
             }
             countDownLatch.await(60, TimeUnit.SECONDS);
+            referralResultMap.put("list", JSON.toJSONString(resultVOS));
             client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId));
         }catch (Exception e){
             throw e;
