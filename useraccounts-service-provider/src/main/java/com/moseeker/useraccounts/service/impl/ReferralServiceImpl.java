@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
@@ -133,15 +134,15 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId) throws UserAccountException {
-        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
-        ReferralProfileData profileData = referralEntity.fetchReferralLog(userId, companyIds);
+        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId));
+        ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
         List<ReferralProfileTab> profileTabs = new ArrayList<>();
         if(profileData != null){
-            List<ReferralLog> logList = profileData.getLogList();
             for(ReferralLog log : logList){
                 profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
             }
-            return profileTabs;
+            return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
+                    .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

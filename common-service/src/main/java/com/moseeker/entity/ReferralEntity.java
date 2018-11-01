@@ -502,7 +502,7 @@ public class ReferralEntity {
         return bonusData;
     }
 
-    public ReferralProfileData fetchReferralLog(int userId, List<Integer> companyIds){
+    public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds){
         ReferralProfileData data = new ReferralProfileData();
         Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
                 () -> employeeDao.getAllEmployeeBycompanyIds(companyIds));
@@ -525,7 +525,7 @@ public class ReferralEntity {
         }
 
         List<ReferralLog> logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
-        return fetchReferralProfileData(logs);
+        return logs;
     }
 
     public ReferralProfileData fetchReferralProfileData(List<ReferralLog> logs){
