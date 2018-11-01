@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
@@ -14,14 +15,12 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
+import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralService;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
-import com.moseeker.useraccounts.service.impl.vo.Bonus;
-import com.moseeker.useraccounts.service.impl.vo.BonusList;
-import com.moseeker.useraccounts.service.impl.vo.RedPacket;
-import com.moseeker.useraccounts.service.impl.vo.RedPackets;
+import com.moseeker.useraccounts.service.impl.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -130,5 +129,20 @@ public class ReferralServiceImpl implements ReferralService {
             bonusList.setTotalRedpackets(count);
         }
         return bonusList;
+    }
+
+    @Override
+    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId) throws UserAccountException {
+        List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
+        ReferralProfileData profileData = referralEntity.fetchReferralLog(userId, companyIds);
+        List<ReferralProfileTab> profileTabs = new ArrayList<>();
+        if(profileData != null){
+            List<ReferralLog> logList = profileData.getLogList();
+            for(ReferralLog log : logList){
+                profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
+            }
+            return profileTabs;
+        }
+        return new ArrayList<>();
     }
 }

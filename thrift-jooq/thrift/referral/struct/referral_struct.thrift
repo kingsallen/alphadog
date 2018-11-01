@@ -37,3 +37,11 @@ struct BonusList {
     2 : optional double totalBonus,
     3 : optional list<Bonus> bonus,
 }
+
+struct ReferralProfileTab{
+    1: optional string positionTitle,
+    2: optional string sender,
+    3: optional string uploadTime,
+    4: optional string filePath,
+    5: optional i32 id
+}

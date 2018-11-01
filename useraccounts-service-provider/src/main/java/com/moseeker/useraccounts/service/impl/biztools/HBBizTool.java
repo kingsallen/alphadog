@@ -4,12 +4,15 @@ import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
+import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
+import com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,5 +125,32 @@ public class HBBizTool {
             bonus.setCancel(true);
         }
         return bonus;
+    }
+
+    /**
+     * 封装内推附件数据
+     * @param log           内推记录
+     * @param profileData   数据对象
+     * @return
+     */
+    public static ReferralProfileTab packageReferralTab(ReferralLog log, ReferralProfileData profileData) {
+        ReferralProfileTab tab = new ReferralProfileTab();
+        tab.setUploadTime(log.getClaimTime());
+        if(profileData.getPositionTitleMap().get(log.getPositionId()) != null){
+            tab.setPositionTitle(profileData.getPositionTitleMap().get(log.getPositionId()));
+        }
+
+        if(profileData.getEmployeeNameMap().get(log.getEmployeeId())!=null){
+            tab.setSender(profileData.getEmployeeNameMap().get(log.getEmployeeId()));
+        }
+
+        if(profileData.getProfileIdMap().get(log.getOldReferenceId())!=null){
+            Integer profileId = profileData.getProfileIdMap().get(log.getOldReferenceId());
+            if(profileData.getAttchmentMap().get(profileId)!=null){
+                tab.setId(profileData.getAttchmentMap().get(profileId).getId());
+                tab.setFilePath(profileData.getAttchmentMap().get(profileId).getPath());
+            }
+        }
+        return tab;
     }
 }
