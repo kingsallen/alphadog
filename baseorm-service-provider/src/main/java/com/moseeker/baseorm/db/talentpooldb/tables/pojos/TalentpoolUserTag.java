@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 人才库人人才与标签的关系
+ * 人才标签表
  */
 @Generated(
     value = {
@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolUserTag implements Serializable {
 
-    private static final long serialVersionUID = -959120833;
+    private static final long serialVersionUID = 136966103;
 
     private Integer   userId;
     private Integer   tagId;

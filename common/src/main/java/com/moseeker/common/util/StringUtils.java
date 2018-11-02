@@ -532,4 +532,15 @@ public class StringUtils {
         return new ArrayList<>();
     }
 
+    public static List<Integer> convertSetToList(Set<Integer> dataList){
+        if(isEmptySet(dataList)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(Integer data:dataList ){
+            result.add(data);
+        }
+        return result;
+    }
+
 }
