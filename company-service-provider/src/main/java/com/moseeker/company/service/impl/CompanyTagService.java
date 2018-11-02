@@ -100,7 +100,6 @@ public class CompanyTagService {
                     this.deleteHrAutomaticTagUserList(tagIdList);
                 }
                 if(totalPage == 0){
-                    //没有查到说明应该走删除路线
                     this.refrushCompantTag(tagIdList,TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue(),null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
                 }else{
                     for (int i = 1; i <= totalPage; i++) {
@@ -119,6 +118,7 @@ public class CompanyTagService {
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
 
         try {
+            logger.info("====================");
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTagUser> deleList=new ArrayList<>();
@@ -299,7 +299,6 @@ public class CompanyTagService {
     public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
         try {
             for (Integer companyId : companyIdSet) {
-
                 this.handlerCompanyTagTalent(userIdset, companyId);
             }
         }catch(Exception e){
@@ -313,10 +312,14 @@ public class CompanyTagService {
         try{
             List<TalentUserHrCompany> list=this.getUserTalentCompanyMapData(userIdset);
             //需要获取company_id
+            logger.info("============需要处理 的数据是========================");
+            logger.info(JSON.toJSONString(list));
+            logger.info("=================================================");
             if(!StringUtils.isEmptyList(list)){
                 for(TalentUserHrCompany data:list){
                     Set<Integer> userIdList=new HashSet<>();
                     userIdList.add(data.getUserId());
+                    logger.info(JSON.toJSONString(userIdList)+"========"+data.getHrId()+"=========="+data.getCompanyId());
                     this.handlerUserIdAndHrTag(userIdList,data.getHrId(),data.getCompanyId());
                 }
             }
