@@ -313,10 +313,14 @@ public class CompanyTagService {
         try{
             List<TalentUserHrCompany> list=this.getUserTalentCompanyMapData(userIdset);
             //需要获取company_id
+            logger.info("============需要处理 的数据是========================");
+            logger.info(JSON.toJSONString(list));
+            logger.info("=================================================");
             if(!StringUtils.isEmptyList(list)){
                 for(TalentUserHrCompany data:list){
                     Set<Integer> userIdList=new HashSet<>();
                     userIdList.add(data.getUserId());
+                    logger.info(JSON.toJSONString(userIdList)+"========"+data.getHrId()+"=========="+data.getCompanyId());
                     this.handlerUserIdAndHrTag(userIdList,data.getHrId(),data.getCompanyId());
                 }
             }
