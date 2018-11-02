@@ -516,7 +516,7 @@ public class StringUtils {
         return false;
     }
 
-    public static String listToString(List<String> list, String splitTag){
+    public static String listToString(List list, String splitTag){
         if(!StringUtils.isEmptyList(list)){
             String keyword = org.apache.commons.lang.StringUtils.join(list,splitTag);
             return keyword;

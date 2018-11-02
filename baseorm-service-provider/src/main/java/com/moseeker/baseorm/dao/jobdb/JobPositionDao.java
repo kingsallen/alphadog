@@ -731,6 +731,21 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 
     }
 
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getJobPositionByIdListAndHbStatus(List<Integer> positionIdList) {
+
+
+        Result<JobPositionRecord> positionRecords = create.selectFrom(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
+                .and(JobPosition.JOB_POSITION.HB_STATUS.ge((byte)0))
+                .fetch();
+        if (positionRecords != null && positionRecords.size() > 0) {
+            return positionRecords.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        } else {
+            return new ArrayList<>();
+        }
+
+    }
+
     /**
      * 查找职位信息
      * @param idList 职位编号集合

@@ -358,4 +358,5 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .limit(1)
                 .fetchOne();
     }
+
 }

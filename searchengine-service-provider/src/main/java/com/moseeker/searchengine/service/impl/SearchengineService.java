@@ -3,6 +3,7 @@ package com.moseeker.searchengine.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.logdb.LogMeetmobotRecomDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -13,9 +14,11 @@ import com.moseeker.baseorm.db.logdb.tables.records.LogMeetmobotRecomRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.pojo.EmployeePointsRecordPojo;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConverTools;
@@ -24,8 +27,8 @@ import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.SearchEngineException;
+import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.service.impl.tools.EmployeeBizTool;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
@@ -33,6 +36,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -54,18 +58,18 @@ import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
 import org.elasticsearch.search.sort.ScriptSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortOrder;
-import org.jboss.netty.util.internal.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.moseeker.searchengine.service.impl.tools.EmployeeBizTool.buildSortScript;
 
 @Service
 @CounterIface
@@ -94,6 +98,8 @@ public class SearchengineService {
     @Autowired
     private LogMeetmobotRecomDao logMeetmobotRecomDao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient client;
 
     @CounterIface
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
@@ -181,7 +187,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         boolean haskey=false;
         if(StringUtils.isNotBlank(keywords)){
@@ -231,7 +237,7 @@ public class SearchengineService {
                 child_company_name, department, custom);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
-        SearchRequestBuilder responseBuilder = client.prepareSearch("index").setTypes("fulltext")
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         this.positionIndexOrder(responseBuilder, order_by_priority, haskey, cities);
         responseBuilder.setFrom(page_from).setSize(page_size);
@@ -394,9 +400,9 @@ public class SearchengineService {
     private QueryBuilder handlerCommonCity(String citys){
         if(StringUtils.isNotBlank(citys)){
             List<String> fieldList=new ArrayList<>();
-            fieldList.add("city");
-            fieldList.add("city_ename");
-            QueryBuilder keyand=searchUtil.shouldMatchParseQuery(fieldList,citys);
+            fieldList.add("search_data.city_list");
+            fieldList.add("search_data.ecity_list");
+            QueryBuilder keyand=searchUtil.shouldTermsQuery(fieldList,citys);
             return keyand;
         }
         return null;
@@ -510,7 +516,7 @@ public class SearchengineService {
         TransportClient client = null;
         try {
             client=searchUtil.getEsClient();
-            IndexResponse response = client.prepareIndex("index", "fulltext", idx).setSource(position).execute().actionGet();
+            IndexResponse response = client.prepareIndex(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE, idx).setSource(position).execute().actionGet();
         } catch (Exception e) {
             logger.error("error in update", e);
             return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
@@ -628,6 +634,7 @@ public class SearchengineService {
                     jsonObject.put("award", userEmployeeDO.getAward());
                     jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
+                    jsonObject.put("disable", userEmployeeDO.getDisable());
 
                     jsonObject.put("update_time", LocalDateTime.parse(userEmployeeDO.getUpdateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                     jsonObject.put("create_time", LocalDateTime.parse(userEmployeeDO.getCreateTime(), java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -690,29 +697,12 @@ public class SearchengineService {
         if (list != null && list.size() > 0) {
             for (EmployeePointsRecordPojo employeePointsRecordPojo : list) {
                 JSONObject a = new JSONObject();
-                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time());
+                a.put("last_update_time", employeePointsRecordPojo.getLast_update_time().format(DateTimeFormatter.ISO_DATE_TIME));
                 a.put("award", employeePointsRecordPojo.getAward());
                 a.put("timespan", employeePointsRecordPojo.getTimespan());
                 jsonObject.put(employeePointsRecordPojo.getTimespan(), a);
             }
         }
-    }
-
-
-    /**
-     * todo searchengine-service依赖 common-service，并依赖 SearchengineEntity的buildSrtScript代码
-     * @param timspanc
-     * @param field
-     * @param sortOrder
-     * @return
-     */
-    private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("double score=0; awards=_source.awards;times=awards['" + timspanc + "'];if(times){award=doc['awards." + timspanc + "." + field + "'].value;if(award){score=award}}; return score");
-        String scripts = sb.toString();
-        Script script = new Script(scripts);
-        ScriptSortBuilder builder = new ScriptSortBuilder(script, "number").order(sortOrder);
-        return builder;
     }
 
     /**
@@ -752,17 +742,39 @@ public class SearchengineService {
     }
 
 
-    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan, String keyword) {
+    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, int filter, int pageSize, int pageNum, String timespan, String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-        if (activation != null) {
-            searchUtil.handleTerms(activation, query, "activation");
+        if (filter > 0) {
+            String activation = "";
+            if (filter == 1) {
+                activation = String.valueOf(EmployeeActiveState.Actived.getState());
+            } else if (filter == 2) {
+                activation = String.valueOf(EmployeeActiveState.Init.getState());
+            } else if ((filter == 3)) {
+                activation = EmployeeActiveState.Cancel.getState()+", "+
+                        EmployeeActiveState.Failure.getState()+", "+
+                        EmployeeActiveState.MigrateToOtherCompany.getState()+", "+
+                        EmployeeActiveState.UnFollow.getState();
+            }
+            if (StringUtils.isNotBlank(activation)) {
+                searchUtil.handleTerms(activation, query, "activation");
+            }
         }
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
-
+        for(Integer companyId : companyIds){
+            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
+            if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(result)){
+                List<Integer> employees = JSON.parseArray(result, Integer.class);
+                if(!com.moseeker.common.util.StringUtils.isEmptyList(employees)){
+                    searchUtil.handlerNotTerms(employees,query,"id");
+                }
+            }
+        }
+        searchUtil.handleTerm(String.valueOf(0), query, "disable");
         EmployeeBizTool.addKeywords(defaultquery, keyword, searchUtil);
         SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query)
                 .addSort("activation", SortOrder.ASC)
@@ -812,7 +824,8 @@ public class SearchengineService {
             } else if (filter == 2) {
                 activation.append("1,2,3,4");
             }
-            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, activation.toString(), pageSize, pageNum, timespan, keyword);
+
+            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, filter, pageSize, pageNum, timespan, keyword);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());
@@ -839,7 +852,8 @@ public class SearchengineService {
     }
 
     public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-                                   String emailValidate, int pageSize, int pageNumber,int balanceType) throws SearchEngineException {
+                                   String emailValidate, int pageSize, int pageNumber, int balanceType, String timeSpan)
+            throws SearchEngineException {
         TransportClient searchClient;
         try {
             searchClient = searchUtil.getEsClient();
@@ -849,17 +863,40 @@ public class SearchengineService {
             QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
             EmployeeBizTool.addCompanyIds(query, companyIds, searchUtil);
             EmployeeBizTool.addFilter(query, filter, searchUtil);
+            for(Integer companyId : companyIds){
+                String str = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
+                if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(str)){
+                    List<Integer> employees = JSON.parseArray(str, Integer.class);
+                    EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+                }
+
+                if (filter == 1) {
+                    String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
+                    if(StringUtils.isNotBlank(str1)){
+                        List<Integer> employees = JSON.parseArray(str1, Integer.class);
+                        EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+                    }
+                }
+            }
+            searchUtil.handleTerm(String.valueOf(0), query, "disable");
             EmployeeBizTool.addKeywords(query, keywords, searchUtil);
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
             SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
-            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
+            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
             EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             result.put("total", response.getHits().getTotalHits());
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                if (StringUtils.isNotBlank(timeSpan)) {
+                    if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timeSpan)) {
+                        jsonObject.put("award", jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getIntValue("award"));
+                    } else {
+                        jsonObject.put("award", 0);
+                    }
+                }
                 data.add(jsonObject);
             }
             logger.info("==================================");

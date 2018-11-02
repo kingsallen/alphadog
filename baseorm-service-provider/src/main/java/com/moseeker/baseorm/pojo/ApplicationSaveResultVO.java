@@ -9,6 +9,7 @@ public class ApplicationSaveResultVO {
     private int positionId;
     private boolean create;
     private int applierId;
+    private long submitTime;
 
     public int getApplicationId() {
         return applicationId;
@@ -40,5 +41,13 @@ public class ApplicationSaveResultVO {
 
     public void setApplierId(int applierId) {
         this.applierId = applierId;
+    }
+
+    public long getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(long submitTime) {
+        this.submitTime = submitTime;
     }
 }

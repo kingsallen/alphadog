@@ -1,36 +1,21 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.AopTargetUtils;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.struct.*;
-import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import com.moseeker.useraccounts.config.AppConfig;
-import com.moseeker.useraccounts.service.EmployeeBinder;
-import java.util.HashMap;
-import java.util.List;
+import org.apache.thrift.TException;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import org.apache.thrift.TException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Commit;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 //import sun.jvm.hotspot.runtime.Thread;
 
 /**
@@ -89,7 +74,7 @@ public class EmployeeServiceTest {
         bp.setType(BindType.EMAIL);
         bp.setUserId(2376);
         bp.setName("fly");
-        Result result = service.bind(bp);
+        Result result = service.bind(bp,1);
         System.out.println(result);
     }
 
@@ -121,7 +106,7 @@ public class EmployeeServiceTest {
 
     @Test
     public void emailActivation() throws Exception {
-        Result result = bindByEmail.emailActivation("b9122ca1f6254e74e69f64708a182b53a857b397");
+        Result result = bindByEmail.emailActivation("b9122ca1f6254e74e69f64708a182b53a857b397",1);
         System.out.println(result);
     }
 

@@ -15,6 +15,8 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwardFrom;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.CustomFieldValuesForm;
+import com.moseeker.servicemanager.web.controller.useraccounts.form.EmployeeExtInfo;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.ContributionDetail;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.LeaderBoardInfo;
@@ -503,5 +505,27 @@ public class UserEmployeeController {
         ParamUtils.parseRequestParam(request);
         employeeService.clearUpVoteWeekly();
         return com.moseeker.servicemanager.web.controller.Result.success(true).toJson();
+    }
+
+    @RequestMapping(value="/v1/employee/custom-field-values", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String updateCustomFieldValues(@RequestBody CustomFieldValuesForm customFieldValuesForm) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("用户", customFieldValuesForm.getUserId());
+        validateUtil.addRequiredValidate("公司", customFieldValuesForm.getCompanyId());
+        validateUtil.addRequiredValidate("项目编号", customFieldValuesForm.getAppid());
+        validateUtil.addRequiredOneValidate("补填信息", customFieldValuesForm.getCustomFieldValues());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            employeeService.patchEmployeeCustomFieldValues(customFieldValuesForm.getUserId(),
+                    customFieldValuesForm.getCompanyId(),
+                    customFieldValuesForm.getCustomFieldValues()
+                            .stream()
+                            .collect(Collectors.toMap(EmployeeExtInfo::getId, EmployeeExtInfo::getOptions)));
+            return com.moseeker.servicemanager.web.controller.Result.success("success").toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrEmployeeCertConfDao;
@@ -32,6 +33,8 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,6 +46,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
 
 /**
  * Created by lucky8987 on 17/6/29.
@@ -87,6 +93,8 @@ public abstract class EmployeeBinder {
     @Autowired
     protected LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
@@ -166,6 +174,7 @@ public abstract class EmployeeBinder {
     /**
      * step 1: 认证当前员工   step 2: 将其他公司的该用户员工设为未认证
      * todo 需要优化  代码过长
+     * todo 积分添加也需要移动到队列里
      * @param useremployee
      * @return
      * @throws TException
@@ -176,59 +185,56 @@ public abstract class EmployeeBinder {
 
         DateTime currentTime = new DateTime();
         int employeeId;
-        if (useremployee.getId() != 0) {
-            useremployee.setUpdateTime(null);
-            String bindTime = useremployee.getBindingTime();
-            useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
-            employeeDao.updateData(useremployee);
-            if (useremployee.getAuthMethod() == 1 &&
-                    org.apache.commons.lang.StringUtils.isBlank(bindTime)) {
-                employeeEntity.addRewardByEmployeeVerified(useremployee.getId(), useremployee.getCompanyId());
-            }
-            employeeId = useremployee.getId();
-        } else {
-            log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
-            log.info("doneBind persist employee:{}", useremployee);
+        log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
+        log.info("doneBind persist employee:{}", useremployee);
 
-
-            UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
-                    useremployee.getCompanyId());
-            if (unActiveEmployee != null) {
-                employeeId = unActiveEmployee.getId();
-                if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
-                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getEmail())) {
-                        unActiveEmployee.setEmail(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
-                    }
-                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getMobile())) {
-                        unActiveEmployee.setMobile(org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getMobile(), ""));
-                    }
-                    if (org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getCname())) {
-                        unActiveEmployee.setCname(useremployee.getCname());
-                    }
-                    if ((org.apache.commons.lang.StringUtils.isBlank(unActiveEmployee.getCustomFieldValues())
-                            || Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(unActiveEmployee.getCustomFieldValues()))
-                            && StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
-                        unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
-                    }
-                    unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
-                    log.info("doneBind unActiveEmployee update record");
+        UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
+                useremployee.getCompanyId());
+        if (unActiveEmployee != null) {
+            employeeId = unActiveEmployee.getId();
+            if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
+                    unActiveEmployee.setEmail(useremployee.getEmail());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getMobile())) {
+                    unActiveEmployee.setMobile(useremployee.getMobile());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
+                    unActiveEmployee.setCname(useremployee.getCname());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomField())) {
+                    unActiveEmployee.setCustomField(useremployee.getCustomField());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCustomFieldValues()) &&
+                        !Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE.equals(useremployee.getCustomFieldValues())) {
+                    unActiveEmployee.setCustomFieldValues(useremployee.getCustomFieldValues());
+                }
+                unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
+                log.info("doneBind unActiveEmployee update record");
+                if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                }
+                if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
                     unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                             .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
-                    if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                        employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
-                    }
+                } else {
                     useremployee.setBindingTime(currentTime.toString("yyyy-MM-dd HH:mm:ss"));
-                    unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
-                    employeeDao.updateRecord(unActiveEmployee);
+                    unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
+                }
+                unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+                employeeDao.updateRecord(unActiveEmployee);
 
+                if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
+                    employeeDao.deleteData(useremployee);
+                    searchengineEntity.deleteEmployeeDO(new ArrayList<Integer>(){{add(useremployee.getId());}});
                 }
-            } else {
-                ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
-                employeeId = executeResult.getId();
-                if (executeResult.getExecute() > 0) {
-                    employeeEntity.addRewardByEmployeeVerified(employeeId, useremployee.getCompanyId());
-                }
+            }
+        } else {
+            ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
+            employeeId = executeResult.getId();
+            if (executeResult.getExecute() > 0) {
+                employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
             }
         }
         referralEmployeeRegisterLogDao.addRegisterLog(employeeId, currentTime);
@@ -304,6 +310,22 @@ public abstract class EmployeeBinder {
         log.info("updateEmployee response : {}", response);
         useremployee.setId(employeeId);
         return response;
+    }
+
+    /**
+     * 初次注册成为员工，添加积分与红包
+     * @param employeeId 员工编号
+     * @param companyId 公司编号
+     * @param bindingTime 员工注册时间
+     */
+    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime) {
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", employeeId);
+        jsonObject.put("binding_time", bindingTime);
+        amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
+                EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                        .build());
     }
     /*
         员工认证成功时，需要将潜在候选人置为无效

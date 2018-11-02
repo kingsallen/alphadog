@@ -12,7 +12,6 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
