@@ -201,6 +201,16 @@ public class ReferralEntity {
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
     }
 
+    public Map<Integer, Integer> logReferralOperations(int employeeId, int userId, List<Integer> positionIds, ReferralType referralType)
+            throws EmployeeException {
+        Map<Integer, Integer> referralIdMap = new HashMap<>(1 >> 4);
+        for(Integer positionId : positionIds){
+            // todo 时间来的及再研究改成batchInsert
+            referralIdMap.put(positionId, logReferralOperation(employeeId, userId, positionId, referralType));
+        }
+        return referralIdMap;
+    }
+
     public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType)
             throws EmployeeException {
 

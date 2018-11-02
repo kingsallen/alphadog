@@ -128,7 +128,6 @@ public class ProfileEntity {
             completenessImpl.reCalculateProfileBasic(profileDB.getId());
             return profileDB.getId();
         } else {
-//            logger.info();
             return storeProfile(profilePojo);
         }
     }
@@ -420,6 +419,7 @@ public class ProfileEntity {
 
     @Transactional
     public void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
+        logger.info("intentionRecords:{}", intentionRecords);
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionDao.delIntentionsByProfileId(profileId);
             intentionRecords.forEach(intention -> {

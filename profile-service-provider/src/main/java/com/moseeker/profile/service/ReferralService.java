@@ -50,7 +50,7 @@ public interface ReferralService {
      * @throws ProfileException 业务异常
      */
     int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType)
-            throws ProfileException;
+            throws ProfileException, BIZException;
 
     /**
      * 员工提交候选人关键信息
@@ -58,7 +58,7 @@ public interface ReferralService {
      * @param candidate 候选人信息
      * @return 推荐记录编号
      */
-    int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException;
+    int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException, BIZException;
 
     /**
      * 删除上传的简历数据

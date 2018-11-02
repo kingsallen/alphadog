@@ -11,7 +11,6 @@ public class ReferralInfoCache {
     private String mobile;
     private String name;
     private List<ReferralPositionIdTitle> positions;
-    private String title;
     private List<String> referralReasons;
     private String userId;
     private String fileName;
@@ -22,7 +21,6 @@ public class ReferralInfoCache {
                 "mobile='" + mobile + '\'' +
                 ", name='" + name + '\'' +
                 ", positions=" + positions +
-                ", title='" + title + '\'' +
                 ", referralReasons=" + referralReasons +
                 ", userId='" + userId + '\'' +
                 ", fileName='" + fileName + '\'' +
@@ -51,14 +49,6 @@ public class ReferralInfoCache {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public List<String> getReferralReasons() {
