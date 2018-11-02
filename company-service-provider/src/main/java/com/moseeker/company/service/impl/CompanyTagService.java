@@ -120,6 +120,7 @@ public class CompanyTagService {
 
         try {
             logger.info("====================");
+            this.handlerHrAutomaticData(idList);
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTagUser> deleList=new ArrayList<>();
@@ -299,6 +300,7 @@ public class CompanyTagService {
      */
     public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
         try {
+            logger.info("=============开始企业标签====================");
             for (Integer companyId : companyIdSet) {
                 this.handlerCompanyTagTalent(userIdset, companyId);
             }
