@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 简历搬家chaos请求操作记录表
+ * 简历搬家操作记录表
  */
 @Generated(
     value = {

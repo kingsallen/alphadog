@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRecord> {
 
-    private static final long serialVersionUID = -725699510;
+    private static final long serialVersionUID = -230180120;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_filter</code>
@@ -152,14 +152,14 @@ public class TalentpoolProfileFilter extends TableImpl<TalentpoolProfileFilterRe
     public final TableField<TalentpoolProfileFilterRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_filter.update_time</code>. 更新时间
+     * The column <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0无效，2关闭
      */
-    public final TableField<TalentpoolProfileFilterRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+    public final TableField<TalentpoolProfileFilterRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "1有效，0无效，2关闭");
 
     /**
-     * The column <code>talentpooldb.talentpool_profile_filter.disable</code>. 1有效，0删除，2关闭
+     * The column <code>talentpooldb.talentpool_profile_filter.update_time</code>.
      */
-    public final TableField<TalentpoolProfileFilterRecord, Integer> DISABLE = createField("disable", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "1有效，0删除，2关闭");
+    public final TableField<TalentpoolProfileFilterRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>talentpooldb.talentpool_profile_filter</code> table reference
