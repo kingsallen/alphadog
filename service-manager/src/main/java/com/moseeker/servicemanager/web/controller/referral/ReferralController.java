@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -467,6 +468,7 @@ public class ReferralController {
         validateUtil.addRequiredValidate("手机", referralForm.getMobile());
         validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
+        validateUtil.addRequiredValidate("文件名称", referralForm.getFileName());
         validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
         validateUtil.addIntTypeValidate("员工", id, 1, null);
         validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
@@ -474,8 +476,8 @@ public class ReferralController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
-            int userId = profileService.saveMobotReferralProfileCache(id, referralForm.getName(),
-                    referralForm.getMobile(), referralForm.getReferralReasons(), (byte) referralForm.getReferralType());
+            int userId = profileService.saveMobotReferralProfileCache(id, referralForm.getName(), referralForm.getMobile(),
+                    referralForm.getReferralReasons(), (byte) referralForm.getReferralType(), referralForm.getFileName());
             return Result.success(userId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
@@ -497,6 +499,28 @@ public class ReferralController {
             return Result.success(true).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    /**
+     * 点击告诉ta时回填推荐信息，从缓存中取
+     * @param id 员工编号
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral/cache", method = RequestMethod.GET)
+    @ResponseBody
+    public String getMobotReferralCache(@PathVariable int id) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            String jsonResult = profileService.getMobotReferralCache(id);
+            jsonResult = (jsonResult == null ? "":jsonResult);
+            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
+            return Result.success(referralInfoCache).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
 }

@@ -128,6 +128,7 @@ public class ProfileEntity {
             completenessImpl.reCalculateProfileBasic(profileDB.getId());
             return profileDB.getId();
         } else {
+//            logger.info();
             return storeProfile(profilePojo);
         }
     }

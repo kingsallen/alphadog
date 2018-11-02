@@ -84,9 +84,19 @@ public interface ReferralService {
      * @param name 被推荐人姓名
      * @param referralReasons 推荐理由
      * @param referralType 推荐类型
+     * @param fileName 文件名字
      * @author  cjm
      * @date  2018/10/31
      * @return  虚拟用户或真实用户id
      */
-    int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType) throws BIZException;
+    int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException;
+
+    /**
+     * 点击告诉ta时回填推荐信息，从缓存中取
+     * @param employeeId 员工编号
+     * @author  cjm
+     * @date  2018/10/31
+     * @return  缓存的推荐信息
+     */
+    String getMobotReferralCache(int employeeId);
 }

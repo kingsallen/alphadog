@@ -18,14 +18,17 @@ public class ReferralInfoCacheDTO {
     private Byte referralType;
     private Boolean employee;
     private Integer userId;
+    private String fileName;
 
-    public ReferralInfoCacheDTO(Integer employeeId, Integer companyId, String name, String mobile, List<String> referralReasons, Byte referralType) {
+    public ReferralInfoCacheDTO(Integer employeeId, Integer companyId, String name, String mobile,
+                                List<String> referralReasons, Byte referralType, String fileName) {
         this.employeeId = employeeId;
         this.companyId = companyId;
         this.name = name;
         this.mobile = mobile;
         this.referralReasons = referralReasons;
         this.referralType = referralType;
+        this.fileName = fileName;
     }
 
     public ReferralInfoCacheDTO() {
@@ -99,12 +102,23 @@ public class ReferralInfoCacheDTO {
     public String toString() {
         return "ReferralInfoCacheDTO{" +
                 "employeeId=" + employeeId +
+                ", companyId=" + companyId +
                 ", name='" + name + '\'' +
                 ", mobile='" + mobile + '\'' +
                 ", referralReasons=" + referralReasons +
                 ", referralType=" + referralType +
                 ", employee=" + employee +
                 ", userId=" + userId +
+                ", fileName='" + fileName + '\'' +
                 '}';
     }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
 }
