@@ -16,6 +16,7 @@ public class MallGoodsInfoVO {
     private String rule;
     private Integer credit;
     private Integer stock;
+    private Integer state;
     private Integer exchange_num;
     private Integer exchange_order;
     private Timestamp create_time;
@@ -115,6 +116,14 @@ public class MallGoodsInfoVO {
 
     public void setUpdate_time(Timestamp update_time) {
         this.update_time = update_time;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
     }
 }
 

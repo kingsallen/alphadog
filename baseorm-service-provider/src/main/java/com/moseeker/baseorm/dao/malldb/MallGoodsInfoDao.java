@@ -12,6 +12,7 @@ import org.jooq.UpdateQuery;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
     public int updateStateByCompanyId(int companyId, byte state) {
         return create.update(MALL_GOODS_INFO)
                 .set(MALL_GOODS_INFO.STATE, state)
+                .set(MALL_GOODS_INFO.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .execute();
     }
@@ -56,6 +58,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
     public int updateGoodStock(MallGoodsInfoDO mallGoodsInfoDO, int stock) {
         return create.update(MALL_GOODS_INFO)
                 .set(MALL_GOODS_INFO.STOCK, (mallGoodsInfoDO.getStock() + stock))
+                .set(MALL_GOODS_INFO.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(MALL_GOODS_INFO.ID.eq(mallGoodsInfoDO.getId()))
                 .and(MALL_GOODS_INFO.STOCK.eq(mallGoodsInfoDO.getStock()))
                 .execute();
@@ -64,6 +67,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
     public int updateGoodStateByIds(List<Integer> ids, int companyId, int state) {
         return create.update(MALL_GOODS_INFO)
                 .set(MALL_GOODS_INFO.STATE, (byte)state)
+                .set(MALL_GOODS_INFO.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(MALL_GOODS_INFO.ID.in(ids))
                 .and(MALL_GOODS_INFO.COMPANY_ID.eq(companyId))
                 .execute();
@@ -76,6 +80,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .set(MALL_GOODS_INFO.CREDIT, mallGoodsInfoForm.getCredit())
                 .set(MALL_GOODS_INFO.DETAIL, mallGoodsInfoForm.getDetail())
                 .set(MALL_GOODS_INFO.RULE, mallGoodsInfoForm.getRule())
+                .set(MALL_GOODS_INFO.UPDATE_TIME, new Timestamp(System.currentTimeMillis()))
                 .where(MALL_GOODS_INFO.ID.eq(mallGoodsInfoForm.getId()))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)1))
                 .execute();
@@ -127,7 +132,8 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
                 .set(MALL_GOODS_INFO.STOCK, mallGoodsInfoDO.getStock() + count)
                 .set(MALL_GOODS_INFO.EXCHANGE_ORDER, mallGoodsInfoDO.getExchange_order() + 1)
                 .set(MALL_GOODS_INFO.EXCHANGE_NUM, mallGoodsInfoDO.getExchange_num() + Math.abs(count))
-                .where(MALL_GOODS_INFO.STOCK.eq(mallGoodsInfoDO.getStock()))
+                .where(MALL_GOODS_INFO.ID.eq(mallGoodsInfoDO.getId()))
+                .and(MALL_GOODS_INFO.STOCK.eq(mallGoodsInfoDO.getStock()))
                 .and(MALL_GOODS_INFO.STATE.eq((byte)state))
                 .execute();
     }
@@ -155,6 +161,7 @@ public class MallGoodsInfoDao extends JooqCrudImpl<MallGoodsInfoDO, MallGoodsInf
             tempQuery.addValue(MALL_GOODS_INFO.EXCHANGE_NUM, record.getExchangeNum() - mallOrderDO.getCount());
             tempQuery.addValue(MALL_GOODS_INFO.EXCHANGE_ORDER, record.getExchangeOrder() - 1);
             tempQuery.addValue(MALL_GOODS_INFO.STOCK, record.getStock() + mallOrderDO.getCount());
+            tempQuery.addValue(MALL_GOODS_INFO.UPDATE_TIME, new Timestamp(System.currentTimeMillis()));
             batchUpdate.add(tempQuery);
         }
         return create.batch(batchUpdate).execute();

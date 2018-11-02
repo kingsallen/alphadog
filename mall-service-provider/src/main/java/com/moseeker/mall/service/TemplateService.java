@@ -123,11 +123,11 @@ public class TemplateService {
         requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
         requestMap.put("url", url);
         requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
-        logger.info("====================requestMap:{}", requestMap);
         String result = HttpClient.sendPost(requestUrl, JSON.toJSONString(requestMap));
         Map<String, Object> params = JSON.parseObject(result);
         requestMap.put("response", params);
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
+        logger.info("====================requestMap:{}", requestMap);
         return requestMap;
     }
 
