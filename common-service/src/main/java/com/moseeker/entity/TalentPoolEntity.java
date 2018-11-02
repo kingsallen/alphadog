@@ -569,7 +569,6 @@ public class TalentPoolEntity {
         tagRecord.setKeywords(keyword);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
         return tagRecord.getId();
-
     }
 
     /*

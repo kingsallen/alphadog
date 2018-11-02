@@ -61,7 +61,7 @@ public class CompanyTagService {
         try {
             if (type == TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()) {//删除标签只需要执行删除操作即可
                 talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
-                this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+                this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.COMPANY_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
             } else {
                 //新增标签，不用调用删除原有表中的标签和人才的对应关系，只需要增加就可以
                 //Map<String, Object> map = JSON.parseObject(JSON.toJSONString(DO));//talentpoolCompanyTagDao.getTagById(tagIdList.get(0));
@@ -72,7 +72,7 @@ public class CompanyTagService {
                         talentpoolCompanyTagUserDao.deleteByTag(tagIdList);
                     }
                     if(totalPage == 0){
-                        this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+                        this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANY_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
                     }else {
                         for (int i = 1; i <= totalPage; i++) {
                             logger.info("执行第" + i + "页");
@@ -101,7 +101,7 @@ public class CompanyTagService {
                     this.deleteHrAutomaticTagUserList(tagIdList);
                 }
                 if(totalPage == 0){
-                    this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+                    this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANY_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
                 }else{
                     for (int i = 1; i <= totalPage; i++) {
                         logger.info("执行第" + i + "页");
@@ -267,7 +267,7 @@ public class CompanyTagService {
 
     //获取企业标签是否正在执行
     public boolean getCompanyTagIsExecute(int tagId){
-        String result=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.COMPANYTAG_ES_STATUS.toString(),
+        String result=client.get(Constant.APPID_ALPHADOG, KeyIdentifier.COMPANY_TAG_ES_STATUS.toString(),
                 String.valueOf(tagId));
         if(StringUtils.isNotNullOrEmpty(result)){
             if(Integer.parseInt(result)>0){
@@ -556,7 +556,7 @@ public class CompanyTagService {
             }
 
         }
-        this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.COMPANYTAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+        this.refrushCompantTag(tagIdList,type,userIdList,KeyIdentifier.COMPANY_TAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
 
     }
     private List<Integer> getUserIdList(int page,int pageSize,Map<String,Object> map) throws TException {
