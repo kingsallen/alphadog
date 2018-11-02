@@ -101,7 +101,7 @@ public class CompanyTagService {
                     this.deleteHrAutomaticTagUserList(tagIdList);
                 }
                 if(totalPage == 0){
-                    this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.COMPANY_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_COMPANYTAG_ID.toString());
+                    this.refrushCompantTag(tagIdList,type,new ArrayList<>(),KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
                 }else{
                     for (int i = 1; i <= totalPage; i++) {
                         logger.info("执行第" + i + "页");
