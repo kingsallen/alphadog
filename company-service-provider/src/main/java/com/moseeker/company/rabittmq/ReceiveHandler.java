@@ -50,6 +50,7 @@ public class ReceiveHandler {
                 log.info(JSON.toJSONString(companyIdSet));
                 log.info("===========================");
                 companyTagService.handlerProfileCompanyIds(convert(userIdSet),convert(companyIdSet));
+                log.info("=========开始修改个人标签==============");
                 companyTagService.handlerHrAutomaticData(convert(userIdSet));
             }
 
