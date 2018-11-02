@@ -242,13 +242,19 @@ public abstract class EmployeeBinder {
                 }
             }
         } else {
-            log.info("employeeDao.registerEmployee");
-            ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
-            employeeId = executeResult.getId();
-            log.info("executeResult :{}", JSON.toJSONString(executeResult));
-            if (executeResult.getExecute() > 0) {
-                log.info("employee add award");
+            if (useremployee.getId() > 0) {
+                employeeDao.updateData(useremployee);
+                employeeId = useremployee.getId();
                 employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+            } else {
+                log.info("employeeDao.registerEmployee");
+                ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
+                log.info("executeResult :{}", JSON.toJSONString(executeResult));
+                employeeId = executeResult.getId();
+                if (executeResult.getExecute() > 0) {
+                    log.info("employee add award");
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                }
             }
         }
         //}
