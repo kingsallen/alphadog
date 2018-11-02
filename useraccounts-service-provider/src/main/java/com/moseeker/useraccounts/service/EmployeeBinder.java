@@ -231,10 +231,16 @@ public abstract class EmployeeBinder {
                 }
             }
         } else {
-            ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
-            employeeId = executeResult.getId();
-            if (executeResult.getExecute() > 0) {
+            if (useremployee.getId() > 0) {
+                employeeDao.updateData(useremployee);
+                employeeId = useremployee.getId();
                 employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+            } else {
+                ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
+                employeeId = executeResult.getId();
+                if (executeResult.getExecute() > 0) {
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                }
             }
         }
         referralEmployeeRegisterLogDao.addRegisterLog(employeeId, currentTime);
