@@ -10,12 +10,32 @@ public class ReferralInfoCache {
 
     private String mobile;
     private String name;
-    List<>
+    private List<ReferralPositionIdTitle> positions;
     private String title;
-    private Integer positionId;
     private List<String> referralReasons;
     private String userId;
     private String fileName;
+
+    @Override
+    public String toString() {
+        return "ReferralInfoCache{" +
+                "mobile='" + mobile + '\'' +
+                ", name='" + name + '\'' +
+                ", positions=" + positions +
+                ", title='" + title + '\'' +
+                ", referralReasons=" + referralReasons +
+                ", userId='" + userId + '\'' +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
+
+    public List<ReferralPositionIdTitle> getPositions() {
+        return positions;
+    }
+
+    public void setPositions(List<ReferralPositionIdTitle> positions) {
+        this.positions = positions;
+    }
 
     public String getMobile() {
         return mobile;
@@ -39,14 +59,6 @@ public class ReferralInfoCache {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Integer getPositionId() {
-        return positionId;
-    }
-
-    public void setPositionId(Integer positionId) {
-        this.positionId = positionId;
     }
 
     public List<String> getReferralReasons() {
@@ -76,16 +88,4 @@ public class ReferralInfoCache {
     public ReferralInfoCache() {
     }
 
-    @Override
-    public String toString() {
-        return "ReferralInfoCache{" +
-                "mobile='" + mobile + '\'' +
-                ", name='" + name + '\'' +
-                ", title='" + title + '\'' +
-                ", positionId=" + positionId +
-                ", referralReasons=" + referralReasons +
-                ", userId='" + userId + '\'' +
-                ", fileName='" + fileName + '\'' +
-                '}';
-    }
 }

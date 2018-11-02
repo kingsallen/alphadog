@@ -1,4 +1,4 @@
-package com.moseeker.servicemanager.web.controller.referral.vo;
+package com.moseeker.servicemanager.web.controller.referral.form;
 
 import java.util.List;
 

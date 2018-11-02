@@ -1,6 +1,7 @@
 package com.moseeker.profile.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.constant.ReferralType;
@@ -298,7 +299,7 @@ public class ReferralServiceImpl implements ReferralService {
                 String.valueOf(employeeId));
         JSONObject jsonObject = new JSONObject();
         jsonObject.putAll(JSONObject.parseObject(referralCache));
-        jsonObject.putAll(JSONObject.parseObject(successPositions));
+        jsonObject.put("positions", JSONArray.parseArray(successPositions));
         return jsonObject.toJSONString();
     }
 
