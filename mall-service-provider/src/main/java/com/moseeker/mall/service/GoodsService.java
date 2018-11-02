@@ -214,7 +214,12 @@ public class GoodsService {
 
     private void checkGoodsState(MallGoodsInfoDO mallGoodsInfoDO, int state) throws BIZException {
         if(mallGoodsInfoDO.getState() != state){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_NEED_DOWNSHELF);
+            if(state == GoodsEnum.DOWNSHELF.getState()){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_NEED_DOWNSHELF);
+            }else if(state == GoodsEnum.UPSHELF.getState()){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_NEED_UPSHELF);
+            }
+
         }
     }
 
