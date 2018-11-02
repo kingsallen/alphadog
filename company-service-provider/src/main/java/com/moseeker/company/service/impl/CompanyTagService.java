@@ -119,6 +119,7 @@ public class CompanyTagService {
     public void handlerCompanyTagTalent(Set<Integer> idList,int companyId) throws Exception {
 
         try {
+            logger.info("====================");
             List<TalentpoolCompanyTagUserRecord> list = new ArrayList<>();
             List<Integer> tagIdList=new ArrayList<>();
             List<TalentpoolCompanyTagUser> deleList=new ArrayList<>();
@@ -299,7 +300,6 @@ public class CompanyTagService {
     public void handlerProfileCompanyIds(Set<Integer> userIdset,Set<Integer> companyIdSet){
         try {
             for (Integer companyId : companyIdSet) {
-
                 this.handlerCompanyTagTalent(userIdset, companyId);
             }
         }catch(Exception e){
