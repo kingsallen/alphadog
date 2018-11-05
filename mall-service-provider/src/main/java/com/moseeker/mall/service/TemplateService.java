@@ -80,7 +80,7 @@ public class TemplateService {
     public void sendAwardTemplate(int sysUserId, int companyId, int templateId, String title,
                                    String keyWord1, String keyWord2, String keyWord3, String keyWord4, String remark, String url) {
         TemplateDataValueVO templateDataValueVO = new TemplateDataValueVO();
-        UserWxUserRecord userWxUserRecord = userWxUserDao.getWXUserByUserId(sysUserId);
+        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOByCompanyId(templateDataValueVO.getCompanyId());
         templateDataValueVO.setFirst(title);
         templateDataValueVO.setTemplateId(templateId);
         templateDataValueVO.setCompanyId(companyId);
@@ -90,9 +90,11 @@ public class TemplateService {
         templateDataValueVO.setKeyWord4(keyWord4);
         templateDataValueVO.setRemark(remark);
         try {
-            Map<String, Object> templateValueMap = sendCreditUpdateTemplate(templateDataValueVO, userWxUserRecord.getOpenid(), url);
+            UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(sysUserId, hrWxWechatDO.getId());
+
+            Map<String, Object> templateValueMap = sendCreditUpdateTemplate(userWxUserRecord.getOpenid(), templateDataValueVO, hrWxWechatDO, url);
             // 插入模板消息发送记录
-            insertLogWxMessageRecord(templateId, userWxUserRecord.getWechatId(), templateValueMap);
+            insertLogWxMessageRecord(templateId, hrWxWechatDO.getId(), templateValueMap);
         }catch (BIZException e){
             logger.info("==============消息模板发送失败:{}", e.getMessage());
         }catch (ConnectException e){
@@ -105,14 +107,13 @@ public class TemplateService {
     /**
      * 发送积分变动消息模板
      * @param templateDataValueVO 积分提醒消息模板values
-     * @param openId 微信用户openid
+     * @param openId 微信用户openId
+     * @param url 消息模板的url
      * @author  cjm
      * @date  2018/10/24
      * @return 微信返回的模板消息发送发送结果
      */
-    private Map<String, Object> sendCreditUpdateTemplate(TemplateDataValueVO templateDataValueVO, String openId, String url) throws ConnectException, BIZException {
-        //仟寻招聘助手（复制的老代码）
-        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOByCompanyId(templateDataValueVO.getCompanyId());
+    private Map<String, Object> sendCreditUpdateTemplate(String openId, TemplateDataValueVO templateDataValueVO, HrWxWechatDO hrWxWechatDO, String url) throws ConnectException, BIZException {
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, templateDataValueVO.getTemplateId());
         String requestUrl = getAwardTemplateUrl(hrWxWechatDO);
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
