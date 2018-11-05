@@ -699,6 +699,7 @@ public class ProfileEntity {
             shortSource = (short) source.getValue();
         }
         profilePojo.getUserRecord().setSource(shortSource);
+        profilePojo.getUserRecord().setEmailVerified((byte)0);
         UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
 
         logger.info("mergeProfile userId:{}", userUserRecord.getId());
