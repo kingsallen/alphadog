@@ -114,6 +114,8 @@ public class OrderController {
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
+        }catch (BIZException e){
+            return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -147,6 +149,8 @@ public class OrderController {
             } else {
                 return ResponseLogNotification.fail(request, message);
             }
+        } catch (BIZException e){
+            return ResponseLogNotification.failJson(request, e.getCode(), e.getMessage(), null);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());

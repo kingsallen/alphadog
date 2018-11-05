@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.mall.vo.TemplateBaseVO;
@@ -24,6 +25,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.net.ConnectException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,13 +111,13 @@ public class TemplateService {
      * @return 微信返回的模板消息发送发送结果
      */
     private Map<String, Object> sendCreditUpdateTemplate(TemplateDataValueVO templateDataValueVO, String openId, String url) throws ConnectException, BIZException {
-        logger.info("====================templateDataValueVO:{}", templateDataValueVO);
         //仟寻招聘助手（复制的老代码）
-        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOBySignature(templateDataValueVO.getCompanyId());
+        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOByCompanyId(templateDataValueVO.getCompanyId());
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, templateDataValueVO.getTemplateId());
         String requestUrl = getAwardTemplateUrl(hrWxWechatDO);
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
         Map<String, TemplateBaseVO> dataMap = createDataMap(templateDataValueVO);
+        url = url.replace("{}", hrWxWechatDO.getSignature());
         requestMap.put("data", dataMap);
         requestMap.put("touser", openId);
         requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
@@ -125,6 +127,7 @@ public class TemplateService {
         Map<String, Object> params = JSON.parseObject(result);
         requestMap.put("response", params);
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
+        logger.info("====================requestMap:{}", requestMap);
         return requestMap;
     }
 
@@ -147,18 +150,22 @@ public class TemplateService {
         messageRecord.setWechatId(wechatId);
         messageRecord.setTopcolor(String.valueOf(templateValueMap.get("topcolor")));
         Map<String, Object> response = (Map<String, Object>)templateValueMap.get("response");
-        if("0".equals(String.valueOf(response.get("errcode")))){
+        String errcode = String.valueOf(response.get("errcode"));
+        if("0".equals(errcode)){
             messageRecord.setSendstatus("success");
             messageRecord.setMsgid(Long.parseLong(String.valueOf(response.get("msgid"))));
         }else {
             messageRecord.setSendstatus("failed");
         }
-        messageRecord.setErrcode(Integer.parseInt(String.valueOf(response.get("errcode"))));
+        messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
+        messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
+        messageRecord.setSendtype(0);
+        messageRecord.setErrcode(Integer.parseInt(errcode));
         messageRecord.setErrmsg(String.valueOf(response.get("errmsg")));
         wxMessageRecordDao.addData(messageRecord);
     }
 
-    private HrWxWechatDO getHrwxWechatDOBySignature(int companyId) {
+    private HrWxWechatDO getHrwxWechatDOByCompanyId(int companyId) {
         return hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyId).buildQuery());
     }
 

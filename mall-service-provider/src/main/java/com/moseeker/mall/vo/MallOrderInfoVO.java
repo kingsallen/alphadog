@@ -180,7 +180,7 @@ public class MallOrderInfoVO{
         }
         setMobile(userEmployeeDO.getMobile());
         setEmail(userEmployeeDO.getEmail());
-        setCustom(userEmployeeDO.getCustomFieldValues());
+        setCustom(userEmployeeDO.getCustomField());
         setName(userEmployeeDO.getCname());
     }
 
