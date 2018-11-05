@@ -22,45 +22,45 @@ public class UseraccountsServices {
 
     public com.moseeker.thrift.gen.common.struct.Response updateUser(com.moseeker.thrift.gen.useraccounts.struct.User user) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response postuserlogout(int userid) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcodeVoice(String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcodeVoice(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, java.lang.String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, String unionid, String code, String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserbindmobile(int appid, String unionid, String code, String countryCode, String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, String old_password, String password) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, java.lang.String old_password, java.lang.String password) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(String countryCode, String mobile, String code, int type) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, int type) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response sendVerifyCode(String countryCode, String mobile, int type) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response sendVerifyCode(java.lang.String countryCode, java.lang.String mobile, int type) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response checkEmail(String email) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response checkEmail(java.lang.String email) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(String countryCode, String mobile, String code, String password) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, java.lang.String password) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(String countryCode, String oldmobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(java.lang.String countryCode, java.lang.String oldmobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(String countryCode, String oldmobile, String code) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, java.lang.String code) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(String countryCode, String newmobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(java.lang.String countryCode, java.lang.String newmobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, java.lang.String countryCode, java.lang.String newmobile, java.lang.String code) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId) throws org.apache.thrift.TException;
 
@@ -68,19 +68,19 @@ public class UseraccountsServices {
 
     public com.moseeker.thrift.gen.common.struct.Response cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response getQrcode(String ticket) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response getQrcode(java.lang.String ticket) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response getScanResult(int wechatId, long sceneId) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response setScanResult(int wechatId, long sceneId, String value) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response setScanResult(int wechatId, long sceneId, java.lang.String value) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO ifExistUser(String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO ifExistUser(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
     public int createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user) throws org.apache.thrift.TException;
 
-    public boolean ifExistProfile(String countryCode, String mobile) throws org.apache.thrift.TException;
+    public boolean ifExistProfile(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
-    public com.moseeker.thrift.gen.common.struct.Response userChangeBind(String unionid, String countryCode, String mobile) throws org.apache.thrift.TException;
+    public com.moseeker.thrift.gen.common.struct.Response userChangeBind(java.lang.String unionid, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException;
 
     public com.moseeker.thrift.gen.common.struct.Response getUserSearchPositionHistory(int userId) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
@@ -90,7 +90,7 @@ public class UseraccountsServices {
 
     public void claimReferralBonus(int bonus_record_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, java.util.List<Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
   }
 
@@ -102,45 +102,45 @@ public class UseraccountsServices {
 
     public void updateUser(com.moseeker.thrift.gen.useraccounts.struct.User user, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void getismobileregisted(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void getismobileregisted(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void postuserlogin(com.moseeker.thrift.gen.useraccounts.struct.Userloginreq userloginreq, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void postuserlogout(int userid, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendsignupcode(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postsendsignupcode(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendsignupcodeVoice(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postsendsignupcodeVoice(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserwxbindmobile(int appid, String unionid, String code, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postuserwxbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserbindmobile(int appid, String unionid, String code, String countryCode, String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postuserbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserchangepassword(int user_id, String old_password, String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postuserchangepassword(int user_id, java.lang.String old_password, java.lang.String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postusersendpasswordforgotcode(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postusersendpasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postvalidatepasswordforgotcode(String countryCode, String mobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postvalidatepasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void validateVerifyCode(String countryCode, String mobile, String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void validateVerifyCode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void sendVerifyCode(String countryCode, String mobile, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void sendVerifyCode(java.lang.String countryCode, java.lang.String mobile, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void checkEmail(String email, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void checkEmail(java.lang.String email, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postuserresetpassword(String countryCode, String mobile, String code, String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postuserresetpassword(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, java.lang.String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postusermergebymobile(int appid, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postusermergebymobile(int appid, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendchangemobilecode(String countryCode, String oldmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postsendchangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postvalidatechangemobilecode(String countryCode, String oldmobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postvalidatechangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postsendresetmobilecode(String countryCode, String newmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postsendresetmobilecode(java.lang.String countryCode, java.lang.String newmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void postresetmobile(int user_id, String countryCode, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void postresetmobile(int user_id, java.lang.String countryCode, java.lang.String newmobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void getUserFavPositionCountByUserIdAndPositionId(int userId, int positionId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -148,19 +148,19 @@ public class UseraccountsServices {
 
     public void cerateQrcode(int wechatId, long sceneId, int expireSeconds, int action_name, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void getQrcode(String ticket, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void getQrcode(java.lang.String ticket, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void getScanResult(int wechatId, long sceneId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void setScanResult(int wechatId, long sceneId, String value, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void setScanResult(int wechatId, long sceneId, java.lang.String value, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
-    public void ifExistUser(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> resultHandler) throws org.apache.thrift.TException;
+    public void ifExistUser(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> resultHandler) throws org.apache.thrift.TException;
 
-    public void createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user, org.apache.thrift.async.AsyncMethodCallback<Integer> resultHandler) throws org.apache.thrift.TException;
+    public void createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException;
 
-    public void ifExistProfile(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws org.apache.thrift.TException;
+    public void ifExistProfile(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException;
 
-    public void userChangeBind(String unionid, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
+    public void userChangeBind(java.lang.String unionid, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
     public void getUserSearchPositionHistory(int userId, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException;
 
@@ -170,7 +170,7 @@ public class UseraccountsServices {
 
     public void claimReferralBonus(int bonus_record_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
-    public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, java.util.List<Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
+    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -263,13 +263,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "updateUser failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getismobileregisted(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_getismobileregisted(countryCode, mobile);
       return recv_getismobileregisted();
     }
 
-    public void send_getismobileregisted(String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_getismobileregisted(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       getismobileregisted_args args = new getismobileregisted_args();
       args.setCountryCode(countryCode);
@@ -333,13 +333,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserlogout failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcode(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_postsendsignupcode(countryCode, mobile);
       return recv_postsendsignupcode();
     }
 
-    public void send_postsendsignupcode(String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_postsendsignupcode(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       postsendsignupcode_args args = new postsendsignupcode_args();
       args.setCountryCode(countryCode);
@@ -357,13 +357,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendsignupcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcodeVoice(String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendsignupcodeVoice(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_postsendsignupcodeVoice(countryCode, mobile);
       return recv_postsendsignupcodeVoice();
     }
 
-    public void send_postsendsignupcodeVoice(String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_postsendsignupcodeVoice(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       postsendsignupcodeVoice_args args = new postsendsignupcodeVoice_args();
       args.setCountryCode(countryCode);
@@ -381,13 +381,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendsignupcodeVoice failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, java.lang.String code) throws org.apache.thrift.TException
     {
       send_postusermobilesignup(user, code);
       return recv_postusermobilesignup();
     }
 
-    public void send_postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code) throws org.apache.thrift.TException
+    public void send_postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, java.lang.String code) throws org.apache.thrift.TException
     {
       postusermobilesignup_args args = new postusermobilesignup_args();
       args.setUser(user);
@@ -405,13 +405,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postusermobilesignup failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, String unionid, String code, String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserwxbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_postuserwxbindmobile(appid, unionid, code, countryCode, mobile);
       return recv_postuserwxbindmobile();
     }
 
-    public void send_postuserwxbindmobile(int appid, String unionid, String code, String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_postuserwxbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       postuserwxbindmobile_args args = new postuserwxbindmobile_args();
       args.setAppid(appid);
@@ -432,13 +432,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserwxbindmobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserbindmobile(int appid, String unionid, String code, String countryCode, String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType) throws org.apache.thrift.TException
     {
       send_postuserbindmobile(appid, unionid, code, countryCode, mobile, bindType);
       return recv_postuserbindmobile();
     }
 
-    public void send_postuserbindmobile(int appid, String unionid, String code, String countryCode, String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType) throws org.apache.thrift.TException
+    public void send_postuserbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType) throws org.apache.thrift.TException
     {
       postuserbindmobile_args args = new postuserbindmobile_args();
       args.setAppid(appid);
@@ -460,13 +460,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserbindmobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, String old_password, String password) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserchangepassword(int user_id, java.lang.String old_password, java.lang.String password) throws org.apache.thrift.TException
     {
       send_postuserchangepassword(user_id, old_password, password);
       return recv_postuserchangepassword();
     }
 
-    public void send_postuserchangepassword(int user_id, String old_password, String password) throws org.apache.thrift.TException
+    public void send_postuserchangepassword(int user_id, java.lang.String old_password, java.lang.String password) throws org.apache.thrift.TException
     {
       postuserchangepassword_args args = new postuserchangepassword_args();
       args.setUser_id(user_id);
@@ -485,13 +485,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserchangepassword failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postusersendpasswordforgotcode(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_postusersendpasswordforgotcode(countryCode, mobile);
       return recv_postusersendpasswordforgotcode();
     }
 
-    public void send_postusersendpasswordforgotcode(String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_postusersendpasswordforgotcode(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       postusersendpasswordforgotcode_args args = new postusersendpasswordforgotcode_args();
       args.setCountryCode(countryCode);
@@ -509,13 +509,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postusersendpasswordforgotcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatepasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code) throws org.apache.thrift.TException
     {
       send_postvalidatepasswordforgotcode(countryCode, mobile, code);
       return recv_postvalidatepasswordforgotcode();
     }
 
-    public void send_postvalidatepasswordforgotcode(String countryCode, String mobile, String code) throws org.apache.thrift.TException
+    public void send_postvalidatepasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code) throws org.apache.thrift.TException
     {
       postvalidatepasswordforgotcode_args args = new postvalidatepasswordforgotcode_args();
       args.setCountryCode(countryCode);
@@ -534,13 +534,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postvalidatepasswordforgotcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(String countryCode, String mobile, String code, int type) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response validateVerifyCode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, int type) throws org.apache.thrift.TException
     {
       send_validateVerifyCode(countryCode, mobile, code, type);
       return recv_validateVerifyCode();
     }
 
-    public void send_validateVerifyCode(String countryCode, String mobile, String code, int type) throws org.apache.thrift.TException
+    public void send_validateVerifyCode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, int type) throws org.apache.thrift.TException
     {
       validateVerifyCode_args args = new validateVerifyCode_args();
       args.setCountryCode(countryCode);
@@ -560,13 +560,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "validateVerifyCode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response sendVerifyCode(String countryCode, String mobile, int type) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response sendVerifyCode(java.lang.String countryCode, java.lang.String mobile, int type) throws org.apache.thrift.TException
     {
       send_sendVerifyCode(countryCode, mobile, type);
       return recv_sendVerifyCode();
     }
 
-    public void send_sendVerifyCode(String countryCode, String mobile, int type) throws org.apache.thrift.TException
+    public void send_sendVerifyCode(java.lang.String countryCode, java.lang.String mobile, int type) throws org.apache.thrift.TException
     {
       sendVerifyCode_args args = new sendVerifyCode_args();
       args.setCountryCode(countryCode);
@@ -585,13 +585,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "sendVerifyCode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response checkEmail(String email) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response checkEmail(java.lang.String email) throws org.apache.thrift.TException
     {
       send_checkEmail(email);
       return recv_checkEmail();
     }
 
-    public void send_checkEmail(String email) throws org.apache.thrift.TException
+    public void send_checkEmail(java.lang.String email) throws org.apache.thrift.TException
     {
       checkEmail_args args = new checkEmail_args();
       args.setEmail(email);
@@ -608,13 +608,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "checkEmail failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(String countryCode, String mobile, String code, String password) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postuserresetpassword(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, java.lang.String password) throws org.apache.thrift.TException
     {
       send_postuserresetpassword(countryCode, mobile, code, password);
       return recv_postuserresetpassword();
     }
 
-    public void send_postuserresetpassword(String countryCode, String mobile, String code, String password) throws org.apache.thrift.TException
+    public void send_postuserresetpassword(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, java.lang.String password) throws org.apache.thrift.TException
     {
       postuserresetpassword_args args = new postuserresetpassword_args();
       args.setCountryCode(countryCode);
@@ -634,13 +634,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postuserresetpassword failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postusermergebymobile(int appid, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_postusermergebymobile(appid, countryCode, mobile);
       return recv_postusermergebymobile();
     }
 
-    public void send_postusermergebymobile(int appid, String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_postusermergebymobile(int appid, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       postusermergebymobile_args args = new postusermergebymobile_args();
       args.setAppid(appid);
@@ -659,13 +659,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postusermergebymobile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(String countryCode, String oldmobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendchangemobilecode(java.lang.String countryCode, java.lang.String oldmobile) throws org.apache.thrift.TException
     {
       send_postsendchangemobilecode(countryCode, oldmobile);
       return recv_postsendchangemobilecode();
     }
 
-    public void send_postsendchangemobilecode(String countryCode, String oldmobile) throws org.apache.thrift.TException
+    public void send_postsendchangemobilecode(java.lang.String countryCode, java.lang.String oldmobile) throws org.apache.thrift.TException
     {
       postsendchangemobilecode_args args = new postsendchangemobilecode_args();
       args.setCountryCode(countryCode);
@@ -683,13 +683,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendchangemobilecode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(String countryCode, String oldmobile, String code) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postvalidatechangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, java.lang.String code) throws org.apache.thrift.TException
     {
       send_postvalidatechangemobilecode(countryCode, oldmobile, code);
       return recv_postvalidatechangemobilecode();
     }
 
-    public void send_postvalidatechangemobilecode(String countryCode, String oldmobile, String code) throws org.apache.thrift.TException
+    public void send_postvalidatechangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, java.lang.String code) throws org.apache.thrift.TException
     {
       postvalidatechangemobilecode_args args = new postvalidatechangemobilecode_args();
       args.setCountryCode(countryCode);
@@ -708,13 +708,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postvalidatechangemobilecode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(String countryCode, String newmobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postsendresetmobilecode(java.lang.String countryCode, java.lang.String newmobile) throws org.apache.thrift.TException
     {
       send_postsendresetmobilecode(countryCode, newmobile);
       return recv_postsendresetmobilecode();
     }
 
-    public void send_postsendresetmobilecode(String countryCode, String newmobile) throws org.apache.thrift.TException
+    public void send_postsendresetmobilecode(java.lang.String countryCode, java.lang.String newmobile) throws org.apache.thrift.TException
     {
       postsendresetmobilecode_args args = new postsendresetmobilecode_args();
       args.setCountryCode(countryCode);
@@ -732,13 +732,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "postsendresetmobilecode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, String countryCode, String newmobile, String code) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response postresetmobile(int user_id, java.lang.String countryCode, java.lang.String newmobile, java.lang.String code) throws org.apache.thrift.TException
     {
       send_postresetmobile(user_id, countryCode, newmobile, code);
       return recv_postresetmobile();
     }
 
-    public void send_postresetmobile(int user_id, String countryCode, String newmobile, String code) throws org.apache.thrift.TException
+    public void send_postresetmobile(int user_id, java.lang.String countryCode, java.lang.String newmobile, java.lang.String code) throws org.apache.thrift.TException
     {
       postresetmobile_args args = new postresetmobile_args();
       args.setUser_id(user_id);
@@ -831,13 +831,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "cerateQrcode failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response getQrcode(String ticket) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response getQrcode(java.lang.String ticket) throws org.apache.thrift.TException
     {
       send_getQrcode(ticket);
       return recv_getQrcode();
     }
 
-    public void send_getQrcode(String ticket) throws org.apache.thrift.TException
+    public void send_getQrcode(java.lang.String ticket) throws org.apache.thrift.TException
     {
       getQrcode_args args = new getQrcode_args();
       args.setTicket(ticket);
@@ -878,13 +878,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "getScanResult failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response setScanResult(int wechatId, long sceneId, String value) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response setScanResult(int wechatId, long sceneId, java.lang.String value) throws org.apache.thrift.TException
     {
       send_setScanResult(wechatId, sceneId, value);
       return recv_setScanResult();
     }
 
-    public void send_setScanResult(int wechatId, long sceneId, String value) throws org.apache.thrift.TException
+    public void send_setScanResult(int wechatId, long sceneId, java.lang.String value) throws org.apache.thrift.TException
     {
       setScanResult_args args = new setScanResult_args();
       args.setWechatId(wechatId);
@@ -903,13 +903,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "setScanResult failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO ifExistUser(String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO ifExistUser(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_ifExistUser(countryCode, mobile);
       return recv_ifExistUser();
     }
 
-    public void send_ifExistUser(String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_ifExistUser(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       ifExistUser_args args = new ifExistUser_args();
       args.setCountryCode(countryCode);
@@ -950,13 +950,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "createRetrieveProfileUser failed: unknown result");
     }
 
-    public boolean ifExistProfile(String countryCode, String mobile) throws org.apache.thrift.TException
+    public boolean ifExistProfile(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_ifExistProfile(countryCode, mobile);
       return recv_ifExistProfile();
     }
 
-    public void send_ifExistProfile(String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_ifExistProfile(java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       ifExistProfile_args args = new ifExistProfile_args();
       args.setCountryCode(countryCode);
@@ -974,13 +974,13 @@ public class UseraccountsServices {
       throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "ifExistProfile failed: unknown result");
     }
 
-    public com.moseeker.thrift.gen.common.struct.Response userChangeBind(String unionid, String countryCode, String mobile) throws org.apache.thrift.TException
+    public com.moseeker.thrift.gen.common.struct.Response userChangeBind(java.lang.String unionid, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       send_userChangeBind(unionid, countryCode, mobile);
       return recv_userChangeBind();
     }
 
-    public void send_userChangeBind(String unionid, String countryCode, String mobile) throws org.apache.thrift.TException
+    public void send_userChangeBind(java.lang.String unionid, java.lang.String countryCode, java.lang.String mobile) throws org.apache.thrift.TException
     {
       userChangeBind_args args = new userChangeBind_args();
       args.setUnionid(unionid);
@@ -1097,13 +1097,13 @@ public class UseraccountsServices {
       return;
     }
 
-    public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, java.util.List<Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds);
       recv_batchClaimReferralCard();
     }
 
-    public void send_batchClaimReferralCard(int userId, String name, String mobile, String vcode, java.util.List<Integer> referralRecordIds) throws org.apache.thrift.TException
+    public void send_batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws org.apache.thrift.TException
     {
       batchClaimReferralCard_args args = new batchClaimReferralCard_args();
       args.setUserId(userId);
@@ -1165,8 +1165,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1197,8 +1197,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1229,8 +1229,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1238,7 +1238,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void getismobileregisted(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void getismobileregisted(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getismobileregisted_call method_call = new getismobileregisted_call(countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1246,9 +1246,9 @@ public class UseraccountsServices {
     }
 
     public static class getismobileregisted_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      public getismobileregisted_call(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public getismobileregisted_call(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1264,8 +1264,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1296,8 +1296,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1328,8 +1328,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1337,7 +1337,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendsignupcode(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postsendsignupcode(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendsignupcode_call method_call = new postsendsignupcode_call(countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1345,9 +1345,9 @@ public class UseraccountsServices {
     }
 
     public static class postsendsignupcode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      public postsendsignupcode_call(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public postsendsignupcode_call(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1363,8 +1363,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1372,7 +1372,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendsignupcodeVoice(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postsendsignupcodeVoice(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendsignupcodeVoice_call method_call = new postsendsignupcodeVoice_call(countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1380,9 +1380,9 @@ public class UseraccountsServices {
     }
 
     public static class postsendsignupcodeVoice_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      public postsendsignupcodeVoice_call(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public postsendsignupcodeVoice_call(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1398,8 +1398,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1407,7 +1407,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postusermobilesignup(com.moseeker.thrift.gen.useraccounts.struct.User user, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postusermobilesignup_call method_call = new postusermobilesignup_call(user, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1416,8 +1416,8 @@ public class UseraccountsServices {
 
     public static class postusermobilesignup_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private com.moseeker.thrift.gen.useraccounts.struct.User user;
-      private String code;
-      public postusermobilesignup_call(com.moseeker.thrift.gen.useraccounts.struct.User user, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String code;
+      public postusermobilesignup_call(com.moseeker.thrift.gen.useraccounts.struct.User user, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user = user;
         this.code = code;
@@ -1433,8 +1433,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1442,7 +1442,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserwxbindmobile(int appid, String unionid, String code, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postuserwxbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserwxbindmobile_call method_call = new postuserwxbindmobile_call(appid, unionid, code, countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1451,11 +1451,11 @@ public class UseraccountsServices {
 
     public static class postuserwxbindmobile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int appid;
-      private String unionid;
-      private String code;
-      private String countryCode;
-      private String mobile;
-      public postuserwxbindmobile_call(int appid, String unionid, String code, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String unionid;
+      private java.lang.String code;
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public postuserwxbindmobile_call(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.appid = appid;
         this.unionid = unionid;
@@ -1477,8 +1477,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1486,7 +1486,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserbindmobile(int appid, String unionid, String code, String countryCode, String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postuserbindmobile(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserbindmobile_call method_call = new postuserbindmobile_call(appid, unionid, code, countryCode, mobile, bindType, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1495,12 +1495,12 @@ public class UseraccountsServices {
 
     public static class postuserbindmobile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int appid;
-      private String unionid;
-      private String code;
-      private String countryCode;
-      private String mobile;
+      private java.lang.String unionid;
+      private java.lang.String code;
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
       private com.moseeker.thrift.gen.useraccounts.struct.BindType bindType;
-      public postuserbindmobile_call(int appid, String unionid, String code, String countryCode, String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public postuserbindmobile_call(int appid, java.lang.String unionid, java.lang.String code, java.lang.String countryCode, java.lang.String mobile, com.moseeker.thrift.gen.useraccounts.struct.BindType bindType, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.appid = appid;
         this.unionid = unionid;
@@ -1524,8 +1524,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1533,7 +1533,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserchangepassword(int user_id, String old_password, String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postuserchangepassword(int user_id, java.lang.String old_password, java.lang.String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserchangepassword_call method_call = new postuserchangepassword_call(user_id, old_password, password, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1542,9 +1542,9 @@ public class UseraccountsServices {
 
     public static class postuserchangepassword_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int user_id;
-      private String old_password;
-      private String password;
-      public postuserchangepassword_call(int user_id, String old_password, String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String old_password;
+      private java.lang.String password;
+      public postuserchangepassword_call(int user_id, java.lang.String old_password, java.lang.String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user_id = user_id;
         this.old_password = old_password;
@@ -1562,8 +1562,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1571,7 +1571,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postusersendpasswordforgotcode(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postusersendpasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postusersendpasswordforgotcode_call method_call = new postusersendpasswordforgotcode_call(countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1579,9 +1579,9 @@ public class UseraccountsServices {
     }
 
     public static class postusersendpasswordforgotcode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      public postusersendpasswordforgotcode_call(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public postusersendpasswordforgotcode_call(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1597,8 +1597,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1606,7 +1606,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postvalidatepasswordforgotcode(String countryCode, String mobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postvalidatepasswordforgotcode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postvalidatepasswordforgotcode_call method_call = new postvalidatepasswordforgotcode_call(countryCode, mobile, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1614,10 +1614,10 @@ public class UseraccountsServices {
     }
 
     public static class postvalidatepasswordforgotcode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      private String code;
-      public postvalidatepasswordforgotcode_call(String countryCode, String mobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      private java.lang.String code;
+      public postvalidatepasswordforgotcode_call(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1635,8 +1635,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1644,7 +1644,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void validateVerifyCode(String countryCode, String mobile, String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void validateVerifyCode(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       validateVerifyCode_call method_call = new validateVerifyCode_call(countryCode, mobile, code, type, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1652,11 +1652,11 @@ public class UseraccountsServices {
     }
 
     public static class validateVerifyCode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      private String code;
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      private java.lang.String code;
       private int type;
-      public validateVerifyCode_call(String countryCode, String mobile, String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public validateVerifyCode_call(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1676,8 +1676,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1685,7 +1685,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void sendVerifyCode(String countryCode, String mobile, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void sendVerifyCode(java.lang.String countryCode, java.lang.String mobile, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       sendVerifyCode_call method_call = new sendVerifyCode_call(countryCode, mobile, type, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1693,10 +1693,10 @@ public class UseraccountsServices {
     }
 
     public static class sendVerifyCode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
       private int type;
-      public sendVerifyCode_call(String countryCode, String mobile, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public sendVerifyCode_call(java.lang.String countryCode, java.lang.String mobile, int type, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1714,8 +1714,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1723,7 +1723,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void checkEmail(String email, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void checkEmail(java.lang.String email, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       checkEmail_call method_call = new checkEmail_call(email, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1731,8 +1731,8 @@ public class UseraccountsServices {
     }
 
     public static class checkEmail_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String email;
-      public checkEmail_call(String email, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String email;
+      public checkEmail_call(java.lang.String email, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.email = email;
       }
@@ -1746,8 +1746,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1755,7 +1755,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postuserresetpassword(String countryCode, String mobile, String code, String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postuserresetpassword(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, java.lang.String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postuserresetpassword_call method_call = new postuserresetpassword_call(countryCode, mobile, code, password, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1763,11 +1763,11 @@ public class UseraccountsServices {
     }
 
     public static class postuserresetpassword_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String mobile;
-      private String code;
-      private String password;
-      public postuserresetpassword_call(String countryCode, String mobile, String code, String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      private java.lang.String code;
+      private java.lang.String password;
+      public postuserresetpassword_call(java.lang.String countryCode, java.lang.String mobile, java.lang.String code, java.lang.String password, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -1787,8 +1787,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1796,7 +1796,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postusermergebymobile(int appid, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postusermergebymobile(int appid, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postusermergebymobile_call method_call = new postusermergebymobile_call(appid, countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1805,9 +1805,9 @@ public class UseraccountsServices {
 
     public static class postusermergebymobile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int appid;
-      private String countryCode;
-      private String mobile;
-      public postusermergebymobile_call(int appid, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public postusermergebymobile_call(int appid, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.appid = appid;
         this.countryCode = countryCode;
@@ -1825,8 +1825,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1834,7 +1834,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendchangemobilecode(String countryCode, String oldmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postsendchangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendchangemobilecode_call method_call = new postsendchangemobilecode_call(countryCode, oldmobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1842,9 +1842,9 @@ public class UseraccountsServices {
     }
 
     public static class postsendchangemobilecode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String oldmobile;
-      public postsendchangemobilecode_call(String countryCode, String oldmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String oldmobile;
+      public postsendchangemobilecode_call(java.lang.String countryCode, java.lang.String oldmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.oldmobile = oldmobile;
@@ -1860,8 +1860,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1869,7 +1869,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postvalidatechangemobilecode(String countryCode, String oldmobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postvalidatechangemobilecode(java.lang.String countryCode, java.lang.String oldmobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postvalidatechangemobilecode_call method_call = new postvalidatechangemobilecode_call(countryCode, oldmobile, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1877,10 +1877,10 @@ public class UseraccountsServices {
     }
 
     public static class postvalidatechangemobilecode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String oldmobile;
-      private String code;
-      public postvalidatechangemobilecode_call(String countryCode, String oldmobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String oldmobile;
+      private java.lang.String code;
+      public postvalidatechangemobilecode_call(java.lang.String countryCode, java.lang.String oldmobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.oldmobile = oldmobile;
@@ -1898,8 +1898,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1907,7 +1907,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postsendresetmobilecode(String countryCode, String newmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postsendresetmobilecode(java.lang.String countryCode, java.lang.String newmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postsendresetmobilecode_call method_call = new postsendresetmobilecode_call(countryCode, newmobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1915,9 +1915,9 @@ public class UseraccountsServices {
     }
 
     public static class postsendresetmobilecode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String countryCode;
-      private String newmobile;
-      public postsendresetmobilecode_call(String countryCode, String newmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String newmobile;
+      public postsendresetmobilecode_call(java.lang.String countryCode, java.lang.String newmobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.newmobile = newmobile;
@@ -1933,8 +1933,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -1942,7 +1942,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void postresetmobile(int user_id, String countryCode, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void postresetmobile(int user_id, java.lang.String countryCode, java.lang.String newmobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       postresetmobile_call method_call = new postresetmobile_call(user_id, countryCode, newmobile, code, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -1951,10 +1951,10 @@ public class UseraccountsServices {
 
     public static class postresetmobile_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int user_id;
-      private String countryCode;
-      private String newmobile;
-      private String code;
-      public postresetmobile_call(int user_id, String countryCode, String newmobile, String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String newmobile;
+      private java.lang.String code;
+      public postresetmobile_call(int user_id, java.lang.String countryCode, java.lang.String newmobile, java.lang.String code, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user_id = user_id;
         this.countryCode = countryCode;
@@ -1974,8 +1974,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2009,8 +2009,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2041,8 +2041,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2082,8 +2082,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2091,7 +2091,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void getQrcode(String ticket, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void getQrcode(java.lang.String ticket, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       getQrcode_call method_call = new getQrcode_call(ticket, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2099,8 +2099,8 @@ public class UseraccountsServices {
     }
 
     public static class getQrcode_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String ticket;
-      public getQrcode_call(String ticket, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String ticket;
+      public getQrcode_call(java.lang.String ticket, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.ticket = ticket;
       }
@@ -2114,8 +2114,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2149,8 +2149,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2158,7 +2158,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setScanResult(int wechatId, long sceneId, String value, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void setScanResult(int wechatId, long sceneId, java.lang.String value, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       setScanResult_call method_call = new setScanResult_call(wechatId, sceneId, value, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2168,8 +2168,8 @@ public class UseraccountsServices {
     public static class setScanResult_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
       private int wechatId;
       private long sceneId;
-      private String value;
-      public setScanResult_call(int wechatId, long sceneId, String value, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String value;
+      public setScanResult_call(int wechatId, long sceneId, java.lang.String value, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.wechatId = wechatId;
         this.sceneId = sceneId;
@@ -2187,8 +2187,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2196,7 +2196,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void ifExistUser(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> resultHandler) throws org.apache.thrift.TException {
+    public void ifExistUser(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       ifExistUser_call method_call = new ifExistUser_call(countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2204,9 +2204,9 @@ public class UseraccountsServices {
     }
 
     public static class ifExistUser_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> {
-      private String countryCode;
-      private String mobile;
-      public ifExistUser_call(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public ifExistUser_call(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -2222,8 +2222,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2231,16 +2231,16 @@ public class UseraccountsServices {
       }
     }
 
-    public void createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user, org.apache.thrift.async.AsyncMethodCallback<Integer> resultHandler) throws org.apache.thrift.TException {
+    public void createRetrieveProfileUser(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       createRetrieveProfileUser_call method_call = new createRetrieveProfileUser_call(user, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class createRetrieveProfileUser_call extends org.apache.thrift.async.TAsyncMethodCall<Integer> {
+    public static class createRetrieveProfileUser_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.Integer> {
       private com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user;
-      public createRetrieveProfileUser_call(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user, org.apache.thrift.async.AsyncMethodCallback<Integer> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public createRetrieveProfileUser_call(com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO user, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.user = user;
       }
@@ -2253,9 +2253,9 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public Integer getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public java.lang.Integer getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2263,17 +2263,17 @@ public class UseraccountsServices {
       }
     }
 
-    public void ifExistProfile(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws org.apache.thrift.TException {
+    public void ifExistProfile(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       ifExistProfile_call method_call = new ifExistProfile_call(countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class ifExistProfile_call extends org.apache.thrift.async.TAsyncMethodCall<Boolean> {
-      private String countryCode;
-      private String mobile;
-      public ifExistProfile_call(String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class ifExistProfile_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.Boolean> {
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public ifExistProfile_call(java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.countryCode = countryCode;
         this.mobile = mobile;
@@ -2288,9 +2288,9 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public Boolean getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+      public java.lang.Boolean getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2298,7 +2298,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void userChangeBind(String unionid, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
+    public void userChangeBind(java.lang.String unionid, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       userChangeBind_call method_call = new userChangeBind_call(unionid, countryCode, mobile, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2306,10 +2306,10 @@ public class UseraccountsServices {
     }
 
     public static class userChangeBind_call extends org.apache.thrift.async.TAsyncMethodCall<com.moseeker.thrift.gen.common.struct.Response> {
-      private String unionid;
-      private String countryCode;
-      private String mobile;
-      public userChangeBind_call(String unionid, String countryCode, String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String unionid;
+      private java.lang.String countryCode;
+      private java.lang.String mobile;
+      public userChangeBind_call(java.lang.String unionid, java.lang.String countryCode, java.lang.String mobile, org.apache.thrift.async.AsyncMethodCallback<com.moseeker.thrift.gen.common.struct.Response> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.unionid = unionid;
         this.countryCode = countryCode;
@@ -2327,8 +2327,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2359,8 +2359,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2391,8 +2391,8 @@ public class UseraccountsServices {
       }
 
       public com.moseeker.thrift.gen.common.struct.Response getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2423,8 +2423,8 @@ public class UseraccountsServices {
       }
 
       public Void getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2455,8 +2455,8 @@ public class UseraccountsServices {
       }
 
       public Void getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2464,7 +2464,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, java.util.List<Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       batchClaimReferralCard_call method_call = new batchClaimReferralCard_call(userId, name, mobile, vcode, referralRecordIds, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
@@ -2473,11 +2473,11 @@ public class UseraccountsServices {
 
     public static class batchClaimReferralCard_call extends org.apache.thrift.async.TAsyncMethodCall<Void> {
       private int userId;
-      private String name;
-      private String mobile;
-      private String vcode;
-      private java.util.List<Integer> referralRecordIds;
-      public batchClaimReferralCard_call(int userId, String name, String mobile, String vcode, java.util.List<Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      private java.lang.String name;
+      private java.lang.String mobile;
+      private java.lang.String vcode;
+      private java.util.List<java.lang.Integer> referralRecordIds;
+      public batchClaimReferralCard_call(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userId = userId;
         this.name = name;
@@ -2499,8 +2499,8 @@ public class UseraccountsServices {
       }
 
       public Void getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
-        if (getState() != State.RESPONSE_READ) {
-          throw new IllegalStateException("Method call not finished!");
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
@@ -2513,14 +2513,14 @@ public class UseraccountsServices {
   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(Processor.class.getName());
     public Processor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
+      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
     }
 
-    protected Processor(I iface, java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
+    protected Processor(I iface, java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends Iface> java.util.Map<String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+    private static <I extends Iface> java.util.Map<java.lang.String,  org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>> getProcessMap(java.util.Map<java.lang.String, org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
       processMap.put("getUserById", new getUserById());
       processMap.put("getUsers", new getUsers());
       processMap.put("updateUser", new updateUser());
@@ -3349,14 +3349,14 @@ public class UseraccountsServices {
   public static class AsyncProcessor<I extends AsyncIface> extends org.apache.thrift.TBaseAsyncProcessor<I> {
     private static final org.slf4j.Logger _LOGGER = org.slf4j.LoggerFactory.getLogger(AsyncProcessor.class.getName());
     public AsyncProcessor(I iface) {
-      super(iface, getProcessMap(new java.util.HashMap<String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
+      super(iface, getProcessMap(new java.util.HashMap<java.lang.String, org.apache.thrift.AsyncProcessFunction<I, ? extends org.apache.thrift.TBase, ?>>()));
     }
 
-    protected AsyncProcessor(I iface, java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    protected AsyncProcessor(I iface, java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       super(iface, getProcessMap(processMap));
     }
 
-    private static <I extends AsyncIface> java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
+    private static <I extends AsyncIface> java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(java.util.Map<java.lang.String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
       processMap.put("getUserById", new getUserById());
       processMap.put("getUsers", new getUsers());
       processMap.put("updateUser", new updateUser());
@@ -3418,12 +3418,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getUserById_result result = new getUserById_result();
@@ -3442,7 +3442,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3479,12 +3479,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getUsers_result result = new getUsers_result();
@@ -3503,7 +3503,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3540,12 +3540,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             updateUser_result result = new updateUser_result();
@@ -3564,7 +3564,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3601,12 +3601,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getismobileregisted_result result = new getismobileregisted_result();
@@ -3625,7 +3625,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3662,12 +3662,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postuserlogin_result result = new postuserlogin_result();
@@ -3686,7 +3686,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3723,12 +3723,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postuserlogout_result result = new postuserlogout_result();
@@ -3747,7 +3747,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3784,12 +3784,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postsendsignupcode_result result = new postsendsignupcode_result();
@@ -3808,7 +3808,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3845,12 +3845,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postsendsignupcodeVoice_result result = new postsendsignupcodeVoice_result();
@@ -3869,7 +3869,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3906,12 +3906,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postusermobilesignup_result result = new postusermobilesignup_result();
@@ -3930,7 +3930,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -3967,12 +3967,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postuserwxbindmobile_result result = new postuserwxbindmobile_result();
@@ -3991,7 +3991,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4028,12 +4028,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postuserbindmobile_result result = new postuserbindmobile_result();
@@ -4052,7 +4052,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4089,12 +4089,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postuserchangepassword_result result = new postuserchangepassword_result();
@@ -4113,7 +4113,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4150,12 +4150,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postusersendpasswordforgotcode_result result = new postusersendpasswordforgotcode_result();
@@ -4174,7 +4174,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4211,12 +4211,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postvalidatepasswordforgotcode_result result = new postvalidatepasswordforgotcode_result();
@@ -4235,7 +4235,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4272,12 +4272,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             validateVerifyCode_result result = new validateVerifyCode_result();
@@ -4296,7 +4296,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4333,12 +4333,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             sendVerifyCode_result result = new sendVerifyCode_result();
@@ -4357,7 +4357,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4394,12 +4394,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             checkEmail_result result = new checkEmail_result();
@@ -4418,7 +4418,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4455,12 +4455,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postuserresetpassword_result result = new postuserresetpassword_result();
@@ -4479,7 +4479,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4516,12 +4516,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postusermergebymobile_result result = new postusermergebymobile_result();
@@ -4540,7 +4540,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4577,12 +4577,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postsendchangemobilecode_result result = new postsendchangemobilecode_result();
@@ -4601,7 +4601,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4638,12 +4638,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postvalidatechangemobilecode_result result = new postvalidatechangemobilecode_result();
@@ -4662,7 +4662,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4699,12 +4699,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postsendresetmobilecode_result result = new postsendresetmobilecode_result();
@@ -4723,7 +4723,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4760,12 +4760,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postresetmobile_result result = new postresetmobile_result();
@@ -4784,7 +4784,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4821,12 +4821,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getUserFavPositionCountByUserIdAndPositionId_result result = new getUserFavPositionCountByUserIdAndPositionId_result();
@@ -4845,7 +4845,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4882,12 +4882,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             postUserFavoritePosition_result result = new postUserFavoritePosition_result();
@@ -4906,7 +4906,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -4943,12 +4943,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             cerateQrcode_result result = new cerateQrcode_result();
@@ -4967,7 +4967,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5004,12 +5004,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getQrcode_result result = new getQrcode_result();
@@ -5028,7 +5028,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5065,12 +5065,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getScanResult_result result = new getScanResult_result();
@@ -5089,7 +5089,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5126,12 +5126,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             setScanResult_result result = new setScanResult_result();
@@ -5150,7 +5150,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5187,12 +5187,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             ifExistUser_result result = new ifExistUser_result();
@@ -5211,7 +5211,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5228,7 +5228,7 @@ public class UseraccountsServices {
       }
     }
 
-    public static class createRetrieveProfileUser<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, createRetrieveProfileUser_args, Integer> {
+    public static class createRetrieveProfileUser<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, createRetrieveProfileUser_args, java.lang.Integer> {
       public createRetrieveProfileUser() {
         super("createRetrieveProfileUser");
       }
@@ -5237,10 +5237,10 @@ public class UseraccountsServices {
         return new createRetrieveProfileUser_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<Integer> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Integer>() {
-          public void onComplete(Integer o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer>() { 
+          public void onComplete(java.lang.Integer o) {
             createRetrieveProfileUser_result result = new createRetrieveProfileUser_result();
             result.success = o;
             result.setSuccessIsSet(true);
@@ -5249,12 +5249,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             createRetrieveProfileUser_result result = new createRetrieveProfileUser_result();
@@ -5273,7 +5273,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5285,12 +5285,12 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, createRetrieveProfileUser_args args, org.apache.thrift.async.AsyncMethodCallback<Integer> resultHandler) throws org.apache.thrift.TException {
+      public void start(I iface, createRetrieveProfileUser_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Integer> resultHandler) throws org.apache.thrift.TException {
         iface.createRetrieveProfileUser(args.user,resultHandler);
       }
     }
 
-    public static class ifExistProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, ifExistProfile_args, Boolean> {
+    public static class ifExistProfile<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, ifExistProfile_args, java.lang.Boolean> {
       public ifExistProfile() {
         super("ifExistProfile");
       }
@@ -5299,10 +5299,10 @@ public class UseraccountsServices {
         return new ifExistProfile_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<Boolean> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Boolean>() {
-          public void onComplete(Boolean o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean>() { 
+          public void onComplete(java.lang.Boolean o) {
             ifExistProfile_result result = new ifExistProfile_result();
             result.success = o;
             result.setSuccessIsSet(true);
@@ -5311,12 +5311,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             ifExistProfile_result result = new ifExistProfile_result();
@@ -5335,7 +5335,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5347,7 +5347,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, ifExistProfile_args args, org.apache.thrift.async.AsyncMethodCallback<Boolean> resultHandler) throws org.apache.thrift.TException {
+      public void start(I iface, ifExistProfile_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.Boolean> resultHandler) throws org.apache.thrift.TException {
         iface.ifExistProfile(args.countryCode, args.mobile,resultHandler);
       }
     }
@@ -5372,12 +5372,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             userChangeBind_result result = new userChangeBind_result();
@@ -5396,7 +5396,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5433,12 +5433,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             getUserSearchPositionHistory_result result = new getUserSearchPositionHistory_result();
@@ -5461,7 +5461,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5498,12 +5498,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             deleteUserSearchPositionHistory_result result = new deleteUserSearchPositionHistory_result();
@@ -5526,7 +5526,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5562,12 +5562,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             claimReferralCard_result result = new claimReferralCard_result();
@@ -5590,7 +5590,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5626,12 +5626,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             claimReferralBonus_result result = new claimReferralBonus_result();
@@ -5654,7 +5654,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5690,12 +5690,12 @@ public class UseraccountsServices {
             } catch (org.apache.thrift.transport.TTransportException e) {
               _LOGGER.error("TTransportException writing to internal frame buffer", e);
               fb.close();
-            } catch (Exception e) {
+            } catch (java.lang.Exception e) {
               _LOGGER.error("Exception writing to internal frame buffer", e);
               onError(e);
             }
           }
-          public void onError(Exception e) {
+          public void onError(java.lang.Exception e) {
             byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
             org.apache.thrift.TSerializable msg;
             batchClaimReferralCard_result result = new batchClaimReferralCard_result();
@@ -5718,7 +5718,7 @@ public class UseraccountsServices {
             }
             try {
               fcall.sendResponse(fb,msg,msgType,seqid);
-            } catch (Exception ex) {
+            } catch (java.lang.Exception ex) {
               _LOGGER.error("Exception writing to internal frame buffer", ex);
               fb.close();
             }
@@ -5751,7 +5751,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER_ID((short)1, "userId");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -5777,21 +5777,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -5800,7 +5800,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -5869,43 +5869,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUserId();
         } else {
-          setUserId((Long)value);
+          setUserId((java.lang.Long)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUserId();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USER_ID:
         return isSetUserId();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUserById_args)
@@ -5948,7 +5948,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -5974,8 +5974,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUserById_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserById_args(");
       boolean first = true;
 
       sb.append("userId:");
@@ -5998,7 +5998,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -6109,7 +6109,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6135,21 +6135,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6158,7 +6158,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -6225,7 +6225,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -6238,30 +6238,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUserById_result)
@@ -6306,7 +6306,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6332,8 +6332,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUserById_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserById_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -6363,7 +6363,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6476,7 +6476,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       QUERY((short)1, "query");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6502,21 +6502,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6525,7 +6525,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -6592,7 +6592,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case QUERY:
         if (value == null) {
@@ -6605,30 +6605,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case QUERY:
         return getQuery();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case QUERY:
         return isSetQuery();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUsers_args)
@@ -6673,7 +6673,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
+      lastComparison = java.lang.Boolean.valueOf(isSetQuery()).compareTo(other.isSetQuery());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -6699,8 +6699,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUsers_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUsers_args(");
       boolean first = true;
 
       sb.append("query:");
@@ -6730,7 +6730,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -6843,7 +6843,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -6869,21 +6869,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -6892,7 +6892,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -6959,7 +6959,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -6972,30 +6972,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUsers_result)
@@ -7040,7 +7040,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7066,8 +7066,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUsers_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUsers_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -7097,7 +7097,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7210,7 +7210,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER((short)1, "user");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7236,21 +7236,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7259,7 +7259,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -7326,7 +7326,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER:
         if (value == null) {
@@ -7339,30 +7339,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER:
         return getUser();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USER:
         return isSetUser();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof updateUser_args)
@@ -7407,7 +7407,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUser()).compareTo(other.isSetUser());
+      lastComparison = java.lang.Boolean.valueOf(isSetUser()).compareTo(other.isSetUser());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7433,8 +7433,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("updateUser_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("updateUser_args(");
       boolean first = true;
 
       sb.append("user:");
@@ -7464,7 +7464,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7577,7 +7577,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7603,21 +7603,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7626,7 +7626,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -7693,7 +7693,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -7706,30 +7706,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof updateUser_result)
@@ -7774,7 +7774,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -7800,8 +7800,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("updateUser_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("updateUser_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -7831,7 +7831,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -7939,15 +7939,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getismobileregisted_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getismobileregisted_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -7975,21 +7975,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -7998,7 +7998,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -8019,8 +8019,8 @@ public class UseraccountsServices {
     }
 
     public getismobileregisted_args(
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.countryCode = countryCode;
@@ -8049,11 +8049,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public getismobileregisted_args setCountryCode(String countryCode) {
+    public getismobileregisted_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -8073,11 +8073,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public getismobileregisted_args setMobile(String mobile) {
+    public getismobileregisted_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -8097,13 +8097,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -8111,14 +8111,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -8127,13 +8127,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -8142,11 +8142,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getismobileregisted_args)
@@ -8204,7 +8204,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8214,7 +8214,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8240,8 +8240,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getismobileregisted_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getismobileregisted_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -8276,7 +8276,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -8410,7 +8410,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8436,21 +8436,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8459,7 +8459,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -8526,7 +8526,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -8539,30 +8539,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getismobileregisted_result)
@@ -8607,7 +8607,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -8633,8 +8633,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getismobileregisted_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getismobileregisted_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -8664,7 +8664,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -8777,7 +8777,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USERLOGINREQ((short)1, "userloginreq");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -8803,21 +8803,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -8826,7 +8826,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -8893,7 +8893,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USERLOGINREQ:
         if (value == null) {
@@ -8906,30 +8906,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USERLOGINREQ:
         return getUserloginreq();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USERLOGINREQ:
         return isSetUserloginreq();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserlogin_args)
@@ -8974,7 +8974,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserloginreq()).compareTo(other.isSetUserloginreq());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserloginreq()).compareTo(other.isSetUserloginreq());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9000,8 +9000,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserlogin_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserlogin_args(");
       boolean first = true;
 
       sb.append("userloginreq:");
@@ -9031,7 +9031,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -9144,7 +9144,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9170,21 +9170,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9193,7 +9193,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -9260,7 +9260,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -9273,30 +9273,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserlogin_result)
@@ -9341,7 +9341,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9367,8 +9367,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserlogin_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserlogin_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -9398,7 +9398,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -9511,7 +9511,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USERID((short)1, "userid");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9537,21 +9537,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9560,7 +9560,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -9629,43 +9629,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USERID:
         if (value == null) {
           unsetUserid();
         } else {
-          setUserid((Integer)value);
+          setUserid((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USERID:
         return getUserid();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USERID:
         return isSetUserid();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserlogout_args)
@@ -9708,7 +9708,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserid()).compareTo(other.isSetUserid());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserid()).compareTo(other.isSetUserid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -9734,8 +9734,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserlogout_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserlogout_args(");
       boolean first = true;
 
       sb.append("userid:");
@@ -9758,7 +9758,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -9869,7 +9869,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -9895,21 +9895,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -9918,7 +9918,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -9985,7 +9985,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -9998,30 +9998,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserlogout_result)
@@ -10066,7 +10066,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10092,8 +10092,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserlogout_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserlogout_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -10123,7 +10123,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -10231,15 +10231,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postsendsignupcode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postsendsignupcode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10267,21 +10267,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10290,7 +10290,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -10311,8 +10311,8 @@ public class UseraccountsServices {
     }
 
     public postsendsignupcode_args(
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.countryCode = countryCode;
@@ -10341,11 +10341,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postsendsignupcode_args setCountryCode(String countryCode) {
+    public postsendsignupcode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -10365,11 +10365,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postsendsignupcode_args setMobile(String mobile) {
+    public postsendsignupcode_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -10389,13 +10389,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -10403,14 +10403,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -10419,13 +10419,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -10434,11 +10434,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendsignupcode_args)
@@ -10496,7 +10496,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10506,7 +10506,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10532,8 +10532,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendsignupcode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendsignupcode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -10568,7 +10568,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -10702,7 +10702,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -10728,21 +10728,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -10751,7 +10751,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -10818,7 +10818,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -10831,30 +10831,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendsignupcode_result)
@@ -10899,7 +10899,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -10925,8 +10925,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendsignupcode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendsignupcode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -10956,7 +10956,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -11064,15 +11064,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postsendsignupcodeVoice_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postsendsignupcodeVoice_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11100,21 +11100,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11123,7 +11123,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -11144,8 +11144,8 @@ public class UseraccountsServices {
     }
 
     public postsendsignupcodeVoice_args(
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.countryCode = countryCode;
@@ -11174,11 +11174,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postsendsignupcodeVoice_args setCountryCode(String countryCode) {
+    public postsendsignupcodeVoice_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -11198,11 +11198,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postsendsignupcodeVoice_args setMobile(String mobile) {
+    public postsendsignupcodeVoice_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -11222,13 +11222,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -11236,14 +11236,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -11252,13 +11252,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -11267,11 +11267,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendsignupcodeVoice_args)
@@ -11329,7 +11329,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11339,7 +11339,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11365,8 +11365,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendsignupcodeVoice_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendsignupcodeVoice_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -11401,7 +11401,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -11535,7 +11535,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11561,21 +11561,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11584,7 +11584,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -11651,7 +11651,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -11664,30 +11664,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendsignupcodeVoice_result)
@@ -11732,7 +11732,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -11758,8 +11758,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendsignupcodeVoice_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendsignupcodeVoice_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -11789,7 +11789,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -11898,14 +11898,14 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postusermobilesignup_argsTupleSchemeFactory();
 
     public com.moseeker.thrift.gen.useraccounts.struct.User user; // required
-    public String code; // required
+    public java.lang.String code; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER((short)1, "user"),
       CODE((short)2, "code");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -11933,21 +11933,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -11956,7 +11956,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -11978,7 +11978,7 @@ public class UseraccountsServices {
 
     public postusermobilesignup_args(
       com.moseeker.thrift.gen.useraccounts.struct.User user,
-      String code)
+      java.lang.String code)
     {
       this();
       this.user = user;
@@ -12031,11 +12031,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postusermobilesignup_args setCode(String code) {
+    public postusermobilesignup_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -12055,7 +12055,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER:
         if (value == null) {
@@ -12069,14 +12069,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER:
         return getUser();
@@ -12085,13 +12085,13 @@ public class UseraccountsServices {
         return getCode();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -12100,11 +12100,11 @@ public class UseraccountsServices {
       case CODE:
         return isSetCode();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postusermobilesignup_args)
@@ -12162,7 +12162,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUser()).compareTo(other.isSetUser());
+      lastComparison = java.lang.Boolean.valueOf(isSetUser()).compareTo(other.isSetUser());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -12172,7 +12172,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -12198,8 +12198,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postusermobilesignup_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postusermobilesignup_args(");
       boolean first = true;
 
       sb.append("user:");
@@ -12237,7 +12237,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -12373,7 +12373,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -12399,21 +12399,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -12422,7 +12422,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -12489,7 +12489,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -12502,30 +12502,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postusermobilesignup_result)
@@ -12570,7 +12570,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -12596,8 +12596,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postusermobilesignup_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postusermobilesignup_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -12627,7 +12627,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -12739,10 +12739,10 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postuserwxbindmobile_argsTupleSchemeFactory();
 
     public int appid; // required
-    public String unionid; // required
-    public String code; // required
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String unionid; // required
+    public java.lang.String code; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -12752,7 +12752,7 @@ public class UseraccountsServices {
       COUNTRY_CODE((short)4, "countryCode"),
       MOBILE((short)5, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -12786,21 +12786,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -12809,7 +12809,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -12839,10 +12839,10 @@ public class UseraccountsServices {
 
     public postuserwxbindmobile_args(
       int appid,
-      String unionid,
-      String code,
-      String countryCode,
-      String mobile)
+      java.lang.String unionid,
+      java.lang.String code,
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.appid = appid;
@@ -12910,11 +12910,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __APPID_ISSET_ID, value);
     }
 
-    public String getUnionid() {
+    public java.lang.String getUnionid() {
       return this.unionid;
     }
 
-    public postuserwxbindmobile_args setUnionid(String unionid) {
+    public postuserwxbindmobile_args setUnionid(java.lang.String unionid) {
       this.unionid = unionid;
       return this;
     }
@@ -12934,11 +12934,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postuserwxbindmobile_args setCode(String code) {
+    public postuserwxbindmobile_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -12958,11 +12958,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postuserwxbindmobile_args setCountryCode(String countryCode) {
+    public postuserwxbindmobile_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -12982,11 +12982,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postuserwxbindmobile_args setMobile(String mobile) {
+    public postuserwxbindmobile_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -13006,13 +13006,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case APPID:
         if (value == null) {
           unsetAppid();
         } else {
-          setAppid((Integer)value);
+          setAppid((java.lang.Integer)value);
         }
         break;
 
@@ -13020,7 +13020,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetUnionid();
         } else {
-          setUnionid((String)value);
+          setUnionid((java.lang.String)value);
         }
         break;
 
@@ -13028,7 +13028,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
@@ -13036,7 +13036,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -13044,14 +13044,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case APPID:
         return getAppid();
@@ -13069,13 +13069,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -13090,11 +13090,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserwxbindmobile_args)
@@ -13189,7 +13189,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetAppid()).compareTo(other.isSetAppid());
+      lastComparison = java.lang.Boolean.valueOf(isSetAppid()).compareTo(other.isSetAppid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -13199,7 +13199,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
+      lastComparison = java.lang.Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -13209,7 +13209,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -13219,7 +13219,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -13229,7 +13229,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -13255,8 +13255,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserwxbindmobile_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserwxbindmobile_args(");
       boolean first = true;
 
       sb.append("appid:");
@@ -13311,7 +13311,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -13514,7 +13514,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -13540,21 +13540,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -13563,7 +13563,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -13630,7 +13630,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -13643,30 +13643,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserwxbindmobile_result)
@@ -13711,7 +13711,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -13737,8 +13737,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserwxbindmobile_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserwxbindmobile_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -13768,7 +13768,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -13881,10 +13881,10 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postuserbindmobile_argsTupleSchemeFactory();
 
     public int appid; // required
-    public String unionid; // required
-    public String code; // required
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String unionid; // required
+    public java.lang.String code; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
     /**
      * 
      * @see com.moseeker.thrift.gen.useraccounts.struct.BindType
@@ -13904,7 +13904,7 @@ public class UseraccountsServices {
        */
       BIND_TYPE((short)6, "bindType");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -13940,21 +13940,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -13963,7 +13963,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -13995,10 +13995,10 @@ public class UseraccountsServices {
 
     public postuserbindmobile_args(
       int appid,
-      String unionid,
-      String code,
-      String countryCode,
-      String mobile,
+      java.lang.String unionid,
+      java.lang.String code,
+      java.lang.String countryCode,
+      java.lang.String mobile,
       com.moseeker.thrift.gen.useraccounts.struct.BindType bindType)
     {
       this();
@@ -14072,11 +14072,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __APPID_ISSET_ID, value);
     }
 
-    public String getUnionid() {
+    public java.lang.String getUnionid() {
       return this.unionid;
     }
 
-    public postuserbindmobile_args setUnionid(String unionid) {
+    public postuserbindmobile_args setUnionid(java.lang.String unionid) {
       this.unionid = unionid;
       return this;
     }
@@ -14096,11 +14096,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postuserbindmobile_args setCode(String code) {
+    public postuserbindmobile_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -14120,11 +14120,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postuserbindmobile_args setCountryCode(String countryCode) {
+    public postuserbindmobile_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -14144,11 +14144,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postuserbindmobile_args setMobile(String mobile) {
+    public postuserbindmobile_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -14200,13 +14200,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case APPID:
         if (value == null) {
           unsetAppid();
         } else {
-          setAppid((Integer)value);
+          setAppid((java.lang.Integer)value);
         }
         break;
 
@@ -14214,7 +14214,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetUnionid();
         } else {
-          setUnionid((String)value);
+          setUnionid((java.lang.String)value);
         }
         break;
 
@@ -14222,7 +14222,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
@@ -14230,7 +14230,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -14238,7 +14238,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
@@ -14253,7 +14253,7 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case APPID:
         return getAppid();
@@ -14274,13 +14274,13 @@ public class UseraccountsServices {
         return getBindType();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -14297,11 +14297,11 @@ public class UseraccountsServices {
       case BIND_TYPE:
         return isSetBindType();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserbindmobile_args)
@@ -14409,7 +14409,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetAppid()).compareTo(other.isSetAppid());
+      lastComparison = java.lang.Boolean.valueOf(isSetAppid()).compareTo(other.isSetAppid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14419,7 +14419,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
+      lastComparison = java.lang.Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14429,7 +14429,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14439,7 +14439,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14449,7 +14449,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14459,7 +14459,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetBindType()).compareTo(other.isSetBindType());
+      lastComparison = java.lang.Boolean.valueOf(isSetBindType()).compareTo(other.isSetBindType());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14485,8 +14485,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserbindmobile_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserbindmobile_args(");
       boolean first = true;
 
       sb.append("appid:");
@@ -14549,7 +14549,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -14775,7 +14775,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -14801,21 +14801,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -14824,7 +14824,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -14891,7 +14891,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -14904,30 +14904,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserbindmobile_result)
@@ -14972,7 +14972,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -14998,8 +14998,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserbindmobile_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserbindmobile_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -15029,7 +15029,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -15139,8 +15139,8 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postuserchangepassword_argsTupleSchemeFactory();
 
     public int user_id; // required
-    public String old_password; // required
-    public String password; // required
+    public java.lang.String old_password; // required
+    public java.lang.String password; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -15148,7 +15148,7 @@ public class UseraccountsServices {
       OLD_PASSWORD((short)2, "old_password"),
       PASSWORD((short)3, "password");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -15178,21 +15178,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -15201,7 +15201,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -15227,8 +15227,8 @@ public class UseraccountsServices {
 
     public postuserchangepassword_args(
       int user_id,
-      String old_password,
-      String password)
+      java.lang.String old_password,
+      java.lang.String password)
     {
       this();
       this.user_id = user_id;
@@ -15286,11 +15286,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USER_ID_ISSET_ID, value);
     }
 
-    public String getOld_password() {
+    public java.lang.String getOld_password() {
       return this.old_password;
     }
 
-    public postuserchangepassword_args setOld_password(String old_password) {
+    public postuserchangepassword_args setOld_password(java.lang.String old_password) {
       this.old_password = old_password;
       return this;
     }
@@ -15310,11 +15310,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getPassword() {
+    public java.lang.String getPassword() {
       return this.password;
     }
 
-    public postuserchangepassword_args setPassword(String password) {
+    public postuserchangepassword_args setPassword(java.lang.String password) {
       this.password = password;
       return this;
     }
@@ -15334,13 +15334,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUser_id();
         } else {
-          setUser_id((Integer)value);
+          setUser_id((java.lang.Integer)value);
         }
         break;
 
@@ -15348,7 +15348,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetOld_password();
         } else {
-          setOld_password((String)value);
+          setOld_password((java.lang.String)value);
         }
         break;
 
@@ -15356,14 +15356,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetPassword();
         } else {
-          setPassword((String)value);
+          setPassword((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUser_id();
@@ -15375,13 +15375,13 @@ public class UseraccountsServices {
         return getPassword();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -15392,11 +15392,11 @@ public class UseraccountsServices {
       case PASSWORD:
         return isSetPassword();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserchangepassword_args)
@@ -15465,7 +15465,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
+      lastComparison = java.lang.Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15475,7 +15475,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetOld_password()).compareTo(other.isSetOld_password());
+      lastComparison = java.lang.Boolean.valueOf(isSetOld_password()).compareTo(other.isSetOld_password());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15485,7 +15485,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetPassword()).compareTo(other.isSetPassword());
+      lastComparison = java.lang.Boolean.valueOf(isSetPassword()).compareTo(other.isSetPassword());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15511,8 +15511,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserchangepassword_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserchangepassword_args(");
       boolean first = true;
 
       sb.append("user_id:");
@@ -15551,7 +15551,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -15708,7 +15708,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -15734,21 +15734,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -15757,7 +15757,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -15824,7 +15824,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -15837,30 +15837,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserchangepassword_result)
@@ -15905,7 +15905,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -15931,8 +15931,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserchangepassword_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserchangepassword_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -15962,7 +15962,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -16070,15 +16070,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postusersendpasswordforgotcode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postusersendpasswordforgotcode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -16106,21 +16106,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -16129,7 +16129,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -16150,8 +16150,8 @@ public class UseraccountsServices {
     }
 
     public postusersendpasswordforgotcode_args(
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.countryCode = countryCode;
@@ -16180,11 +16180,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postusersendpasswordforgotcode_args setCountryCode(String countryCode) {
+    public postusersendpasswordforgotcode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -16204,11 +16204,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postusersendpasswordforgotcode_args setMobile(String mobile) {
+    public postusersendpasswordforgotcode_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -16228,13 +16228,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -16242,14 +16242,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -16258,13 +16258,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -16273,11 +16273,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postusersendpasswordforgotcode_args)
@@ -16335,7 +16335,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -16345,7 +16345,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -16371,8 +16371,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postusersendpasswordforgotcode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postusersendpasswordforgotcode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -16407,7 +16407,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -16541,7 +16541,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -16567,21 +16567,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -16590,7 +16590,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -16657,7 +16657,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -16670,30 +16670,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postusersendpasswordforgotcode_result)
@@ -16738,7 +16738,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -16764,8 +16764,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postusersendpasswordforgotcode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postusersendpasswordforgotcode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -16795,7 +16795,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -16904,9 +16904,9 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postvalidatepasswordforgotcode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postvalidatepasswordforgotcode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
-    public String code; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
+    public java.lang.String code; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -16914,7 +16914,7 @@ public class UseraccountsServices {
       MOBILE((short)2, "mobile"),
       CODE((short)3, "code");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -16944,21 +16944,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -16967,7 +16967,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -16990,9 +16990,9 @@ public class UseraccountsServices {
     }
 
     public postvalidatepasswordforgotcode_args(
-      String countryCode,
-      String mobile,
-      String code)
+      java.lang.String countryCode,
+      java.lang.String mobile,
+      java.lang.String code)
     {
       this();
       this.countryCode = countryCode;
@@ -17026,11 +17026,11 @@ public class UseraccountsServices {
       this.code = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postvalidatepasswordforgotcode_args setCountryCode(String countryCode) {
+    public postvalidatepasswordforgotcode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -17050,11 +17050,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postvalidatepasswordforgotcode_args setMobile(String mobile) {
+    public postvalidatepasswordforgotcode_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -17074,11 +17074,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postvalidatepasswordforgotcode_args setCode(String code) {
+    public postvalidatepasswordforgotcode_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -17098,13 +17098,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -17112,7 +17112,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
@@ -17120,14 +17120,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -17139,13 +17139,13 @@ public class UseraccountsServices {
         return getCode();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -17156,11 +17156,11 @@ public class UseraccountsServices {
       case CODE:
         return isSetCode();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postvalidatepasswordforgotcode_args)
@@ -17231,7 +17231,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -17241,7 +17241,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -17251,7 +17251,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -17277,8 +17277,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postvalidatepasswordforgotcode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postvalidatepasswordforgotcode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -17321,7 +17321,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -17478,7 +17478,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -17504,21 +17504,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -17527,7 +17527,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -17594,7 +17594,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -17607,30 +17607,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postvalidatepasswordforgotcode_result)
@@ -17675,7 +17675,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -17701,8 +17701,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postvalidatepasswordforgotcode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postvalidatepasswordforgotcode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -17732,7 +17732,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -17842,9 +17842,9 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new validateVerifyCode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new validateVerifyCode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
-    public String code; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
+    public java.lang.String code; // required
     public int type; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -17854,7 +17854,7 @@ public class UseraccountsServices {
       CODE((short)3, "code"),
       TYPE((short)4, "type");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -17886,21 +17886,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -17909,7 +17909,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -17936,9 +17936,9 @@ public class UseraccountsServices {
     }
 
     public validateVerifyCode_args(
-      String countryCode,
-      String mobile,
-      String code,
+      java.lang.String countryCode,
+      java.lang.String mobile,
+      java.lang.String code,
       int type)
     {
       this();
@@ -17979,11 +17979,11 @@ public class UseraccountsServices {
       this.type = 0;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public validateVerifyCode_args setCountryCode(String countryCode) {
+    public validateVerifyCode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -18003,11 +18003,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public validateVerifyCode_args setMobile(String mobile) {
+    public validateVerifyCode_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -18027,11 +18027,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public validateVerifyCode_args setCode(String code) {
+    public validateVerifyCode_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -18074,13 +18074,13 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -18088,7 +18088,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
@@ -18096,7 +18096,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
@@ -18104,14 +18104,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetType();
         } else {
-          setType((Integer)value);
+          setType((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -18126,13 +18126,13 @@ public class UseraccountsServices {
         return getType();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -18145,11 +18145,11 @@ public class UseraccountsServices {
       case TYPE:
         return isSetType();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof validateVerifyCode_args)
@@ -18231,7 +18231,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18241,7 +18241,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18251,7 +18251,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18261,7 +18261,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetType()).compareTo(other.isSetType());
+      lastComparison = java.lang.Boolean.valueOf(isSetType()).compareTo(other.isSetType());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18287,8 +18287,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("validateVerifyCode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("validateVerifyCode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -18335,7 +18335,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -18515,7 +18515,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -18541,21 +18541,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -18564,7 +18564,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -18631,7 +18631,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -18644,30 +18644,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof validateVerifyCode_result)
@@ -18712,7 +18712,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -18738,8 +18738,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("validateVerifyCode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("validateVerifyCode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -18769,7 +18769,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -18878,8 +18878,8 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new sendVerifyCode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new sendVerifyCode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
     public int type; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -18888,7 +18888,7 @@ public class UseraccountsServices {
       MOBILE((short)2, "mobile"),
       TYPE((short)3, "type");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -18918,21 +18918,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -18941,7 +18941,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -18966,8 +18966,8 @@ public class UseraccountsServices {
     }
 
     public sendVerifyCode_args(
-      String countryCode,
-      String mobile,
+      java.lang.String countryCode,
+      java.lang.String mobile,
       int type)
     {
       this();
@@ -19003,11 +19003,11 @@ public class UseraccountsServices {
       this.type = 0;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public sendVerifyCode_args setCountryCode(String countryCode) {
+    public sendVerifyCode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -19027,11 +19027,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public sendVerifyCode_args setMobile(String mobile) {
+    public sendVerifyCode_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -19074,13 +19074,13 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -19088,7 +19088,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
@@ -19096,14 +19096,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetType();
         } else {
-          setType((Integer)value);
+          setType((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -19115,13 +19115,13 @@ public class UseraccountsServices {
         return getType();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -19132,11 +19132,11 @@ public class UseraccountsServices {
       case TYPE:
         return isSetType();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof sendVerifyCode_args)
@@ -19205,7 +19205,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19215,7 +19215,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19225,7 +19225,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetType()).compareTo(other.isSetType());
+      lastComparison = java.lang.Boolean.valueOf(isSetType()).compareTo(other.isSetType());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19251,8 +19251,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("sendVerifyCode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendVerifyCode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -19291,7 +19291,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -19448,7 +19448,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -19474,21 +19474,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -19497,7 +19497,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -19564,7 +19564,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -19577,30 +19577,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof sendVerifyCode_result)
@@ -19645,7 +19645,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -19671,8 +19671,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("sendVerifyCode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("sendVerifyCode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -19702,7 +19702,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -19809,13 +19809,13 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new checkEmail_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new checkEmail_argsTupleSchemeFactory();
 
-    public String email; // required
+    public java.lang.String email; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       EMAIL((short)1, "email");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -19841,21 +19841,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -19864,7 +19864,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -19883,7 +19883,7 @@ public class UseraccountsServices {
     }
 
     public checkEmail_args(
-      String email)
+      java.lang.String email)
     {
       this();
       this.email = email;
@@ -19907,11 +19907,11 @@ public class UseraccountsServices {
       this.email = null;
     }
 
-    public String getEmail() {
+    public java.lang.String getEmail() {
       return this.email;
     }
 
-    public checkEmail_args setEmail(String email) {
+    public checkEmail_args setEmail(java.lang.String email) {
       this.email = email;
       return this;
     }
@@ -19931,43 +19931,43 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case EMAIL:
         if (value == null) {
           unsetEmail();
         } else {
-          setEmail((String)value);
+          setEmail((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case EMAIL:
         return getEmail();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case EMAIL:
         return isSetEmail();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof checkEmail_args)
@@ -20012,7 +20012,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetEmail()).compareTo(other.isSetEmail());
+      lastComparison = java.lang.Boolean.valueOf(isSetEmail()).compareTo(other.isSetEmail());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20038,8 +20038,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("checkEmail_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("checkEmail_args(");
       boolean first = true;
 
       sb.append("email:");
@@ -20066,7 +20066,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -20177,7 +20177,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -20203,21 +20203,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -20226,7 +20226,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -20293,7 +20293,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -20306,30 +20306,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof checkEmail_result)
@@ -20374,7 +20374,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20400,8 +20400,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("checkEmail_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("checkEmail_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -20431,7 +20431,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -20541,10 +20541,10 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postuserresetpassword_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postuserresetpassword_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
-    public String code; // required
-    public String password; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
+    public java.lang.String code; // required
+    public java.lang.String password; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -20553,7 +20553,7 @@ public class UseraccountsServices {
       CODE((short)3, "code"),
       PASSWORD((short)4, "password");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -20585,21 +20585,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -20608,7 +20608,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -20633,10 +20633,10 @@ public class UseraccountsServices {
     }
 
     public postuserresetpassword_args(
-      String countryCode,
-      String mobile,
-      String code,
-      String password)
+      java.lang.String countryCode,
+      java.lang.String mobile,
+      java.lang.String code,
+      java.lang.String password)
     {
       this();
       this.countryCode = countryCode;
@@ -20675,11 +20675,11 @@ public class UseraccountsServices {
       this.password = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postuserresetpassword_args setCountryCode(String countryCode) {
+    public postuserresetpassword_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -20699,11 +20699,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postuserresetpassword_args setMobile(String mobile) {
+    public postuserresetpassword_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -20723,11 +20723,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postuserresetpassword_args setCode(String code) {
+    public postuserresetpassword_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -20747,11 +20747,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getPassword() {
+    public java.lang.String getPassword() {
       return this.password;
     }
 
-    public postuserresetpassword_args setPassword(String password) {
+    public postuserresetpassword_args setPassword(java.lang.String password) {
       this.password = password;
       return this;
     }
@@ -20771,13 +20771,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -20785,7 +20785,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
@@ -20793,7 +20793,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
@@ -20801,14 +20801,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetPassword();
         } else {
-          setPassword((String)value);
+          setPassword((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -20823,13 +20823,13 @@ public class UseraccountsServices {
         return getPassword();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -20842,11 +20842,11 @@ public class UseraccountsServices {
       case PASSWORD:
         return isSetPassword();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserresetpassword_args)
@@ -20930,7 +20930,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20940,7 +20940,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20950,7 +20950,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20960,7 +20960,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetPassword()).compareTo(other.isSetPassword());
+      lastComparison = java.lang.Boolean.valueOf(isSetPassword()).compareTo(other.isSetPassword());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -20986,8 +20986,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserresetpassword_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserresetpassword_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -21038,7 +21038,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -21218,7 +21218,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -21244,21 +21244,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -21267,7 +21267,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -21334,7 +21334,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -21347,30 +21347,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postuserresetpassword_result)
@@ -21415,7 +21415,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -21441,8 +21441,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postuserresetpassword_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postuserresetpassword_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -21472,7 +21472,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -21582,8 +21582,8 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postusermergebymobile_argsTupleSchemeFactory();
 
     public int appid; // required
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -21591,7 +21591,7 @@ public class UseraccountsServices {
       COUNTRY_CODE((short)2, "countryCode"),
       MOBILE((short)3, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -21621,21 +21621,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -21644,7 +21644,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -21670,8 +21670,8 @@ public class UseraccountsServices {
 
     public postusermergebymobile_args(
       int appid,
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.appid = appid;
@@ -21729,11 +21729,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __APPID_ISSET_ID, value);
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postusermergebymobile_args setCountryCode(String countryCode) {
+    public postusermergebymobile_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -21753,11 +21753,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public postusermergebymobile_args setMobile(String mobile) {
+    public postusermergebymobile_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -21777,13 +21777,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case APPID:
         if (value == null) {
           unsetAppid();
         } else {
-          setAppid((Integer)value);
+          setAppid((java.lang.Integer)value);
         }
         break;
 
@@ -21791,7 +21791,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -21799,14 +21799,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case APPID:
         return getAppid();
@@ -21818,13 +21818,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -21835,11 +21835,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postusermergebymobile_args)
@@ -21908,7 +21908,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetAppid()).compareTo(other.isSetAppid());
+      lastComparison = java.lang.Boolean.valueOf(isSetAppid()).compareTo(other.isSetAppid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -21918,7 +21918,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -21928,7 +21928,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -21954,8 +21954,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postusermergebymobile_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postusermergebymobile_args(");
       boolean first = true;
 
       sb.append("appid:");
@@ -21994,7 +21994,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -22151,7 +22151,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -22177,21 +22177,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -22200,7 +22200,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -22267,7 +22267,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -22280,30 +22280,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postusermergebymobile_result)
@@ -22348,7 +22348,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -22374,8 +22374,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postusermergebymobile_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postusermergebymobile_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -22405,7 +22405,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -22513,15 +22513,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postsendchangemobilecode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postsendchangemobilecode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String oldmobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String oldmobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       OLDMOBILE((short)2, "oldmobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -22549,21 +22549,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -22572,7 +22572,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -22593,8 +22593,8 @@ public class UseraccountsServices {
     }
 
     public postsendchangemobilecode_args(
-      String countryCode,
-      String oldmobile)
+      java.lang.String countryCode,
+      java.lang.String oldmobile)
     {
       this();
       this.countryCode = countryCode;
@@ -22623,11 +22623,11 @@ public class UseraccountsServices {
       this.oldmobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postsendchangemobilecode_args setCountryCode(String countryCode) {
+    public postsendchangemobilecode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -22647,11 +22647,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getOldmobile() {
+    public java.lang.String getOldmobile() {
       return this.oldmobile;
     }
 
-    public postsendchangemobilecode_args setOldmobile(String oldmobile) {
+    public postsendchangemobilecode_args setOldmobile(java.lang.String oldmobile) {
       this.oldmobile = oldmobile;
       return this;
     }
@@ -22671,13 +22671,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -22685,14 +22685,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetOldmobile();
         } else {
-          setOldmobile((String)value);
+          setOldmobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -22701,13 +22701,13 @@ public class UseraccountsServices {
         return getOldmobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -22716,11 +22716,11 @@ public class UseraccountsServices {
       case OLDMOBILE:
         return isSetOldmobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendchangemobilecode_args)
@@ -22778,7 +22778,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -22788,7 +22788,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetOldmobile()).compareTo(other.isSetOldmobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetOldmobile()).compareTo(other.isSetOldmobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -22814,8 +22814,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendchangemobilecode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendchangemobilecode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -22850,7 +22850,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -22984,7 +22984,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -23010,21 +23010,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -23033,7 +23033,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -23100,7 +23100,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -23113,30 +23113,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendchangemobilecode_result)
@@ -23181,7 +23181,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -23207,8 +23207,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendchangemobilecode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendchangemobilecode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -23238,7 +23238,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -23347,9 +23347,9 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postvalidatechangemobilecode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postvalidatechangemobilecode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String oldmobile; // required
-    public String code; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String oldmobile; // required
+    public java.lang.String code; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -23357,7 +23357,7 @@ public class UseraccountsServices {
       OLDMOBILE((short)2, "oldmobile"),
       CODE((short)3, "code");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -23387,21 +23387,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -23410,7 +23410,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -23433,9 +23433,9 @@ public class UseraccountsServices {
     }
 
     public postvalidatechangemobilecode_args(
-      String countryCode,
-      String oldmobile,
-      String code)
+      java.lang.String countryCode,
+      java.lang.String oldmobile,
+      java.lang.String code)
     {
       this();
       this.countryCode = countryCode;
@@ -23469,11 +23469,11 @@ public class UseraccountsServices {
       this.code = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postvalidatechangemobilecode_args setCountryCode(String countryCode) {
+    public postvalidatechangemobilecode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -23493,11 +23493,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getOldmobile() {
+    public java.lang.String getOldmobile() {
       return this.oldmobile;
     }
 
-    public postvalidatechangemobilecode_args setOldmobile(String oldmobile) {
+    public postvalidatechangemobilecode_args setOldmobile(java.lang.String oldmobile) {
       this.oldmobile = oldmobile;
       return this;
     }
@@ -23517,11 +23517,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postvalidatechangemobilecode_args setCode(String code) {
+    public postvalidatechangemobilecode_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -23541,13 +23541,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -23555,7 +23555,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetOldmobile();
         } else {
-          setOldmobile((String)value);
+          setOldmobile((java.lang.String)value);
         }
         break;
 
@@ -23563,14 +23563,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -23582,13 +23582,13 @@ public class UseraccountsServices {
         return getCode();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -23599,11 +23599,11 @@ public class UseraccountsServices {
       case CODE:
         return isSetCode();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postvalidatechangemobilecode_args)
@@ -23674,7 +23674,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -23684,7 +23684,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetOldmobile()).compareTo(other.isSetOldmobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetOldmobile()).compareTo(other.isSetOldmobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -23694,7 +23694,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -23720,8 +23720,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postvalidatechangemobilecode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postvalidatechangemobilecode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -23764,7 +23764,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -23921,7 +23921,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -23947,21 +23947,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -23970,7 +23970,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -24037,7 +24037,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -24050,30 +24050,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postvalidatechangemobilecode_result)
@@ -24118,7 +24118,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -24144,8 +24144,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postvalidatechangemobilecode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postvalidatechangemobilecode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -24175,7 +24175,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -24283,15 +24283,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new postsendresetmobilecode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postsendresetmobilecode_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String newmobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String newmobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       NEWMOBILE((short)2, "newmobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -24319,21 +24319,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -24342,7 +24342,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -24363,8 +24363,8 @@ public class UseraccountsServices {
     }
 
     public postsendresetmobilecode_args(
-      String countryCode,
-      String newmobile)
+      java.lang.String countryCode,
+      java.lang.String newmobile)
     {
       this();
       this.countryCode = countryCode;
@@ -24393,11 +24393,11 @@ public class UseraccountsServices {
       this.newmobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postsendresetmobilecode_args setCountryCode(String countryCode) {
+    public postsendresetmobilecode_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -24417,11 +24417,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getNewmobile() {
+    public java.lang.String getNewmobile() {
       return this.newmobile;
     }
 
-    public postsendresetmobilecode_args setNewmobile(String newmobile) {
+    public postsendresetmobilecode_args setNewmobile(java.lang.String newmobile) {
       this.newmobile = newmobile;
       return this;
     }
@@ -24441,13 +24441,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -24455,14 +24455,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetNewmobile();
         } else {
-          setNewmobile((String)value);
+          setNewmobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -24471,13 +24471,13 @@ public class UseraccountsServices {
         return getNewmobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -24486,11 +24486,11 @@ public class UseraccountsServices {
       case NEWMOBILE:
         return isSetNewmobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendresetmobilecode_args)
@@ -24548,7 +24548,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -24558,7 +24558,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetNewmobile()).compareTo(other.isSetNewmobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetNewmobile()).compareTo(other.isSetNewmobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -24584,8 +24584,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendresetmobilecode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendresetmobilecode_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -24620,7 +24620,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -24754,7 +24754,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -24780,21 +24780,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -24803,7 +24803,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -24870,7 +24870,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -24883,30 +24883,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postsendresetmobilecode_result)
@@ -24951,7 +24951,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -24977,8 +24977,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postsendresetmobilecode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postsendresetmobilecode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -25008,7 +25008,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -25119,9 +25119,9 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new postresetmobile_argsTupleSchemeFactory();
 
     public int user_id; // required
-    public String countryCode; // required
-    public String newmobile; // required
-    public String code; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String newmobile; // required
+    public java.lang.String code; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -25130,7 +25130,7 @@ public class UseraccountsServices {
       NEWMOBILE((short)3, "newmobile"),
       CODE((short)4, "code");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -25162,21 +25162,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -25185,7 +25185,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -25213,9 +25213,9 @@ public class UseraccountsServices {
 
     public postresetmobile_args(
       int user_id,
-      String countryCode,
-      String newmobile,
-      String code)
+      java.lang.String countryCode,
+      java.lang.String newmobile,
+      java.lang.String code)
     {
       this();
       this.user_id = user_id;
@@ -25278,11 +25278,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USER_ID_ISSET_ID, value);
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public postresetmobile_args setCountryCode(String countryCode) {
+    public postresetmobile_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -25302,11 +25302,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getNewmobile() {
+    public java.lang.String getNewmobile() {
       return this.newmobile;
     }
 
-    public postresetmobile_args setNewmobile(String newmobile) {
+    public postresetmobile_args setNewmobile(java.lang.String newmobile) {
       this.newmobile = newmobile;
       return this;
     }
@@ -25326,11 +25326,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCode() {
+    public java.lang.String getCode() {
       return this.code;
     }
 
-    public postresetmobile_args setCode(String code) {
+    public postresetmobile_args setCode(java.lang.String code) {
       this.code = code;
       return this;
     }
@@ -25350,13 +25350,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUser_id();
         } else {
-          setUser_id((Integer)value);
+          setUser_id((java.lang.Integer)value);
         }
         break;
 
@@ -25364,7 +25364,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -25372,7 +25372,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetNewmobile();
         } else {
-          setNewmobile((String)value);
+          setNewmobile((java.lang.String)value);
         }
         break;
 
@@ -25380,14 +25380,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCode();
         } else {
-          setCode((String)value);
+          setCode((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUser_id();
@@ -25402,13 +25402,13 @@ public class UseraccountsServices {
         return getCode();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -25421,11 +25421,11 @@ public class UseraccountsServices {
       case CODE:
         return isSetCode();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postresetmobile_args)
@@ -25507,7 +25507,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
+      lastComparison = java.lang.Boolean.valueOf(isSetUser_id()).compareTo(other.isSetUser_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -25517,7 +25517,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -25527,7 +25527,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetNewmobile()).compareTo(other.isSetNewmobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetNewmobile()).compareTo(other.isSetNewmobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -25537,7 +25537,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCode()).compareTo(other.isSetCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -25563,8 +25563,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postresetmobile_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postresetmobile_args(");
       boolean first = true;
 
       sb.append("user_id:");
@@ -25611,7 +25611,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -25791,7 +25791,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -25817,21 +25817,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -25840,7 +25840,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -25907,7 +25907,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -25920,30 +25920,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postresetmobile_result)
@@ -25988,7 +25988,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -26014,8 +26014,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postresetmobile_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postresetmobile_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -26045,7 +26045,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -26161,7 +26161,7 @@ public class UseraccountsServices {
       USER_ID((short)1, "userId"),
       POSITION_ID((short)2, "positionId");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -26189,21 +26189,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -26212,7 +26212,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -26313,13 +26313,13 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __POSITIONID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUserId();
         } else {
-          setUserId((Integer)value);
+          setUserId((java.lang.Integer)value);
         }
         break;
 
@@ -26327,14 +26327,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetPositionId();
         } else {
-          setPositionId((Integer)value);
+          setPositionId((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUserId();
@@ -26343,13 +26343,13 @@ public class UseraccountsServices {
         return getPositionId();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -26358,11 +26358,11 @@ public class UseraccountsServices {
       case POSITION_ID:
         return isSetPositionId();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUserFavPositionCountByUserIdAndPositionId_args)
@@ -26416,7 +26416,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -26426,7 +26426,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
+      lastComparison = java.lang.Boolean.valueOf(isSetPositionId()).compareTo(other.isSetPositionId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -26452,8 +26452,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUserFavPositionCountByUserIdAndPositionId_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserFavPositionCountByUserIdAndPositionId_args(");
       boolean first = true;
 
       sb.append("userId:");
@@ -26480,7 +26480,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -26612,7 +26612,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -26638,21 +26638,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -26661,7 +26661,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -26728,7 +26728,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -26741,30 +26741,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUserFavPositionCountByUserIdAndPositionId_result)
@@ -26809,7 +26809,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -26835,8 +26835,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUserFavPositionCountByUserIdAndPositionId_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserFavPositionCountByUserIdAndPositionId_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -26866,7 +26866,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -26979,7 +26979,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER_FAVORITE_POSITION((short)1, "userFavoritePosition");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -27005,21 +27005,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -27028,7 +27028,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -27095,7 +27095,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_FAVORITE_POSITION:
         if (value == null) {
@@ -27108,30 +27108,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_FAVORITE_POSITION:
         return getUserFavoritePosition();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USER_FAVORITE_POSITION:
         return isSetUserFavoritePosition();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postUserFavoritePosition_args)
@@ -27176,7 +27176,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserFavoritePosition()).compareTo(other.isSetUserFavoritePosition());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserFavoritePosition()).compareTo(other.isSetUserFavoritePosition());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -27202,8 +27202,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postUserFavoritePosition_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postUserFavoritePosition_args(");
       boolean first = true;
 
       sb.append("userFavoritePosition:");
@@ -27233,7 +27233,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -27346,7 +27346,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -27372,21 +27372,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -27395,7 +27395,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -27462,7 +27462,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -27475,30 +27475,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof postUserFavoritePosition_result)
@@ -27543,7 +27543,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -27569,8 +27569,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("postUserFavoritePosition_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("postUserFavoritePosition_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -27600,7 +27600,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -27722,7 +27722,7 @@ public class UseraccountsServices {
       EXPIRE_SECONDS((short)3, "expireSeconds"),
       ACTION_NAME((short)4, "action_name");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -27754,21 +27754,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -27777,7 +27777,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -27942,13 +27942,13 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __ACTION_NAME_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case WECHAT_ID:
         if (value == null) {
           unsetWechatId();
         } else {
-          setWechatId((Integer)value);
+          setWechatId((java.lang.Integer)value);
         }
         break;
 
@@ -27956,7 +27956,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetSceneId();
         } else {
-          setSceneId((Long)value);
+          setSceneId((java.lang.Long)value);
         }
         break;
 
@@ -27964,7 +27964,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetExpireSeconds();
         } else {
-          setExpireSeconds((Integer)value);
+          setExpireSeconds((java.lang.Integer)value);
         }
         break;
 
@@ -27972,14 +27972,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetAction_name();
         } else {
-          setAction_name((Integer)value);
+          setAction_name((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case WECHAT_ID:
         return getWechatId();
@@ -27994,13 +27994,13 @@ public class UseraccountsServices {
         return getAction_name();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -28013,11 +28013,11 @@ public class UseraccountsServices {
       case ACTION_NAME:
         return isSetAction_name();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof cerateQrcode_args)
@@ -28093,7 +28093,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
+      lastComparison = java.lang.Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -28103,7 +28103,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
+      lastComparison = java.lang.Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -28113,7 +28113,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetExpireSeconds()).compareTo(other.isSetExpireSeconds());
+      lastComparison = java.lang.Boolean.valueOf(isSetExpireSeconds()).compareTo(other.isSetExpireSeconds());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -28123,7 +28123,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetAction_name()).compareTo(other.isSetAction_name());
+      lastComparison = java.lang.Boolean.valueOf(isSetAction_name()).compareTo(other.isSetAction_name());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -28149,8 +28149,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("cerateQrcode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("cerateQrcode_args(");
       boolean first = true;
 
       sb.append("wechatId:");
@@ -28185,7 +28185,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -28359,7 +28359,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -28385,21 +28385,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -28408,7 +28408,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -28475,7 +28475,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -28488,30 +28488,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof cerateQrcode_result)
@@ -28556,7 +28556,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -28582,8 +28582,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("cerateQrcode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("cerateQrcode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -28613,7 +28613,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -28720,13 +28720,13 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new getQrcode_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new getQrcode_argsTupleSchemeFactory();
 
-    public String ticket; // required
+    public java.lang.String ticket; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       TICKET((short)1, "ticket");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -28752,21 +28752,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -28775,7 +28775,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -28794,7 +28794,7 @@ public class UseraccountsServices {
     }
 
     public getQrcode_args(
-      String ticket)
+      java.lang.String ticket)
     {
       this();
       this.ticket = ticket;
@@ -28818,11 +28818,11 @@ public class UseraccountsServices {
       this.ticket = null;
     }
 
-    public String getTicket() {
+    public java.lang.String getTicket() {
       return this.ticket;
     }
 
-    public getQrcode_args setTicket(String ticket) {
+    public getQrcode_args setTicket(java.lang.String ticket) {
       this.ticket = ticket;
       return this;
     }
@@ -28842,43 +28842,43 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case TICKET:
         if (value == null) {
           unsetTicket();
         } else {
-          setTicket((String)value);
+          setTicket((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case TICKET:
         return getTicket();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case TICKET:
         return isSetTicket();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getQrcode_args)
@@ -28923,7 +28923,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetTicket()).compareTo(other.isSetTicket());
+      lastComparison = java.lang.Boolean.valueOf(isSetTicket()).compareTo(other.isSetTicket());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -28949,8 +28949,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getQrcode_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getQrcode_args(");
       boolean first = true;
 
       sb.append("ticket:");
@@ -28977,7 +28977,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -29088,7 +29088,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -29114,21 +29114,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -29137,7 +29137,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -29204,7 +29204,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -29217,30 +29217,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getQrcode_result)
@@ -29285,7 +29285,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -29311,8 +29311,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getQrcode_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getQrcode_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -29342,7 +29342,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -29458,7 +29458,7 @@ public class UseraccountsServices {
       WECHAT_ID((short)1, "wechatId"),
       SCENE_ID((short)2, "sceneId");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -29486,21 +29486,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -29509,7 +29509,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -29610,13 +29610,13 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SCENEID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case WECHAT_ID:
         if (value == null) {
           unsetWechatId();
         } else {
-          setWechatId((Integer)value);
+          setWechatId((java.lang.Integer)value);
         }
         break;
 
@@ -29624,14 +29624,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetSceneId();
         } else {
-          setSceneId((Long)value);
+          setSceneId((java.lang.Long)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case WECHAT_ID:
         return getWechatId();
@@ -29640,13 +29640,13 @@ public class UseraccountsServices {
         return getSceneId();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -29655,11 +29655,11 @@ public class UseraccountsServices {
       case SCENE_ID:
         return isSetSceneId();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getScanResult_args)
@@ -29713,7 +29713,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
+      lastComparison = java.lang.Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -29723,7 +29723,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
+      lastComparison = java.lang.Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -29749,8 +29749,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getScanResult_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getScanResult_args(");
       boolean first = true;
 
       sb.append("wechatId:");
@@ -29777,7 +29777,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -29909,7 +29909,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -29935,21 +29935,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -29958,7 +29958,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -30025,7 +30025,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -30038,30 +30038,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getScanResult_result)
@@ -30106,7 +30106,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -30132,8 +30132,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getScanResult_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getScanResult_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -30163,7 +30163,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -30274,7 +30274,7 @@ public class UseraccountsServices {
 
     public int wechatId; // required
     public long sceneId; // required
-    public String value; // required
+    public java.lang.String value; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -30282,7 +30282,7 @@ public class UseraccountsServices {
       SCENE_ID((short)2, "sceneId"),
       VALUE((short)3, "value");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -30312,21 +30312,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -30335,7 +30335,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -30363,7 +30363,7 @@ public class UseraccountsServices {
     public setScanResult_args(
       int wechatId,
       long sceneId,
-      String value)
+      java.lang.String value)
     {
       this();
       this.wechatId = wechatId;
@@ -30444,11 +30444,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SCENEID_ISSET_ID, value);
     }
 
-    public String getValue() {
+    public java.lang.String getValue() {
       return this.value;
     }
 
-    public setScanResult_args setValue(String value) {
+    public setScanResult_args setValue(java.lang.String value) {
       this.value = value;
       return this;
     }
@@ -30468,13 +30468,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case WECHAT_ID:
         if (value == null) {
           unsetWechatId();
         } else {
-          setWechatId((Integer)value);
+          setWechatId((java.lang.Integer)value);
         }
         break;
 
@@ -30482,7 +30482,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetSceneId();
         } else {
-          setSceneId((Long)value);
+          setSceneId((java.lang.Long)value);
         }
         break;
 
@@ -30490,14 +30490,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetValue();
         } else {
-          setValue((String)value);
+          setValue((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case WECHAT_ID:
         return getWechatId();
@@ -30509,13 +30509,13 @@ public class UseraccountsServices {
         return getValue();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -30526,11 +30526,11 @@ public class UseraccountsServices {
       case VALUE:
         return isSetValue();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof setScanResult_args)
@@ -30597,7 +30597,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
+      lastComparison = java.lang.Boolean.valueOf(isSetWechatId()).compareTo(other.isSetWechatId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -30607,7 +30607,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
+      lastComparison = java.lang.Boolean.valueOf(isSetSceneId()).compareTo(other.isSetSceneId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -30617,7 +30617,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetValue()).compareTo(other.isSetValue());
+      lastComparison = java.lang.Boolean.valueOf(isSetValue()).compareTo(other.isSetValue());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -30643,8 +30643,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("setScanResult_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("setScanResult_args(");
       boolean first = true;
 
       sb.append("wechatId:");
@@ -30679,7 +30679,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -30834,7 +30834,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -30860,21 +30860,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -30883,7 +30883,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -30950,7 +30950,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -30963,30 +30963,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof setScanResult_result)
@@ -31031,7 +31031,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -31057,8 +31057,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("setScanResult_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("setScanResult_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -31088,7 +31088,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -31196,15 +31196,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ifExistUser_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ifExistUser_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -31232,21 +31232,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -31255,7 +31255,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -31276,8 +31276,8 @@ public class UseraccountsServices {
     }
 
     public ifExistUser_args(
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.countryCode = countryCode;
@@ -31306,11 +31306,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public ifExistUser_args setCountryCode(String countryCode) {
+    public ifExistUser_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -31330,11 +31330,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public ifExistUser_args setMobile(String mobile) {
+    public ifExistUser_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -31354,13 +31354,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -31368,14 +31368,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -31384,13 +31384,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -31399,11 +31399,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof ifExistUser_args)
@@ -31461,7 +31461,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -31471,7 +31471,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -31497,8 +31497,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("ifExistUser_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifExistUser_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -31533,7 +31533,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -31667,7 +31667,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -31693,21 +31693,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -31716,7 +31716,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -31783,7 +31783,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -31796,30 +31796,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof ifExistUser_result)
@@ -31864,7 +31864,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -31890,8 +31890,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("ifExistUser_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifExistUser_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -31921,7 +31921,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -32034,7 +32034,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER((short)1, "user");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -32060,21 +32060,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -32083,7 +32083,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -32150,7 +32150,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER:
         if (value == null) {
@@ -32163,30 +32163,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER:
         return getUser();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USER:
         return isSetUser();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof createRetrieveProfileUser_args)
@@ -32231,7 +32231,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUser()).compareTo(other.isSetUser());
+      lastComparison = java.lang.Boolean.valueOf(isSetUser()).compareTo(other.isSetUser());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -32257,8 +32257,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("createRetrieveProfileUser_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("createRetrieveProfileUser_args(");
       boolean first = true;
 
       sb.append("user:");
@@ -32288,7 +32288,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -32401,7 +32401,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -32427,21 +32427,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -32450,7 +32450,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -32519,43 +32519,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((Integer)value);
+          setSuccess((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof createRetrieveProfileUser_result)
@@ -32598,7 +32598,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -32624,8 +32624,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("createRetrieveProfileUser_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("createRetrieveProfileUser_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -32648,7 +32648,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -32756,15 +32756,15 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new ifExistProfile_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ifExistProfile_argsTupleSchemeFactory();
 
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       COUNTRY_CODE((short)1, "countryCode"),
       MOBILE((short)2, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -32792,21 +32792,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -32815,7 +32815,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -32836,8 +32836,8 @@ public class UseraccountsServices {
     }
 
     public ifExistProfile_args(
-      String countryCode,
-      String mobile)
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.countryCode = countryCode;
@@ -32866,11 +32866,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public ifExistProfile_args setCountryCode(String countryCode) {
+    public ifExistProfile_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -32890,11 +32890,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public ifExistProfile_args setMobile(String mobile) {
+    public ifExistProfile_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -32914,13 +32914,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case COUNTRY_CODE:
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -32928,14 +32928,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case COUNTRY_CODE:
         return getCountryCode();
@@ -32944,13 +32944,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -32959,11 +32959,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof ifExistProfile_args)
@@ -33021,7 +33021,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -33031,7 +33031,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -33057,8 +33057,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("ifExistProfile_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifExistProfile_args(");
       boolean first = true;
 
       sb.append("countryCode:");
@@ -33093,7 +33093,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -33227,7 +33227,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -33253,21 +33253,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -33276,7 +33276,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -33345,43 +33345,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __SUCCESS_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
           unsetSuccess();
         } else {
-          setSuccess((Boolean)value);
+          setSuccess((java.lang.Boolean)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return isSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof ifExistProfile_result)
@@ -33424,7 +33424,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -33450,8 +33450,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("ifExistProfile_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("ifExistProfile_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -33474,7 +33474,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -33583,9 +33583,9 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new userChangeBind_argsStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new userChangeBind_argsTupleSchemeFactory();
 
-    public String unionid; // required
-    public String countryCode; // required
-    public String mobile; // required
+    public java.lang.String unionid; // required
+    public java.lang.String countryCode; // required
+    public java.lang.String mobile; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -33593,7 +33593,7 @@ public class UseraccountsServices {
       COUNTRY_CODE((short)2, "countryCode"),
       MOBILE((short)3, "mobile");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -33623,21 +33623,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -33646,7 +33646,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -33669,9 +33669,9 @@ public class UseraccountsServices {
     }
 
     public userChangeBind_args(
-      String unionid,
-      String countryCode,
-      String mobile)
+      java.lang.String unionid,
+      java.lang.String countryCode,
+      java.lang.String mobile)
     {
       this();
       this.unionid = unionid;
@@ -33705,11 +33705,11 @@ public class UseraccountsServices {
       this.mobile = null;
     }
 
-    public String getUnionid() {
+    public java.lang.String getUnionid() {
       return this.unionid;
     }
 
-    public userChangeBind_args setUnionid(String unionid) {
+    public userChangeBind_args setUnionid(java.lang.String unionid) {
       this.unionid = unionid;
       return this;
     }
@@ -33729,11 +33729,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getCountryCode() {
+    public java.lang.String getCountryCode() {
       return this.countryCode;
     }
 
-    public userChangeBind_args setCountryCode(String countryCode) {
+    public userChangeBind_args setCountryCode(java.lang.String countryCode) {
       this.countryCode = countryCode;
       return this;
     }
@@ -33753,11 +33753,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public userChangeBind_args setMobile(String mobile) {
+    public userChangeBind_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -33777,13 +33777,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case UNIONID:
         if (value == null) {
           unsetUnionid();
         } else {
-          setUnionid((String)value);
+          setUnionid((java.lang.String)value);
         }
         break;
 
@@ -33791,7 +33791,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetCountryCode();
         } else {
-          setCountryCode((String)value);
+          setCountryCode((java.lang.String)value);
         }
         break;
 
@@ -33799,14 +33799,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case UNIONID:
         return getUnionid();
@@ -33818,13 +33818,13 @@ public class UseraccountsServices {
         return getMobile();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -33835,11 +33835,11 @@ public class UseraccountsServices {
       case MOBILE:
         return isSetMobile();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof userChangeBind_args)
@@ -33910,7 +33910,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
+      lastComparison = java.lang.Boolean.valueOf(isSetUnionid()).compareTo(other.isSetUnionid());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -33920,7 +33920,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
+      lastComparison = java.lang.Boolean.valueOf(isSetCountryCode()).compareTo(other.isSetCountryCode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -33930,7 +33930,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -33956,8 +33956,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("userChangeBind_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("userChangeBind_args(");
       boolean first = true;
 
       sb.append("unionid:");
@@ -34000,7 +34000,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -34157,7 +34157,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       SUCCESS((short)0, "success");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -34183,21 +34183,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -34206,7 +34206,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -34273,7 +34273,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -34286,30 +34286,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case SUCCESS:
         return isSetSuccess();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof userChangeBind_result)
@@ -34354,7 +34354,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -34380,8 +34380,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("userChangeBind_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("userChangeBind_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -34411,7 +34411,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -34524,7 +34524,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER_ID((short)1, "userId");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -34550,21 +34550,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -34573,7 +34573,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -34642,43 +34642,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUserId();
         } else {
-          setUserId((Integer)value);
+          setUserId((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUserId();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USER_ID:
         return isSetUserId();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUserSearchPositionHistory_args)
@@ -34721,7 +34721,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -34747,8 +34747,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUserSearchPositionHistory_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserSearchPositionHistory_args(");
       boolean first = true;
 
       sb.append("userId:");
@@ -34771,7 +34771,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -34885,7 +34885,7 @@ public class UseraccountsServices {
       SUCCESS((short)0, "success"),
       E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -34913,21 +34913,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -34936,7 +34936,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -35035,7 +35035,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -35056,7 +35056,7 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
@@ -35065,13 +35065,13 @@ public class UseraccountsServices {
         return getE();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -35080,11 +35080,11 @@ public class UseraccountsServices {
       case E:
         return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof getUserSearchPositionHistory_result)
@@ -35142,7 +35142,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -35152,7 +35152,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -35178,8 +35178,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("getUserSearchPositionHistory_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("getUserSearchPositionHistory_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -35217,7 +35217,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -35355,7 +35355,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       USER_ID((short)1, "userId");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -35381,21 +35381,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -35404,7 +35404,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -35473,43 +35473,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUserId();
         } else {
-          setUserId((Integer)value);
+          setUserId((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUserId();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case USER_ID:
         return isSetUserId();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof deleteUserSearchPositionHistory_args)
@@ -35552,7 +35552,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -35578,8 +35578,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("deleteUserSearchPositionHistory_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("deleteUserSearchPositionHistory_args(");
       boolean first = true;
 
       sb.append("userId:");
@@ -35602,7 +35602,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -35716,7 +35716,7 @@ public class UseraccountsServices {
       SUCCESS((short)0, "success"),
       E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -35744,21 +35744,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -35767,7 +35767,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -35866,7 +35866,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case SUCCESS:
         if (value == null) {
@@ -35887,7 +35887,7 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case SUCCESS:
         return getSuccess();
@@ -35896,13 +35896,13 @@ public class UseraccountsServices {
         return getE();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -35911,11 +35911,11 @@ public class UseraccountsServices {
       case E:
         return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof deleteUserSearchPositionHistory_result)
@@ -35973,7 +35973,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -35983,7 +35983,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -36009,8 +36009,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("deleteUserSearchPositionHistory_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("deleteUserSearchPositionHistory_result(");
       boolean first = true;
 
       sb.append("success:");
@@ -36048,7 +36048,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -36186,7 +36186,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       FORM((short)1, "form");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -36212,21 +36212,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -36235,7 +36235,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -36302,7 +36302,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case FORM:
         if (value == null) {
@@ -36315,30 +36315,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case FORM:
         return getForm();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case FORM:
         return isSetForm();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof claimReferralCard_args)
@@ -36383,7 +36383,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetForm()).compareTo(other.isSetForm());
+      lastComparison = java.lang.Boolean.valueOf(isSetForm()).compareTo(other.isSetForm());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -36409,8 +36409,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("claimReferralCard_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("claimReferralCard_args(");
       boolean first = true;
 
       sb.append("form:");
@@ -36440,7 +36440,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -36553,7 +36553,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -36579,21 +36579,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -36602,7 +36602,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -36669,7 +36669,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case E:
         if (value == null) {
@@ -36682,30 +36682,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case E:
         return getE();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case E:
         return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof claimReferralCard_result)
@@ -36750,7 +36750,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -36776,8 +36776,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("claimReferralCard_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("claimReferralCard_result(");
       boolean first = true;
 
       sb.append("e:");
@@ -36804,7 +36804,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -36917,7 +36917,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       BONUS_RECORD_ID((short)1, "bonus_record_id");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -36943,21 +36943,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -36966,7 +36966,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -37035,43 +37035,43 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __BONUS_RECORD_ID_ISSET_ID, value);
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case BONUS_RECORD_ID:
         if (value == null) {
           unsetBonus_record_id();
         } else {
-          setBonus_record_id((Integer)value);
+          setBonus_record_id((java.lang.Integer)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case BONUS_RECORD_ID:
         return getBonus_record_id();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case BONUS_RECORD_ID:
         return isSetBonus_record_id();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof claimReferralBonus_args)
@@ -37114,7 +37114,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetBonus_record_id()).compareTo(other.isSetBonus_record_id());
+      lastComparison = java.lang.Boolean.valueOf(isSetBonus_record_id()).compareTo(other.isSetBonus_record_id());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -37140,8 +37140,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("claimReferralBonus_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("claimReferralBonus_args(");
       boolean first = true;
 
       sb.append("bonus_record_id:");
@@ -37164,7 +37164,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -37275,7 +37275,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -37301,21 +37301,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -37324,7 +37324,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -37391,7 +37391,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case E:
         if (value == null) {
@@ -37404,30 +37404,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case E:
         return getE();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case E:
         return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof claimReferralBonus_result)
@@ -37472,7 +37472,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -37498,8 +37498,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("claimReferralBonus_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("claimReferralBonus_result(");
       boolean first = true;
 
       sb.append("e:");
@@ -37526,7 +37526,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
@@ -37638,10 +37638,10 @@ public class UseraccountsServices {
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new batchClaimReferralCard_argsTupleSchemeFactory();
 
     public int userId; // required
-    public String name; // required
-    public String mobile; // required
-    public String vcode; // required
-    public java.util.List<Integer> referralRecordIds; // required
+    public java.lang.String name; // required
+    public java.lang.String mobile; // required
+    public java.lang.String vcode; // required
+    public java.util.List<java.lang.Integer> referralRecordIds; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -37651,7 +37651,7 @@ public class UseraccountsServices {
       VCODE((short)4, "vcode"),
       REFERRAL_RECORD_IDS((short)5, "referralRecordIds");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -37685,21 +37685,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -37708,7 +37708,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -37739,10 +37739,10 @@ public class UseraccountsServices {
 
     public batchClaimReferralCard_args(
       int userId,
-      String name,
-      String mobile,
-      String vcode,
-      java.util.List<Integer> referralRecordIds)
+      java.lang.String name,
+      java.lang.String mobile,
+      java.lang.String vcode,
+      java.util.List<java.lang.Integer> referralRecordIds)
     {
       this();
       this.userId = userId;
@@ -37769,7 +37769,7 @@ public class UseraccountsServices {
         this.vcode = other.vcode;
       }
       if (other.isSetReferralRecordIds()) {
-        java.util.List<Integer> __this__referralRecordIds = new java.util.ArrayList<Integer>(other.referralRecordIds);
+        java.util.List<java.lang.Integer> __this__referralRecordIds = new java.util.ArrayList<java.lang.Integer>(other.referralRecordIds);
         this.referralRecordIds = __this__referralRecordIds;
       }
     }
@@ -37811,11 +37811,11 @@ public class UseraccountsServices {
       __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __USERID_ISSET_ID, value);
     }
 
-    public String getName() {
+    public java.lang.String getName() {
       return this.name;
     }
 
-    public batchClaimReferralCard_args setName(String name) {
+    public batchClaimReferralCard_args setName(java.lang.String name) {
       this.name = name;
       return this;
     }
@@ -37835,11 +37835,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getMobile() {
+    public java.lang.String getMobile() {
       return this.mobile;
     }
 
-    public batchClaimReferralCard_args setMobile(String mobile) {
+    public batchClaimReferralCard_args setMobile(java.lang.String mobile) {
       this.mobile = mobile;
       return this;
     }
@@ -37859,11 +37859,11 @@ public class UseraccountsServices {
       }
     }
 
-    public String getVcode() {
+    public java.lang.String getVcode() {
       return this.vcode;
     }
 
-    public batchClaimReferralCard_args setVcode(String vcode) {
+    public batchClaimReferralCard_args setVcode(java.lang.String vcode) {
       this.vcode = vcode;
       return this;
     }
@@ -37887,22 +37887,22 @@ public class UseraccountsServices {
       return (this.referralRecordIds == null) ? 0 : this.referralRecordIds.size();
     }
 
-    public java.util.Iterator<Integer> getReferralRecordIdsIterator() {
+    public java.util.Iterator<java.lang.Integer> getReferralRecordIdsIterator() {
       return (this.referralRecordIds == null) ? null : this.referralRecordIds.iterator();
     }
 
     public void addToReferralRecordIds(int elem) {
       if (this.referralRecordIds == null) {
-        this.referralRecordIds = new java.util.ArrayList<Integer>();
+        this.referralRecordIds = new java.util.ArrayList<java.lang.Integer>();
       }
       this.referralRecordIds.add(elem);
     }
 
-    public java.util.List<Integer> getReferralRecordIds() {
+    public java.util.List<java.lang.Integer> getReferralRecordIds() {
       return this.referralRecordIds;
     }
 
-    public batchClaimReferralCard_args setReferralRecordIds(java.util.List<Integer> referralRecordIds) {
+    public batchClaimReferralCard_args setReferralRecordIds(java.util.List<java.lang.Integer> referralRecordIds) {
       this.referralRecordIds = referralRecordIds;
       return this;
     }
@@ -37922,13 +37922,13 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case USER_ID:
         if (value == null) {
           unsetUserId();
         } else {
-          setUserId((Integer)value);
+          setUserId((java.lang.Integer)value);
         }
         break;
 
@@ -37936,7 +37936,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetName();
         } else {
-          setName((String)value);
+          setName((java.lang.String)value);
         }
         break;
 
@@ -37944,7 +37944,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetMobile();
         } else {
-          setMobile((String)value);
+          setMobile((java.lang.String)value);
         }
         break;
 
@@ -37952,7 +37952,7 @@ public class UseraccountsServices {
         if (value == null) {
           unsetVcode();
         } else {
-          setVcode((String)value);
+          setVcode((java.lang.String)value);
         }
         break;
 
@@ -37960,14 +37960,14 @@ public class UseraccountsServices {
         if (value == null) {
           unsetReferralRecordIds();
         } else {
-          setReferralRecordIds((java.util.List<Integer>)value);
+          setReferralRecordIds((java.util.List<java.lang.Integer>)value);
         }
         break;
 
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case USER_ID:
         return getUserId();
@@ -37985,13 +37985,13 @@ public class UseraccountsServices {
         return getReferralRecordIds();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
@@ -38006,11 +38006,11 @@ public class UseraccountsServices {
       case REFERRAL_RECORD_IDS:
         return isSetReferralRecordIds();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof batchClaimReferralCard_args)
@@ -38105,7 +38105,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
+      lastComparison = java.lang.Boolean.valueOf(isSetUserId()).compareTo(other.isSetUserId());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -38115,7 +38115,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetName()).compareTo(other.isSetName());
+      lastComparison = java.lang.Boolean.valueOf(isSetName()).compareTo(other.isSetName());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -38125,7 +38125,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
+      lastComparison = java.lang.Boolean.valueOf(isSetMobile()).compareTo(other.isSetMobile());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -38135,7 +38135,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetVcode()).compareTo(other.isSetVcode());
+      lastComparison = java.lang.Boolean.valueOf(isSetVcode()).compareTo(other.isSetVcode());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -38145,7 +38145,7 @@ public class UseraccountsServices {
           return lastComparison;
         }
       }
-      lastComparison = Boolean.valueOf(isSetReferralRecordIds()).compareTo(other.isSetReferralRecordIds());
+      lastComparison = java.lang.Boolean.valueOf(isSetReferralRecordIds()).compareTo(other.isSetReferralRecordIds());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -38171,8 +38171,8 @@ public class UseraccountsServices {
     }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("batchClaimReferralCard_args(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("batchClaimReferralCard_args(");
       boolean first = true;
 
       sb.append("userId:");
@@ -38227,7 +38227,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
         __isset_bitfield = 0;
@@ -38291,7 +38291,7 @@ public class UseraccountsServices {
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
                   org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                  struct.referralRecordIds = new java.util.ArrayList<Integer>(_list0.size);
+                  struct.referralRecordIds = new java.util.ArrayList<java.lang.Integer>(_list0.size);
                   int _elem1;
                   for (int _i2 = 0; _i2 < _list0.size; ++_i2)
                   {
@@ -38430,7 +38430,7 @@ public class UseraccountsServices {
         if (incoming.get(4)) {
           {
             org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-            struct.referralRecordIds = new java.util.ArrayList<Integer>(_list5.size);
+            struct.referralRecordIds = new java.util.ArrayList<java.lang.Integer>(_list5.size);
             int _elem6;
             for (int _i7 = 0; _i7 < _list5.size; ++_i7)
             {
@@ -38462,7 +38462,7 @@ public class UseraccountsServices {
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
       E((short)1, "e");
 
-      private static final java.util.Map<String, _Fields> byName = new java.util.HashMap<String, _Fields>();
+      private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
       static {
         for (_Fields field : java.util.EnumSet.allOf(_Fields.class)) {
@@ -38488,21 +38488,21 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftIdOrThrow(int fieldId) {
         _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        if (fields == null) throw new java.lang.IllegalArgumentException("Field " + fieldId + " doesn't exist!");
         return fields;
       }
 
       /**
        * Find the _Fields constant that matches name, or null if its not found.
        */
-      public static _Fields findByName(String name) {
+      public static _Fields findByName(java.lang.String name) {
         return byName.get(name);
       }
 
       private final short _thriftId;
-      private final String _fieldName;
+      private final java.lang.String _fieldName;
 
-      _Fields(short thriftId, String fieldName) {
+      _Fields(short thriftId, java.lang.String fieldName) {
         _thriftId = thriftId;
         _fieldName = fieldName;
       }
@@ -38511,7 +38511,7 @@ public class UseraccountsServices {
         return _thriftId;
       }
 
-      public String getFieldName() {
+      public java.lang.String getFieldName() {
         return _fieldName;
       }
     }
@@ -38578,7 +38578,7 @@ public class UseraccountsServices {
       }
     }
 
-    public void setFieldValue(_Fields field, Object value) {
+    public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
       case E:
         if (value == null) {
@@ -38591,30 +38591,30 @@ public class UseraccountsServices {
       }
     }
 
-    public Object getFieldValue(_Fields field) {
+    public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
       case E:
         return getE();
 
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
     public boolean isSet(_Fields field) {
       if (field == null) {
-        throw new IllegalArgumentException();
+        throw new java.lang.IllegalArgumentException();
       }
 
       switch (field) {
       case E:
         return isSetE();
       }
-      throw new IllegalStateException();
+      throw new java.lang.IllegalStateException();
     }
 
     @Override
-    public boolean equals(Object that) {
+    public boolean equals(java.lang.Object that) {
       if (that == null)
         return false;
       if (that instanceof batchClaimReferralCard_result)
@@ -38659,7 +38659,7 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetE()).compareTo(other.isSetE());
+      lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
       if (lastComparison != 0) {
         return lastComparison;
       }
@@ -38685,8 +38685,8 @@ public class UseraccountsServices {
       }
 
     @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("batchClaimReferralCard_result(");
+    public java.lang.String toString() {
+      java.lang.StringBuilder sb = new java.lang.StringBuilder("batchClaimReferralCard_result(");
       boolean first = true;
 
       sb.append("e:");
@@ -38713,7 +38713,7 @@ public class UseraccountsServices {
       }
     }
 
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, java.lang.ClassNotFoundException {
       try {
         read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
       } catch (org.apache.thrift.TException te) {
