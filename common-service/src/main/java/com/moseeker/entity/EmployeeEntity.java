@@ -1248,7 +1248,6 @@ public class EmployeeEntity {
                         }
                         jsonObject.put("psc", pscId);
                         jsonObject.put("direct_referral_user_id", directReferralUserId);
-                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                         logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
                         Message message = amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
