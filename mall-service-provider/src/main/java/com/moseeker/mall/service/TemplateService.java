@@ -80,7 +80,7 @@ public class TemplateService {
     public void sendAwardTemplate(int sysUserId, int companyId, int templateId, String title,
                                    String keyWord1, String keyWord2, String keyWord3, String keyWord4, String remark, String url) {
         TemplateDataValueVO templateDataValueVO = new TemplateDataValueVO();
-        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOByCompanyId(templateDataValueVO.getCompanyId());
+        HrWxWechatDO hrWxWechatDO = getHrwxWechatDOByCompanyId(companyId);
         templateDataValueVO.setFirst(title);
         templateDataValueVO.setTemplateId(templateId);
         templateDataValueVO.setCompanyId(companyId);
