@@ -81,6 +81,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.LazyReflectiveObjectGenerator;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -912,6 +913,7 @@ public class UserHrAccountService {
                 for (Map<String, Object> map : result) {
                     if (map.get("activation") != null) {
                         if ((Byte) map.get("activation") == 0) {
+                            logger.info("getListNum regcount:{}", cancelCount);
                             userEmployeeNumStatistic.setRegcount((Integer) map.get("activation_count"));
                         } else if ((Byte) map.get("activation") == 1
                                 || (Byte) map.get("activation") == 2
@@ -919,16 +921,19 @@ public class UserHrAccountService {
                                 || (Byte) map.get("activation") == 5) {
                             cancelCount+=(Integer) map.get("activation_count");
                         } else if ((Byte) map.get("activation") == 3) {
+                            logger.info("getListNum unregcount:{}", map.get("activation_count"));
                             userEmployeeNumStatistic.setUnregcount((Integer) map.get("activation_count"));
                         }
                     }
                 }
+                logger.info("getListNum cancelCount:{}", cancelCount);
                 userEmployeeNumStatistic.setCancelcount(cancelCount);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
         }
+        logger.info("getListNum userEmployeeNumStatistic:{}", JSON.toJSONString(userEmployeeNumStatistic));
         return userEmployeeNumStatistic;
     }
 
@@ -945,8 +950,11 @@ public class UserHrAccountService {
         if (employeeMap != null && employeeMap.size() > 0) {
             reward = true;
         }
+        Query query = queryBuilder.buildQuery();
+        logger.info("UserHrAccountService employeeList query:{}", query);
         // 员工数据
         userEmployeeDOS = userEmployeeDao.getDatas(queryBuilder.buildQuery());
+        logger.info("UserHrAccountService employeeList userEmployeeDOS:{}", JSONArray.toJSONString(userEmployeeDOS));
 
         if (userEmployeeDOS != null && userEmployeeDOS.size() > 0) {
             Set<Integer> sysuserId = userEmployeeDOS.stream().filter(userUserDO -> userUserDO.getSysuserId() > 0)
@@ -1057,6 +1065,7 @@ public class UserHrAccountService {
      * @param pageSize   每页的条数
      */
     public UserEmployeeVOPageVO employeeList(String keyword, Integer companyId, Integer filter, String order, String asc, Integer pageNumber, Integer pageSize, String timespan,String emailValidate) throws CommonException {
+        logger.info("UserHrAccountService employeeList filter:{}, order:{}, asc:{}, pageNumber:{}, pageSize:{}, timespan:{}, keyword:{}", filter, order, asc, pageNumber, pageSize, timespan, keyword);
         UserEmployeeVOPageVO userEmployeeVOPageVO = new UserEmployeeVOPageVO();
         // 公司ID未设置
         if (companyId == 0) {
@@ -1164,13 +1173,14 @@ public class UserHrAccountService {
         userEmployeeVOPageVO.setTotalRow(counts);
         // 员工列表，不需要取排行榜
         if (StringUtils.isNullOrEmpty(timespan)) {
-            logger.info("timespan:{}", timespan);
+            logger.info("UserHrAccountService employeeList timespan:{}", timespan);
             userEmployeeVOPageVO.setData(employeeList(queryBuilder, 0, companyIds, null));
             return userEmployeeVOPageVO;
         }
         // 员工列表，从ES中获取积分月，季，年榜单数据
         Response response = null;
         try {
+            logger.info("UserHrAccountService employeeList queryAwardRanking companyIds:{}, timespan:{}, pageSize:{}, pageNumber:{}, keyword:{}, filter:{}", companyIds, timespan, pageSize, pageNumber, keyword, filter);
             response = searchengineServices.queryAwardRanking(companyIds, timespan, pageSize, pageNumber, keyword, filter);
         } catch (Exception e) {
             throw UserAccountException.SEARCH_ES_ERROR;
@@ -1230,6 +1240,7 @@ public class UserHrAccountService {
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Response response;
         try {
+            logger.info("getEmployees pageNum:{}, pageSize:{}", pageNumber, pageSize);
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
                     pageSize, pageNumber,balanceType, timeSpan);
         } catch (Exception e) {

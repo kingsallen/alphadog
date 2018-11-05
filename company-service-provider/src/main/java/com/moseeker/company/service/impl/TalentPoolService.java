@@ -12,12 +12,17 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.notify.UpdateEs;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
@@ -45,6 +50,10 @@ import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.company.struct.TalentpoolHrAutomaticTagDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
+import com.moseeker.thrift.gen.searchengine.struct.FilterResp;
+import java.util.*;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1616,8 +1625,8 @@ public class TalentPoolService {
                             if (data.isSetKeyword_list()) {
                             String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
                             map.put("keywords", keyword);
+                            map.put("company_id",companyId);
                         }
-                        map.put("company_id",companyId);
                         tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
                         return 0;
                     });

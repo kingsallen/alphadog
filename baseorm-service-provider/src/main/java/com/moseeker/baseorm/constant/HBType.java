@@ -9,7 +9,8 @@ public enum HBType {
     EmployeeVerify((byte)0, "员工认证红包"),
     Recommend((byte)1, "推荐评价红包"),
     ReferralClick((byte)2, "转发被点击红包"),
-    ReferralHire((byte)3, "转发被申请红包");
+    ReferralHire((byte)3, "转发被申请红包"),
+    InitialHire((byte)4, "推荐通过初筛红包");
 
     HBType(byte value, String name) {
         this.value = value;

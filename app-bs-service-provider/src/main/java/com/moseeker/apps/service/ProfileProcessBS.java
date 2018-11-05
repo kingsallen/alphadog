@@ -182,6 +182,7 @@ public class ProfileProcessBS {
 //        try {
             List<ApplicationAts> list = getJobApplication(params);
             if (list == null || list.size() == 0) {
+                logger.info("application id not exist!");
                 return ResponseUtils
                         .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
@@ -203,6 +204,7 @@ public class ProfileProcessBS {
     private List<ApplicationAts> getJobApplication(String params)
             throws Exception {      
         List<Integer> appIds = this.convertList(params);
+        logger.info("getJobApplication appIds: {}", appIds);
         List<ApplicationAts> list=jobApplicationDao.getApplicationByLApId(appIds);
         return list;
     }
@@ -276,7 +278,7 @@ public class ProfileProcessBS {
                     if (result.getStatus() == 0) {
                         List<Integer> recommenderIds = new ArrayList<Integer>();
                         List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
-                        // 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
+                        // 简历还未被浏览就被拒绝，则视为已Searche被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
                         List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<>();
                         RewardsToBeAddBean reward = null;
                         HrOperationRecordDO turnToCVChecked = null;
@@ -396,7 +398,9 @@ public class ProfileProcessBS {
                                         pvs.getApplier_name(), companyId, company,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.TOSEEKER);
+                                logger.info("=============isEmployee:{}",employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId));
                                 if(employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId)) {
+                                    logger.info("=============position_name:{}",pvs.getPosition_name());
                                     sendTemplate(pvs.getRecommender_user_id(),
                                             pvs.getApplier_name(), companyId, company,
                                             progressStatus, pvs.getPosition_name(),
@@ -458,7 +462,7 @@ public class ProfileProcessBS {
             userName = "";
         }
         MsInfo msInfo = tm.processStatus(status, userName);
-        logger.info("msInfo: {}", msInfo);
+        logger.info("msInfo================================: {}", msInfo);
         if(msInfo == null){
             return ;
         }
@@ -489,7 +493,9 @@ public class ProfileProcessBS {
                             String.class), signature,
                     String.valueOf(applicationId));
             url = url +"&send_time=" + new Date().getTime();
+            logger.info("url====================:{}",url);
             templateNoticeStruct.setUrl(url);
+            logger.info("templateNoticeStruct====================:{}",templateNoticeStruct);
             try {
                 mqService.messageTemplateNotice(templateNoticeStruct);
             } catch (TException e) {

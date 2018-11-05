@@ -75,6 +75,7 @@ public class MandrillMailConsumer {
 	private String fetchConstantlyMessage() {
 		try {
 			List<String> el = redisClient.brpop(Constant.APPID_ALPHADOG, Constant.MQ_MESSAGE_EMAIL_MANDRILL);
+			logger.info("fetchConstantlyMessage el:{}", el);
 			if (el != null && el.size() > 1){
                 return el.get(1);
             }

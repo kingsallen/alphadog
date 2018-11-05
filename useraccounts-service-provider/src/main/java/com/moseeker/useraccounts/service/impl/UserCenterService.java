@@ -220,6 +220,7 @@ public class UserCenterService {
      */
     @SuppressWarnings("unchecked")
     public RecommendationVO getRecommendations(int userId, byte type, int pageNo, int pageSize) throws CommonException {
+        logger.info("UserCenterService getRecommendations userId:{}, type:{}, pageNo:{}, pageSize:{}", userId, type, pageNo, pageSize);
         RecommendationVO recommendationForm = new RecommendationVO();
         try {
 
@@ -230,6 +231,7 @@ public class UserCenterService {
             /** 并行查找三个统计信息 */
 
             List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+            logger.info("UserCenterService getRecommendations positionIdList:{}", positionIdList);
             if (positionIdList == null) {
                 return recommendationForm;
             }
@@ -248,10 +250,18 @@ public class UserCenterService {
             scoreVO.setLink_viewed_count(totalCount);
             recommendationForm.setScore(scoreVO);
 
+
+            logger.info("UserCenterService getRecommendations before listCandidateRecomRecords userId:{}, type:{}, positionIdList:{}, presenteeUserIdList:{}, pageNo:{}, pageSize:{}", userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
             /** 分页查找相关职位转发记录 */
             List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
-            if (recomRecordDOList.size() > 0) {
+            logger.info("UserCenterService getRecommendations recomRecordDOList.size():{}, recomRecordDOList:{}", recomRecordDOList.size(), recomRecordDOList);
+            if (totalCount > 0 || interestedCount > 0 || applyCount > 0) {
                 recommendationForm.setHasRecommends(true);
+            } else {
+                recommendationForm.setHasRecommends(false);
+            }
+
+            if (recomRecordDOList.size() > 0) {
 
                 Set<Integer> positionIDSet = new HashSet<>();           //转发记录涉及到的职位编号，需要根据这些职位编号查找职位名称
                 Set<Integer> presenteeIDSet = new HashSet<>();          //转发记录涉及到的浏览者编号，需要根据这些编号查找用户名称、昵称等信息
@@ -307,6 +317,8 @@ public class UserCenterService {
                     recommendationRecordVO.setClick_time(candidateRecomRecordDO.getClickTime());
                     recommendationRecordVO.setRecom_status((byte)candidateRecomRecordDO.getIsRecom());
 
+                    logger.info("getRecommendations recommendationRecordVO id:{}, click_time:{}, recom_status:{}", recommendationRecordVO.getId(), recommendationRecordVO.getClick_time(), recommendationRecordVO.getRecom_status());
+
                     /** 匹配职位名称 */
                     if (positions != null && positions.size() > 0) {
                         positions.stream().filter(position -> position.getId() == candidateRecomRecordDO.getPositionId() && position.getId() > 0)
@@ -324,6 +336,7 @@ public class UserCenterService {
                     }
                     /** 匹配转发者的名称 */
                     if (candidateRecomRecordDO.getPostUserId() != candidateRecomRecordDO.getRepostUserId()) {
+                        logger.info("getRecommendations postUserId:{}, rePostUserId:{}", candidateRecomRecordDO.getPostUserId(), candidateRecomRecordDO.getRepostUserId());
                         if (reposts != null && reposts.size() > 0) {
                             reposts.stream().filter(repost -> repost.getId() == candidateRecomRecordDO.getRepostUserId())
                                     .forEach(repost ->

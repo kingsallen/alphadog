@@ -103,7 +103,7 @@ public class UserReferralRecordDao extends JooqCrudImpl<UserReferralRecord, User
                 .fetch();
     }
 
-    public UserReferralRecordRecord insertReferralTypeIfNotExist(int reference, int companyId, Long mobile, ReferralScene scene) {
+    public UserReferralRecordRecord insertReferralTypeIfNotExist(int reference, int companyId, Long mobile, ReferralScene scene, UserSource userSource) {
         Param<Integer> refereeParam = param(USER_REFERRAL_RECORD.REFERENCE_ID.getName(), reference);
         Param<Integer> companyParam = param(USER_REFERRAL_RECORD.COMPANY_ID.getName(), companyId);
         Param<Byte> sceneParam = param(USER_REFERRAL_RECORD.SCENE.getName(), scene.getScene());
@@ -124,7 +124,7 @@ public class UserReferralRecordDao extends JooqCrudImpl<UserReferralRecord, User
                                 .where(UserUser.USER_USER.MOBILE.eq(mobile))
                                 .and(UserUser.USER_USER.COUNTRY_CODE.eq("86"))
                                 .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
-                                .and(UserUser.USER_USER.SOURCE.eq((short) UserSource.EMPLOYEE_REFERRAL.getValue()))
+                                .and(UserUser.USER_USER.SOURCE.eq((short) userSource.getValue()))
                                 .and(USER_REFERRAL_RECORD.COMPANY_ID.eq(companyId))
                                 .and(USER_REFERRAL_RECORD.SCENE.eq(scene.getScene()))
                 )

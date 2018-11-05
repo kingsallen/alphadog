@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecomRecord extends UpdatableRecordImpl<LogAiRecomRecord> implements Record10<Integer, Integer, Integer, String, Byte, Timestamp, String, String, Integer, Byte> {
 
-    private static final long serialVersionUID = -1496940974;
+    private static final long serialVersionUID = -1359174296;
 
     /**
      * Setter for <code>logdb.log_ai_recom.id</code>.
@@ -75,28 +75,34 @@ public class LogAiRecomRecord extends UpdatableRecordImpl<LogAiRecomRecord> impl
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.action</code>. 发送行为，当type为2，3时这里发送职位时的职位id，当为1时不写入
+     * Setter for <code>logdb.log_ai_recom.action</code>. 发送行为，这里发送职位时的职位id
      */
     public void setAction(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.action</code>. 发送行为，当type为2，3时这里发送职位时的职位id，当为1时不写入
+     * Getter for <code>logdb.log_ai_recom.action</code>. 发送行为，这里发送职位时的职位id
      */
     public String getAction() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.type</code>. type=1粉丝简历完善 type=2粉丝职位推荐 type=3员工职位推荐 type=4员工简历完善(已弃用)
+     * Setter for <code>logdb.log_ai_recom.type</code>. type=1粉丝简历完善
+type=2粉丝职位推荐
+type=3员工职位推荐
+type=4员工简历完善
      */
     public void setType(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.type</code>. type=1粉丝简历完善 type=2粉丝职位推荐 type=3员工职位推荐 type=4员工简历完善(已弃用)
+     * Getter for <code>logdb.log_ai_recom.type</code>. type=1粉丝简历完善
+type=2粉丝职位推荐
+type=3员工职位推荐
+type=4员工简历完善
      */
     public Byte getType() {
         return (Byte) get(4);
@@ -117,28 +123,28 @@ public class LogAiRecomRecord extends UpdatableRecordImpl<LogAiRecomRecord> impl
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.md_code</code>. 唯一的标识串，通过user_user.id,hr_company.id和时间戳取 16位 md5
+     * Setter for <code>logdb.log_ai_recom.md_code</code>.
      */
     public void setMdCode(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.md_code</code>. 唯一的标识串，通过user_user.id,hr_company.id和时间戳取 16位 md5
+     * Getter for <code>logdb.log_ai_recom.md_code</code>.
      */
     public String getMdCode() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>logdb.log_ai_recom.algorithm_name</code>. 算法名称
+     * Setter for <code>logdb.log_ai_recom.algorithm_name</code>.
      */
     public void setAlgorithmName(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>logdb.log_ai_recom.algorithm_name</code>. 算法名称
+     * Getter for <code>logdb.log_ai_recom.algorithm_name</code>.
      */
     public String getAlgorithmName() {
         return (String) get(7);

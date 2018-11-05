@@ -1236,6 +1236,16 @@ public class CandidateEntity implements Candidate {
         return recentPosition;
     }
 
+    @Override
+    public void addApplicationReferral(int applicationId, int pscId, int directReferralUserId) {
+        candidateDBDao.addApplicationPsc(applicationId, pscId, directReferralUserId);
+    }
+
+    @Override
+    public CandidateApplicationReferralDO getApplicationReferralByApplication(int applicationId) {
+        return candidateDBDao.getApplicationPscByApplicationId(applicationId);
+    }
+
     /**
      * 查找候选人的链路
      *

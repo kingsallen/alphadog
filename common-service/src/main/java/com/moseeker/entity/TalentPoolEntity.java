@@ -4,9 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyEmailInfoDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionProfileFilterDao;
+import com.moseeker.baseorm.dao.logdb.LogTalentpoolEmailDailyLogDao;
 import com.moseeker.baseorm.dao.talentpooldb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -38,6 +40,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.moseeker.common.util.query.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -240,7 +243,6 @@ public class TalentPoolEntity {
      */
     public String validateCompanyTalentPoolV3ByFilter(TalentpoolCompanyTagDO companyTagDO){
 
-
         if(StringUtils.isNotNullOrEmpty(companyTagDO.getOrigins()) || StringUtils.isNotNullOrEmpty(companyTagDO.getWork_years())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getCity_name()) || StringUtils.isNotNullOrEmpty(companyTagDO.getDegree())
                 || StringUtils.isNotNullOrEmpty(companyTagDO.getPast_position()) || companyTagDO.getMin_age() > 0 || companyTagDO.getMax_age()>0
@@ -299,7 +301,6 @@ public class TalentPoolEntity {
             return result;
         }
         return "标签全为默认值;";
-
     }
 
 
@@ -565,9 +566,9 @@ public class TalentPoolEntity {
      */
     @Transactional
     public int updateCompanyTag(TalentpoolCompanyTagDO companyTagDO){
+        logger.info("TalentpoolCompanyTagDO info :{}", companyTagDO);
         TalentpoolCompanyTagRecord tagRecord = talentpoolCompanyTagDao.dataToRecordAll(companyTagDO);
-        String keyword = StringUtils.listToString(companyTagDO.getKeyword_list(), ";");
-        tagRecord.setKeywords(keyword);
+        logger.info("TalentpoolCompanyTagRecord info :{}", tagRecord);
         talentpoolCompanyTagDao.updateRecord(tagRecord);
         return tagRecord.getId();
     }
@@ -789,10 +790,9 @@ public class TalentPoolEntity {
     /*
      通过CompanyId获取企业标签
      */
-    public  List<Map<String, Object>> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
+    public List<Map<String, Object>> handlerCompanyTagBycompanyId(int companyId, int pageNum, int pageSize){
         List<Map<String, Object>> tagRecordList = talentpoolCompanyTagDao.getCompanyTagByCompanyId(companyId, pageNum, pageSize);
         return tagRecordList;
-
     }
 
     /*
@@ -904,7 +904,6 @@ public class TalentPoolEntity {
         }
         return companyTagMapList;
     }
-
     /*
      通过userIdList获取所有的公开人和收藏人
      */
@@ -1782,6 +1781,7 @@ public class TalentPoolEntity {
         Map<String,Object> result=new HashMap<>();
         result.put("tableName","talentpool_comment");
         result.put("user_id",userId);
+        logger.info(JSON.toJSONString(result));
         client.lpush(Constant.APPID_ALPHADOG,
                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", JSON.toJSONString(result));
     }
@@ -1810,8 +1810,10 @@ public class TalentPoolEntity {
     /*
      获取上传简历的user_id
      */
-    public UserUserRecord getTalentUploadUser(String phone,int companyId, int source){
-        String countryCode="86";
+    public UserUserRecord getTalentUploadUser(String phone,int companyId, int source,String countryCode){
+        if(StringUtils.isNullOrEmpty(countryCode)){
+            countryCode="86";
+        }
         if(phone.contains("-")){
             String [] phoneArray=phone.split("-");
             countryCode=phoneArray[0];
@@ -1955,7 +1957,7 @@ public class TalentPoolEntity {
                 }
                 //需要删除的记录
                 logger.info("==============================");
-                logger.info(result.toString());
+
                 logger.info("==============================");
                 if(!StringUtils.isEmptyList(result)){
                     talentpoolHrAutomaticTagUserDao.deleteList(result);
@@ -2383,7 +2385,6 @@ public class TalentPoolEntity {
         Map<String, Object> list=talentpoolCompanyTagDao.getCompanyTagByTagIdAndCompanyId(companyId,company_tag_id);
         return list;
     }
-
 
 
     public String convertToString(Set<Integer> list){

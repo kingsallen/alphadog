@@ -1,5 +1,6 @@
 package com.moseeker.profile.service.impl.resumefileupload.iface;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
@@ -50,9 +51,10 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     protected abstract String getRedisKey();
 
     protected abstract ProfileDocParseResult setProfileDocParseResult(ProfileDocParseResult profileDocParseResult,User user,Integer userId);
-    
+
     @Override
     public  ProfileDocParseResult parseResume(Integer id, String fileName, ByteBuffer fileData) {
+        logger.info("AbstractResumeFileParser parseResume id:{}, fileName:{}", id, fileName);
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
         if (!ProfileDocCheckTool.checkFileName(fileName)) {
             throw ProfileException.REFERRAL_FILE_TYPE_NOT_SUPPORT;
@@ -67,6 +69,7 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     }
     private ProfileDocParseResult parseResult(int id, String fileName, String fileData,
                                               FileNameData fileNameData) throws ProfileException {
+        logger.info("AbstractResumeFileParser parseResult id:{}, fileName:{}, fileNameData:{}", id, fileName, JSON.toJSONString(fileNameData));
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();
         profileDocParseResult.setFile(fileNameData.getFileName());
         // 调用SDK得到结果
@@ -77,13 +80,17 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_PARSE_TEXT_FAILED;
         }
+        logger.info("AbstractResumeFileParser after profileParserAdaptor");
         ProfileObj profileObj = resumeEntity.handlerParseData(resumeObj,0,fileName);
+        logger.info("AbstractResumeFileParser after handlerParseData");
         profileDocParseResult = setProfileDocParseResult(profileDocParseResult,profileObj.getUser(),id);
         profileObj.setResumeObj(null);
         JSONObject jsonObject = getProfileObject(profileObj,fileNameData,profileDocParseResult);
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
+        logger.info("AbstractResumeFileParser after parseProfile");
         client.set(AppId.APPID_ALPHADOG.getValue(), getRedisKey(), String.valueOf(id),
                 "", profilePojo.toJson(), 24*60*60);
+        logger.info("AbstractResumeFileParser after store redis");
         return profileDocParseResult;
     }
 

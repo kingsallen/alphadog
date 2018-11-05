@@ -49,6 +49,7 @@ public class LeaderBoardEntity {
         String timeSpan = type.buildTimeSpan();
 
         JSONObject jsonObject = searchengineEntity.getEmployeeInfo(employeeInfo.getId());
+        logger.info("fetchLeaderBoardInfo jsonObject:{}", jsonObject);
 
         if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
             info.setAward(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getInteger("award"));
@@ -56,6 +57,7 @@ public class LeaderBoardEntity {
         }
         if (info.getAward() > 0) {
             List<Integer> companyIdList = userEmployeeEntity.getCompanyIds(employeeInfo.getCompanyId());
+
             logger.info("fetchLeaderBoardInfo id:{}, award:{}, timeSpan:{}, cmopanyIdList:{}", employeeInfo.getId(), employeeInfo.getAward(),timeSpan, companyIdList);
             int sort = searchengineEntity.getSort(employeeInfo.getId(), info.getAward(), info.getLastUpdateTime(),timeSpan, companyIdList);
             logger.info("fetchLeaderBoardInfo sort:{}", sort);

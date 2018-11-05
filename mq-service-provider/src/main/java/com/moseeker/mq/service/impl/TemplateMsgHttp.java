@@ -18,7 +18,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.Constant;
@@ -42,15 +41,15 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
-import java.net.ConnectException;
-import java.util.*;
-
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.net.ConnectException;
+import java.util.*;
 
 import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NOTICE_TPL;
 
@@ -61,6 +60,7 @@ import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NO
 
 @Service
 public class TemplateMsgHttp {
+
     @Autowired
     private HrWxNoticeMessageDao wxNoticeMessageDao;
     @Autowired
@@ -103,7 +103,9 @@ public class TemplateMsgHttp {
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
 
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
-    private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
+    //private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
+
+    private static String NoticeEmployeeVerifyFirstTemplateId = "I0r7v2HKg4-flc6IaPVwoT8wud6hX2l_w4BUGIAAUSM";
 
     private static String NoticeEmployeeReferralBonusFirst = "恭喜你获得内推入职奖励";
     private static String NoticeEmployeeReferralBonusRemark = "请点击查看详情";
@@ -114,6 +116,8 @@ public class TemplateMsgHttp {
 
     public void noticeEmployeeVerify(int userId, int companyId, String companyName) {
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployee(userId, companyId);
+
+        logger.info("noticeEmployeeVerify userEmployeeRecord:{}", userEmployeeRecord);
         if (userEmployeeRecord == null) {
 
             logger.info("noticeEmployeeVerify userEmployeeRecord != null");
@@ -129,7 +133,8 @@ public class TemplateMsgHttp {
                  first = NoticeEmployeeVerifyFirst;
                 remark = "";
             }
-
+            logger.info("noticeEmployeeVerify first:{}", first);
+            logger.info("noticeEmployeeVerify remark:{}", first);
             //公司公众号
             HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
                     companyId).buildQuery());
@@ -144,10 +149,14 @@ public class TemplateMsgHttp {
                     templateId = hrWxTemplateMessage.getWxTemplateId();
                 }
 
+                logger.info("noticeEmployeeVerify templateId:{}", templateId);
                 UserWxUserDO userWxUserDO = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
                         userId).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
 
                 if (userWxUserDO != null) {
+
+                    logger.info("noticeEmployeeVerify openid:{}", userWxUserDO.getOpenid());
+
                     JSONObject colMap = new JSONObject();
 
                     JSONObject firstJson = new JSONObject();
@@ -208,7 +217,13 @@ public class TemplateMsgHttp {
     }
 
     public void noticeEmployeeReferralBonus(int applicationId, long operationTIme, Integer nowStage) {
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus applicationId:{}, operationTIme:{}, nowStage:{}",
+                applicationId, operationTIme, nowStage);
         JobApplication application = applicationDao.fetchOneById(applicationId);
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus application:{}", application);
+
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus BonusStage.Hired:{}, result:{}",
+                BonusStage.Hired.getValue(), nowStage == BonusStage.Hired.getValue());
         if (application != null && nowStage == BonusStage.Hired.getValue()
                 && application.getRecommenderUserId() != null && application.getRecommenderUserId() > 0) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
@@ -300,7 +315,7 @@ public class TemplateMsgHttp {
 
                     try {
                         String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
-                        logger.info("noticeEmployeeVerify result:{}", result);
+                        logger.info("TemlateMsgHttp noticeEmployeeVerify result:{}", result);
                     } catch (ConnectException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -308,7 +323,7 @@ public class TemplateMsgHttp {
             }
 
         } else {
-            logger.error("noticeEmployeeReferralBonus 申请信息不存在!");
+            logger.error("TemplateMsgHttp noticeEmployeeRererralBonus 申请信息不存在!");
         }
     }
 

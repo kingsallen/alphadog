@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -22,6 +23,8 @@ import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.BonusList;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
 import com.moseeker.useraccounts.service.impl.vo.RedPackets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +56,11 @@ public class ReferralServiceImpl implements ReferralService {
     @Autowired
     private ReferralEntity referralEntity;
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
     public RedPackets getRedPackets(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException {
+        logger.info("ReferralServiceImpl getRedPackets id:{}, companyId:{}, pageNum:{}, pageSize:{}", userId, companyId, pageNum, pageSize);
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             throw UserAccountException.PROGRAM_FETCH_TOO_MUCH;
         }
@@ -64,30 +70,40 @@ public class ReferralServiceImpl implements ReferralService {
             BigDecimal bonus = new BigDecimal(userEmployeeDO.getBonus());
             redPackets.setTotalBonus(bonus.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
         }
-
+        logger.info("ReferralServiceImpl getRedPackets userEmployeeDO:{}", userEmployeeDO);
         List<UserWxUserRecord> wxUserRecords = wxUserDao.getWXUsersByUserId(userId);
         if (wxUserRecords != null && wxUserRecords.size() > 0) {
+
 
             List<Integer> wxUserIdList = wxUserRecords
                     .stream()
                     .map(userWxUserRecord -> userWxUserRecord.getId().intValue())
                     .collect(Collectors.toList());
+            logger.info("ReferralServiceImpl getRedPackets wxUserIdList:{}", wxUserIdList
+                    .stream()
+                    .map(integer -> String.valueOf(integer))
+                    .collect(Collectors.joining(",")));
             //计算红包总额
             redPackets.setTotalRedpackets(itemsDao.sumOpenedRedPacketsByWxUserIdList(wxUserIdList, companyId));
-
+            logger.info("ReferralServiceImpl getRedPackets totalRedPackets:{}", redPackets.getTotalRedpackets());
             PageUtil pageUtil = new PageUtil(pageNum, pageSize);
 
             List<HrHbItems> itemsRecords = itemsDao.fetchItemsByWxUserIdList(wxUserIdList, companyId,
                     pageUtil.getIndex(), pageUtil.getSize());
             if (itemsRecords != null && itemsRecords.size() > 0) {
 
+                logger.info("ReferralServiceImpl getRedPackets itemsRecords.size:{}", itemsRecords.size());
                 HBData data = referralEntity.fetchHBData(itemsRecords);
+                logger.info("ReferralServiceImpl getRedPackets data.candidateNameMap:{}", data.getCandidateNameMap());
 
                 List<RedPacket> list = new ArrayList<>();
                 for (HrHbItems hrHbItems : itemsRecords) {
                     list.add(HBBizTool.packageRedPacket(hrHbItems, data));
                 }
+                logger.info("ReferralServiceImpl getRedPackets list:{}", JSON.toJSONString(list));
                 redPackets.setRedpackets(list);
+            } else {
+                logger.info("ReferralServiceImpl getRedPackets itemsRecords is null!");
             }
         }
         return redPackets;
@@ -112,11 +128,13 @@ public class ReferralServiceImpl implements ReferralService {
             if (referralEmployeeBonusRecordList != null && referralEmployeeBonusRecordList.size() > 0) {
 
                 BonusData bonusData = referralEntity.fetchBonusData(referralEmployeeBonusRecordList);
+                logger.info("ReferralServiceImpl getBonus bonusData bonusData.getEmploymentDateMap:{}", bonusData.getEmploymentDateMap());
 
                 List<Bonus> bonuses = new ArrayList<>();
                 for (ReferralEmployeeBonusRecord referralEmployeeBonusRecord : referralEmployeeBonusRecordList) {
                     bonuses.add(HBBizTool.packageBonus(referralEmployeeBonusRecord, bonusData));
                 }
+                logger.info("ReferralServiceImpl getBonus bonuses:{}", JSON.toJSONString(bonuses));
                 bonusList.setBonus(bonuses);
             }
         }

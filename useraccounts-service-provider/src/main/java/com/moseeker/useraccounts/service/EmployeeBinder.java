@@ -29,6 +29,7 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.impl.EmployeeBindByEmail;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -88,10 +89,13 @@ public abstract class EmployeeBinder {
     protected CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
-    protected ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
+    protected LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
 
     @Autowired
-    protected LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+    EmployeeBindByEmail employeeBindByEmail;
+
+    @Autowired
+    protected ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -181,6 +185,7 @@ public abstract class EmployeeBinder {
      */
     protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException {
         log.info("doneBind param: useremployee={}", useremployee);
+        log.info("useremployee.authMethod:{}", useremployee.getAuthMethod());
         Result response = new Result();
 
         DateTime currentTime = new DateTime();
@@ -188,11 +193,16 @@ public abstract class EmployeeBinder {
         log.info("doneBind now:{}", currentTime.toString("YYYY-MM-dd HH:mm:ss"));
         log.info("doneBind persist employee:{}", useremployee);
 
+
         UserEmployeeRecord unActiveEmployee = employeeDao.getUnActiveEmployee(useremployee.getSysuserId(),
                 useremployee.getCompanyId());
         if (unActiveEmployee != null) {
+            log.info("userEmployee.bindingTime:{}", unActiveEmployee.getBindingTime());
+            log.info("userEmployee != null  userEmployee:{}", unActiveEmployee);
             employeeId = unActiveEmployee.getId();
+            log.info("userEmployee active:{}", unActiveEmployee.getActivation());
             if (unActiveEmployee.getActivation() != EmployeeActiveState.Actived.getState()) {
+                log.info("userEmployee not active");
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getEmail())) {
                     unActiveEmployee.setEmail(useremployee.getEmail());
                 }
@@ -211,6 +221,7 @@ public abstract class EmployeeBinder {
                 }
                 unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
                 log.info("doneBind unActiveEmployee update record");
+                log.info("unActiveEmployee.authMethod:{}, bindingTime:{}", useremployee.getAuthMethod(), unActiveEmployee.getBindingTime());
                 if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
                     employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
                 }
@@ -236,13 +247,17 @@ public abstract class EmployeeBinder {
                 employeeId = useremployee.getId();
                 employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
             } else {
+                log.info("employeeDao.registerEmployee");
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
+                log.info("executeResult :{}", JSON.toJSONString(executeResult));
                 employeeId = executeResult.getId();
                 if (executeResult.getExecute() > 0) {
+                    log.info("employee add award");
                     employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
                 }
             }
         }
+        //}
         referralEmployeeRegisterLogDao.addRegisterLog(employeeId, currentTime);
         if (useremployee.getSysuserId() > 0
                 && org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {

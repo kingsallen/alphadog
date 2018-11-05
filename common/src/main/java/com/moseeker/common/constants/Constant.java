@@ -235,6 +235,8 @@ public final class Constant {
     public static final int TEMPLATES_NEW_RESUME_TPL = 24; // 新简历通知的消息通知ID
     public static final int EMPLOYEE_EMAILVERIFY_NOT_VERIFY_NOTICE_TPL = 79; // 新简历通知的消息通知ID
     public static final int TEMPLATES_REFERRAL_BONUS_NOTICE_TPL = 81; // 内推入职奖金
+    public static final int TEMPLATES_AWARD_CONSUME_NOTICE_TPL = 83; // 积分商城积分消费模板消息ID
+    public static final int TEMPLATES_AWARD_RETURN_NOTICE_TPL = 84; // 积分商城积分返还模板消息ID
 
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
@@ -275,6 +277,10 @@ public final class Constant {
     //职位列表索引
     public static final String ES_POSITION_INDEX="index";
     public static final String ES_POSITION_TYPE="fulltext";
+
+    public static final String POSITION_WX_TYPE="fulltext";
+    public static final String POSITION_WX_INDEX="index";
+
     //talentpool邮件的config_id
     public static final int TALENTPOOL_EMAIL_PROFILE_FILTER_NOT_PASS = 70;
     public static final int TALENTPOOL_EMAIL_PROFILE_SEND = 69;
@@ -299,6 +305,7 @@ public final class Constant {
             "educations.description_data;projectexps.name_data;projectexps.company_name;projectexps.role;projectexps.description_data;" +
             "languages.name;skills.name_data;awards.name;credentials.name_data;" +
             "others.other;basic.company_name;basic.industry_name;basic.current_job;basic.position_name;";
+
     public static final String USERNAME_IS_NULL="未填写";
 
     public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";

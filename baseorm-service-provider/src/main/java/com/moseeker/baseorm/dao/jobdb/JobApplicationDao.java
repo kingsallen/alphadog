@@ -15,6 +15,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import jdk.nashorn.internal.scripts.JO;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,6 +227,20 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	 */
 	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, List<Integer> positionIdList,
 															   LocalDateTime lastFriday, LocalDateTime currentFriday) {
+
+		System.out.println(create.select(
+				JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
+				count(JobApplication.JOB_APPLICATION.ID).as("count")
+		)
+				.from(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIdList))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
+						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
+								.toEpochMilli())))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
+						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).getSQL());
 		return create.select(
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					count(JobApplication.JOB_APPLICATION.ID).as("count")

@@ -112,18 +112,18 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+    tmpMap.put(_Fields.DATA, new org.apache.thrift.meta_data.FieldMetaData("data", org.apache.thrift.TFieldRequirementType.DEFAULT,
+        new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST,
             new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, UserEmployeeStruct.class))));
-    tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.DEL_NOT_INCLUDE, new org.apache.thrift.meta_data.FieldMetaData("del_not_include", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.DEL_NOT_INCLUDE, new org.apache.thrift.meta_data.FieldMetaData("del_not_include", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-    tmpMap.put(_Fields.AS_TASK, new org.apache.thrift.meta_data.FieldMetaData("as_task", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.AS_TASK, new org.apache.thrift.meta_data.FieldMetaData("as_task", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-    tmpMap.put(_Fields.CANCEL_AUTH, new org.apache.thrift.meta_data.FieldMetaData("cancel_auth", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.CANCEL_AUTH, new org.apache.thrift.meta_data.FieldMetaData("cancel_auth", org.apache.thrift.TFieldRequirementType.OPTIONAL,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.BOOL)));
-    tmpMap.put(_Fields.AUTH_METHOD, new org.apache.thrift.meta_data.FieldMetaData("auth_method", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
+    tmpMap.put(_Fields.AUTH_METHOD, new org.apache.thrift.meta_data.FieldMetaData("auth_method", org.apache.thrift.TFieldRequirementType.OPTIONAL,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(UserEmployeeBatchForm.class, metaDataMap);
@@ -697,7 +697,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
       while (true)
       {
         schemeField = iprot.readFieldBegin();
-        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
           break;
         }
         switch (schemeField.id) {
@@ -716,7 +716,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
                 iprot.readListEnd();
               }
               struct.setDataIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -724,7 +724,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.company_id = iprot.readI32();
               struct.setCompany_idIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -732,7 +732,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
             if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
               struct.del_not_include = iprot.readBool();
               struct.setDel_not_includeIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -740,7 +740,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
             if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
               struct.as_task = iprot.readBool();
               struct.setAs_taskIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -748,7 +748,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
             if (schemeField.type == org.apache.thrift.protocol.TType.BOOL) {
               struct.cancel_auth = iprot.readBool();
               struct.setCancel_authIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -756,7 +756,7 @@ public class UserEmployeeBatchForm implements org.apache.thrift.TBase<UserEmploy
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.auth_method = iprot.readI32();
               struct.setAuth_methodIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogTalentpoolEmailLog extends TableImpl<LogTalentpoolEmailLogRecord> {
 
-    private static final long serialVersionUID = 6814052;
+    private static final long serialVersionUID = -178898003;
 
     /**
      * The reference instance of <code>logdb.log_talentpool_email_log</code>
@@ -65,7 +65,7 @@ public class LogTalentpoolEmailLog extends TableImpl<LogTalentpoolEmailLogRecord
      * The column <code>logdb.log_talentpool_email_log.type</code>. 邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件
 5：转发求职者简历邮件 0充值
      */
-    public final TableField<LogTalentpoolEmailLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件\r\n5：转发求职者简历邮件 0充值");
+    public final TableField<LogTalentpoolEmailLogRecord, Integer> TYPE = createField("type", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "邮件类别 1:投递成功邮件 2：不匹配通知邮件 3：生日祝福邮件 4：邀请投递邮件\n5：转发求职者简历邮件 0充值");
 
     /**
      * The column <code>logdb.log_talentpool_email_log.hr_id</code>. hr_id

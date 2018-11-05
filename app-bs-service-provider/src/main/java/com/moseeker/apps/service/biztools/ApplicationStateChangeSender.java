@@ -41,7 +41,8 @@ public class ApplicationStateChangeSender {
                 "applierId:{}, positionId:{}, move:{}, operationTime:{}",
                 appId, stage, nextStage, applierId, positionId, move,
                 operationTime.toString("yyyy-MM-dd HH:mm:ss"));
-        if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED) {
+        if (nextStage == Constant.RECRUIT_STATUS_HIRED || stage == Constant.RECRUIT_STATUS_HIRED
+                || nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("applicationId", appId);
             jsonObject.put("nowStage", stage);
@@ -50,6 +51,10 @@ public class ApplicationStateChangeSender {
             jsonObject.put("positionId", positionId);
             jsonObject.put("move", move);
             jsonObject.put("operationTime", operationTime.getMillis());
+
+            logger.info("ApplicaitonStateChangeSender publishStateChangeEvent stage change: {} -> {}",
+                    stage, nextStage);
+
             amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                     APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());

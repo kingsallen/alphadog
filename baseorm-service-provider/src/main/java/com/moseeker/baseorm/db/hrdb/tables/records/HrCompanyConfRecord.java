@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -1732473316;
+    private static final long serialVersionUID = 702007936;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -379,6 +379,62 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         return (Byte) get(24);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
+     */
+    public void setMallSwitch(Byte value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mall_switch</code>. 商城开关  0从未开通 1 已开通 2 开通过目前停用
+     */
+    public Byte getMallSwitch() {
+        return (Byte) get(25);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
+     */
+    public void setMallGoodsMethod(String value) {
+        set(26, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mall_goods_method</code>. 商城商品领取规则
+     */
+    public String getMallGoodsMethod() {
+        return (String) get(26);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+     */
+    public void setMallGoodsMethodState(Byte value) {
+        set(27, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mall_goods_method_state</code>. 商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+     */
+    public Byte getMallGoodsMethodState() {
+        return (Byte) get(27);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
+     */
+    public void setJob51SalaryDiscuss(Byte value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
+     */
+    public Byte getJob51SalaryDiscuss() {
+        return (Byte) get(28);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -405,7 +461,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte job51SalaryDiscuss) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -433,5 +489,9 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(22, displayLocale);
         set(23, talentpoolStatus);
         set(24, veryeastSwitch);
+        set(25, mallSwitch);
+        set(26, mallGoodsMethod);
+        set(27, mallGoodsMethodState);
+        set(28, job51SalaryDiscuss);
     }
 }

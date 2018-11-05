@@ -694,6 +694,22 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     }
 
     /**
+     * batchhandler的时候根据公司ID查询职位部分字段，只有部分字段，因为全字段可能量很大，导致mysql查询很慢
+     * @param companyId
+     * @param source
+     * @return
+     */
+    public List<JobPositionRecord> getDatasForBatchhandlerDelete(int companyId, int source) {
+        return create.select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.SOURCE_ID, JobPosition.JOB_POSITION.JOBNUMBER
+                , JobPosition.JOB_POSITION.SOURCE, JobPosition.JOB_POSITION.CANDIDATE_SOURCE, JobPosition.JOB_POSITION.STATUS
+                , JobPosition.JOB_POSITION.COMPANY_ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
+                .fetchInto(JobPositionRecord.class);
+    }
+
+    /**
      * 计算合法再招并且是给定公司下的职位的数量
      * @param companyId 公司编号
      * @param positionIdList 职位编号集合

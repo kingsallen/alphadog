@@ -785,7 +785,7 @@ public class SearchengineService {
         if (pageNum > 0 && pageSize > 0) {
             searchRequestBuilder.setSize(pageSize).setFrom((pageNum - 1) * pageSize);
         }
-        logger.info(searchRequestBuilder.toString());
+        logger.info("SearchengineService getSearchRequestBuilder:{}", searchRequestBuilder.toString());
         return searchRequestBuilder;
     }
 
@@ -812,20 +812,13 @@ public class SearchengineService {
     }
     @CounterIface
     public Response queryAwardRanking(List<Integer> companyIds, String timespan, int pageSize, int pageNum, String keyword, int filter) {
+        logger.info("queryAwardRanking filter:{}, pageNum:{}, pageSize:{}", filter, pageNum, pageSize);
         Map<String, Object> object = new HashMap<>();
         TransportClient searchClient =null;
         try {
             searchClient=searchUtil.getEsClient();
-            StringBuffer activation = new StringBuffer();
-            if (filter == 0) {
-                activation.append("");
-            } else if (filter == 1) {
-                activation.append("0");
-            } else if (filter == 2) {
-                activation.append("1,2,3,4");
-            }
-
             SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, filter, pageSize, pageNum, timespan, keyword);
+            logger.info("queryAwardRanking ES SQL:{}", searchRequestBuilder.toString());
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());
@@ -869,9 +862,10 @@ public class SearchengineService {
                     List<Integer> employees = JSON.parseArray(str, Integer.class);
                     EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                 }
-
+                logger.info("SearchengineService fetchEmployees companyId：{}", companyId);
                 if (filter == 1) {
                     String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
+                    logger.info("SearchengineService fetchEmployees str1：{}", str1);
                     if(StringUtils.isNotBlank(str1)){
                         List<Integer> employees = JSON.parseArray(str1, Integer.class);
                         EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
@@ -917,12 +911,14 @@ public class SearchengineService {
     }
 
     public Response queryAwardRankingInWx(List<Integer> companyIds, String timespan, Integer employeeId) {
-
+        logger.info("queryAwardRankingInWx companyIds:{}, timespan:{}, employeeId:{}", companyIds, timespan, employeeId);
         return queryLeaderBoard(companyIds, timespan, employeeId, 0, 20);
     }
 
     public Response listLeaderBoard(List<Integer> companyIds, String timespan, int employeeId, int pageNum,
                                     int pageSize) {
+        logger.info("queryAwardRankingInWx companyIds:{}, timespan:{}, employeeId:{}, pageNum:{}, pageSize:{}",
+                companyIds, timespan, employeeId, pageNum, pageSize);
         return queryLeaderBoard(companyIds, timespan, employeeId, pageNum, pageSize);
     }
 
@@ -982,8 +978,10 @@ public class SearchengineService {
             SearchResponse response = getSearchRequestBuilder(searchClient, companyIds, null, "0",
                     pageSize, from, timespan).execute().actionGet();
             int index = from+1;
+            logger.info("queryLeaderBoard response:{}", response);
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                logger.info("queryLeaderBoard source:{}", jsonObject);
                 if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timespan) && jsonObject.getJSONObject("awards").getJSONObject(timespan).getIntValue("award") > 0) {
                     JSONObject obj = JSON.parseObject("{}");
                     obj.put("employee_id", jsonObject.getIntValue("id"));
@@ -993,6 +991,7 @@ public class SearchengineService {
                     data.put(jsonObject.getIntValue("id"), obj);
                 }
             }
+            logger.info("queryAwardRankingInWx data.size:{}", data.size());
             // 当前用户在 >= 20 名，显示返回前20条，小于22条返回前20+用户前一名+用户排名+用户后一名，未上榜返回前20条
             List<JSONObject> allRankingList = new ArrayList<>(data.values());
             data = allRankingList
@@ -1247,7 +1246,7 @@ public class SearchengineService {
             List<Integer> pidList=this.getPidList(result);
             List<Map<String,Object>> data=this.mobotSearch(params,pidList,client);
             if(data!=null&&data.size()>0){
-            result.addAll(data);
+                result.addAll(data);
             }
             String field=fieldList.remove(fieldList.size()-1);
             params.remove(field);

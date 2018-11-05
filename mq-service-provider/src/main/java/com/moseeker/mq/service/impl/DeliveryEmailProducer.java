@@ -292,7 +292,7 @@ public class DeliveryEmailProducer {
                 profileEntity.updateProfileOther(otherDatas, emailInfo);
             }
             //获取教育信息
-            List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", new ArrayList());
+            List<Map<String, Object>> educationList = (List<Map<String, Object>>) data.getOrDefault("educations", null);
             if (degree != null && degree.size() > 0 && !StringUtils.isEmptyList(educationList)) {
                 for (DictConstantDO constantDO : degree) {
                     if (educationList.get(0).get("degree") != null) {
