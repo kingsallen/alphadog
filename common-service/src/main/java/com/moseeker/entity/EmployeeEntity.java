@@ -55,7 +55,6 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
