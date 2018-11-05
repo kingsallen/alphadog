@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -584,9 +585,9 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
-	public void batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws BIZException, TException {
+	public String batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws BIZException, TException {
 		try {
-			service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds);
+			return JSON.toJSONString(service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds));
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}

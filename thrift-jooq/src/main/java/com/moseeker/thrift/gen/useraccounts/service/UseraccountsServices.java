@@ -90,7 +90,7 @@ public class UseraccountsServices {
 
     public void claimReferralBonus(int bonus_record_id) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
-    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
+    public java.lang.String batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException;
 
   }
 
@@ -170,7 +170,7 @@ public class UseraccountsServices {
 
     public void claimReferralBonus(int bonus_record_id, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
 
-    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException;
+    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -1097,10 +1097,10 @@ public class UseraccountsServices {
       return;
     }
 
-    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public java.lang.String batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       send_batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds);
-      recv_batchClaimReferralCard();
+      return recv_batchClaimReferralCard();
     }
 
     public void send_batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds) throws org.apache.thrift.TException
@@ -1114,14 +1114,17 @@ public class UseraccountsServices {
       sendBase("batchClaimReferralCard", args);
     }
 
-    public void recv_batchClaimReferralCard() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
+    public java.lang.String recv_batchClaimReferralCard() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException
     {
       batchClaimReferralCard_result result = new batchClaimReferralCard_result();
       receiveBase(result, "batchClaimReferralCard");
+      if (result.isSetSuccess()) {
+        return result.success;
+      }
       if (result.e != null) {
         throw result.e;
       }
-      return;
+      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "batchClaimReferralCard failed: unknown result");
     }
 
   }
@@ -2464,20 +2467,20 @@ public class UseraccountsServices {
       }
     }
 
-    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+    public void batchClaimReferralCard(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException {
       checkReady();
       batchClaimReferralCard_call method_call = new batchClaimReferralCard_call(userId, name, mobile, vcode, referralRecordIds, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class batchClaimReferralCard_call extends org.apache.thrift.async.TAsyncMethodCall<Void> {
+    public static class batchClaimReferralCard_call extends org.apache.thrift.async.TAsyncMethodCall<java.lang.String> {
       private int userId;
       private java.lang.String name;
       private java.lang.String mobile;
       private java.lang.String vcode;
       private java.util.List<java.lang.Integer> referralRecordIds;
-      public batchClaimReferralCard_call(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+      public batchClaimReferralCard_call(int userId, java.lang.String name, java.lang.String mobile, java.lang.String vcode, java.util.List<java.lang.Integer> referralRecordIds, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, false);
         this.userId = userId;
         this.name = name;
@@ -2498,13 +2501,13 @@ public class UseraccountsServices {
         prot.writeMessageEnd();
       }
 
-      public Void getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
+      public java.lang.String getResult() throws com.moseeker.thrift.gen.common.struct.BIZException, org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new java.lang.IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return null;
+        return (new Client(prot)).recv_batchClaimReferralCard();
       }
     }
 
@@ -3336,7 +3339,7 @@ public class UseraccountsServices {
       public batchClaimReferralCard_result getResult(I iface, batchClaimReferralCard_args args) throws org.apache.thrift.TException {
         batchClaimReferralCard_result result = new batchClaimReferralCard_result();
         try {
-          iface.batchClaimReferralCard(args.userId, args.name, args.mobile, args.vcode, args.referralRecordIds);
+          result.success = iface.batchClaimReferralCard(args.userId, args.name, args.mobile, args.vcode, args.referralRecordIds);
         } catch (com.moseeker.thrift.gen.common.struct.BIZException e) {
           result.e = e;
         }
@@ -5671,7 +5674,7 @@ public class UseraccountsServices {
       }
     }
 
-    public static class batchClaimReferralCard<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, batchClaimReferralCard_args, Void> {
+    public static class batchClaimReferralCard<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, batchClaimReferralCard_args, java.lang.String> {
       public batchClaimReferralCard() {
         super("batchClaimReferralCard");
       }
@@ -5680,11 +5683,12 @@ public class UseraccountsServices {
         return new batchClaimReferralCard_args();
       }
 
-      public org.apache.thrift.async.AsyncMethodCallback<Void> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
+      public org.apache.thrift.async.AsyncMethodCallback<java.lang.String> getResultHandler(final org.apache.thrift.server.AbstractNonblockingServer.AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new org.apache.thrift.async.AsyncMethodCallback<Void>() { 
-          public void onComplete(Void o) {
+        return new org.apache.thrift.async.AsyncMethodCallback<java.lang.String>() { 
+          public void onComplete(java.lang.String o) {
             batchClaimReferralCard_result result = new batchClaimReferralCard_result();
+            result.success = o;
             try {
               fcall.sendResponse(fb, result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
             } catch (org.apache.thrift.transport.TTransportException e) {
@@ -5730,7 +5734,7 @@ public class UseraccountsServices {
         return false;
       }
 
-      public void start(I iface, batchClaimReferralCard_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws org.apache.thrift.TException {
+      public void start(I iface, batchClaimReferralCard_args args, org.apache.thrift.async.AsyncMethodCallback<java.lang.String> resultHandler) throws org.apache.thrift.TException {
         iface.batchClaimReferralCard(args.userId, args.name, args.mobile, args.vcode, args.referralRecordIds,resultHandler);
       }
     }
@@ -38451,15 +38455,18 @@ public class UseraccountsServices {
   public static class batchClaimReferralCard_result implements org.apache.thrift.TBase<batchClaimReferralCard_result, batchClaimReferralCard_result._Fields>, java.io.Serializable, Cloneable, Comparable<batchClaimReferralCard_result>   {
     private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("batchClaimReferralCard_result");
 
+    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.STRING, (short)0);
     private static final org.apache.thrift.protocol.TField E_FIELD_DESC = new org.apache.thrift.protocol.TField("e", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new batchClaimReferralCard_resultStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new batchClaimReferralCard_resultTupleSchemeFactory();
 
+    public java.lang.String success; // required
     public com.moseeker.thrift.gen.common.struct.BIZException e; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      SUCCESS((short)0, "success"),
       E((short)1, "e");
 
       private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
@@ -38475,6 +38482,8 @@ public class UseraccountsServices {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
+          case 0: // SUCCESS
+            return SUCCESS;
           case 1: // E
             return E;
           default:
@@ -38520,6 +38529,8 @@ public class UseraccountsServices {
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
       tmpMap.put(_Fields.E, new org.apache.thrift.meta_data.FieldMetaData("e", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.StructMetaData(org.apache.thrift.protocol.TType.STRUCT, com.moseeker.thrift.gen.common.struct.BIZException.class)));
       metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
@@ -38530,9 +38541,11 @@ public class UseraccountsServices {
     }
 
     public batchClaimReferralCard_result(
+      java.lang.String success,
       com.moseeker.thrift.gen.common.struct.BIZException e)
     {
       this();
+      this.success = success;
       this.e = e;
     }
 
@@ -38540,6 +38553,9 @@ public class UseraccountsServices {
      * Performs a deep copy on <i>other</i>.
      */
     public batchClaimReferralCard_result(batchClaimReferralCard_result other) {
+      if (other.isSetSuccess()) {
+        this.success = other.success;
+      }
       if (other.isSetE()) {
         this.e = new com.moseeker.thrift.gen.common.struct.BIZException(other.e);
       }
@@ -38551,7 +38567,32 @@ public class UseraccountsServices {
 
     @Override
     public void clear() {
+      this.success = null;
       this.e = null;
+    }
+
+    public java.lang.String getSuccess() {
+      return this.success;
+    }
+
+    public batchClaimReferralCard_result setSuccess(java.lang.String success) {
+      this.success = success;
+      return this;
+    }
+
+    public void unsetSuccess() {
+      this.success = null;
+    }
+
+    /** Returns true if field success is set (has been assigned a value) and false otherwise */
+    public boolean isSetSuccess() {
+      return this.success != null;
+    }
+
+    public void setSuccessIsSet(boolean value) {
+      if (!value) {
+        this.success = null;
+      }
     }
 
     public com.moseeker.thrift.gen.common.struct.BIZException getE() {
@@ -38580,6 +38621,14 @@ public class UseraccountsServices {
 
     public void setFieldValue(_Fields field, java.lang.Object value) {
       switch (field) {
+      case SUCCESS:
+        if (value == null) {
+          unsetSuccess();
+        } else {
+          setSuccess((java.lang.String)value);
+        }
+        break;
+
       case E:
         if (value == null) {
           unsetE();
@@ -38593,6 +38642,9 @@ public class UseraccountsServices {
 
     public java.lang.Object getFieldValue(_Fields field) {
       switch (field) {
+      case SUCCESS:
+        return getSuccess();
+
       case E:
         return getE();
 
@@ -38607,6 +38659,8 @@ public class UseraccountsServices {
       }
 
       switch (field) {
+      case SUCCESS:
+        return isSetSuccess();
       case E:
         return isSetE();
       }
@@ -38628,6 +38682,15 @@ public class UseraccountsServices {
       if (this == that)
         return true;
 
+      boolean this_present_success = true && this.isSetSuccess();
+      boolean that_present_success = true && that.isSetSuccess();
+      if (this_present_success || that_present_success) {
+        if (!(this_present_success && that_present_success))
+          return false;
+        if (!this.success.equals(that.success))
+          return false;
+      }
+
       boolean this_present_e = true && this.isSetE();
       boolean that_present_e = true && that.isSetE();
       if (this_present_e || that_present_e) {
@@ -38644,6 +38707,10 @@ public class UseraccountsServices {
     public int hashCode() {
       int hashCode = 1;
 
+      hashCode = hashCode * 8191 + ((isSetSuccess()) ? 131071 : 524287);
+      if (isSetSuccess())
+        hashCode = hashCode * 8191 + success.hashCode();
+
       hashCode = hashCode * 8191 + ((isSetE()) ? 131071 : 524287);
       if (isSetE())
         hashCode = hashCode * 8191 + e.hashCode();
@@ -38659,6 +38726,16 @@ public class UseraccountsServices {
 
       int lastComparison = 0;
 
+      lastComparison = java.lang.Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetSuccess()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
       lastComparison = java.lang.Boolean.valueOf(isSetE()).compareTo(other.isSetE());
       if (lastComparison != 0) {
         return lastComparison;
@@ -38689,6 +38766,14 @@ public class UseraccountsServices {
       java.lang.StringBuilder sb = new java.lang.StringBuilder("batchClaimReferralCard_result(");
       boolean first = true;
 
+      sb.append("success:");
+      if (this.success == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.success);
+      }
+      first = false;
+      if (!first) sb.append(", ");
       sb.append("e:");
       if (this.e == null) {
         sb.append("null");
@@ -38739,6 +38824,14 @@ public class UseraccountsServices {
             break;
           }
           switch (schemeField.id) {
+            case 0: // SUCCESS
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
+                struct.success = iprot.readString();
+                struct.setSuccessIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
             case 1: // E
               if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
                 struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
@@ -38763,6 +38856,11 @@ public class UseraccountsServices {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.success != null) {
+          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+          oprot.writeString(struct.success);
+          oprot.writeFieldEnd();
+        }
         if (struct.e != null) {
           oprot.writeFieldBegin(E_FIELD_DESC);
           struct.e.write(oprot);
@@ -38786,10 +38884,16 @@ public class UseraccountsServices {
       public void write(org.apache.thrift.protocol.TProtocol prot, batchClaimReferralCard_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
-        if (struct.isSetE()) {
+        if (struct.isSetSuccess()) {
           optionals.set(0);
         }
-        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetE()) {
+          optionals.set(1);
+        }
+        oprot.writeBitSet(optionals, 2);
+        if (struct.isSetSuccess()) {
+          oprot.writeString(struct.success);
+        }
         if (struct.isSetE()) {
           struct.e.write(oprot);
         }
@@ -38798,8 +38902,12 @@ public class UseraccountsServices {
       @Override
       public void read(org.apache.thrift.protocol.TProtocol prot, batchClaimReferralCard_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-        java.util.BitSet incoming = iprot.readBitSet(1);
+        java.util.BitSet incoming = iprot.readBitSet(2);
         if (incoming.get(0)) {
+          struct.success = iprot.readString();
+          struct.setSuccessIsSet(true);
+        }
+        if (incoming.get(1)) {
           struct.e = new com.moseeker.thrift.gen.common.struct.BIZException();
           struct.e.read(iprot);
           struct.setEIsSet(true);

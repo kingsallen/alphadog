@@ -6,6 +6,7 @@ import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
@@ -27,6 +28,7 @@ import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -45,6 +47,7 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
@@ -76,6 +79,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -127,6 +131,9 @@ public class UseraccountsService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
@@ -1235,7 +1242,7 @@ public class UseraccountsService {
      * @return 每个认领id对应的认领结果
      */
     @Transactional(rollbackFor = Exception.class)
-    public List<ClaimResult> batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws InterruptedException {
+    public List<ClaimResult> batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) {
         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
@@ -1252,20 +1259,24 @@ public class UseraccountsService {
         if (userUserDO == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+
+        Map<Integer, String> positionIdTitleMap = getPositionIdTitleMap(referralLogs);
         List<ClaimResult> claimResults = new ArrayList<>();
         for(ReferralLog referralLog : referralLogs){
             pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferralId(referralLog.getId());
-                claimResult.setErrCode(0);
+                claimResult.setSuccess(true);
+                claimResult.setPositionId(referralLog.getPositionId());
+                claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
                     claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
                 }catch (UserAccountException e){
-                    claimResult.setErrCode(e.getCode());
+                    claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
                     throw e;
                 } catch (Exception e){
-                    claimResult.setErrCode(1);
+                    claimResult.setSuccess(false);
                     logger.info("员工认领异常信息:{}", e.getMessage());
                     throw e;
                 }finally {
@@ -1275,6 +1286,16 @@ public class UseraccountsService {
             });
         }
         return claimResults;
+    }
+
+    private Map<Integer, String> getPositionIdTitleMap(List<ReferralLog> referralLogs){
+        List<Integer> positionIds = referralLogs.stream().map(ReferralLog::getPositionId).collect(Collectors.toList());
+        List<JobPositionDO> jobPositionDOS = jobPositionDao.getPositionList(positionIds);
+        Map<Integer, String> positionMap = new HashMap<>(1 >> 4);
+        for(JobPositionDO jobPositionDO : jobPositionDOS){
+            positionMap.put(jobPositionDO.getId(), jobPositionDO.getTitle());
+        }
+        return positionMap;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -1341,13 +1362,13 @@ public class UseraccountsService {
      * @param claimForm 参数
      */
     @Transactional(rollbackFor = Exception.class)
-    public void claimReferralCard(ClaimForm claimForm) throws UserAccountException, InterruptedException, BIZException {
+    public void claimReferralCard(ClaimForm claimForm) throws UserAccountException, BIZException {
         List<Integer> referralIds = new ArrayList<>();
         referralIds.add(claimForm.getReferralRecordId());
         List<ClaimResult> claimResults = batchClaimReferralCard(claimForm.getUserId(), claimForm.getName(), claimForm.getMobile(), claimForm.getVerifyCode(), referralIds);
         for(ClaimResult result : claimResults){
-            if(result.getErrCode() != 0){
-                throw new BIZException(result.getErrCode(), result.getErrmsg());
+            if(!result.getSuccess()){
+                throw new BIZException(1, result.getErrmsg());
             }
         }
     }

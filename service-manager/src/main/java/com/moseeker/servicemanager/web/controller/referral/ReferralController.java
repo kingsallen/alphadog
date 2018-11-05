@@ -497,8 +497,8 @@ public class ReferralController {
         validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
-            userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
-            return Result.success(true).toJson();
+            String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            return Result.success(JSONArray.toJSON(claimResults)).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }
