@@ -81,7 +81,7 @@ public class CandidateDBDao {
     CandidateRecomRecordDao candidateRecomRecordDao;
 
     @Autowired
-    CandidateApplicationReferralDao applicationPscDao;
+    CandidateApplicationReferralDao applicationreferralDao;
 
     @Autowired
     HrPointsConfDao hrPointsConfDao;
@@ -564,8 +564,8 @@ public class CandidateDBDao {
      * @param applicationId 申请编号
      * @param psc_id    candidate_share_chain.id
      */
-    public void  addApplicationPsc(int applicationId, int psc_id){
-        applicationPscDao.addDataIgnoreDuplicate(applicationId, psc_id);
+    public void  addApplicationPsc(int applicationId, int psc_id, int directReferralUserId){
+        applicationreferralDao.addDataIgnoreDuplicate(applicationId, psc_id, directReferralUserId);
     }
 
     /**
@@ -573,7 +573,7 @@ public class CandidateDBDao {
      * @param applicationId
      * @return
      */
-    public CandidateApplicationPscDO getApplicationPscByApplicationId(int applicationId){
-        return applicationPscDao.getApplicationPscByApplication(applicationId);
+    public CandidateApplicationReferralDO getApplicationPscByApplicationId(int applicationId){
+        return applicationreferralDao.getApplicationPscByApplication(applicationId);
     }
 }

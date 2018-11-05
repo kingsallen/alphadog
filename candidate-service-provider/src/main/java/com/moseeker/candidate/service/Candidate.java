@@ -6,6 +6,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import java.util.List;
 import java.util.Map;
 
@@ -105,12 +106,12 @@ public interface Candidate {
      * @param applicationId
      * @param pscId
      */
-    void addApplicationPsc(int applicationId, int pscId);
+    void addApplicationReferral(int applicationId, int pscId, int directReferralUserId);
 
     /**
      * 根据申请编号查询申请时链路信息
      * @param applicationId 申请编号
      * @return
      */
-    CandidateApplicationPscDO getApplicationPscByApplication(int applicationId);
+    CandidateApplicationReferralDO getApplicationReferralByApplication(int applicationId);
 }

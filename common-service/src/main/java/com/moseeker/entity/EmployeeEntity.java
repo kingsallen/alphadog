@@ -56,6 +56,7 @@ import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -1197,7 +1198,7 @@ public class EmployeeEntity {
                 ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 if(statusCount == null){
-                    CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
+                    CandidateApplicationReferralDO referral = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
@@ -1216,10 +1217,13 @@ public class EmployeeEntity {
                             jsonObject.put("wechat_id", wechat.getId());
                         }
                         int pscId = 0;
-                        if(psc != null){
-                            pscId = psc.getPscId();
+                        int directReferralUserId = 0;
+                        if(referral != null){
+                            pscId = referral.getPscId();
+                            directReferralUserId = referral.getDirectReferralUserId();
                         }
                         jsonObject.put("psc", pscId);
+                        jsonObject.put("direct_referral_user_id", directReferralUserId);
                         amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                         .build());

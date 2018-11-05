@@ -4,7 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral;
 import static com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateApplicationReferralRecord;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -30,14 +30,14 @@ public class CandidateApplicationReferralDao extends JooqCrudImpl<CandidateAppli
     public CandidateApplicationReferralDO getApplicationPscByApplication(int applicationId) {
         return create.selectFrom(CANDIDATE_APPLICATION_REFERRAL)
                 .where(CANDIDATE_APPLICATION_REFERRAL.APPLICATION_ID.eq(applicationId))
-                .fetchOneInto(CandidateApplicationPscDO.class);
+                .fetchOneInto(CandidateApplicationReferralDO.class);
     }
 
-    public int addDataIgnoreDuplicate(int applicationId, int pscId){
+    public int addDataIgnoreDuplicate(int applicationId, int pscId, int directReferralUserId){
         CandidateApplicationReferral T = CANDIDATE_APPLICATION_REFERRAL;
         return create.insertInto(T)
-                .columns(T.APPLICATION_ID,T.PSC_ID)
-                .values(applicationId, pscId)
+                .columns(T.APPLICATION_ID,T.PSC_ID, T.DIRECT_REFERRAL_USER_ID)
+                .values(applicationId, pscId, directReferralUserId)
                 .onDuplicateKeyIgnore()
                 .execute();
     }
