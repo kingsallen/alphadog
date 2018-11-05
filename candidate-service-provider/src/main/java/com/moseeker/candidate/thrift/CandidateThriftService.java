@@ -2,10 +2,8 @@ package com.moseeker.candidate.thrift;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
@@ -14,7 +12,6 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;

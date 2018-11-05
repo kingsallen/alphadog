@@ -4,8 +4,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import java.util.List;
 import java.util.Map;
