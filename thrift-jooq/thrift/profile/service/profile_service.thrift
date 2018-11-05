@@ -80,14 +80,19 @@ service ProfileServices {
     profile_struct.ProfileParseResult parseFileStreamProfile(1:i32 employeeId, 2: string fileOriginName, 3: string fileName, 4: string absoluteName, 5: string fileData)throws (1: common_struct.BIZException e)
     //员工推荐简历
     i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 referralType)throws (1: common_struct.BIZException e)
-    //用户上传简历
+        //用户上传简历
      i32 updateUserProfile(1:i32 employeeId, 2:string name, 3:string mobile)throws (1: common_struct.BIZException e)
 
     //删除上传的简历数据
     void employeeDeleteReferralProfile(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //员工提交被推荐人关键信息
     i32 postCandidateInfo(1:i32 employeeId, 2: profile_struct.CandidateInfo candidateInfo)throws (1: common_struct.BIZException e)
-
+    // mobot 提交推荐申请
+    map<string, string> saveMobotReferralProfile(1:i32 employeeId, 2:list<i32> ids)throws (1: common_struct.BIZException e)
+    // mobot 提交推荐信息缓存
+    i32 saveMobotReferralProfileCache(1:i32 employeeId, 2:string mobile, 3: string name, 4:list<string> referralReasons, 5: i8 referralType, 6: string fileName)throws (1: common_struct.BIZException e)
+    // 点击告诉ta时回填推荐信息，从缓存中取
+    string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
 }
 
 service AttachmentServices {

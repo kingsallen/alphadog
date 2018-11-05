@@ -51,7 +51,7 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     protected abstract String getRedisKey();
 
     protected abstract ProfileDocParseResult setProfileDocParseResult(ProfileDocParseResult profileDocParseResult,User user,Integer userId);
-    
+
     @Override
     public  ProfileDocParseResult parseResume(Integer id, String fileName, ByteBuffer fileData) {
         logger.info("AbstractResumeFileParser parseResume id:{}, fileName:{}", id, fileName);

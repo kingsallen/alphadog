@@ -436,6 +436,7 @@ public class ProfileEntity {
 
     @Transactional
     public void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
+        logger.info("intentionRecords:{}", intentionRecords);
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionDao.delIntentionsByProfileId(profileId);
             intentionRecords.forEach(intention -> {
@@ -691,14 +692,14 @@ public class ProfileEntity {
         }
     }
 
+    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId, ReferralScene referralScene) throws ProfileException {
 
-    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
-
+        UserSource userSource = referralScene.getScene() == ReferralScene.Referral.getScene() ? UserSource.EMPLOYEE_REFERRAL : UserSource.EMPLOYEE_REFERRAL_CHATBOT;
         UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
                 companyId, profilePojo.getUserRecord().getMobile(),
-                ReferralScene.Referral);
+                referralScene, userSource);
         if (referralRecordRecord != null) {
-            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL,null,null,null);
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, userSource,null,null,null);
             if (referralRecordRecord != null && userUserRecord1 != null) {
                 referralRecordRecord.setUserId(userUserRecord1.getId());
                 userReferralRecordDao.updateRecord(referralRecordRecord);
@@ -718,6 +719,7 @@ public class ProfileEntity {
             shortSource = (short) source.getValue();
         }
         profilePojo.getUserRecord().setSource(shortSource);
+        profilePojo.getUserRecord().setEmailVerified((byte)0);
         UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
 
         logger.info("mergeProfile userId:{}", userUserRecord.getId());

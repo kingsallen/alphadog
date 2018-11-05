@@ -28,6 +28,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.MD5Util;
@@ -39,6 +40,7 @@ import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
+import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -56,6 +58,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 import com.moseeker.useraccounts.service.impl.pojos.ClaimForm;
+import com.moseeker.useraccounts.service.impl.vo.ClaimResult;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -67,9 +70,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -117,15 +123,14 @@ public class UseraccountsService {
     private EmployeeEntity employeeEntity;
 
     @Autowired
-    private JobApplicationDao applicationDao;
-
-    @Autowired
     private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
+
+    ThreadPool pool = ThreadPool.Instance;
 
     /**
      * 账号换绑操作
@@ -1219,35 +1224,73 @@ public class UseraccountsService {
     }
 
     /**
-     * 认领员工推荐卡片
-     * @param claimForm 参数
+     * 批量认领
+     * @param userId 用户id
+     * @param name 用户name
+     * @param mobile 手机号
+     * @param vcode 验证码
+     * @param referralRecordIds 认领记录ids
+     * @author  cjm
+     * @date  2018/10/31
+     * @return 每个认领id对应的认领结果
      */
-    @Transactional
-    public void claimReferralCard(ClaimForm claimForm) throws UserAccountException {
-        if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
+    @Transactional(rollbackFor = Exception.class)
+    public List<ClaimResult> batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws InterruptedException {
+        if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
+<<<<<<< HEAD
         logger.info("claimReferralCard claim form:{}", JSON.toJSONString(claimForm));
         ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
         if (referralLog == null) {
+=======
+        List<ReferralLog> referralLogs = referralEntity.fetchReferralLogs(referralRecordIds);
+        if (referralLogs == null) {
+>>>>>>> remotes/origin/feature/profile_upload_dev
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
+        // 检验推荐记录已认领
+        checkReferralClaim(referralLogs);
 
-        if (referralLog.getClaim() == 1) {
-            throw UserAccountException.ERMPLOYEE_REFERRAL_ALREADY_CLAIMED;
+        UserUserDO userUserDO = userdao.getUser(userId);
+        if (userUserDO == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+        List<ClaimResult> claimResults = new ArrayList<>();
+        for(ReferralLog referralLog : referralLogs){
+            pool.startTast(()->{
+                ClaimResult claimResult = new ClaimResult();
+                claimResult.setReferralId(referralLog.getId());
+                claimResult.setErrCode(0);
+                try{
+                    claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
+                }catch (UserAccountException e){
+                    claimResult.setErrCode(e.getCode());
+                    claimResult.setErrmsg(e.getMessage());
+                    throw e;
+                } catch (Exception e){
+                    claimResult.setErrCode(1);
+                    logger.info("员工认领异常信息:{}", e.getMessage());
+                    throw e;
+                }finally {
+                    claimResults.add(claimResult);
+                }
+                return 0;
+            });
+        }
+        return claimResults;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    protected void claimReferral(ReferralLog referralLog, UserUserDO userUserDO, int userId, String name, String mobile, String vcode) {
 
         ReferralLog repeatReferralLog = referralEntity.fetchReferralLog(referralLog.getEmployeeId(),
-                referralLog.getPositionId(), claimForm.getUserId());
+                referralLog.getPositionId(),userId);
         if (repeatReferralLog != null && repeatReferralLog.getClaim() != null
                 && repeatReferralLog.getClaim() == ClaimType.Claimed.getValue()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
         }
 
-        UserUserDO userUserDO = userdao.getUser(claimForm.getUserId());
-        if (userUserDO == null) {
-            throw UserAccountException.USEREMPLOYEES_EMPTY;
-        }
         UserUserDO referralUser = userdao.getUser(referralLog.getReferenceId());
         if (referralUser == null) {
             throw UserAccountException.USEREMPLOYEES_EMPTY;
@@ -1258,40 +1301,65 @@ public class UseraccountsService {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
 
-        if (!claimForm.getName().equals(referralUser.getName())) {
+        if (!name.equals(referralUser.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
         logger.info("claimReferralCard userUserDO:{}", userUserDO);
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
-            validateUtil.addRequiredStringValidate("手机号码", claimForm.getMobile());
-            validateUtil.addRequiredStringValidate("验证码", claimForm.getVerifyCode());
+            validateUtil.addRequiredStringValidate("手机号码", mobile);
+            validateUtil.addRequiredStringValidate("验证码", vcode);
             String validateResult = validateUtil.validate();
             if (org.apache.commons.lang.StringUtils.isNotBlank(validateResult)) {
                 throw UserAccountException.validateFailed(validateResult);
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
+<<<<<<< HEAD
             boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
             logger.info("claimReferralCard validateVerifyResult:{}", validateVerifyResult);
+=======
+            boolean validateVerifyResult = smsScene.validateVerifyCode("", mobile, vcode, redisClient);
+>>>>>>> remotes/origin/feature/profile_upload_dev
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }
-            userUserDO.setUsername(claimForm.getMobile());
+            userUserDO.setUsername(mobile);
             UserUserRecord userUserRecord = new UserUserRecord();
             userUserRecord.setId(userUserDO.getId());
             if (org.apache.commons.lang.StringUtils.isBlank(userUserDO.getName())) {
-                userUserRecord.setName(claimForm.getName());
+                userUserRecord.setName(name);
             }
-            userUserRecord.setUsername(claimForm.getMobile().trim());
-            userUserRecord.setMobile(Long.valueOf(claimForm.getMobile().trim()));
+            userUserRecord.setUsername(mobile.trim());
+            userUserRecord.setMobile(Long.valueOf(mobile.trim()));
             userdao.updateRecord(userUserRecord);
         }
-
         referralEntity.claimReferralCard(userUserDO, referralLog);
     }
 
+    private void checkReferralClaim(List<ReferralLog> referralLogs) {
+        for(ReferralLog referralLog : referralLogs){
+            if (referralLog.getClaim() == 1) {
+                throw UserAccountException.ERMPLOYEE_REFERRAL_ALREADY_CLAIMED;
+            }
+        }
+    }
 
+    /**
+     * 认领员工推荐卡片
+     * @param claimForm 参数
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void claimReferralCard(ClaimForm claimForm) throws UserAccountException, InterruptedException, BIZException {
+        List<Integer> referralIds = new ArrayList<>();
+        referralIds.add(claimForm.getReferralRecordId());
+        List<ClaimResult> claimResults = batchClaimReferralCard(claimForm.getUserId(), claimForm.getName(), claimForm.getMobile(), claimForm.getVerifyCode(), referralIds);
+        for(ClaimResult result : claimResults){
+            if(result.getErrCode() != 0){
+                throw new BIZException(result.getErrCode(), result.getErrmsg());
+            }
+        }
+    }
 
     /**
      * 认领内推奖金
@@ -1312,4 +1380,7 @@ public class UseraccountsService {
         referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
     }
+
+
+
 }

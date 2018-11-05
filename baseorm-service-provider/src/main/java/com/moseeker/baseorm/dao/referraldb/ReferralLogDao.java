@@ -124,4 +124,18 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
             return new ArrayList<>();
         }
     }
+
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByIds(List<Integer> referralLogIds) {
+        List<ReferralLogRecord> referralLogRecords = using(configuration())
+                .selectFrom(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.ID.in(referralLogIds))
+                .fetchInto(ReferralLogRecord.class);
+        if(referralLogIds.size() != referralLogRecords.size()){
+            return null;
+        }else{
+            List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> referralLogs = new ArrayList<>();
+            referralLogRecords.stream().map(referralLogRecord -> referralLogs.add(referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class)));
+            return referralLogs;
+        }
+    }
 }

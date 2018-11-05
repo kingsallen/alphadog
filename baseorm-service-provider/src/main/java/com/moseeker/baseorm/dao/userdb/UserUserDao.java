@@ -463,12 +463,12 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
      * @param countryCode 国家代码
      * @return 用户信息
      */
-    public List<UserUserRecord> getReferralUser(String phone, String countryCode) {
+    public List<UserUserRecord> getReferralUser(String phone, String countryCode, short source) {
         return create
                 .selectFrom(UserUser.USER_USER)
                 .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
                 .and(UserUser.USER_USER.COUNTRY_CODE.eq(countryCode))
-                .and(UserUser.USER_USER.SOURCE.eq((short)UserSource.EMPLOYEE_REFERRAL.getValue()))
+                .and(UserUser.USER_USER.SOURCE.eq(source))
                 .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .fetch();
     }
