@@ -84,7 +84,7 @@ service UseraccountsServices {
     void claimReferralBonus(1: i32 bonus_record_id) throws (1: common_struct.BIZException e);
 
     //批量认领卡片
-    void batchClaimReferralCard(1: i32 userId, 2: string name, 3: string mobile, 4: string vcode, 5:list<i32> referralRecordIds) throws (1: common_struct.BIZException e);
+    string batchClaimReferralCard(1: i32 userId, 2: string name, 3: string mobile, 4: string vcode, 5:list<i32> referralRecordIds) throws (1: common_struct.BIZException e);
 }
 /**
 * 用户配置服务

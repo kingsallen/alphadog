@@ -9,7 +9,9 @@ package com.moseeker.useraccounts.service.impl.vo;
 public class ClaimResult {
 
     private Integer referralId;
-    private Integer errCode;
+    private Integer positionId;
+    private String title;
+    private Boolean success;
     private String errmsg;
 
     public Integer getReferralId() {
@@ -20,20 +22,36 @@ public class ClaimResult {
         this.referralId = referralId;
     }
 
-    public Integer getErrCode() {
-        return errCode;
-    }
-
-    public void setErrCode(Integer errCode) {
-        this.errCode = errCode;
-    }
-
     public String getErrmsg() {
         return errmsg;
     }
 
     public void setErrmsg(String errmsg) {
         this.errmsg = errmsg;
+    }
+
+    public Integer getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Integer positionId) {
+        this.positionId = positionId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }
 
