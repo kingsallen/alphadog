@@ -1239,14 +1239,10 @@ public class UseraccountsService {
         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
-<<<<<<< HEAD
-        logger.info("claimReferralCard claim form:{}", JSON.toJSONString(claimForm));
-        ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
-        if (referralLog == null) {
-=======
+
         List<ReferralLog> referralLogs = referralEntity.fetchReferralLogs(referralRecordIds);
         if (referralLogs == null) {
->>>>>>> remotes/origin/feature/profile_upload_dev
+
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
         }
         // 检验推荐记录已认领
@@ -1315,12 +1311,7 @@ public class UseraccountsService {
                 throw UserAccountException.validateFailed(validateResult);
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
-<<<<<<< HEAD
-            boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
-            logger.info("claimReferralCard validateVerifyResult:{}", validateVerifyResult);
-=======
             boolean validateVerifyResult = smsScene.validateVerifyCode("", mobile, vcode, redisClient);
->>>>>>> remotes/origin/feature/profile_upload_dev
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }
