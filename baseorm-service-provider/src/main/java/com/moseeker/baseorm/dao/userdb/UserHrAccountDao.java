@@ -569,4 +569,11 @@ public class UserHrAccountDao extends JooqCrudImpl<UserHrAccountDO, UserHrAccoun
                 .where(UserHrAccount.USER_HR_ACCOUNT.ID.eq(id))
                 .fetchOneInto(UserHrAccountDO.class);
     }
+
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount> getAccountByIdList(List<Integer> hrIdList){
+        return create.selectFrom(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.ID.in(hrIdList))
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount.class);
+    }
+
 }

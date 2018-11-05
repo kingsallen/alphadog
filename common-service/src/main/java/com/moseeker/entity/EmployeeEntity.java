@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
-import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationPscDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationReferralDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -25,7 +25,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -144,7 +143,7 @@ public class EmployeeEntity {
     private CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
-    CandidateApplicationPscDao applicationPscDao;
+    CandidateApplicationReferralDao applicationPscDao;
     @Autowired
     private UserWxUserDao userWxUserDao;
 
@@ -1094,6 +1093,9 @@ public class EmployeeEntity {
     }
 
     public void followWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+        if(userId <= 0 || wechatId <= 0){
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
         HrWxWechatDO wxWechatDO = wechatDao.fetchWechat(wechatId);
         if (wxWechatDO == null) {
             throw EmployeeException.NODATA_EXCEPTION;
@@ -1115,6 +1117,9 @@ public class EmployeeEntity {
     }
 
     public void unfollowWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
+        if(userId <= 0 || wechatId <= 0){
+            throw EmployeeException.NODATA_EXCEPTION;
+        }
         HrWxWechatDO wxWechatDO = wechatDao.fetchWechat(wechatId);
         if (wxWechatDO == null) {
             throw EmployeeException.NODATA_EXCEPTION;

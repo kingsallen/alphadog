@@ -81,7 +81,7 @@ public class CandidateDBDao {
     CandidateRecomRecordDao candidateRecomRecordDao;
 
     @Autowired
-    CandidateApplicationPscDao applicationPscDao;
+    CandidateApplicationReferralDao applicationPscDao;
 
     @Autowired
     HrPointsConfDao hrPointsConfDao;
