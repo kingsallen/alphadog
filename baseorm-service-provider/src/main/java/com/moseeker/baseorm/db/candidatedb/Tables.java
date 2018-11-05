@@ -4,7 +4,7 @@
 package com.moseeker.baseorm.db.candidatedb;
 
 
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom;
 
 import javax.annotation.Generated;
 
@@ -30,9 +31,9 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * 申请时员工一度的链路
+     * 申请时推荐链路信息
      */
-    public static final CandidateApplicationPsc CANDIDATE_APPLICATION_PSC = com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC;
+    public static final CandidateApplicationReferral CANDIDATE_APPLICATION_REFERRAL = com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL;
 
     /**
      * 候选人表
@@ -68,4 +69,9 @@ public class Tables {
      * HR手动添加相关职位表
      */
     public static final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
+
+    /**
+     * VIEW
+     */
+    public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 }

@@ -17,6 +17,7 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
+import com.moseeker.baseorm.db.talentpooldb.tables.pojos.*;
 import com.moseeker.baseorm.db.talentpooldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -1624,8 +1625,8 @@ public class TalentPoolService {
                             if (data.isSetKeyword_list()) {
                             String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
                             map.put("keywords", keyword);
+                            map.put("company_id",companyId);
                         }
-                        map.put("company_id",companyId);
                         tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
                         return 0;
                     });

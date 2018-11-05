@@ -1237,12 +1237,12 @@ public class CandidateEntity implements Candidate {
     }
 
     @Override
-    public void addApplicationPsc(int applicationId, int pscId) {
-        candidateDBDao.addApplicationPsc(applicationId, pscId);
+    public void addApplicationReferral(int applicationId, int pscId, int directReferralUserId) {
+        candidateDBDao.addApplicationPsc(applicationId, pscId, directReferralUserId);
     }
 
     @Override
-    public CandidateApplicationPscDO getApplicationPscByApplication(int applicationId) {
+    public CandidateApplicationReferralDO getApplicationReferralByApplication(int applicationId) {
         return candidateDBDao.getApplicationPscByApplicationId(applicationId);
     }
 

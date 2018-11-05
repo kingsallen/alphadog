@@ -4,7 +4,7 @@
 package com.moseeker.baseorm.db.candidatedb;
 
 
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationPsc;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
@@ -12,7 +12,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateApplicationPscRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateApplicationReferralRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
@@ -46,7 +46,7 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<CandidateApplicationPscRecord, Integer> IDENTITY_CANDIDATE_APPLICATION_PSC = Identities0.IDENTITY_CANDIDATE_APPLICATION_PSC;
+    public static final Identity<CandidateApplicationReferralRecord, Integer> IDENTITY_CANDIDATE_APPLICATION_REFERRAL = Identities0.IDENTITY_CANDIDATE_APPLICATION_REFERRAL;
     public static final Identity<CandidateCompanyRecord, Integer> IDENTITY_CANDIDATE_COMPANY = Identities0.IDENTITY_CANDIDATE_COMPANY;
     public static final Identity<CandidatePositionShareRecordRecord, Integer> IDENTITY_CANDIDATE_POSITION_SHARE_RECORD = Identities0.IDENTITY_CANDIDATE_POSITION_SHARE_RECORD;
     public static final Identity<CandidateRecomRecordRecord, Integer> IDENTITY_CANDIDATE_RECOM_RECORD = Identities0.IDENTITY_CANDIDATE_RECOM_RECORD;
@@ -58,7 +58,7 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<CandidateApplicationPscRecord> KEY_CANDIDATE_APPLICATION_PSC_PRIMARY = UniqueKeys0.KEY_CANDIDATE_APPLICATION_PSC_PRIMARY;
+    public static final UniqueKey<CandidateApplicationReferralRecord> KEY_CANDIDATE_APPLICATION_REFERRAL_PRIMARY = UniqueKeys0.KEY_CANDIDATE_APPLICATION_REFERRAL_PRIMARY;
     public static final UniqueKey<CandidateCompanyRecord> KEY_CANDIDATE_COMPANY_PRIMARY = UniqueKeys0.KEY_CANDIDATE_COMPANY_PRIMARY;
     public static final UniqueKey<CandidateCompanyRecord> KEY_CANDIDATE_COMPANY_CANDIDATE_COMPANY_COMPANY_USER = UniqueKeys0.KEY_CANDIDATE_COMPANY_CANDIDATE_COMPANY_COMPANY_USER;
     public static final UniqueKey<CandidatePositionRecord> KEY_CANDIDATE_POSITION_PRIMARY = UniqueKeys0.KEY_CANDIDATE_POSITION_PRIMARY;
@@ -78,7 +78,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<CandidateApplicationPscRecord, Integer> IDENTITY_CANDIDATE_APPLICATION_PSC = createIdentity(CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC, CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC.ID);
+        public static Identity<CandidateApplicationReferralRecord, Integer> IDENTITY_CANDIDATE_APPLICATION_REFERRAL = createIdentity(CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL, CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL.ID);
         public static Identity<CandidateCompanyRecord, Integer> IDENTITY_CANDIDATE_COMPANY = createIdentity(CandidateCompany.CANDIDATE_COMPANY, CandidateCompany.CANDIDATE_COMPANY.ID);
         public static Identity<CandidatePositionShareRecordRecord, Integer> IDENTITY_CANDIDATE_POSITION_SHARE_RECORD = createIdentity(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.ID);
         public static Identity<CandidateRecomRecordRecord, Integer> IDENTITY_CANDIDATE_RECOM_RECORD = createIdentity(CandidateRecomRecord.CANDIDATE_RECOM_RECORD, CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
@@ -88,7 +88,7 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<CandidateApplicationPscRecord> KEY_CANDIDATE_APPLICATION_PSC_PRIMARY = createUniqueKey(CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC, "KEY_candidate_application_psc_PRIMARY", CandidateApplicationPsc.CANDIDATE_APPLICATION_PSC.ID);
+        public static final UniqueKey<CandidateApplicationReferralRecord> KEY_CANDIDATE_APPLICATION_REFERRAL_PRIMARY = createUniqueKey(CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL, "KEY_candidate_application_referral_PRIMARY", CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL.ID);
         public static final UniqueKey<CandidateCompanyRecord> KEY_CANDIDATE_COMPANY_PRIMARY = createUniqueKey(CandidateCompany.CANDIDATE_COMPANY, "KEY_candidate_company_PRIMARY", CandidateCompany.CANDIDATE_COMPANY.ID);
         public static final UniqueKey<CandidateCompanyRecord> KEY_CANDIDATE_COMPANY_CANDIDATE_COMPANY_COMPANY_USER = createUniqueKey(CandidateCompany.CANDIDATE_COMPANY, "KEY_candidate_company_candidate_company_company_user", CandidateCompany.CANDIDATE_COMPANY.COMPANY_ID, CandidateCompany.CANDIDATE_COMPANY.SYS_USER_ID);
         public static final UniqueKey<CandidatePositionRecord> KEY_CANDIDATE_POSITION_PRIMARY = createUniqueKey(CandidatePosition.CANDIDATE_POSITION, "KEY_candidate_position_PRIMARY", CandidatePosition.CANDIDATE_POSITION.USER_ID, CandidatePosition.CANDIDATE_POSITION.POSITION_ID);

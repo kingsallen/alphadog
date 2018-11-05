@@ -15,6 +15,7 @@ import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,9 +128,9 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public Response addApplicationPsc(int applicationId, int pscId) throws BIZException, TException {
+    public Response addApplicationReferral(int applicationId, int pscId, int directReferralUserId) throws BIZException, TException {
         try {
-            candidate.addApplicationPsc(applicationId, pscId);
+            candidate.addApplicationReferral(applicationId, pscId, directReferralUserId);
             return ResponseUtils.success("");
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -137,9 +138,9 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public Response getApplicationPsc(int applicationId) throws BIZException, TException {
+    public Response getApplicationReferral(int applicationId) throws BIZException, TException {
         try {
-            CandidateApplicationPscDO psc = candidate.getApplicationPscByApplication(applicationId);
+            CandidateApplicationReferralDO psc = candidate.getApplicationReferralByApplication(applicationId);
             return ResponseUtils.success(psc);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);

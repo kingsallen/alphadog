@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
-import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationPscDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationReferralDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -25,7 +25,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -56,7 +55,7 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -145,7 +144,7 @@ public class EmployeeEntity {
     private CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
-    CandidateApplicationPscDao applicationPscDao;
+    CandidateApplicationReferralDao applicationPscDao;
     @Autowired
     private UserWxUserDao userWxUserDao;
 
@@ -1223,7 +1222,7 @@ public class EmployeeEntity {
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 logger.info("publishInitalScreenHbEvent  statusCount {}",statusCount);
                 if(statusCount == null){
-                    CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
+                    CandidateApplicationReferralDO referral = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
@@ -1242,10 +1241,14 @@ public class EmployeeEntity {
                             jsonObject.put("wechat_id", wechat.getId());
                         }
                         int pscId = 0;
-                        if(psc != null){
-                            pscId = psc.getPscId();
+                        int directReferralUserId = 0;
+                        if(referral != null){
+                            pscId = referral.getPscId();
+                            directReferralUserId = referral.getDirectReferralUserId();
                         }
                         jsonObject.put("psc", pscId);
+                        jsonObject.put("direct_referral_user_id", directReferralUserId);
+                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                         logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
                         Message message = amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
