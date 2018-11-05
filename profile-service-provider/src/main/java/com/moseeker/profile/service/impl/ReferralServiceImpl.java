@@ -208,6 +208,7 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException {
+
         // 获取缓存的推荐记录
         ReferralInfoCacheDTO referralInfoCacheDTO = getReferralCache(employeeId);
         List<JobPositionDO> jobPositionDOS = jobPositionDao.getPositionList(ids);
