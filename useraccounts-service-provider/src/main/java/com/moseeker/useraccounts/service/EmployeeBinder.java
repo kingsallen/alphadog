@@ -249,7 +249,6 @@ public abstract class EmployeeBinder {
             } else {
                 log.info("employeeDao.registerEmployee");
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
-                log.info("executeResult :{}", JSON.toJSONString(executeResult));
                 employeeId = executeResult.getId();
                 if (executeResult.getExecute() > 0) {
                     log.info("employee add award");

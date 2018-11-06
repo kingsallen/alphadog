@@ -70,8 +70,6 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import java.net.ConnectException;
-import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +81,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -1241,13 +1241,10 @@ public class EmployeeEntity {
                             jsonObject.put("wechat_id", wechat.getId());
                         }
                         int pscId = 0;
-                        int directReferralUserId = 0;
                         if(referral != null){
                             pscId = referral.getPscId();
-                            directReferralUserId = referral.getDirectReferralUserId();
                         }
                         jsonObject.put("psc", pscId);
-                        jsonObject.put("direct_referral_user_id", directReferralUserId);
                         logger.info("publishInitalScreenHbEvent  json {}",jsonObject);
                         Message message = amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
