@@ -8,18 +8,26 @@ package com.moseeker.useraccounts.service.impl.vo;
  **/
 public class ClaimResult {
 
-    private Integer referralId;
-    private Integer positionId;
+    private Integer referral_id;
+    private Integer position_id;
     private String title;
     private Boolean success;
     private String errmsg;
 
-    public Integer getReferralId() {
-        return referralId;
+    public Integer getReferral_id() {
+        return referral_id;
     }
 
-    public void setReferralId(Integer referralId) {
-        this.referralId = referralId;
+    public void setReferral_id(Integer referral_id) {
+        this.referral_id = referral_id;
+    }
+
+    public Integer getPosition_id() {
+        return position_id;
+    }
+
+    public void setPosition_id(Integer position_id) {
+        this.position_id = position_id;
     }
 
     public String getErrmsg() {
@@ -28,14 +36,6 @@ public class ClaimResult {
 
     public void setErrmsg(String errmsg) {
         this.errmsg = errmsg;
-    }
-
-    public Integer getPositionId() {
-        return positionId;
-    }
-
-    public void setPositionId(Integer positionId) {
-        this.positionId = positionId;
     }
 
     public String getTitle() {

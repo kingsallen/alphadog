@@ -1265,9 +1265,9 @@ public class UseraccountsService {
         for(ReferralLog referralLog : referralLogs){
             pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
-                claimResult.setReferralId(referralLog.getId());
+                claimResult.setReferral_id(referralLog.getId());
                 claimResult.setSuccess(true);
-                claimResult.setPositionId(referralLog.getPositionId());
+                claimResult.setPosition_id(referralLog.getPositionId());
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
                     claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);

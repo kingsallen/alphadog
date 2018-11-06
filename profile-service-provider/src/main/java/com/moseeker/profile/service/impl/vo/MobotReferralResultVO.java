@@ -9,7 +9,7 @@ package com.moseeker.profile.service.impl.vo;
 public class MobotReferralResultVO {
 
     private Integer id;
-    private Integer positionId;
+    private Integer position_id;
     private String title;
     private String reason;
     private Boolean success;
@@ -46,19 +46,19 @@ public class MobotReferralResultVO {
         this.title = title;
     }
 
-    public Integer getPositionId() {
-        return positionId;
+    public Integer getPosition_id() {
+        return position_id;
     }
 
-    public void setPositionId(Integer positionId) {
-        this.positionId = positionId;
+    public void setPosition_id(Integer position_id) {
+        this.position_id = position_id;
     }
 
     @Override
     public String toString() {
         return "MobotReferralResultVO{" +
                 "id=" + id +
-                ", positionId=" + positionId +
+                ", position_id=" + position_id +
                 ", title='" + title + '\'' +
                 ", reason='" + reason + '\'' +
                 ", success=" + success +

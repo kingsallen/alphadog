@@ -610,7 +610,7 @@ public class ReferralServiceImpl implements ReferralService {
                                    GenderType gender, String email, List<MobotReferralResultVO> resultVOS, CountDownLatch countDownLatch)
             throws TException {
         MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
-        referralResultVO.setPositionId(jobPositionDO.getId());
+        referralResultVO.setPosition_id(jobPositionDO.getId());
         referralResultVO.setTitle(jobPositionDO.getTitle());
         try {
             int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, jobPositionDO.getId(), referralType);
