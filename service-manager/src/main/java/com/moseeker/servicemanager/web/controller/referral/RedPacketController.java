@@ -59,7 +59,7 @@ public class RedPacketController {
         if (StringUtils.isNotBlank(result)) {
 
             ActivityDTO activityDTO = new ActivityDTO();
-            BeanUtils.copyProperties(activityDTO, form);
+            BeanUtils.copyProperties(form, activityDTO);
             activityDTO.setId(id);
             referralService.updateActivity(activityDTO);
             return Result.success("success").toJson();
