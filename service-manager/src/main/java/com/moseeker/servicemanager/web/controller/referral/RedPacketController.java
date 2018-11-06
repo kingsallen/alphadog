@@ -33,7 +33,7 @@ public class RedPacketController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/redpacket-activity/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/redpacket-activity/{id}", method = RequestMethod.PATCH)
     @ResponseBody
     public String startActivity(@PathVariable(value = "id") Integer id, @RequestBody ActivityForm form) throws Exception {
 
