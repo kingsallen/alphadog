@@ -1,11 +1,5 @@
 package com.moseeker.common.constants;
 
-import org.joda.time.DateTime;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 
  * Common项目常用配置信息

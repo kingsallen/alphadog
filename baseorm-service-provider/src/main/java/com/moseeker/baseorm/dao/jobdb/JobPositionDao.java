@@ -19,6 +19,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Position.PositionStatus;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -777,6 +778,28 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             return records.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    /**
+     * 更新职位的红包活动状态
+     * @param positions
+     * @param newStatus
+     */
+    public void updateHBStatus(List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positions,
+                               Map<Integer, Byte> newStatus) throws CommonException {
+        for (com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition jobPosition : positions) {
+            if (newStatus.get(jobPosition.getId()) != null) {
+                int execute = create.update(JobPosition.JOB_POSITION)
+                        .set(JobPosition.JOB_POSITION.HB_STATUS, newStatus.get(jobPosition.getId()))
+                        .where(JobPosition.JOB_POSITION.ID.eq(jobPosition.getId()))
+                        .and(JobPosition.JOB_POSITION.HB_STATUS.eq(jobPosition.getHbStatus()))
+                        .execute();
+                if (execute == 0) {
+                    throw CommonException.DATA_OPTIMISTIC;
+                }
+            }
+
         }
     }
 }

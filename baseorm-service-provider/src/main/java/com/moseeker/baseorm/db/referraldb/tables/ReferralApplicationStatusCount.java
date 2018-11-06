@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralApplicationStatusCount extends TableImpl<ReferralApplicationStatusCountRecord> {
 
-    private static final long serialVersionUID = 824055641;
+    private static final long serialVersionUID = 1074246969;
 
     /**
      * The reference instance of <code>referraldb.referral_application_status_count</code>
@@ -132,7 +132,7 @@ public class ReferralApplicationStatusCount extends TableImpl<ReferralApplicatio
      */
     @Override
     public List<UniqueKey<ReferralApplicationStatusCountRecord>> getKeys() {
-        return Arrays.<UniqueKey<ReferralApplicationStatusCountRecord>>asList(Keys.KEY_REFERRAL_APPLICATION_STATUS_COUNT_PRIMARY);
+        return Arrays.<UniqueKey<ReferralApplicationStatusCountRecord>>asList(Keys.KEY_REFERRAL_APPLICATION_STATUS_COUNT_PRIMARY, Keys.KEY_REFERRAL_APPLICATION_STATUS_COUNT_REFERRAL_APPLICATION_STATUS_APPLICATION_ID_TPL_STATUS_PK);
     }
 
     /**

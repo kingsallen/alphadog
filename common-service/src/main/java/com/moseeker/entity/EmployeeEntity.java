@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
-import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationPscDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationReferralDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -25,7 +25,6 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -56,7 +55,7 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -71,8 +70,6 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import java.net.ConnectException;
-import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +81,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -145,7 +144,7 @@ public class EmployeeEntity {
     private CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
-    CandidateApplicationPscDao applicationPscDao;
+    CandidateApplicationReferralDao applicationPscDao;
     @Autowired
     private UserWxUserDao userWxUserDao;
 
@@ -1223,7 +1222,7 @@ public class EmployeeEntity {
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 logger.info("publishInitalScreenHbEvent  statusCount {}",statusCount);
                 if(statusCount == null){
-                    CandidateApplicationPscDO psc = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
+                    CandidateApplicationReferralDO referral = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
@@ -1242,8 +1241,8 @@ public class EmployeeEntity {
                             jsonObject.put("wechat_id", wechat.getId());
                         }
                         int pscId = 0;
-                        if(psc != null){
-                            pscId = psc.getPscId();
+                        if(referral != null){
+                            pscId = referral.getPscId();
                         }
                         jsonObject.put("psc", pscId);
                         logger.info("publishInitalScreenHbEvent  json {}",jsonObject);

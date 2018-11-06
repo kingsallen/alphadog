@@ -2,10 +2,8 @@ package com.moseeker.candidate.thrift;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.candidate.service.Candidate;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
@@ -13,15 +11,13 @@ import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
-
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationPscDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
+import java.util.List;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by jack on 16/02/2017.
@@ -127,9 +123,9 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public Response addApplicationPsc(int applicationId, int pscId) throws BIZException, TException {
+    public Response addApplicationReferral(int applicationId, int pscId, int directReferralUserId) throws BIZException, TException {
         try {
-            candidate.addApplicationPsc(applicationId, pscId);
+            candidate.addApplicationReferral(applicationId, pscId, directReferralUserId);
             return ResponseUtils.success("");
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -137,9 +133,9 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public Response getApplicationPsc(int applicationId) throws BIZException, TException {
+    public Response getApplicationReferral(int applicationId) throws BIZException, TException {
         try {
-            CandidateApplicationPscDO psc = candidate.getApplicationPscByApplication(applicationId);
+            CandidateApplicationReferralDO psc = candidate.getApplicationReferralByApplication(applicationId);
             return ResponseUtils.success(psc);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);

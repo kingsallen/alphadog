@@ -100,7 +100,6 @@ public class CompanyTagService {
                     this.deleteHrAutomaticTagUserList(tagIdList);
                 }
                 if(totalPage == 0){
-                    //没有查到说明应该走删除路线
                     this.refrushCompantTag(tagIdList,TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue(),null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
                 }else{
                     for (int i = 1; i <= totalPage; i++) {

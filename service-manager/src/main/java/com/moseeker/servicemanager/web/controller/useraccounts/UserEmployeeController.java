@@ -343,7 +343,6 @@ public class UserEmployeeController {
             if(StringUtils.isNotNullOrEmpty(conf.getText())){
                 logger.info("===============text:{}",conf.getText());
                 vu.addSensitiveValidate("內推文案", conf.getText(), null, "文章中不能含有敏感词");
-                vu.addStringLengthValidate("內推文案", conf.getText(), null, "文章的长度过长", 0, 10001);
             }
             if(StringUtils.isNotNullOrEmpty(conf.getLink())){
                 logger.info("===============text:{}",conf.getLink());
