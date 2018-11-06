@@ -13,13 +13,12 @@ import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
+import java.util.List;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by jack on 16/02/2017.

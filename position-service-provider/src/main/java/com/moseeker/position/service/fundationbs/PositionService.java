@@ -1915,6 +1915,7 @@ public class PositionService {
                     e.setCandidate_source(jr.getCandidateSource());
                     e.setRequirement(jr.getRequirement());
                     e.setTotal_num(count);
+                    e.setHb_status(jr.getHbStatus());
                     e.setIs_referral(jr.getIsReferral());
                     e.setEmployment_type(jr.getEmploymentType());
                     e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
