@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
+ * 红包活动
  * @Author: jack
  * @Date: 2018/11/6
  */
@@ -43,6 +44,12 @@ public abstract class Activity {
             throw UserAccountException.ACTIVITY_STATUS_ERROR;
         }
     }
+
+    /**
+     * 开始红包活动
+     * @param activityVO
+     * @throws UserAccountException
+     */
     public void start(ActivityVO activityVO) throws UserAccountException {
         if (activityStatus.equals(ActivityStatus.Running)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_IN_RUNNING;
@@ -53,18 +60,25 @@ public abstract class Activity {
         }
     }
 
+    /**
+     * 结束宏奥活动
+     * @throws UserAccountException
+     */
     public void finish() throws UserAccountException {
         configDao.updateStatus(id, ActivityStatus.Finish.getValue());
     }
 
-    protected void checked() throws UserAccountException {
-        configDao.updateCheckValue(id, ActivityCheckState.Checked.getValue());
-    }
-
+    /**
+     * 删除红包活动
+     * @throws UserAccountException
+     */
     public void delete() throws UserAccountException {
         configDao.updateStatus(id, ActivityStatus.Deleted.getValue());
     }
 
+    /**
+     * 暂停红包活动
+     */
     public void pause() {
         configDao.updateStatus(id, ActivityStatus.Pause.getValue());
     }

@@ -123,8 +123,6 @@ public abstract class PositionActivity extends Activity {
                 }
 
                 positionBindingDao.deleteByActivityId(id);
-
-
             }
 
             //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
@@ -144,6 +142,43 @@ public abstract class PositionActivity extends Activity {
 
             try {
                 positionDao.updateHBStatus(positionList, newStatus);
+            } catch (CommonException e) {
+                throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
+            }
+        }
+    }
+
+    @Override
+    public void finish() throws UserAccountException {
+        super.finish();
+        releasePosition();
+    }
+
+    @Override
+    public void delete() throws UserAccountException {
+        super.delete();
+        releasePosition();
+    }
+
+    /**
+     * 释放参与红包活动的职位的红包状态
+     */
+    private void releasePosition() {
+        List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
+        if (bindingRecords != null && bindingRecords.size() > 0) {
+            List<Integer> positionIdList = bindingRecords
+                    .stream()
+                    .map(HrHbPositionBindingRecord::getPositionId)
+                    .collect(Collectors.toList());
+            List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
+            Map<Integer, Byte> newStatus = new HashMap<>();
+            for (JobPosition position : positions) {
+                //获取当前
+                newStatus.put(position.getId(), (byte)(position.getHbStatus()^activityStatus.getValue()));
+                //处理职位是否在参加活动数据
+            }
+            try {
+                positionDao.updateHBStatus(positions, newStatus);
             } catch (CommonException e) {
                 throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
             }

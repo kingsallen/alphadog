@@ -24,9 +24,9 @@ import java.util.List;
  * @Author: jack
  * @Date: 2018/11/6
  */
-public class NunePositionActivity extends Activity {
+public class NonePositionActivity extends Activity {
 
-    public NunePositionActivity(int id,
+    public NonePositionActivity(int id,
                                 HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
                                 HrHbItemsDao itemsDao) {
         super(id, configDao, positionBindingDao, itemsDao);
