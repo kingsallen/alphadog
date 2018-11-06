@@ -224,10 +224,12 @@ public class ApplicationEntity {
         logger.info("userApplyCount参数校招参数：{};社招参数:{}", userApplyCount.getSchoolApplyCount(), userApplyCount.getSocialApplyCount());
         if (candidateSource == 0) {
             if (userApplyCount.getSocialApplyCount() >= conf.getSocialApplyCount()) {
+                logger.info("社招超限制");
                 throw ApplicationException.APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK;
             }
         } else {
             if (userApplyCount.getSchoolApplyCount() >= conf.getSchoolApplyCount()) {
+                logger.info("校招超限制");
                 throw ApplicationException.APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK;
             }
         }

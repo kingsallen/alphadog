@@ -1,16 +1,15 @@
 package com.moseeker.useraccounts.service.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.useraccounts.config.AppConfig;
-import java.util.HashMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.HashMap;
 
 /**
  * Created by lucky8987 on 17/5/17.

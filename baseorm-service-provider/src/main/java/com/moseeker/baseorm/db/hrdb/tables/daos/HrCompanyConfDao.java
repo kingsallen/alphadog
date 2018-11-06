@@ -232,4 +232,32 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByVeryeastSwitch(Byte... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.VERYEAST_SWITCH, values);
     }
+
+    /**
+     * Fetch records that have <code>mall_switch IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMallSwitch(Byte... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.MALL_SWITCH, values);
+    }
+
+    /**
+     * Fetch records that have <code>mall_goods_method IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMallGoodsMethod(String... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.MALL_GOODS_METHOD, values);
+    }
+
+    /**
+     * Fetch records that have <code>mall_goods_method_state IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMallGoodsMethodState(Byte... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.MALL_GOODS_METHOD_STATE, values);
+    }
+
+    /**
+     * Fetch records that have <code>job51_salary_discuss IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByJob51SalaryDiscuss(Byte... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.JOB51_SALARY_DISCUSS, values);
+    }
 }

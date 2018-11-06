@@ -19,6 +19,7 @@ import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.Position.PositionStatus;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
@@ -694,6 +695,22 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     }
 
     /**
+     * batchhandler的时候根据公司ID查询职位部分字段，只有部分字段，因为全字段可能量很大，导致mysql查询很慢
+     * @param companyId
+     * @param source
+     * @return
+     */
+    public List<JobPositionRecord> getDatasForBatchhandlerDelete(int companyId, int source) {
+        return create.select(JobPosition.JOB_POSITION.ID, JobPosition.JOB_POSITION.SOURCE_ID, JobPosition.JOB_POSITION.JOBNUMBER
+                , JobPosition.JOB_POSITION.SOURCE, JobPosition.JOB_POSITION.CANDIDATE_SOURCE, JobPosition.JOB_POSITION.STATUS
+                , JobPosition.JOB_POSITION.COMPANY_ID)
+                .from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
+                .fetchInto(JobPositionRecord.class);
+    }
+
+    /**
      * 计算合法再招并且是给定公司下的职位的数量
      * @param companyId 公司编号
      * @param positionIdList 职位编号集合
@@ -761,6 +778,28 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             return records.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
         } else {
             return new ArrayList<>();
+        }
+    }
+
+    /**
+     * 更新职位的红包活动状态
+     * @param positions
+     * @param newStatus
+     */
+    public void updateHBStatus(List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positions,
+                               Map<Integer, Byte> newStatus) throws CommonException {
+        for (com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition jobPosition : positions) {
+            if (newStatus.get(jobPosition.getId()) != null) {
+                int execute = create.update(JobPosition.JOB_POSITION)
+                        .set(JobPosition.JOB_POSITION.HB_STATUS, newStatus.get(jobPosition.getId()))
+                        .where(JobPosition.JOB_POSITION.ID.eq(jobPosition.getId()))
+                        .and(JobPosition.JOB_POSITION.HB_STATUS.eq(jobPosition.getHbStatus()))
+                        .execute();
+                if (execute == 0) {
+                    throw CommonException.DATA_OPTIMISTIC;
+                }
+            }
+
         }
     }
 }

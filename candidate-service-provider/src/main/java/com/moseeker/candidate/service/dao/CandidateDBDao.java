@@ -259,10 +259,14 @@ public class CandidateDBDao {
         DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd");
         DateTime dateTime = DateTime.parse(clickTime, format);
         Timestamp time=new Timestamp(dateTime.getMillis());
-        Timestamp time1=new Timestamp(dateTime.plusDays(1).getMillis());
-        Timestamp time2=new Timestamp(dateTime.plusDays(-1).getMillis());
-        Timestamp time3=new Timestamp(dateTime.plusDays(-2).getMillis());
-        Timestamp time4=new Timestamp(dateTime.plusDays(-3).getMillis());
+        //        Timestamp time1=new Timestamp(dateTime.plusDays(1).getMillis());
+//        Timestamp time2=new Timestamp(dateTime.plusDays(-1).getMillis());
+//        Timestamp time3=new Timestamp(dateTime.plusDays(-2).getMillis());
+//        Timestamp time4=new Timestamp(dateTime.plusDays(-3).getMillis());
+        Timestamp time1=new Timestamp(dateTime.plusMinutes(5).getMillis());
+        Timestamp time2=new Timestamp(dateTime.plusMinutes(-5).getMillis());
+        Timestamp time3=new Timestamp(dateTime.plusMinutes(-10).getMillis());
+        Timestamp time4=new Timestamp(dateTime.plusMinutes(-15).getMillis());
         List<CandidateRecomRecordDO> result=this.handlerListCandidateRecomData(postUserId,recoms,positionIdList,time,time1,time2,time3,time4);
         return result;
 

@@ -1858,7 +1858,6 @@ public class TalentpoolEmailService {
             basicInfo.setDegree((String)education.get("degree_name"));
             basicInfo.setMajor((String)education.getOrDefault("major_name",""));
             basicInfo.setCollege((String)education.getOrDefault("college_name",""));
-
         }
         if(!StringUtils.isEmptyMap(works)){
             basicInfo.setPosition((String)works.getOrDefault("job_name",""));

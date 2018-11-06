@@ -379,6 +379,7 @@ public class LiePinReceiverHandler {
         return jobPositionDO;
     }
 
+
     /**
      * 批量处理职位下架
      * ats批量下架

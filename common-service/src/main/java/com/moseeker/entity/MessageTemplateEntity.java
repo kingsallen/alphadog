@@ -428,8 +428,8 @@ public class MessageTemplateEntity {
             UserWxUserDO userWxUserDO=getUserWxUserById(wxId);
             if(userWxUserDO!=null){
                 String nickName=userWxUserDO.getNickname();
-                if(!StringUtils.isNullOrEmpty(nickName)){
-                    return nickName;
+                    if(!StringUtils.isNullOrEmpty(nickName)){
+                        return nickName;
                 }
             }
         }

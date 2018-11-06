@@ -7,18 +7,18 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbItemsDO;
 import org.joda.time.DateTime;
-import org.jooq.Record;
-import org.jooq.Record1;
-import org.jooq.Result;
+import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.jooq.impl.DSL.sum;
 
@@ -102,6 +102,13 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         return 0;
     }
 
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> getHbItemsListBybindingIdList(List<Integer> bindingList,int wxUserId) {
+        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> list = create.selectFrom(HrHbItems.HR_HB_ITEMS)
+                .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.eq(wxUserId)).and(HrHbItems.HR_HB_ITEMS.BINDING_ID.in(bindingList))
+                .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems.class);
+        return list;
+    }
+
     public double sumOpenedRedPacketsByWxUserIdList(List<Integer> wxUserIdList, int companyId) {
         if (wxUserIdList != null && wxUserIdList.size() > 0) {
             Record1<BigDecimal> bigDecimalRecord1 = create.select(sum(HrHbItems.HR_HB_ITEMS.AMOUNT))
@@ -124,10 +131,34 @@ public class HrHbItemsDao extends JooqCrudImpl<HrHbItemsDO, HrHbItemsRecord> {
         return 0;
     }
 
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> getHbItemsListBybindingIdList(List<Integer> bindingList,int wxUserId){
-        List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems> list=create.selectFrom(HrHbItems.HR_HB_ITEMS)
-                .where(HrHbItems.HR_HB_ITEMS.WXUSER_ID.eq(wxUserId)).and(HrHbItems.HR_HB_ITEMS.BINDING_ID.in(bindingList))
-                .fetchInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems.class);
-        return list;
+    /**
+     * 统计指定红包活动的红包数量
+     * @param activityId 红包活动编号
+     * @return 红包数量
+     */
+    public int countItemsByActivity(Integer activityId) {
+        return create.selectCount()
+                .from(HrHbItems.HR_HB_ITEMS)
+                .where(HrHbItems.HR_HB_ITEMS.HB_CONFIG_ID.eq(activityId))
+                .fetchOne().value1();
+    }
+
+    /**
+     * 添加红包记录
+     * @param items 红包记录
+     * @return
+     */
+    public boolean insertIfNotExistForStartActivity(List<HrHbItemsRecord> items) {
+        InsertSetStep<HrHbItemsRecord> insertSetStep = create.insertInto(HrHbItems.HR_HB_ITEMS);
+        InsertSetMoreStep<HrHbItemsRecord> insertSetMoreStep = null;
+        for (int i=0; i<items.size(); i++) {
+            if (i == 0) {
+                insertSetMoreStep = insertSetStep.set(items.get(i));
+            } else {
+                insertSetMoreStep = insertSetMoreStep.newRecord().set(items.get(i));
+            }
+        }
+        Result<HrHbItemsRecord> result = insertSetMoreStep.returning().fetch();
+        return result.size() != 0;
     }
 }

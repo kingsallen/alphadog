@@ -167,6 +167,10 @@ public class UseraccountsService {
                 if (userUserDO.getUnionid().equals(unionid)) {
                     return ResponseUtils.fail(ConstantErrorCodeMessage.WEXIN_IS_SAME);
                 }
+
+                // 把之前的user_wx_user的sysuser_id置为0
+                wxuserdao.invalidOldWxUser(userUserDO.getUnionid());
+
                 // 更新user_user
                 userUserDO.setUnionid(unionid);
                 userdao.updateData(userUserDO);
@@ -1200,9 +1204,11 @@ public class UseraccountsService {
     public Response getUserSearchPositionHistory(int userId) throws BIZException {
         String info = redisClient.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_POSITION_SEARCH.toString(), String.valueOf(userId));
         List<String> history = null;
+        logger.info("getUserSearchPositionHistory info --------------:{}",info);
         if(StringUtils.isNotNullOrEmpty(info)){
             history = (List)JSONObject.parse(info);
         }
+        logger.info("getUserSearchPositionHistory history --------------:{}",history);
         return ResponseUtils.success(history);
     }
 
@@ -1221,6 +1227,7 @@ public class UseraccountsService {
         if (org.apache.commons.lang.StringUtils.isBlank(claimForm.getName())) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
         }
+        logger.info("claimReferralCard claim form:{}", JSON.toJSONString(claimForm));
         ReferralLog referralLog = referralEntity.fetchReferralLog(claimForm.getReferralRecordId());
         if (referralLog == null) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_LOG_NOT_EXIST;
@@ -1254,7 +1261,7 @@ public class UseraccountsService {
         if (!claimForm.getName().equals(referralUser.getName())) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
-
+        logger.info("claimReferralCard userUserDO:{}", userUserDO);
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
@@ -1266,6 +1273,7 @@ public class UseraccountsService {
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
             boolean validateVerifyResult = smsScene.validateVerifyCode("", claimForm.getMobile(), claimForm.getVerifyCode(), redisClient);
+            logger.info("claimReferralCard validateVerifyResult:{}", validateVerifyResult);
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }

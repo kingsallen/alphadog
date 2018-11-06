@@ -28,6 +28,8 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +56,7 @@ public class ReferralController {
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
 
-    DecimalFormat bonusFormat = new DecimalFormat("###################");
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
      * 员工上传简历
@@ -85,7 +87,7 @@ public class ReferralController {
             }
 
             ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
-
+            logger.info("ReferralController parseFileProfile file_name:{}", params.getString("file_name"));
             com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
                     profileService.parseFileProfile(employeeId, params.getString("file_name"), byteBuffer);
             ProfileDocParseResult parseResult = new ProfileDocParseResult();

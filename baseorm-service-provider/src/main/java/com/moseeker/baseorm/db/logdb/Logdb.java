@@ -19,7 +19,6 @@ import com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailLog;
 import com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog;
-import com.moseeker.baseorm.db.logdb.tables.LogUserEmployee;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMenuRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxMessageRecord;
 import com.moseeker.baseorm.db.logdb.tables.LogWxTemplateMessageSendrecord;
@@ -49,7 +48,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Logdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1487774170;
+    private static final long serialVersionUID = 1202845728;
 
     /**
      * The reference instance of <code>logdb</code>
@@ -117,7 +116,7 @@ public class Logdb extends SchemaImpl {
     public final LogSmsSendrecord LOG_SMS_SENDRECORD = com.moseeker.baseorm.db.logdb.tables.LogSmsSendrecord.LOG_SMS_SENDRECORD;
 
     /**
-     * 邮件额度每天消耗日志
+     * 邮件额度每天使用日志
      */
     public final LogTalentpoolEmailDailyLog LOG_TALENTPOOL_EMAIL_DAILY_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG;
 
@@ -130,11 +129,6 @@ public class Logdb extends SchemaImpl {
      * 人才库简历过滤日志
      */
     public final LogTalentpoolProfileFilterLog LOG_TALENTPOOL_PROFILE_FILTER_LOG = com.moseeker.baseorm.db.logdb.tables.LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG;
-
-    /**
-     * The table <code>logdb.log_user_employee</code>.
-     */
-    public final LogUserEmployee LOG_USER_EMPLOYEE = com.moseeker.baseorm.db.logdb.tables.LogUserEmployee.LOG_USER_EMPLOYEE;
 
     /**
      * 微信菜单操作日志表
@@ -196,7 +190,6 @@ public class Logdb extends SchemaImpl {
             LogTalentpoolEmailDailyLog.LOG_TALENTPOOL_EMAIL_DAILY_LOG,
             LogTalentpoolEmailLog.LOG_TALENTPOOL_EMAIL_LOG,
             LogTalentpoolProfileFilterLog.LOG_TALENTPOOL_PROFILE_FILTER_LOG,
-            LogUserEmployee.LOG_USER_EMPLOYEE,
             LogWxMenuRecord.LOG_WX_MENU_RECORD,
             LogWxMessageRecord.LOG_WX_MESSAGE_RECORD,
             LogWxTemplateMessageSendrecord.LOG_WX_TEMPLATE_MESSAGE_SENDRECORD,

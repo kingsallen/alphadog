@@ -169,6 +169,7 @@ public class EmployeeBizTool {
      * @param pageSize 分页
      */
     public static void addPagination(SearchRequestBuilder searchRequestBuilder, int pageNumber, int pageSize) {
+        logger.info("addPagination pageNum:{}, pageSize:{}", pageNumber, pageSize);
         if (pageNumber > 0 && pageSize > 0) {
             searchRequestBuilder.setFrom((pageNumber-1)*pageSize).setSize(pageSize);
         } else {

@@ -198,14 +198,14 @@ public class ResumeDeliveryService {
                 case 1:{
                     Response sendResponse = sendTemplateMessageToApplier(templateMessageDO, hrChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
+                        sendResponse = sendTemplateMessageToApplierByQX(hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     }
                     sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "4");
                     }
                     sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
-                            workExp, lastWorkName);
+                            workExp, lastWorkName, companyDO);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
@@ -214,7 +214,7 @@ public class ResumeDeliveryService {
 
                     Response sendResponse = sendTemplateMessageToApplier(templateMessageDO, hrChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     if(sendResponse.getStatus()!=0) {
-                        sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
+                        sendResponse = sendTemplateMessageToApplierByQX(hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     }
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "1");
@@ -225,21 +225,21 @@ public class ResumeDeliveryService {
                     sendTemplateMessageToRecomByQX(hrChatDO, aggregationChatDO, positionDo, messageEmailStruct.getRecommender_user_id(),  workExp, lastWorkName);
                     }
                     sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
-                            workExp, lastWorkName);
+                            workExp, lastWorkName, companyDO);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
                 //聚合号
                 case 4:{
                     sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
-                    Response sendResponse = sendTemplateMessageToApplierByQX(templateMessageDO, hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
+                    Response sendResponse = sendTemplateMessageToApplierByQX(hrChatDO, aggregationChatDO, userUserDO, messageEmailStruct.getApplication_id(), companyDO, positionDo);
                     if(sendResponse.getStatus()!=0) {
                         sendSMSToApplier(companyDO, positionDo, userUserDO, "2");
                     }
                     sendTemplateMessageToRecomByQX(hrChatDO, aggregationChatDO,positionDo, messageEmailStruct.getRecommender_user_id(), workExp, lastWorkName);
 
                     sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
-                            workExp, lastWorkName);
+                            workExp, lastWorkName, companyDO);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
@@ -247,7 +247,7 @@ public class ResumeDeliveryService {
                 default:{
                     sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
-                            workExp, lastWorkName);
+                            workExp, lastWorkName, companyDO);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
             }
@@ -311,7 +311,7 @@ public class ResumeDeliveryService {
      * @param positionDO        职位信息
      * @return                  发送结果
      */
-    public Response sendTemplateMessageToApplierByQX(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, HrWxWechatDO qxChatDO, UserUserDO userUserDO,
+    public Response sendTemplateMessageToApplierByQX(HrWxWechatDO hrChatDO, HrWxWechatDO qxChatDO, UserUserDO userUserDO,
                                                      int application_id, HrCompanyDO companyDO, JobPositionDO positionDO) {
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
@@ -327,7 +327,7 @@ public class ResumeDeliveryService {
         if(!send_applier){
             return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
         }
-        if(templateMessageDO != null && qxChatDO != null){
+        if(qxChatDO != null){
             String url = handlerUrl().replace("{}", qxChatDO.getAccessToken());
             UserWxUserDO userWxDO = wxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
                     userUserDO.getId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), qxChatDO.getId()).buildQuery());
@@ -543,7 +543,7 @@ public class ResumeDeliveryService {
      */
     public Response sendTemplateMessageToHr(HrWxTemplateMessageDO templateMessageDO, HrWxWechatDO hrChatDO, HrWxWechatDO hrWxWechatDO, UserUserDO userUserDO,
                                             UserWxUserDO hrWxUserDo, UserHrAccountDO accountDO, JobPositionDO positionDO,
-                                            String workExp, String lastWorkName) {
+                                            String workExp, String lastWorkName, HrCompanyDO companyDO) {
         List<HrWxNoticeMessageDO> wxNoticeMessageDO = null;
         Response response = ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
         String url = handlerUrl().replace("{}", hrWxWechatDO.getAccessToken());
@@ -556,7 +556,7 @@ public class ResumeDeliveryService {
             if (wxNoticeMessageDO == null || wxNoticeMessageDO.size() == 0)
                 send_applier = false;
         }
-        if(!send_applier){
+        if(!send_applier && companyDO.getType() == 0){
             return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
         }
         if(hrWxUserDo != null && templateMessageDO != null ){

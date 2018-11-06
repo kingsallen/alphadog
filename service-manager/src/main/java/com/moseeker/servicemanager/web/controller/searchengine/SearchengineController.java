@@ -103,7 +103,7 @@ public class SearchengineController {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             logger.info(JSON.toJSONString(reqParams)+"=============");
             String keywords = StringUtils.filterStringForSearch(BeanUtils.converToString(reqParams.get("keywords")));
-            String cities = BeanUtils.converToString(reqParams.get("cities"));
+            String cities =BeanUtils.converToString(reqParams.get("cities"));
             String industries =StringUtils.filterStringForSearch( BeanUtils.converToString(reqParams.get("industries")));
             String occupations = BeanUtils.converToString(reqParams.get("occupations"));
             String scale = BeanUtils.converToString(reqParams.get("scale"));
@@ -354,6 +354,9 @@ public class SearchengineController {
                 params.put("is_referral","1");
                 params.put("position_status","0");
             }
+//            logger.info("+++++++++++++++++++");
+//            logger.info(JSON.toJSONString(params));
+//            logger.info("+++++++++++++++++++");
             Response res=searchengineServices.userQuery(params);
             return ResponseLogNotification.success(request,res);
         }catch(Exception e){

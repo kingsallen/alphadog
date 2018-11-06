@@ -51,6 +51,10 @@ public class ApplicationStateChangeSender {
             jsonObject.put("positionId", positionId);
             jsonObject.put("move", move);
             jsonObject.put("operationTime", operationTime.getMillis());
+
+            logger.info("ApplicaitonStateChangeSender publishStateChangeEvent stage change: {} -> {}",
+                    stage, nextStage);
+
             amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                     APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());

@@ -91,7 +91,6 @@ public class CompanyTagService {
     public  void handlerHrAutomaticTag(List<Integer> tagIdList, int type,Map<String,Object> map) throws Exception {
         if(type == TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()){
             this.deleteHrAutomaticTagUserList(tagIdList);
-            this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
         }else{
             if (map != null && !map.isEmpty()) {
                 map.put("account_type","1");//查询时因为需要hr账号类型取查询人才库，所以注意
