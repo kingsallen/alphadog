@@ -1512,7 +1512,8 @@ public class TalentpoolEmailService {
         result.setMergeVars(resumeInfoList);
         result.setFromName(abbr+"人才招聘团队");
         result.setFromEmail("info@moseeker.net");
-        result.setTemplateName("forward-resume-v2");
+        //转发简历模板
+        result.setTemplateName("forward-resume-v3");
         return result;
     }
      /*
@@ -1820,6 +1821,14 @@ public class TalentpoolEmailService {
             info.setGenderName(genderName);
             info.setIndustryName(nationName);
             info.setAge(age);
+
+            /***---转发简历显示联系方式 by lcf--- ***/
+            //联系方式
+            String mobile = basic.get("mobile") == null ? "" : String.valueOf(basic.get("mobile"));
+            info.setMobile(mobile);
+            //电子邮件
+            String email = (String) basic.getOrDefault("email","");
+            info.setEmail(email);
         }
     }
     private void handlerProfileData(Map<String,Object> profiles,TalentEmailForwardsResumeInfo info){
