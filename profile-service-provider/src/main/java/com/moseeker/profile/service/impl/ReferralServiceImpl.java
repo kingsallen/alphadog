@@ -9,21 +9,16 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
-import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.constants.Position.PositionStatus;
-import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.validation.ValidateUtil;
-import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.*;
@@ -56,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -70,8 +66,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -221,14 +215,32 @@ public class ReferralServiceImpl implements ReferralService {
             return applyLimit;
         }
         List<Integer> positionIds = jobPositionDOS.stream().map(JobPositionDO::getId).collect(Collectors.toList());
-        List<PositionIdTitleDTO> successPositions = new ArrayList<>();
+        List<ReferralInfoCacheDTO> successCache = new ArrayList<>();
         List<MobotReferralResultVO> referralResultVOS = employeeReferralProfileAdaptor(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
                 referralInfoCacheDTO.getReferralReasons(), positionIds, referralInfoCacheDTO.getReferralType(), ReferralScene.ChatBot);
         referralResultMap.put("list", JSON.toJSONString(referralResultVOS));
+        initReferralResult(referralInfoCacheDTO, referralResultVOS, successCache);
         client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_POSITION_CACHE.toString(),
-                    String.valueOf(employeeId), JSON.toJSONString(successPositions));
-//        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+                    String.valueOf(employeeId), JSON.toJSONString(successCache));
         return referralResultMap;
+    }
+
+    /**
+     * 将推荐结果封装存入redis
+     * @param  referralInfoCacheDTO  推荐信息缓存
+     * @param  referralResultVOS  推荐业务结果
+     * @param  successCache  推荐业务缓存
+     * @author  cjm
+     * @date  2018/11/6
+     */
+    private void initReferralResult(ReferralInfoCacheDTO referralInfoCacheDTO, List<MobotReferralResultVO> referralResultVOS, List<ReferralInfoCacheDTO> successCache) {
+        for(MobotReferralResultVO referralResultVO : referralResultVOS){
+            if(referralResultVO.getSuccess()){
+                ReferralInfoCacheDTO newCache = new ReferralInfoCacheDTO();
+                BeanUtils.copyProperties(referralInfoCacheDTO, newCache);
+                successCache.add(newCache);
+            }
+        }
     }
 
     private ReferralInfoCacheDTO getReferralCache(int employeeId) throws BIZException {
@@ -236,7 +248,7 @@ public class ReferralServiceImpl implements ReferralService {
         if(StringUtils.isBlank(referralCache)){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_OVERTIME);
         }
-//        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId));
+        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_POSITION_CACHE.toString(), String.valueOf(employeeId));
         return JSONObject.parseObject(referralCache, ReferralInfoCacheDTO.class);
     }
 
@@ -532,7 +544,7 @@ public class ReferralServiceImpl implements ReferralService {
         ProfileExtUtils.createReferralProfileData(profilePojo);
         ProfileExtUtils.createProfileBasic(profilePojo, genderType);
         ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
-        JobPositionDO jobPositionDO = BeanUtils.DBToStruct(JobPositionDO.class, positionRecord);
+        JobPositionDO jobPositionDO = com.moseeker.baseorm.util.BeanUtils.DBToStruct(JobPositionDO.class, positionRecord);
         List<JobPositionDO> jobPositionDOS = new ArrayList<>();
         jobPositionDOS.add(jobPositionDO);
         int userId = createUserIdIfNotExist(profilePojo, employeeDO, candidate.getName(), candidate.getMobile(), ReferralScene.Referral);
