@@ -42,7 +42,7 @@ public class OfficeUtils {
             logger.error(e.getMessage());
             return 0;
         }
-        return 0;
+        return 1;
     }
 
     /**
