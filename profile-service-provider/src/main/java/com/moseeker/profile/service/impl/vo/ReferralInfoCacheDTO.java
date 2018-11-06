@@ -17,6 +17,7 @@ public class ReferralInfoCacheDTO {
     private List<String> referralReasons;
     private Byte referralType;
     private Boolean employee;
+    private Integer referralId;
     private Integer userId;
     private String fileName;
 
@@ -32,6 +33,14 @@ public class ReferralInfoCacheDTO {
     }
 
     public ReferralInfoCacheDTO() {
+    }
+
+    public Integer getReferralId() {
+        return referralId;
+    }
+
+    public void setReferralId(Integer referralId) {
+        this.referralId = referralId;
     }
 
     public Integer getEmployeeId() {
@@ -108,6 +117,7 @@ public class ReferralInfoCacheDTO {
                 ", referralReasons=" + referralReasons +
                 ", referralType=" + referralType +
                 ", employee=" + employee +
+                ", referralId=" + referralId +
                 ", userId=" + userId +
                 ", fileName='" + fileName + '\'' +
                 '}';
