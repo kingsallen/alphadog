@@ -2048,6 +2048,9 @@ public class UserHrAccountService {
                 if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getBindingTime())) {
                     userEmployeeVO.setBindingTime(new DateTime(userEmployeeDO.getBindingTime()).toString("yyyy-MM-dd HH:mm:ss"));
                 }
+                if(userEmployeeVO.getAward()<0){
+                    userEmployeeVO.setAward(0);
+                }
                 List customFieldValues = new ArrayList();
                 if (userEmployeeDO.getCustomFieldValues() != null) {
                     customFieldValues.addAll(JSONObject.parseObject(userEmployeeDO.getCustomFieldValues(), List.class));
