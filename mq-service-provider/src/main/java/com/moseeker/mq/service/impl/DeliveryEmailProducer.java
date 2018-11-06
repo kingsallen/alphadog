@@ -288,7 +288,7 @@ public class DeliveryEmailProducer {
                 }
                 emailInfo.setIntroduction((String) basicData.getOrDefault("self_introduction", ""));
                 //新增电子邮箱和联系方式字段
-                emailInfo.setMobile((String) basicData.getOrDefault("mobile", ""));
+                emailInfo.setMobile(basicData.get("mobile") == null ? "" : String.valueOf(basicData.get("mobile")));
                 emailInfo.setEmail((String) basicData.getOrDefault("email", ""));
             }
             if (otherDatas != null) {

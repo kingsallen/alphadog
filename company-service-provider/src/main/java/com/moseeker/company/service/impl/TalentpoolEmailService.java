@@ -1824,7 +1824,7 @@ public class TalentpoolEmailService {
 
             /***---转发简历显示联系方式 by lcf--- ***/
             //联系方式
-            String mobile = (String) basic.getOrDefault("mobile","");
+            String mobile = basic.get("mobile") == null ? "" : String.valueOf(basic.get("mobile"));
             info.setMobile(mobile);
             //电子邮件
             String email = (String) basic.getOrDefault("email","");
