@@ -22,7 +22,6 @@ import java.util.UUID;
 public class StreamUtils {
 
 
-
     private static Logger logger = LoggerFactory.getLogger(StreamUtils.class);
 
     /**
@@ -86,13 +85,7 @@ public class StreamUtils {
             fop.flush();
             fop.close();
 
-            if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)){
-                String pdfName = uuid +Constant.WORD_PDF;
-                OfficeUtils.Word2Pdf(dirAddress+File.separator+monthFileName+File.separator+fileName,
-                        dirAddress+File.separator+monthFileName+File.separator+pdfName);
-                fileNameData.setFileName(pdfName);
-                fileNameData.setFileAbsoluteName(dirAddress+File.separator+monthFileName+File.separator+pdfName);
-            }
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_FILE_SAVE_FAILED;

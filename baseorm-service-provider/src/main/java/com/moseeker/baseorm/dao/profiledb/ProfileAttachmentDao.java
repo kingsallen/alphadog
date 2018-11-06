@@ -70,4 +70,11 @@ public class ProfileAttachmentDao extends JooqCrudImpl<ProfileAttachmentDO, Prof
 
         return result;
     }
+
+    public int updateAttachmentPathByName(String name, String path, String oldName){
+        return create.update(ProfileAttachment.PROFILE_ATTACHMENT)
+                .set(ProfileAttachment.PROFILE_ATTACHMENT.NAME,ProfileAttachment.PROFILE_ATTACHMENT.PATH)
+                .where(ProfileAttachment.PROFILE_ATTACHMENT.NAME.eq(oldName))
+                .execute();
+    }
 }
