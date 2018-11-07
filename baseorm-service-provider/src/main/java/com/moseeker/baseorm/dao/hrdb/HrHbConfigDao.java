@@ -82,11 +82,12 @@ public class HrHbConfigDao extends JooqCrudImpl<HrHbConfigDO, HrHbConfigRecord> 
                 .fetchOne();
     }
 
-    public List<HrHbConfigRecord> fetchActiveByCompanyIdExceptId(Integer companyId, Integer id) {
+    public List<HrHbConfigRecord> fetchActiveByCompanyIdExceptId(Integer companyId, Integer id, byte type) {
         return create
                 .selectFrom(HrHbConfig.HR_HB_CONFIG)
                 .where(HrHbConfig.HR_HB_CONFIG.COMPANY_ID.eq(companyId))
                 .and(HrHbConfig.HR_HB_CONFIG.ID.ne(id))
+                .and(HrHbConfig.HR_HB_CONFIG.TYPE.eq(type))
                 .and(HrHbConfig.HR_HB_CONFIG.STATUS.notIn(new ArrayList<Byte>(){{add((byte)-1);add((byte)5);}}))
                 .fetch();
 
