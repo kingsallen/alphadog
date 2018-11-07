@@ -64,7 +64,9 @@ public abstract class NonePositionActivity extends Activity {
             itemsDao.insertIfNotExistForStartActivity(items);
         }
 
-        activityVO.setActualTotal(activityVO.getAmounts().size());
+        if (activityVO.getTotalAmount() != null) {
+            activityVO.setActualTotal(activityVO.getAmounts().size());
+        }
         updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
