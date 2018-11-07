@@ -43,7 +43,6 @@ public abstract class PositionActivity extends Activity {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredOneValidate("红包金额", activityVO.getAmounts());
-        validateUtil.addRequiredOneValidate("职位", activityVO.getPositionIds());
         String result = validateUtil.validate();
         if (StringUtils.isNotBlank(result)) {
             throw UserAccountException.validateFailed(result);
@@ -56,7 +55,7 @@ public abstract class PositionActivity extends Activity {
         int totalNum = 0;
         if (count == 0) {
             List<HrHbPositionBindingRecord> recordList = positionBindingDao.fetchByActivity(id);
-            if (recordList != null && recordList.size() > 0) {
+            if (recordList == null || recordList.size() == 0) {
                 throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
             }
 
@@ -79,7 +78,6 @@ public abstract class PositionActivity extends Activity {
 
             activityVO.setActualTotal(activityVO.getAmounts().size()*recordList.size());
         }
-
 
         updateInfo(activityVO);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
