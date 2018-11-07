@@ -114,7 +114,7 @@ public abstract class PositionActivity extends Activity {
                 logger.info("PositionActivity updateInfo positionList:{}", positionList);
 
                 for (JobPosition position : positionList) {
-                    if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
+                    if ((position.getHbStatus().intValue() | positionHBStatus.getValue()) == position.getHbStatus()) {
                         throw UserAccountException.ACTIVITY_POSITION_ALREADY_IN_ACTIVITY;
                     }
                 }
