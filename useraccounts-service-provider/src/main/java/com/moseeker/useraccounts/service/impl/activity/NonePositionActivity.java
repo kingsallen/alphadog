@@ -92,7 +92,7 @@ public class NonePositionActivity extends Activity {
             }
             //红包活动的活动时间是否有交集的情况。非职位相关的红包活动不能有时间交集。
             List<HrHbConfigRecord> hrHbConfigRecords
-                    = configDao.fetchActiveByCompanyIdExceptId(hrHbConfig.getCompanyId(), hrHbConfig.getId(), activityType.getValue());
+                    = configDao.fetchSameTypeActiveByCompanyIdExceptId(hrHbConfig.getCompanyId(), hrHbConfig.getId(), activityType.getValue());
             if (hrHbConfigRecords != null && hrHbConfigRecords.size() > 0) {
                 for (HrHbConfigRecord record : hrHbConfigRecords) {
                     if ((hrHbConfig.getStartTime().getTime() < record.getStartTime().getTime()
