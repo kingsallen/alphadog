@@ -57,9 +57,7 @@ public class RedPacketController {
 
         String result = validateUtil.validate();
         if (StringUtils.isNotBlank(result)) {
-
-            ActivityDTO activityDTO = new ActivityDTO();
-            BeanUtils.copyProperties(form, activityDTO);
+            ActivityDTO activityDTO = com.moseeker.baseorm.util.BeanUtils.DBToBean(form, ActivityDTO.class);
             activityDTO.setId(id);
             referralService.updateActivity(activityDTO);
             return Result.success("success").toJson();
