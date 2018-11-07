@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.useraccounts.service.impl.vo.BonusList;
 import com.moseeker.useraccounts.service.impl.vo.RedPackets;
 
@@ -30,4 +31,11 @@ public interface ReferralService {
      * @throws UserAccountException 异常
      */
     BonusList getBonus(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException;
+
+    /**
+     * 修改红包活动
+     * @param activityVO 红包活动
+     * @throws UserAccountException 业务异常
+     */
+    void updateActivity(ActivityVO activityVO) throws UserAccountException;
 }
