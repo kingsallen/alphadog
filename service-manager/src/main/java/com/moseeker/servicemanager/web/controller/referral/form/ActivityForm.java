@@ -14,8 +14,8 @@ public class ActivityForm {
     private String startTime;
     private String endTime;
     private Double totalAmount;
-    private Double rangMin;
-    private Double rangMax;
+    private Double rangeMin;
+    private Double rangeMax;
     private Integer probability;
     private Integer dType;
     private String headline;
@@ -77,20 +77,20 @@ public class ActivityForm {
         this.totalAmount = totalAmount;
     }
 
-    public Double getRangMin() {
-        return rangMin;
+    public Double getRangeMin() {
+        return rangeMin;
     }
 
-    public void setRangMin(Double rangMin) {
-        this.rangMin = rangMin;
+    public void setRangeMin(Double rangeMin) {
+        this.rangeMin = rangeMin;
     }
 
-    public Double getRangMax() {
-        return rangMax;
+    public Double getRangeMax() {
+        return rangeMax;
     }
 
-    public void setRangMax(Double rangMax) {
-        this.rangMax = rangMax;
+    public void setRangeMax(Double rangeMax) {
+        this.rangeMax = rangeMax;
     }
 
     public Integer getProbability() {

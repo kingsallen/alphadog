@@ -11,12 +11,8 @@ import com.moseeker.thrift.gen.referral.struct.ActivityDTO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @Author: jack
@@ -47,8 +43,8 @@ public class RedPacketController {
         validateUtil.addDateValidate("活动开始时间", form.getStartTime(), DateType.longDate);
         validateUtil.addDateValidate("活动结束时间", form.getEndTime(), DateType.longDate);
         validateUtil.addIntTypeValidate("红包总预算", form.getTotalAmount(), 10, 8888889);
-        validateUtil.addIntTypeValidate("红包下限", form.getRangMin(), 1, 201);
-        validateUtil.addIntTypeValidate("红包上限", form.getRangMax(), 1, 201);
+        validateUtil.addIntTypeValidate("红包下限", form.getRangeMin(), 1, 201);
+        validateUtil.addIntTypeValidate("红包上限", form.getRangeMax(), 1, 201);
         validateUtil.addIntTypeValidate("中奖概率", form.getProbability(), 1, 101);
         validateUtil.addIntTypeValidate("分布类型", form.getdType(), 0, 2);
         validateUtil.addStringLengthValidate("抽奖页面", form.getHeadline(), 0, 513);
