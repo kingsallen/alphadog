@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
@@ -36,7 +37,7 @@ public class RedPacketController {
     @ResponseBody
     public String startActivity(@PathVariable(value = "id") Integer id, @RequestBody ActivityForm form) throws Exception {
 
-        logger.info("RedPacketController startActivity form:{}", form);
+        logger.info("RedPacketController startActivity form:{}", JSON.toJSONString(form));
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("调用方编号", form.getAppid());
         validateUtil.addRequiredValidate("活动编号", id);
@@ -63,6 +64,7 @@ public class RedPacketController {
             referralService.updateActivity(activityDTO);
             return Result.success("success").toJson();
         } else {
+            logger.info("RedPacketController startActivity result:{}", result);
             return Result.validateFailed(result).toJson();
         }
     }
