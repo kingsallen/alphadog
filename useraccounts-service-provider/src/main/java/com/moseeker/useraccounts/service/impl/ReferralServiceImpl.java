@@ -182,9 +182,9 @@ public class ReferralServiceImpl implements ReferralService {
                     case Finish:
                         activity.finish();break;
                     case Running:
-                        activity.start(activityVO);
+                        activity.start(activityVO); break;
                     case Pause:
-                        activity.pause();
+                        activity.pause(); break;
                 }
             }
         } else {
