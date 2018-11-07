@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl.activity;
 
-import com.moseeker.baseorm.constant.ActivityCheckState;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
@@ -54,18 +53,7 @@ public class NonePositionActivity extends Activity {
             throw UserAccountException.ACTIVITY_NOT_EXISTS;
         }
 
-        List<HrHbConfigRecord> hrHbConfigRecords = configDao.fetchActiveByCompanyIdExceptId(hrHbConfig.getCompanyId(), hrHbConfig.getId());
-        if (hrHbConfigRecords != null && hrHbConfigRecords.size() > 0) {
-            for (HrHbConfigRecord record : hrHbConfigRecords) {
-                if ((hrHbConfig.getStartTime().getTime() < record.getStartTime().getTime()
-                        && hrHbConfig.getEndTime().getTime() > record.getStartTime().getTime())
-                        || (hrHbConfig.getStartTime().getTime() < record.getEndTime().getTime()
-                        && hrHbConfig.getEndTime().getTime() > record.getEndTime().getTime())) {
-                    throw UserAccountException.ACTIVITY_CONFLICT;
-                }
-            }
-        }
-
+        //检查红包活动是否已经生成红包记录了，如果有则没有必要再次生成红包记录。
         int count = itemsDao.countItemsByActivity(id);
         if (count == 0) {
             List<HrHbItemsRecord>  items = new ArrayList<>();
@@ -81,6 +69,7 @@ public class NonePositionActivity extends Activity {
             itemsDao.insertIfNotExistForStartActivity(items);
         }
 
+        activityVO.setActualTotal(activityVO.getAmounts().size());
         updateInfo(activityVO);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
@@ -98,7 +87,9 @@ public class NonePositionActivity extends Activity {
             if (StringUtils.isNotBlank(activityVO.getEndTime())) {
                 hrHbConfig.setEndTime(new Timestamp(DateTime.parse(activityVO.getEndTime()).getMillis()));
             }
-            List<HrHbConfigRecord> hrHbConfigRecords = configDao.fetchActiveByCompanyIdExceptId(hrHbConfig.getCompanyId(), hrHbConfig.getId());
+            //红包活动的活动时间是否有交集的情况。非职位相关的红包活动不能有时间交集。
+            List<HrHbConfigRecord> hrHbConfigRecords
+                    = configDao.fetchActiveByCompanyIdExceptId(hrHbConfig.getCompanyId(), hrHbConfig.getId());
             if (hrHbConfigRecords != null && hrHbConfigRecords.size() > 0) {
                 for (HrHbConfigRecord record : hrHbConfigRecords) {
                     if ((hrHbConfig.getStartTime().getTime() < record.getStartTime().getTime()

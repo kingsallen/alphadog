@@ -53,6 +53,7 @@ public abstract class PositionActivity extends Activity {
 
         //是否生成红包数据 如果已经生成就不需要再生成了
         int count = itemsDao.countItemsByActivity(id);
+        int totalNum = 0;
         if (count == 0) {
             List<HrHbPositionBindingRecord> recordList = positionBindingDao.fetchByActivity(id);
             if (recordList != null && recordList.size() > 0) {
@@ -68,12 +69,17 @@ public abstract class PositionActivity extends Activity {
                     items.add(hrHbItemsRecord);
                     totalAmount.add(hrHbItemsRecord.getAmount());
                 }
+                position.setTotalNum(activityVO.getAmounts().size());
             }
+            positionBindingDao.updateRecords(recordList);
             if (totalAmount.doubleValue() > activityVO.getTotalAmount() || totalAmount1.doubleValue() > activityVO.getTotalAmount()) {
                 throw UserAccountException.ACTIVITY_AMOUNT_ERROR;
             }
             itemsDao.insertIfNotExistForStartActivity(items);
+
+            activityVO.setActualTotal(activityVO.getAmounts().size()*recordList.size());
         }
+
 
         updateInfo(activityVO);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
