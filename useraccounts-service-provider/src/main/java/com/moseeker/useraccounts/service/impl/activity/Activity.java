@@ -171,7 +171,7 @@ public abstract class Activity {
                 hrHbConfig.setActualTotal(activityVO.getActualTotal());
             }
             if (checked) {
-                if (hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
+                if (!hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
                         && (activityStatus.equals(ActivityStatus.Checked)
                         || activityStatus.equals(ActivityStatus.UnChecked)
                         || activityStatus.equals(ActivityStatus.UnStart))) {
