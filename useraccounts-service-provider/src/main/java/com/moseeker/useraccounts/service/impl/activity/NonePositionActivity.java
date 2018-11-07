@@ -63,7 +63,7 @@ public class NonePositionActivity extends Activity {
                 items.add(hrHbItemsRecord);
                 totalAmount.add(hrHbItemsRecord.getAmount());
             }
-            if (totalAmount.doubleValue() > activityVO.getTotalAmount()) {
+            if (totalAmount.doubleValue() > this.totalAmount) {
                 throw UserAccountException.ACTIVITY_AMOUNT_ERROR;
             }
             itemsDao.insertIfNotExistForStartActivity(items);

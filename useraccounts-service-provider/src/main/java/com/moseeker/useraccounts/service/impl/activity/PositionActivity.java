@@ -71,7 +71,7 @@ public abstract class PositionActivity extends Activity {
                 position.setTotalNum(activityVO.getAmounts().size());
             }
             positionBindingDao.updateRecords(recordList);
-            if (totalAmount.doubleValue() > activityVO.getTotalAmount() || totalAmount1.doubleValue() > activityVO.getTotalAmount()) {
+            if (totalAmount.doubleValue() > this.totalAmount || totalAmount1.doubleValue() > this.totalAmount) {
                 throw UserAccountException.ACTIVITY_AMOUNT_ERROR;
             }
             itemsDao.insertIfNotExistForStartActivity(items);
