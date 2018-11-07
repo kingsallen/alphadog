@@ -127,11 +127,8 @@ public abstract class Activity {
                 hrHbConfig.setEndTime(new Timestamp(DateTime.parse(activityVO.getEndTime(), format).getMillis()));
             }
             if (activityVO.getTotalAmount() != null) {
-                hrHbConfig.setTotalAmount(activityVO.getTotalAmount().intValue());
-                totalAmount = activityVO.getTotalAmount().intValue();
-                if (hrHbConfig.getChecked() == 1) {
-                    hrHbConfig.setChecked((byte)0);
-                }
+                hrHbConfig.setTotalAmount(activityVO.getTotalAmount());
+                totalAmount = activityVO.getTotalAmount();
             }
             if (activityVO.getRangeMax() != null) {
                 hrHbConfig.setRangeMax(activityVO.getRangeMax());
