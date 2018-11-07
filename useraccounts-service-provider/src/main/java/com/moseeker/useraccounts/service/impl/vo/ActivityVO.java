@@ -13,7 +13,7 @@ public class ActivityVO {
     private Integer target;
     private String startTime;
     private String endTime;
-    private Double totalAmount;
+    private Integer totalAmount;
     private Double rangMin;
     private Double rangMax;
     private Integer probability;
@@ -61,11 +61,11 @@ public class ActivityVO {
         this.endTime = endTime;
     }
 
-    public Double getTotalAmount() {
+    public Integer getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Double totalAmount) {
+    public void setTotalAmount(Integer totalAmount) {
         this.totalAmount = totalAmount;
     }
 
