@@ -44,8 +44,8 @@ public class RedPacketController {
         validateUtil.addDateValidate("活动开始时间", form.getStartTime(), DateType.longDate);
         validateUtil.addDateValidate("活动结束时间", form.getEndTime(), DateType.longDate);
         validateUtil.addIntTypeValidate("红包总预算", form.getTotalAmount(), 10, 8888889);
-        validateUtil.addIntTypeValidate("红包下限", form.getRangeMin(), 1, 201);
-        validateUtil.addIntTypeValidate("红包上限", form.getRangeMax(), 1, 201);
+        validateUtil.addDoubleTypeValidate("红包下限", form.getRangeMin(), 1d, 201d);
+        validateUtil.addDoubleTypeValidate("红包上限", form.getRangeMax(), 1d, 201d);
         validateUtil.addIntTypeValidate("中奖概率", form.getProbability(), 1, 101);
         validateUtil.addIntTypeValidate("分布类型", form.getdType(), 0, 2);
         validateUtil.addStringLengthValidate("抽奖页面", form.getHeadline(), 0, 513);
