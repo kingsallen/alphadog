@@ -178,7 +178,7 @@ public abstract class Activity {
             }
             logger.info("Activity updateInfo checked:{} activityStatus:{}", checked, activityStatus);
             if (checked) {
-                if (hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
+                if (!hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
                         && (activityStatus.equals(ActivityStatus.Checked)
                         || activityStatus.equals(ActivityStatus.UnChecked)
                         || activityStatus.equals(ActivityStatus.UnStart))) {
