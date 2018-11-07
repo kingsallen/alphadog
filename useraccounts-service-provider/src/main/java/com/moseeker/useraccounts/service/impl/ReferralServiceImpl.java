@@ -174,7 +174,7 @@ public class ReferralServiceImpl implements ReferralService {
             ActivityStatus activityStatus = ActivityStatus.instanceFromValue(activityVO.getStatus().byteValue());
 
             if (activityStatus == null) {
-                activity.updateInfo(activityVO);
+                activity.updateInfo(activityVO, true);
             } else {
                 switch (activityStatus) {
                     case Deleted:
@@ -188,7 +188,7 @@ public class ReferralServiceImpl implements ReferralService {
                 }
             }
         } else {
-            activity.updateInfo(activityVO);
+            activity.updateInfo(activityVO, true);
         }
     }
 }

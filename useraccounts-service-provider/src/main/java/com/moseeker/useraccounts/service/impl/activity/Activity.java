@@ -11,7 +11,6 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
