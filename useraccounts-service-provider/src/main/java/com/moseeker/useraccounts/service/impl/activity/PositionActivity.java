@@ -92,62 +92,65 @@ public abstract class PositionActivity extends Activity {
         //更新活动的基本信息
         super.updateInfo(activityVO);
         //如果是未审核或者审核未通过，那么依然可以重新选择参与红包的职位。
-        if (activityCheckState.equals(ActivityCheckState.UnChecked) ||
-                activityCheckState.equals(ActivityCheckState.Cancel) && activityVO.getPositionIds() != null) {
+        if (activityVO.getPositionIds() != null && activityVO.getPositionIds().size() > 0) {
+            if (activityCheckState.equals(ActivityCheckState.UnChecked) ||
+                    activityCheckState.equals(ActivityCheckState.Cancel) && activityVO.getPositionIds() != null) {
 
-            List<JobPosition> positionList = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
-            if (positionList == null || positionList.size() != activityVO.getPositionIds().size()) {
-                throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
-            } else {
-                for (JobPosition position : positionList) {
-                    if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
-                        throw UserAccountException.ACTIVITY_POSITION_ALREADY_IN_ACTIVITY;
+
+                List<JobPosition> positionList = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
+                if (positionList == null || positionList.size() != activityVO.getPositionIds().size()) {
+                    throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
+                } else {
+                    for (JobPosition position : positionList) {
+                        if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
+                            throw UserAccountException.ACTIVITY_POSITION_ALREADY_IN_ACTIVITY;
+                        }
                     }
                 }
-            }
 
-            //将之前参与活动的职位删除，并修改职位参与活动的状态。
-            List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
-            if (bindingRecords != null && bindingRecords.size() > 0) {
-                List<Integer> positionIdList = bindingRecords
-                        .stream()
-                        .map(HrHbPositionBindingRecord::getPositionId)
-                        .collect(Collectors.toList());
-                List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
-                Map<Integer, Byte> newStatus = new HashMap<>();
-                for (JobPosition position : positions) {
-                    //获取当前
-                    newStatus.put(position.getId(), (byte)(position.getHbStatus()^activityStatus.getValue()));
-                    //处理职位是否在参加活动数据
+                //将之前参与活动的职位删除，并修改职位参与活动的状态。
+                List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
+                if (bindingRecords != null && bindingRecords.size() > 0) {
+                    List<Integer> positionIdList = bindingRecords
+                            .stream()
+                            .map(HrHbPositionBindingRecord::getPositionId)
+                            .collect(Collectors.toList());
+                    List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
+                    Map<Integer, Byte> newStatus = new HashMap<>();
+                    for (JobPosition position : positions) {
+                        //获取当前
+                        newStatus.put(position.getId(), (byte)(position.getHbStatus()^activityStatus.getValue()));
+                        //处理职位是否在参加活动数据
+                    }
+                    try {
+                        positionDao.updateHBStatus(positions, newStatus);
+                    } catch (CommonException e) {
+                        throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
+                    }
+
+                    positionBindingDao.deleteByActivityId(id);
                 }
+
+                //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
+                List<HrHbPositionBindingRecord> bindings = new ArrayList<>();
+                Map<Integer, Byte> newStatus = new HashMap<>();
+                HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
+                for (JobPosition position : positionList) {
+                    HrHbPositionBindingRecord binding = new HrHbPositionBindingRecord();
+                    binding.setHbConfigId(id);
+                    binding.setPositionId(position.getId());
+                    binding.setTriggerWay(getTriggerWay());
+                    binding.setTotalAmount(BigDecimal.valueOf(hrHbConfig.getTotalAmount()));
+                    bindings.add(binding);
+                    newStatus.put(position.getId(), (byte)(position.getHbStatus() | activityStatus.getValue()));
+                }
+                positionBindingDao.insert(bindings);
+
                 try {
-                    positionDao.updateHBStatus(positions, newStatus);
+                    positionDao.updateHBStatus(positionList, newStatus);
                 } catch (CommonException e) {
                     throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
                 }
-
-                positionBindingDao.deleteByActivityId(id);
-            }
-
-            //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
-            List<HrHbPositionBindingRecord> bindings = new ArrayList<>();
-            Map<Integer, Byte> newStatus = new HashMap<>();
-            HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
-            for (JobPosition position : positionList) {
-                HrHbPositionBindingRecord binding = new HrHbPositionBindingRecord();
-                binding.setHbConfigId(id);
-                binding.setPositionId(position.getId());
-                binding.setTriggerWay(getTriggerWay());
-                binding.setTotalAmount(BigDecimal.valueOf(hrHbConfig.getTotalAmount()));
-                bindings.add(binding);
-                newStatus.put(position.getId(), (byte)(position.getHbStatus() | activityStatus.getValue()));
-            }
-            positionBindingDao.insert(bindings);
-
-            try {
-                positionDao.updateHBStatus(positionList, newStatus);
-            } catch (CommonException e) {
-                throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
             }
         }
     }
