@@ -52,7 +52,7 @@ public class RedPacketController {
         validateUtil.addIntTypeValidate("审核状态", form.getChecked(), 0, 2);
 
         String result = validateUtil.validate();
-        if (StringUtils.isNotBlank(result)) {
+        if (StringUtils.isBlank(result)) {
             ActivityDTO activityDTO = com.moseeker.baseorm.util.BeanUtils.DBToBean(form, ActivityDTO.class);
             activityDTO.setId(id);
             referralService.updateActivity(activityDTO);
