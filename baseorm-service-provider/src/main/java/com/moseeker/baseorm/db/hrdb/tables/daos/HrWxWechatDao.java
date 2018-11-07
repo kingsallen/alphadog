@@ -143,10 +143,10 @@ public class HrWxWechatDao extends DAOImpl<HrWxWechatRecord, com.moseeker.baseor
     }
 
     /**
-     * Fetch records that have <code>default_ IN (values)</code>
+     * Fetch records that have <code>default IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat> fetchByDefault_(Integer... values) {
-        return fetch(HrWxWechat.HR_WX_WECHAT.DEFAULT_, values);
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat> fetchByDefault(Integer... values) {
+        return fetch(HrWxWechat.HR_WX_WECHAT.DEFAULT, values);
     }
 
     /**

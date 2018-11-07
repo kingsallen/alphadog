@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = -202240309;
+    private static final long serialVersionUID = 1206897548;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>
@@ -112,9 +112,9 @@ public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
     public final TableField<HrWxWechatRecord, Integer> WELCOME = createField("welcome", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "welcome message");
 
     /**
-     * The column <code>hrdb.hr_wx_wechat.default_</code>. default message
+     * The column <code>hrdb.hr_wx_wechat.default</code>. default message
      */
-    public final TableField<HrWxWechatRecord, Integer> DEFAULT_ = createField("default_", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "default message");
+    public final TableField<HrWxWechatRecord, Integer> DEFAULT = createField("default", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "default message");
 
     /**
      * The column <code>hrdb.hr_wx_wechat.qrcode</code>. 关注公众号的二维码
