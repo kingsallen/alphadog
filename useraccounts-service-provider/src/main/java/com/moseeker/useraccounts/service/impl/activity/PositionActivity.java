@@ -112,7 +112,7 @@ public abstract class PositionActivity extends Activity {
 
 
                 for (JobPosition position : positionList) {
-                    if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
+                    if ((position.getHbStatus().intValue() | positionHBStatus.getValue()) == position.getHbStatus()) {
                         throw UserAccountException.ACTIVITY_POSITION_ALREADY_IN_ACTIVITY;
                     }
                 }
@@ -173,6 +173,7 @@ public abstract class PositionActivity extends Activity {
      */
     private void releasePosition() {
         List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
+
         releasePosition(bindingRecords);
     }
 
