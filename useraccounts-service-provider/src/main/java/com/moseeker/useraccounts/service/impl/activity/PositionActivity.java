@@ -88,15 +88,19 @@ public abstract class PositionActivity extends Activity {
         super.updateInfo(activityVO, checked);
         //如果是未审核或者审核未通过，那么依然可以重新选择参与红包的职位。
         if (activityVO.getPositionIds() != null && activityVO.getPositionIds().size() > 0) {
+            logger.info("PositionActivity updateInfo activityVO.getPositionIds().size:{}", activityVO.getPositionIds());
             if (activityStatus.equals(ActivityStatus.Checked)
                     || activityStatus.equals(ActivityStatus.UnChecked)
                     || activityStatus.equals(ActivityStatus.UnStart)) {
 
+                logger.info("PositionActivity updateInfo activityStatus:{}", activityStatus);
                 List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
                 List<JobPosition> positionList = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
 
+                logger.info("PositionActivity updateInfo bindingRecords:{}, positionList", bindingRecords, positionList);
                 //如果选择的职位和之前配置的职位一直，则不需要做任何处理
                 if (checkIfChangePosition(activityVO.getPositionIds(), bindingRecords)) {
+                    logger.info("PositionActivity updateInfo change position");
                     if (positionList == null || positionList.size() != activityVO.getPositionIds().size()) {
                         throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
                     } else {
@@ -124,6 +128,7 @@ public abstract class PositionActivity extends Activity {
                         bindings.add(binding);
                         newStatus.put(position.getId(), (byte)(position.getHbStatus() | positionHBStatus.getValue()));
                     }
+                    logger.info("PositionActivity updateInfo insert bindings:{}", bindings);
                     positionBindingDao.insert(bindings);
 
                     try {

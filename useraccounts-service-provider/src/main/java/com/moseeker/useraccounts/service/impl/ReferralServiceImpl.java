@@ -169,7 +169,7 @@ public class ReferralServiceImpl implements ReferralService {
 
         Activity activity = ActivityType.buildActivity(activityVO.getId(), configDao, positionBindingDao, itemsDao,
                 positionDao);
-        logger.info("ReferralServiceImpl updateActivity activityVO:{}", activityVO);
+        logger.info("ReferralServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
         if (activityVO.getStatus() != null) {
             ActivityStatus activityStatus = ActivityStatus.instanceFromValue(activityVO.getStatus().byteValue());
             logger.info("ReferralServiceImpl updateActivity activityStatus:{}", activityStatus);
