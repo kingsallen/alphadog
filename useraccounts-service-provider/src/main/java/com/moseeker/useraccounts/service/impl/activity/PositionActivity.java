@@ -197,9 +197,11 @@ public abstract class PositionActivity extends Activity {
                         .findAny();
                 return !optional1.isPresent();
             }).findAny();
+
             return optional.isPresent();
+
         } else {
-            return false;
+            return true;
         }
     }
 
