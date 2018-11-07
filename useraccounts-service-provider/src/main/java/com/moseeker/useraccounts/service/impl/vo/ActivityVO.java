@@ -9,7 +9,7 @@ import java.util.List;
 public class ActivityVO {
 
     private Integer id;
-    private List<Integer> amounts;
+    private List<Double> amounts;
     private Integer target;
     private String startTime;
     private String endTime;
@@ -29,11 +29,11 @@ public class ActivityVO {
     private Integer actualTotal;
     private List<Integer> positionIds;
 
-    public List<Integer> getAmounts() {
+    public List<Double> getAmounts() {
         return amounts;
     }
 
-    public void setAmounts(List<Integer> amounts) {
+    public void setAmounts(List<Double> amounts) {
         this.amounts = amounts;
     }
 

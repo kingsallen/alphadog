@@ -40,7 +40,7 @@ struct BonusList {
 
 struct ActivityDTO {
     1 : optional i32 id,
-    2 : optional list<i32> amounts,
+    2 : optional list<double> amounts,
     3 : optional i32 target,
     4 : optional string startTime,
     5 : optional string endTime,

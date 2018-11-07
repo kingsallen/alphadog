@@ -9,7 +9,7 @@ import java.util.List;
 public class ActivityForm {
 
     private Integer appid;
-    private List<Integer> amounts;
+    private List<Double> amounts;
     private Integer target;
     private String startTime;
     private String endTime;
@@ -37,11 +37,11 @@ public class ActivityForm {
         this.appid = appid;
     }
 
-    public List<Integer> getAmounts() {
+    public List<Double> getAmounts() {
         return amounts;
     }
 
-    public void setAmounts(List<Integer> amounts) {
+    public void setAmounts(List<Double> amounts) {
         this.amounts = amounts;
     }
 
