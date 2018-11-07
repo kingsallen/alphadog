@@ -19,6 +19,7 @@ public class RetransmitClickActivity extends PositionActivity {
                                    HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
                                    HrHbItemsDao itemsDao, JobPositionDao positionDao) {
         super(id, configDao, positionBindingDao, itemsDao, positionDao);
+        positionHBStatus = PositionHBStatus.RetransmitClick;
     }
 
     @Override

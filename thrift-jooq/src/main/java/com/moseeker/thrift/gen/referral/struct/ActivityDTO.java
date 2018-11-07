@@ -36,7 +36,7 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
   private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new ActivityDTOTupleSchemeFactory();
 
   public int id; // optional
-  public java.util.List<java.lang.Integer> amounts; // optional
+  public java.util.List<java.lang.Double> amounts; // optional
   public int target; // optional
   public java.lang.String startTime; // optional
   public java.lang.String endTime; // optional
@@ -192,7 +192,7 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.AMOUNTS, new org.apache.thrift.meta_data.FieldMetaData("amounts", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
-            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32))));
+            new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.DOUBLE))));
     tmpMap.put(_Fields.TARGET, new org.apache.thrift.meta_data.FieldMetaData("target", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
     tmpMap.put(_Fields.START_TIME, new org.apache.thrift.meta_data.FieldMetaData("startTime", org.apache.thrift.TFieldRequirementType.OPTIONAL, 
@@ -244,7 +244,7 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
     __isset_bitfield = other.__isset_bitfield;
     this.id = other.id;
     if (other.isSetAmounts()) {
-      java.util.List<java.lang.Integer> __this__amounts = new java.util.ArrayList<java.lang.Integer>(other.amounts);
+      java.util.List<java.lang.Double> __this__amounts = new java.util.ArrayList<java.lang.Double>(other.amounts);
       this.amounts = __this__amounts;
     }
     this.target = other.target;
@@ -350,22 +350,22 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
     return (this.amounts == null) ? 0 : this.amounts.size();
   }
 
-  public java.util.Iterator<java.lang.Integer> getAmountsIterator() {
+  public java.util.Iterator<java.lang.Double> getAmountsIterator() {
     return (this.amounts == null) ? null : this.amounts.iterator();
   }
 
-  public void addToAmounts(int elem) {
+  public void addToAmounts(double elem) {
     if (this.amounts == null) {
-      this.amounts = new java.util.ArrayList<java.lang.Integer>();
+      this.amounts = new java.util.ArrayList<java.lang.Double>();
     }
     this.amounts.add(elem);
   }
 
-  public java.util.List<java.lang.Integer> getAmounts() {
+  public java.util.List<java.lang.Double> getAmounts() {
     return this.amounts;
   }
 
-  public ActivityDTO setAmounts(java.util.List<java.lang.Integer> amounts) {
+  public ActivityDTO setAmounts(java.util.List<java.lang.Double> amounts) {
     this.amounts = amounts;
     return this;
   }
@@ -836,7 +836,7 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
       if (value == null) {
         unsetAmounts();
       } else {
-        setAmounts((java.util.List<java.lang.Integer>)value);
+        setAmounts((java.util.List<java.lang.Double>)value);
       }
       break;
 
@@ -1829,11 +1829,11 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
             if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
               {
                 org.apache.thrift.protocol.TList _list16 = iprot.readListBegin();
-                struct.amounts = new java.util.ArrayList<java.lang.Integer>(_list16.size);
-                int _elem17;
+                struct.amounts = new java.util.ArrayList<java.lang.Double>(_list16.size);
+                double _elem17;
                 for (int _i18 = 0; _i18 < _list16.size; ++_i18)
                 {
-                  _elem17 = iprot.readI32();
+                  _elem17 = iprot.readDouble();
                   struct.amounts.add(_elem17);
                 }
                 iprot.readListEnd();
@@ -2021,10 +2021,10 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
         if (struct.isSetAmounts()) {
           oprot.writeFieldBegin(AMOUNTS_FIELD_DESC);
           {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, struct.amounts.size()));
-            for (int _iter22 : struct.amounts)
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.DOUBLE, struct.amounts.size()));
+            for (double _iter22 : struct.amounts)
             {
-              oprot.writeI32(_iter22);
+              oprot.writeDouble(_iter22);
             }
             oprot.writeListEnd();
           }
@@ -2229,9 +2229,9 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
       if (struct.isSetAmounts()) {
         {
           oprot.writeI32(struct.amounts.size());
-          for (int _iter24 : struct.amounts)
+          for (double _iter24 : struct.amounts)
           {
-            oprot.writeI32(_iter24);
+            oprot.writeDouble(_iter24);
           }
         }
       }
@@ -2307,12 +2307,12 @@ public class ActivityDTO implements org.apache.thrift.TBase<ActivityDTO, Activit
       }
       if (incoming.get(1)) {
         {
-          org.apache.thrift.protocol.TList _list26 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.I32, iprot.readI32());
-          struct.amounts = new java.util.ArrayList<java.lang.Integer>(_list26.size);
-          int _elem27;
+          org.apache.thrift.protocol.TList _list26 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.DOUBLE, iprot.readI32());
+          struct.amounts = new java.util.ArrayList<java.lang.Double>(_list26.size);
+          double _elem27;
           for (int _i28 = 0; _i28 < _list26.size; ++_i28)
           {
-            _elem27 = iprot.readI32();
+            _elem27 = iprot.readDouble();
             struct.amounts.add(_elem27);
           }
         }

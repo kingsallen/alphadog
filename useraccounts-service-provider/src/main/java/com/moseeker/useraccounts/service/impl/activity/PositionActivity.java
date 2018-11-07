@@ -160,7 +160,7 @@ public abstract class PositionActivity extends Activity {
             Map<Integer, Byte> newStatus = new HashMap<>();
             for (JobPosition position : positions) {
                 //获取当前
-                newStatus.put(position.getId(), (byte)(position.getHbStatus()^activityStatus.getValue()));
+                newStatus.put(position.getId(), (byte)(position.getHbStatus()^positionHBStatus.getValue()));
                 //处理职位是否在参加活动数据
             }
             try {
@@ -174,4 +174,6 @@ public abstract class PositionActivity extends Activity {
     public abstract byte getTriggerWay() throws UserAccountException;
 
     protected JobPositionDao positionDao;
+
+    protected PositionHBStatus positionHBStatus;
 }
