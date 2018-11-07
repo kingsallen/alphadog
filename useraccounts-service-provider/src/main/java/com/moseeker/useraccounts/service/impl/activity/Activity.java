@@ -13,8 +13,11 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+=======
+>>>>>>> feature/3.12.2
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -26,8 +29,11 @@ import java.sql.Timestamp;
  */
 public abstract class Activity {
 
+<<<<<<< HEAD
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
+=======
+>>>>>>> feature/3.12.2
     public Activity(int id, HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao, HrHbItemsDao itemsDao)
             throws UserAccountException {
         this.id = id;
@@ -44,8 +50,11 @@ public abstract class Activity {
         this.activityStatus = ActivityStatus.instanceFromValue(record.getStatus());
         this.activityCheckState = ActivityCheckState.instanceFromValue(record.getChecked());
 
+<<<<<<< HEAD
         logger.info("Activity Activity id:{}, activityStatus:{}, activityCheckState:{}", id, activityStatus, activityCheckState);
 
+=======
+>>>>>>> feature/3.12.2
         if (this.activityStatus == null || this.activityCheckState == null) {
             throw UserAccountException.ACTIVITY_STATUS_ERROR;
         }
@@ -60,7 +69,10 @@ public abstract class Activity {
         if (activityStatus.equals(ActivityStatus.Running)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_IN_RUNNING;
         }
+<<<<<<< HEAD
         logger.info("Activity start id:{}, activityStatus:{}, activityCheckState:{}", id, activityStatus, activityCheckState);
+=======
+>>>>>>> feature/3.12.2
         if (activityCheckState.equals(ActivityCheckState.UnChecked) || activityStatus.equals(ActivityStatus.Finish)
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;

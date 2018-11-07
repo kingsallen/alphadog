@@ -5,6 +5,10 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
+<<<<<<< HEAD
+=======
+import com.moseeker.useraccounts.exception.UserAccountException;
+>>>>>>> feature/3.12.2
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -73,8 +77,11 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
         try {
             ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
+<<<<<<< HEAD
             logger.info("ReferralThriftServiceImpl updateActivity activityDTO:{}", activityDTO);
             logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
+=======
+>>>>>>> feature/3.12.2
             referralService.updateActivity(activityVO);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
