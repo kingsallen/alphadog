@@ -4,11 +4,11 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
-import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ReferralThriftServiceImpl implements ReferralService.Iface {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private com.moseeker.useraccounts.service.ReferralService referralService;
@@ -70,6 +72,8 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
         try {
             ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
+            logger.info("ReferralThriftServiceImpl updateActivity activityDTO:{}", activityDTO);
+            logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", activityVO);
             referralService.updateActivity(activityVO);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
