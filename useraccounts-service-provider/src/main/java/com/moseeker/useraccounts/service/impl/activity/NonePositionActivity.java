@@ -25,7 +25,7 @@ import java.util.List;
  * @Author: jack
  * @Date: 2018/11/6
  */
-public class NonePositionActivity extends Activity {
+public abstract class NonePositionActivity extends Activity {
 
     public NonePositionActivity(int id,
                                 HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
