@@ -70,12 +70,12 @@ public class NonePositionActivity extends Activity {
         }
 
         activityVO.setActualTotal(activityVO.getAmounts().size());
-        updateInfo(activityVO);
+        updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
 
     @Override
-    public void updateInfo(ActivityVO activityVO) {
+    public void updateInfo(ActivityVO activityVO, boolean checked) {
         if (StringUtils.isNotBlank(activityVO.getStartTime()) || StringUtils.isNotBlank(activityVO.getEndTime())) {
             HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
             if (hrHbConfig == null ) {
@@ -102,6 +102,6 @@ public class NonePositionActivity extends Activity {
             }
 
         }
-        super.updateInfo(activityVO);
+        super.updateInfo(activityVO, checked);
     }
 }

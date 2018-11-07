@@ -79,7 +79,7 @@ public abstract class PositionActivity extends Activity {
             activityVO.setActualTotal(activityVO.getAmounts().size()*recordList.size());
         }
 
-        updateInfo(activityVO);
+        updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
 
@@ -88,9 +88,9 @@ public abstract class PositionActivity extends Activity {
      * @param activityVO 红包活动参数
      */
     @Override
-    public void updateInfo(ActivityVO activityVO) {
+    public void updateInfo(ActivityVO activityVO, boolean checked) {
         //更新活动的基本信息
-        super.updateInfo(activityVO);
+        super.updateInfo(activityVO, checked);
         //如果是未审核或者审核未通过，那么依然可以重新选择参与红包的职位。
         if (activityVO.getPositionIds() != null && activityVO.getPositionIds().size() > 0) {
             if (activityCheckState.equals(ActivityCheckState.UnChecked) ||
