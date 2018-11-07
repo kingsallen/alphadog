@@ -98,5 +98,5 @@ public interface ReferralService {
      * @date  2018/10/31
      * @return  缓存的推荐信息
      */
-    String getMobotReferralCache(int employeeId);
+    String getMobotReferralCache(int employeeId) throws BIZException;
 }
