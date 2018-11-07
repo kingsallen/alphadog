@@ -187,6 +187,8 @@ public class ReferralServiceImpl implements ReferralService {
                         activity.pause();
                 }
             }
+        } else {
+            activity.updateInfo(activityVO);
         }
     }
 }
