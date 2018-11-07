@@ -99,9 +99,6 @@ public abstract class PositionActivity extends Activity {
 
                 logger.info("PositionActivity updateInfo bindingRecords1:{}, positionList1", bindingRecords1, positionList1);
                 //如果选择的职位和之前配置的职位一直，则不需要做任何处理
-                if (bindingRecords1 == null || bindingRecords1.size() != activityVO.getPositionIds().size()) {
-                    throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
-                }
 
                 List<JobPosition> positionList = positionList1.stream().filter(jobPosition -> {
                     Optional<HrHbPositionBindingRecord> optional = bindingRecords1
