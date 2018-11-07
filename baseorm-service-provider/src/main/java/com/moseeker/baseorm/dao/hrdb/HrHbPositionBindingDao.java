@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class HrHbPositionBindingDao extends JooqCrudImpl<HrHbPositionBindingDO, HrHbPositionBindingRecord> {
@@ -58,9 +59,11 @@ public class HrHbPositionBindingDao extends JooqCrudImpl<HrHbPositionBindingDO, 
                 .fetch();
     }
 
-    public void deleteByActivityId(Integer activityId) {
+    public void deleteByActivityId(Integer activityId, List<HrHbPositionBindingRecord> bindingRecords) {
+        List<Integer> idList = bindingRecords.stream().map(HrHbPositionBindingRecord::getId).collect(Collectors.toList());
         create.deleteFrom(HrHbPositionBinding.HR_HB_POSITION_BINDING)
                 .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.eq(activityId))
+                .and(HrHbPositionBinding.HR_HB_POSITION_BINDING.ID.in(idList))
                 .execute();
     }
 
