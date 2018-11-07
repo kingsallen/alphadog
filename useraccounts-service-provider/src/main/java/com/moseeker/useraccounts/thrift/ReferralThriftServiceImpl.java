@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
@@ -73,7 +74,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         try {
             ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
             logger.info("ReferralThriftServiceImpl updateActivity activityDTO:{}", activityDTO);
-            logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", activityVO);
+            logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
             referralService.updateActivity(activityVO);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
