@@ -54,7 +54,7 @@ public abstract class Activity {
         if (activityStatus.equals(ActivityStatus.Running)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_IN_RUNNING;
         }
-        if (!activityCheckState.equals(ActivityCheckState.UnChecked) || activityStatus.equals(ActivityStatus.Finish)
+        if (activityCheckState.equals(ActivityCheckState.UnChecked) || activityStatus.equals(ActivityStatus.Finish)
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;
         }
