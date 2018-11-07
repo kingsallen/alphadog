@@ -10,7 +10,6 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -170,9 +169,10 @@ public class ReferralServiceImpl implements ReferralService {
 
         Activity activity = ActivityType.buildActivity(activityVO.getId(), configDao, positionBindingDao, itemsDao,
                 positionDao);
+        logger.info("ReferralServiceImpl updateActivity activityVO:{}", activityVO);
         if (activityVO.getStatus() != null) {
             ActivityStatus activityStatus = ActivityStatus.instanceFromValue(activityVO.getStatus().byteValue());
-
+            logger.info("ReferralServiceImpl updateActivity activityStatus:{}", activityStatus);
             if (activityStatus == null) {
                 activity.updateInfo(activityVO);
             } else {
@@ -182,9 +182,9 @@ public class ReferralServiceImpl implements ReferralService {
                     case Finish:
                         activity.finish();break;
                     case Running:
-                        activity.start(activityVO);
+                        activity.start(activityVO);break;
                     case Pause:
-                        activity.pause();
+                        activity.pause(); break;
                 }
             }
         } else {
