@@ -1,5 +1,6 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -445,6 +446,7 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getIds());
             if(idReasons.get("state") == null){
+                logger.info("idReasons:{}", JSON.toJSONString(idReasons));
                 return Result.success(JSONArray.parseArray(idReasons.get("list"))).toJson();
             }else {
                 return new Result(-1, "apply_limit", idReasons).toJson();
@@ -480,6 +482,7 @@ public class ReferralController {
 
             int userId = profileService.saveMobotReferralProfileCache(id, referralForm.getName(), referralForm.getMobile(),
                     referralForm.getReferralReasons(), (byte) referralForm.getReferralType(), referralForm.getFileName());
+            logger.info("userId:{}", userId);
             return Result.success(userId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
@@ -498,6 +501,7 @@ public class ReferralController {
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            logger.info("claimResults:{}", claimResults);
             return Result.success(JSONArray.parseArray(claimResults)).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
