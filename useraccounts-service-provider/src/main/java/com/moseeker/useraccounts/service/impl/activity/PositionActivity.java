@@ -95,6 +95,9 @@ public abstract class PositionActivity extends Activity {
 
                 List<HrHbPositionBindingRecord> bindingRecords1 = positionBindingDao.fetchByActivity(id);
                 List<JobPosition> positionList1 = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
+                if (positionList1 == null || positionList1.size() != activityVO.getPositionIds().size()) {
+                    throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
+                }
 
                 //如果选择的职位和之前配置的职位一直，则不需要做任何处理
 
