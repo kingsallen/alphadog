@@ -10,29 +10,29 @@ public class ReferralInfoCache {
 
     private String mobile;
     private String name;
-    private List<ReferralPositionIdTitle> positions;
     private List<String> referralReasons;
     private String userId;
     private String fileName;
+    private String referralType;
+
+    public String getReferralType() {
+        return referralType;
+    }
+
+    public void setReferralType(String referralType) {
+        this.referralType = referralType;
+    }
 
     @Override
     public String toString() {
         return "ReferralInfoCache{" +
                 "mobile='" + mobile + '\'' +
                 ", name='" + name + '\'' +
-                ", positions=" + positions +
                 ", referralReasons=" + referralReasons +
                 ", userId='" + userId + '\'' +
                 ", fileName='" + fileName + '\'' +
+                ", referralType='" + referralType + '\'' +
                 '}';
-    }
-
-    public List<ReferralPositionIdTitle> getPositions() {
-        return positions;
-    }
-
-    public void setPositions(List<ReferralPositionIdTitle> positions) {
-        this.positions = positions;
     }
 
     public String getMobile() {

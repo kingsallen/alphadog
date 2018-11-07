@@ -204,10 +204,8 @@ public class ReferralServiceImpl implements ReferralService {
     public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException {
 
         // 获取缓存的推荐记录
-        ReferralInfoCacheDTO referralInfoCacheDTO = getReferralCache(employeeId);
-        List<JobPositionDO> jobPositionDOS = jobPositionDao.getPositionList(ids);
-        // todo 需要判断职位为空的情况
-//        checkPositionState();
+        ReferralInfoCacheDTO referralInfoCacheDTO = JSONObject.parseObject(getReferralCache(employeeId), ReferralInfoCacheDTO.class);
+        List<JobPositionDO> jobPositionDOS = jobPositionDao.getPositionListWithoutStatus(ids);
         // 检验是否达到申请上限
         Map<String, String> applyLimit = checkCompanyApply(referralInfoCacheDTO.getCompanyId(), referralInfoCacheDTO.getUserId(), jobPositionDOS);
         Map<String, String> referralResultMap = new HashMap<>(1 >> 4);
@@ -215,41 +213,18 @@ public class ReferralServiceImpl implements ReferralService {
             return applyLimit;
         }
         List<Integer> positionIds = jobPositionDOS.stream().map(JobPositionDO::getId).collect(Collectors.toList());
-        List<ReferralInfoCacheDTO> successCache = new ArrayList<>();
         List<MobotReferralResultVO> referralResultVOS = employeeReferralProfileAdaptor(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
                 referralInfoCacheDTO.getReferralReasons(), positionIds, referralInfoCacheDTO.getReferralType(), ReferralScene.ChatBot);
         referralResultMap.put("list", JSON.toJSONString(referralResultVOS));
-        initReferralResult(referralInfoCacheDTO, referralResultVOS, successCache);
-        client.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_POSITION_CACHE.toString(),
-                    String.valueOf(employeeId), JSON.toJSONString(successCache));
         return referralResultMap;
     }
 
-    /**
-     * 将推荐结果封装存入redis
-     * @param  referralInfoCacheDTO  推荐信息缓存
-     * @param  referralResultVOS  推荐业务结果
-     * @param  successCache  推荐业务缓存
-     * @author  cjm
-     * @date  2018/11/6
-     */
-    private void initReferralResult(ReferralInfoCacheDTO referralInfoCacheDTO, List<MobotReferralResultVO> referralResultVOS, List<ReferralInfoCacheDTO> successCache) {
-        for(MobotReferralResultVO referralResultVO : referralResultVOS){
-            if(referralResultVO.getSuccess()){
-                ReferralInfoCacheDTO newCache = new ReferralInfoCacheDTO();
-                BeanUtils.copyProperties(referralInfoCacheDTO, newCache);
-                successCache.add(newCache);
-            }
-        }
-    }
-
-    private ReferralInfoCacheDTO getReferralCache(int employeeId) throws BIZException {
+    private String getReferralCache(int employeeId) throws BIZException {
         String referralCache = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(), String.valueOf(employeeId));
         if(StringUtils.isBlank(referralCache)){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROFILE_DATA_OVERTIME);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.REFERRAL_DATA_OVERTIME);
         }
-        client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_POSITION_CACHE.toString(), String.valueOf(employeeId));
-        return JSONObject.parseObject(referralCache, ReferralInfoCacheDTO.class);
+        return referralCache;
     }
 
     @Override
@@ -284,15 +259,8 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public String getMobotReferralCache(int employeeId) {
-        String referralCache = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_INFO_CACHE.toString(),
-                String.valueOf(employeeId));
-        String successPositions = client.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_POSITION_CACHE.toString(),
-                String.valueOf(employeeId));
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.putAll(JSONObject.parseObject(referralCache));
-        jsonObject.put("positions", JSONArray.parseArray(successPositions));
-        return jsonObject.toJSONString();
+    public String getMobotReferralCache(int employeeId) throws BIZException {
+        return getReferralCache(employeeId);
     }
 
     /**
