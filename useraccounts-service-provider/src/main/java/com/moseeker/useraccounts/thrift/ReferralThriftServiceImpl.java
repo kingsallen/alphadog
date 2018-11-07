@@ -1,13 +1,14 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
-import com.moseeker.thrift.gen.referral.struct.Bonus;
-import com.moseeker.thrift.gen.referral.struct.BonusList;
-import com.moseeker.thrift.gen.referral.struct.RedPacket;
-import com.moseeker.thrift.gen.referral.struct.RedPackets;
+import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.thrift.TException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ReferralThriftServiceImpl implements ReferralService.Iface {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private com.moseeker.useraccounts.service.ReferralService referralService;
@@ -61,6 +64,18 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
                 }).collect(Collectors.toList()));
             }
             return result;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
+        try {
+            ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
+            logger.info("ReferralThriftServiceImpl updateActivity activityDTO:{}", activityDTO);
+            logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
+            referralService.updateActivity(activityVO);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

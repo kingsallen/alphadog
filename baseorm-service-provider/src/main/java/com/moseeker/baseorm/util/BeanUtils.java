@@ -57,7 +57,7 @@ public class BeanUtils {
     }};
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> R structToDB(T t, Class<R> origClazz,
+    public static <T, R> R structToDB(T t, Class<R> origClazz,
                                                      Map<String, String> equalRules) {
         R orig = null;
         try {
@@ -70,7 +70,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> R structToDB(T t, Class<R> origClazz) {
+    public static <T, R> R structToDB(T t, Class<R> origClazz) {
         R orig = null;
         try {
             orig = origClazz.newInstance();
@@ -82,7 +82,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> R structToDBAll(T t, Class<R> origClazz) {
+    public static <T, R> R structToDBAll(T t, Class<R> origClazz) {
         R orig = null;
         try {
             orig = origClazz.newInstance();
@@ -94,7 +94,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> List<R> structToDB(List<T> ts, Class<R> origClazz) {
+    public static <T, R> List<R> structToDB(List<T> ts, Class<R> origClazz) {
         List<R> records = new ArrayList<R>();
         ts.forEach(t -> {
             R r = structToDB(t, origClazz);
@@ -109,7 +109,7 @@ public class BeanUtils {
      * @param orig record 对象
      */
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> void structToDBAll(T dest, R orig, Map<String, String> equalRules) {
+    public static <T, R> void structToDBAll(T dest, R orig, Map<String, String> equalRules) {
         if (dest == null || orig == null) {
             return;
         }
@@ -171,7 +171,7 @@ public class BeanUtils {
      * @param orig record 对象
      */
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> void structToDB(T dest, R orig, Map<String, String> equalRules) {
+    public static <T, R> void structToDB(T dest, R orig, Map<String, String> equalRules) {
         if (dest == null || orig == null) {
             return;
         }
@@ -231,7 +231,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> T DBToStruct(Class<T> destClazz, R orig,
+    public static <T, R> T DBToStruct(Class<T> destClazz, R orig,
                                                      Map<String, String> equalRules) {
         T base = null;
         try {
@@ -244,7 +244,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> T DBToStruct(Class<T> destClazz, R orig) {
+    public static <T, R> T DBToStruct(Class<T> destClazz, R orig) {
         T base = null;
         try {
             base = destClazz.newInstance();
@@ -256,7 +256,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
+    public static <T, R> List<T> DBToStruct(Class<T> destClazz, List<R> origs) {
         List<T> list = new ArrayList<>();
 
         if (origs != null && origs.size() > 0) {
@@ -270,7 +270,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> void DBToStruct(T dest, R orig, Map<String, String> equalRules) {
+    public static <T, R> void DBToStruct(T dest, R orig, Map<String, String> equalRules) {
         if (dest == null || orig == null) {
             return;
         }
@@ -325,7 +325,7 @@ public class BeanUtils {
     }
 
     @SuppressWarnings("rawtypes")
-    public static <T, R extends Record> T DBToBean(R orig, Class<T> destClazz) {
+    public static <T, R> T DBToBean(R orig, Class<T> destClazz) {
         T dest = null;
         try {
             dest = destClazz.newInstance();

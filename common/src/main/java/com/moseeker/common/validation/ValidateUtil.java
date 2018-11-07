@@ -404,6 +404,20 @@ public class ValidateUtil {
 	}
 
 	/**
+	 * 往验证器中添加一个DateTypeValidateRule
+	 *
+	 * @param paramName
+	 * @param beanToBeValidated
+	 * @param type
+	 * @return DasValidateRule
+	 */
+	public ValidateRule addDateValidate(String paramName,
+										Object beanToBeValidated, DateType type) throws ValidateNotAppointParamException {
+
+		return addDateValidate(paramName, beanToBeValidated, type, null, null);
+	}
+
+	/**
 	 * 往验证器中添加RegExpressValidateRule
 	 * 
 	 * @param paramName

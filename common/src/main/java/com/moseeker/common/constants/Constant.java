@@ -1,11 +1,5 @@
 package com.moseeker.common.constants;
 
-import org.joda.time.DateTime;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 
  * Common项目常用配置信息
@@ -241,7 +235,7 @@ public final class Constant {
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
 
-    public static final String RESUME_INFORM_HR = "resume-detail"; //简历投递给HR发邮件没有附件模板
+    public static final String RESUME_INFORM_HR = "resume-detail-v2"; //简历投递给HR发邮件没有附件模板   新简历模板
     public static final String ANNEX_RESUME_INFORM_HR = "annex-resume-delivery-to-hr-email";
     public static final String MISMATCH_NOTIFICATION = "mismatch-notification";//简历投递不匹配发送邮件
     public static final String DELIVERY_SUCCESS = "delivery-success";//简历投递
