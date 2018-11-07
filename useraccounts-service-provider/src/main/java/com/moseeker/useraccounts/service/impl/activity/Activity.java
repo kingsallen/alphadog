@@ -61,7 +61,7 @@ public abstract class Activity {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_IN_RUNNING;
         }
         logger.info("Activity start id:{}, activityStatus:{}, activityCheckState:{}", id, activityStatus, activityCheckState);
-        if (!activityCheckState.equals(ActivityCheckState.UnChecked) || activityStatus.equals(ActivityStatus.Finish)
+        if (activityCheckState.equals(ActivityCheckState.UnChecked) || activityStatus.equals(ActivityStatus.Finish)
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;
         }
