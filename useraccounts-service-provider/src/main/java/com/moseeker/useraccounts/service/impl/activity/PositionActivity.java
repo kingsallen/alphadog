@@ -127,6 +127,7 @@ public abstract class PositionActivity extends Activity {
                 positionBindingDao.insert(bindings);
 
                 try {
+                    logger.info("PositionActivity updateInfo 职位参加活动 positionList:{}, newStatus:{}",positionList, newStatus);
                     positionDao.updateHBStatus(positionList, newStatus);
                 } catch (CommonException e) {
                     throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
