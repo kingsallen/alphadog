@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat implements Serializable {
 
-    private static final long serialVersionUID = -989262342;
+    private static final long serialVersionUID = 1785370350;
 
     private Integer   id;
     private Integer   companyId;
@@ -243,11 +243,11 @@ public class HrWxWechat implements Serializable {
         this.welcome = welcome;
     }
 
-    public Integer getDefault() {
+    public Integer getDefault_() {
         return this.default_;
     }
 
-    public void setDefault(Integer default_) {
+    public void setDefault_(Integer default_) {
         this.default_ = default_;
     }
 

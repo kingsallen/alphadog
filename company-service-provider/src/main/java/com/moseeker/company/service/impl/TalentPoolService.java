@@ -1616,8 +1616,8 @@ public class TalentPoolService {
                             if (data.isSetKeyword_list()) {
                             String keyword = StringUtils.listToString(data.getKeyword_list(), ";");
                             map.put("keywords", keyword);
-                            map.put("company_id",companyId);
                         }
+                        map.put("company_id",companyId);
                         tagService.handlerHrAutomaticTag(idList, TalentpoolTagStatus.TALENT_POOL_ADD_TAG.getValue(), map);
                         return 0;
                     });

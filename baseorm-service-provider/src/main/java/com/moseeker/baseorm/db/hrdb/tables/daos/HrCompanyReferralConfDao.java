@@ -87,7 +87,7 @@ public class HrCompanyReferralConfDao extends DAOImpl<HrCompanyReferralConfRecor
     }
 
     /**
-     * Fetch records that have <code>text IN (values)</code>
+     * Fetch records that have <code>TEXT IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyReferralConf> fetchByText(String... values) {
         return fetch(HrCompanyReferralConf.HR_COMPANY_REFERRAL_CONF.TEXT, values);

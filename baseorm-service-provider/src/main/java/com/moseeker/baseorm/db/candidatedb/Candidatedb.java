@@ -11,6 +11,8 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom;
 
@@ -38,7 +40,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-    private static final long serialVersionUID = -2021510683;
+    private static final long serialVersionUID = 1813531166;
 
     /**
      * The reference instance of <code>candidatedb</code>
@@ -79,6 +81,16 @@ public class Candidatedb extends SchemaImpl {
      * 链路信息表
      */
     public final CandidateShareChain CANDIDATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain.CANDIDATE_SHARE_CHAIN;
+
+    /**
+     * 链路信息表
+     */
+    public final CandidateShareChain_0417 CANDIDATE_SHARE_CHAIN_0417 = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417;
+
+    /**
+     * 链路信息表
+     */
+    public final CandidateShareChain_0418 CANDIDATE_SHARE_CHAIN_0418 = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418;
 
     /**
      * HR手动添加相关职位表
@@ -122,6 +134,8 @@ public class Candidatedb extends SchemaImpl {
             CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
             CandidateRemark.CANDIDATE_REMARK,
             CandidateShareChain.CANDIDATE_SHARE_CHAIN,
+            CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417,
+            CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418,
             CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION,
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM);
     }
