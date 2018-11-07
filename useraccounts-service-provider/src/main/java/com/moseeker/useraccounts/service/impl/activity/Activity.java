@@ -120,6 +120,9 @@ public abstract class Activity {
             if (activityVO.getTotalAmount() != null) {
                 hrHbConfig.setTotalAmount(activityVO.getTotalAmount().intValue());
                 totalAmount = activityVO.getTotalAmount().intValue();
+                if (hrHbConfig.getChecked() == 1) {
+                    hrHbConfig.setChecked((byte)0);
+                }
             }
             if (activityVO.getRangeMax() != null) {
                 hrHbConfig.setRangeMax(activityVO.getRangeMax());
