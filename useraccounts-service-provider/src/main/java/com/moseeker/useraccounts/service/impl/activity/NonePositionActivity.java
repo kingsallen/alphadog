@@ -11,6 +11,8 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -81,11 +83,12 @@ public class NonePositionActivity extends Activity {
             if (hrHbConfig == null ) {
                 throw UserAccountException.ACTIVITY_NOT_EXISTS;
             }
+            DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
             if (StringUtils.isNotBlank(activityVO.getStartTime())) {
-                hrHbConfig.setStartTime(new Timestamp(DateTime.parse(activityVO.getStartTime()).getMillis()));
+                hrHbConfig.setStartTime(new Timestamp(DateTime.parse(activityVO.getStartTime(), format).getMillis()));
             }
             if (StringUtils.isNotBlank(activityVO.getEndTime())) {
-                hrHbConfig.setEndTime(new Timestamp(DateTime.parse(activityVO.getEndTime()).getMillis()));
+                hrHbConfig.setEndTime(new Timestamp(DateTime.parse(activityVO.getEndTime(), format).getMillis()));
             }
             //红包活动的活动时间是否有交集的情况。非职位相关的红包活动不能有时间交集。
             List<HrHbConfigRecord> hrHbConfigRecords
