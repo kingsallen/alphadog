@@ -151,18 +151,21 @@ public abstract class PositionActivity extends Activity {
      */
     private void releasePosition() {
         List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
+        logger.info("PositionActivity releasePosition bindingRecords:{}", bindingRecords);
         if (bindingRecords != null && bindingRecords.size() > 0) {
             List<Integer> positionIdList = bindingRecords
                     .stream()
                     .map(HrHbPositionBindingRecord::getPositionId)
                     .collect(Collectors.toList());
             List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
+            logger.info("PositionActivity releasePosition positions:{}", positions);
             Map<Integer, Byte> newStatus = new HashMap<>();
             for (JobPosition position : positions) {
                 //获取当前
                 newStatus.put(position.getId(), (byte)(position.getHbStatus()^activityStatus.getValue()));
                 //处理职位是否在参加活动数据
             }
+            logger.info("PositionActivity releasePosition newStatus:{}", newStatus);
             try {
                 positionDao.updateHBStatus(positions, newStatus);
             } catch (CommonException e) {
