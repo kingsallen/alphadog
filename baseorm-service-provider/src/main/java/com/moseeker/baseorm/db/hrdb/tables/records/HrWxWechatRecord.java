@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = -1866257017;
+    private static final long serialVersionUID = 69903833;
 
     /**
      * Setter for <code>hrdb.hr_wx_wechat.id</code>.
@@ -198,16 +198,16 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_wechat.default</code>. default message
+     * Setter for <code>hrdb.hr_wx_wechat.default_</code>. default message
      */
-    public void setDefault(Integer value) {
+    public void setDefault_(Integer value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_wechat.default</code>. default message
+     * Getter for <code>hrdb.hr_wx_wechat.default_</code>. default message
      */
-    public Integer getDefault() {
+    public Integer getDefault_() {
         return (Integer) get(12);
     }
 
