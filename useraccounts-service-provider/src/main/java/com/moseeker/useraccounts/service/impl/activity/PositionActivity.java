@@ -130,7 +130,7 @@ public abstract class PositionActivity extends Activity {
 
                 //将之前参与活动的职位删除，并修改职位参与活动的状态。
                 releasePosition(bindingRecords);
-                positionBindingDao.deleteByActivityId(id);
+                positionBindingDao.deleteByActivityId(id, bindingRecords);
 
                 //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
                 List<HrHbPositionBindingRecord> bindings = new ArrayList<>();
