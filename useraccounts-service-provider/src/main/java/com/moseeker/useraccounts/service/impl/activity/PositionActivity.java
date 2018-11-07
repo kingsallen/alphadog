@@ -93,45 +93,64 @@ public abstract class PositionActivity extends Activity {
                     || activityStatus.equals(ActivityStatus.UnChecked)
                     || activityStatus.equals(ActivityStatus.UnStart)) {
 
-                List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
-                List<JobPosition> positionList = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
+                List<HrHbPositionBindingRecord> bindingRecords1 = positionBindingDao.fetchByActivity(id);
+                List<JobPosition> positionList1 = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
 
                 //如果选择的职位和之前配置的职位一直，则不需要做任何处理
-                if (checkIfChangePosition(activityVO.getPositionIds(), bindingRecords)) {
-                    if (positionList == null || positionList.size() != activityVO.getPositionIds().size()) {
-                        throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
-                    } else {
-                        for (JobPosition position : positionList) {
-                            if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
-                                throw UserAccountException.ACTIVITY_POSITION_ALREADY_IN_ACTIVITY;
-                            }
-                        }
-                    }
+                if (bindingRecords1 == null || bindingRecords1.size() != activityVO.getPositionIds().size()) {
+                    throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
+                }
 
-                    //将之前参与活动的职位删除，并修改职位参与活动的状态。
-                    releasePosition(bindingRecords);
-                    positionBindingDao.deleteByActivityId(id);
+                List<JobPosition> positionList = positionList1.stream().filter(jobPosition -> {
+                    Optional<HrHbPositionBindingRecord> optional = bindingRecords1
+                            .stream()
+                            .filter(hrHbPositionBindingRecord
+                                    -> hrHbPositionBindingRecord.getPositionId().equals(jobPosition.getId()))
+                            .findAny();
+                    return !optional.isPresent();
+                }).collect(Collectors.toList());
 
-                    //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
-                    List<HrHbPositionBindingRecord> bindings = new ArrayList<>();
-                    Map<Integer, Byte> newStatus = new HashMap<>();
-                    HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
-                    for (JobPosition position : positionList) {
-                        HrHbPositionBindingRecord binding = new HrHbPositionBindingRecord();
-                        binding.setHbConfigId(id);
-                        binding.setPositionId(position.getId());
-                        binding.setTriggerWay(getTriggerWay());
-                        binding.setTotalAmount(BigDecimal.valueOf(hrHbConfig.getTotalAmount()));
-                        bindings.add(binding);
-                        newStatus.put(position.getId(), (byte)(position.getHbStatus() | positionHBStatus.getValue()));
-                    }
-                    positionBindingDao.insert(bindings);
 
-                    try {
-                        positionDao.updateHBStatus(positionList, newStatus);
-                    } catch (CommonException e) {
-                        throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
+                for (JobPosition position : positionList) {
+                    if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
+                        throw UserAccountException.ACTIVITY_POSITION_ALREADY_IN_ACTIVITY;
                     }
+                }
+
+                List<HrHbPositionBindingRecord> bindingRecords = bindingRecords1
+                        .stream()
+                        .filter(hrHbPositionBindingRecord -> {
+                            Optional<JobPosition> optional = positionList1
+                                    .stream()
+                                    .filter(jobPosition
+                                            -> jobPosition.getId().equals(hrHbPositionBindingRecord.getPositionId()))
+                                    .findAny();
+                            return !optional.isPresent();
+                        }).collect(Collectors.toList());
+
+                //将之前参与活动的职位删除，并修改职位参与活动的状态。
+                releasePosition(bindingRecords);
+                positionBindingDao.deleteByActivityId(id);
+
+                //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
+                List<HrHbPositionBindingRecord> bindings = new ArrayList<>();
+                Map<Integer, Byte> newStatus = new HashMap<>();
+                HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
+                for (JobPosition position : positionList) {
+                    HrHbPositionBindingRecord binding = new HrHbPositionBindingRecord();
+                    binding.setHbConfigId(id);
+                    binding.setPositionId(position.getId());
+                    binding.setTriggerWay(getTriggerWay());
+                    binding.setTotalAmount(BigDecimal.valueOf(hrHbConfig.getTotalAmount()));
+                    bindings.add(binding);
+                    newStatus.put(position.getId(), (byte)(position.getHbStatus() | positionHBStatus.getValue()));
+                }
+                positionBindingDao.insert(bindings);
+
+                try {
+                    positionDao.updateHBStatus(positionList, newStatus);
+                } catch (CommonException e) {
+                    throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
                 }
             }
         }
