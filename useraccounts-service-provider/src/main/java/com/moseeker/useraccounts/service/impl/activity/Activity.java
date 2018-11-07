@@ -11,6 +11,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.common.validation.rules.DateType;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
@@ -83,7 +84,13 @@ public abstract class Activity {
         configDao.updateStatus(id, ActivityStatus.Pause.getValue());
     }
 
-    public void updateInfo(ActivityVO activityVO) {
+    /**
+     * 修改红包活动数据
+     * 如果
+     * @param activityVO
+     * @param checked
+     */
+    public void updateInfo(ActivityVO activityVO, boolean checked) {
         if (activityStatus.equals(ActivityStatus.Running)) {
             throw UserAccountException.ACTIVITY_RUNNING;
         } else {
@@ -160,6 +167,14 @@ public abstract class Activity {
             }
             if (activityVO.getActualTotal() != null) {
                 hrHbConfig.setActualTotal(activityVO.getActualTotal());
+            }
+            if (checked) {
+                if (hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
+                        && (activityStatus.equals(ActivityStatus.Checked)
+                        || activityStatus.equals(ActivityStatus.UnChecked)
+                        || activityStatus.equals(ActivityStatus.UnStart))) {
+                    hrHbConfig.setChecked(ActivityCheckState.UnChecked.getValue());
+                }
             }
             configDao.update(hrHbConfig);
         }
