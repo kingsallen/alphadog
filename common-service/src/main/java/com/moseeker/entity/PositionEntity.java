@@ -65,7 +65,7 @@ public class PositionEntity {
 
     @Autowired
     private HrCompanyDao companyDao;
-
+    ;
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
