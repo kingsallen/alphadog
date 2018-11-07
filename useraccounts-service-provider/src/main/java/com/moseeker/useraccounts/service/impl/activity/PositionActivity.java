@@ -41,13 +41,14 @@ public abstract class PositionActivity extends Activity {
 
         super.start(activityVO);
 
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredOneValidate("红包金额", activityVO.getAmounts());
-        String result = validateUtil.validate();
-        if (StringUtils.isNotBlank(result)) {
-            throw UserAccountException.validateFailed(result);
+        if (!activityStatus.equals(ActivityStatus.Pause)) {
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredOneValidate("红包金额", activityVO.getAmounts());
+            String result = validateUtil.validate();
+            if (StringUtils.isNotBlank(result)) {
+                throw UserAccountException.validateFailed(result);
+            }
         }
-
         List<HrHbItemsRecord> items = new ArrayList<>();
 
         //是否生成红包数据 如果已经生成就不需要再生成了
