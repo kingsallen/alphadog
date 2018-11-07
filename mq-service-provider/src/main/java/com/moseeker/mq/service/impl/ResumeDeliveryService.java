@@ -105,7 +105,7 @@ public class ResumeDeliveryService {
     @Autowired
     private JobPositionCcmailDao ccmailDao;
     @Autowired
-    private TemlateMsgHttp msgHttp;
+    private TemplateMsgHttp msgHttp;
     @Autowired
     private SmsService smsService;
     @Autowired

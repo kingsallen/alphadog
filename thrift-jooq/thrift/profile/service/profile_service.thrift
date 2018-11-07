@@ -27,6 +27,7 @@ service ProfileOtherThriftService {
     common_struct.Response otherFieldsCheck(1: i32 profileId, 2: string fields) throws(1: common_struct.BIZException e);
     common_struct.Response getProfileOtherByPosition(1:i32 userId, 2:i32 accountId, 3:i32 positionId) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileOtherByPositionNotViewApplication(1:i32 userId, 2:i32 accountId, 3:i32 positionId) throws (1: common_struct.BIZException e);
+    common_struct.Response updateSpecificResource(1:string otherParams)
 }
 
 service WholeProfileServices {
@@ -70,17 +71,23 @@ service ProfileServices {
     common_struct.Response resumeTalentProfile(1:string fileName,2:string file,3: i32 companyId)throws (1: common_struct.BIZException e);
     list<profile_struct.UserProfile> fetchUserProfile(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileTokenDecrypt(1:string token);
-    i32 parseText(1: string profile, 2: i32 reference) throws (1: common_struct.BIZException e);
-    //简历解析
+    i32 parseText(1: string profile, 2: i32 reference, 3: i32 appid) throws (1: common_struct.BIZException e);
+    //员工简历解析
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+     //用户简历解析
+     profile_struct.ProfileParseResult parseUserFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
     //简历解析
     profile_struct.ProfileParseResult parseFileStreamProfile(1:i32 employeeId, 2: string fileOriginName, 3: string fileName, 4: string absoluteName, 5: string fileData)throws (1: common_struct.BIZException e)
     //员工推荐简历
     i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 referralType)throws (1: common_struct.BIZException e)
+    //用户上传简历
+     i32 updateUserProfile(1:i32 employeeId, 2:string name, 3:string mobile)throws (1: common_struct.BIZException e)
+
     //删除上传的简历数据
     void employeeDeleteReferralProfile(1:i32 employeeId)throws (1: common_struct.BIZException e)
     //员工提交被推荐人关键信息
     i32 postCandidateInfo(1:i32 employeeId, 2: profile_struct.CandidateInfo candidateInfo)throws (1: common_struct.BIZException e)
+
 }
 
 service AttachmentServices {

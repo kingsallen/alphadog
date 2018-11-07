@@ -2,15 +2,12 @@ package com.moseeker.entity.biz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.dictdb.DictCollegeDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictPositionDao;
 import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
-import com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysCvTpl;
-import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysCvTplRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
@@ -20,7 +17,6 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.Pagination;
-import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ProfileAttributeLengthLimit;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCollegeDO;
@@ -432,7 +428,7 @@ public class ProfileUtils {
 										&& positionRecord.getPositionCode().intValue() != 0)
 										|| StringUtils.isNotBlank(positionRecord.getPositionName()))) {
 									record.getPositions().add(positionRecord);
-									break;
+//									break;
 								}
 							}
 						}
@@ -448,7 +444,7 @@ public class ProfileUtils {
 										&& industryRecord.getIndustryCode().intValue() != 0)
 										|| StringUtils.isNotBlank(industryRecord.getIndustryName()))) {
 									record.getIndustries().add(industryRecord);
-									break;
+//									break;
 								}
 							}
 						}
@@ -914,13 +910,13 @@ public class ProfileUtils {
 				List<DictPositionRecord> dictPositions = dictPositionDao.getRecords(dictQuery);
 				List<Integer> intentionIds = new ArrayList<>();
 				records.forEach(record -> {
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("id", record.getId().intValue());
+					Map<String, Object> map = new HashMap<>();
+					map.put("id", record.getId());
 					map.put("worktype", record.getWorktype().intValue());
 					map.put("worktype_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3105
-								&& constantRecord.getCode().intValue() == record.getWorktype().intValue()) {
+						if (constantRecord.getParentCode() == 3105
+								&& constantRecord.getCode() == record.getWorktype().intValue()) {
 							map.put("worktype_name", constantRecord.getName());
 							break;
 						}
@@ -928,8 +924,8 @@ public class ProfileUtils {
 					map.put("workstate", record.getWorkstate().intValue());
 					map.put("workstate_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3102
-								&& constantRecord.getCode().intValue() == record.getWorkstate().intValue()) {
+						if (constantRecord.getParentCode() == 3102
+								&& constantRecord.getCode() == record.getWorkstate().intValue()) {
 							map.put("workstate_name", constantRecord.getName());
 							break;
 						}
@@ -937,8 +933,8 @@ public class ProfileUtils {
 					map.put("salary_code", record.getSalaryCode().intValue());
 					map.put("salary_code_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3114
-								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
+						if (constantRecord.getParentCode() == 3114
+								&& constantRecord.getCode() == record.getSalaryCode().intValue()) {
 							map.put("salary_code_name", constantRecord.getName());
 							break;
 						}
@@ -948,13 +944,13 @@ public class ProfileUtils {
 							record.getConsiderVentureCompanyOpportunities().intValue());
 					map.put("consider_venture_company_opportunities_name", "");
 					for (DictConstantRecord constantRecord : constantRecords) {
-						if (constantRecord.getParentCode().intValue() == 3120
-								&& constantRecord.getCode().intValue() == record.getSalaryCode().intValue()) {
+						if (constantRecord.getParentCode() == 3120
+								&& constantRecord.getCode() == record.getSalaryCode().intValue()) {
 							map.put("consider_venture_company_opportunities_name", constantRecord.getName());
 							break;
 						}
 					}
-					intentionIds.add(record.getId().intValue());
+					intentionIds.add(record.getId());
 					list.add(map);
 				});
 				List<ProfileIntentionCityRecord> cityRecords = intentionCityDao.getIntentionCities(intentionIds);
@@ -965,9 +961,9 @@ public class ProfileUtils {
 				list.forEach(map -> {
 					if (cityRecords != null) {
 						List<Map<String, Object>> cities = new ArrayList<>();
-						cityRecords.forEach(cityRecord -> {
+						cityRecords.stream().filter(ProfileUtils::activeIntentionCity).forEach(cityRecord -> {
 							Map<String, Object> cityMap = new HashMap<>();
-							cityMap.put("city_code", cityRecord.getCityCode().intValue());
+							cityMap.put("city_code", cityRecord.getCityCode());
 							if(StringUtils.isBlank(cityRecord.getCityName())) {
 								for(DictCityRecord dictCity : dictCities) {
 									if(cityRecord.getCityCode().intValue() == dictCity.getCode().intValue()) {
@@ -984,10 +980,11 @@ public class ProfileUtils {
 					}
 					if (industryRecords != null) {
 						List<Map<String, Object>> industries = new ArrayList<>();
-						industryRecords.forEach(record -> {
+						industryRecords.stream().filter(ProfileUtils::activeIntentionIndustry).forEach(record -> {
 							Map<String, Object> industryMap = new HashMap<>();
-							industryMap.put("industry_code", record.getIndustryCode().intValue());
+							industryMap.put("industry_code", record.getIndustryCode());
 							if(StringUtils.isBlank(record.getIndustryName())) {
+
 								for(DictIndustryRecord dictIndustry : dictIndustries) {
 									if(dictIndustry.getCode().intValue() == record.getIndustryCode().intValue()) {
 										industryMap.put("industry_name", dictIndustry.getName());
@@ -1003,7 +1000,7 @@ public class ProfileUtils {
 					}
 					if (positionRecords != null) {
 						List<Map<String, Object>> positions = new ArrayList<>();
-						positionRecords.forEach(record -> {
+						positionRecords.stream().filter(ProfileUtils::activeIntentionPosition).forEach(record -> {
 							Map<String, Object> positionMap = new HashMap<>();
 							if(StringUtils.isBlank(record.getPositionName())) {
 								for(DictPositionRecord dictPosition : dictPositions) {
@@ -1028,6 +1025,31 @@ public class ProfileUtils {
 			// do nothing
 		}
 		return list;
+	}
+
+	/**
+	 * 判断期望城市是否是有效的信息（线上存在一些城市code 为0 或者为空字符串并且城市名称也是为空字符串的无效数据）
+	 * @param cityRecord 期望城市
+	 * @return true 有效的数据；false 无效数据
+	 */
+	public static boolean activeIntentionCity(ProfileIntentionCityRecord cityRecord) {
+		return  (cityRecord.getCityCode() != null && cityRecord.getCityCode() > 0)
+				|| StringUtils.isNotBlank(cityRecord.getCityName());
+	}
+
+	/**
+	 * 判断期望行业是否是有效信息（同期望城市）
+	 * @param record 期望职能数据
+	 * @return true 有效数据；false 无效数据
+	 */
+	public static boolean activeIntentionIndustry(ProfileIntentionIndustryRecord record) {
+		return (record.getIndustryCode() != null && record.getIndustryCode() > 0)
+				|| StringUtils.isNotBlank(record.getIndustryName());
+	}
+
+	public static boolean activeIntentionPosition(ProfileIntentionPositionRecord record) {
+		return (record.getPositionCode() != null && record.getPositionCode() > 0)
+				|| StringUtils.isNotBlank(record.getPositionName());
 	}
 
 	/**

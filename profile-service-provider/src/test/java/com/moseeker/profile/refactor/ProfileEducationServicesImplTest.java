@@ -51,7 +51,7 @@ public class ProfileEducationServicesImplTest{
 		Education education = new Education();
 		education.setProfile_id(170);
 		education.setDescription("postResource");
-		education.setCollege_name("test college name");
+		education.setCollege_name("resumeFileParser college name");
 		education.setDegree(3);
 		education.setStart_date("2005-09-01");
 		education.setEnd_date("2008-06-01");
@@ -72,7 +72,7 @@ public class ProfileEducationServicesImplTest{
 		Education education = new Education();
 		education.setProfile_id(170);
 		education.setDescription("postResources");
-		education.setCollege_name("test college name");
+		education.setCollege_name("resumeFileParser college name");
 		education.setDegree(3);
 		education.setStart_date("2005-09-01");
 		education.setEnd_date("2008-06-01");

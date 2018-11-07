@@ -49,7 +49,7 @@ public class ProfileProjectExpServicesImplTest {
             ProjectExp projectExp = new ProjectExp();
             projectExp.setProfile_id(170);
             projectExp.setStart_date("2017-01-01");
-            projectExp.setName("test postResources");
+            projectExp.setName("resumeFileParser postResources");
             response = service.postResources(new ArrayList<ProjectExp>(){{add(projectExp);add(projectExp);}});
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,11 +64,11 @@ public class ProfileProjectExpServicesImplTest {
 
             ProjectExp projectExp = new ProjectExp();
             projectExp.setId(140556);
-            projectExp.setName("test putResources");
+            projectExp.setName("resumeFileParser putResources");
 
             ProjectExp projectExp2 = new ProjectExp();
             projectExp2.setId(140557);
-            projectExp2.setName("test putResources2");
+            projectExp2.setName("resumeFileParser putResources2");
 
             response = service.putResources(new ArrayList<ProjectExp>(){{add(projectExp);add(projectExp2);}});
         } catch (Exception e) {
@@ -99,7 +99,7 @@ public class ProfileProjectExpServicesImplTest {
             ProjectExp projectExp = new ProjectExp();
             projectExp.setProfile_id(170);
             projectExp.setStart_date("2017-01-01");
-            projectExp.setName("test postResource");
+            projectExp.setName("resumeFileParser postResource");
             response = service.postResource(projectExp);
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +113,7 @@ public class ProfileProjectExpServicesImplTest {
         try {
             ProjectExp projectExp = new ProjectExp();
             projectExp.setId(140558);
-            projectExp.setName("test putResource");
+            projectExp.setName("resumeFileParser putResource");
             response = service.putResource(projectExp);
         } catch (Exception e) {
             e.printStackTrace();

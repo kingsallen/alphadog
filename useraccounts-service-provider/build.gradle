@@ -41,7 +41,9 @@ jar {
 
     
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 project.description = '''
     1) User Service
     2) We call them "service-provider" in this project

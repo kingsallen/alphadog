@@ -76,15 +76,15 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 		return operationrecordDOList;
 	}
 
-    public int addRecord(JobApplication application, int appTplId, int companyId, int hrId) {
+    public int addRecord(long applicationId, long submitTime, int appTplId, int companyId, int hrId) {
 		HrOperationRecordRecord recordRecord = create.insertInto(HrOperationRecord.HR_OPERATION_RECORD)
 				.columns(HrOperationRecord.HR_OPERATION_RECORD.APP_ID,
 						HrOperationRecord.HR_OPERATION_RECORD.OPERATE_TPL_ID,
 						HrOperationRecord.HR_OPERATION_RECORD.ADMIN_ID,
 						HrOperationRecord.HR_OPERATION_RECORD.COMPANY_ID,
 						HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME)
-				.values((long)application.getId(), appTplId, (long)hrId, (long)companyId,
-						new Timestamp(application.getSubmitTime().getTime()-1))
+				.values(applicationId, appTplId, (long)hrId, (long)companyId,
+						new Timestamp(submitTime-1))
 				.returning()
 				.fetchOne();
 		return recordRecord != null ? recordRecord.getId():0;

@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
@@ -28,6 +29,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
@@ -91,7 +93,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -761350071;
+    private static final long serialVersionUID = 290729342;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -147,6 +149,11 @@ public class Hrdb extends SchemaImpl {
      * 账号公司关联记录
      */
     public final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
+
+    /**
+     * 账号公司关联记录
+     */
+    public final HrCompanyAccountCopy HR_COMPANY_ACCOUNT_COPY = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY;
 
     /**
      * 公司级别的配置信息表
@@ -217,6 +224,11 @@ public class Hrdb extends SchemaImpl {
      * 红包记录表
      */
     public final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
+
+    /**
+     * The table <code>hrdb.hr_hb_items_backup</code>.
+     */
+    public final HrHbItemsBackup HR_HB_ITEMS_BACKUP = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup.HR_HB_ITEMS_BACKUP;
 
     /**
      * 红包配置和职位绑定表
@@ -374,7 +386,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * The table <code>hrdb.hr_wx_module</code>.
+     * 微信模块表
      */
     public final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 
@@ -443,6 +455,7 @@ public class Hrdb extends SchemaImpl {
             HrCmsPages.HR_CMS_PAGES,
             HrCompany.HR_COMPANY,
             HrCompanyAccount.HR_COMPANY_ACCOUNT,
+            HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY,
             HrCompanyConf.HR_COMPANY_CONF,
             HrCompanyCs.HR_COMPANY_CS,
             HrCompanyEmailInfo.HR_COMPANY_EMAIL_INFO,
@@ -457,6 +470,7 @@ public class Hrdb extends SchemaImpl {
             HrGroupCompanyRel.HR_GROUP_COMPANY_REL,
             HrHbConfig.HR_HB_CONFIG,
             HrHbItems.HR_HB_ITEMS,
+            HrHbItemsBackup.HR_HB_ITEMS_BACKUP,
             HrHbPositionBinding.HR_HB_POSITION_BINDING,
             HrHbScratchCard.HR_HB_SCRATCH_CARD,
             HrHbSendRecord.HR_HB_SEND_RECORD,

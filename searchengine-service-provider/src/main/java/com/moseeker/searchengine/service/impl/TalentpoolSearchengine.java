@@ -232,7 +232,7 @@ public class TalentpoolSearchengine {
             }
             client=searchUtil.getEsClient();
             QueryBuilder query = this.query(params);
-            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_INDEX).setQuery(query);
+            SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
 //                   .addAggregation(this.handleAllcountAgg(params))
                     .addAggregation(this.handleAggInfo(params,"all_count_app","",1))//所有申请的数量
@@ -472,12 +472,31 @@ public class TalentpoolSearchengine {
     private void searchPastCommon(SearchPast searchPast,QueryBuilder query){
         String publisher=searchPast.getPublisher();
         String companyId=searchPast.getCompanyId();
+        String isTalent=searchPast.getIsTalent();
         if(StringUtils.isNotNullOrEmpty(publisher)){
             searchUtil.handleTerms(publisher,query,"user.applications.publisher");
         }
         if(StringUtils.isNotNullOrEmpty(companyId)){
             searchUtil.handleTerms(companyId,query,"user.applications.company_id");
         }
+        if(StringUtils.isNotNullOrEmpty(isTalent)){
+            String tagIds="talent,allpublic";
+            QueryBuilder queryNest=this.handlerPastNest(tagIds,companyId,publisher);
+            if(queryNest!=null){
+                ((BoolQueryBuilder) query).filter(queryNest);
+            }
+        }
+    }
+
+    private QueryBuilder handlerPastNest(String tagIds,String companyId,String hrId){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.queryByNestCompanyId(Integer.parseInt(companyId),query);
+        if(StringUtils.isNotNullOrEmpty(tagIds)){
+            this.queryByTagId(tagIds,hrId,query);
+        }
+        query=QueryBuilders.nestedQuery("user.talent_pool",query);
+        return query;
     }
     /*
      查询字段是否存在
@@ -615,7 +634,8 @@ public class TalentpoolSearchengine {
      */
     private QueryBuilder getQueryByTag(Map<String,String> params) throws TException {
         this.handlerProvinceCity(params);
-        int companyId=Integer.parseInt(params.get("company_id"));
+        String companyId=params.get("company_id");
+        String hrId=params.get("hr_id");
         String origins=params.get("origins");
         String workYears=params.get("work_years");
         String submitTime=params.get("submit_time");
@@ -709,8 +729,8 @@ public class TalentpoolSearchengine {
                     continue;
                 }
                 MultiMatchQueryBuilder fullf = QueryBuilders.multiMatchQuery(keyword);
-                fullf.type(MultiMatchQueryBuilder.Type.CROSS_FIELDS);
-                fullf.minimumShouldMatch("98%");
+                fullf.type(MultiMatchQueryBuilder.Type.PHRASE);
+                fullf.slop(0);
                 List<String> colums = StringUtils.stringToList(Constant.PROFILE_SEARCH_KEYWORD_COLUMS,";");
                 if(!StringUtils.isEmptyList(colums)){
                     for(String colum :colums){
@@ -732,7 +752,12 @@ public class TalentpoolSearchengine {
             //这里是处理groovy语法的位置
             StringBuffer sb=new StringBuffer();
             sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
-            sb.append("val.company_id=="+companyId+"&&");
+            if(StringUtils.isNotNullOrEmpty(companyId)){
+                sb.append("val.company_id=="+companyId+"&&");
+            }
+//            if(StringUtils.isNotNullOrEmpty(hrId)){
+//                sb.append("val.publisher=="+hrId+"&&");
+//            }
             if(StringUtils.isNotNullOrEmpty(submitTime)){
                 String longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
@@ -794,10 +819,12 @@ public class TalentpoolSearchengine {
         return query;
     }
     public QueryBuilder queryTalentNest(Map<String,String> params){
-        int companyId=Integer.parseInt(params.get("company_id"));
+        String companyId=params.get("company_id");
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
-        this.queryByNestCompanyId(companyId,query);
+        if(StringUtils.isNotNullOrEmpty(companyId)){
+            this.queryByNestCompanyId(Integer.parseInt(companyId),query);
+        }
         String hrId=params.get("hr_id");
         if(StringUtils.isNotNullOrEmpty(hrId)){
             String account_type=params.get("account_type");
@@ -1028,9 +1055,10 @@ public class TalentpoolSearchengine {
         String pastPosition=params.get("past_position");
         String intentionCityCode=params.get("intention_city_code");
         String companyTag=params.get("company_tag");
+        String hrAutoTag=params.get("hr_auto_tag");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
-        if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord) ){
+        if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag) ){
             if(StringUtils.isNotNullOrEmpty(intentionCityCode)){
                 if(!intentionCityCode.contains("111111")){
                     intentionCityCode=intentionCityCode+",111111";
@@ -1048,6 +1076,9 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(companyTag)){
                 this.queryByCompanyTag(companyTag,query);
             }
+            if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
+                this.queryByHrAutoTag(hrAutoTag,query);
+            }
         }
 
     }
@@ -1055,11 +1086,11 @@ public class TalentpoolSearchengine {
      判断是否继续执行查询操作
      */
     private boolean validateCommon(String keyword,String cityName,String companyName,String pastPosition,String intentionCity,String companyTag,
-                                   String pastPositionKeyWord,String pastCompanyKeyWord){
+                                   String pastPositionKeyWord,String pastCompanyKeyWord,String hrAutoTag){
         return StringUtils.isNotNullOrEmpty(keyword)||StringUtils.isNotNullOrEmpty(cityName)||
                 StringUtils.isNotNullOrEmpty(companyName)||StringUtils.isNotNullOrEmpty(pastPosition)||
                 StringUtils.isNotNullOrEmpty(intentionCity)||StringUtils.isNotNullOrEmpty(companyTag)||
-                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||StringUtils.isNotNullOrEmpty(pastCompanyKeyWord);
+                StringUtils.isNotNullOrEmpty(pastPositionKeyWord)||StringUtils.isNotNullOrEmpty(pastCompanyKeyWord)||StringUtils.isNotNullOrEmpty(hrAutoTag);
     }
     /*
      处理现居住地
@@ -1328,6 +1359,11 @@ public class TalentpoolSearchengine {
                 tagIds="talent";
             }
         }
+        //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
+        String hrAutoTag=params.get("hr_auto_tag");
+        if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
+            tagIds="talent,allpublic";
+        }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
         if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
@@ -1584,6 +1620,10 @@ public class TalentpoolSearchengine {
      */
     private void queryByCompanyTag(String companyTag,QueryBuilder queryBuilder){
         searchUtil.handlerCompanyTag(companyTag,queryBuilder);
+    }
+
+    private void queryByHrAutoTag(String hrAutoTag,QueryBuilder queryBuilder){
+        searchUtil.handlerHrAutoTag(hrAutoTag,queryBuilder);
     }
     /*
      构建和公司相关的人才库

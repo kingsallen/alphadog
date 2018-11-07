@@ -32,7 +32,9 @@ jar {
         attributes 'Main-Class': 'com.moseeker.demo1.Demo1Server'
     }
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 project.description = '''
     demo1
 '''

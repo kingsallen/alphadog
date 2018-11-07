@@ -113,7 +113,8 @@ public class ProfileParseUtil {
         if(result!=null&&!result.isEmpty()){
             return JSON.toJSONString(result);
         }
-        return other;
+        //原来是return other
+        return null;
     }
 
     private List<String> getConfigSysCvTplList(){

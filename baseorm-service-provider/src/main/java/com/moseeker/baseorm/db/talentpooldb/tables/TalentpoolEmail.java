@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolEmail extends TableImpl<TalentpoolEmailRecord> {
 
-    private static final long serialVersionUID = -228950706;
+    private static final long serialVersionUID = 1231665060;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_email</code>
@@ -87,9 +87,9 @@ public class TalentpoolEmail extends TableImpl<TalentpoolEmailRecord> {
     public final TableField<TalentpoolEmailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>talentpooldb.talentpool_email.company_id</code>. 公司编号
+     * The column <code>talentpooldb.talentpool_email.company_id</code>.
      */
-    public final TableField<TalentpoolEmailRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "公司编号");
+    public final TableField<TalentpoolEmailRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>talentpooldb.talentpool_email</code> table reference

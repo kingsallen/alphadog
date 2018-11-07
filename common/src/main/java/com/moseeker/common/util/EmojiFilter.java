@@ -1,5 +1,10 @@
 package com.moseeker.common.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,39 +70,34 @@ public class EmojiFilter {
      * @param source
      * @return
      */
-    public static String filterEmoji(String source) {
+    public static JSONObject filterEmoji(String source) {
+        JSONObject jsonObject = JSON.parseObject(source);
+        parseJsonObject(jsonObject);
+        return jsonObject;
+    }
 
-        if (!containsWord(source)) {
-            return source;//如果不包含，直接返回
-        }
-        //到这里铁定包含
-        StringBuilder buf = null;
-
-        int len = source.length();
-
-        for (int i = 0; i < len; i++) {
-            char codePoint = source.charAt(i);
-            //System.out.println("codePoint:"+codePoint);
-
-            if (isNotEmojiCharacter(codePoint)) {
-                if (buf == null) {
-                    buf = new StringBuilder(source.length());
+    private static void parseJsonObject(JSONObject jsonObject) {
+        if (jsonObject != null) {
+            for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+                if (entry.getValue() instanceof JSONArray) {
+                    parseJsonArray((JSONArray)entry.getValue());
+                } else if(entry.getValue() instanceof JSONObject) {
+                    parseJsonObject((JSONObject)entry.getValue());
+                } else if (entry.getValue() instanceof String) {
+                    jsonObject.put(entry.getKey(),
+                            EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8((String)entry.getValue())));
                 }
-                buf.append(codePoint);
-            } else {
             }
         }
+    }
 
-        if (buf == null) {
-            return "";//如果没有可能到这步吧！
-        } else {
-            if (buf.length() == len) {//这里的意义在于尽可能少的toString，因为会重新生成字符串
-                return source;
-            } else {
-                return buf.toString();
+    private static void parseJsonArray(JSONArray jsonArray) {
+        if (jsonArray != null && jsonArray.size() > 0) {
+            for (Object o : jsonArray) {
+                JSONObject jsonObject = (JSONObject)o;
+                parseJsonObject(jsonObject);
             }
         }
-
     }
 
     /**

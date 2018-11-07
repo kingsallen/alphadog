@@ -9,6 +9,7 @@ public class ProfileDocParseResult {
     private String file;
     private String name;
     private String mobile;
+    private Boolean mobileeditable;
 
     public String getFile() {
         return file;
@@ -32,5 +33,13 @@ public class ProfileDocParseResult {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public Boolean getMobileeditable() {
+        return mobileeditable;
+    }
+
+    public void setMobileeditable(Boolean mobileeditable) {
+        this.mobileeditable = mobileeditable;
     }
 }

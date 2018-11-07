@@ -8,6 +8,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionExtDO;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
 * @author xxx
 * JobPositionExtDao 实现类 （groovy 生成）
@@ -32,5 +34,11 @@ public class JobPositionExtDao extends JooqCrudImpl<JobPositionExtDO, JobPositio
                 .set( JobPositionExt.JOB_POSITION_EXT.ALIPAY_JOB_ID,jobId)
                 .execute();
         return result;
+    }
+
+    public List<JobPositionExtDO> getDatasByPids(List<Integer> pids){
+        return create.selectFrom(JobPositionExt.JOB_POSITION_EXT)
+                .where(JobPositionExt.JOB_POSITION_EXT.PID.in(pids))
+                .fetchInto(JobPositionExtDO.class);
     }
 }

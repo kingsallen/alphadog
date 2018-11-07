@@ -136,6 +136,20 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public ProfileParseResult parseUserFileProfile(int userId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    profileService.parseFileProfile(userId, fileName, fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+
+    @Override
     public ProfileParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
                                                      String fileAbsoluteName, String fileData)
             throws BIZException, TException {
@@ -233,9 +247,9 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int parseText(String profile, int referenceId) throws BIZException, TException {
+    public int parseText(String profile, int referenceId, int appid) throws BIZException, TException {
         try {
-            return service.parseText(profile, referenceId);
+            return service.parseText(profile, referenceId,appid);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ExceptionUtils.convertException(e);
@@ -314,6 +328,15 @@ public class ProfileServicesImpl implements Iface {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public int updateUserProfile(int id, String name, String mobile) throws BIZException, TException {
+        try {
+            return profileService.updateUserProfile(id, name, mobile);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
     }
 }

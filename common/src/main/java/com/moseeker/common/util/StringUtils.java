@@ -516,7 +516,7 @@ public class StringUtils {
         return false;
     }
 
-    public static String listToString(List<String> list, String splitTag){
+    public static String listToString(List list, String splitTag){
         if(!StringUtils.isEmptyList(list)){
             String keyword = org.apache.commons.lang.StringUtils.join(list,splitTag);
             return keyword;
@@ -530,6 +530,17 @@ public class StringUtils {
             return Arrays.asList(keyword);
         }
         return new ArrayList<>();
+    }
+
+    public static List<Integer> convertSetToList(Set<Integer> dataList){
+        if(isEmptySet(dataList)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(Integer data:dataList ){
+            result.add(data);
+        }
+        return result;
     }
 
 }

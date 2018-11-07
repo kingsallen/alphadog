@@ -97,7 +97,7 @@ public class EmployeeServiceTest {
 //		bp.setType(BindType.QUESTIONS);
 //		bp.setUserId(1122611);
 		try {
-			Result result = service.bind(bp);
+			Result result = service.bind(bp,1);
 			System.out.println(result);
 		} catch (TException e) {
 			// TODO Auto-generated catch block
@@ -108,7 +108,7 @@ public class EmployeeServiceTest {
     ////@Test
 	public void emailActivationTest() {
 		try {
-			Result result = service.emailActivation("ff24a4dc10362b20");
+			Result result = service.emailActivation("ff24a4dc10362b20",1);
 			System.out.println(result);
 		} catch (TException e) {
 			// TODO Auto-generated catch block

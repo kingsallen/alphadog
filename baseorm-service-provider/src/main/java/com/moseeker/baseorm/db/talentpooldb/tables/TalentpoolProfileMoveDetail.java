@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TalentpoolProfileMoveDetail extends TableImpl<TalentpoolProfileMoveDetailRecord> {
 
-    private static final long serialVersionUID = -939255850;
+    private static final long serialVersionUID = -1507334056;
 
     /**
      * The reference instance of <code>talentpooldb.talentpool_profile_move_detail</code>
@@ -81,6 +81,11 @@ public class TalentpoolProfileMoveDetail extends TableImpl<TalentpoolProfileMove
      * The column <code>talentpooldb.talentpool_profile_move_detail.update_time</code>.
      */
     public final TableField<TalentpoolProfileMoveDetailRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>talentpooldb.talentpool_profile_move_detail.hr_id</code>. hraccount.id
+     */
+    public final TableField<TalentpoolProfileMoveDetailRecord, Integer> HR_ID = createField("hr_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hraccount.id");
 
     /**
      * Create a <code>talentpooldb.talentpool_profile_move_detail</code> table reference
