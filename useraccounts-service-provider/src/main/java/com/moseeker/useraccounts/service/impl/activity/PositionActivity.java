@@ -52,7 +52,6 @@ public abstract class PositionActivity extends Activity {
 
         //是否生成红包数据 如果已经生成就不需要再生成了
         int count = itemsDao.countItemsByActivity(id);
-        int totalNum = 0;
         if (count == 0) {
             List<HrHbPositionBindingRecord> recordList = positionBindingDao.fetchByActivity(id);
             if (recordList == null || recordList.size() == 0) {
@@ -78,7 +77,6 @@ public abstract class PositionActivity extends Activity {
 
             activityVO.setActualTotal(activityVO.getAmounts().size()*recordList.size());
         }
-
         updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
@@ -109,27 +107,8 @@ public abstract class PositionActivity extends Activity {
                 }
 
                 //将之前参与活动的职位删除，并修改职位参与活动的状态。
-                List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
-                if (bindingRecords != null && bindingRecords.size() > 0) {
-                    List<Integer> positionIdList = bindingRecords
-                            .stream()
-                            .map(HrHbPositionBindingRecord::getPositionId)
-                            .collect(Collectors.toList());
-                    List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
-                    Map<Integer, Byte> newStatus = new HashMap<>();
-                    for (JobPosition position : positions) {
-                        //获取当前
-                        newStatus.put(position.getId(), (byte)(position.getHbStatus()^activityStatus.getValue()));
-                        //处理职位是否在参加活动数据
-                    }
-                    try {
-                        positionDao.updateHBStatus(positions, newStatus);
-                    } catch (CommonException e) {
-                        throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
-                    }
-
-                    positionBindingDao.deleteByActivityId(id);
-                }
+                releasePosition();
+                positionBindingDao.deleteByActivityId(id);
 
                 //重新创建参与红包活动的职位信息，并更新这些职位的红包状态
                 List<HrHbPositionBindingRecord> bindings = new ArrayList<>();
