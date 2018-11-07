@@ -66,7 +66,7 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_MOVING = "{'status':31027,'message':'简历搬家正在进行中，请不要重复提交!'}";
     public static final String PROFILE_MOVING_MAIN_ACCOUNT = "{'status':31028,'message':'简历搬家只能主账号操作!'}";
     public static final String PROFILE_ORIGIN_UPSUPORT = "{'status':31029,'message':'简历搬家不支持的简历来源!'}";
-    public static final String PROFILE_DATA_OVERTIME = "{'status':31030,'message':'推荐信息已失效，请重新推荐!'}";
+    public static final String REFERRAL_DATA_OVERTIME = "{'status':31030,'message':'推荐信息已失效，请重新推荐!'}";
 
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";

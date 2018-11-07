@@ -763,4 +763,13 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             return new ArrayList<>();
         }
     }
+
+    public List<JobPositionDO> getPositionListWithoutStatus(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return  null;
+        }
+        com.moseeker.common.util.query.Condition condition=new com.moseeker.common.util.query.Condition("id",list.toArray(),ValueOp.IN);
+        Query query=new Query.QueryBuilder().where(condition).buildQuery();
+        return this.getDatas(query);
+    }
 }
