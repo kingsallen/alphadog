@@ -121,7 +121,7 @@ public abstract class PositionActivity extends Activity {
                     binding.setTriggerWay(getTriggerWay());
                     binding.setTotalAmount(BigDecimal.valueOf(hrHbConfig.getTotalAmount()));
                     bindings.add(binding);
-                    newStatus.put(position.getId(), (byte)(position.getHbStatus() | activityStatus.getValue()));
+                    newStatus.put(position.getId(), (byte)(position.getHbStatus() | positionHBStatus.getValue()));
                 }
                 positionBindingDao.insert(bindings);
 
