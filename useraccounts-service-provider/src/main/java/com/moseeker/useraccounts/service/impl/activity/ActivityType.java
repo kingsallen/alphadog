@@ -49,8 +49,9 @@ public enum ActivityType {
         }
         switch (ActivityType.instanceFromValue(record.getType())) {
             case EmployeeVerification:
+                activity = new EmployeeVerificationActivity(id, configDao, positionBindingDao, itemsDao); break;
             case Referral:
-                activity = new NonePositionActivity(id, configDao, positionBindingDao, itemsDao); break;
+                activity = new ReferralActivity(id, configDao, positionBindingDao, itemsDao); break;
             case retransmitClick:
                 activity = new RetransmitClickActivity(id, configDao, positionBindingDao, itemsDao, positionDao); break;
             case retransmitApply:
