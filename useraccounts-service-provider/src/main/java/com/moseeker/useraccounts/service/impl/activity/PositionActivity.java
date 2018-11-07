@@ -100,7 +100,7 @@ public abstract class PositionActivity extends Activity {
                     throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
                 }
 
-                logger.info("PositionActivity updateInfo bindingRecords1:{}, positionList1", bindingRecords1, positionList1);
+                logger.info("PositionActivity updateInfo bindingRecords1:{}, positionList1:{}", bindingRecords1, positionList1);
                 //如果选择的职位和之前配置的职位一直，则不需要做任何处理
 
                 List<JobPosition> positionList = positionList1.stream().filter(jobPosition -> {
@@ -111,7 +111,7 @@ public abstract class PositionActivity extends Activity {
                             .findAny();
                     return !optional.isPresent();
                 }).collect(Collectors.toList());
-                logger.info("PositionActivity updateInfo positionList", positionList);
+                logger.info("PositionActivity updateInfo positionList:{}", positionList);
 
                 for (JobPosition position : positionList) {
                     if ((position.getHbStatus().intValue() | 1) == position.getHbStatus()) {
@@ -129,7 +129,7 @@ public abstract class PositionActivity extends Activity {
                                     .findAny();
                             return !optional.isPresent();
                         }).collect(Collectors.toList());
-                logger.info("PositionActivity updateInfo bindingRecords", bindingRecords);
+                logger.info("PositionActivity updateInfo bindingRecords:{}", bindingRecords);
 
                 //将之前参与活动的职位删除，并修改职位参与活动的状态。
                 releasePosition(bindingRecords);
