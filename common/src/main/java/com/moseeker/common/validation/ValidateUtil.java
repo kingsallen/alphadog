@@ -372,6 +372,57 @@ public class ValidateUtil {
 	}
 
 	/**
+	 * 往验证器中添加一个IntTypeValidateRule
+	 *
+	 * @param paramName
+	 * @param beanToBeValidated
+	 * @param minRange
+	 * @param maxRange
+	 * @return DasValidateRule
+	 */
+	public ValidateRule addDoubleTypeValidate(String paramName,
+											  Object beanToBeValidated, Double minRange, Double maxRange)
+			throws ValidateNotAppointParamException {
+		return addDoubleTypeValidate(paramName, beanToBeValidated, null, null, minRange, maxRange);
+	}
+
+	/**
+	 * 往验证器中添加一个IntTypeValidateRule
+	 *
+	 * @param paramName
+	 * @param beanToBeValidated
+	 * @param errorMessage
+	 * @param message
+	 * @param minRange
+	 * @param maxRange
+	 * @return DasValidateRule
+	 */
+	public ValidateRule addDoubleTypeValidate(String paramName,
+											 Object beanToBeValidated, String errorMessage, String message,
+											 Double minRange, Double maxRange)
+			throws ValidateNotAppointParamException {
+		DoubleTypeValidateRule itvr = null;
+		try {
+			itvr = new DoubleTypeValidateRule(paramName, beanToBeValidated,
+					minRange, maxRange);
+
+			if (!StringUtils.isNullOrEmpty(errorMessage)) {
+				itvr.setErrorMessage(errorMessage);
+			}
+			if (!StringUtils.isNullOrEmpty(message)) {
+				itvr.setMessage(message);
+			}
+
+			addToRules(itvr);
+
+		} catch (ValidateNotAppointParamException e) {
+			logger.error("faild!", e);
+			throw e;
+		}
+		return itvr;
+	}
+
+	/**
 	 * 往验证器中添加一个DateTypeValidateRule
 	 * 
 	 * @param paramName
