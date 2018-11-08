@@ -8,10 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -124,6 +121,9 @@ public class UseraccountsService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private UserPrivacyRecordDao userPrivacyRecordDao;
 
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
@@ -1303,5 +1303,37 @@ public class UseraccountsService {
         referralEmployeeBonusRecord.setClaimTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecord.setUpdateTime(Timestamp.valueOf(now));
         referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
+    }
+
+    /**
+     * 是否查看隐私协议
+     * @param userId user_user.id
+     * @return  是否查看标识 0：未查看，1：已查看
+     * @throws BIZException
+     * @throws TException
+     */
+    public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
+        return userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+    }
+
+    /**
+     * 根据user_id删除隐私协议记录
+     * @param userId user_user.id
+     * @throws BIZException
+     * @throws TException
+     */
+    public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
+        userPrivacyRecordDao.deletePrivacyRecordByUserId(userId);
+    }
+
+    /**
+     * 插入隐私协议未查看记录
+     *
+     * @param userId
+     * @throws BIZException
+     * @throws TException
+     */
+    public void insertPrivacyRecord(int userId) throws BIZException, TException {
+        userPrivacyRecordDao.insertPrivacyRecord(userId);
     }
 }
