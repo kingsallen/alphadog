@@ -596,7 +596,7 @@ public class UseraccountsServiceImpl implements Iface {
 
 		try {
 			service.deletePrivacyRecordByUserId(userId);
-		} catch (TException e) {
+		} catch (Exception e) {
 			ExceptionUtils.convertException(e);
 		}
 	}
@@ -605,7 +605,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public void insertPrivacyRecord(int userId) throws BIZException, TException {
 		try {
 			service.insertPrivacyRecord(userId);
-		} catch (TException e) {
+		} catch (Exception e) {
 			ExceptionUtils.convertException(e);
 		}
 	}

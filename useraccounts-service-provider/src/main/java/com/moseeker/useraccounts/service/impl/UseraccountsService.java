@@ -1312,7 +1312,7 @@ public class UseraccountsService {
      * @throws BIZException
      * @throws TException
      */
-    public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
+    public int ifViewPrivacyProtocol(int userId) throws Exception {
         return userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
     }
 
@@ -1322,7 +1322,7 @@ public class UseraccountsService {
      * @throws BIZException
      * @throws TException
      */
-    public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
+    public void deletePrivacyRecordByUserId(int userId) throws Exception {
         userPrivacyRecordDao.deletePrivacyRecordByUserId(userId);
     }
 
@@ -1333,7 +1333,7 @@ public class UseraccountsService {
      * @throws BIZException
      * @throws TException
      */
-    public void insertPrivacyRecord(int userId) throws BIZException, TException {
+    public void insertPrivacyRecord(int userId) throws Exception {
         userPrivacyRecordDao.insertPrivacyRecord(userId);
     }
 }

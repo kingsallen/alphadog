@@ -11,6 +11,8 @@ import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 /**
+ * 用户隐私协议记录Dao
+ *
  * Created by lee on 2018/11/7.
  */
 @Repository
@@ -23,57 +25,43 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
         super(table, objectClass);
     }
 
-    public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
+    /**
+     * 查看用户是否有阅读隐私协议
+     *
+     * @param userId user_user.id
+     * @return 0:未读， 1：已读
+     * @throws Exception
+     */
+    public int ifViewPrivacyProtocol(int userId) throws Exception {
         UserPrivacyRecordRecord record = null;
-        try {
-            record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                    .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).fetchOne();
-            //有记录，说明未阅读协议
-            if (record != null) {
-                return 0;
-            }
-            return 1;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+        record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).fetchOne();
+        //有记录，说明未阅读协议
+        if (record != null) {
             return 0;
         }
-
+        return 1;
     }
 
     /**
      * 根据userId删除记录
      *
      * @param userId user_user.id
-     * @throws BIZException
-     * @throws TException
+     * @throws Exception
      */
-    public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
-
-        try {
-            create.deleteFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                    .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).execute();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
+    public void deletePrivacyRecordByUserId(int userId) throws Exception {
+        create.deleteFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).execute();
     }
 
     /**
      * 新用户插入隐私协议未阅读记录
      *
      * @param userId
-     * @throws BIZException
-     * @throws TException
+     * @throws Exception
      */
-    public void insertPrivacyRecord(int userId) throws BIZException, TException {
-
-        try {
-            create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD).set(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, userId).execute();
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-        }
-
-
+    public void insertPrivacyRecord(int userId) throws Exception {
+        create.insertInto(UserPrivacyRecord.USER_PRIVACY_RECORD).set(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID, userId).execute();
     }
 
 }
