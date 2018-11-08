@@ -24,13 +24,12 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
     }
 
     public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
-//        return 0;
-        Result<UserPrivacyRecordRecord> records = null;
+        UserPrivacyRecordRecord record = null;
         try {
-            records = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                    .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).and(UserPrivacyRecord.USER_PRIVACY_RECORD.STATUS.eq(0)).fetch();
+            record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
+                    .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).and(UserPrivacyRecord.USER_PRIVACY_RECORD.STATUS.eq(0)).fetchOne();
             //有记录，说明未阅读协议
-            if (records != null) {
+            if (record != null) {
                 return 0;
             }
             return 1;
