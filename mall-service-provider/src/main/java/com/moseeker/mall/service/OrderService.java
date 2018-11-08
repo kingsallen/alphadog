@@ -572,7 +572,7 @@ public class OrderService {
             if(userEmployeeDO == null){
                 userEmployeeDO = historyEmployeeDOMap.get(orderDO.getEmployee_id());
             }
-            userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCredit(), 1);
+            userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCount() * orderDO.getCredit(), 1);
             // 发送积分变动消息模板
             String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
             String url = getTemplateJumpUrlByKey("mall.refund.template.url");

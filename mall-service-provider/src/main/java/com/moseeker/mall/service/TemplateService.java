@@ -96,7 +96,7 @@ public class TemplateService {
             // 插入模板消息发送记录
             insertLogWxMessageRecord(templateId, hrWxWechatDO.getId(), templateValueMap);
         }catch (BIZException e){
-            logger.info("==============消息模板发送失败:{}", e.getMessage());
+            logger.info("==============消息模板发送业务失败:{}", e.getMessage());
         }catch (ConnectException e){
             logger.info("=========================积分消息模板发送超时：templateDataValueVO:{}", templateDataValueVO);
         }catch (Exception e){
