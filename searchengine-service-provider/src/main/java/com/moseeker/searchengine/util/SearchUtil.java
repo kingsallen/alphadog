@@ -939,7 +939,7 @@ public class SearchUtil {
             String array[]=condition.split(",");
             for(String items:array){
                 for(String field:fieldList){
-                    QueryBuilder fullf = QueryBuilders.wildcardQuery("*"+field+"*", items);
+                    QueryBuilder fullf = QueryBuilders.wildcardQuery(field, "*"+items+"*");
                     ((BoolQueryBuilder) keyand).should(fullf);
                 }
             }
