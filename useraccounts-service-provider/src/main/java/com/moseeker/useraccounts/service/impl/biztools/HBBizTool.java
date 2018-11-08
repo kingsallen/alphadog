@@ -149,6 +149,7 @@ public class HBBizTool {
             if(profileData.getAttchmentMap().get(profileId)!=null){
                 tab.setId(profileData.getAttchmentMap().get(profileId).getId());
                 tab.setFilePath(profileData.getAttchmentMap().get(profileId).getPath());
+                tab.setName(profileData.getAttchmentMap().get(profileId).getName());
             }
         }
         return tab;

@@ -43,5 +43,6 @@ struct ReferralProfileTab{
     2: optional string sender,
     3: optional string uploadTime,
     4: optional string filePath,
-    5: optional i32 id
+    5: optional string name,
+    6: optional i32 id,
 }
