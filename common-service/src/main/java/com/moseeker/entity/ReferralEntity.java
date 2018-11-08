@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
@@ -34,6 +35,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
@@ -41,8 +43,19 @@ import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.RecommendHBData;
+import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -50,13 +63,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -90,6 +96,9 @@ public class ReferralEntity {
 
     @Autowired
     private ProfileProfileDao profileDao;
+
+    @Autowired
+    private ProfileAttachmentDao attachmentDao;
 
     @Autowired
     private UserEmployeeDao employeeDao;
@@ -505,4 +514,102 @@ public class ReferralEntity {
             }
         }
     }
+
+    public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds){
+        ReferralProfileData data = new ReferralProfileData();
+        Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
+                () -> employeeDao.getEmployeeBycompanyIds(companyIds));
+        Future<List<HistoryUserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
+                () -> historyUserEmployeeDao.getHistoryEmployeeByCompanyIds(companyIds));
+        List<Integer> employeeIds = new ArrayList<>();
+        try {
+            List<UserEmployeeDO> employeeList = employeeListFeature.get();
+            if (!StringUtils.isEmptyList(employeeList)){
+                List<Integer> employeeIds1 = employeeList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                employeeIds.addAll(employeeIds1);
+            }
+            List<HistoryUserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
+            if (!StringUtils.isEmptyList(historyUserEmployees)){
+                List<Integer> employeeIds2 = historyUserEmployees.stream().map(m -> m.getId()).collect(Collectors.toList());
+                employeeIds.addAll(employeeIds2);
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+
+        List<ReferralLog> logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
+        return logs;
+    }
+
+    public ReferralProfileData fetchReferralProfileData(List<ReferralLog> logs){
+        ReferralProfileData data = new ReferralProfileData();
+        if(StringUtils.isEmptyList(logs)){
+            return null;
+        }
+        List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+        List<Integer> empolyeeReferralIds = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+        Set<Integer> refenceIds = logs.stream().map(m -> m.getOldReferenceId()).collect(Collectors.toSet());
+        Future<List<ProfileProfileDO>> profileListFuture  = threadPool.startTast(
+                () -> profileDao.getProfileByUidList(refenceIds));
+        Future<List<JobPositionDO>> positionListFuture = threadPool.startTast(
+                () -> positionDao.getPositionList(positionIds));
+        Future<List<UserEmployeeDO>> empListFuture  = threadPool.startTast(
+                () -> employeeDao.getEmployeeByIds(empolyeeReferralIds));
+        Future<List<UserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
+                () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
+        try {
+            List<ProfileProfileDO> profileList = profileListFuture.get();
+            if(StringUtils.isEmptyList(profileList)){
+                return null;
+            }
+            List<Integer> profileIds = profileList.stream().map(m -> m.getId()).collect(Collectors.toList());
+            Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
+                    () -> attachmentDao.fetchAttachmentByProfileIds(profileIds));
+            Map<Integer, Integer> profileIdMap = new HashMap<>();
+            profileList.forEach(profile ->
+                    profileIdMap.put(profile.getUserId(), profile.getId())
+            );
+            data.setProfileIdMap(profileIdMap);
+            List<JobPositionDO> positionList = positionListFuture.get();
+            if(!StringUtils.isEmptyList(positionList)){
+                Map<Integer, String> positionTitileMap = new HashMap<>();
+                positionList.forEach(position
+                        -> positionTitileMap
+                        .put(position.getId(),
+                                position.getTitle()));
+                data.setPositionTitleMap(positionTitileMap);
+            }
+            Map<Integer, String> employeeNameMap = new HashMap<>();
+            List<UserEmployeeDO> empList = empListFuture.get();
+            if(!StringUtils.isEmptyList(empList)){
+                empList.forEach( employee ->
+                    employeeNameMap.put(employee.getId(), employee.getCname())
+                );
+            }
+            List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
+            if(!StringUtils.isEmptyList(historyEmpList)){
+                historyEmpList.forEach(employee ->
+                    employeeNameMap.put(employee.getId(), employee.getCname())
+                );
+            }
+            data.setEmployeeNameMap(employeeNameMap);
+            List<ProfileAttachmentDO> attachmentList = attachmentListFuture.get();
+            if(StringUtils.isEmptyList(attachmentList)){
+                return null;
+            }
+            Map<Integer, ProfileAttachmentDO> attachmentMap = new HashMap<>();
+            attachmentList.forEach( attac ->
+                attachmentMap.put(attac.getProfileId(), attac)
+            );
+            data.setAttchmentMap(attachmentMap);
+            data.setLogList(logs);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+
+        return data;
+
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.moseeker.profile.service.impl.serviceutils;
 
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import org.apache.http.Consts;
@@ -19,6 +21,7 @@ import java.util.UUID;
  * @Date: 2018/9/4
  */
 public class StreamUtils {
+
 
     private static Logger logger = LoggerFactory.getLogger(StreamUtils.class);
 
@@ -69,7 +72,8 @@ public class StreamUtils {
             }
         }
 
-        String fileName = UUID.randomUUID().toString()+"."+suffix;
+        String uuid = UUID.randomUUID().toString();
+        String fileName = uuid +"."+suffix;
         fileNameData.setFileName(fileName);
         fileNameData.setFileAbsoluteName(dirAddress+File.separator+monthFileName+File.separator+fileName);
 
@@ -81,10 +85,13 @@ public class StreamUtils {
             fop.write(dataArray);
             fop.flush();
             fop.close();
+
+
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROFILE_FILE_SAVE_FAILED;
         }
+
 
         return fileNameData;
     }
@@ -96,4 +103,7 @@ public class StreamUtils {
     public static String convertASCToUTF8(String fileData) {
         return new String(fileData.getBytes(Consts.ASCII), Consts.UTF_8);
     }
+
+
+
 }

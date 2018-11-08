@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.referraldb;
 import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
+import com.moseeker.common.util.StringUtils;
 import org.jooq.Configuration;
 import org.jooq.Param;
 import org.jooq.Record1;
@@ -82,6 +83,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                 .set(ReferralLog.REFERRAL_LOG.REFERENCE_ID, userId)
                 .set(ReferralLog.REFERRAL_LOG.CLAIM, ClaimType.Claimed.getValue())
                 .set(ReferralLog.REFERRAL_LOG.CLAIM_TIME, new Timestamp(System.currentTimeMillis()))
+                .set(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID, referralLog.getReferenceId())
                 .where(ReferralLog.REFERRAL_LOG.ID.eq(referralLog.getId()))
                 .and(ReferralLog.REFERRAL_LOG.CLAIM.eq(ClaimType.UnClaim.getValue()))
                 .andNotExists(
@@ -137,5 +139,20 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
             referralLogRecords.stream().map(referralLogRecord -> referralLogs.add(referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class)));
             return referralLogs;
         }
+    }
+
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog>
+        fetchByEmployeeIdsAndRefenceId(List<Integer> employeeIds, Integer referenceId){
+        List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> referralLogs =using(configuration())
+                .selectFrom(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.in(employeeIds))
+                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                .and(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID.ne(0))
+                .fetchInto(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
+        if(StringUtils.isEmptyList(referralLogs)){
+            return  new ArrayList<>();
+        }
+        return referralLogs;
+
     }
 }
