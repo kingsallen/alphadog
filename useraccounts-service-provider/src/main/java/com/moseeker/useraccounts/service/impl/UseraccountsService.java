@@ -1253,6 +1253,7 @@ public class UseraccountsService {
         }
 
         Map<Integer, String> positionIdTitleMap = getPositionIdTitleMap(referralLogs);
+        CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
         List<ClaimResult> claimResults = new ArrayList<>();
         for(ReferralLog referralLog : referralLogs){
             pool.startTast(()->{
@@ -1273,9 +1274,15 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
+                    countDownLatch.countDown();
                 }
                 return 0;
             });
+        }
+        try {
+            countDownLatch.await(20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         return claimResults;
     }
