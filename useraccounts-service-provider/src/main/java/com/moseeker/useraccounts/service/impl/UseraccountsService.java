@@ -9,10 +9,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -131,6 +128,9 @@ public class UseraccountsService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private UserPrivacyRecordDao userPrivacyRecordDao;
 
     @Autowired
     private JobPositionDao jobPositionDao;
@@ -1375,7 +1375,7 @@ public class UseraccountsService {
 
     /**
      * 认领内推奖金
-     * @param claimForm 参数
+     * @param bonus_record_id 参数
      */
     @Transactional
     public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {
@@ -1393,6 +1393,35 @@ public class UseraccountsService {
         referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
     }
 
+    /**
+     * 是否查看隐私协议
+     * @param userId user_user.id
+     * @return  是否查看标识 0：未查看，1：已查看
+     * @throws BIZException
+     * @throws TException
+     */
+    public int ifViewPrivacyProtocol(int userId) throws Exception {
+        return userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+    }
 
+    /**
+     * 根据user_id删除隐私协议记录
+     * @param userId user_user.id
+     * @throws BIZException
+     * @throws TException
+     */
+    public void deletePrivacyRecordByUserId(int userId) throws Exception {
+        userPrivacyRecordDao.deletePrivacyRecordByUserId(userId);
+    }
 
+    /**
+     * 插入隐私协议未查看记录
+     *
+     * @param userId
+     * @throws BIZException
+     * @throws TException
+     */
+    public void insertPrivacyRecord(int userId) throws Exception {
+        userPrivacyRecordDao.insertPrivacyRecord(userId);
+    }
 }
