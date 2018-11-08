@@ -27,7 +27,8 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
         UserPrivacyRecordRecord record = null;
         try {
             record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
-                    .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).and(UserPrivacyRecord.USER_PRIVACY_RECORD.STATUS.eq(0)).fetchOne();
+                    .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).fetchOne();
+            logger.info(record.toString());
             //有记录，说明未阅读协议
             if (record != null) {
                 return 0;
