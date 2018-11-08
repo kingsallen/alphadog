@@ -1337,8 +1337,7 @@ public class UseraccountsService {
                 throw UserAccountException.validateFailed(validateResult);
             }
             SMSScene smsScene = SMSScene.SMS_VERIFY_MOBILE;
-//            boolean validateVerifyResult = smsScene.validateVerifyCode("", mobile, vcode, redisClient);
-            boolean validateVerifyResult = true;
+            boolean validateVerifyResult = smsScene.validateVerifyCode("", mobile, vcode, redisClient);
             if (!validateVerifyResult) {
                 throw UserAccountException.INVALID_SMS_CODE;
             }
