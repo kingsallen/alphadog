@@ -497,7 +497,7 @@ public class OrderService {
         int month = dateTime.getMonthOfYear();
         int day = dateTime.getDayOfMonth();
         logger.info("allDay:{}, expireTime:{}", allDay, expireTime);
-        return String.valueOf((((year * 100) + month) * 100 + day) * 10000L + Long.parseLong(current));
+        return String.valueOf((((year * 100) + month) * 100 + day) * 100000L + Long.parseLong(current));
     }
 
     private void handleUpdatedOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException {
