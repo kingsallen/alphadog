@@ -37,10 +37,10 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
 
    }
 
-    public List<HistoryUserEmployeeDO> getHistoryEmployeeByIds(List<Integer> ids){
-        List<HistoryUserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)
+    public List<UserEmployeeDO> getHistoryEmployeeByIds(List<Integer> ids){
+        List<UserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)
                 .where(HISTORY_USER_EMPLOYEE.ID.in(ids))
-                .fetchInto(HistoryUserEmployeeDO.class);
+                .fetchInto(UserEmployeeDO.class);
         if(StringUtils.isEmptyList(historyUserEmployees)){
             return new ArrayList<>();
         }

@@ -542,7 +542,7 @@ public class ReferralEntity {
                 () -> positionDao.getPositionList(positionIds));
         Future<List<UserEmployeeDO>> empListFuture  = threadPool.startTast(
                 () -> employeeDao.getEmployeeByIds(empolyeeReferralIds));
-        Future<List<HistoryUserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
+        Future<List<UserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
                 () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
         try {
             List<ProfileProfileDO> profileList = profileListFuture.get();
@@ -573,7 +573,7 @@ public class ReferralEntity {
                     employeeNameMap.put(employee.getId(), employee.getCname())
                 );
             }
-            List<HistoryUserEmployeeDO> historyEmpList = historyEmpListFuture.get();
+            List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
             if(!StringUtils.isEmptyList(historyEmpList)){
                 historyEmpList.forEach(employee ->
                     employeeNameMap.put(employee.getId(), employee.getCname())
