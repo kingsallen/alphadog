@@ -1269,12 +1269,13 @@ public class UseraccountsService {
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
                     claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
-                }catch (UserAccountException e){
+                }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
                     throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
+                    claimResult.setErrmsg(e.getMessage());
                     logger.info("员工认领异常信息:{}", e.getMessage());
                     throw e;
                 }finally {
