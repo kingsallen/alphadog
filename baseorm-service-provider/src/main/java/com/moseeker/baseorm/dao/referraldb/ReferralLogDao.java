@@ -136,7 +136,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
             return null;
         }else{
             List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> referralLogs = new ArrayList<>();
-            referralLogRecords.stream().map(referralLogRecord -> referralLogs.add(referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class)));
+            referralLogRecords.forEach(referralLogRecord -> referralLogs.add(referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class)));
             return referralLogs;
         }
     }
