@@ -43,13 +43,6 @@ public abstract class NonePositionActivity extends Activity {
 
         super.start(activityVO);
 
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredOneValidate("红包金额", activityVO.getAmounts());
-        String result = validateUtil.validate();
-        if (StringUtils.isNotBlank(result)) {
-            throw UserAccountException.validateFailed(result);
-        }
-
         HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
         if (hrHbConfig == null ) {
             throw UserAccountException.ACTIVITY_NOT_EXISTS;
@@ -71,7 +64,9 @@ public abstract class NonePositionActivity extends Activity {
             itemsDao.insertIfNotExistForStartActivity(items);
         }
 
-        activityVO.setActualTotal(activityVO.getAmounts().size());
+        if (activityVO.getTotalAmount() != null) {
+            activityVO.setActualTotal(activityVO.getAmounts().size());
+        }
         updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
