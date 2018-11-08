@@ -57,6 +57,11 @@ public class UserProfileParser extends AbstractResumeFileParser {
     }
 
     @Override
+    protected void toPDF(String suffix, FileNameData fileNameData, Integer id) {
+
+    }
+
+    @Override
     protected ProfileDocParseResult setProfileDocParseResult(ProfileDocParseResult profileDocParseResult, User user, Integer userId) {
         UserUserRecord userRecord = userAccountEntity.getUserRecordbyId(userId);
         if (userRecord == null || userRecord.getId() <= 0) {
