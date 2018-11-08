@@ -29,18 +29,18 @@ public class UserPrivacyRecordDao extends JooqCrudImpl<Object, UserPrivacyRecord
      * 查看用户是否有阅读隐私协议
      *
      * @param userId user_user.id
-     * @return 0:未读， 1：已读
+     * @return 1:未读，弹窗， 0：已读，不弹窗
      * @throws Exception
      */
     public int ifViewPrivacyProtocol(int userId) throws Exception {
         UserPrivacyRecordRecord record = null;
         record = create.selectFrom(UserPrivacyRecord.USER_PRIVACY_RECORD)
                 .where(UserPrivacyRecord.USER_PRIVACY_RECORD.USER_ID.eq(userId)).fetchOne();
-        //有记录，说明未阅读协议
+        //有记录，说明未阅读协议，弹窗
         if (record != null) {
-            return 0;
+            return 1;
         }
-        return 1;
+        return 0;
     }
 
     /**
