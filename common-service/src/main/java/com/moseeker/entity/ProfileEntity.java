@@ -127,7 +127,7 @@ public class ProfileEntity {
         ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
         int profileId= mergeProfileCommon(profilePojo, profileDB);
         if (profileDB != null) {
-            int id = improveAttachmentReferral(profilePojo.getAttachmentRecords(), attachmentId);
+            int id = improveAttachmentReferral(profilePojo.getAttachmentRecords(), attachmentId, profileId);
             completenessImpl.reCalculateProfileBasic(profileId);
             attachmentId = id;
         }
@@ -507,13 +507,17 @@ public class ProfileEntity {
         }
     }
     @Transactional
-    public int  improveAttachmentReferral(List<ProfileAttachmentRecord> attachmentRecords, int attachmentId) {
+    public int  improveAttachmentReferral(List<ProfileAttachmentRecord> attachmentRecords, int attachmentId, int profileId) {
         if (attachmentRecords != null && attachmentRecords.size() > 0) {
             ProfileAttachmentRecord record = attachmentDao.fetchAttachmentById(attachmentId);
+            ProfileAttachmentRecord atta = attachmentRecords.get(attachmentRecords.size()-1);
             if(record != null){
+                atta.setId(record.getId());
+                atta.setProfileId(record.getProfileId());
                 attachmentDao.updateRecord(attachmentRecords.get(attachmentRecords.size()-1));
             }else{
-                return attachmentDao.addRecord(attachmentRecords.get(attachmentRecords.size()-1)).getId();
+                atta.setProfileId(profileId);
+                return attachmentDao.addRecord(atta).getId();
             }
         }
         return attachmentId;
