@@ -81,7 +81,7 @@ public class OrderService {
     private RedisClient redisClient;
 
     private static final String CONFIRM_REASON = "积分商城兑换商品消费积分";
-    private static final String REFUSE_REASON = "积分商城拒绝兑换商品返还积分";
+    private static final String REFUSE_REASON = "积分商城拒绝兑换返还积分";
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
@@ -409,7 +409,7 @@ public class OrderService {
         for(MallOrderDO mallOrderDO : orderList){
             UserEmployeePointsRecordDO userEmployeePointsDO = new UserEmployeePointsRecordDO();
             if(orderState == OrderEnum.REFUSED.getState()){
-                userEmployeePointsDO.setAward(mallOrderDO.getCredit());
+                userEmployeePointsDO.setAward(mallOrderDO.getCount() * mallOrderDO.getCredit());
                 userEmployeePointsDO.setEmployeeId(mallOrderDO.getEmployee_id());
                 userEmployeePointsDO.setReason(REFUSE_REASON);
                 userEmployeePointsDO = userEmployeePointsDao.addData(userEmployeePointsDO);
