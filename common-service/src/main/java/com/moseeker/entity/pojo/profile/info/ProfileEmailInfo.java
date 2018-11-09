@@ -35,6 +35,26 @@ public class ProfileEmailInfo {
     private List<Message> otherCareer;
     private String otherIdPhoto;
 
+    //新增联系方式和电子邮箱字段
+    private String mobile;
+    private String email;
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getCompanyLogo() {
         return companyLogo;
     }
