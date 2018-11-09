@@ -35,13 +35,6 @@ public interface ReferralService {
     BonusList getBonus(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException;
 
     /**
-     * 修改红包活动
-     * @param activityVO 红包活动
-     * @throws UserAccountException 业务异常
-     */
-    void updateActivity(ActivityVO activityVO) throws UserAccountException;
-
-    /**
      * 获取候选人在公司下的推荐附件简历
      * @param usetId    候选人编号
      * @param companyId 公司编号
@@ -50,4 +43,11 @@ public interface ReferralService {
      */
     List<ReferralProfileTab> getReferralProfileTabList(int usetId, int companyId)throws UserAccountException;
 
+
+    /**
+     * 修改红包活动
+     * @param activityVO 红包活动
+     * @throws UserAccountException 业务异常
+     */
+    void updateActivity(ActivityVO activityVO) throws UserAccountException;
 }

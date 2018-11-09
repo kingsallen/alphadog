@@ -29,7 +29,6 @@ import com.moseeker.useraccounts.service.impl.activity.Activity;
 import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
-import com.moseeker.useraccounts.service.impl.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,6 +167,21 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
+    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId) throws UserAccountException {
+        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId));
+        ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
+        List<ReferralProfileTab> profileTabs = new ArrayList<>();
+        if(profileData != null){
+            for(ReferralLog log : logList){
+                profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
+            }
+            return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
     @Transactional
     public void updateActivity(ActivityVO activityVO) throws UserAccountException {
 
@@ -199,20 +213,5 @@ public class ReferralServiceImpl implements ReferralService {
         } else {
             activity.updateInfo(activityVO, true);
         }
-    }
-
-    @Override
-    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId) throws UserAccountException {
-        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId));
-        ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
-        List<ReferralProfileTab> profileTabs = new ArrayList<>();
-        if(profileData != null){
-            for(ReferralLog log : logList){
-                profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
-            }
-            return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
-                    .collect(Collectors.toList());
-        }
-        return new ArrayList<>();
     }
 }

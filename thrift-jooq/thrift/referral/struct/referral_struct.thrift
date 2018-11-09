@@ -38,6 +38,15 @@ struct BonusList {
     3 : optional list<Bonus> bonus,
 }
 
+struct ReferralProfileTab{
+    1: optional string positionTitle,
+    2: optional string sender,
+    3: optional string uploadTime,
+    4: optional string filePath,
+    5: optional string name,
+    6: optional i32 id,
+}
+
 struct ActivityDTO {
     1 : optional i32 id,
     2 : optional list<double> amounts,
@@ -61,11 +70,3 @@ struct ActivityDTO {
     20: optional list<i32> positionIds,
 }
 
-struct ReferralProfileTab{
-    1: optional string positionTitle,
-    2: optional string sender,
-    3: optional string uploadTime,
-    4: optional string filePath,
-    5: optional string name,
-    6: optional i32 id,
-}

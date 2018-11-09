@@ -134,4 +134,11 @@ public class ReferralLogDao extends DAOImpl<ReferralLogRecord, com.moseeker.base
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByOldReferenceId(Integer... values) {
         return fetch(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>attement_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog> fetchByAttementId(Integer... values) {
+        return fetch(ReferralLog.REFERRAL_LOG.ATTEMENT_ID, values);
+    }
 }

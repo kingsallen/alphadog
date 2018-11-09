@@ -136,21 +136,21 @@ public class HBBizTool {
     public static ReferralProfileTab packageReferralTab(ReferralLog log, ReferralProfileData profileData) {
         ReferralProfileTab tab = new ReferralProfileTab();
         tab.setUploadTime(log.getCreateTime());
-        if(profileData.getPositionTitleMap().get(log.getPositionId()) != null){
+        if(profileData.getPositionTitleMap() != null &&
+                profileData.getPositionTitleMap().get(log.getPositionId()) != null){
             tab.setPositionTitle(profileData.getPositionTitleMap().get(log.getPositionId()));
         }
 
-        if(profileData.getEmployeeNameMap().get(log.getEmployeeId())!=null){
+        if(profileData.getEmployeeNameMap()!=null &&
+                profileData.getEmployeeNameMap().get(log.getEmployeeId())!=null){
             tab.setSender(profileData.getEmployeeNameMap().get(log.getEmployeeId()));
         }
 
-        if(profileData.getProfileIdMap().get(log.getOldReferenceId())!=null){
-            Integer profileId = profileData.getProfileIdMap().get(log.getOldReferenceId());
-            if(profileData.getAttchmentMap().get(profileId)!=null){
-                tab.setId(profileData.getAttchmentMap().get(profileId).getId());
-                tab.setFilePath(profileData.getAttchmentMap().get(profileId).getPath());
-                tab.setName(profileData.getAttchmentMap().get(profileId).getName());
-            }
+        if(profileData.getAttchmentMap()!=null &&
+                profileData.getAttchmentMap().get(log.getAttementId())!=null){
+            tab.setId(profileData.getAttchmentMap().get(log.getAttementId()).getId());
+            tab.setFilePath(profileData.getAttchmentMap().get(log.getAttementId()).getPath());
+            tab.setName(profileData.getAttchmentMap().get(log.getAttementId()).getName());
         }
         return tab;
     }

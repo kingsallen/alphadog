@@ -10,6 +10,9 @@ import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.thrift.gen.referral.struct.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,4 +106,5 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
 }

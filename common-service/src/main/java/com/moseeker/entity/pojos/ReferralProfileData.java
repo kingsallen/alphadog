@@ -13,7 +13,6 @@ import java.util.Map;
 public class ReferralProfileData {
 
     private List<ReferralLog> logList;
-    private Map<Integer, Integer> profileIdMap = new HashMap<>();
     private Map<Integer, String> positionTitleMap = new HashMap<>();
     private Map<Integer, ProfileAttachmentDO> attchmentMap = new HashMap<>();
     private Map<Integer, String> employeeNameMap = new HashMap<>();
@@ -24,14 +23,6 @@ public class ReferralProfileData {
 
     public void setLogList(List<ReferralLog> logList) {
         this.logList = logList;
-    }
-
-    public Map<Integer, Integer> getProfileIdMap() {
-        return profileIdMap;
-    }
-
-    public void setProfileIdMap(Map<Integer, Integer> profileIdMap) {
-        this.profileIdMap = profileIdMap;
     }
 
     public Map<Integer, String> getPositionTitleMap() {
