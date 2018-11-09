@@ -538,7 +538,7 @@ public class ReferralEntity {
                 }
             }
         }
-        return logs;
+        return logList;
     }
 
     public ReferralProfileData fetchReferralProfileData(List<ReferralLog> logs){
