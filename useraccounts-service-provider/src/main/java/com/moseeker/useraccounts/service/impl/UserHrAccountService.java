@@ -1722,6 +1722,7 @@ public class UserHrAccountService {
                 }
             }
         }
+        logger.info("===============rewardVOPageVO:{}", JSON.toJSONString(rewardVOPageVO));
         return rewardVOPageVO;
     }
 
