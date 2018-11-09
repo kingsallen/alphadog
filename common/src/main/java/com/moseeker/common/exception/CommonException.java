@@ -27,6 +27,8 @@ public class CommonException extends RuntimeException {
     public static final CommonException PROGRAM_APPID_REQUIRED = new CommonException(1,"请设置 appid!");
     public static final CommonException PROGRAM_DOUBLE_CLICK = new CommonException(90017,"重复录入!");
 
+    public static final CommonException DATA_OPTIMISTIC = new CommonException(90018, "触发乐观锁！");
+
     private static final long serialVersionUID = 1982007458282752099L;
 
     public CommonException() {

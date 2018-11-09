@@ -7,6 +7,9 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import org.apache.thrift.TException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +83,16 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
                 }).collect(Collectors.toList());
             }
             return result;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
+        try {
+            ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
+            referralService.updateActivity(activityVO);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

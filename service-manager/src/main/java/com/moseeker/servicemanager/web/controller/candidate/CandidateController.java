@@ -77,19 +77,22 @@ public class CandidateController {
         }
     }
 
-    @RequestMapping(value = "/v1/candidate/application/psc", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/candidate/application/referral", method = RequestMethod.POST)
     @ResponseBody
     public String addAppliationPscInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             Integer applicationId = params.getInt("application_id");
             Integer pscId = params.getInt("psc_id");
+            Integer directReferralUserId = params.getInt("direct_referral_user_id");
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("申请编号", applicationId, null, null);
-            vu.addRequiredValidate("psc编号", pscId, null, null);
             String message = vu.validate();
+            if(pscId.intValue() <=0 && directReferralUserId.intValue()<=0){
+                message = "传入参数有误！";
+            }
             if (StringUtils.isNullOrEmpty(message)) {
-                Response result = candidateService.addApplicationPsc(applicationId, pscId);
+                Response result = candidateService.addApplicationReferral(applicationId, pscId, directReferralUserId);
                 return ResponseLogNotification.success(request, result);
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
@@ -111,7 +114,7 @@ public class CandidateController {
             vu.addRequiredValidate("申请编号", applicationId, null, null);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Response result = candidateService.getApplicationPsc(applicationId);
+                Response result = candidateService.getApplicationReferral(applicationId);
                 return ResponseLogNotification.success(request, result);
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());

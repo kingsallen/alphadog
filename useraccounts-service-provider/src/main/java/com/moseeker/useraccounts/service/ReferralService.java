@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.useraccounts.service.impl.vo.BonusList;
 import com.moseeker.useraccounts.service.impl.vo.RedPackets;
 import com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab;
@@ -42,4 +43,11 @@ public interface ReferralService {
      */
     List<ReferralProfileTab> getReferralProfileTabList(int usetId, int companyId)throws UserAccountException;
 
+
+    /**
+     * 修改红包活动
+     * @param activityVO 红包活动
+     * @throws UserAccountException 业务异常
+     */
+    void updateActivity(ActivityVO activityVO) throws UserAccountException;
 }

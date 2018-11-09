@@ -43,6 +43,26 @@ public class TalentEmailForwardsResumeInfo {
     private List<Message> otherCareer;
     private String otherIdPhoto;
 
+    //新增两个字段的展示 by lcf
+    private String mobile;//联系方式
+    private String email;//电子邮件
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getSubject() {
         return subject;
     }
