@@ -9,7 +9,7 @@ public class ReferralProfileTab {
 
     private String positionTitle;
     private String sender;
-    private Timestamp uploadTime;
+    private String uploadTime;
     private String filePath;
     private String name;
     private int id;
@@ -30,11 +30,11 @@ public class ReferralProfileTab {
         this.sender = sender;
     }
 
-    public Timestamp getUploadTime() {
+    public String getUploadTime() {
         return uploadTime;
     }
 
-    public void setUploadTime(Timestamp uploadTime) {
+    public void setUploadTime(String uploadTime) {
         this.uploadTime = uploadTime;
     }
 

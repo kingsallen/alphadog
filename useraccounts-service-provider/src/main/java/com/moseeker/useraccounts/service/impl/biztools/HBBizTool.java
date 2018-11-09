@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
@@ -135,7 +136,7 @@ public class HBBizTool {
      */
     public static ReferralProfileTab packageReferralTab(ReferralLog log, ReferralProfileData profileData) {
         ReferralProfileTab tab = new ReferralProfileTab();
-        tab.setUploadTime(log.getCreateTime());
+        tab.setUploadTime(DateUtils.dateToShortTime(log.getCreateTime()));
         if(profileData.getPositionTitleMap() != null &&
                 profileData.getPositionTitleMap().get(log.getPositionId()) != null){
             tab.setPositionTitle(profileData.getPositionTitleMap().get(log.getPositionId()));
