@@ -75,10 +75,13 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
             String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
                     + Constant.WORD_PDF;
             tp.startTast(() -> {
+
                 String path = fileNameData.getFileAbsoluteName();
+                System.out.println("toPDF path:{}"+path);
                 String name = fileNameData.getFileName();
                 int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
                         fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                System.out.println("toPDF status:{}"+status);
                 if(status != 1) {
                     String result = client.get(AppId.APPID_ALPHADOG.getValue(), getRedisKey(), String.valueOf(id),
                             "");
