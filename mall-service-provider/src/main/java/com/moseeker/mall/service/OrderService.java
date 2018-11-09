@@ -236,6 +236,7 @@ public class OrderService {
         List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
         Map<Integer,UserEmployeeDO> idEmployeeMap = employeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
         Map<Integer,UserEmployeeDO> historyIdEmployeeMap = historyEmployeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for(Integer employeeId : employeeIds){
             List<MallOrderDO> tempList = employeeOrderMap.get(employeeId);
             for(MallOrderDO mallOrderDO : tempList){
