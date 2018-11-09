@@ -81,7 +81,7 @@ public class OrderService {
     private RedisClient redisClient;
 
     private static final String CONFIRM_REASON = "积分商城兑换商品消费积分";
-    private static final String REFUSE_REASON = "积分商城拒绝兑换返还积分";
+    private static final String REFUSE_REASON = "积分商城未成功发放返还积分";
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
