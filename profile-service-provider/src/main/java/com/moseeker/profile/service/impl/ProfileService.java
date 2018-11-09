@@ -555,13 +555,17 @@ public class ProfileService {
      * @return
      */
     public Response checkProfileOther(int userId, int positionId) {
+        logger.info("ProfileService checkProfileOther userId:{}, positionId:{}", userId, positionId);
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", appCvConfigId);
         HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        logger.info("ProfileService checkProfileOther hrAppCvConfDO:{}", hrAppCvConfDO);
         if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+            logger.info("ProfileService checkProfileOther hrAppCvConfDO is null or getFieldValue is empty");
             return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
         } else {
+            logger.info("ProfileService checkProfileOther 正常进行");
             queryBuilder.clear();
             queryBuilder.where("user_id", userId);
             ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
@@ -579,8 +583,10 @@ public class ProfileService {
             List<JSONObject> appCvConfigJson = new ArrayList<>();
             try {
                 profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
+                logger.info("ProfileService checkProfileOther profileOtherJson:{}", profileOtherJson);
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                         map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
+                logger.info("ProfileService checkProfileOther appCvConfigJson:{}", appCvConfigJson);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 logger.error("profileOther: {}; hrAppCvConf: {}", profileOther, hrAppCvConfDO);
@@ -588,7 +594,9 @@ public class ProfileService {
             }
             Object customResult = "";
             for (JSONObject appCvConfig : appCvConfigJson) {
+                logger.info("ProfileService checkProfileOther appCvConfig:{}", appCvConfig);
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
+                    logger.info("ProfileService checkProfileOther appCvConfig.getString(\"map\"):{}", appCvConfig.getString("map"));
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains("&")) {
