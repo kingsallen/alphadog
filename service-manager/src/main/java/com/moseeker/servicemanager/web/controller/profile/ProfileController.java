@@ -518,6 +518,7 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
+
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, result);
         } catch (Exception e) {

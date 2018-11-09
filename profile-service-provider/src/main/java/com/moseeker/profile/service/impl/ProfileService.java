@@ -555,13 +555,17 @@ public class ProfileService {
      * @return
      */
     public Response checkProfileOther(int userId, int positionId) {
+        logger.info("ProfileService checkProfileOther userId:{}, positionId:{}", userId, positionId);
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", appCvConfigId);
         HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        logger.info("ProfileService checkProfileOther hrAppCvConfDO:{}", hrAppCvConfDO);
         if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+            logger.info("ProfileService checkProfileOther hrAppCvConfDO is null or getFieldValue is empty");
             return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
         } else {
+            logger.info("ProfileService checkProfileOther 正常进行");
             queryBuilder.clear();
             queryBuilder.where("user_id", userId);
             ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
@@ -579,8 +583,10 @@ public class ProfileService {
             List<JSONObject> appCvConfigJson = new ArrayList<>();
             try {
                 profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
+                logger.info("ProfileService checkProfileOther profileOtherJson:{}", profileOtherJson);
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                         map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
+                logger.info("ProfileService checkProfileOther appCvConfigJson:{}", appCvConfigJson);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 logger.error("profileOther: {}; hrAppCvConf: {}", profileOther, hrAppCvConfDO);
@@ -588,7 +594,9 @@ public class ProfileService {
             }
             Object customResult = "";
             for (JSONObject appCvConfig : appCvConfigJson) {
+                logger.info("ProfileService checkProfileOther appCvConfig:{}", appCvConfig);
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
+                    logger.info("ProfileService checkProfileOther appCvConfig.getString(\"map\"):{}", appCvConfig.getString("map"));
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains("&")) {
@@ -614,6 +622,7 @@ public class ProfileService {
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 }
+                logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
@@ -848,6 +857,7 @@ public class ProfileService {
                 // 普通字段校验
                 customResult = fieldJson.get(fieldName);
             }
+            logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", configSysCvTplDO.getValidateRe(), customResult);
             if (Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getValidateRe(), ""), String.valueOf(customResult))) {
                 result.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
             } else {
