@@ -53,6 +53,19 @@ public interface ReferralService {
             throws ProfileException, BIZException;
 
     /**
+     * 员工推荐简历
+     * @param employeeId 员工编号
+     * @param name 推荐者名称
+     * @param mobile 手机号码
+     * @param referralReasons 推荐理由
+     * @param position 职位编号
+     * @param referralType 推荐方式 1 手机端上传 2 电脑端上传 3 推荐关键信息
+     * @return 推荐记录编号
+     * @throws ProfileException 业务异常
+     */
+    int employeeReferralProfileV1(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType)
+            throws ProfileException, BIZException;
+    /**
      * 员工提交候选人关键信息
      * @param employeeId 员工编号
      * @param candidate 候选人信息

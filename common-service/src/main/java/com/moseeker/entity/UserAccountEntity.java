@@ -188,6 +188,27 @@ public class UserAccountEntity {
         }
         return userUserRecord;
     }
+    /**
+     * 根据手机号码查找内推用户
+     * @param phone 手机号码
+     * @param companyId 公司编号
+     * @return 用户信息
+     */
+    public UserUserRecord getReferralUser(String phone, int companyId) {
+
+        UserUserRecord userUserRecord = null;
+        String countryCode="86";
+        if(phone.contains("-")){
+            String [] phoneArray=phone.split("-");
+            countryCode=phoneArray[0];
+            phone=phoneArray[1];
+        }
+        List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode);
+        if (list != null && list.size() > 0) {
+            userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.Referral);
+        }
+        return userUserRecord;
+    }
 
     /**
      * 根据手机号码查找内推用户
