@@ -614,6 +614,7 @@ public class ProfileService {
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 }
+                logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
@@ -848,6 +849,7 @@ public class ProfileService {
                 // 普通字段校验
                 customResult = fieldJson.get(fieldName);
             }
+            logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", configSysCvTplDO.getValidateRe(), customResult);
             if (Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getValidateRe(), ""), String.valueOf(customResult))) {
                 result.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
             } else {
