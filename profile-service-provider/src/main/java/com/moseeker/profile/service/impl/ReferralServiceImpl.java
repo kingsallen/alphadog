@@ -787,7 +787,7 @@ public class ReferralServiceImpl implements ReferralService {
         referralResultVO.setPosition_id(jobPositionDO.getId());
         referralResultVO.setTitle(jobPositionDO.getTitle());
         try {
-            int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, jobPositionDO.getId(), referralType);
+            int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, 0, jobPositionDO.getId(), referralType);
             JobApplication jobApplication = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(), name, origin, employeeDO.getSysuserId());
             Response response = applicationService.postApplication(jobApplication);
             int applicationId = 0;
