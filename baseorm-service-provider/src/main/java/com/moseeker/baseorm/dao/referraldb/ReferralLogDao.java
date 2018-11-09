@@ -165,7 +165,6 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                 .selectFrom(ReferralLog.REFERRAL_LOG)
                 .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.in(employeeIds))
                 .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
-                .and(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID.ne(0))
                 .orderBy(ReferralLog.REFERRAL_LOG.CREATE_TIME.desc())
                 .fetchInto(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
         if(StringUtils.isEmptyList(referralLogs)){
