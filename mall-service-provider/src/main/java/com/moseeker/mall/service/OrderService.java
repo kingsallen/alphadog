@@ -81,7 +81,7 @@ public class OrderService {
     private RedisClient redisClient;
 
     private static final String CONFIRM_REASON = "积分商城兑换商品消费积分";
-    private static final String REFUSE_REASON = "积分商城拒绝兑换商品返还积分";
+    private static final String REFUSE_REASON = "积分商城拒绝兑换返还积分";
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
@@ -218,24 +218,17 @@ public class OrderService {
         if(employeeDOS.size() != employeeIds.size()){
             historyEmployeeDOS = historyUserEmployeeDao.getHistoryEmployeeByIds(employeeIds);
         }
-        List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds);
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<MallOrderInfoVO> mallOrderInfoVOS = getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds, sdf);
         return JSON.toJSONString(mallOrderInfoVOS);
     }
 
-    /**
-     * 组装订单记录数据
-     * @param   employeeOrderMap 员工ID-订单map
-     * @param   employeeDOS 员工dos
-     * @param   historyEmployeeDOS 历史表员工dos
-     * @param   employeeIds 员工IDS
-     * @author  cjm
-     * @date  2018/10/16
-     * @return   mallOrderInfoVOS
-     */
-    private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, List<UserEmployeeDO> employeeDOS, List<UserEmployeeDO> historyEmployeeDOS, List<Integer> employeeIds) {
+    private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, List<UserEmployeeDO> employeeDOS,
+                                                      List<UserEmployeeDO> historyEmployeeDOS, List<Integer> employeeIds, DateFormat dateFormat) {
         List<MallOrderInfoVO> mallOrderInfoVOS = new ArrayList<>();
         Map<Integer,UserEmployeeDO> idEmployeeMap = employeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
         Map<Integer,UserEmployeeDO> historyIdEmployeeMap = historyEmployeeDOS.stream().collect(Collectors.toMap(UserEmployeeDO::getId, userEmployeeDO -> userEmployeeDO));
+
         for(Integer employeeId : employeeIds){
             List<MallOrderDO> tempList = employeeOrderMap.get(employeeId);
             for(MallOrderDO mallOrderDO : tempList){
@@ -245,11 +238,26 @@ public class OrderService {
                 if(userEmployeeDO == null){
                     historyIdEmployee = historyIdEmployeeMap.get(employeeId);
                 }
-                mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO, historyIdEmployee);
+                mallOrderInfoVO.cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO, historyIdEmployee, dateFormat);
                 mallOrderInfoVOS.add(mallOrderInfoVO);
             }
         }
         return mallOrderInfoVOS;
+    }
+
+        /**
+         * 组装订单记录数据
+         * @param   employeeOrderMap 员工ID-订单map
+         * @param   employeeDOS 员工dos
+         * @param   historyEmployeeDOS 历史表员工dos
+         * @param   employeeIds 员工IDS
+         * @author  cjm
+         * @date  2018/10/16
+         * @return   mallOrderInfoVOS
+         */
+    private List<MallOrderInfoVO> getMallOrderInfoVOS(Map<Integer, List<MallOrderDO>> employeeOrderMap, List<UserEmployeeDO> employeeDOS, List<UserEmployeeDO> historyEmployeeDOS, List<Integer> employeeIds) {
+        return getMallOrderInfoVOS(employeeOrderMap, employeeDOS, historyEmployeeDOS, employeeIds, null);
+
     }
 
     /**
@@ -401,7 +409,7 @@ public class OrderService {
         for(MallOrderDO mallOrderDO : orderList){
             UserEmployeePointsRecordDO userEmployeePointsDO = new UserEmployeePointsRecordDO();
             if(orderState == OrderEnum.REFUSED.getState()){
-                userEmployeePointsDO.setAward(mallOrderDO.getCredit());
+                userEmployeePointsDO.setAward(mallOrderDO.getCount() * mallOrderDO.getCredit());
                 userEmployeePointsDO.setEmployeeId(mallOrderDO.getEmployee_id());
                 userEmployeePointsDO.setReason(REFUSE_REASON);
                 userEmployeePointsDO = userEmployeePointsDao.addData(userEmployeePointsDO);

@@ -4,6 +4,8 @@ import com.moseeker.mall.constant.OrderUserEmployeeEnum;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 
+import java.text.DateFormat;
+
 /**
  * 订单记录VO
  *
@@ -147,26 +149,29 @@ public class MallOrderInfoVO{
         this.name = name;
     }
 
-    /**
-     * 根据订单信息，员工信息组装页面显示的订单信息
-     * @param mallOrderDO 订单信息
-     * @param userEmployeeDO 员工信息
-     * @param historyUserEmployeeDO 历史表员工信息
-     * @author  cjm
-     * @date  2018/10/23
-     */
-    public void cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO, UserEmployeeDO historyUserEmployeeDO){
-
+    public void cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO,
+                                         UserEmployeeDO historyUserEmployeeDO, DateFormat dateFormat) {
         setId(mallOrderDO.getId());
-        setAssign_time(mallOrderDO.getAssign_time());
         setCount(mallOrderDO.getCount());
-        setCreate_time(mallOrderDO.getCreateTime());
         setCredit(mallOrderDO.getCredit());
         setGood_id(mallOrderDO.getGoods_id());
         setOrder_id(mallOrderDO.getOrder_id());
         setPic_url(mallOrderDO.getPic_url());
         setOrder_state(mallOrderDO.getState());
         setTitle(mallOrderDO.getTitle());
+        if(dateFormat == null){
+            setCreate_time(mallOrderDO.getCreateTime());
+            setAssign_time(mallOrderDO.getAssign_time());
+        }else {
+            try {
+                // 格式化时间格式
+                setCreate_time(dateFormat.format(dateFormat.parse(mallOrderDO.getCreateTime())));
+                setAssign_time(dateFormat.format(dateFormat.parse(mallOrderDO.getAssign_time())));
+            }catch (Exception e){
+                setCreate_time(mallOrderDO.getCreateTime());
+                setAssign_time(mallOrderDO.getAssign_time());
+            }
+        }
         if(userEmployeeDO != null){
             setEmployee_state(userEmployeeDO.getActivation() == 0 ?
                     (byte)OrderUserEmployeeEnum.VERTIFIED.getState() :
@@ -182,6 +187,18 @@ public class MallOrderInfoVO{
         setEmail(userEmployeeDO.getEmail());
         setCustom(userEmployeeDO.getCustomField());
         setName(userEmployeeDO.getCname());
+    }
+    /**
+     * 根据订单信息，员工信息组装页面显示的订单信息
+     * @param mallOrderDO 订单信息
+     * @param userEmployeeDO 员工信息
+     * @param historyUserEmployeeDO 历史表员工信息
+     * @author  cjm
+     * @date  2018/10/23
+     */
+    public void cloneFromOrderAndEmloyee(MallOrderDO mallOrderDO, UserEmployeeDO userEmployeeDO,
+                                         UserEmployeeDO historyUserEmployeeDO){
+        cloneFromOrderAndEmloyee(mallOrderDO, userEmployeeDO, historyUserEmployeeDO, null);
     }
 
     @Override
