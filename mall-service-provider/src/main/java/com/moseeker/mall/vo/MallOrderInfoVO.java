@@ -1,5 +1,6 @@
 package com.moseeker.mall.vo;
 
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.mall.constant.OrderUserEmployeeEnum;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallOrderDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -166,7 +167,9 @@ public class MallOrderInfoVO{
             try {
                 // 格式化时间格式
                 setCreate_time(dateFormat.format(dateFormat.parse(mallOrderDO.getCreateTime())));
-                setAssign_time(dateFormat.format(dateFormat.parse(mallOrderDO.getAssign_time())));
+                if(!StringUtils.isNullOrEmpty(mallOrderDO.getAssign_time())){
+                    setAssign_time(dateFormat.format(dateFormat.parse(mallOrderDO.getAssign_time())));
+                }
             }catch (Exception e){
                 setCreate_time(mallOrderDO.getCreateTime());
                 setAssign_time(mallOrderDO.getAssign_time());
