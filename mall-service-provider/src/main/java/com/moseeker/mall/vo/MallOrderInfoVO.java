@@ -153,7 +153,6 @@ public class MallOrderInfoVO{
                                          UserEmployeeDO historyUserEmployeeDO, DateFormat dateFormat) {
         setId(mallOrderDO.getId());
         setCount(mallOrderDO.getCount());
-        setCreate_time(mallOrderDO.getCreateTime());
         setCredit(mallOrderDO.getCredit());
         setGood_id(mallOrderDO.getGoods_id());
         setOrder_id(mallOrderDO.getOrder_id());
@@ -161,12 +160,15 @@ public class MallOrderInfoVO{
         setOrder_state(mallOrderDO.getState());
         setTitle(mallOrderDO.getTitle());
         if(dateFormat == null){
+            setCreate_time(mallOrderDO.getCreateTime());
             setAssign_time(mallOrderDO.getAssign_time());
         }else {
             try {
                 // 格式化时间格式
+                setCreate_time(dateFormat.format(dateFormat.parse(mallOrderDO.getCreateTime())));
                 setAssign_time(dateFormat.format(dateFormat.parse(mallOrderDO.getAssign_time())));
             }catch (Exception e){
+                setCreate_time(mallOrderDO.getCreateTime());
                 setAssign_time(mallOrderDO.getAssign_time());
             }
         }
