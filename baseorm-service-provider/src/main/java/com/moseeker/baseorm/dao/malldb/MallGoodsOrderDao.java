@@ -50,16 +50,16 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
     }
 
     public int updateOrderStateByIdAndCompanyId(MallGoodsOrderUpdateForm updateForm) {
-        if(updateForm.getState() == 0){
+        if(updateForm.getState() == 1){
             return create.update(MALL_ORDER)
                     .set(MALL_ORDER.STATE, (byte)updateForm.getState())
+                    .set(MALL_ORDER.ASSIGN_TIME, new Timestamp(System.currentTimeMillis()))
                     .where(MALL_ORDER.ID.in(updateForm.getIds()))
                     .and(MALL_ORDER.COMPANY_ID.eq(updateForm.getCompany_id()))
                     .execute();
         }else {
             return create.update(MALL_ORDER)
                     .set(MALL_ORDER.STATE, (byte)updateForm.getState())
-                    .set(MALL_ORDER.ASSIGN_TIME, new Timestamp(System.currentTimeMillis()))
                     .where(MALL_ORDER.ID.in(updateForm.getIds()))
                     .and(MALL_ORDER.COMPANY_ID.eq(updateForm.getCompany_id()))
                     .execute();
