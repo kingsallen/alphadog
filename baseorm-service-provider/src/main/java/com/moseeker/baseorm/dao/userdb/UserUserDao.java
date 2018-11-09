@@ -473,6 +473,22 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
                 .fetch();
     }
 
+    /**
+     * 根据手机号码查找内推用户
+     * @param phone 手机号码
+     * @param countryCode 国家代码
+     * @return 用户信息
+     */
+    public List<UserUserRecord> getReferralUser(String phone, String countryCode) {
+        return create
+                .selectFrom(UserUser.USER_USER)
+                .where(UserUser.USER_USER.MOBILE.eq(Long.valueOf(phone)))
+                .and(UserUser.USER_USER.COUNTRY_CODE.eq(countryCode))
+                .and(UserUser.USER_USER.SOURCE.eq((short)UserSource.EMPLOYEE_REFERRAL.getValue()))
+                .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetch();
+    }
+
     public List<UserUserRecord> fetchByIdList(List<Integer> userIdList) {
         return create
                 .selectFrom(UserUser.USER_USER)

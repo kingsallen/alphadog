@@ -709,6 +709,22 @@ public class ProfileEntity {
             throw ProfileException.PROGRAM_DOUBLE_CLICK;
         }
     }
+    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
+
+        UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
+                companyId, profilePojo.getUserRecord().getMobile(),
+                ReferralScene.Referral);
+        if (referralRecordRecord != null) {
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, UserSource.EMPLOYEE_REFERRAL,null,null,null);
+            if (referralRecordRecord != null && userUserRecord1 != null) {
+                referralRecordRecord.setUserId(userUserRecord1.getId());
+                userReferralRecordDao.updateRecord(referralRecordRecord);
+            }
+            return userUserRecord1;
+        } else {
+            throw ProfileException.PROGRAM_DOUBLE_CLICK;
+        }
+    }
 
     private UserUserRecord storeUserRecord(ProfilePojo profilePojo, UserSource source,Integer appid,Integer referenceId,Integer companyId) {
         if (org.apache.commons.lang.StringUtils.isBlank(profilePojo.getUserRecord().getPassword())) {
