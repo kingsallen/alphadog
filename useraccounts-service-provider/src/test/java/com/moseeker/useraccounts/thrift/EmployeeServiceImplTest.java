@@ -22,7 +22,7 @@ public class EmployeeServiceImplTest {
 
     @Test
     public void emailActivation() throws Exception {
-        employeeService.emailActivation("23ed4070c1ca2ac49d5ce7c3c8ae7e0d24a888a0");
+        employeeService.emailActivation("23ed4070c1ca2ac49d5ce7c3c8ae7e0d24a888a0", 0);
     }
 
 }

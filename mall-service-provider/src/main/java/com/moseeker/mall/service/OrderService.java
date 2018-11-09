@@ -296,12 +296,12 @@ public class OrderService {
         // 插入订单操作记录
         insertOperationRecord(mallOrderDO.getId(), userEmployeePointsDO.getId());
         // 发送消息模板
-        sendAwardTemplate(orderForm.getCompany_id(), mallOrderDO.getCredit(), userEmployeeDO.getSysuserId(), mallGoodsInfoDO.getTitle());
+        sendAwardTemplate(orderForm.getCompany_id(), mallOrderDO.getCount() * mallOrderDO.getCredit(), userEmployeeDO.getSysuserId(), mallGoodsInfoDO.getTitle());
         // 删除redis锁
         delOrderRedisLock(orderForm);
     }
 
-    private void sendAwardTemplate(int companyId, int returnCredit, int sysUserId, String goodTitle){
+    private void sendAwardTemplate(int companyId, int credit, int sysUserId, String goodTitle){
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         String current = dateFormat.format(dateTime.toDate());
@@ -310,7 +310,7 @@ public class OrderService {
         HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(companyId);
         String shopName = hrCompanyDO.getName() + "积分商城";
         templateService.sendAwardTemplate(sysUserId, companyId, Constant.TEMPLATES_AWARD_CONSUME_NOTICE_TPL, templateTile,
-                current, "0",  returnCredit+ "", shopName, CONSUME_REMARK, url);
+                current, "0",  credit+ "", shopName, CONSUME_REMARK, url);
     }
 
     /**
@@ -497,7 +497,7 @@ public class OrderService {
         int month = dateTime.getMonthOfYear();
         int day = dateTime.getDayOfMonth();
         logger.info("allDay:{}, expireTime:{}", allDay, expireTime);
-        return String.valueOf((((year * 100) + month) * 100 + day) * 10000L + Long.parseLong(current));
+        return String.valueOf((((year * 100) + month) * 100 + day) * 100000L + Long.parseLong(current));
     }
 
     private void handleUpdatedOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException {
@@ -572,12 +572,13 @@ public class OrderService {
             if(userEmployeeDO == null){
                 userEmployeeDO = historyEmployeeDOMap.get(orderDO.getEmployee_id());
             }
-            userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCredit(), 1);
+            userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCount() * orderDO.getCredit(), 1);
             // 发送积分变动消息模板
             String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
             String url = getTemplateJumpUrlByKey("mall.refund.template.url");
             templateService.sendAwardTemplate(userEmployeeDO.getSysuserId(), userEmployeeDO.getCompanyId(), Constant.TEMPLATES_AWARD_RETURN_NOTICE_TPL, templateTile,
-                    "0", orderDO.getCredit() + "", "0", userEmployeeDO.getAward() + orderDO.getCredit() + "", REFUSE_REMARK, url);
+                    "0", orderDO.getCount() * orderDO.getCredit() + "", "0",
+                    userEmployeeDO.getAward() + orderDO.getCount() * orderDO.getCredit() + "", REFUSE_REMARK, url);
         }
     }
 

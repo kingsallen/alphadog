@@ -69,6 +69,10 @@ public class MallService {
 
     @OnlySuperAccount
     public void updateDefaultRule(MallRuleForm mallRuleForm) throws BIZException {
+        if(mallRuleForm.getState() == 0){
+            // 如果是取消默认规则，将默认规则删除
+            mallRuleForm.setRule("");
+        }
         int row = hrCompanyConfDao.updateMallDefaultRule(mallRuleForm.getCompany_id(), mallRuleForm.getState(), mallRuleForm.getRule());
         if(row == 0){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HRCOMPANY_NOTEXIST);

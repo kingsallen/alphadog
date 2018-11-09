@@ -91,12 +91,12 @@ public class TemplateService {
         templateDataValueVO.setRemark(remark);
         try {
             UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(sysUserId, hrWxWechatDO.getId());
-
+            logger.info("===============userWxUserRecord:{}", userWxUserRecord);
             Map<String, Object> templateValueMap = sendCreditUpdateTemplate(userWxUserRecord.getOpenid(), templateDataValueVO, hrWxWechatDO, url);
             // 插入模板消息发送记录
             insertLogWxMessageRecord(templateId, hrWxWechatDO.getId(), templateValueMap);
         }catch (BIZException e){
-            logger.info("==============消息模板发送失败:{}", e.getMessage());
+            logger.info("==============消息模板发送业务失败:{}", e.getMessage());
         }catch (ConnectException e){
             logger.info("=========================积分消息模板发送超时：templateDataValueVO:{}", templateDataValueVO);
         }catch (Exception e){
@@ -115,6 +115,7 @@ public class TemplateService {
      */
     private Map<String, Object> sendCreditUpdateTemplate(String openId, TemplateDataValueVO templateDataValueVO, HrWxWechatDO hrWxWechatDO, String url) throws ConnectException, BIZException {
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, templateDataValueVO.getTemplateId());
+        logger.info("=========hrWxTemplateMessageDO:{}", hrWxTemplateMessageDO);
         String requestUrl = getAwardTemplateUrl(hrWxWechatDO);
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
         Map<String, TemplateBaseVO> dataMap = createDataMap(templateDataValueVO);

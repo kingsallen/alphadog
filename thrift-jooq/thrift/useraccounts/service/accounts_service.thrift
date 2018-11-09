@@ -85,6 +85,15 @@ service UseraccountsServices {
 
     //批量认领卡片
     string batchClaimReferralCard(1: i32 userId, 2: string name, 3: string mobile, 4: string vcode, 5:list<i32> referralRecordIds) throws (1: common_struct.BIZException e);
+    //是否查看过隐私协议
+    i32 ifViewPrivacyProtocol(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    // 根据用户表id删除隐私记录
+    void deletePrivacyRecordByUserId(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    //插入隐私协议记录
+    void insertPrivacyRecord(1: i32 userId) throws (1: common_struct.BIZException e);
+
 }
 /**
 * 用户配置服务

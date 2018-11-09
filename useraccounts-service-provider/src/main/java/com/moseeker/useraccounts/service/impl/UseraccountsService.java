@@ -5,14 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.ClaimType;
 import com.moseeker.baseorm.constant.SMSScene;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
-import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
-import com.moseeker.baseorm.dao.userdb.UserFavPositionDao;
-import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
-import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
@@ -28,7 +24,6 @@ import com.moseeker.baseorm.util.SmsSender;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
@@ -42,7 +37,6 @@ import com.moseeker.common.weixin.QrcodeType;
 import com.moseeker.common.weixin.WeixinTicketBean;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
-import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -131,6 +125,9 @@ public class UseraccountsService {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private UserPrivacyRecordDao userPrivacyRecordDao;
 
     @Autowired
     private JobPositionDao jobPositionDao;
@@ -1261,6 +1258,7 @@ public class UseraccountsService {
         }
 
         Map<Integer, String> positionIdTitleMap = getPositionIdTitleMap(referralLogs);
+        CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
         List<ClaimResult> claimResults = new ArrayList<>();
         for(ReferralLog referralLog : referralLogs){
             pool.startTast(()->{
@@ -1271,19 +1269,26 @@ public class UseraccountsService {
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
                     claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
-                }catch (UserAccountException e){
+                }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
                     throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
+                    claimResult.setErrmsg(e.getMessage());
                     logger.info("员工认领异常信息:{}", e.getMessage());
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
+                    countDownLatch.countDown();
                 }
                 return 0;
             });
+        }
+        try {
+            countDownLatch.await(20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw CommonException.PROGRAM_EXCEPTION;
         }
         return claimResults;
     }
@@ -1375,7 +1380,7 @@ public class UseraccountsService {
 
     /**
      * 认领内推奖金
-     * @param claimForm 参数
+     * @param bonus_record_id 参数
      */
     @Transactional
     public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {
@@ -1393,6 +1398,35 @@ public class UseraccountsService {
         referralEmployeeBonusRecordDao.update(referralEmployeeBonusRecord);
     }
 
+    /**
+     * 是否查看隐私协议
+     * @param userId user_user.id
+     * @return  是否查看标识 0：未查看，1：已查看
+     * @throws BIZException
+     * @throws TException
+     */
+    public int ifViewPrivacyProtocol(int userId) throws Exception {
+        return userPrivacyRecordDao.ifViewPrivacyProtocol(userId);
+    }
 
+    /**
+     * 根据user_id删除隐私协议记录
+     * @param userId user_user.id
+     * @throws BIZException
+     * @throws TException
+     */
+    public void deletePrivacyRecordByUserId(int userId) throws Exception {
+        userPrivacyRecordDao.deletePrivacyRecordByUserId(userId);
+    }
 
+    /**
+     * 插入隐私协议未查看记录
+     *
+     * @param userId
+     * @throws BIZException
+     * @throws TException
+     */
+    public void insertPrivacyRecord(int userId) throws Exception {
+        userPrivacyRecordDao.insertPrivacyRecord(userId);
+    }
 }
