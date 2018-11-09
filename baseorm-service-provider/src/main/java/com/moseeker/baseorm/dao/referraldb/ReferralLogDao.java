@@ -8,6 +8,7 @@ import org.jooq.Configuration;
 import org.jooq.Param;
 import org.jooq.Record1;
 import org.jooq.Result;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -30,13 +31,14 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         super(configuration);
     }
 
-    public int createReferralLog(int employeeId, int referenceId, int position, int referralType) {
+    public int createReferralLog(int employeeId, int referenceId, int position, int referralType, int attachmentId) {
 
         Param<Integer> employeeIdParam = param(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.getName(), employeeId);
         Param<Integer> referenceIdParam = param(ReferralLog.REFERRAL_LOG.REFERENCE_ID.getName(), referenceId);
         Param<Integer> positionIdParam = param(ReferralLog.REFERRAL_LOG.POSITION_ID.getName(), position);
         Param<Timestamp> referralTime = param(ReferralLog.REFERRAL_LOG.REFERRAL_TIME.getName(), new Timestamp(System.currentTimeMillis()));
         Param<Integer> referralTypeParam = param(ReferralLog.REFERRAL_LOG.TYPE.getName(), referralType);
+        Param<Integer> attachmentParam = param(ReferralLog.REFERRAL_LOG.ATTEMENT_ID.getName(), attachmentId);
 
         ReferralLogRecord referralLogRecord = using(configuration()).insertInto(
                 ReferralLog.REFERRAL_LOG,
@@ -44,14 +46,16 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                 ReferralLog.REFERRAL_LOG.REFERENCE_ID,
                 ReferralLog.REFERRAL_LOG.POSITION_ID,
                 ReferralLog.REFERRAL_LOG.REFERRAL_TIME,
-                ReferralLog.REFERRAL_LOG.TYPE
+                ReferralLog.REFERRAL_LOG.TYPE,
+                ReferralLog.REFERRAL_LOG.ATTEMENT_ID
         ).select(
                 select(
                         employeeIdParam,
                         referenceIdParam,
                         positionIdParam,
                         referralTime,
-                        referralTypeParam
+                        referralTypeParam,
+                        attachmentParam
                 ).whereNotExists(
                         selectOne()
                         .from(ReferralLog.REFERRAL_LOG)
@@ -110,6 +114,20 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
         }
     }
 
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog
+    fetchByEmployeeIdReferenceId(Integer employeeId, Integer referenceId) {
+        ReferralLogRecord referralLogRecord = using(configuration())
+                .selectFrom(ReferralLog.REFERRAL_LOG)
+                .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
+                .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                .fetchOne();
+        if (referralLogRecord != null) {
+            return referralLogRecord.into(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
+        } else {
+            return null;
+        }
+    }
+
     public List<Integer> fetchReferenceIdByEmployeeId(int employeeId) {
         Result<Record1<Integer>> result = using(configuration())
                 .select(ReferralLog.REFERRAL_LOG.REFERENCE_ID)
@@ -130,6 +148,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                 .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.in(employeeIds))
                 .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
                 .and(ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID.ne(0))
+                .orderBy(ReferralLog.REFERRAL_LOG.CREATE_TIME.desc())
                 .fetchInto(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog.class);
         if(StringUtils.isEmptyList(referralLogs)){
             return  new ArrayList<>();

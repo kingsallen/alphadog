@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog extends TableImpl<ReferralLogRecord> {
 
-    private static final long serialVersionUID = 1685210991;
+    private static final long serialVersionUID = 1240878913;
 
     /**
      * The reference instance of <code>referraldb.referral_log</code>
@@ -105,6 +105,11 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
      * The column <code>referraldb.referral_log.old_reference_id</code>. 认领之前被推荐人编号
      */
     public final TableField<ReferralLogRecord, Integer> OLD_REFERENCE_ID = createField("old_reference_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "认领之前被推荐人编号");
+
+    /**
+     * The column <code>referraldb.referral_log.attement_id</code>. 内推简历附件编号
+     */
+    public final TableField<ReferralLogRecord, Integer> ATTEMENT_ID = createField("attement_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "内推简历附件编号");
 
     /**
      * Create a <code>referraldb.referral_log</code> table reference

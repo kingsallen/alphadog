@@ -213,10 +213,10 @@ public class ReferralEntity {
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
     }
 
-    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType)
+    public int logReferralOperation(int employeeId, int userId, int attachmentId, int position, ReferralType referralType)
             throws EmployeeException {
 
-        int referralId = referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
+        int referralId = referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue(), attachmentId);
         if (referralId == 0) {
             throw EmployeeException.EMPLOYEE_REPEAT_RECOMMEND;
         }
@@ -275,6 +275,10 @@ public class ReferralEntity {
 
     public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
         return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
+    }
+
+    public ReferralLog fetchReferralLog(Integer employeeId,  int referenceId) {
+        return referralLogDao.fetchByEmployeeIdReferenceId(employeeId, referenceId);
     }
 
     public List<Integer> fetchReferenceIdList(int userId) {
@@ -523,8 +527,17 @@ public class ReferralEntity {
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }
-
         List<ReferralLog> logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
+        List<ReferralLog> logList = new ArrayList<>();
+        if(!StringUtils.isEmptyList(logs)){
+            Set<Integer> idList = new HashSet<>();
+            for (ReferralLog log :logs){
+                if(!idList.contains(log.getEmployeeId())){
+                    logList.add(log);
+                    idList.add(log.getEmployeeId());
+                }
+            }
+        }
         return logs;
     }
 
@@ -535,9 +548,9 @@ public class ReferralEntity {
         }
         List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         List<Integer> empolyeeReferralIds = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
-        Set<Integer> refenceIds = logs.stream().map(m -> m.getOldReferenceId()).collect(Collectors.toSet());
-        Future<List<ProfileProfileDO>> profileListFuture  = threadPool.startTast(
-                () -> profileDao.getProfileByUidList(refenceIds));
+        List<Integer> attementIds = logs.stream().map(m -> m.getAttementId()).collect(Collectors.toList());
+        Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
+                () -> attachmentDao.fetchAttachmentByIds(attementIds));
         Future<List<JobPositionDO>> positionListFuture = threadPool.startTast(
                 () -> positionDao.getPositionList(positionIds));
         Future<List<UserEmployeeDO>> empListFuture  = threadPool.startTast(
@@ -545,18 +558,6 @@ public class ReferralEntity {
         Future<List<UserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
                 () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
         try {
-            List<ProfileProfileDO> profileList = profileListFuture.get();
-            if(StringUtils.isEmptyList(profileList)){
-                return null;
-            }
-            List<Integer> profileIds = profileList.stream().map(m -> m.getId()).collect(Collectors.toList());
-            Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
-                    () -> attachmentDao.fetchAttachmentByProfileIds(profileIds));
-            Map<Integer, Integer> profileIdMap = new HashMap<>();
-            profileList.forEach(profile ->
-                    profileIdMap.put(profile.getUserId(), profile.getId())
-            );
-            data.setProfileIdMap(profileIdMap);
             List<JobPositionDO> positionList = positionListFuture.get();
             if(!StringUtils.isEmptyList(positionList)){
                 Map<Integer, String> positionTitileMap = new HashMap<>();
@@ -586,7 +587,7 @@ public class ReferralEntity {
             }
             Map<Integer, ProfileAttachmentDO> attachmentMap = new HashMap<>();
             attachmentList.forEach( attac ->
-                attachmentMap.put(attac.getProfileId(), attac)
+                attachmentMap.put(attac.getId(), attac)
             );
             data.setAttchmentMap(attachmentMap);
             data.setLogList(logs);
