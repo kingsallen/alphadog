@@ -69,9 +69,9 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
         byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
         String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
         FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
+        fileNameData.setOriginName(fileName);
         toPDF(suffix, fileNameData, id);
         profileDocParseResult.setFile(fileNameData.getFileName());
-        fileNameData.setOriginName(fileName);
         return parseResult(id, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
     }
     private ProfileDocParseResult parseResult(int id, String fileName, String fileData,
