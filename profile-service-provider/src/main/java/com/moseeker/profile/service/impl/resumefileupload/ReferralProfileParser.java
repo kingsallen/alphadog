@@ -70,7 +70,7 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
         if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
             String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
                     + Constant.WORD_PDF;
-            tp.startTast(() -> {
+//            tp.startTast(() -> {
                 String path = fileNameData.getFileAbsoluteName();
                 String name = fileNameData.getFileName();
                 int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
@@ -94,8 +94,8 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
                     }
                     attachmentDao.updateAttachmentPathByName(name, path, pdfName);
                 }
-                return 0;
-            });
+//                return 0;
+//            });
             fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
             fileNameData.setFileName(pdfName);
         }
