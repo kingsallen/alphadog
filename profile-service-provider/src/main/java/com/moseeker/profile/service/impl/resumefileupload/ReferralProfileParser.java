@@ -74,36 +74,12 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
         if(Constant.WORD_DOC.equals(suffix) || Constant.WORD_DOCX.equals(suffix)) {
             String pdfName = fileNameData.getFileName().substring(0,fileNameData.getFileName().lastIndexOf("."))
                     + Constant.WORD_PDF;
-            tp.startTast(() -> {
-                String path = fileNameData.getFileAbsoluteName();
-                logger.info("toPDF path:{}",path);
-                String name = fileNameData.getFileName();
-                int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
-                        fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
-                logger.info("toPDF status:{}",status);
-                if(status != 1) {
-                    String result = client.get(AppId.APPID_ALPHADOG.getValue(), getRedisKey(), String.valueOf(id),
-                            "");
-                    if(StringUtils.isNotNullOrEmpty(result)) {
-                        ProfilePojo pojo = (ProfilePojo) JSONObject.parse(result);
-                        List<ProfileAttachmentRecord> attachmentList = pojo.getAttachmentRecords();
-                        for(ProfileAttachmentRecord record : attachmentList){
-                            if(record.getName().equals(pdfName)){
-                                record.setName(name);
-                                record.setPath(path);
-                                break;
-                            }
-                        }
-                        logger.info("toPDF ProfilePojo:{}",pojo);
-                        client.set(AppId.APPID_ALPHADOG.getValue(), getRedisKey(), String.valueOf(id),
-                                "", pojo.toJson(), 24*60*60);
-                    }
-                    attachmentDao.updateAttachmentPathByName(name, path, pdfName);
-                }
-                return 0;
-            });
-            fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
-            fileNameData.setFileName(pdfName);
+            int status = OfficeUtils.Word2Pdf(fileNameData.getFileAbsoluteName(),
+                    fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+            if(status == 1) {
+                fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
+                fileNameData.setFileName(pdfName);
+            }
         }
     }
 
