@@ -79,6 +79,8 @@ public class ReferralProfileParser extends AbstractResumeFileParser {
             if(status == 1) {
                 fileNameData.setFileAbsoluteName(fileNameData.getFileAbsoluteName().replace(fileNameData.getFileName(), pdfName));
                 fileNameData.setFileName(pdfName);
+                fileNameData.setOriginName(fileNameData.getOriginName().replace(Constant.WORD_DOC, Constant.WORD_PDF)
+                        .replace(Constant.WORD_DOCX, Constant.WORD_PDF));
             }
         }
     }
