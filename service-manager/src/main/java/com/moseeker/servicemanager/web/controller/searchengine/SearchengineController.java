@@ -7,7 +7,9 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.CleanJsonResponse4Alphacloud;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -17,6 +19,7 @@ import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,6 +46,9 @@ public class SearchengineController {
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.
             getService(CompanyServices.Iface.class);
+
+    @Autowired
+    private TalentPoolEntity talentPoolEntity;
 
 
     @RequestMapping(value = "/search/update", method = RequestMethod.POST)
@@ -466,5 +472,310 @@ public class SearchengineController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+
+    /**********************--add by lcf @2018/11/12--*************************/
+    /**
+     * 查询企业标签的人才数量
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/talentSearchNum", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud talentSearchNum(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+            int num = searchengineServices.talentSearchNum(params);
+            return ResponseLogNotification.success4Alphacloud(num);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+    /**
+     * 获取企业标签的人才库用户id集合
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/getTalentUserIdList", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud getTalentUserIdList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud( "参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+            List<Integer> talentUserIdList = searchengineServices.getTalentUserIdList(params);
+            return ResponseLogNotification.success4Alphacloud(talentUserIdList);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+    /**
+     * queryCompanyTagUserIdListCount
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/queryCompanyTagUserIdListCount", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud queryCompanyTagUserIdListCount(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+            int count = searchengineServices.queryCompanyTagUserIdListCount(params);
+            return ResponseLogNotification.success4Alphacloud(count);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+    /**
+     * queryProfileFilterUserIdList
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/queryProfileFilterUserIdList", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud queryProfileFilterUserIdList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            //解析请求体参数
+            List<Map<String, String>> filterMapList = (List<Map<String, String>>) reqParams.get("filterMapList");
+            Integer pageNumber = BeanUtils.converToInteger(reqParams.get("pageNumber"));
+            Integer pageSize = BeanUtils.converToInteger(reqParams.get("pageSize"));
+
+            Response res = searchengineServices.queryProfileFilterUserIdList(filterMapList, pageNumber, pageSize);
+            return ResponseLogNotification.success4Alphacloud(JSON.parse(res.getData()));
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+    /**
+     * queryCompanyTagUserIdList
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/queryCompanyTagUserIdList", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud queryCompanyTagUserIdList(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+            List<Integer> res = searchengineServices.queryCompanyTagUserIdList(params);
+            return ResponseLogNotification.success4Alphacloud(res);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+
+    /**
+     * realTimeUpdateUpload
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    /*@RequestMapping(value = "/v4/searchengine/realTimeUpdateUpload", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud realTimeUpdateUpload(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+
+            List<Integer> res = searchengineServices.realTimeUpdateUpload(params);
+            return ResponseLogNotification.success4Alphacloud(res);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }*/
+
+    /**
+     * realTimeUpdate
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/realTimeUpdate", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud realTimeUpdate(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            List<Integer> userIdList = (List<Integer>) reqParams.get("userIdList");
+
+            talentPoolEntity.realTimeUpdate(userIdList);
+            return ResponseLogNotification.success4Alphacloud(null);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+/**
+     * realTimeUpdateUpload
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    /*@RequestMapping(value = "/v4/searchengine/updateCompanyTagId", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud updateCompanyTagId(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+
+            List<Integer> res = searchengineServices.updateCompanyTagId(params);
+            return ResponseLogNotification.success4Alphacloud(res);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }*/
+
+    /**
+     * userQuery
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/userQuery", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud userQuery(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+
+            Map map = (Map) reqParams.get("map");
+
+            Response res = searchengineServices.userQuery(map);
+            return ResponseLogNotification.success4Alphacloud(JSON.parse(res.getData()));
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+    /**
+     * userQueryById
+     *
+     * @param request
+     * @param response
+     * @return CleanJsonResponse4Alphacloud
+     */
+    @RequestMapping(value = "/v4/searchengine/userQueryById", method = RequestMethod.PUT)
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud userQueryById(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+
+            List<Integer> userIdList = (List<Integer>) reqParams.get("userIdList");
+
+            Response res = searchengineServices.userQueryById(userIdList);
+            return ResponseLogNotification.success4Alphacloud(JSON.parse(res.getData()));
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
+        }
+    }
+
+
+
+//        ??@RequestMapping(value = "/v4/searchengine/realTimeUpdateUpload", method = RequestMethod.PUT)
+//        ??Result realTimeUpdateUpload(@RequestBody List<Integer> userIdList);
+
+
+
+
+//    @RequestMapping(value = "/v4/searchengine/updateCompanyTagId", method = RequestMethod.PUT)
+//    ResultObject<Integer> updateCompanyTagId(@RequestBody EsUpdateCompanyTagVO vo  );
+//
+//    @RequestMapping(value = "/v4/searchengine/realTimeUpdateComment", method = RequestMethod.PUT)
+//    Result realTimeUpdateComment(@RequestBody Integer userId  );
+
+
+    //获取企业标签的人才数量
+//    @RequestMapping(value = "/v4/searchengine/talentSearchNum/companyTag", method = RequestMethod.PUT)
+//    ResultObject<Integer> talentSearchNumByCompanyTag(@RequestBody SearchTalentNumVO vo);
+//
+//    @RequestMapping(value = "/v4/searchengine/deleteCompanyTag", method = RequestMethod.PUT)
+//    Result deleteCompanyTag(@RequestBody List<Integer> tagIdList);
+//
+//    @RequestMapping(value = "/v4/searchengine/updateCompanyTagByIdAndType", method = RequestMethod.PUT)
+//    Result updateCompanyTagByIdAndType(@RequestBody EsUpdateCompanyTagAndTypeVO vo  );
 
 }
