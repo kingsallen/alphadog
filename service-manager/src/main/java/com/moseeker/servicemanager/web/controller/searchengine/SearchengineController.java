@@ -658,40 +658,40 @@ public class SearchengineController {
             List<Integer> userIdList = (List<Integer>) reqParams.get("userIdList");
 
             talentPoolEntity.realTimeUpdate(userIdList);
-            return ResponseLogNotification.success4Alphacloud(null);
+            return ResponseLogNotification.success4Alphacloud(1);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             return ResponseLogNotification.fail4Alphacloud(e.getMessage());
         }
     }
 
-/**
-     * realTimeUpdateUpload
+    /**
+     * realTimeUpdateComment
      *
      * @param request
      * @param response
      * @return CleanJsonResponse4Alphacloud
      */
-    /*@RequestMapping(value = "/v4/searchengine/updateCompanyTagId", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/realTimeUpdateComment", method = RequestMethod.PUT)
     @ResponseBody
-    public CleanJsonResponse4Alphacloud updateCompanyTagId(HttpServletRequest request, HttpServletResponse response) {
+    public CleanJsonResponse4Alphacloud realTimeUpdateComment(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
             Map<String, String> params = new HashMap<>();
             if (reqParams == null || reqParams.isEmpty()) {
                 return ResponseLogNotification.fail4Alphacloud("参数不能为空");
             }
-            for (String key : reqParams.keySet()) {
-                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
-            }
+            Integer userId = BeanUtils.converToInteger(reqParams.get("userId"));
 
-            List<Integer> res = searchengineServices.updateCompanyTagId(params);
-            return ResponseLogNotification.success4Alphacloud(res);
+
+            talentPoolEntity.realTimeUpdateComment(userId);
+            return ResponseLogNotification.success4Alphacloud(1);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
             return ResponseLogNotification.fail4Alphacloud(e.getMessage());
         }
-    }*/
+    }
+
 
     /**
      * userQuery
@@ -764,8 +764,6 @@ public class SearchengineController {
 //    @RequestMapping(value = "/v4/searchengine/updateCompanyTagId", method = RequestMethod.PUT)
 //    ResultObject<Integer> updateCompanyTagId(@RequestBody EsUpdateCompanyTagVO vo  );
 //
-//    @RequestMapping(value = "/v4/searchengine/realTimeUpdateComment", method = RequestMethod.PUT)
-//    Result realTimeUpdateComment(@RequestBody Integer userId  );
 
 
     //获取企业标签的人才数量
