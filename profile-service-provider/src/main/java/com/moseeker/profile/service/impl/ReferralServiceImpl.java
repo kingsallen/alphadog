@@ -671,6 +671,7 @@ public class ReferralServiceImpl implements ReferralService {
                 if(logRecord != null){
                     id = logRecord.getAttementId();
                 }
+                logger.info("recommend --> attementId:{}",id);
                 attachmentId = profileEntity.mergeProfileReferral(profilePojo, userRecord.getId(), id);
                 tp.startTast(() -> {
                     companyTagService.handlerCompanyTagByUserId(userId);
