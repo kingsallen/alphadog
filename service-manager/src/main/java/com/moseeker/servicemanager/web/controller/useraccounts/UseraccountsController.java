@@ -1,17 +1,18 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.apps.userbs.service.UserBS;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserSearchConditionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.useraccounts.service.UserQxService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -1116,4 +1117,77 @@ public class UseraccountsController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+	/**
+	 * 用户是否查看隐私协议
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/privacy_record/get", method = RequestMethod.GET)
+	@ResponseBody
+	public String ifViewPrivacyProtocol(HttpServletRequest request, HttpServletResponse response) {
+
+		String user_id = request.getParameter("user_id");
+		if (user_id == null) {
+			throw ExceptionUtils.getCommonException("参数有误！");
+		}
+		try {
+			int result = useraccountsServices.ifViewPrivacyProtocol(Integer.parseInt(user_id));
+			return Result.success(result).toJson();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+	/**
+	 * 新用户插入隐私协议记录
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/privacy_record/insert", method = RequestMethod.GET)
+	@ResponseBody
+	public String insertPrivacyRecord(HttpServletRequest request, HttpServletResponse response) {
+
+		String user_id = request.getParameter("user_id");
+		if (user_id == null) {
+			throw ExceptionUtils.getCommonException("参数有误！");
+		}
+		try {
+			useraccountsServices.insertPrivacyRecord(Integer.parseInt(user_id));
+			return Result.success(true).toJson();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+
+	}
+
+	/**
+	 * 已读隐私协议用户删除记录
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value = "/user/privacy_record/delete", method = RequestMethod.GET)
+	@ResponseBody
+	public String deletePrivacyRecordByUserId(HttpServletRequest request, HttpServletResponse response) {
+
+		String user_id = request.getParameter("user_id");
+		if (user_id == null) {
+			throw ExceptionUtils.getCommonException("参数有误！");
+		}
+		try {
+			useraccountsServices.deletePrivacyRecordByUserId(Integer.parseInt(user_id));
+			return Result.success(true).toJson();
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			return ResponseLogNotification.fail(request, e.getMessage());
+		}
+	}
+
+
+
 }

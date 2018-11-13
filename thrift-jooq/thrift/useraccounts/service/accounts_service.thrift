@@ -83,6 +83,14 @@ service UseraccountsServices {
     //认领内推奖金
     void claimReferralBonus(1: i32 bonus_record_id) throws (1: common_struct.BIZException e);
 
+    //是否查看过隐私协议
+    i32 ifViewPrivacyProtocol(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    // 根据用户表id删除隐私记录
+    void deletePrivacyRecordByUserId(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    //插入隐私协议记录
+    void insertPrivacyRecord(1: i32 userId) throws (1: common_struct.BIZException e);
 
 }
 /**
