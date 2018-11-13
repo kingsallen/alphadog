@@ -124,6 +124,7 @@ public class ReferralLogDao extends com.moseeker.baseorm.db.referraldb.tables.da
                 .selectFrom(ReferralLog.REFERRAL_LOG)
                 .where(ReferralLog.REFERRAL_LOG.EMPLOYEE_ID.eq(employeeId))
                 .and(ReferralLog.REFERRAL_LOG.REFERENCE_ID.eq(referenceId))
+                .orderBy(ReferralLog.REFERRAL_LOG.CREATE_TIME.desc())
                 .limit(1)
                 .fetchOne();
         if (referralLogRecord != null) {
