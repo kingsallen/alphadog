@@ -5,6 +5,7 @@ dependencies {
 
     compile project(":thrift-jooq")
     compile project(":common")
+    compile project(":common-service")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
 
