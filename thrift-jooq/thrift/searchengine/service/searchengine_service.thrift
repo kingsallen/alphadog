@@ -65,4 +65,17 @@ service SearchengineServices {
 
     //mobot查询职位
     common_struct.Response mobotSearchPosition(1: map<string,string> params) throws (1: common_struct.BIZException e);
+
+    //
+    i32 deleteCompanyTags(1: i32 companyId, 2: list<i32> companyTags) throws (1: common_struct.BIZException e);
+
+    i32 updateCompanyTag(1: map<string,string> params) throws (1: common_struct.BIZException e);
+
+    void realTimeUpdateUpload(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
+
+    void realTimeUpdate(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
+
+    void realTimeUpdateComment(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    void updateCompanyTagByIdAndType(1: map<string, string> params) throws (1: common_struct.BIZException e);
 }

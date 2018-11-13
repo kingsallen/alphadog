@@ -7,7 +7,6 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.CleanJsonResponse4Alphacloud;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -15,12 +14,10 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
-import com.moseeker.thrift.gen.company.struct.TalentpoolCompanyTagDO;
 import com.moseeker.thrift.gen.position.service.PositionServices;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -47,10 +44,6 @@ public class SearchengineController {
 
     CompanyServices.Iface companyServices = ServiceManager.SERVICEMANAGER.
             getService(CompanyServices.Iface.class);
-
-    @Autowired
-    private TalentPoolEntity talentPoolEntity;
-
 
     @RequestMapping(value = "/search/update", method = RequestMethod.POST)
     @ResponseBody
@@ -619,7 +612,7 @@ public class SearchengineController {
             Integer companyId = BeanUtils.converToInteger(reqParams.get("companyId"));
             List<Integer> companyTags = (List<Integer>) reqParams.get("companyTags");
             // 0 执行成功  3 数据有误(根据公司编号和标签编号没有查到足量的数据)
-            int result = talentPoolEntity.deleteCompanyTags(companyId, companyTags);
+            int result = searchengineServices.deleteCompanyTags(companyId, companyTags);
             if (result == 0) {
                 result = 1;
             }
@@ -641,13 +634,15 @@ public class SearchengineController {
         try {
 
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
             if (reqParams == null || reqParams.isEmpty()) {
                 return ResponseLogNotification.fail4Alphacloud("参数不能为空");
             }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
 
-            TalentpoolCompanyTagDO companyTagDO = ParamUtils.initModelForm(reqParams, TalentpoolCompanyTagDO.class);
-
-            talentPoolEntity.updateCompanyTag(companyTagDO);
+            searchengineServices.updateCompanyTag(params);
             return ResponseLogNotification.success4Alphacloud(1);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
@@ -672,7 +667,7 @@ public class SearchengineController {
 
 
             List<Integer> userIdList = (List<Integer>) reqParams.get("userIdList");
-            talentPoolEntity.realTimeUpdateUpload(userIdList);
+            searchengineServices.realTimeUpdateUpload(userIdList);
             return ResponseLogNotification.success4Alphacloud(1);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
@@ -695,7 +690,7 @@ public class SearchengineController {
             }
             List<Integer> userIdList = (List<Integer>) reqParams.get("userIdList");
 
-            talentPoolEntity.realTimeUpdate(userIdList);
+            searchengineServices.realTimeUpdate(userIdList);
             return ResponseLogNotification.success4Alphacloud(1);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
@@ -720,7 +715,7 @@ public class SearchengineController {
             Integer userId = BeanUtils.converToInteger(reqParams.get("userId"));
 
 
-            talentPoolEntity.realTimeUpdateComment(userId);
+            searchengineServices.realTimeUpdateComment(userId);
             return ResponseLogNotification.success4Alphacloud(1);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);

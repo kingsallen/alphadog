@@ -7,6 +7,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
@@ -40,6 +41,8 @@ public class SearchengineServiceImpl implements Iface {
 	private PositionSearchEngine positionSearchEngine;
 	@Autowired
 	private TalentpoolSearchengine talentpoolSearchengine;
+	@Autowired
+	private TalentPoolEntity talentPoolEntity;
 
 	private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
@@ -350,6 +353,72 @@ public class SearchengineServiceImpl implements Iface {
 			Response respose=ResponseUtils.success(result);
 			return respose;
 		}catch(Exception e){
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int deleteCompanyTags(int companyId, List<Integer> companyTags) throws BIZException, TException {
+		try {
+			talentPoolEntity.deleteCompanyTags(companyId, companyTags);
+			return 1;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public int updateCompanyTag(Map<String, String> params) throws BIZException, TException {
+		try {
+//			talentPoolEntity.updateCompanyTag(params);
+			return 1;
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void realTimeUpdateUpload(List<Integer> userIdList) throws BIZException, TException {
+
+		try {
+			talentPoolEntity.realTimeUpdateUpload(userIdList);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void realTimeUpdate(List<Integer> userIdList) throws BIZException, TException {
+
+		try {
+			talentPoolEntity.realTimeUpdate(userIdList);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void realTimeUpdateComment(int userId) throws BIZException, TException {
+
+		try {
+			talentPoolEntity.realTimeUpdateComment(userId);
+		} catch (Exception e) {
+			logger.error(e.getMessage(),e);
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void updateCompanyTagByIdAndType(Map<String, String> params) throws BIZException, TException {
+
+		try {
+			updateCompanyTagByIdAndType(params);
+		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw ExceptionUtils.convertException(e);
 		}
