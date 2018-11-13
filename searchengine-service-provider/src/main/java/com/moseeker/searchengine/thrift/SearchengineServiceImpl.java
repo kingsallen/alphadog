@@ -358,71 +358,7 @@ public class SearchengineServiceImpl implements Iface {
 		}
 	}
 
-	@Override
-	public int deleteCompanyTags(int companyId, List<Integer> companyTags) throws BIZException, TException {
-		try {
-			talentPoolEntity.deleteCompanyTags(companyId, companyTags);
-			return 1;
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			throw ExceptionUtils.convertException(e);
-		}
-	}
 
-	@Override
-	public int updateCompanyTag(Map<String, String> params) throws BIZException, TException {
-		try {
-//			talentPoolEntity.updateCompanyTag(params);
-			return 1;
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			throw ExceptionUtils.convertException(e);
-		}
-	}
-
-	@Override
-	public void realTimeUpdateUpload(List<Integer> userIdList) throws BIZException, TException {
-
-		try {
-			talentPoolEntity.realTimeUpdateUpload(userIdList);
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			throw ExceptionUtils.convertException(e);
-		}
-	}
-
-	@Override
-	public void realTimeUpdate(List<Integer> userIdList) throws BIZException, TException {
-
-		try {
-			talentPoolEntity.realTimeUpdate(userIdList);
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			throw ExceptionUtils.convertException(e);
-		}
-	}
-
-	@Override
-	public void realTimeUpdateComment(int userId) throws BIZException, TException {
-
-		try {
-			talentPoolEntity.realTimeUpdateComment(userId);
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			throw ExceptionUtils.convertException(e);
-		}
-	}
-
-	@Override
-	public void updateCompanyTagByIdAndType(Map<String, String> params) throws BIZException, TException {
-
-		try {
-			updateCompanyTagByIdAndType(params);
-		} catch (Exception e) {
-			logger.error(e.getMessage(),e);
-			throw ExceptionUtils.convertException(e);
-		}
-	}
 
 	@Override
 	public Response userQueryById(List<Integer> userIdlist) throws BIZException,TException {
