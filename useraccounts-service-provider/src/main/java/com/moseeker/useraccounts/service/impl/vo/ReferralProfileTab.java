@@ -12,6 +12,7 @@ public class ReferralProfileTab {
     private String uploadTime;
     private String filePath;
     private String name;
+    private int claim;
     private int id;
 
     public String getPositionTitle() {
@@ -60,5 +61,13 @@ public class ReferralProfileTab {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getClaim() {
+        return claim;
+    }
+
+    public void setClaim(int claim) {
+        this.claim = claim;
     }
 }
