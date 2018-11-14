@@ -389,7 +389,8 @@ public class ReferralController {
                 }).collect(Collectors.toList());
             }
             logger.info("ReferralProfileTab tab :{}",JSON.toJSONString(result));
-            return Result.success(result).toJson();
+            logger.info("ReferralProfileTab tab :{}",JSON.toJSONString(tabList));
+            return Result.success(tabList).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }
