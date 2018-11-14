@@ -1512,7 +1512,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(isGdpr)&&"1".equals(isGdpr)){
             StringBuffer sb=new StringBuffer();
             sb.append("user=_source.user;if(user){applications=user.applications;if(applications){");
-            sb.append("for(val in applications){if(val.status!=2&&val.company_id=="+companyId+"){return true}}}}");
+            sb.append("for(val in applications){if(val.status!=1&&val.company_id=="+companyId+"){return true}}}}");
             ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
             return script;
         }
