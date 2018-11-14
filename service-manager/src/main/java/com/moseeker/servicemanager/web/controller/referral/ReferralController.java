@@ -385,7 +385,7 @@ public class ReferralController {
                     return profileTab;
                 }).collect(Collectors.toList());
             }
-            return Result.success(result).toJson();
+            return Result.success(tabList).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }
