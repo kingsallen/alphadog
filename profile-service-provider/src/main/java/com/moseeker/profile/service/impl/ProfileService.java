@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileCompletenessDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileOtherDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -13,6 +14,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserSettingsDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.profiledb.tables.ProfileOther;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserSettingsRecord;
@@ -129,6 +131,9 @@ public class ProfileService {
 
     @Autowired
     private LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+
+    @Autowired
+    private JobPositionDao jobPositionDao;
 
 
 
@@ -690,6 +695,10 @@ public class ProfileService {
      * @throws CommonException
      */
     public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
+        positionIds=filterPositionHasProfileTemplate(positionIds);
+        if(StringUtils.isEmptyList(positionIds)){
+            return null;
+        }
         long start = System.currentTimeMillis();
         Map<String, Object> otherMap = new HashMap<>();
         Map<String, Object> parentValues = new HashMap<>();
@@ -751,6 +760,23 @@ public class ProfileService {
 //        }
 //        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
+    }
+    /*
+     过滤职位是否包含自定义简历模板
+     */
+    private List<Integer> filterPositionHasProfileTemplate(List<Integer> pidList){
+        List<JobPosition> dataList=jobPositionDao.fetchPosition(pidList);
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        List<Integer> positionIdList=new ArrayList<>();
+        for(JobPosition position:dataList){
+            int appcvtpl=position.getAppCvConfigId();
+            if(appcvtpl>0){
+                positionIdList.add(position.getId());
+            }
+        }
+        return positionIdList;
     }
 
     public Map<String, Object> getApplicationOtherCommon(int userId, int accountId, int positionId) {
