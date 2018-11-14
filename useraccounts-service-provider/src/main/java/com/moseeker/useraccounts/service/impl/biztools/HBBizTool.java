@@ -154,6 +154,7 @@ public class HBBizTool {
             tab.setFilePath(profileData.getAttchmentMap().get(log.getAttementId()).getPath());
             tab.setName(profileData.getAttchmentMap().get(log.getAttementId()).getName());
         }
+        logger.info("ReferralProfileTab tab:{}", tab);
         return tab;
     }
 }
