@@ -196,6 +196,11 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     public final TableField<HrCompanyConfRecord, Byte> JOB51_SALARY_DISCUSS = createField("job51_salary_discuss", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "51薪资面议开关 0：未开启，1：开启");
 
     /**
+     * The column <code>hrdb.hr_company_conf.is_open_gdpr</code>.
+     */
+    public final TableField<HrCompanyConfRecord, Byte> IS_OPEN_GDPR = createField("is_open_gdpr", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+
+    /**
      * Create a <code>hrdb.hr_company_conf</code> table reference
      */
     public HrCompanyConf() {

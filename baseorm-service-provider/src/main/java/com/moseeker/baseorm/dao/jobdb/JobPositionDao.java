@@ -747,6 +747,16 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
 
     }
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getPositionNotDelByIdList(List<Integer> positionIdList) {
+
+
+        List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> list = create.select(JobPosition.JOB_POSITION.ID).from(JobPosition.JOB_POSITION)
+                .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
+                .and(JobPosition.JOB_POSITION.STATUS.ne((byte)2))
+                .fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
+        return list;
+
+    }
 
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getJobPositionByIdListAndHbStatus(List<Integer> positionIdList) {
 

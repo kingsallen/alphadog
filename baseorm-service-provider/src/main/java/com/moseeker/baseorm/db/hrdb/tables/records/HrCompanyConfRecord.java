@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 702007936;
+    private static final long serialVersionUID = 756032146;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -435,6 +435,20 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         return (Byte) get(28);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_company_conf.is_open_gdpr</code>.
+     */
+    public void setIsOpenGdpr(Byte value) {
+        set(29, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.is_open_gdpr</code>.
+     */
+    public Byte getIsOpenGdpr() {
+        return (Byte) get(29);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -461,7 +475,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte job51SalaryDiscuss) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte job51SalaryDiscuss, Byte isOpenGdpr) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -493,5 +507,6 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(26, mallGoodsMethod);
         set(27, mallGoodsMethodState);
         set(28, job51SalaryDiscuss);
+        set(29, isOpenGdpr);
     }
 }
