@@ -7,20 +7,15 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
-import com.moseeker.thrift.gen.referral.struct.*;
 import java.util.ArrayList;
 import java.util.List;
-import com.moseeker.thrift.gen.referral.struct.*;
-import com.moseeker.useraccounts.exception.UserAccountException;
-import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -89,10 +84,10 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public List<ReferralProfileTab> getReferralProfileList(int userId, int companyId) throws BIZException, TException {
+    public List<ReferralProfileTab> getReferralProfileList(int userId, int companyId, int hrId) throws BIZException, TException {
         try {
             List<com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab> profileTabList = referralService
-                    .getReferralProfileTabList(userId, companyId);
+                    .getReferralProfileTabList(userId, companyId, hrId);
             List<ReferralProfileTab> result = new ArrayList<>();
             if (!StringUtils.isEmptyList(profileTabList)) {
                 result = profileTabList.stream().map(tab -> {

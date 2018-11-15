@@ -18,6 +18,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
@@ -34,6 +35,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -47,8 +49,8 @@ import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -102,6 +104,9 @@ public class ReferralEntity {
 
     @Autowired
     private UserEmployeeDao employeeDao;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @Autowired
     private HistoryUserEmployeeDao historyUserEmployeeDao;
@@ -519,14 +524,26 @@ public class ReferralEntity {
         }
     }
 
-    public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds){
+    public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
         ReferralProfileData data = new ReferralProfileData();
+        Future<UserHrAccountDO> accountFuture = threadPool.startTast(
+                () -> userHrAccountDao.getUserHrAccountById(hrId));
         Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
                 () -> employeeDao.getEmployeeBycompanyIds(companyIds));
         Future<List<HistoryUserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
                 () -> historyUserEmployeeDao.getHistoryEmployeeByCompanyIds(companyIds));
+
         List<Integer> employeeIds = new ArrayList<>();
+        UserHrAccountDO account = new UserHrAccountDO();
+        List<Integer> positionIds = new ArrayList<>();
         try {
+            account = accountFuture.get();
+            if(account == null){
+                throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            }
+            if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
+               positionIds = positionDao.getPositionIdByPublisher(hrId);
+            }
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
             if (!StringUtils.isEmptyList(employeeList)){
                 List<Integer> employeeIds1 = employeeList.stream().map(m -> m.getId()).collect(Collectors.toList());
@@ -539,8 +556,14 @@ public class ReferralEntity {
             }
         }catch (Exception e){
             logger.error(e.getMessage(), e);
+            throw CommonException.PROGRAM_EXCEPTION;
         }
-        List<ReferralLog> logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
+        List<ReferralLog> logs = new ArrayList<>();
+        if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
+            logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(employeeIds, userId, positionIds);
+        }else {
+            logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
+        }
         List<ReferralLog> logList = new ArrayList<>();
         if(!StringUtils.isEmptyList(logs)){
             Set<Integer> idList = new HashSet<>();

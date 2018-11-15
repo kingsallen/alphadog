@@ -27,7 +27,13 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,14 +41,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.nio.ByteBuffer;
-import java.text.DecimalFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -368,17 +366,18 @@ public class ReferralController {
     @ResponseBody
     public String getProfileTab(@PathVariable Integer id,
                            @RequestParam(value = "appid") Integer appid,
-                           @RequestParam(value = "company_id") Integer companyId)
+                           @RequestParam(value = "company_id") Integer companyId,
+                           @RequestParam(value = "hr_id") Integer hrId)
             throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("用户编号", id);
         validateUtil.addRequiredValidate("公司编号", companyId);
-
+        validateUtil.addRequiredValidate("HR编号", hrId);
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             List<com.moseeker.thrift.gen.referral.struct.ReferralProfileTab> tabList = referralService
-                    .getReferralProfileList(id, companyId);
+                    .getReferralProfileList(id, companyId, hrId);
 
             List<ReferralProfileTab> result = new ArrayList<>();
             if (tabList != null && tabList.size() > 0) {

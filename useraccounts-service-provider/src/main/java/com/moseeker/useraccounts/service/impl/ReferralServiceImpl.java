@@ -167,8 +167,8 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId) throws UserAccountException {
-        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId));
+    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId, int hrId) throws UserAccountException {
+        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
         ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
         List<ReferralProfileTab> profileTabs = new ArrayList<>();
         if(profileData != null){
@@ -204,7 +204,7 @@ public class ReferralServiceImpl implements ReferralService {
                     case Pause:
                         activity.pause(); break;
                     case UnChecked:
-                        activity.updateInfo(activityVO, false);
+                        activity.updateInfo(activityVO, false);break;
                     case Checked:
                     case UnStart:
                         activity.updateInfo(activityVO, true); break;
