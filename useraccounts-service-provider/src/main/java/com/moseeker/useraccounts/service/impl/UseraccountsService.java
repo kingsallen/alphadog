@@ -1246,6 +1246,19 @@ public class UseraccountsService {
         }
         // 检验推荐记录已认领
         checkReferralClaim(referralLogs);
+        // 批量认领只能认领一个用户
+        List<Integer> referrenceIds = referralLogs.stream().map(ReferralLog::getReferenceId).distinct().collect(Collectors.toList());
+        if(referrenceIds.size() > 1){
+            throw UserAccountException.ERMPLOYEE_REFERRAL_CLAIMED_SINGLE;
+        }
+        // 检验认领的名字是否和user_user名字相同
+        UserUserDO referralUser = userdao.getUser(referrenceIds.get(0));
+        if (referralUser == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        if (!name.equals(referralUser.getName())) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
+        }
 
         UserUserDO userUserDO = userdao.getUser(userId);
         if (userUserDO == null) {
@@ -1308,18 +1321,9 @@ public class UseraccountsService {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
         }
 
-        UserUserDO referralUser = userdao.getUser(referralLog.getReferenceId());
-        if (referralUser == null) {
-            throw UserAccountException.USEREMPLOYEES_EMPTY;
-        }
-
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(referralLog.getEmployeeId());
         if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
-        }
-
-        if (!name.equals(referralUser.getName())) {
-            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
         }
 
         //修改手机号码
