@@ -60,7 +60,12 @@ service CompanyServices {
     common_struct.Response findSubAccountNum(1:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response updateWechatThenm(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e),
     common_struct.Response getCompanyWechatList(1:i32 companyId)throws (1: common_struct.BIZException e)
-
+    //校验申请人在某一家公司下是否触发GDPR隐私条款保护
+    list<company_struct.GDPRProtectedInfo> validateGDPR(1: list<i32> userIds, 2: i32 companyId) throws (1: common_struct.BIZException e)
+    //查看指定公司是否开启GDPR隐私保护条款
+    bool fetchGDPRSwitch(1: i32 companyId) throws (1: common_struct.BIZException e)
+    //查看指定的HR 所在的公司是否开启GDPR隐私保护条款
+    bool fetchGDPRSwitchByHR(1: i32 hrId) throws (1: common_struct.BIZException e)
 }
 
 service HrTeamServices {

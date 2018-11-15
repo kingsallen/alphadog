@@ -230,6 +230,12 @@ public class ProfileProcessBS {
             List<ProcessValidationStruct> list=jobApplicationDao.getAuth(appIds, companyId, progressStatus);
             if (list!=null&&list.size()>0) {
 
+                List<Integer> applierIdList = list
+                        .stream()
+                        .map(ProcessValidationStruct::getApplier_id)
+                        .collect(Collectors.toList());
+
+
                 boolean processStatus = true;
                 int recruitOrder = 0;
                 UserHrAccount account = this.getAccount(accountId);
