@@ -1156,10 +1156,12 @@ public class TalentpoolSearchengine {
         String maxAge=params.get("max_age");
         String updateTime=params.get("update_time");
         String extsis=params.get("extsis");
+        //ats查询时使用的时间
+        String atsTime=params.get("ats_profile_update_time");
         if(
                 StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
                         StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
-                        ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))
+                        ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge))||StringUtils.isNotNullOrEmpty(atsTime))
                 )
         {
             if(StringUtils.isNotNullOrEmpty(degree)){
@@ -1194,7 +1196,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(extsis)){
             this.exitsisQuery(extsis,query);
         }
-
+        if(StringUtils.isNotNullOrEmpty(atsTime)){
+            this.queryByAtsProfileUpDateTime(atsTime,query);
+        }
         return query;
     }
 
@@ -1552,6 +1556,11 @@ public class TalentpoolSearchengine {
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
 
         String time=this.getLongTime(updateTime);
+        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
+    }
+
+    private void queryByAtsProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
+        String time=updateTime.replace(" ","T");
         this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
     }
 

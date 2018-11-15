@@ -582,6 +582,35 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
+	public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
+
+		try {
+			return service.ifViewPrivacyProtocol(userId);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
+
+		try {
+			service.deletePrivacyRecordByUserId(userId);
+		} catch (Exception e) {
+			ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void insertPrivacyRecord(int userId) throws BIZException, TException {
+		try {
+			service.insertPrivacyRecord(userId);
+		} catch (Exception e) {
+			ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
 	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {

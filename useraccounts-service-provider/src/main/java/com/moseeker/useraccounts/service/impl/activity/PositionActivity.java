@@ -188,14 +188,17 @@ public abstract class PositionActivity extends Activity {
                     .map(HrHbPositionBindingRecord::getPositionId)
                     .collect(Collectors.toList());
             List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
+            List<JobPosition> positionList = new ArrayList<>();
             Map<Integer, Byte> newStatus = new HashMap<>();
             for (JobPosition position : positions) {
                 //获取当前
-                newStatus.put(position.getId(), (byte)(position.getHbStatus()^positionHBStatus.getValue()));
-                //处理职位是否在参加活动数据
+                if ((position.getHbStatus().intValue() | positionHBStatus.getValue()) == position.getHbStatus()) {
+                    newStatus.put(position.getId(), (byte)(position.getHbStatus()^positionHBStatus.getValue()));
+                    positionList.add(position);
+                }
             }
             try {
-                positionDao.updateHBStatus(positions, newStatus);
+                positionDao.updateHBStatus(positionList, newStatus);
             } catch (CommonException e) {
                 throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
             }

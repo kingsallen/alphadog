@@ -191,7 +191,7 @@ public class ReferralServiceImpl implements ReferralService {
                     case Pause:
                         activity.pause(); break;
                     case UnChecked:
-                        activity.updateInfo(activityVO, false);
+                        activity.updateInfo(activityVO, false);break;
                     case Checked:
                     case UnStart:
                         activity.updateInfo(activityVO, true); break;
