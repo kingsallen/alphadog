@@ -80,82 +80,12 @@ public class ValidateTalent {
                         && !ChannelType.MVHOUSEZHILIANUPLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
                 ))
                 .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
-        userIdList=filterGRPD(companyId,userIdList);
+        userIdList=talentPoolEntity.filterGRPD(companyId,userIdList);
         return userIdList;
     }
     /*
      校验GRPD
      */
-    public Set<Integer> filterGRPD(int companyId,Set<Integer> userIdList){
-        HrCompanyConf conf=hrCompanyConfDao.getConfbyCompanyId(companyId);
-        if(conf==null||conf.getIsOpenGdpr()==0){
-            return userIdList;
-        }
-
-        Set<Integer> applierIdList=this.getApplierIdListByAppList(userIdList,companyId);
-        return applierIdList;
-    }
-    /*
-     过滤掉全部删除的投递的人
-     */
-    private Set<Integer> getApplierIdListByAppList(Set<Integer> userIdList,int companyId){
-        List<JobApplication> dataList=jobApplicationDao.getAppdataByApplierIdListAndCompanyId(userIdList,companyId);
-        if(StringUtils.isEmptyList(dataList)){
-            return null;
-        }
-        List<Integer> pidList=this.getPositionIdList(dataList);
-        if(StringUtils.isEmptyList(pidList)){
-            return null;
-        }
-        List<JobPosition> positionList=jobPositionDao.getPositionNotDelByIdList(pidList);
-        if(StringUtils.isEmptyList(positionList)){
-            return null;
-        }
-        List<Integer> positionIdList=this.getPidList(positionList);
-        if(StringUtils.isEmptyList(positionIdList)){
-            return null;
-        }
-        Set<Integer> applierIdList=new HashSet<>();
-        for(JobApplication app:dataList){
-            int positionId=app.getPositionId();
-
-            if(positionIdList.contains(positionId)){
-                int applierId=app.getApplierId();
-                applierIdList.add(applierId);
-            }
-        }
-        return applierIdList;
-    }
-    /*
-     根据投递信息列表获取职位列表
-     */
-    private List<Integer> getPositionIdList(List<JobApplication> dataList){
-        if(StringUtils.isEmptyList(dataList)){
-            return null;
-        }
-        List<Integer> pidList=new ArrayList<>();
-        for(JobApplication app:dataList){
-            if(!pidList.contains(app.getPositionId())){
-                pidList.add(app.getPositionId());
-            }
-        }
-        return pidList;
-    }
-    /*
-     根据职位信息列表获取职位的id列表
-     */
-    private List<Integer> getPidList(List<JobPosition> positionList){
-        if(StringUtils.isEmptyList(positionList)){
-            return null;
-        }
-        List<Integer> pidList=new ArrayList<>();
-        for(JobPosition position:positionList){
-            if(!pidList.contains(position.getId())){
-                pidList.add(position.getId());
-            }
-        }
-        return pidList;
-    }
 
     /*
      获取userIdList在这个hr下所有的申请
