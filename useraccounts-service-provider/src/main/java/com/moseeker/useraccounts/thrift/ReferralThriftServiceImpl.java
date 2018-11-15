@@ -70,10 +70,10 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public List<ReferralProfileTab> getReferralProfileList(int userId, int companyId) throws BIZException, TException {
+    public List<ReferralProfileTab> getReferralProfileList(int userId, int companyId, int hrId) throws BIZException, TException {
         try {
             List<com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab> profileTabList = referralService
-                    .getReferralProfileTabList(userId, companyId);
+                    .getReferralProfileTabList(userId, companyId, hrId);
             List<ReferralProfileTab> result = new ArrayList<>();
             if (!StringUtils.isEmptyList(profileTabList)) {
                 result = profileTabList.stream().map(tab -> {

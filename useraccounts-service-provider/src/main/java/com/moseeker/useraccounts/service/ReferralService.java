@@ -41,7 +41,7 @@ public interface ReferralService {
      * @return
      * @throws UserAccountException
      */
-    List<ReferralProfileTab> getReferralProfileTabList(int usetId, int companyId)throws UserAccountException;
+    List<ReferralProfileTab> getReferralProfileTabList(int usetId, int companyId, int hrId)throws UserAccountException;
 
 
     /**

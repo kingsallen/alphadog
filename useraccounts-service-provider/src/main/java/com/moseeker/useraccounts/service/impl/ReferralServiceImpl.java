@@ -155,8 +155,8 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId) throws UserAccountException {
-        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId));
+    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId, int hrId) throws UserAccountException {
+        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
         ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
         List<ReferralProfileTab> profileTabs = new ArrayList<>();
         if(profileData != null){

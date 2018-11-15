@@ -365,17 +365,18 @@ public class ReferralController {
     @ResponseBody
     public String getProfileTab(@PathVariable Integer id,
                            @RequestParam(value = "appid") Integer appid,
-                           @RequestParam(value = "company_id") Integer companyId)
+                           @RequestParam(value = "company_id") Integer companyId,
+                           @RequestParam(value = "hr_id") Integer hrId)
             throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("用户编号", id);
         validateUtil.addRequiredValidate("公司编号", companyId);
-
+        validateUtil.addRequiredValidate("HR编号", hrId);
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             List<com.moseeker.thrift.gen.referral.struct.ReferralProfileTab> tabList = referralService
-                    .getReferralProfileList(id, companyId);
+                    .getReferralProfileList(id, companyId, hrId);
 
             List<ReferralProfileTab> result = new ArrayList<>();
             if (tabList != null && tabList.size() > 0) {
