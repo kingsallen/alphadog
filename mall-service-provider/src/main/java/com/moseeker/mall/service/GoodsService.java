@@ -52,7 +52,7 @@ public class GoodsService {
         MallGoodsInfoDO mallGoodsInfoDO = getGoodDetailByGoodIdAndCompanyId(mallGoodsIdForm.getGood_id(), mallGoodsIdForm.getCompany_id());
         checkGoodsExist(mallGoodsInfoDO);
         MallGoodsInfoVO mallGoodsInfoVO = new MallGoodsInfoVO();
-        BeanUtils.copyProperties(mallGoodsInfoDO, mallGoodsInfoVO);
+        mallGoodsInfoVO.cloneFromGoodsDO(mallGoodsInfoDO);
         return mallGoodsInfoVO;
     }
 

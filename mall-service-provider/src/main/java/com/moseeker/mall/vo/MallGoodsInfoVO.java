@@ -1,5 +1,7 @@
 package com.moseeker.mall.vo;
 
+import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
+
 import java.sql.Timestamp;
 
 /**
@@ -124,6 +126,20 @@ public class MallGoodsInfoVO {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public void cloneFromGoodsDO(MallGoodsInfoDO mallGoodsInfoDO) {
+        setCompany_id(mallGoodsInfoDO.getCompany_id());
+        setId(mallGoodsInfoDO.getId());
+        setTitle(mallGoodsInfoDO.getTitle());
+        setPic_url(mallGoodsInfoDO.getPic_url());
+        setCredit(mallGoodsInfoDO.getCredit());
+        setStock(mallGoodsInfoDO.getStock());
+        setExchange_num(mallGoodsInfoDO.getExchange_num());
+        setExchange_order(mallGoodsInfoDO.getExchange_order());
+        setDetail(mallGoodsInfoDO.getDetail());
+        setState((int)mallGoodsInfoDO.getState());
+        setRule(mallGoodsInfoDO.getRule());
     }
 }
 
