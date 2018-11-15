@@ -43,6 +43,7 @@ public class TalentpoolController {
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
             Integer flag=(Integer) data.get("flag");
+            int isGdpr= (int) data.getOrDefault("is_gdpr",0);
             if(flag==null||flag==0){
                 List<Integer> userIdList=(List<Integer>)data.get("user_ids");
                 if(StringUtils.isEmptyList(userIdList)){
@@ -277,6 +278,7 @@ public class TalentpoolController {
             int hrId=(int) data.get("hr_id");
             int companyId=(int) data.get("company_id");
             Integer flag=(Integer) data.get("flag");
+            int isGdpr= (int) data.getOrDefault("is_gdpr",0);
             if(flag==null||flag==0){
                 List<Integer> userIdList = (List<Integer>) data.get("user_ids");
                 if (StringUtils.isEmptyList(userIdList)) {

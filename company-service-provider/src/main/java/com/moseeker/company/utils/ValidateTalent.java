@@ -38,10 +38,29 @@ public class ValidateTalent {
     /*
     处理批量传输的人才，获取其中有效的和无效的
     */
+    public ValidateTalentBean handlerApplierId(int hrId, Set<Integer> userIdList, int companyId,int isGdpr){
+        ValidateTalentBean bean=new ValidateTalentBean();
+        Set<Integer>applierIdList=getHandlerUserIdList(hrId,userIdList,companyId);
+        // todo 新增，通过简历搬家收藏的人才不能取消收藏
+        applierIdList = filterMvHouseApplierId(companyId,applierIdList,isGdpr);
+        Set<Integer> unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
+        bean.setUnUseUserIdSet(unUsedApplierIdList);
+        bean.setUserIdSet(applierIdList);
+        return bean;
+    }
     public ValidateTalentBean handlerApplierId(int hrId, Set<Integer> userIdList, int companyId){
         ValidateTalentBean bean=new ValidateTalentBean();
+        Set<Integer>applierIdList=getHandlerUserIdList(hrId,userIdList,companyId);
+        applierIdList = filterMvHouseApplierId(companyId,applierIdList,0);
+        // todo 新增，通过简历搬家收藏的人才不能取消收藏
+        Set<Integer> unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
+        bean.setUnUseUserIdSet(unUsedApplierIdList);
+        bean.setUserIdSet(applierIdList);
+        return bean;
+    }
+
+    private Set<Integer> getHandlerUserIdList(int hrId, Set<Integer> userIdList, int companyId){
         int flag= talentPoolEntity.valiadteMainAccount(hrId,companyId);
-        Set<Integer> unUsedApplierIdList=new HashSet<>();
         Set<Integer> applierIdList=new HashSet<>();
          /*
          上传的简历没有任何求职申请，所以肯定不在这种逻辑之内，所以在取消收藏时自动过滤
@@ -54,12 +73,7 @@ public class ValidateTalent {
             List<JobApplicationRecord> list=talentPoolEntity.getJobApplicationByCompanyIdAndApplierId(userIdList,companyId);
             applierIdList=this.getIdListByApplicationList(list);
         }
-        // todo 新增，通过简历搬家收藏的人才不能取消收藏
-        applierIdList = filterMvHouseApplierId(companyId,applierIdList);
-        unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
-        bean.setUnUseUserIdSet(unUsedApplierIdList);
-        bean.setUserIdSet(applierIdList);
-        return bean;
+        return applierIdList;
     }
     /**
      * 过滤简历搬家的人才id
@@ -68,7 +82,7 @@ public class ValidateTalent {
      * @date  2018/9/11
      * @return  过滤后的userIdList
      */
-    private Set<Integer> filterMvHouseApplierId(int companyId,Set<Integer> userIdList){
+    private Set<Integer> filterMvHouseApplierId(int companyId,Set<Integer> userIdList,int isGdpr){
         if(userIdList == null || userIdList.isEmpty()){
             return userIdList;
         }
@@ -80,7 +94,9 @@ public class ValidateTalent {
                         && !ChannelType.MVHOUSEZHILIANUPLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
                 ))
                 .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
-        userIdList=talentPoolEntity.filterGRPD(companyId,userIdList);
+        if(isGdpr==1){
+            userIdList=talentPoolEntity.filterGRPD(companyId,userIdList);
+        }
         return userIdList;
     }
     /*
