@@ -5,6 +5,9 @@ import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileAttachmentRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -39,6 +42,8 @@ import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
@@ -345,6 +350,7 @@ public class ReferralServiceImpl implements ReferralService {
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
+        int attachmentId = 0;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
             UserUserRecord userUserRecord = new UserUserRecord();
@@ -369,7 +375,12 @@ public class ReferralServiceImpl implements ReferralService {
                 if (profilePojo.getProfileRecord() != null) {
                     profilePojo.getProfileRecord().setUserId(userRecord.getId());
                 }
-                profileEntity.mergeProfile(profilePojo, userRecord.getId());
+                ReferralLog logRecord = referralEntity.fetchReferralLog(employeeDO.getId(), userId);
+                int id = 0;
+                if(logRecord != null){
+                    id = logRecord.getAttementId();
+                }
+                attachmentId = profileEntity.mergeProfileReferral(profilePojo, userRecord.getId(), id);
                 tp.startTast(() -> {
                     companyTagService.handlerCompanyTagByUserId(userId);
                     return true;
@@ -379,13 +390,16 @@ public class ReferralServiceImpl implements ReferralService {
             userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId());
             profilePojo.getProfileRecord().setUserId(userRecord.getId());
             userId = userRecord.getId();
+            ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
+            ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
+            attachmentId = attachmentRecord.getId();
             tp.startTast(() -> {
                 companyTagService.handlerCompanyTagByUserId(userId);
                 return true;
             });
         }
 
-        int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, positionRecord.getId(),
+        int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, attachmentId, positionRecord.getId(),
                 referralType);
         Future<Response> responseFeature = tp.startTast(() -> {
             try {
