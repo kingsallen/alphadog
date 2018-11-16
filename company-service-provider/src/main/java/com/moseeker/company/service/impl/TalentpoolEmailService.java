@@ -6,16 +6,14 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryDao;
 import com.moseeker.baseorm.dao.dictdb.DictIndustryTypeDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyEmailInfoDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.talentpooldb.TalentpoolEmailDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryTypeRecord;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyEmailInfo;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyAccountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyEmailInfoRecord;
@@ -129,6 +127,9 @@ public class TalentpoolEmailService {
 
     @Autowired
     private UserHrAccountDao userHrAccountDao;
+
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
 
     @Autowired
     private Environment env;
@@ -345,6 +346,8 @@ public class TalentpoolEmailService {
             return sflag ;
         }
         if(flag==0){
+            //校验gdpr
+            userIdList=StringUtils.convertSetToList(talentPoolEntity.filterGRPD(companyId,StringUtils.convertListToSet(userIdList)));
             return sendResumeEmail(idList, userIdList, companyId, hrId,emailList);
         }else{
             return sendAllResumeEmail(idList,params,companyId,hrId,emailList);
@@ -779,6 +782,9 @@ public class TalentpoolEmailService {
         boolean flag=this.validateSendEmail(hrCompanyEmailInfoRecord,talentpoolEmailRecord);
         if(flag){
             try {
+                if(this.isOpenGdpr(companyId)){
+                    params.put("is_gdpr","1");
+                }
                 int talentNum = searchService.talentSearchNum(params);
                 if(talentNum>0){
                     List<UserEmployeeDO> employeeList=this.getUserEmployeeList(idList);
@@ -815,6 +821,16 @@ public class TalentpoolEmailService {
             return TalentEmailEnum.NOCONFIGEMAIL.getValue();
         }
         return 0;
+    }
+    /*
+     添加gdpr的规范的校验
+     */
+    private boolean isOpenGdpr(int companyId){
+        HrCompanyConf data=hrCompanyConfDao.getConfbyCompanyId(companyId);
+        if(data==null||data.getIsOpenGdpr()==0){
+            return false;
+        }
+        return true;
     }
     /*
      发送转发邮件的核心处理，使用线程启动他

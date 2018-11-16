@@ -152,12 +152,12 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
     */
     @Transactional
-    public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
+    public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId,int isGdpr)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
-        ValidateTalentBean bean=validateTalent.handlerApplierId(hrId,userIdList,companyId);
+        ValidateTalentBean bean=validateTalent.handlerApplierId(hrId,userIdList,companyId,isGdpr);
         Set<Integer> applierIdList=bean.getUserIdSet();
         Set<Integer> unUseList=bean.getUnUseUserIdSet();
         if(StringUtils.isEmptySet(applierIdList)){
@@ -194,20 +194,23 @@ public class TalentPoolService {
      处理所有的加入人才库
      */
     @CounterIface
-    public void addAllTalent(int hrId,Map<String,String> params,int companyId){
+    public void addAllTalent(int hrId,Map<String,String> params,int companyId,int isGdpr){
         try{
             tp.startTast(() -> {
                 int total=service.talentSearchNum(params);
                 if(total>0) {
                     int totalPageNum = (int) Math.ceil((double) total / 100);
                     for(int i=1;i<=totalPageNum;i++){
+                        if(isGdpr==1){
+                            params.put("is_gdpr", 1 + "");
+                        }
                         params.put("page_number", i + "");
                         params.put("page_size", 100 + "");
                         try {
                             List<Integer> userIdList = service.getTalentUserIdList(params);
                             if (!StringUtils.isEmptyList(userIdList)) {
                                 Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                this.batchAddTalent(hrId, userIdSet, companyId);
+                                this.batchAddTalent(hrId, userIdSet, companyId,isGdpr);
                             }
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);
@@ -350,6 +353,7 @@ public class TalentPoolService {
                     int totalPageNum=(int)Math.ceil((double)total/100);
                     Set<Integer> tagIdSet=this.talentPoolEntity.converListToSet(tagIdList);
                     for(int i=1;i<=totalPageNum;i++){
+
                         params.put("page_number", i + "");
                         params.put("page_size", 100 + "");
                             try {
