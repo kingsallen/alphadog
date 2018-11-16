@@ -255,6 +255,7 @@ public class UserCenterService {
             /** 分页查找相关职位转发记录 */
             List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
             logger.info("UserCenterService getRecommendations recomRecordDOList.size():{}, recomRecordDOList:{}", recomRecordDOList.size(), recomRecordDOList);
+            logger.info("totalCount:{},applyCount:{},interestedCount:{}", totalCount,applyCount,interestedCount);
             if (totalCount > 0 || interestedCount > 0 || applyCount > 0) {
                 recommendationForm.setHasRecommends(true);
             } else {
