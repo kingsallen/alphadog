@@ -242,7 +242,7 @@ public class GoodsManageController {
         vu.addIntTypeValidate("标题", getStringLength(mallGoodsInfoForm.getTitle()), null, null, 1, 33);
         vu.addStringLengthValidate("主图url", mallGoodsInfoForm.getPic_url(), null, null, 1, 2001);
         vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 2001);
-        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 0, 201);
+        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 1, 201);
         return vu;
     }
 
