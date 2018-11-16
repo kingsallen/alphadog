@@ -1222,7 +1222,7 @@ public class TalentPoolEntity {
     /*
      获取职位id List
      */
-    public Set<Integer> getPidList(List<JobPositionRecord> list){
+    public Set<Integer> getPidListFromRecord(List<JobPositionRecord> list){
         if(StringUtils.isEmptyList(list)){
             return null;
         }
@@ -1237,7 +1237,7 @@ public class TalentPoolEntity {
      */
     public Set<Integer> getPositionIdByPublisher(int hrId){
         List<JobPositionRecord> list=this.getJobPositionList(hrId);
-        Set<Integer> result=this.getPidList(list);
+        Set<Integer> result=this.getPidListFromRecord(list);
         return result;
     }
     /*

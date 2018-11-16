@@ -49,7 +49,7 @@ public class TalentpoolController {
                 if(StringUtils.isEmptyList(userIdList)){
                     return  ResponseLogNotification.fail(request,"userId不能为空");
                 }
-                Response result = service.batchAddTalent(hrId,userIdList,companyId);
+                Response result = service.batchAddTalent(hrId,userIdList,companyId,isGdpr);
                 return ResponseLogNotification.success(request, result);
             }else{
                 Map<String,String> params=new HashMap<>();
@@ -59,7 +59,7 @@ public class TalentpoolController {
                 for(String key:data.keySet()){
                     params.put(key,String.valueOf(data.get(key)));
                 }
-                service.addAllTalent(hrId,params,companyId);
+                service.addAllTalent(hrId,params,companyId,isGdpr);
                 Response res= ResponseUtils.success("");
                 return ResponseLogNotification.success(request, res);
             }
@@ -284,7 +284,7 @@ public class TalentpoolController {
                 if (StringUtils.isEmptyList(userIdList)) {
                     return ResponseLogNotification.fail(request, "userId不能为空");
                 }
-                Response result = service.batchAddPublicTalent(hrId, companyId, userIdList);
+                Response result = service.batchAddPublicTalent(hrId, companyId, userIdList,isGdpr);
                 return ResponseLogNotification.success(request, result);
             }else{
                 Map<String,String> params=new HashMap<>();
@@ -294,7 +294,7 @@ public class TalentpoolController {
                 for(String key:data.keySet()){
                     params.put(key,String.valueOf(data.get(key)));
                 }
-                service.addAllTalentPublic(hrId,params,companyId);
+                service.addAllTalentPublic(hrId,params,companyId,isGdpr);
                 Response res= ResponseUtils.success("");
                 return ResponseLogNotification.success(request, res);
             }
