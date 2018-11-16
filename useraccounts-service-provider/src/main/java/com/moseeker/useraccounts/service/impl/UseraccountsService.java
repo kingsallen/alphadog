@@ -1235,7 +1235,6 @@ public class UseraccountsService {
      * @date  2018/10/31
      * @return 每个认领id对应的认领结果
      */
-    @Transactional(rollbackFor = Exception.class)
     public List<ClaimResult> batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) {
         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");

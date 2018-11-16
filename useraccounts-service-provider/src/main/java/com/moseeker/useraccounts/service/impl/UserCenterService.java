@@ -368,8 +368,6 @@ public class UserCenterService {
 
                 });
                 recommendationForm.setRecommends(recommendationRecordVOList);
-            } else {
-                recommendationForm.setHasRecommends(false);
             }
         } catch (CommonException e) {
             logger.error(e.getMessage(), e);
