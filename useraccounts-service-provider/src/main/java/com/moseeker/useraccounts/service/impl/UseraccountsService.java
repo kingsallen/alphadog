@@ -1282,8 +1282,8 @@ public class UseraccountsService {
                     throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
-                    claimResult.setErrmsg(e.getMessage());
-                    logger.info("员工认领异常信息:{}", e.getMessage());
+                    claimResult.setErrmsg("后台异常");
+                    logger.error("员工认领异常信息:{}", e.getMessage());
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
