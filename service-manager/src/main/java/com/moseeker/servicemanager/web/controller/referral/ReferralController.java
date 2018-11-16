@@ -27,6 +27,8 @@ import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +55,7 @@ public class ReferralController {
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
-
+    private Logger logger = LoggerFactory.getLogger(ReferralController.class);
     DecimalFormat bonusFormat = new DecimalFormat("###################");
 
     /**
@@ -493,6 +495,7 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("用户", claimForm.getUser(), 1, null);
         validateUtil.addRequiredOneValidate("推荐卡片", claimForm.getReferralRecordIds());
         validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
+        logger.info("user:{},recordIds:{},name:{}", claimForm.getUser(), claimForm.getReferralRecordIds(), claimForm.getName());
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
