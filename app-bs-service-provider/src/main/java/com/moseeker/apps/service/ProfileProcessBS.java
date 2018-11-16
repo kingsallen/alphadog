@@ -46,6 +46,7 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.GDPRProtectedInfo;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
@@ -234,7 +235,21 @@ public class ProfileProcessBS {
                         .stream()
                         .map(ProcessValidationStruct::getApplier_id)
                         .collect(Collectors.toList());
-
+                List<GDPRProtectedInfo> gdprProtectedInfos = companyService.validateGDPR(applierIdList, companyId);
+                if (gdprProtectedInfos != null && gdprProtectedInfos.size() > 0) {
+                    list = list
+                            .stream()
+                            .filter(processValidationStruct -> {
+                                Optional<GDPRProtectedInfo> optional = gdprProtectedInfos
+                                        .stream()
+                                        .filter(gdprProtectedInfo -> gdprProtectedInfo.getUserId()
+                                                == processValidationStruct.getApplier_id()
+                                                && !gdprProtectedInfo.isTrigger())
+                                        .findAny();
+                                return optional.isPresent();
+                            })
+                            .collect(Collectors.toList());
+                }
 
                 boolean processStatus = true;
                 int recruitOrder = 0;
