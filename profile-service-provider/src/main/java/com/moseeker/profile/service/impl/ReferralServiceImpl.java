@@ -301,22 +301,6 @@ public class ReferralServiceImpl implements ReferralService {
         }
         String email = StringUtils.defaultIfBlank(profilePojo.getUserRecord().getEmail(), "");
 
-        int userId = createUserIdIfNotExist(profilePojo, employeeDO, name, mobile, referralScene);
-        return recommendV1(userId, employeeDO, jobPositions, name, mobile, referralReasons,
-                genderType, email, type, referralScene);
-    }
-
-    /**
-     * 如果用户不存在，创建虚拟用户，如果存在，合并简历。 打上企业标签
-     * @param   profilePojo  简历数据
-     * @param   employeeDO 员工数据
-     * @param   mobile  被推荐人或投递人手机号
-     * @param   name  被推荐人或投递人姓名
-     * @author  cjm
-     * @date  2018/11/2
-     * @return
-     */
-    private int createUserIdIfNotExist(ProfilePojo profilePojo, UserEmployeeDO employeeDO, String name, String mobile, ReferralScene referralScene) {
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId(), referralScene);
         int userId;
@@ -359,7 +343,9 @@ public class ReferralServiceImpl implements ReferralService {
                 return true;
             });
         }
-        return userId;
+
+        return recommendV1(userId, employeeDO, jobPositions, name, mobile, referralReasons,
+                genderType, email, type, referralScene);
     }
 
     /**
@@ -754,7 +740,6 @@ public class ReferralServiceImpl implements ReferralService {
         }
 
         try {
-            // todo 这里有限定时间，所以前边推荐职位个数要有限制
             countDownLatch.await(60, TimeUnit.SECONDS);
              return resultVOS;
         } catch (Exception e) {
