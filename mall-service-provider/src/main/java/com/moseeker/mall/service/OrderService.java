@@ -14,6 +14,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.GoodsEnum;
@@ -79,8 +80,8 @@ public class OrderService {
 
     private final Environment environment;
 
-    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
-            .getService(UserHrAccountService.Iface.class);
+    @Autowired
+    private SearchengineEntity searchengineEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -295,18 +296,17 @@ public class OrderService {
         // 获取商品信息
         MallGoodsInfoDO mallGoodsInfoDO = goodsService.getUpshelfGoodById(orderForm.getGoods_id(), orderForm.getCompany_id());
         // 检验剩余积分，返回待支付积分
-        int payCredit = checkRemainAward(mallGoodsInfoDO.getCredit(), orderForm.getCount(), userEmployeeDO.getAward());
+        checkRemainAward(mallGoodsInfoDO.getCredit(), orderForm.getCount(), userEmployeeDO.getAward());
         // 检验剩余库存
         checkRemainStock(orderForm.getCount(), mallGoodsInfoDO.getStock());
         // 插入订单记录
         MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
         // 乐观锁减库存
         minusStockByLock(mallGoodsInfoDO, orderForm);
-        // 乐观锁减积分
-        String reason = "兑换商品-" + mallOrderDO.getTitle() + "-数量：" + mallOrderDO.getCount();
-        updateAward(userEmployeeDO, -payCredit, reason);
         // 插入积分明细
         UserEmployeePointsRecordDO userEmployeePointsDO = insertAwardRecord(mallOrderDO, OrderEnum.CONFIRM.getState());
+        // 更新ES中的user_employee数据，以便积分排行实时更新
+        searchengineEntity.updateEmployeeAwards(userEmployeeDO.getId(), userEmployeePointsDO.getId());
         // 插入订单操作记录
         insertOperationRecord(mallOrderDO.getId(), userEmployeePointsDO.getId());
         // 发送消息模板
@@ -443,12 +443,6 @@ public class OrderService {
         return userEmployeePointsDao.addData(userEmployeePointsDO);
     }
 
-
-    private void updateAward(UserEmployeeDO userEmployeeDO, int payCredit, String reason) throws TException {
-        userHrAccountService.addEmployeeReward(userEmployeeDO.getId(), userEmployeeDO.getCompanyId(),
-                payCredit, reason);
-    }
-
     /**
      * 乐观锁减库存
      * @param mallGoodsInfoDO 商品信息
@@ -530,12 +524,10 @@ public class OrderService {
     private Map<Integer,UserEmployeePointsRecordDO> handleRefuseOrder(MallGoodsOrderUpdateForm updateForm, List<MallOrderDO> orderList) throws TException {
         Map<Integer, UserEmployeePointsRecordDO> recordDOMap = new HashMap<>(1 >> 4);
         if(updateForm.getState() == OrderEnum.REFUSED.getState()){
-            // 插入积分变更记录
-            recordDOMap = batchInsertAwardRecord(orderList, OrderEnum.REFUSED.getState());
             // 商品信息修改，例如兑换次数，兑换数量
             goodsService.batchUpdateGoodInfo(orderList, 1);
             // 返还积分
-            batchUpdateAward(orderList);
+            recordDOMap = batchUpdateAward(orderList);
         }else if(updateForm.getState() != OrderEnum.CONFIRM.getState()){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
         }
@@ -562,7 +554,8 @@ public class OrderService {
      * @author  cjm
      * @date  2018/10/22
      */
-    private void batchUpdateAward(List<MallOrderDO> orderList) throws TException {
+    private Map<Integer, UserEmployeePointsRecordDO> batchUpdateAward(List<MallOrderDO> orderList) throws TException {
+        Map<Integer, UserEmployeePointsRecordDO> map = new HashMap<>(1 >> 4);
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).collect(Collectors.toList());
         // 获取历史库和员工库的所有员工信息
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
@@ -580,8 +573,10 @@ public class OrderService {
                     continue;
                 }
             }
-            String reason = "退回积分-" + orderDO.getTitle() + "-数量：" + orderDO.getCount();
-            updateAward(userEmployeeDO, orderDO.getCount() * orderDO.getCredit(), reason);
+            UserEmployeePointsRecordDO userEmployeePointsDO = insertAwardRecord(orderDO, OrderEnum.REFUSED.getState());
+            map.put(orderDO.getId(), userEmployeePointsDO);
+            // 更新ES中的user_employee数据，以便积分排行实时更新
+            searchengineEntity.updateEmployeeAwards(userEmployeeDO.getId(), userEmployeePointsDO.getId());
             // 发送积分变动消息模板
             String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
             String url = getTemplateJumpUrlByKey("mall.refund.template.url");
@@ -589,6 +584,7 @@ public class OrderService {
                     "0", orderDO.getCount() * orderDO.getCredit() + "积分", "0",
                     userEmployeeDO.getAward() + orderDO.getCount() * orderDO.getCredit() + "积分", REFUSE_REMARK, url);
         }
+        return map;
     }
 
     private Map<Integer, UserEmployeeDO> getIdEmployeeMap(List<UserEmployeeDO> userEmployeeDOS){
