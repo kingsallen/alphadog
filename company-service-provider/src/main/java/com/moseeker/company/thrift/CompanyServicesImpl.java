@@ -11,6 +11,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
 import com.moseeker.company.service.impl.vo.GDPRProtectedInfoVO;
@@ -576,12 +577,20 @@ public class CompanyServicesImpl implements Iface {
 
     @Override
     public boolean fetchGDPRSwitch(int companyId) throws BIZException, TException {
-        return service.fetchGDPRSwitch(companyId);
+        try {
+            return service.fetchGDPRSwitch(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public boolean fetchGDPRSwitchByHR(int hrId) throws BIZException, TException {
-        return service.fetchGDPRSwitchByHR(hrId);
+        try {
+            return service.fetchGDPRSwitchByHR(hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     /**
@@ -594,7 +603,11 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(int companyId) throws BIZException, TException {
-        return service.getHrEmployeeCustomFields(companyId);
+        try {
+            return service.getHrEmployeeCustomFields(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }
 
