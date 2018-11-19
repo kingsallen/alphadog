@@ -125,6 +125,7 @@ public class OrderService {
                 orderList = orderDao.getOrdersListByPageAndState(orderSearchForm.getCompany_id(), orderSearchForm.getState(), startIndex, orderSearchForm.getPage_size());
             }
         }else {
+            orderSearchForm.setKeyword("%" + orderSearchForm.getKeyword() + "%");
             if(state == OrderEnum.All.getState()){
                 totalRows = orderDao.getTotalRowsByCompanyIdAndKeyword(orderSearchForm.getCompany_id(), keyWord);
                 int startIndex = PaginationUtils.getStartIndex(orderSearchForm.getPage_size(), orderSearchForm.getPage_number(), totalRows);
