@@ -737,7 +737,8 @@ public class ReferralServiceImpl implements ReferralService {
                 if(logRecord != null){
                     id = logRecord.getAttementId();
                 }
-                attachmentId = profileEntity.mergeProfileReferral(profilePojo, userRecord.getId(),id);
+                attachmentId = getAttachmentId(profilePojo, userRecord.getId(),id, referralScene);
+
                 tp.startTast(() -> {
                     companyTagService.handlerCompanyTagByUserId(userId);
                     return true;
@@ -776,6 +777,19 @@ public class ReferralServiceImpl implements ReferralService {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROGRAM_EXCEPTION;
         }
+    }
+
+    private int getAttachmentId(ProfilePojo profilePojo, Integer userId, int tempId, ReferralScene referralScene) {
+       int attachmentId;
+       // mobot 在缓存简历信息时已经创建虚拟用户，所以这里不再创建合并
+       if(referralScene.getScene() != ReferralScene.ChatBot.getScene()){
+           attachmentId = profileEntity.mergeProfileReferral(profilePojo, userId,tempId);
+       }else {
+           ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
+           ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
+           attachmentId = attachmentRecord.getId();
+       }
+       return attachmentId;
     }
 
     /**
