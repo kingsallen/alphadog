@@ -100,6 +100,7 @@ struct HrCompanyConf {
 	24: optional i16 school_application_count_limit, //一个人在一个公司下每月校招职位申请次数限制
 	25: optional i16 job51_salary_discuss,    //51薪资面议开关 0：未开启，1：开启
     26: optional i16 veryeast_switch         //最佳东方c端简历导入开关 0：未开启，1：开启
+    27: optional i16 is_open_gdpr
 
 }
 
