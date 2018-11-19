@@ -13,15 +13,16 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.OrderEnum;
+import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
-import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
@@ -33,7 +34,6 @@ import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
 import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
-import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -81,6 +81,8 @@ public class OrderService {
     private final Environment environment;
 
     private final SearchengineEntity searchengineEntity;
+
+    ThreadPool pool = ThreadPool.Instance;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -296,13 +298,15 @@ public class OrderService {
         // 获取商品信息
         MallGoodsInfoDO mallGoodsInfoDO = goodsService.getUpshelfGoodById(orderForm.getGoods_id(), orderForm.getCompany_id());
         // 检验剩余积分，返回待支付积分
-        checkRemainAward(mallGoodsInfoDO.getCredit(), orderForm.getCount(), userEmployeeDO.getAward());
+        int payCredit = checkRemainAward(mallGoodsInfoDO.getCredit(), orderForm.getCount(), userEmployeeDO.getAward());
         // 检验剩余库存
         checkRemainStock(orderForm.getCount(), mallGoodsInfoDO.getStock());
         // 插入订单记录
         MallOrderDO mallOrderDO = insertOrder(mallGoodsInfoDO, userEmployeeDO, orderForm);
         // 乐观锁减库存
         minusStockByLock(mallGoodsInfoDO, orderForm);
+        // 乐观锁减积分
+        updateAward(userEmployeeDO, -payCredit);
         // 插入积分明细
         UserEmployeePointsRecordDO userEmployeePointsDO = insertAwardRecord(mallOrderDO, OrderEnum.CONFIRM.getState());
         // 更新ES中的user_employee数据，以便积分排行实时更新
@@ -573,18 +577,40 @@ public class OrderService {
                     continue;
                 }
             }
+            UserEmployeeDO tempEmployee = userEmployeeDO;
             UserEmployeePointsRecordDO userEmployeePointsDO = insertAwardRecord(orderDO, OrderEnum.REFUSED.getState());
             map.put(orderDO.getId(), userEmployeePointsDO);
-            // 更新ES中的user_employee数据，以便积分排行实时更新
-            searchengineEntity.updateEmployeeAwards(userEmployeeDO.getId(), userEmployeePointsDO.getId());
-            // 发送积分变动消息模板
-            String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
-            String url = getTemplateJumpUrlByKey("mall.refund.template.url");
-            templateService.sendAwardTemplate(userEmployeeDO.getSysuserId(), userEmployeeDO.getCompanyId(), Constant.TEMPLATES_AWARD_RETURN_NOTICE_TPL, templateTile,
-                    "0", orderDO.getCount() * orderDO.getCredit() + "积分", "0",
-                    userEmployeeDO.getAward() + orderDO.getCount() * orderDO.getCredit() + "积分", REFUSE_REMARK, url);
+            pool.startTast(() -> {
+                // 更新ES中的user_employee数据，以便积分排行实时更新
+                searchengineEntity.updateEmployeeAwards(tempEmployee.getId(), userEmployeePointsDO.getId());
+                updateAwardByLock(tempEmployee, orderDO.getCount() * orderDO.getCredit(), 1);
+                // 发送积分变动消息模板
+                String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
+                String url = getTemplateJumpUrlByKey("mall.refund.template.url");
+                templateService.sendAwardTemplate(tempEmployee.getSysuserId(), tempEmployee.getCompanyId(), Constant.TEMPLATES_AWARD_RETURN_NOTICE_TPL, templateTile,
+                        "0", orderDO.getCount() * orderDO.getCredit() + "积分", "0",
+                        tempEmployee.getAward() + orderDO.getCount() * orderDO.getCredit() + "积分", REFUSE_REMARK, url);
+                return 0;
+            });
+
         }
         return map;
+    }
+
+    private void updateAward(UserEmployeeDO userEmployeeDO, int payCredit) throws BIZException {
+        updateAwardByLock(userEmployeeDO, payCredit, 1);
+    }
+
+    private UserEmployeeDO updateAwardByLock(UserEmployeeDO userEmployeeDO, int payCredit, int retryTimes) throws BIZException {
+        DbUtils.checkRetryTimes(retryTimes);
+        int employeeId = userEmployeeDO.getId();
+        int oldAward = userEmployeeDO.getAward();
+        int row = userEmployeeDao.addAward(employeeId, oldAward + payCredit, oldAward);
+        if(row == 0){
+            userEmployeeDO = userEmployeeDao.getEmployeeById(employeeId);
+            return updateAwardByLock(userEmployeeDO, payCredit, ++retryTimes);
+        }
+        return userEmployeeDO;
     }
 
     private Map<Integer, UserEmployeeDO> getIdEmployeeMap(List<UserEmployeeDO> userEmployeeDOS){
@@ -649,4 +675,5 @@ public class OrderService {
         }
         return userEmployeeDO;
     }
+
 }
