@@ -8,15 +8,12 @@ import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
-import com.moseeker.baseorm.dao.referraldb.HistoryReferralPositionRelDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralPositionRelDao;
 import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionRel;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -29,15 +26,14 @@ import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.joda.time.DateTime;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * 职位业务
@@ -62,12 +58,6 @@ public class PositionEntity {
     private HrCompanyFeatureDao hrCompanyFeatureDao;
 
     @Autowired
-    private ReferralPositionRelDao referralPositionRelDao;
-
-    @Autowired
-    private HistoryReferralPositionRelDao historyReferralPositionRelDao;
-
-    @Autowired
     private SearchengineEntity searchengineEntity;
 
     @Autowired
@@ -75,7 +65,7 @@ public class PositionEntity {
 
     @Autowired
     private HrCompanyDao companyDao;
-
+    ;
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**
@@ -312,7 +302,6 @@ public class PositionEntity {
      * @param pids
      */
     public void putReferralPositions(List<Integer> pids){
-        List<ReferralPositionRel> records = new ArrayList<>();
         logger.info("putReferralPositions pids.size {}",pids.size());
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Query query = queryBuilder.where(new Condition("id",pids,ValueOp.IN)).buildQuery();

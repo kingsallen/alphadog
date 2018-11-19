@@ -49,7 +49,16 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException ERMPLOYEE_REFERRAL_BONUS_NOT_EXIST = new UserAccountException(42039, "内推奖金记录不存在!");
     public static final UserAccountException ERMPLOYEE_REFERRAL_BONUS__REPEAT_CLAIM = new UserAccountException(42040, "重复认领!");
     public static final UserAccountException ERMPLOYEE_EXTINFO_PARAM_ERROR = new UserAccountException(42041, "补填信息不符合要求!");
-
+    public static final UserAccountException ACTIVITY_RUNNING = new UserAccountException(42042, "活动正在进行中!");
+    public static final UserAccountException ACTIVITY_UNCHECKED_OR_IN_RUNNING = new UserAccountException(42043, "红包活动正在进行中!");
+    public static final UserAccountException ACTIVITY_POSITIONS_ERROR = new UserAccountException(42044, "职位数据无效，请重新选择职位!");
+    public static final UserAccountException ACTIVITY_AMOUNT_ERROR = new UserAccountException(42045, "红包列表的红包金额超支!");
+    public static final UserAccountException ACTIVITY_NOT_EXISTS = new UserAccountException(42046, "红包活动不存在!");
+    public static final UserAccountException ACTIVITY_STATUS_ERROR = new UserAccountException(42047, "红包状态不正确!");
+    public static final UserAccountException ACTIVITY_UNCHECKED_OR_FINISHED = new UserAccountException(42048, "红包活动未审核或已经结束!");
+    public static final UserAccountException ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE = new UserAccountException(42049, "红包选择的职位的红包是否参与活动的状态修改失败，可能是由于已经参加其他的红包活动导致!");
+    public static final UserAccountException ACTIVITY_POSITION_ALREADY_IN_ACTIVITY = new UserAccountException(42050, "所选职位已经参与红包活动!");
+    public static final UserAccountException ACTIVITY_CONFLICT = new UserAccountException(42051, "红包活动时间重叠，请重新选择时间!");
 
     public static final UserAccountException INVALID_SMS_CODE = new UserAccountException(10011, "无效验证码！");
 

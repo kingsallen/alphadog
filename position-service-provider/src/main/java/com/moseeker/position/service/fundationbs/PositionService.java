@@ -1915,6 +1915,7 @@ public class PositionService {
                     e.setCandidate_source(jr.getCandidateSource());
                     e.setRequirement(jr.getRequirement());
                     e.setTotal_num(count);
+                    e.setHb_status(jr.getHbStatus());
                     e.setIs_referral(jr.getIsReferral());
                     e.setEmployment_type(jr.getEmploymentType());
                     e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
@@ -2051,7 +2052,7 @@ public class PositionService {
         } else {
             return result;
         }
-        Condition condition = new Condition("type", new Object[]{2, 3}, ValueOp.IN);
+        Condition condition = new Condition("type", new Object[]{2, 3, 4}, ValueOp.IN);
         // 获取正在运行的转发类红包活动集合
         Query qu = new Query.QueryBuilder()
                 .where("status", "3")
@@ -2235,6 +2236,7 @@ public class PositionService {
         List<Integer> typeList=new ArrayList<>();
         typeList.add(2);
         typeList.add(3);
+        typeList.add(4);
         List<HrHbConfig> hrHbList=hrHbConfigDao.getHrHbConfigByCompanyId(companyId,status,typeList);
         return hrHbList;
     }

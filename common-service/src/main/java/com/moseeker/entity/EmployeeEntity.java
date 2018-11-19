@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.dao.candidatedb.CandidateApplicationReferralDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
@@ -23,10 +24,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrPointsConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrPointsConfRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeRegisterLog;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.*;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -57,6 +55,7 @@ import com.moseeker.entity.exception.ExceptionFactory;
 import com.moseeker.entity.pojos.EmployeeInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -99,6 +98,8 @@ import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 @CounterIface
 public class EmployeeEntity {
 
+
+
     @Autowired
     private UserEmployeeDao employeeDao;
 
@@ -140,6 +141,9 @@ public class EmployeeEntity {
 
     @Autowired
     private CandidateCompanyDao candidateCompanyDao;
+
+    @Autowired
+    CandidateApplicationReferralDao applicationPscDao;
     @Autowired
     private UserWxUserDao userWxUserDao;
 
@@ -151,6 +155,9 @@ public class EmployeeEntity {
 
     @Autowired
     private ReferralEmployeeBonusRecordDao referralEmployeeBonusRecordDao;
+
+    @Autowired
+    ReferralApplicationStatusCountDao referralApplicationStatusCountDao;
 
     @Autowired
     private ReferralEmployeeRegisterLogDao referralEmployeeRegisterLogDao;
@@ -167,11 +174,13 @@ public class EmployeeEntity {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
+    ThreadPool tp =ThreadPool.Instance;
+
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    ThreadPool tp = ThreadPool.Instance;
-
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_exchange";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
     private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
@@ -183,7 +192,7 @@ public class EmployeeEntity {
      *
      * @param userId
      * @param companyId 如果公司属于集团公司，需验证用户是否在集团下的所有公司中认证过员工
-     * @return
+     * @redpacket_exchange
      */
     public boolean isEmployee(int userId, int companyId) {
         UserEmployeeDO employee = getCompanyEmployee(userId, companyId);
@@ -1179,6 +1188,63 @@ public class EmployeeEntity {
         return employeeInfo;
     }
 
+    public void publishInitalScreenHbEvent(JobApplication jobApplication, JobPositionRecord jobPositionRecord,
+                                           Integer userId, Integer nextStage){
+        if(jobApplication != null && jobPositionRecord != null) {
+            int hbStatus = jobPositionRecord.getHbStatus();
+            if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
+                ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplById(nextStage);
+                ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
+                        .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
+                if(statusCount == null){
+                    CandidateApplicationReferralDO referral = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
+                    statusCount = new ReferralApplicationStatusCount();
+                    statusCount.setAppicationTplStatus(confTplDO.getId());
+                    statusCount.setApplicationId(jobApplication.getId());
+                    statusCount.setCount(1);
+                    int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
+                    if(result >0 ){
+                        HrWxWechatDO wechat = wechatDao.getHrWxWechatByCompanyId(jobPositionRecord.getCompanyId());
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("application_id", jobApplication.getId());
+                        jsonObject.put("be_recom_user_id", jobApplication.getApplierId());
+                        jsonObject.put("next_stage", nextStage);
+                        jsonObject.put("position_id", jobPositionRecord.getId());
+                        jsonObject.put("company_id", jobPositionRecord.getCompanyId());
+                        jsonObject.put("user_id", userId);
+                        if(wechat != null){
+                            jsonObject.put("wechat_id", wechat.getId());
+                        }
+                        int pscId = 0;
+                        int directReferralUserId = 0;
+                        if(referral != null){
+                            pscId = referral.getPscId();
+                            directReferralUserId = referral.getDirectReferralUserId();
+                        }
+                        jsonObject.put("psc", pscId);
+                        jsonObject.put("direct_referral_user_id", directReferralUserId);
+                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
+                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                        .build());
+                    }
+                }else{
+                    int i =0;
+                    while (i<3){
+                        statusCount = referralApplicationStatusCountDao
+                                .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
+                        int count = statusCount.getCount();
+                        statusCount.setCount(count+1);
+                        int result = referralApplicationStatusCountDao.updateReferralApplicationStatusCount(statusCount);
+                        if(result > 0){
+                            break;
+                        }
+                        i++;
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      *
@@ -1196,6 +1262,14 @@ public class EmployeeEntity {
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
+        Integer userId = jobApplication.getRecommenderUserId();
+        if(nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
+            tp.startTast(() -> {
+                this.publishInitalScreenHbEvent(jobApplication, jobPositionRecord, userId, nextStage);
+                return 0;
+            });
+            return;
+        }
         //如果职位不是一个内推职位(is_referral=0), 直接返回不做后续操作
         if(jobPositionRecord == null || Integer.valueOf(jobPositionRecord.getIsReferral()).equals(0)) {
             logger.info("addReferralBonus 不是内推职位 不发内推奖金 positionId {}  isReferral {} ",positionId,jobPositionRecord.getIsReferral());
@@ -1206,14 +1280,13 @@ public class EmployeeEntity {
 
         //下个节点奖金主数据
         ReferralPositionBonusStageDetail nextStageDetail = referralPositionBonusStageDetailDao.fetchByReferralPositionIdAndStageType(positionId,nextStage);
-
-        Integer userId = jobApplication.getRecommenderUserId();
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployeeByUserId(userId);
         if(userEmployeeRecord == null) {
 
             logger.info("addReferralBonus 不是已认证员工,不能发内推奖金 employeeId {}",userId);
             throw new BIZException(-1, userId +" 不是已认证员工,不能发内推奖金");
         }
+
         Integer employeeId = Integer.valueOf(userEmployeeRecord.getId());
 
 

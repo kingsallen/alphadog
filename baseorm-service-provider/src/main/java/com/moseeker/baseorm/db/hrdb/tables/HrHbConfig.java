@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbConfig extends TableImpl<HrHbConfigRecord> {
 
-    private static final long serialVersionUID = -1288904302;
+    private static final long serialVersionUID = -385862766;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_config</code>
@@ -57,9 +57,9 @@ public class HrHbConfig extends TableImpl<HrHbConfigRecord> {
     public final TableField<HrHbConfigRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
+     * The column <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包， 4:推荐通过初筛红包
      */
-    public final TableField<HrHbConfigRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包");
+    public final TableField<HrHbConfigRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包， 4:推荐通过初筛红包");
 
     /**
      * The column <code>hrdb.hr_hb_config.target</code>. 0:员工，1:员工及员工二度，2:粉丝

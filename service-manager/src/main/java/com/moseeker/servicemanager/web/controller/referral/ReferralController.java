@@ -26,6 +26,7 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
+import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -355,6 +356,39 @@ public class ReferralController {
             result.setTotalBonus(BonusTools.convertToBonus(bonusList.getTotalBonus()));
             result.setTotalRedpackets(BonusTools.convertToBonus(bonusList.getTotalRedpackets()));
             return Result.success(result).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+
+
+    @RequestMapping(value = "/v1/referral/profile/{id}/tab", method = RequestMethod.GET)
+    @ResponseBody
+    public String getProfileTab(@PathVariable Integer id,
+                           @RequestParam(value = "appid") Integer appid,
+                           @RequestParam(value = "company_id") Integer companyId,
+                           @RequestParam(value = "hr_id") Integer hrId)
+            throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("用户编号", id);
+        validateUtil.addRequiredValidate("公司编号", companyId);
+        validateUtil.addRequiredValidate("HR编号", hrId);
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            List<com.moseeker.thrift.gen.referral.struct.ReferralProfileTab> tabList = referralService
+                    .getReferralProfileList(id, companyId, hrId);
+
+            List<ReferralProfileTab> result = new ArrayList<>();
+            if (tabList != null && tabList.size() > 0) {
+                result = tabList.stream().map(tab -> {
+                    ReferralProfileTab profileTab = new ReferralProfileTab();
+                    BeanUtils.copyProperties(tab, profileTab);
+                    return profileTab;
+                }).collect(Collectors.toList());
+            }
+            return Result.success(tabList).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
         }

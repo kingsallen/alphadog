@@ -72,8 +72,10 @@ service ProfileServices {
     list<profile_struct.UserProfile> fetchUserProfile(1: list<i32> userIdList) throws (1: common_struct.BIZException e);
     common_struct.Response getProfileTokenDecrypt(1:string token);
     i32 parseText(1: string profile, 2: i32 reference, 3: i32 appid) throws (1: common_struct.BIZException e);
-    //简历解析
+    //员工简历解析
     profile_struct.ProfileParseResult parseFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
+     //用户简历解析
+     profile_struct.ProfileParseResult parseUserFileProfile(1:i32 employeeId, 2:string fileName, 3:binary fileData)throws (1: common_struct.BIZException e)
     //简历解析
     profile_struct.ProfileParseResult parseFileStreamProfile(1:i32 employeeId, 2: string fileOriginName, 3: string fileName, 4: string absoluteName, 5: string fileData)throws (1: common_struct.BIZException e)
     //员工推荐简历

@@ -14,7 +14,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
-import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
@@ -29,7 +28,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
-import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
@@ -136,17 +134,12 @@ public class Tables {
     public static final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
 
     /**
-     * 账号公司关联记录
-     */
-    public static final HrCompanyAccountCopy HR_COMPANY_ACCOUNT_COPY = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY;
-
-    /**
      * 公司级别的配置信息表
      */
     public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
 
     /**
-     * 邮件额度每天使用日志
+     * 公司和CS匹配表
      */
     public static final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
@@ -209,11 +202,6 @@ public class Tables {
      * 红包记录表
      */
     public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
-
-    /**
-     * The table <code>hrdb.hr_hb_items_backup</code>.
-     */
-    public static final HrHbItemsBackup HR_HB_ITEMS_BACKUP = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup.HR_HB_ITEMS_BACKUP;
 
     /**
      * 红包配置和职位绑定表

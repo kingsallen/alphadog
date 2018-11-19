@@ -3,7 +3,10 @@ package com.moseeker.profile.service.impl.resumefileupload.iface;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
@@ -15,6 +18,7 @@ import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.StreamUtils;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import java.io.File;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,8 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
+
+
     Logger logger = LoggerFactory.getLogger(AbstractResumeFileParser.class);
 
     protected abstract boolean checkUser(Integer id);
@@ -48,6 +54,8 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     protected abstract JSONObject getProfileObject(ProfileObj profileObj,FileNameData fileNameData,ProfileDocParseResult profileDocParseResult);
 
     protected abstract String getRedisKey();
+
+    protected abstract void toPDF(String suffix, FileNameData fileNameData, Integer id);
 
     protected abstract ProfileDocParseResult setProfileDocParseResult(ProfileDocParseResult profileDocParseResult,User user,Integer userId);
 
@@ -61,8 +69,9 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
         byte[] dataArray = StreamUtils.ByteBufferToByteArray(fileData);
         String suffix = fileName.substring(fileName.lastIndexOf(".")+1);
         FileNameData fileNameData = StreamUtils.persistFile(dataArray, env.getProperty("profile.persist.url"), suffix);
-        profileDocParseResult.setFile(fileNameData.getFileName());
         fileNameData.setOriginName(fileName);
+        toPDF(suffix, fileNameData, id);
+        profileDocParseResult.setFile(fileNameData.getFileName());
         return parseResult(id, fileName, StreamUtils.byteArrayToBase64String(dataArray), fileNameData);
     }
     private ProfileDocParseResult parseResult(int id, String fileName, String fileData,

@@ -37,3 +37,36 @@ struct BonusList {
     2 : optional double totalBonus,
     3 : optional list<Bonus> bonus,
 }
+
+struct ReferralProfileTab{
+    1: optional string positionTitle,
+    2: optional string sender,
+    3: optional string uploadTime,
+    4: optional string filePath,
+    5: optional string name,
+    6: optional i32 claim,
+    7: optional i32 id,
+}
+
+struct ActivityDTO {
+    1 : optional i32 id,
+    2 : optional list<double> amounts,
+    3 : optional i32 target,
+    4 : optional string startTime,
+    5 : optional string endTime,
+    6 : optional double totalAmount,
+    7 : optional double rangeMin,
+    8 : optional double rangeMax,
+    9 : optional i32 probability,
+    10: optional i32 dType,
+    11: optional string headline,
+    12: optional string headlineFailure,
+    13: optional string shareTitle,
+    14: optional string shareDesc,
+    15: optional string shareImg,
+    16: optional i32 status,
+    17: optional i32 checked,
+    18: optional i32 estimatedTotal,
+    19: optional i32 actualTotal,
+    20: optional list<i32> positionIds,
+}

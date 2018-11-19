@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record13<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String, String, String> {
 
-    private static final long serialVersionUID = -1109599774;
+    private static final long serialVersionUID = 587286246;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -201,14 +201,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用的参数
+     * Setter for <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用参数
      */
     public void setStats(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用的参数
+     * Getter for <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用参数
      */
     public String getStats() {
         return (String) get(12);

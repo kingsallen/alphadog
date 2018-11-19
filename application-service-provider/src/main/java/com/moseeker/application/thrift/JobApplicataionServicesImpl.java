@@ -252,6 +252,19 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public int appSendEmail(int appId) throws BIZException, TException {
+        try {
+            int result=service.appSendEmail(appId);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ApplicationException.PROGRAM_EXCEPTION;
+        }
+    }
+
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用

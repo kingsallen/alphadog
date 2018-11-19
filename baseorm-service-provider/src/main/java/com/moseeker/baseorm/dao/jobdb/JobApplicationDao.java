@@ -15,6 +15,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import jdk.nashorn.internal.scripts.JO;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
 import org.springframework.beans.factory.annotation.Autowired;

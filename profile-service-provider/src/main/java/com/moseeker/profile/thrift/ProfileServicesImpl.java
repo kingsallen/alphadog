@@ -153,6 +153,20 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public ProfileParseResult parseUserFileProfile(int userId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    profileService.parseFileProfile(userId, fileName, fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+
+    @Override
     public ProfileParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
                                                      String fileAbsoluteName, String fileData)
             throws BIZException, TException {
@@ -172,7 +186,6 @@ public class ProfileServicesImpl implements Iface {
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte referralType) throws BIZException, TException {
         try {
-
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
                     referralType);
         } catch (Exception e) {

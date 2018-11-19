@@ -250,8 +250,13 @@ public class UserCenterService {
 
             /** 分页查找相关职位转发记录 */
             List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, type, positionIdList, presenteeUserIdList, pageNo, pageSize);
-            if (recomRecordDOList.size() > 0) {
+            if (totalCount > 0 || interestedCount > 0 || applyCount > 0) {
                 recommendationForm.setHasRecommends(true);
+            } else {
+                recommendationForm.setHasRecommends(false);
+            }
+
+            if (recomRecordDOList.size() > 0) {
 
                 Set<Integer> positionIDSet = new HashSet<>();           //转发记录涉及到的职位编号，需要根据这些职位编号查找职位名称
                 Set<Integer> presenteeIDSet = new HashSet<>();          //转发记录涉及到的浏览者编号，需要根据这些编号查找用户名称、昵称等信息

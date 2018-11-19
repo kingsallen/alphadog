@@ -10,6 +10,7 @@ public class SearchPast {
     private String keyword;
     private String pageNumber;
     private String pageSize;
+    private String isTalent;
 
     public String getPublisher() {
         return publisher;
@@ -49,5 +50,13 @@ public class SearchPast {
 
     public void setPageSize(String pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public String getIsTalent() {
+        return isTalent;
+    }
+
+    public void setIsTalent(String isTalent) {
+        this.isTalent = isTalent;
     }
 }

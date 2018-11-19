@@ -82,7 +82,7 @@ struct WechatPositionListQuery {
     15: optional string department
     16: optional bool order_by_priority,
     17: optional string custom,
-    18: optional i32 user_id
+    18: optional i32 user_id,
     19: optional i32 is_referral
 }
 
@@ -118,7 +118,8 @@ struct WechatPositionListData {
     30: optional i32 experience_above;
     31: optional string experience;
     32: optional i32 team_id;
-    33: optional string total_bonus;
+    33: optional string total_bonus,
+    34: optional i32 hb_status
 }
 
 // 微信端职位列表的附加红包信息
