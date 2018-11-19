@@ -41,8 +41,6 @@ public class SearchengineServiceImpl implements Iface {
 	private PositionSearchEngine positionSearchEngine;
 	@Autowired
 	private TalentpoolSearchengine talentpoolSearchengine;
-	@Autowired
-	private TalentPoolEntity talentPoolEntity;
 
 	private SerializeConfig serializeConfig = new SerializeConfig(); // 生产环境中，parserConfig要做singleton处理，要不然会存在性能问题
 
