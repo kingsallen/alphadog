@@ -18,9 +18,9 @@ import com.moseeker.mall.annotation.OnlyEmployee;
 import com.moseeker.mall.annotation.OnlySuperAccount;
 import com.moseeker.mall.constant.GoodsEnum;
 import com.moseeker.mall.constant.OrderEnum;
-import com.moseeker.mall.utils.DbUtils;
 import com.moseeker.mall.utils.PaginationUtils;
 import com.moseeker.mall.vo.MallOrderInfoVO;
+import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
@@ -32,6 +32,8 @@ import com.moseeker.thrift.gen.mall.struct.BaseMallForm;
 import com.moseeker.thrift.gen.mall.struct.MallGoodsOrderUpdateForm;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
 import com.moseeker.thrift.gen.mall.struct.OrderSearchForm;
+import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
+import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.slf4j.Logger;
@@ -76,6 +78,9 @@ public class OrderService {
     private final TemplateService templateService;
 
     private final Environment environment;
+
+    UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER
+            .getService(UserHrAccountService.Iface.class);
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -181,7 +186,7 @@ public class OrderService {
      */
     @OnlyEmployee
     @Transactional(rollbackFor = Exception.class)
-    public void confirmOrder(OrderForm orderForm) throws BIZException {
+    public void confirmOrder(OrderForm orderForm) throws TException {
         try{
             handleOrder(orderForm);
         }catch (Exception e){
@@ -198,7 +203,7 @@ public class OrderService {
      */
     @Transactional(rollbackFor = Exception.class)
     @OnlySuperAccount
-    public void updateOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException {
+    public void updateOrder(MallGoodsOrderUpdateForm updateForm) throws TException {
         try{
             handleUpdatedOrder(updateForm);
         }catch (Exception e){
@@ -282,7 +287,7 @@ public class OrderService {
         return employeeOrderMap;
     }
 
-    private void handleOrder(OrderForm orderForm) throws BIZException {
+    private void handleOrder(OrderForm orderForm) throws TException {
         // redis防止重复提交
         checkEmployeeDuplicateCommit(orderForm.getGoods_id(), orderForm.getEmployee_id());
         // 获取员工信息
@@ -298,7 +303,8 @@ public class OrderService {
         // 乐观锁减库存
         minusStockByLock(mallGoodsInfoDO, orderForm);
         // 乐观锁减积分
-        updateAward(userEmployeeDO, -payCredit);
+        String reason = "兑换商品-" + mallOrderDO.getTitle() + "-数量：" + mallOrderDO.getCount();
+        updateAward(userEmployeeDO, -payCredit, reason);
         // 插入积分明细
         UserEmployeePointsRecordDO userEmployeePointsDO = insertAwardRecord(mallOrderDO, OrderEnum.CONFIRM.getState());
         // 插入订单操作记录
@@ -438,20 +444,9 @@ public class OrderService {
     }
 
 
-    private void updateAward(UserEmployeeDO userEmployeeDO, int payCredit) throws BIZException {
-        updateAwardByLock(userEmployeeDO, payCredit, 1);
-    }
-
-    private UserEmployeeDO updateAwardByLock(UserEmployeeDO userEmployeeDO, int payCredit, int retryTimes) throws BIZException {
-        DbUtils.checkRetryTimes(retryTimes);
-        int employeeId = userEmployeeDO.getId();
-        int oldAward = userEmployeeDO.getAward();
-        int row = userEmployeeDao.addAward(employeeId, oldAward + payCredit, oldAward);
-        if(row == 0){
-            userEmployeeDO = userEmployeeDao.getEmployeeById(employeeId);
-            return updateAwardByLock(userEmployeeDO, payCredit, ++retryTimes);
-        }
-        return userEmployeeDO;
+    private void updateAward(UserEmployeeDO userEmployeeDO, int payCredit, String reason) throws TException {
+        userHrAccountService.addEmployeeReward(userEmployeeDO.getId(), userEmployeeDO.getCompanyId(),
+                payCredit, reason);
     }
 
     /**
@@ -510,7 +505,7 @@ public class OrderService {
         return String.valueOf((((year * 100) + month) * 100 + day) * 100000L + Long.parseLong(current));
     }
 
-    private void handleUpdatedOrder(MallGoodsOrderUpdateForm updateForm) throws BIZException {
+    private void handleUpdatedOrder(MallGoodsOrderUpdateForm updateForm) throws TException {
         // 检验重复提交
         batchCheckHrDuplicateCommit(updateForm);
         // 检验需要修改的订单状态是否是合法状态
@@ -532,7 +527,7 @@ public class OrderService {
         batchDelOrderRedisLock(updateForm.getIds(), updateForm.getHr_id());
     }
 
-    private Map<Integer,UserEmployeePointsRecordDO> handleRefuseOrder(MallGoodsOrderUpdateForm updateForm, List<MallOrderDO> orderList) throws BIZException {
+    private Map<Integer,UserEmployeePointsRecordDO> handleRefuseOrder(MallGoodsOrderUpdateForm updateForm, List<MallOrderDO> orderList) throws TException {
         Map<Integer, UserEmployeePointsRecordDO> recordDOMap = new HashMap<>(1 >> 4);
         if(updateForm.getState() == OrderEnum.REFUSED.getState()){
             // 插入积分变更记录
@@ -567,7 +562,7 @@ public class OrderService {
      * @author  cjm
      * @date  2018/10/22
      */
-    private void batchUpdateAward(List<MallOrderDO> orderList) throws BIZException {
+    private void batchUpdateAward(List<MallOrderDO> orderList) throws TException {
         List<Integer> employeeIds = orderList.stream().map(MallOrderDO::getEmployee_id).collect(Collectors.toList());
         // 获取历史库和员工库的所有员工信息
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getEmployeeByIds(employeeIds);
@@ -581,8 +576,12 @@ public class OrderService {
             UserEmployeeDO userEmployeeDO = userEmployeeDOMap.get(orderDO.getEmployee_id());
             if(userEmployeeDO == null){
                 userEmployeeDO = historyEmployeeDOMap.get(orderDO.getEmployee_id());
+                if(userEmployeeDO == null){
+                    continue;
+                }
             }
-            userEmployeeDO = updateAwardByLock(userEmployeeDO, orderDO.getCount() * orderDO.getCredit(), 1);
+            String reason = "退回积分-" + orderDO.getTitle() + "-数量：" + orderDO.getCount();
+            updateAward(userEmployeeDO, orderDO.getCount() * orderDO.getCredit(), reason);
             // 发送积分变动消息模板
             String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
             String url = getTemplateJumpUrlByKey("mall.refund.template.url");

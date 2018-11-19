@@ -4,6 +4,7 @@ import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.mall.config.AppConfig;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.mall.struct.OrderForm;
+import org.apache.thrift.TException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,8 @@ public class OrderServiceTest {
                         e.printStackTrace();
                     } catch (BIZException e) {
                         e.printStackTrace();
+                    } catch (TException e) {
+                        e.printStackTrace();
                     }
                 }
 
@@ -86,6 +89,8 @@ public class OrderServiceTest {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    } catch (TException e) {
                         e.printStackTrace();
                     }
                 }
