@@ -95,16 +95,14 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
         return create.selectCount()
                 .from(MALL_ORDER)
                 .where(MALL_ORDER.COMPANY_ID.eq(companyId))
-                .and(MALL_ORDER.TITLE.like(keyWord))
-                .or(MALL_ORDER.NAME.like(keyWord))
+                .and(MALL_ORDER.TITLE.like(keyWord).or(MALL_ORDER.NAME.like(keyWord)))
                 .fetchOne(0, int.class);
     }
 
     public List<MallOrderDO> getOrdersListByPageAndKeyword(OrderSearchForm orderSearchForm, int startIndex) {
         return create.selectFrom(MALL_ORDER)
                 .where(MALL_ORDER.COMPANY_ID.eq(orderSearchForm.getCompany_id()))
-                .and(MALL_ORDER.TITLE.like(orderSearchForm.getKeyword()))
-                .or(MALL_ORDER.NAME.like(orderSearchForm.getKeyword()))
+                .and(MALL_ORDER.TITLE.like(orderSearchForm.getKeyword()).or(MALL_ORDER.NAME.like(orderSearchForm.getKeyword())))
                 .orderBy(MALL_ORDER.CREATE_TIME.desc())
                 .limit(startIndex, orderSearchForm.getPage_size())
                 .fetchInto(MallOrderDO.class);
@@ -115,8 +113,7 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
                 .from(MALL_ORDER)
                 .where(MALL_ORDER.COMPANY_ID.eq(companyId))
                 .and(MALL_ORDER.STATE.eq(state))
-                .and(MALL_ORDER.TITLE.like(keyWord))
-                .or(MALL_ORDER.NAME.like(keyWord))
+                .and(MALL_ORDER.TITLE.like(keyWord).or(MALL_ORDER.NAME.like(keyWord)))
                 .fetchOne(0, int.class);
     }
 
@@ -124,8 +121,7 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
         return create.selectFrom(MALL_ORDER)
                 .where(MALL_ORDER.COMPANY_ID.eq(orderSearchForm.getCompany_id()))
                 .and(MALL_ORDER.STATE.eq(orderSearchForm.getState()))
-                .and(MALL_ORDER.TITLE.like(orderSearchForm.getKeyword()))
-                .or(MALL_ORDER.NAME.like(orderSearchForm.getKeyword()))
+                .and(MALL_ORDER.TITLE.like(orderSearchForm.getKeyword()).or(MALL_ORDER.NAME.like(orderSearchForm.getKeyword())))
                 .orderBy(MALL_ORDER.CREATE_TIME.desc())
                 .limit(startIndex, orderSearchForm.getPage_size())
                 .fetchInto(MallOrderDO.class);
