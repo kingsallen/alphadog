@@ -606,14 +606,9 @@ public class SearchengineController {
     public CleanJsonResponse4Alphacloud userQuery(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
-            Map<String, String> params = new HashMap<>();
             if (reqParams == null || reqParams.isEmpty()) {
                 return ResponseLogNotification.fail4Alphacloud("参数不能为空");
             }
-            for (String key : reqParams.keySet()) {
-                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
-            }
-
             Map map = (Map) reqParams.get("map");
 
             Response res = searchengineServices.userQuery(map);
@@ -634,14 +629,9 @@ public class SearchengineController {
     public CleanJsonResponse4Alphacloud userQueryById(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
-            Map<String, String> params = new HashMap<>();
             if (reqParams == null || reqParams.isEmpty()) {
                 return ResponseLogNotification.fail4Alphacloud("参数不能为空");
             }
-            for (String key : reqParams.keySet()) {
-                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
-            }
-
             List<Integer> userIdList = (List<Integer>) reqParams.get("userIdList");
 
             Response res = searchengineServices.userQueryById(userIdList);
