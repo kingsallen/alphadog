@@ -474,7 +474,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/talentSearchNum", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/talentSearchNum", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud talentSearchNum(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -499,7 +499,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/getTalentUserIdList", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/getTalentUserIdList", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud getTalentUserIdList(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -524,7 +524,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/queryCompanyTagUserIdListCount", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/queryCompanyTagUserIdListCount", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud queryCompanyTagUserIdListCount(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -549,7 +549,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/queryProfileFilterUserIdList", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/queryProfileFilterUserIdList", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud queryProfileFilterUserIdList(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -575,7 +575,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/queryCompanyTagUserIdList", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/queryCompanyTagUserIdList", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud queryCompanyTagUserIdList(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -601,7 +601,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/userQuery", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/userQuery", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud userQuery(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -629,7 +629,7 @@ public class SearchengineController {
      *
      * @return CleanJsonResponse4Alphacloud
      */
-    @RequestMapping(value = "/v4/searchengine/userQueryById", method = RequestMethod.PUT)
+    @RequestMapping(value = "/v4/searchengine/userQueryById", method = RequestMethod.POST)
     @ResponseBody
     public CleanJsonResponse4Alphacloud userQueryById(HttpServletRequest request, HttpServletResponse response) {
         try {
