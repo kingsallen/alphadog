@@ -82,15 +82,14 @@ public class GoodsManageController {
      */
     @RequestMapping(value = "/goods", method = RequestMethod.POST)
     @ResponseBody
-    public String addGood(HttpServletRequest request, @RequestBody GoodsInfoVO goodsInfoVO) {
+    public String addGood(HttpServletRequest request) {
         try {
-            ValidateUtil vu = validateRequireInfo(goodsInfoVO);
-            vu.addRequiredValidate("库存", goodsInfoVO.getStock());
-            vu.addIntTypeValidate("库存", goodsInfoVO.getStock(), null, null, 0, 100000);
+            MallGoodsInfoForm mallGoodsInfoForm = ParamUtils.initModelForm(request, MallGoodsInfoForm.class);
+            ValidateUtil vu = validateRequireInfo(mallGoodsInfoForm);
+            vu.addRequiredValidate("库存", mallGoodsInfoForm.getStock());
+            vu.addIntTypeValidate("库存", mallGoodsInfoForm.getStock(), null, null, 0, 100000);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                MallGoodsInfoForm mallGoodsInfoForm = new MallGoodsInfoForm();
-                BeanUtils.copyProperties(goodsInfoVO, mallGoodsInfoForm);
                 goodsService.addGood(mallGoodsInfoForm);
                 return ResponseLogNotification.successJson(request, null);
             } else {
@@ -111,13 +110,12 @@ public class GoodsManageController {
     @ResponseBody
     public String editGood(HttpServletRequest request, @RequestBody GoodsInfoVO goodsInfoVO) {
         try {
-            ValidateUtil vu = validateRequireInfo(goodsInfoVO);
+            MallGoodsInfoForm mallGoodsInfoForm = ParamUtils.initModelForm(request, MallGoodsInfoForm.class);
+            ValidateUtil vu = validateRequireInfo(mallGoodsInfoForm);
             vu.addRequiredValidate("商品id", goodsInfoVO.getId());
             vu.addIntTypeValidate("商品id", goodsInfoVO.getId(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                MallGoodsInfoForm mallGoodsInfoForm = new MallGoodsInfoForm();
-                BeanUtils.copyProperties(goodsInfoVO, mallGoodsInfoForm);
                 goodsService.editGood(mallGoodsInfoForm);
                 return ResponseLogNotification.successJson(request, null);
             } else {
@@ -222,27 +220,27 @@ public class GoodsManageController {
 
     /**
      * 校验商品信息完整性，编辑商品时由于不能编辑库存，故不校验商品的库存
-     * @param   goodsInfoVO 商品参数form
+     * @param   mallGoodsInfoForm 商品参数form
      * @author  cjm
      * @date  2018/10/12
      * @return 返回校验信息
      */
-    private ValidateUtil validateRequireInfo(GoodsInfoVO goodsInfoVO) {
+    private ValidateUtil validateRequireInfo(MallGoodsInfoForm mallGoodsInfoForm) {
 
         ValidateUtil vu = new ValidateUtil();
-        vu.addRequiredValidate("主图url", goodsInfoVO.getPic_url());
-        vu.addRequiredValidate("公司id", goodsInfoVO.getCompany_id());
-        vu.addRequiredValidate("标题", goodsInfoVO.getTitle());
-        vu.addRequiredValidate("积分", goodsInfoVO.getCredit());
-        vu.addRequiredValidate("详情", goodsInfoVO.getDetail());
-        vu.addRequiredValidate("领取规则", goodsInfoVO.getRule());
+        vu.addRequiredValidate("主图url", mallGoodsInfoForm.getPic_url());
+        vu.addRequiredValidate("公司id", mallGoodsInfoForm.getCompany_id());
+        vu.addRequiredValidate("标题", mallGoodsInfoForm.getTitle());
+        vu.addRequiredValidate("积分", mallGoodsInfoForm.getCredit());
+        vu.addRequiredValidate("详情", mallGoodsInfoForm.getDetail());
+        vu.addRequiredValidate("领取规则", mallGoodsInfoForm.getRule());
 
-        vu.addIntTypeValidate("积分", goodsInfoVO.getCredit(), null, null, 0, 1000000);
-        vu.addIntTypeValidate("公司id", goodsInfoVO.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
-        vu.addIntTypeValidate("标题", getStringLength(goodsInfoVO.getTitle()), null, null, 1, 33);
-        vu.addStringLengthValidate("主图url", goodsInfoVO.getPic_url(), null, null, 1, 2001);
-        vu.addStringLengthValidate("详情", goodsInfoVO.getDetail(), null, null, 1, 5001);
-        vu.addStringLengthValidate("领取规则", goodsInfoVO.getRule(), null, null, 1, 2001);
+        vu.addIntTypeValidate("积分", mallGoodsInfoForm.getCredit(), null, null, 0, 1000000);
+        vu.addIntTypeValidate("公司id", mallGoodsInfoForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
+        vu.addIntTypeValidate("标题", getStringLength(mallGoodsInfoForm.getTitle()), null, null, 1, 33);
+        vu.addStringLengthValidate("主图url", mallGoodsInfoForm.getPic_url(), null, null, 1, 2001);
+        vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 5001);
+        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 1, 2001);
         return vu;
     }
 
