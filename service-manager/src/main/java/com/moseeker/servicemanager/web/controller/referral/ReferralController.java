@@ -533,6 +533,7 @@ public class ReferralController {
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            logger.info("============claimResults:{}", claimResults);
             return Result.success(JSONArray.parseArray(claimResults)).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
