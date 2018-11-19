@@ -80,8 +80,6 @@ public class OrderService {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    private static final String CONFIRM_REASON = "积分商城兑换商品消费积分";
-    private static final String REFUSE_REASON = "积分商城未成功发放返还积分";
     private static final String CONSUME_REMARK = "点击查看详细兑换记录";
     private static final String REFUSE_REMARK = "点击查看积分明细";
 
@@ -320,7 +318,7 @@ public class OrderService {
         HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(companyId);
         String shopName = hrCompanyDO.getName() + "积分商城";
         templateService.sendAwardTemplate(sysUserId, companyId, Constant.TEMPLATES_AWARD_CONSUME_NOTICE_TPL, templateTile,
-                current, "0",  credit+ "", shopName, CONSUME_REMARK, url);
+                current, "0",  credit+ "积分", shopName, CONSUME_REMARK, url);
     }
 
     /**
@@ -413,7 +411,7 @@ public class OrderService {
             if(orderState == OrderEnum.REFUSED.getState()){
                 userEmployeePointsDO.setAward(mallOrderDO.getCount() * mallOrderDO.getCredit());
                 userEmployeePointsDO.setEmployeeId(mallOrderDO.getEmployee_id());
-                userEmployeePointsDO.setReason(REFUSE_REASON);
+                userEmployeePointsDO.setReason("兑换商品-" + mallOrderDO.getTitle() + "-数量：" + mallOrderDO.getCount());
                 userEmployeePointsDO = userEmployeePointsDao.addData(userEmployeePointsDO);
                 map.put(mallOrderDO.getId(), userEmployeePointsDO);
             }else if(orderState != OrderEnum.CONFIRM.getState()) {
@@ -429,7 +427,9 @@ public class OrderService {
             int award = mallOrderDO.getCredit() * mallOrderDO.getCount();
             userEmployeePointsDO.setAward(orderState == OrderEnum.CONFIRM.getState() ?  -award: award);
             userEmployeePointsDO.setEmployeeId(mallOrderDO.getEmployee_id());
-            userEmployeePointsDO.setReason(orderState == OrderEnum.CONFIRM.getState() ? CONFIRM_REASON : REFUSE_REASON);
+            String confirmReason = "兑换商品-" + mallOrderDO.getTitle() + "-数量：" + mallOrderDO.getCount();
+            String refuseReason = "退回积分-" + mallOrderDO.getTitle() + "-数量：" + mallOrderDO.getCount();
+            userEmployeePointsDO.setReason(orderState == OrderEnum.CONFIRM.getState() ? confirmReason : refuseReason);
         }else {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_ORDER_UNSUPPORTED_STATE);
         }
@@ -587,8 +587,8 @@ public class OrderService {
             String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
             String url = getTemplateJumpUrlByKey("mall.refund.template.url");
             templateService.sendAwardTemplate(userEmployeeDO.getSysuserId(), userEmployeeDO.getCompanyId(), Constant.TEMPLATES_AWARD_RETURN_NOTICE_TPL, templateTile,
-                    "0", orderDO.getCount() * orderDO.getCredit() + "", "0",
-                    userEmployeeDO.getAward() + orderDO.getCount() * orderDO.getCredit() + "", REFUSE_REMARK, url);
+                    "0", orderDO.getCount() * orderDO.getCredit() + "积分", "0",
+                    userEmployeeDO.getAward() + orderDO.getCount() * orderDO.getCredit() + "积分", REFUSE_REMARK, url);
         }
     }
 
