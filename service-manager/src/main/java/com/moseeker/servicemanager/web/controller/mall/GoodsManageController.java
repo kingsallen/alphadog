@@ -237,7 +237,7 @@ public class GoodsManageController {
         vu.addRequiredValidate("详情", goodsInfoVO.getDetail());
         vu.addRequiredValidate("领取规则", goodsInfoVO.getRule());
 
-        vu.addIntTypeValidate("积分", goodsInfoVO.getCredit(), null, null, 0, Integer.MAX_VALUE);
+        vu.addIntTypeValidate("积分", goodsInfoVO.getCredit(), null, null, 0, 1000000);
         vu.addIntTypeValidate("公司id", goodsInfoVO.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
         vu.addIntTypeValidate("标题", getStringLength(goodsInfoVO.getTitle()), null, null, 1, 33);
         vu.addStringLengthValidate("主图url", goodsInfoVO.getPic_url(), null, null, 1, 2001);
