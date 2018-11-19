@@ -30,6 +30,7 @@ import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
+import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
 import com.moseeker.profile.domain.ResumeEntity;
@@ -787,7 +788,7 @@ public class ReferralServiceImpl implements ReferralService {
                                    int origin, ReferralType referralType, List<String> referralReasons, String mobile,
                                    GenderType gender, String email, List<MobotReferralResultVO> resultVOS, CountDownLatch countDownLatch,
                                    int attachmentId)
-            throws TException {
+            throws TException,EmployeeException {
         MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
         referralResultVO.setPosition_id(jobPositionDO.getId());
         referralResultVO.setTitle(jobPositionDO.getTitle());
