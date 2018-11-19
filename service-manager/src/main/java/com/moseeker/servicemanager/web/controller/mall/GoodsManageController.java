@@ -108,12 +108,12 @@ public class GoodsManageController {
      */
     @RequestMapping(value = "/goods", method = RequestMethod.PUT)
     @ResponseBody
-    public String editGood(HttpServletRequest request, @RequestBody GoodsInfoVO goodsInfoVO) {
+    public String editGood(HttpServletRequest request) {
         try {
             MallGoodsInfoForm mallGoodsInfoForm = ParamUtils.initModelForm(request, MallGoodsInfoForm.class);
             ValidateUtil vu = validateRequireInfo(mallGoodsInfoForm);
-            vu.addRequiredValidate("商品id", goodsInfoVO.getId());
-            vu.addIntTypeValidate("商品id", goodsInfoVO.getId(), null, null, 1, Integer.MAX_VALUE);
+            vu.addRequiredValidate("商品id", mallGoodsInfoForm.getId());
+            vu.addIntTypeValidate("商品id", mallGoodsInfoForm.getId(), null, null, 1, Integer.MAX_VALUE);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 goodsService.editGood(mallGoodsInfoForm);
