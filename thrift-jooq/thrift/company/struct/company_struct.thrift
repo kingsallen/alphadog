@@ -122,3 +122,7 @@ struct HrCompanyWechatDO {
     7: optional  i32    employeeCount
 }
 
+struct GDPRProtectedInfo {
+    1 : optional i32 userId,
+    2 : optional bool trigger,
+}

@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.impl.activity;
 
-import com.moseeker.baseorm.constant.ActivityCheckState;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
