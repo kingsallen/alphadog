@@ -80,8 +80,7 @@ public class OrderService {
 
     private final Environment environment;
 
-    @Autowired
-    private SearchengineEntity searchengineEntity;
+    private final SearchengineEntity searchengineEntity;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -92,7 +91,7 @@ public class OrderService {
     @Autowired
     public OrderService(MallGoodsOrderDao orderDao, UserEmployeeDao userEmployeeDao, HistoryUserEmployeeDao historyUserEmployeeDao,
                         GoodsService goodsService, MallOrderOperationDao orderOperationDao, UserEmployeePointsDao userEmployeePointsDao,
-                        HrCompanyDao hrCompanyDao, TemplateService templateService, Environment environment) {
+                        HrCompanyDao hrCompanyDao, TemplateService templateService, Environment environment, SearchengineEntity searchengineEntity) {
         this.orderDao = orderDao;
         this.userEmployeeDao = userEmployeeDao;
         this.historyUserEmployeeDao = historyUserEmployeeDao;
@@ -102,6 +101,7 @@ public class OrderService {
         this.hrCompanyDao = hrCompanyDao;
         this.templateService = templateService;
         this.environment = environment;
+        this.searchengineEntity = searchengineEntity;
     }
 
     /**
