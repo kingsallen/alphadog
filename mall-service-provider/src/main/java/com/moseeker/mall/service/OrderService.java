@@ -188,7 +188,6 @@ public class OrderService {
      * @date  2018/10/16
      */
     @OnlyEmployee
-    @Transactional(rollbackFor = Exception.class)
     public void confirmOrder(OrderForm orderForm) throws TException {
         try{
             handleOrder(orderForm);
@@ -290,7 +289,8 @@ public class OrderService {
         return employeeOrderMap;
     }
 
-    private void handleOrder(OrderForm orderForm) throws TException {
+    @Transactional(rollbackFor = Exception.class)
+    public void handleOrder(OrderForm orderForm) throws TException {
         // redis防止重复提交
         checkEmployeeDuplicateCommit(orderForm.getGoods_id(), orderForm.getEmployee_id());
         // 获取员工信息
@@ -582,8 +582,8 @@ public class OrderService {
             map.put(orderDO.getId(), userEmployeePointsDO);
             pool.startTast(() -> {
                 // 更新ES中的user_employee数据，以便积分排行实时更新
-                searchengineEntity.updateEmployeeAwards(tempEmployee.getId(), userEmployeePointsDO.getId());
                 updateAwardByLock(tempEmployee, orderDO.getCount() * orderDO.getCredit(), 1);
+                searchengineEntity.updateEmployeeAwards(tempEmployee.getId(), userEmployeePointsDO.getId());
                 // 发送积分变动消息模板
                 String templateTile = "您兑换的【" + orderDO.getTitle() + "】未成功发放，积分已退还到您的账户";
                 String url = getTemplateJumpUrlByKey("mall.refund.template.url");
