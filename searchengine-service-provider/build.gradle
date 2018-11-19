@@ -15,7 +15,9 @@ dependencies {
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
 
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
 
 task copyJars(type: Copy) {

@@ -52,4 +52,19 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 		return companyConfDO;
 
 	}
+
+	public int updateMallSwitch(int companyId, int state) {
+		return create.update(HrCompanyConf.HR_COMPANY_CONF)
+				.set(HrCompanyConf.HR_COMPANY_CONF.MALL_SWITCH, (byte)state)
+				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
+				.execute();
+	}
+
+	public int updateMallDefaultRule(int companyId, int state, String rule) {
+		return create.update(HrCompanyConf.HR_COMPANY_CONF)
+				.set(HrCompanyConf.HR_COMPANY_CONF.MALL_GOODS_METHOD_STATE, (byte)state)
+				.set(HrCompanyConf.HR_COMPANY_CONF.MALL_GOODS_METHOD, rule)
+				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
+				.execute();
+	}
 }
