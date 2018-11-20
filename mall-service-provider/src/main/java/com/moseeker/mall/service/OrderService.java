@@ -553,7 +553,7 @@ public class OrderService {
     }
 
     /**
-     * 目前只想到了循环更新积分
+     * todo 目前只想到了循环更新积分和es，由于目前只支持单个不发放，所以这样写暂时不会有效率问题，但是之后如果要修改为批量的这里需要解决
      * @param orderList 订单信息
      * @author  cjm
      * @date  2018/10/22
