@@ -229,6 +229,7 @@ public class ProfileProcessBS {
             }
             // 对需要修改的进行权限验证
             List<ProcessValidationStruct> list=jobApplicationDao.getAuth(appIds, companyId, progressStatus);
+            logger.info("ProfileProcessBS list:{}", JSON.toJSONString(list));
             if (list!=null&&list.size()>0) {
 
                 List<Integer> applierIdList = list
@@ -236,6 +237,7 @@ public class ProfileProcessBS {
                         .map(ProcessValidationStruct::getApplier_id)
                         .collect(Collectors.toList());
                 List<GDPRProtectedInfo> gdprProtectedInfos = companyService.validateGDPR(applierIdList, companyId);
+                logger.info("ProfileProcessBS gdprProtectedInfos:{}", JSON.toJSONString(gdprProtectedInfos));
                 if (gdprProtectedInfos != null && gdprProtectedInfos.size() > 0) {
                     list = list
                             .stream()
