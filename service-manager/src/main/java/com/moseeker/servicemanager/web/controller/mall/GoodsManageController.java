@@ -14,11 +14,9 @@ import com.moseeker.thrift.gen.mall.struct.*;
 import org.elasticsearch.search.aggregations.metrics.geobounds.InternalGeoBounds;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -237,12 +235,12 @@ public class GoodsManageController {
         vu.addRequiredValidate("详情", mallGoodsInfoForm.getDetail());
         vu.addRequiredValidate("领取规则", mallGoodsInfoForm.getRule());
 
-        vu.addIntTypeValidate("积分", mallGoodsInfoForm.getCredit(), null, null, 0, Integer.MAX_VALUE);
+        vu.addIntTypeValidate("积分", mallGoodsInfoForm.getCredit(), null, null, 0, 1000000);
         vu.addIntTypeValidate("公司id", mallGoodsInfoForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
         vu.addIntTypeValidate("标题", getStringLength(mallGoodsInfoForm.getTitle()), null, null, 1, 33);
         vu.addStringLengthValidate("主图url", mallGoodsInfoForm.getPic_url(), null, null, 1, 2001);
-        vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 2001);
-        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 0, 201);
+        vu.addStringLengthValidate("详情", mallGoodsInfoForm.getDetail(), null, null, 1, 5001);
+        vu.addStringLengthValidate("领取规则", mallGoodsInfoForm.getRule(), null, null, 1, 2001);
         return vu;
     }
 

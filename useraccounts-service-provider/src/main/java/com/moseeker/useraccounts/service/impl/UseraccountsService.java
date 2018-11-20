@@ -1238,7 +1238,6 @@ public class UseraccountsService {
      * @date  2018/10/31
      * @return 每个认领id对应的认领结果
      */
-    @Transactional(rollbackFor = Exception.class)
     public List<ClaimResult> batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) {
         if (org.apache.commons.lang.StringUtils.isBlank(name)) {
             throw UserAccountException.validateFailed("缺少用户姓名!");
@@ -1251,6 +1250,19 @@ public class UseraccountsService {
         }
         // 检验推荐记录已认领
         checkReferralClaim(referralLogs);
+        // 批量认领只能认领一个用户
+        List<Integer> referrenceIds = referralLogs.stream().map(ReferralLog::getReferenceId).distinct().collect(Collectors.toList());
+        if(referrenceIds.size() > 1){
+            throw UserAccountException.ERMPLOYEE_REFERRAL_CLAIMED_SINGLE;
+        }
+        // 检验认领的名字是否和user_user名字相同
+        UserUserDO referralUser = userdao.getUser(referrenceIds.get(0));
+        if (referralUser == null) {
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        if (!name.equals(referralUser.getName())) {
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
+        }
 
         UserUserDO userUserDO = userdao.getUser(userId);
         if (userUserDO == null) {
@@ -1275,8 +1287,8 @@ public class UseraccountsService {
                     throw e;
                 } catch (Exception e){
                     claimResult.setSuccess(false);
-                    claimResult.setErrmsg(e.getMessage());
-                    logger.info("员工认领异常信息:{}", e.getMessage());
+                    claimResult.setErrmsg("后台异常");
+                    logger.error("员工认领异常信息:{}", e.getMessage());
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
@@ -1313,20 +1325,11 @@ public class UseraccountsService {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_REPEAT_CLAIM;
         }
 
-        UserUserDO referralUser = userdao.getUser(referralLog.getReferenceId());
-        if (referralUser == null) {
-            throw UserAccountException.USEREMPLOYEES_EMPTY;
-        }
-
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(referralLog.getEmployeeId());
         if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
 
-        if (!name.equals(referralUser.getName())) {
-            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_WRITE;
-        }
-        logger.info("claimReferralCard userUserDO:{}", userUserDO);
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
