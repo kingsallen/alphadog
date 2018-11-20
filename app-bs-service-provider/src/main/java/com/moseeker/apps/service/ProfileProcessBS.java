@@ -252,6 +252,10 @@ public class ProfileProcessBS {
                             })
                             .collect(Collectors.toList());
                 }
+                if(StringUtils.isEmptyList(list)){
+                    return ResponseUtils
+                            .fail("{\"status\":2159, \"message\":\"GDPR检验未通过\"}");
+                }
 
                 boolean processStatus = true;
                 int recruitOrder = 0;
