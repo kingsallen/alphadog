@@ -58,6 +58,14 @@ public class JooqCrudImpl<S, R extends UpdatableRecord<R>> extends Crud<S, R> {
 
     @Override
     public R addRecord(R r) {
+
+        List<R> list = create.insertInto(table)
+                .set(r)
+                .newRecord()
+                .set(r)
+                .returning()
+                .fetch();
+
         create.execute("set names utf8mb4");
         create.attach(r);
         r.insert();
