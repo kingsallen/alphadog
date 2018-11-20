@@ -39,6 +39,21 @@ public final class ConstantErrorCodeMessage {
     public static final String WEXIN_IS_INVALID = "{'status':10026,'message':'unionid 有误'}";
     public static final String MOBILE_WECHAT_IS_INVALID = "{'status':10027,'message':'该手机号码或微信账号已经注册'}";
     public static final String HRCOMPANY_CONF_NOTEXIST = "{'status':10028,'message':'公司配置不存在!'}";
+    public static final String MALL_STATE_UNSUPPORTED = "{'status':10029,'message':'不支持的商城操作状态!'}";
+    public static final String MALL_GOODS_UNEXISTS = "{'status':10030,'message':'商品不存在!'}";
+    public static final String MALL_GOODS_NEED_DOWNSHELF = "{'status':10031,'message':'必须先下架商品才能编辑!'}";
+    public static final String MALL_LIMIT_SUPER_ACCOUNT = "{'status':10032,'message':'非主账号权限不能操作!'}";
+    public static final String MALL_VISIT_LIMIT = "{'status':10033,'message':'未认证员工不能进入积分商城!'}";
+    public static final String MALL_ORDER_OPERATION_LIMIT = "{'status':10034,'message':'非本公司订单不能操作!'}";
+    public static final String MALL_ORDER_TYPE_UNEXISTS = "{'status':10035,'message':'不存在的订单类型!'}";
+    public static final String USER_NOTEXIST = "{'status':10036,'message':'员工信息不存在!'}";
+    public static final String MALL_STOCK_LIMIT = "{'status':10037,'message':'库存范围是1~99999，不能超出此范围!'}";
+    public static final String MALL_STOCK_LACK = "{'status':10038,'message':'库存不足!'}";
+    public static final String MALL_AWARD_LACK = "{'status':10039,'message':'当前积分不足!'}";
+    public static final String MALL_ORDER_REPEATED_COMMIT = "{'status':10040,'message':'订单处理中，请勿重复提交!'}";
+    public static final String MALL_ORDER_UNSUPPORTED_STATE = "{'status':10041,'message':'不支持的订单处理状态!'}";
+    public static final String MALL_TEMPLATE_SWITCH_CLOSE = "{'status':10042,'message':'商城积分变动消息模板已关闭!'}";
+    public static final String MALL_GOODS_NEED_UPSHELF = "{'status':10043,'message':'商品已下架!'}";
     public static final String USEREMPLOYEE_NONEXIST = "{'status':10029,'message':'查不到该员工!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";

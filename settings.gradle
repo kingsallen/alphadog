@@ -18,4 +18,5 @@ include 'demo-service-provider'
 include 'candidate-service-provider'
 include 'chat-service-provider'
 include 'common-service'
+include 'mall-service-provider'
 
