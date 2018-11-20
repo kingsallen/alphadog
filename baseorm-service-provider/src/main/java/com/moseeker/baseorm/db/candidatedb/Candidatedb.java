@@ -4,13 +4,17 @@
 package com.moseeker.baseorm.db.candidatedb;
 
 
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,12 +40,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-    private static final long serialVersionUID = 659437624;
+    private static final long serialVersionUID = 1813531166;
 
     /**
      * The reference instance of <code>candidatedb</code>
      */
     public static final Candidatedb CANDIDATEDB = new Candidatedb();
+
+    /**
+     * 申请时推荐链路信息
+     */
+    public final CandidateApplicationReferral CANDIDATE_APPLICATION_REFERRAL = com.moseeker.baseorm.db.candidatedb.tables.CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL;
 
     /**
      * 候选人表
@@ -74,9 +83,24 @@ public class Candidatedb extends SchemaImpl {
     public final CandidateShareChain CANDIDATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain.CANDIDATE_SHARE_CHAIN;
 
     /**
+     * 链路信息表
+     */
+    public final CandidateShareChain_0417 CANDIDATE_SHARE_CHAIN_0417 = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417;
+
+    /**
+     * 链路信息表
+     */
+    public final CandidateShareChain_0418 CANDIDATE_SHARE_CHAIN_0418 = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418;
+
+    /**
      * HR手动添加相关职位表
      */
     public final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
+
+    /**
+     * VIEW
+     */
+    public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 
     /**
      * No further instances allowed
@@ -103,12 +127,16 @@ public class Candidatedb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            CandidateApplicationReferral.CANDIDATE_APPLICATION_REFERRAL,
             CandidateCompany.CANDIDATE_COMPANY,
             CandidatePosition.CANDIDATE_POSITION,
             CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD,
             CandidateRecomRecord.CANDIDATE_RECOM_RECORD,
             CandidateRemark.CANDIDATE_REMARK,
             CandidateShareChain.CANDIDATE_SHARE_CHAIN,
-            CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION);
+            CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417,
+            CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418,
+            CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION,
+            CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM);
     }
 }

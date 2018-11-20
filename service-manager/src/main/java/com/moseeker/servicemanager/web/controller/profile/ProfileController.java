@@ -8,6 +8,7 @@ import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.commonservice.utils.ProfileDocCheckTool;
@@ -18,6 +19,7 @@ import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeForm;
 import com.moseeker.servicemanager.web.controller.profile.form.OutPutResumeUtil;
+import com.moseeker.servicemanager.web.controller.profile.form.UserProfileForm;
 import com.moseeker.servicemanager.web.controller.referral.vo.ProfileDocParseResult;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.servicemanager.web.controller.util.ProfileParamUtil;
@@ -45,10 +47,7 @@ import org.apache.http.Consts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -716,4 +715,73 @@ public class ProfileController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+    /**
+     * 手机上传简历
+     * @param file 简历文件
+     * @param request 请求数据
+     * @return 解析结果
+     * @throws Exception 异常信息
+     */
+    @RequestMapping(value = "/profile/file-parser", method = RequestMethod.POST)
+    @ResponseBody
+    public String parseProfileFile(@RequestParam(value = "file", required = false) MultipartFile file,
+                                   HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseequestParameter(request);
+        int userId = params.getInt("user", 0);
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("简历", file);
+        validateUtil.addRequiredStringValidate("简历名称", params.getString("file_name"));
+        validateUtil.addIntTypeValidate("用户", userId, 1, null);
+        validateUtil.addRequiredValidate("appid", params.getInt("appid"));
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
+            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+            }
+
+            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
+
+            com.moseeker.thrift.gen.profile.struct.ProfileParseResult result1 =
+                    service.parseUserFileProfile(userId, params.getString("file_name"), byteBuffer);
+            ProfileDocParseResult parseResult = new ProfileDocParseResult();
+            org.springframework.beans.BeanUtils.copyProperties(result1, parseResult);
+            return Result.success(parseResult).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+
+    /**
+     * 用户插入简历
+     * @param id 员工编号
+     * @param userProfileForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/profile/{id}/upsert", method = RequestMethod.POST)
+    @ResponseBody
+    public String upsertProfile(@PathVariable int id, @RequestBody UserProfileForm userProfileForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机", userProfileForm.getMobile());
+        validateUtil.addRegExpressValidate("手机", userProfileForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", userProfileForm.getName());
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        validateUtil.addIntTypeValidate("appid", userProfileForm.getAppid(), 0, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            int profileId = service.updateUserProfile(id, userProfileForm.getName(),
+                    userProfileForm.getMobile()
+                   );
+            return Result.success(profileId).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
 }

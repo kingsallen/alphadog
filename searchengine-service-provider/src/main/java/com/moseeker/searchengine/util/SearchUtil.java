@@ -910,6 +910,14 @@ public class SearchUtil {
         }
     }
 
+    public void handlerHrAutoTag(String hrAutoTag,QueryBuilder builder){
+        List<String> tagIdList=this.stringConvertList(hrAutoTag);
+        if(tagIdList != null && tagIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.hr_auto_tag.id",tagIdList);
+            ((BoolQueryBuilder) builder).must(query2);
+        }
+    }
+
     public void matchPhrasePrefixQuery(List<String> fieldList,String condition ,QueryBuilder query){
         if (fieldList!=null&&fieldList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
@@ -917,6 +925,21 @@ public class SearchUtil {
             for(String items:array){
                 for(String field:fieldList){
                     QueryBuilder fullf = QueryBuilders.matchPhrasePrefixQuery(field, items);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
+    public void matchPhrasePrefixQueryV2(List<String> fieldList,String condition ,QueryBuilder query){
+        if (fieldList!=null&&fieldList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            String array[]=condition.split(",");
+            for(String items:array){
+                for(String field:fieldList){
+                    QueryBuilder fullf = QueryBuilders.wildcardQuery(field, "*"+items+"*");
                     ((BoolQueryBuilder) keyand).should(fullf);
                 }
             }

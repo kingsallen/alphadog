@@ -3,6 +3,7 @@ package com.moseeker.searchengine.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.util.TypeUtils;
+import com.moseeker.baseorm.constant.EmployeeActiveState;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.logdb.LogMeetmobotRecomDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
@@ -67,6 +68,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static com.moseeker.searchengine.service.impl.tools.EmployeeBizTool.buildSortScript;
 
 @Service
 @CounterIface
@@ -184,7 +187,7 @@ public class SearchengineService {
         if(StringUtils.isNotBlank(publisher)){
             searchUtil.handleMatch(Integer.parseInt(publisher),query,"publisher");
         }
-        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX, Constant.ES_POSITION_TYPE)
+        SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
                 .setQuery(query);
         boolean haskey=false;
         if(StringUtils.isNotBlank(keywords)){
@@ -702,23 +705,6 @@ public class SearchengineService {
         }
     }
 
-
-    /**
-     * todo searchengine-service依赖 common-service，并依赖 SearchengineEntity的buildSrtScript代码
-     * @param timspanc
-     * @param field
-     * @param sortOrder
-     * @return
-     */
-    private SortBuilder buildSortScript(String timspanc, String field, SortOrder sortOrder) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("double score=0; awards=_source.awards;times=awards['" + timspanc + "'];if(times){award=doc['awards." + timspanc + "." + field + "'].value;if(award){score=award}}; return score");
-        String scripts = sb.toString();
-        Script script = new Script(scripts);
-        ScriptSortBuilder builder = new ScriptSortBuilder(script, "number").order(sortOrder);
-        return builder;
-    }
-
     /**
      * 查找制定用户积分
      * @param searchClient
@@ -756,18 +742,31 @@ public class SearchengineService {
     }
 
 
-    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, String activation, int pageSize, int pageNum, String timespan, String keyword) {
+    private SearchRequestBuilder getSearchRequestBuilder(TransportClient searchClient, List<Integer> companyIds, Integer employeeId, int filter, int pageSize, int pageNum, String timespan, String keyword) {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         searchUtil.handleTerms(Arrays.toString(companyIds.toArray()).replaceAll("\\[|\\]| ", ""), query, "company_id");
-        if (activation != null) {
-            searchUtil.handleTerms(activation, query, "activation");
+        if (filter > 0) {
+            String activation = "";
+            if (filter == 1) {
+                activation = String.valueOf(EmployeeActiveState.Actived.getState());
+            } else if (filter == 2) {
+                activation = String.valueOf(EmployeeActiveState.Init.getState());
+            } else if ((filter == 3)) {
+                activation = EmployeeActiveState.Cancel.getState()+", "+
+                        EmployeeActiveState.Failure.getState()+", "+
+                        EmployeeActiveState.MigrateToOtherCompany.getState()+", "+
+                        EmployeeActiveState.UnFollow.getState();
+            }
+            if (StringUtils.isNotBlank(activation)) {
+                searchUtil.handleTerms(activation, query, "activation");
+            }
         }
         if (employeeId != null) {
             searchUtil.handleTerms(String.valueOf(employeeId), query, "id");
         }
         for(Integer companyId : companyIds){
-            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.TALENTPOOL_COMPANY_TAG_ADD.toString(), String.valueOf(companyId));
+            String result = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_DELETE.toString(), String.valueOf(companyId));
             if(com.moseeker.common.util.StringUtils.isNotNullOrEmpty(result)){
                 List<Integer> employees = JSON.parseArray(result, Integer.class);
                 if(!com.moseeker.common.util.StringUtils.isEmptyList(employees)){
@@ -825,7 +824,8 @@ public class SearchengineService {
             } else if (filter == 2) {
                 activation.append("1,2,3,4");
             }
-            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, activation.toString(), pageSize, pageNum, timespan, keyword);
+
+            SearchRequestBuilder searchRequestBuilder = getSearchRequestBuilder(searchClient, companyIds, null, filter, pageSize, pageNum, timespan, keyword);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             object.put("total", response.getHits().getTotalHits());
@@ -852,7 +852,8 @@ public class SearchengineService {
     }
 
     public Response fetchEmployees(List<Integer> companyIds, String keywords, int filter, String order, String asc,
-                                   String emailValidate, int pageSize, int pageNumber,int balanceType) throws SearchEngineException {
+                                   String emailValidate, int pageSize, int pageNumber, int balanceType, String timeSpan)
+            throws SearchEngineException {
         TransportClient searchClient;
         try {
             searchClient = searchUtil.getEsClient();
@@ -868,19 +869,34 @@ public class SearchengineService {
                     List<Integer> employees = JSON.parseArray(str, Integer.class);
                     EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
                 }
+
+                if (filter == 1) {
+                    String str1 = client.get(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(), String.valueOf(companyId));
+                    if(StringUtils.isNotBlank(str1)){
+                        List<Integer> employees = JSON.parseArray(str1, Integer.class);
+                        EmployeeBizTool.addNotEmployeeIds(query,employees, searchUtil);
+                    }
+                }
             }
             searchUtil.handleTerm(String.valueOf(0), query, "disable");
             EmployeeBizTool.addKeywords(query, keywords, searchUtil);
             EmployeeBizTool.addEmailValidate(query, emailValidate, searchUtil);
             EmployeeBizTool.addBalanceTypeFilter(query,balanceType,searchUtil);
             SearchRequestBuilder searchRequestBuilder = searchClient.prepareSearch("awards").setTypes("award").setQuery(query);
-            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc);
+            EmployeeBizTool.addOrder(searchRequestBuilder, order, asc, timeSpan);
             EmployeeBizTool.addPagination(searchRequestBuilder, pageNumber, pageSize);
             SearchResponse response = searchRequestBuilder.execute().actionGet();
             List<Map<String, Object>> data = new ArrayList<>();
             result.put("total", response.getHits().getTotalHits());
             for (SearchHit searchHit : response.getHits().getHits()) {
                 JSONObject jsonObject = JSON.parseObject(searchHit.getSourceAsString());
+                if (StringUtils.isNotBlank(timeSpan)) {
+                    if (jsonObject.containsKey("awards") && jsonObject.getJSONObject("awards").containsKey(timeSpan)) {
+                        jsonObject.put("award", jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getIntValue("award"));
+                    } else {
+                        jsonObject.put("award", 0);
+                    }
+                }
                 data.add(jsonObject);
             }
             logger.info("==================================");

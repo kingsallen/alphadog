@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbPositionBinding extends TableImpl<HrHbPositionBindingRecord> {
 
-    private static final long serialVersionUID = 1448463270;
+    private static final long serialVersionUID = -1574533972;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_position_binding</code>
@@ -68,9 +68,9 @@ public class HrHbPositionBinding extends TableImpl<HrHbPositionBindingRecord> {
     public final TableField<HrHbPositionBindingRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_position.id");
 
     /**
-     * The column <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请
+     * The column <code>hrdb.hr_hb_position_binding.trigger_way</code>. 领取条件：1=职位被转发 2=职位被申请 3=推荐候选人初筛通过
      */
-    public final TableField<HrHbPositionBindingRecord, Byte> TRIGGER_WAY = createField("trigger_way", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "领取条件：1=职位被转发 2=职位被申请");
+    public final TableField<HrHbPositionBindingRecord, Byte> TRIGGER_WAY = createField("trigger_way", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "领取条件：1=职位被转发 2=职位被申请 3=推荐候选人初筛通过");
 
     /**
      * The column <code>hrdb.hr_hb_position_binding.total_amount</code>. 总金额

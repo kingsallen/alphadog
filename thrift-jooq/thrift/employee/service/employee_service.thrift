@@ -44,6 +44,9 @@ service EmployeeService {
 
     // 员工填写认证自定义字段（更新redis中员工记录）
     employee_struct.Result setCacheEmployeeCustomInfo(1: i32 userId, 2: i32 companyId, 3: string customValues);
+    
+    //更新员工自定义字段
+    void patchEmployeeCustomFieldValues(1: i32 userId, 2: i32 companyId, 3: map<i32, list<string>> customValues);
 
     //插入更新公司内推政策数据
     void upsertCompanyReferralConf(1:hr_company_referral_conf_struct.HrCompanyReferralConfDO conf)throws (1: common_struct.BIZException e)

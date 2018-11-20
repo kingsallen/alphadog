@@ -74,9 +74,9 @@ public class TalentpoolProfileMoveDetailDao extends DAOImpl<TalentpoolProfileMov
     }
 
     /**
-     * Fetch records that have <code>profile_move_id IN (values)</code>
+     * Fetch records that have <code>profile_move_record_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveDetail> fetchByProfileMoveId(Integer... values) {
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveDetail> fetchByProfileMoveRecordId(Integer... values) {
         return fetch(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.PROFILE_MOVE_RECORD_ID, values);
     }
 
@@ -99,5 +99,12 @@ public class TalentpoolProfileMoveDetailDao extends DAOImpl<TalentpoolProfileMov
      */
     public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveDetail> fetchByUpdateTime(Timestamp... values) {
         return fetch(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.UPDATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>hr_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileMoveDetail> fetchByHrId(Integer... values) {
+        return fetch(TalentpoolProfileMoveDetail.TALENTPOOL_PROFILE_MOVE_DETAIL.HR_ID, values);
     }
 }

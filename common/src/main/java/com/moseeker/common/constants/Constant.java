@@ -22,6 +22,7 @@ public final class Constant {
     public static final String POINTS_CONF_EMPLOYEE_VERIFIED = "完成员工认证";
     public static final String POINTS_CONF_REFINE_CANDIDATE= "完善被推荐人信息";
     public static final String EMPLOYEE_PARSE_PROFILE_DOCUMENT = "员工简历简历数据";
+    public static final String USER_PARSE_PROFILE_DOCUMENT = "用户简历数据";
     public static int MAX_SIZE = 60000;
 
     private Constant() throws AssertionError {
@@ -61,6 +62,12 @@ public final class Constant {
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
+    public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_register_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_register_routingkey.first_register";
+
+    public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
+
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";
@@ -89,7 +96,7 @@ public final class Constant {
     public static final int RECRUIT_STATUS_OFFERED          = 12;      // 面试通过
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
-    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;    // 工上传人才简历
+    public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,
@@ -187,7 +194,7 @@ public final class Constant {
 	public static final int EVENT_TYPE_RECOMMEND_POSITION_EMAIL = 4;              //推荐职位邮箱
 
     public static final byte AUTH_METHON_TYPE_CUSTOMIZE = 1;
-	
+
 	public static final String MQ_MESSAGE_EMAIL_BIZ = "MQ_MESSAGE_EMAIL_BIZ";	//业务邮件消息队列的key_identifier
 	public static final String EMAIL_VERIFIED_SUBJECT = "邮箱认证";				//业务邮件消息队列的key_identifier
 	
@@ -232,7 +239,7 @@ public final class Constant {
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
 
-    public static final String RESUME_INFORM_HR = "resume-detail"; //简历投递给HR发邮件没有附件模板
+    public static final String RESUME_INFORM_HR = "resume-detail-v2"; //简历投递给HR发邮件没有附件模板   新简历模板
     public static final String ANNEX_RESUME_INFORM_HR = "annex-resume-delivery-to-hr-email";
     public static final String MISMATCH_NOTIFICATION = "mismatch-notification";//简历投递不匹配发送邮件
     public static final String DELIVERY_SUCCESS = "delivery-success";//简历投递
@@ -286,19 +293,18 @@ public final class Constant {
     public static final String COMPANY_LOGO_DEFAULT = "http://o6yey4xgg.bkt.clouddn.com/common/images/default-company-logo.jpg";
 
 
-    public static final String PROFILE_SEARCH_KEYWORD_COLUMS="projectexps.name;projectexps.member;projectexps.responsibility;" +
-            "projectexps.company_name;projectexps.role;projectexps.achievement;projectexps.description;recent_job.job_name;" +
-            "recent_job.company_scale_name;recent_job.company_name;recent_job.department_name;recent_job.company_new_name;" +
-            "recent_job.job;recent_job.company_property_name;recent_job.position_name;recent_job.achievement;recent_job.description;" +
-            "educations.degree_name;educations.description;educations.major_name;educations.college_name;intentions.salary_code_name;" +
-            "intentions.industries.industry_name;intentions.worktype_name;intentions.workstate_name;intentions.tag;intentions.positions.position_name;" +
-            "intentions.cities.city_name;intentions.consider_venture_company_opportunities_name;basic.icon_class;basic.position_name;basic.constellation;" +
-            "basic.company_name;basic.email;basic.current_job;basic.weixin;basic.nationality_name;basic.city_name;basic.motto;basic.industry_name;basic.qq;" +
-            "basic.name;basic.self_introduction;basic.gender_name;basic.birth_date;others.other;credentials.code;other_workexps.job_name;other_workexps.company_scale_name;" +
-            "other_workexps.company_name;other_workexps.department_name;other_workexps.company_new_name;other_workexps.job;other_workexps.company_property_name;" +
-            "other_workexps.position_name;other_workexps.achievement;other_workexps.description;credentials.name;credentials.organization;credentials.url;" +
-            "attachments.name;attachment.description;skills.name;imports.user_name;imports.data;imports.account_id;awards.name;languages.name;works.name;works.url;" +
-            "works.description";
+    public static final String PROFILE_SEARCH_KEYWORD_COLUMS="recent_job.company_name;recent_job_company_new_name;recent_job.company_name_data;recent_job.position_name;recent_job.description;" +
+            "recent_job.job;recent_job.job_name;recent_job.job_name_data;other_workexps.company_name_data;other_workexps.company_name;other_workexps.company_new_name;other_workexps.position_name;" +
+            "other_workexps.description;educations.major_name;other_workexps.job_name;other_workexps.job;other_workexps.job_name_data;" +
+            "educations.description_data;projectexps.name_data;projectexps.company_name;projectexps.role;projectexps.description_data;" +
+            "languages.name;skills.name_data;awards.name;credentials.name_data;" +
+            "others.other;basic.company_name;basic.industry_name;basic.current_job;basic.position_name;";
+    public static final String USERNAME_IS_NULL="未填写";
 
     public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";
+    public static final String WORD_DOC="doc";
+    public static final String WORD_DOCX = "docx";
+    public static final String WORD_PDF = ".pdf";
+
+
 }

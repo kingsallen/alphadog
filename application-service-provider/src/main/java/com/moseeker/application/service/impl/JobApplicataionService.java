@@ -76,6 +76,10 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -137,6 +141,9 @@ public class JobApplicataionService {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -238,7 +245,23 @@ public class JobApplicataionService {
             //do nothing
         }
     }
+    @CounterIface
+    public int  appSendEmail(int jobApplicationId){
+        com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication  application=jobApplicationDao.fetchOneById(jobApplicationId);
+        if(application==null){
+            throw ApplicationException.APPLICATION_APPLICATION_ELLEGAL;
+        }
 
+        Query query = new QueryBuilder().where("id", application.getPositionId()).buildQuery();
+        JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+        if(jobPositionRecord==null){
+            throw ApplicationException.APPLICATION_POSITION_NOT_EXIST;
+        }
+        this.sendMessageAndEmailThread(jobApplicationId,jobPositionRecord.getId(),application.getApplyType(),application.getEmailStatus(),application.getRecommenderUserId()
+                ,application.getApplierId(),application.getOrigin());
+
+        return 1;
+    }
     /**
      * 校验申请的有效性，并发送 消息通知
      * @param jobApplicationId 申请编号
@@ -1051,6 +1074,16 @@ public class JobApplicataionService {
             }
             addApplicationCountAtCompany(applierId, employeeDO.getCompanyId(), userApplyCount);
 
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("employeeId", employeeDO.getId());
+            jsonObject.put("companyId", employeeDO.getCompanyId());
+
+            jsonObject.put("berecomUserId", applierId);
+
+            jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
+            MessageProperties mp = new MessageProperties();
+            mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
+            mp.setReceivedExchange("user_action_topic_exchange");
             for (ApplicationSaveResultVO resultVO : applyIdList) {
                 tp.startTast(() -> {
                     logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}",
@@ -1058,6 +1091,20 @@ public class JobApplicataionService {
                     try {
                         chatService.updateApplyStatus(resultVO.getApplierId(), resultVO.getPositionId());
                     } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    try {
+                        hrOperationRecordDao.addRecord(resultVO.getApplicationId(), resultVO.getSubmitTime(),
+                                Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
+                        jsonObject.put("positionId", resultVO.getPositionId());
+                        jsonObject.put("applicationId", resultVO.getApplicationId());
+                        jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+                        jsonObject.put("employeeId", employeeDO.getId());
+                        jsonObject.put("companyId", employeeDO.getCompanyId());
+                        jsonObject.put("berecomUserId", applierId);
+                        amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+                                MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+                    } catch (AmqpException e) {
                         logger.error(e.getMessage(), e);
                     }
 

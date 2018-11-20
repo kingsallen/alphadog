@@ -349,7 +349,7 @@ public class Tables {
     public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
     /**
-     * 语音聊天的语音信息
+     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
      */
     public static final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 

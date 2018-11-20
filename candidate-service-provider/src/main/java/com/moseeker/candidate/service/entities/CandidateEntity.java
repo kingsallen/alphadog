@@ -1108,10 +1108,14 @@ public class CandidateEntity implements Candidate {
 
         // 如果是新数据需要添加一条新数据
         if (candidateRemarkRecord == null) {
+
             candidateRemarkRecord = new CandidateRemarkRecord();
             candidateRemarkRecord.setHraccountId(hrId);
             candidateRemarkRecord.setUserId(userId);
             candidateRemarkRecord.setStatus(1);
+            if(userHrAccountRecord.getAccountType().intValue() == Constant.ACCOUNT_TYPE_SUPERACCOUNT){
+                handlerCandidateRemark(candidateRemarkRecord, userHrAccountRecord.getCompanyId(), userId);
+            }
             create.attach(candidateRemarkRecord);
             candidateRemarkRecord.insert();
         } else {
@@ -1202,6 +1206,24 @@ public class CandidateEntity implements Candidate {
         return result;
     }
 
+    public void handlerCandidateRemark(CandidateRemarkRecord remark, int companyId, int userId){
+        List<UserHrAccountRecord> accountRecordList = create.select().from(UserHrAccount.USER_HR_ACCOUNT)
+                .where(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID.eq(companyId))
+                .and(UserHrAccount.USER_HR_ACCOUNT.ACCOUNT_TYPE.ne(Constant.ACCOUNT_TYPE_SUPERACCOUNT))
+                .fetchInto(UserHrAccountRecord.class);
+        List<Integer> accountIdList = accountRecordList.stream().map(m -> m.getId()).collect(Collectors.toList());
+        CandidateRemarkRecord remarkRecord = create.select().from(CandidateRemark.CANDIDATE_REMARK)
+                .where(CandidateRemark.CANDIDATE_REMARK.USER_ID.eq(userId))
+                .and(CandidateRemark.CANDIDATE_REMARK.HRACCOUNT_ID.in(accountIdList))
+                .orderBy(CandidateRemark.CANDIDATE_REMARK.CREATE_TIME.desc())
+                .limit(1)
+                .fetchOneInto(CandidateRemarkRecord.class);
+        if(remarkRecord != null){
+            remark.setCurrentCompany(remarkRecord.getCurrentCompany());
+            remark.setCurrentPosition(remarkRecord.getCurrentPosition());
+        }
+    }
+
     @Override
     public RecentPosition getRecentPosition(int hrId, int userId) {
         RecentPosition recentPosition = new RecentPosition();
@@ -1234,6 +1256,16 @@ public class CandidateEntity implements Candidate {
         }
 
         return recentPosition;
+    }
+
+    @Override
+    public void addApplicationReferral(int applicationId, int pscId, int directReferralUserId) {
+        candidateDBDao.addApplicationPsc(applicationId, pscId, directReferralUserId);
+    }
+
+    @Override
+    public CandidateApplicationReferralDO getApplicationReferralByApplication(int applicationId) {
+        return candidateDBDao.getApplicationPscByApplicationId(applicationId);
     }
 
     /**

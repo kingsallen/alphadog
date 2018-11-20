@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
@@ -11,12 +12,14 @@ import com.moseeker.baseorm.dao.hrdb.HrHbScratchCardDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
@@ -30,10 +33,13 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusReco
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
@@ -41,8 +47,16 @@ import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.RecommendHBData;
+import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.util.concurrent.ExecutionException;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -50,6 +64,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -92,13 +108,16 @@ public class ReferralEntity {
     private ProfileProfileDao profileDao;
 
     @Autowired
+    private ProfileAttachmentDao attachmentDao;
+
+    @Autowired
     private UserEmployeeDao employeeDao;
 
     @Autowired
-    private HistoryUserEmployeeDao historyUserEmployeeDao;
+    private UserHrAccountDao userHrAccountDao;
 
     @Autowired
-    private ProfileCompletenessImpl completeness;
+    private HistoryUserEmployeeDao historyUserEmployeeDao;
 
     @Autowired
     private ReferralPositionBonusStageDetailDao stageDetailDao;
@@ -114,6 +133,9 @@ public class ReferralEntity {
 
     @Autowired
     private ReferralRecomHbPositionDao referralRecomHbPositionDao;
+
+    @Autowired
+    private ProfileCompletenessImpl completeness;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -201,26 +223,31 @@ public class ReferralEntity {
         candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
     }
 
-    public int logReferralOperation(int employeeId, int userId, int position, ReferralType referralType)
+    public int logReferralOperation(int employeeId, int userId, int attachmentId, int position, ReferralType referralType)
             throws EmployeeException {
 
-        int referralId = referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue());
+        int referralId = referralLogDao.createReferralLog(employeeId, userId, position, referralType.getValue(), attachmentId);
         if (referralId == 0) {
             throw EmployeeException.EMPLOYEE_REPEAT_RECOMMEND;
         }
         return referralId;
     }
 
+    public List<ReferralLog> fetchReferralLogs(List<Integer> referralLogIds) {
+        return referralLogDao.fetchByIds(referralLogIds);
+    }
+
     public ReferralLog fetchReferralLog(int referralLogId) {
         return referralLogDao.fetchOneById(referralLogId);
     }
 
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
-
+        // 判断是否重复认证
         if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
         }
-
+        // 更新申请记录的申请人
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
         if (application != null) {
@@ -234,16 +261,10 @@ public class ReferralEntity {
                     application.getApplierId(), application.getApplierName(), updateTime);
         }
 
-        ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());
-        if (profileProfileRecord == null) {
-            ProfileProfileRecord record = profileDao.getProfileByUserId(referralLog.getReferenceId());
-            if (record != null) {
-                if (profileDao.changUserId(record, userUserDO.getId()) > 0) {
-                    completeness.reCalculateProfileCompleteness(record.getId());
-                }
-            }
-        }
+        // 更新简历中的userId，计算简历完整度
+        updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
 
+        // 更新候选人推荐记录中的推荐人
         int postUserId = 0;
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Query query = queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), referralLog.getEmployeeId()).buildQuery();
@@ -263,6 +284,10 @@ public class ReferralEntity {
 
     public ReferralLog fetchReferralLog(Integer employeeId, Integer positionId, int referenceId) {
         return referralLogDao.fetchByEmployeeIdReferenceIdUserId(employeeId, referenceId, positionId);
+    }
+
+    public ReferralLog fetchReferralLog(Integer employeeId,  int referenceId) {
+        return referralLogDao.fetchByEmployeeIdReferenceId(employeeId, referenceId);
     }
 
     public List<Integer> fetchReferenceIdList(int userId) {
@@ -489,4 +514,128 @@ public class ReferralEntity {
 
         return bonusData;
     }
+
+    private void updateProfileUserIdAndCompleteness(int userId, Integer referenceId) {
+        ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
+        if (profileProfileRecord == null) {
+            ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
+            if (record != null) {
+                if (profileDao.changUserId(record, userId) > 0) {
+                    completeness.reCalculateProfileCompleteness(record.getId());
+                }
+            }
+        }
+    }
+
+    public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
+        ReferralProfileData data = new ReferralProfileData();
+        Future<UserHrAccountDO> accountFuture = threadPool.startTast(
+                () -> userHrAccountDao.getUserHrAccountById(hrId));
+        Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
+                () -> employeeDao.getEmployeeBycompanyIds(companyIds));
+        Future<List<HistoryUserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
+                () -> historyUserEmployeeDao.getHistoryEmployeeByCompanyIds(companyIds));
+
+        List<Integer> employeeIds = new ArrayList<>();
+        UserHrAccountDO account = new UserHrAccountDO();
+        List<Integer> positionIds = new ArrayList<>();
+        try {
+            account = accountFuture.get();
+            if(account == null){
+                throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            }
+            if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
+               positionIds = positionDao.getPositionIdByPublisher(hrId);
+            }
+            List<UserEmployeeDO> employeeList = employeeListFeature.get();
+            if (!StringUtils.isEmptyList(employeeList)){
+                List<Integer> employeeIds1 = employeeList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                employeeIds.addAll(employeeIds1);
+            }
+            List<HistoryUserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
+            if (!StringUtils.isEmptyList(historyUserEmployees)){
+                List<Integer> employeeIds2 = historyUserEmployees.stream().map(m -> m.getId()).collect(Collectors.toList());
+                employeeIds.addAll(employeeIds2);
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        List<ReferralLog> logs = new ArrayList<>();
+        if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
+            logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(employeeIds, userId, positionIds);
+        }else {
+            logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
+        }
+        List<ReferralLog> logList = new ArrayList<>();
+        if(!StringUtils.isEmptyList(logs)){
+            Set<Integer> idList = new HashSet<>();
+            for (ReferralLog log :logs){
+                if(!idList.contains(log.getEmployeeId())){
+                    logList.add(log);
+                    idList.add(log.getEmployeeId());
+                }
+            }
+        }
+        return logList;
+    }
+
+    public ReferralProfileData fetchReferralProfileData(List<ReferralLog> logs){
+        ReferralProfileData data = new ReferralProfileData();
+        if(StringUtils.isEmptyList(logs)){
+            return null;
+        }
+        List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+        List<Integer> empolyeeReferralIds = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+        List<Integer> attementIds = logs.stream().map(m -> m.getAttementId()).collect(Collectors.toList());
+        Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
+                () -> attachmentDao.fetchAttachmentByIds(attementIds));
+        Future<List<JobPositionDO>> positionListFuture = threadPool.startTast(
+                () -> positionDao.getPositionList(positionIds));
+        Future<List<UserEmployeeDO>> empListFuture  = threadPool.startTast(
+                () -> employeeDao.getEmployeeByIds(empolyeeReferralIds));
+        Future<List<UserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
+                () -> historyUserEmployeeDao.getHistoryEmployeeByIds(empolyeeReferralIds));
+        try {
+            List<JobPositionDO> positionList = positionListFuture.get();
+            if(!StringUtils.isEmptyList(positionList)){
+                Map<Integer, String> positionTitileMap = new HashMap<>();
+                positionList.forEach(position
+                        -> positionTitileMap
+                        .put(position.getId(),
+                                position.getTitle()));
+                data.setPositionTitleMap(positionTitileMap);
+            }
+            Map<Integer, String> employeeNameMap = new HashMap<>();
+            List<UserEmployeeDO> empList = empListFuture.get();
+            if(!StringUtils.isEmptyList(empList)){
+                empList.forEach( employee ->
+                    employeeNameMap.put(employee.getId(), employee.getCname())
+                );
+            }
+            List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
+            if(!StringUtils.isEmptyList(historyEmpList)){
+                historyEmpList.forEach(employee ->
+                    employeeNameMap.put(employee.getId(), employee.getCname())
+                );
+            }
+            data.setEmployeeNameMap(employeeNameMap);
+            List<ProfileAttachmentDO> attachmentList = attachmentListFuture.get();
+            if(StringUtils.isEmptyList(attachmentList)){
+                return null;
+            }
+            Map<Integer, ProfileAttachmentDO> attachmentMap = new HashMap<>();
+            attachmentList.forEach( attac ->
+                attachmentMap.put(attac.getId(), attac)
+            );
+            data.setAttchmentMap(attachmentMap);
+            data.setLogList(logs);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+
+        return data;
+
+    }
+
 }

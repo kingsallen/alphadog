@@ -1,14 +1,22 @@
 package com.moseeker.profile.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
+import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
+import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
+import com.moseeker.profile.service.impl.resumefileupload.iface.AbstractResumeFileParser;
+import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -22,13 +30,19 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ProfileServicesImpl implements Iface {
 
     Logger logger = LoggerFactory.getLogger(ProfileProjectExpServicesImpl.class);
+
+    @Autowired
+    private ResumeFileParserFactory resumeFileParserFactory;
 
     @Autowired
     private ProfileService service;
@@ -41,6 +55,9 @@ public class ProfileServicesImpl implements Iface {
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     @Override
     public Response getResource(CommonQuery query) throws TException {
@@ -136,6 +153,20 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
+    public ProfileParseResult parseUserFileProfile(int userId, String fileName, ByteBuffer fileData) throws BIZException, TException {
+        try {
+            com.moseeker.profile.service.impl.vo.ProfileDocParseResult result =
+                    profileService.parseFileProfile(userId, fileName, fileData);
+            ProfileParseResult profileParseResult = new ProfileParseResult();
+            BeanUtils.copyProperties(result, profileParseResult);
+            return profileParseResult;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+
+    @Override
     public ProfileParseResult parseFileStreamProfile(int employeeId, String fileOriginName, String fileName,
                                                      String fileAbsoluteName, String fileData)
             throws BIZException, TException {
@@ -155,7 +186,6 @@ public class ProfileServicesImpl implements Iface {
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte referralType) throws BIZException, TException {
         try {
-
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
                     referralType);
         } catch (Exception e) {
@@ -179,6 +209,34 @@ public class ProfileServicesImpl implements Iface {
             BeanUtils.copyProperties(candidateInfo, candidate);
             candidate.setPosition(candidateInfo.getPositionId());
             return referralService.postCandidateInfo(employeeId, candidate);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+
+    @Override
+    public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, TException {
+        try {
+            return referralService.saveMobotReferralProfile(employeeId, ids);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException, TException {
+        try {
+            return referralService.saveMobotReferralProfileCache(employeeId, name, mobile, referralReasons, referralType, fileName);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String getMobotReferralCache(int employeeId) throws BIZException, TException {
+        try {
+            return referralService.getMobotReferralCache(employeeId);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -314,6 +372,15 @@ public class ProfileServicesImpl implements Iface {
             e.printStackTrace();
             logger.error(e.getMessage(), e);
             throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+        }
+    }
+
+    @Override
+    public int updateUserProfile(int id, String name, String mobile) throws BIZException, TException {
+        try {
+            return profileService.updateUserProfile(id, name, mobile);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
     }
 }

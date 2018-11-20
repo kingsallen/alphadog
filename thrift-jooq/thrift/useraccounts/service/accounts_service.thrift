@@ -83,7 +83,17 @@ service UseraccountsServices {
     //认领内推奖金
     void claimReferralBonus(1: i32 bonus_record_id) throws (1: common_struct.BIZException e);
 
+    //是否查看过隐私协议
+    i32 ifViewPrivacyProtocol(1: i32 userId) throws (1: common_struct.BIZException e);
 
+    // 根据用户表id删除隐私记录
+    void deletePrivacyRecordByUserId(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    //插入隐私协议记录
+    void insertPrivacyRecord(1: i32 userId) throws (1: common_struct.BIZException e);
+
+    //批量认领卡片
+    string batchClaimReferralCard(1: i32 userId, 2: string name, 3: string mobile, 4: string vcode, 5:list<i32> referralRecordIds) throws (1: common_struct.BIZException e);
 }
 /**
 * 用户配置服务
@@ -172,7 +182,7 @@ service UserHrAccountService {
     // 员工列表
     useraccounts_struct.UserEmployeeVOPageVO employeeList(1:string keword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string timespan,9:string email_validate) throws (1: common_struct.BIZException e);
     //新员工列表
-    useraccounts_struct.UserEmployeeVOPageVO getEmployees(1:string keyword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string email_validate,9:i32 balanceType) throws (1: common_struct.BIZException e);
+    useraccounts_struct.UserEmployeeVOPageVO getEmployees(1:string keyword, 2:i32 companyId, 3:i32 filter, 4:string order, 5:string asc, 6:i32 pageNumber, 7:i32 pageSize,8:string email_validate,9:i32 balanceType, 10: string timespan) throws (1: common_struct.BIZException e);
     // 员工信息导出
     list<useraccounts_struct.UserEmployeeVO> employeeExport(1:list<i32> userEmployees,2:i32 companyId,3:i32 type) throws (1: common_struct.BIZException e);
     // 员工信息

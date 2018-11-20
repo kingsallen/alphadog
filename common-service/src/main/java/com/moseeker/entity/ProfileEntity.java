@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.profiledb.entity.ProfileWorkexpEntity;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserReferralRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import static com.moseeker.baseorm.db.profiledb.tables.ProfileAttachment.PROFILE_ATTACHMENT;
 import com.moseeker.baseorm.db.profiledb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
@@ -30,6 +31,7 @@ import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ProfileException;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
@@ -83,7 +85,7 @@ public class ProfileEntity {
      * @return 格式化的简历信息
      */
     public ProfilePojo parseProfile(String profileParameter) {
-        Map<String, Object> paramMap = JSON.parseObject(EmojiFilter.filterEmoji1(EmojiFilter.unicodeToUtf8(profileParameter)));
+        Map<String, Object> paramMap = EmojiFilter.filterEmoji(profileParameter);
         return ProfilePojo.parseProfile(paramMap, profileParseUtil.initParseProfileParam());
     }
 
@@ -111,10 +113,37 @@ public class ProfileEntity {
     public int mergeProfile(ProfilePojo profilePojo, int userId) {
 
         ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
+        int profileId= mergeProfileCommon(profilePojo, profileDB);
+        if (profileDB != null) {
+            improveAttachment(profilePojo.getAttachmentRecords(), profileDB.getId());
+            completenessImpl.reCalculateProfileBasic(profileDB.getId());
+            profileId = profileDB.getId();
+        }
+        return profileId;
+    }
+
+    public int mergeProfileReferral(ProfilePojo profilePojo, int userId, int attachmentId) {
+
+        ProfileProfileRecord profileDB = profileDao.getProfileOrderByActiveByUserId(userId);
+        int profileId= mergeProfileCommon(profilePojo, profileDB);
+        if (profileDB != null) {
+            int id = improveAttachmentReferral(profilePojo.getAttachmentRecords(), attachmentId, profileId);
+            completenessImpl.reCalculateProfileBasic(profileId);
+            attachmentId = id;
+        }
+        return attachmentId;
+    }
+
+    /**
+     * 如果存在简历则合并，不存在则添加
+     * @param profilePojo 简历数据
+     * @param profileDB 用户编号
+     */
+    public int mergeProfileCommon(ProfilePojo profilePojo, ProfileProfileRecord profileDB) {
+
         if (profileDB != null) {
             improveProfile(profilePojo.getProfileRecord(), profileDB);
             improveBasic(profilePojo.getBasicRecord(), profileDB.getId());
-            improveAttachment(profilePojo.getAttachmentRecords(), profileDB.getId());
             improveAwards(profilePojo.getAwardsRecords(), profileDB.getId());
             improveCredentials(profilePojo.getCredentialsRecords(), profileDB.getId());
             improveEducation(profilePojo.getEducationRecords(), profileDB.getId());
@@ -419,6 +448,7 @@ public class ProfileEntity {
 
     @Transactional
     public void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
+        logger.info("intentionRecords:{}", intentionRecords);
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionDao.delIntentionsByProfileId(profileId);
             intentionRecords.forEach(intention -> {
@@ -477,6 +507,23 @@ public class ProfileEntity {
             attachmentDao.addAllRecord(attachmentRecords);
         }
     }
+    @Transactional
+    public int  improveAttachmentReferral(List<ProfileAttachmentRecord> attachmentRecords, int attachmentId, int profileId) {
+        if (attachmentRecords != null && attachmentRecords.size() > 0) {
+            ProfileAttachmentRecord record = attachmentDao.fetchAttachmentById(attachmentId);
+            ProfileAttachmentRecord atta = attachmentRecords.get(attachmentRecords.size()-1);
+            if(record != null){
+                atta.setId(record.getId());
+                atta.setProfileId(record.getProfileId());
+                attachmentDao.updateRecord(attachmentRecords.get(attachmentRecords.size()-1));
+            }else{
+                atta.setProfileId(profileId);
+                return attachmentDao.addRecord(atta).getId();
+            }
+        }
+        return attachmentId;
+    }
+
 
     /**
      * 根据用户编号查找简历信息
@@ -487,6 +534,12 @@ public class ProfileEntity {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(PROFILE_PROFILE.USER_ID.getName(), userId);
         return profileDao.getData(queryBuilder.buildQuery());
+    }
+
+    public ProfileAttachmentDO getProfileAttachmentByProfileId(int profileId){
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where(PROFILE_ATTACHMENT.PROFILE_ID.getName(), profileId);
+        return attachmentDao.getData(queryBuilder.buildQuery());
     }
 
     public void reCalculateProfileAward(Integer profileId, int awardId) {
@@ -671,6 +724,23 @@ public class ProfileEntity {
         }
     }
 
+    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId, ReferralScene referralScene) throws ProfileException {
+
+        UserSource userSource = referralScene.getScene() == ReferralScene.Referral.getScene() ? UserSource.EMPLOYEE_REFERRAL : UserSource.EMPLOYEE_REFERRAL_CHATBOT;
+        UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
+                companyId, profilePojo.getUserRecord().getMobile(),
+                referralScene, userSource);
+        if (referralRecordRecord != null) {
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, userSource,null,null,null);
+            if (referralRecordRecord != null && userUserRecord1 != null) {
+                referralRecordRecord.setUserId(userUserRecord1.getId());
+                userReferralRecordDao.updateRecord(referralRecordRecord);
+            }
+            return userUserRecord1;
+        } else {
+            throw ProfileException.PROGRAM_DOUBLE_CLICK;
+        }
+    }
     public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
 
         UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
@@ -697,6 +767,7 @@ public class ProfileEntity {
             shortSource = (short) source.getValue();
         }
         profilePojo.getUserRecord().setSource(shortSource);
+        profilePojo.getUserRecord().setEmailVerified((byte)0);
         UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
 
         logger.info("mergeProfile userId:{}", userUserRecord.getId());

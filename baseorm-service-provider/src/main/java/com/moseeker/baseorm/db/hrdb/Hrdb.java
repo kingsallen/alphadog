@@ -91,7 +91,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -657658657;
+    private static final long serialVersionUID = -763141023;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -364,7 +364,7 @@ public class Hrdb extends SchemaImpl {
     public final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
     /**
-     * 语音聊天的语音信息
+     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
      */
     public final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 

@@ -112,9 +112,16 @@ public class AppConfig {
         Queue queue = new Queue("persona_recom_que", true, false, false);
         return queue;
     }
+
     @Bean
-    public TopicExchange topicExchange() {
-        TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
+    public Queue employeeFirstRegisterQueue() {
+        Queue queue = new Queue("employee_first_register_exchange", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange employeeRegisterExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_register_exchange", true, false);
         return topicExchange;
     }
     @Bean
@@ -127,6 +134,13 @@ public class AppConfig {
         TopicExchange topicExchange = new TopicExchange("person_recom_exchange", true, false);
         return topicExchange;
     }
+
+    @Bean
+    public TopicExchange topicExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_action_topic_exchange", true, false);
+        return topicExchange;
+    }
+
     @Bean
     public Queue profileCompanyTagQue() {
         Queue queue = new Queue("profile_company_tag_recom_que", true, false, false);
@@ -159,6 +173,7 @@ public class AppConfig {
             add(BindingBuilder.bind(personaRecomQue()).to(personaRecomExchange()).with("personarecom.#"));
             add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
             add(BindingBuilder.bind(bonusNoticeQueue()).to(applicationStateChangeExchange()).with("add_bonus_change_routingkey.add_bonus"));
+            add(BindingBuilder.bind(employeeFirstRegisterQueue()).to(employeeRegisterExchange()).with("employee_register_routingkey.first_register"));
         }};
     }
 }
