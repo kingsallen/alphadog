@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbConfigRecord extends UpdatableRecordImpl<HrHbConfigRecord> implements Record22<Integer, Byte, Byte, Integer, Timestamp, Timestamp, Integer, Double, Double, Double, Byte, String, String, String, String, String, Byte, Byte, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -459937021;
+    private static final long serialVersionUID = 865568643;
 
     /**
      * Setter for <code>hrdb.hr_hb_config.id</code>.
@@ -47,14 +47,14 @@ public class HrHbConfigRecord extends UpdatableRecordImpl<HrHbConfigRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
+     * Setter for <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包， 4:推荐通过初筛红包
      */
     public void setType(Byte value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包
+     * Getter for <code>hrdb.hr_hb_config.type</code>. 0:员工认证红包，1:推荐评价红包，2:转发被点击红包，3:转发被申请红包， 4:推荐通过初筛红包
      */
     public Byte getType() {
         return (Byte) get(1);

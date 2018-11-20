@@ -103,6 +103,36 @@ public class UserReferralRecordDao extends JooqCrudImpl<UserReferralRecord, User
                 .fetch();
     }
 
+    public UserReferralRecordRecord insertReferralTypeIfNotExist(int reference, int companyId, Long mobile, ReferralScene scene, UserSource userSource) {
+        Param<Integer> refereeParam = param(USER_REFERRAL_RECORD.REFERENCE_ID.getName(), reference);
+        Param<Integer> companyParam = param(USER_REFERRAL_RECORD.COMPANY_ID.getName(), companyId);
+        Param<Byte> sceneParam = param(USER_REFERRAL_RECORD.SCENE.getName(), scene.getScene());
+
+        UserReferralRecordRecord result = create.insertInto(
+                USER_REFERRAL_RECORD,
+                USER_REFERRAL_RECORD.REFERENCE_ID,
+                USER_REFERRAL_RECORD.COMPANY_ID,
+                USER_REFERRAL_RECORD.SCENE
+        ).select(
+                select(
+                        refereeParam,
+                        companyParam,
+                        sceneParam
+                ).whereNotExists(
+                        selectOne()
+                                .from(UserUser.USER_USER).innerJoin(USER_REFERRAL_RECORD).on(UserUser.USER_USER.ID.eq(USER_REFERRAL_RECORD.USER_ID))
+                                .where(UserUser.USER_USER.MOBILE.eq(mobile))
+                                .and(UserUser.USER_USER.COUNTRY_CODE.eq("86"))
+                                .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                                .and(UserUser.USER_USER.SOURCE.eq((short) userSource.getValue()))
+                                .and(USER_REFERRAL_RECORD.COMPANY_ID.eq(companyId))
+                                .and(USER_REFERRAL_RECORD.SCENE.eq(scene.getScene()))
+                )
+        ).returning().fetchOne();
+        return result;
+
+    }
+
     public UserReferralRecordRecord insertReferralTypeIfNotExist(int reference, int companyId, Long mobile, ReferralScene scene) {
         Param<Integer> refereeParam = param(USER_REFERRAL_RECORD.REFERENCE_ID.getName(), reference);
         Param<Integer> companyParam = param(USER_REFERRAL_RECORD.COMPANY_ID.getName(), companyId);

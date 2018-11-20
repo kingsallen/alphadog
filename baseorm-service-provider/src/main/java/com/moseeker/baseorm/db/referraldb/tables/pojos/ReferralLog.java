@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog implements Serializable {
 
-    private static final long serialVersionUID = -786566848;
+    private static final long serialVersionUID = 505560438;
 
     private Integer   id;
     private Integer   employeeId;
@@ -35,6 +35,8 @@ public class ReferralLog implements Serializable {
     private Timestamp claimTime;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   attementId;
+    private Integer   oldReferenceId;
 
     public ReferralLog() {}
 
@@ -49,6 +51,8 @@ public class ReferralLog implements Serializable {
         this.claimTime = value.claimTime;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.attementId = value.attementId;
+        this.oldReferenceId = value.oldReferenceId;
     }
 
     public ReferralLog(
@@ -61,7 +65,9 @@ public class ReferralLog implements Serializable {
         Byte      claim,
         Timestamp claimTime,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   attementId,
+        Integer   oldReferenceId
     ) {
         this.id = id;
         this.employeeId = employeeId;
@@ -73,6 +79,8 @@ public class ReferralLog implements Serializable {
         this.claimTime = claimTime;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.attementId = attementId;
+        this.oldReferenceId = oldReferenceId;
     }
 
     public Integer getId() {
@@ -155,6 +163,22 @@ public class ReferralLog implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getAttementId() {
+        return this.attementId;
+    }
+
+    public void setAttementId(Integer attementId) {
+        this.attementId = attementId;
+    }
+
+    public Integer getOldReferenceId() {
+        return this.oldReferenceId;
+    }
+
+    public void setOldReferenceId(Integer oldReferenceId) {
+        this.oldReferenceId = oldReferenceId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralLog (");
@@ -169,6 +193,8 @@ public class ReferralLog implements Serializable {
         sb.append(", ").append(claimTime);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(attementId);
+        sb.append(", ").append(oldReferenceId);
 
         sb.append(")");
         return sb.toString();

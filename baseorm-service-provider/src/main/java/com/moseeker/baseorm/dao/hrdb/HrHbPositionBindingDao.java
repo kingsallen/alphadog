@@ -5,11 +5,16 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbPositionBindingRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrHbPositionBindingDO;
+import org.jooq.InsertSetMoreStep;
+import org.jooq.InsertSetStep;
 import org.jooq.Record2;
+import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class HrHbPositionBindingDao extends JooqCrudImpl<HrHbPositionBindingDO, HrHbPositionBindingRecord> {
@@ -38,5 +43,46 @@ public class HrHbPositionBindingDao extends JooqCrudImpl<HrHbPositionBindingDO, 
                 .on(HrHbPositionBinding.HR_HB_POSITION_BINDING.POSITION_ID.eq(JobPosition.JOB_POSITION.ID))
                 .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.ID.in(positionBindingIdList))
                 .fetch();
+    }
+
+    public int countByActivityId(Integer activityId) {
+        return create.selectCount()
+                .from(HrHbPositionBinding.HR_HB_POSITION_BINDING)
+                .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.eq(activityId))
+                .fetchOne().value1();
+    }
+
+    public Result<HrHbPositionBindingRecord> fetchByActivity(Integer activityId) {
+
+        return create.selectFrom(HrHbPositionBinding.HR_HB_POSITION_BINDING)
+                .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.eq(activityId))
+                .fetch();
+    }
+
+    public void deleteByActivityId(Integer activityId, List<HrHbPositionBindingRecord> bindingRecords) {
+        List<Integer> idList = bindingRecords.stream().map(HrHbPositionBindingRecord::getId).collect(Collectors.toList());
+        create.deleteFrom(HrHbPositionBinding.HR_HB_POSITION_BINDING)
+                .where(HrHbPositionBinding.HR_HB_POSITION_BINDING.HB_CONFIG_ID.eq(activityId))
+                .and(HrHbPositionBinding.HR_HB_POSITION_BINDING.ID.in(idList))
+                .execute();
+    }
+
+    public List<HrHbPositionBindingRecord> insert(List<HrHbPositionBindingRecord> bindings) {
+        if (bindings != null && bindings.size() > 0) {
+            InsertSetStep<HrHbPositionBindingRecord> insertSetStep =
+                    create.insertInto(HrHbPositionBinding.HR_HB_POSITION_BINDING);
+            InsertSetMoreStep<HrHbPositionBindingRecord> insertSetMoreStep = null;
+            for (HrHbPositionBindingRecord record : bindings) {
+                if (insertSetMoreStep == null) {
+                    insertSetMoreStep = insertSetStep.set(record);
+                } else {
+                    insertSetMoreStep = insertSetMoreStep.newRecord().set(record);
+                }
+
+            }
+            return insertSetMoreStep.returning().fetch();
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

@@ -54,6 +54,8 @@ public final class ConstantErrorCodeMessage {
     public static final String MALL_ORDER_UNSUPPORTED_STATE = "{'status':10041,'message':'不支持的订单处理状态!'}";
     public static final String MALL_TEMPLATE_SWITCH_CLOSE = "{'status':10042,'message':'商城积分变动消息模板已关闭!'}";
     public static final String MALL_GOODS_NEED_UPSHELF = "{'status':10043,'message':'商品已下架!'}";
+    public static final String USEREMPLOYEE_NONEXIST = "{'status':10029,'message':'查不到该员工!'}";
+
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
     // 职位服务ERRCODE说明定义 2字头
@@ -78,7 +80,8 @@ public final class ConstantErrorCodeMessage {
     public static final String PROFILE_ORIGIN_NULL = "{'status':31026,'message':'简历来源不能为空!'}";
     public static final String PROFILE_MOVING = "{'status':31027,'message':'简历搬家正在进行中，请不要重复提交!'}";
     public static final String PROFILE_MOVING_MAIN_ACCOUNT = "{'status':31028,'message':'简历搬家只能主账号操作!'}";
-    public static final String PROFILE_ORIGIN_UPSUPORT = "{'status':31028,'message':'简历搬家不支持的简历来源!'}";
+    public static final String PROFILE_ORIGIN_UPSUPORT = "{'status':31029,'message':'简历搬家不支持的简历来源!'}";
+    public static final String REFERRAL_DATA_OVERTIME = "{'status':31030,'message':'推荐信息已失效，请重新推荐!'}";
 
     // Company服务提示信息说明
     public static final String COMPANY_NAME_REPEAT = "{'status':33001,'message':'不允许和拥有超级帐号的公司的公司名称重名!'}";
@@ -190,6 +193,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_PUBLISHCITY_INVALID="{'status':52008,'message':'该职位查不到发布地区!'}";
     public static final String POSITION_CITYCODE_INVALID="{'status':52009,'message':'错误的仟寻citycode，查不到该code的所有城市level!'}";
     public static final String POSITION_REFERRAL_UPDATE_INVALID="{'status':52010,'message':'更新数量超过上线500条'}";
+    public static final String POSITION_APPLY_FAILED="{'status':52011,'message':'非本公司职位不能投递'}";
 
     //职位同步
     public static final String POSITION_SYNC_VERIFY_TIMEOUT = "{'status':61001,'message':'验证已超时，职位同步失败'}";

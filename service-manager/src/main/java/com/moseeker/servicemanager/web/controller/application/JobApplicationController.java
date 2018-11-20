@@ -317,4 +317,18 @@ public class JobApplicationController {
 			return Result.validateFailed(validateResult).toJson();
 		}
 	}
+
+	@RequestMapping(value = "/application/send/email", method = RequestMethod.GET)
+	@ResponseBody
+	public String sendAppEmail(HttpServletRequest request) throws Exception {
+		try {
+			Params<String, Object> params = ParamUtils.parseRequestParam(request);
+			Integer appId = params.getInt("application_id");
+			int result=applicationService.appSendEmail(appId);
+			return ResponseLogNotification.successJson(request,result);
+		}catch (Exception e){
+			logger.error(e.getMessage());
+			return ResponseLogNotification.fail(request,e.getMessage());
+		}
+	}
 }

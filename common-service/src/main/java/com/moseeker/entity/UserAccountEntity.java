@@ -10,6 +10,7 @@ import com.moseeker.baseorm.db.talentpooldb.tables.records.TalentpoolTalentRecor
 import com.moseeker.baseorm.db.userdb.tables.records.UserReferralRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -187,7 +188,6 @@ public class UserAccountEntity {
         }
         return userUserRecord;
     }
-
     /**
      * 根据手机号码查找内推用户
      * @param phone 手机号码
@@ -206,6 +206,32 @@ public class UserAccountEntity {
         List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode);
         if (list != null && list.size() > 0) {
             userUserRecord = findEmployeeReferral(list, companyId, ReferralScene.Referral);
+        }
+        return userUserRecord;
+    }
+
+    /**
+     * 根据手机号码查找内推用户
+     * @param phone 手机号码
+     * @param companyId 公司编号
+     * @return 用户信息
+     */
+    public UserUserRecord getReferralUser(String phone, int companyId, ReferralScene referralScene) {
+
+        UserUserRecord userUserRecord = null;
+        String countryCode="86";
+        if(phone.contains("-")){
+            String [] phoneArray=phone.split("-");
+            countryCode=phoneArray[0];
+            phone=phoneArray[1];
+        }
+        short source = (short) UserSource.EMPLOYEE_REFERRAL.getValue();
+        if(referralScene.getScene() == ReferralScene.ChatBot.getScene()){
+            source = (short) UserSource.EMPLOYEE_REFERRAL_CHATBOT.getValue();
+        }
+        List<UserUserRecord> list = userDao.getReferralUser(phone, countryCode, source);
+        if (list != null && list.size() > 0) {
+            userUserRecord = findEmployeeReferral(list, companyId, referralScene);
         }
         return userUserRecord;
     }
