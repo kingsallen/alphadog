@@ -133,4 +133,8 @@ public class MallGoodsOrderDao extends JooqCrudImpl<MallOrderDO, MallOrderRecord
                 .orderBy(MALL_ORDER.CREATE_TIME.desc())
                 .fetchInto(MallOrderDO.class);
     }
+
+    public int[] batchInsert(List<MallOrderRecord> list) {
+        return create.batchInsert(list).execute();
+    }
 }
