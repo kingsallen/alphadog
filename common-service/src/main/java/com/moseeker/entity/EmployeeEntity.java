@@ -32,6 +32,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.pojo.CustomEmployeeInsertResult;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -70,8 +71,6 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import java.net.ConnectException;
-import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +81,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -1613,5 +1614,31 @@ public class EmployeeEntity {
         }
     }
 
+    /**
+     * 增加重复添加的校验
+     * @param userEmployeeList 需要添加的自定义员工信息
+     * @return 添加的数量
+     */
+    public int addEmployeeListIfNotExist(List<UserEmployeeDO> userEmployeeList) {
+        if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            int count = 0;
+            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
+            for(UserEmployeeDO employee : userEmployeeList){
+                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
+                UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
+
+                if (userEmployeeRecord != null) {
+                    employeeDOS.add(userEmployeeRecord);
+                    count += 1;
+                }
+            }
+            // ES 索引更新
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            return count;
+        } else {
+            return 0;
+        }
+    }
 }
 
