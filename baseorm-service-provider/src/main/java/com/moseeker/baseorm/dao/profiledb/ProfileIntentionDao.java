@@ -12,8 +12,12 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCompletenessRecor
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionCityRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileIntentionRecord;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileIntentionDO;
+import org.jooq.Param;
 import org.jooq.Record1;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -24,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
+import static org.jooq.impl.DSL.*;
 /**
  * @author xxx
  *         ProfileIntentionDao 实现类 （groovy 生成）
@@ -158,5 +162,58 @@ public class ProfileIntentionDao extends JooqCrudImpl<ProfileIntentionDO, Profil
             completenessRecord.setProfileIntention(intentionCompleteness);
         }
         return 0;
+    }
+
+//    private void insertProfileIntentionWhereNotExist(IntentionRecord intentionRecord, int retryTimes) throws BIZException {
+//        if(retryTimes > 3){
+//            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_EXHAUSTED);
+//        }
+//        Param<Integer> profileIdParam = param(ProfileIntention.PROFILE_INTENTION.PROFILE_ID.getName(), intentionRecord.getProfileId());
+//        Param<Byte> workStateParam = param(ProfileIntention.PROFILE_INTENTION.WORKSTATE.getName(), intentionRecord.getWorkstate());
+//        Param<Byte> workTypeParam = param(ProfileIntention.PROFILE_INTENTION.WORKTYPE.getName(), intentionRecord.getWorktype());
+//        Param<Byte> considerParam = param(ProfileIntention.PROFILE_INTENTION.CONSIDER_VENTURE_COMPANY_OPPORTUNITIES.getName(), intentionRecord.getConsiderVentureCompanyOpportunities());
+//        Param<Byte> salaryCodeParam = param(ProfileIntention.PROFILE_INTENTION.SALARY_CODE.getName(), intentionRecord.getSalaryCode());
+//        Param<String> tagParam = param(ProfileIntention.PROFILE_INTENTION.TAG.getName(), intentionRecord.getTag());
+//        ProfileIntentionRecord profileIntention = create.insertInto(
+//                ProfileIntention.PROFILE_INTENTION,
+//                ProfileIntention.PROFILE_INTENTION.PROFILE_ID,
+//                ProfileIntention.PROFILE_INTENTION.WORKSTATE,
+//                ProfileIntention.PROFILE_INTENTION.WORKTYPE,
+//                ProfileIntention.PROFILE_INTENTION.CONSIDER_VENTURE_COMPANY_OPPORTUNITIES,
+//                ProfileIntention.PROFILE_INTENTION.SALARY_CODE,
+//                ProfileIntention.PROFILE_INTENTION.TAG
+//        ).select(
+//                select(
+//                        profileIdParam,
+//                        workStateParam,
+//                        workTypeParam,
+//                        considerParam,
+//                        salaryCodeParam,
+//                        tagParam
+//                ).whereNotExists(
+//                        selectOne()
+//                                .from(ProfileIntention.PROFILE_INTENTION)
+//                                .where(ProfileIntention.PROFILE_INTENTION.PROFILE_ID.eq(intentionRecord.getProfileId()))
+//                )
+//        ).returning().fetchOne();
+//
+//        if(profileIntention == null){
+//            profileIntention = create.selectFrom(ProfileIntention.PROFILE_INTENTION).fetchOne();
+//            if(profileIntention == null){
+//                insertProfileIntentionWhereNotExist(intentionRecord, ++retryTimes);
+//            }else {
+//                mappingRecord(intentionRecord, profileIntention);
+//                updateRecord(profileIntention);
+//                intentionRecord.setId(profileIntention.getId);
+//            }
+//        }
+//    }
+
+    private void mappingRecord(IntentionRecord intentionRecord, ProfileIntentionRecord profileIntention) {
+        profileIntention.setConsiderVentureCompanyOpportunities(intentionRecord.getConsiderVentureCompanyOpportunities());
+        profileIntention.setSalaryCode(intentionRecord.getSalaryCode());
+        profileIntention.setTag(intentionRecord.getTag());
+        profileIntention.setWorkstate(intentionRecord.getWorkstate());
+        profileIntention.setWorktype(intentionRecord.getWorktype());
     }
 }

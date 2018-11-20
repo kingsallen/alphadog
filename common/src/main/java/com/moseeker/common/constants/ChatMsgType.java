@@ -110,6 +110,18 @@ public enum ChatMsgType {
         public boolean vaildChat(ChatVO chatVO) {
             return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
         }
+    },
+    UPLOADRESUME("uploadResume"){
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
+    },
+    TELLREFERRAL("tellReferral"){
+        @Override
+        public boolean vaildChat(ChatVO chatVO) {
+            return chatVO != null && StringUtils.isNotBlank(chatVO.getCompoundContent());
+        }
     }
     ;
 

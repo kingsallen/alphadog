@@ -304,4 +304,9 @@ public final class Constant {
     public static final String EMPLOYEE_BATCH_DELETE_FAILED = "EMPLOYEE_BATCH_DELETE_FAILED";
 
     public static final int IS_NOT_OPEN_GRPD=1;
+    public static final String WORD_DOC="doc";
+    public static final String WORD_DOCX = "docx";
+    public static final String WORD_PDF = ".pdf";
+
+
 }
