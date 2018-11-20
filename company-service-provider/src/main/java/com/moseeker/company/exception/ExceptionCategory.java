@@ -1,8 +1,11 @@
 package com.moseeker.company.exception;
 
 /**
+ * 已经废弃，改用ProfileException
+ * @see CompanyException
  * Created by jack on 03/07/2017.
  */
+@Deprecated
 public enum ExceptionCategory {
 
     COMPANY_NOT_BELONG_GROUPCOMPANY(32010, "并非是集团公司！"),

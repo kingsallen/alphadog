@@ -1,7 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;

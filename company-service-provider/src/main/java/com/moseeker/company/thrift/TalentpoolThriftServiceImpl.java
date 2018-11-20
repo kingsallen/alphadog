@@ -93,9 +93,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response batchAddTalent(int hr_id, List<Integer> user_ids, int company_id) throws BIZException, TException {
+    public Response batchAddTalent(int hr_id, List<Integer> user_ids, int company_id,int isGdpr) throws BIZException, TException {
         try{
-            return talentPoolService.batchAddTalent(hr_id,ConvertListToSet(user_ids),company_id);
+            return talentPoolService.batchAddTalent(hr_id,ConvertListToSet(user_ids),company_id,isGdpr);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
@@ -184,9 +184,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response batchAddPublicTalent(int hr_id, int company_id, List<Integer> user_ids) throws BIZException, TException {
+    public Response batchAddPublicTalent(int hr_id, int company_id, List<Integer> user_ids,int isGdpr) throws BIZException, TException {
         try{
-            return talentPoolService.AddbatchPublicTalent(hr_id,company_id,ConvertListToSet(user_ids));
+            return talentPoolService.AddbatchPublicTalent(hr_id,company_id,ConvertListToSet(user_ids),isGdpr);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
@@ -471,9 +471,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public void addAllTalent(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+    public void addAllTalent(int hrId, Map<String, String> params, int companyId,int isGdpr) throws BIZException, TException {
         try{
-             talentPoolService.addAllTalent(hrId,params,companyId);
+             talentPoolService.addAllTalent(hrId,params,companyId,isGdpr);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
@@ -491,9 +491,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public void addAllTalentPublic(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+    public void addAllTalentPublic(int hrId, Map<String, String> params, int companyId,int isGdpr) throws BIZException, TException {
         try{
-            talentPoolService.addAllTalentPublic(params,companyId,hrId);
+            talentPoolService.addAllTalentPublic(params,companyId,hrId,isGdpr);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
