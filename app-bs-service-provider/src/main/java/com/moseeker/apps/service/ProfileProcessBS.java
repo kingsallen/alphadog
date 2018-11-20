@@ -222,6 +222,7 @@ public class ProfileProcessBS {
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) throws Exception {
         logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
         Map<String,String> dataResult=new HashMap<>();
+        String message = "";
         try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
@@ -231,7 +232,6 @@ public class ProfileProcessBS {
             List<ProcessValidationStruct> list=jobApplicationDao.getAuth(appIds, companyId, progressStatus);
             logger.info("ProfileProcessBS list:{}", JSON.toJSONString(list));
             if (list!=null&&list.size()>0) {
-
                 List<Integer> applierIdList = list
                         .stream()
                         .map(ProcessValidationStruct::getApplier_id)
@@ -256,7 +256,13 @@ public class ProfileProcessBS {
                     return ResponseUtils
                             .fail("{\"status\":2159, \"message\":\"GDPR检验未通过\"}");
                 }
-
+                Set<Integer> userIds = list
+                        .stream()
+                        .map(ProcessValidationStruct::getApplier_id)
+                        .collect(Collectors.toSet());
+                if(userIds.size() != new HashSet<>(applierIdList).size()){
+                    message = "遵守GDPR规则，"+userIds.size()+"人申请状态修改成功！";
+                }
                 boolean processStatus = true;
                 int recruitOrder = 0;
                 UserHrAccount account = this.getAccount(accountId);
@@ -448,7 +454,9 @@ public class ProfileProcessBS {
                         .fail("{\"status\":2201, \"message\":\"参数错误\"}");
             }
 
-
+            if(StringUtils.isNotNullOrEmpty(message)){
+                return ResponseUtils.fail("{\"status\":2159, \"message\":"+message+"}");
+            }
             return ResponseUtils.success(dataResult);
         } catch (Exception e) {
             e.printStackTrace();
