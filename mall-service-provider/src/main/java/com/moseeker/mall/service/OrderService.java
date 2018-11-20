@@ -208,6 +208,7 @@ public class OrderService {
     public void updateOrder(MallGoodsOrderUpdateForm updateForm) throws TException {
         try {
             List<Integer> employeeIds = handleUpdatedOrder(updateForm);
+            logger.info("==========employeeids:{}", employeeIds);
             // 更新ES中的user_employee数据，以便积分排行实时更新
             pool.startTast(() -> searchengineEntity.updateEmployeeAwards(employeeIds));
         } catch (Exception e) {
@@ -305,7 +306,10 @@ public class OrderService {
         // 更改订单业务更新，发送模板消息
         UserEmployeePointsRecordDO userEmployeePointsDO = handleOrderDbUpdate(orderForm, userEmployeeDO, mallGoodsInfoDO, payCredit);
         // 更新ES中的user_employee数据，以便积分排行实时更新
-        searchengineEntity.updateEmployeeAwards(userEmployeeDO.getId(), userEmployeePointsDO.getId());
+//        searchengineEntity.updateEmployeeAwards(userEmployeeDO.getId(), userEmployeePointsDO.getId());
+        List<Integer> employeeIds = new ArrayList<>();
+        employeeIds.add((int)userEmployeePointsDO.getEmployeeId());
+        searchengineEntity.updateEmployeeAwards(employeeIds);
         // 删除redis锁
         delOrderRedisLock(orderForm);
     }
