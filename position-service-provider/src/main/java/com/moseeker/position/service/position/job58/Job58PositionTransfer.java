@@ -3,6 +3,7 @@ package com.moseeker.position.service.position.job58;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
+import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.job58.dto.Job58PositionDTO;
@@ -10,6 +11,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -46,28 +48,13 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<ThirdPartyPo
         return null;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Override
+    public TwoParam<HrThirdPartyPositionDO,EmptyExtThirdPartyPosition> sendSyncRequest(TransferResult<Job58PositionDTO,EmptyExtThirdPartyPosition> result)
+            throws TException {
+        Job58PositionDTO job58PositionDTO = result.getPositionWithAccount();
+        HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
+        return null;
+    }
 
     @Override
     public EmptyExtThirdPartyPosition toExtThirdPartyPosition(ThirdPartyPosition position, Job58PositionDTO r) {
