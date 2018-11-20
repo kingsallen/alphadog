@@ -348,6 +348,9 @@ public class TalentpoolEmailService {
         if(flag==0){
             //校验gdpr
             userIdList=StringUtils.convertSetToList(talentPoolEntity.filterGRPD(companyId,StringUtils.convertListToSet(userIdList)));
+            if(StringUtils.isEmptyList(userIdList)){
+                throw new CommonException(1,"根据gdpr政策，简历无法转发");
+            }
             return sendResumeEmail(idList, userIdList, companyId, hrId,emailList);
         }else{
             return sendAllResumeEmail(idList,params,companyId,hrId,emailList);
