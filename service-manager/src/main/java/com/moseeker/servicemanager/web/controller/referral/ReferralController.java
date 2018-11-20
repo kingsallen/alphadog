@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -12,10 +14,7 @@ import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
-import com.moseeker.servicemanager.web.controller.referral.form.CandidateInfo;
-import com.moseeker.servicemanager.web.controller.referral.form.ClaimForm;
-import com.moseeker.servicemanager.web.controller.referral.form.PCUploadProfileTypeForm;
-import com.moseeker.servicemanager.web.controller.referral.form.ReferralForm;
+import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
@@ -29,6 +28,8 @@ import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
 import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -54,7 +56,7 @@ public class ReferralController {
     private UseraccountsServices.Iface userService =  ServiceManager.SERVICEMANAGER.getService(UseraccountsServices.Iface.class);
     private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
     private UserHrAccountService.Iface userHrAccountService = ServiceManager.SERVICEMANAGER.getService(UserHrAccountService.Iface.class);
-
+    private Logger logger = LoggerFactory.getLogger(ReferralController.class);
     DecimalFormat bonusFormat = new DecimalFormat("###################");
 
     /**
@@ -459,4 +461,103 @@ public class ReferralController {
         }
     }
 
+    /**
+     * 员工推荐简历，mobot上传简历使用，走内推的员工推荐逻辑
+     * @param id 员工编号
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral/confirm", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveMobotReferralProfile(@PathVariable int id, @RequestBody ReferralPositionForm referralForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addRequiredOneValidate("推荐职位ids", referralForm.getIds());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            Map<String, String> idReasons = profileService.saveMobotReferralProfile(id, referralForm.getIds());
+            if(idReasons.get("state") == null){
+                return Result.success(JSONArray.parseArray(idReasons.get("list"))).toJson();
+            }else {
+                return new Result(-1, "apply_limit", idReasons).toJson();
+            }
+
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+
+    /**
+     * 员工推荐简历，mobot上传简历使用，将推荐信息放到redis中，无插库操作
+     * @param id 员工编号
+     * @param referralForm 推荐表单
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral/cache", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveMobotReferralProfileCache(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("手机", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("姓名", referralForm.getName());
+        validateUtil.addRequiredValidate("文件名称", referralForm.getFileName());
+        validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        validateUtil.addIntTypeValidate("appid", referralForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("推荐类型", referralForm.getReferralType(), 1, 4);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+
+            int userId = profileService.saveMobotReferralProfileCache(id, referralForm.getName(), referralForm.getMobile(),
+                    referralForm.getReferralReasons(), (byte) referralForm.getReferralType(), referralForm.getFileName());
+            return Result.success(userId).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    @RequestMapping(value = "/v1/referral/claim/batch", method = RequestMethod.POST)
+    @ResponseBody
+    public String batchClaimReferralCard(@RequestBody BatchClaimForm claimForm) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", claimForm.getAppid(), 0, null);
+        validateUtil.addIntTypeValidate("用户", claimForm.getUser(), 1, null);
+        validateUtil.addRequiredOneValidate("推荐卡片", claimForm.getReferralRecordIds());
+        validateUtil.addRequiredStringValidate("用户姓名", claimForm.getName());
+        logger.info("user:{},recordIds:{},name:{}", claimForm.getUser(), claimForm.getReferralRecordIds(), claimForm.getName());
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            String claimResults = userService.batchClaimReferralCard(claimForm.getUser(), claimForm.getName(), claimForm.getMobile(), claimForm.getVcode(), claimForm.getReferralRecordIds());
+            return Result.success(JSONArray.parseArray(claimResults)).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
+
+    /**
+     * 点击告诉ta时回填推荐信息，从缓存中取
+     * @param id 员工编号
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/{id}/referral/cache", method = RequestMethod.GET)
+    @ResponseBody
+    public String getMobotReferralCache(@PathVariable int id) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工", id, 1, null);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            String jsonResult = profileService.getMobotReferralCache(id);
+            jsonResult = (jsonResult == null ? "":jsonResult);
+            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
+            return Result.success(referralInfoCache).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
 }

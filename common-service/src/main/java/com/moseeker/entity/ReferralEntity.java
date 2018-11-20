@@ -64,6 +64,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -118,9 +120,6 @@ public class ReferralEntity {
     private HistoryUserEmployeeDao historyUserEmployeeDao;
 
     @Autowired
-    private ProfileCompletenessImpl completeness;
-
-    @Autowired
     private ReferralPositionBonusStageDetailDao stageDetailDao;
 
     @Autowired
@@ -134,6 +133,9 @@ public class ReferralEntity {
 
     @Autowired
     private ReferralRecomHbPositionDao referralRecomHbPositionDao;
+
+    @Autowired
+    private ProfileCompletenessImpl completeness;
 
     @Autowired
     EmployeeEntity employeeEntity;
@@ -231,16 +233,21 @@ public class ReferralEntity {
         return referralId;
     }
 
+    public List<ReferralLog> fetchReferralLogs(List<Integer> referralLogIds) {
+        return referralLogDao.fetchByIds(referralLogIds);
+    }
+
     public ReferralLog fetchReferralLog(int referralLogId) {
         return referralLogDao.fetchOneById(referralLogId);
     }
 
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
-
+        // 判断是否重复认证
         if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             throw EmployeeException.EMPLOYEE_REPEAT_CLAIM;
         }
-
+        // 更新申请记录的申请人
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
         if (application != null) {
@@ -254,16 +261,10 @@ public class ReferralEntity {
                     application.getApplierId(), application.getApplierName(), updateTime);
         }
 
-        ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userUserDO.getId());
-        if (profileProfileRecord == null) {
-            ProfileProfileRecord record = profileDao.getProfileByUserId(referralLog.getReferenceId());
-            if (record != null) {
-                if (profileDao.changUserId(record, userUserDO.getId()) > 0) {
-                    completeness.reCalculateProfileCompleteness(record.getId());
-                }
-            }
-        }
+        // 更新简历中的userId，计算简历完整度
+        updateProfileUserIdAndCompleteness(userUserDO.getId(), referralLog.getReferenceId());
 
+        // 更新候选人推荐记录中的推荐人
         int postUserId = 0;
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Query query = queryBuilder.where(UserEmployee.USER_EMPLOYEE.ID.getName(), referralLog.getEmployeeId()).buildQuery();
@@ -514,6 +515,18 @@ public class ReferralEntity {
         return bonusData;
     }
 
+    private void updateProfileUserIdAndCompleteness(int userId, Integer referenceId) {
+        ProfileProfileRecord profileProfileRecord = profileDao.getProfileByUserId(userId);
+        if (profileProfileRecord == null) {
+            ProfileProfileRecord record = profileDao.getProfileByUserId(referenceId);
+            if (record != null) {
+                if (profileDao.changUserId(record, userId) > 0) {
+                    completeness.reCalculateProfileCompleteness(record.getId());
+                }
+            }
+        }
+    }
+
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
         ReferralProfileData data = new ReferralProfileData();
         Future<UserHrAccountDO> accountFuture = threadPool.startTast(
@@ -624,6 +637,5 @@ public class ReferralEntity {
         return data;
 
     }
-
 
 }

@@ -58,7 +58,7 @@ public abstract class AbstractResumeFileParser implements resumeFileParser {
     protected abstract void toPDF(String suffix, FileNameData fileNameData, Integer id);
 
     protected abstract ProfileDocParseResult setProfileDocParseResult(ProfileDocParseResult profileDocParseResult,User user,Integer userId);
-    
+
     @Override
     public  ProfileDocParseResult parseResume(Integer id, String fileName, ByteBuffer fileData) {
         ProfileDocParseResult profileDocParseResult = new ProfileDocParseResult();

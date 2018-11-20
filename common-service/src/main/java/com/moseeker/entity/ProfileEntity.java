@@ -448,6 +448,7 @@ public class ProfileEntity {
 
     @Transactional
     public void improveIntention(List<IntentionRecord> intentionRecords, int profileId) {
+        logger.info("intentionRecords:{}", intentionRecords);
         if (intentionRecords != null && intentionRecords.size() > 0) {
             intentionDao.delIntentionsByProfileId(profileId);
             intentionRecords.forEach(intention -> {
@@ -723,6 +724,23 @@ public class ProfileEntity {
         }
     }
 
+    public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId, ReferralScene referralScene) throws ProfileException {
+
+        UserSource userSource = referralScene.getScene() == ReferralScene.Referral.getScene() ? UserSource.EMPLOYEE_REFERRAL : UserSource.EMPLOYEE_REFERRAL_CHATBOT;
+        UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
+                companyId, profilePojo.getUserRecord().getMobile(),
+                referralScene, userSource);
+        if (referralRecordRecord != null) {
+            UserUserRecord userUserRecord1 = storeUserRecord(profilePojo, userSource,null,null,null);
+            if (referralRecordRecord != null && userUserRecord1 != null) {
+                referralRecordRecord.setUserId(userUserRecord1.getId());
+                userReferralRecordDao.updateRecord(referralRecordRecord);
+            }
+            return userUserRecord1;
+        } else {
+            throw ProfileException.PROGRAM_DOUBLE_CLICK;
+        }
+    }
     public UserUserRecord storeReferralUser(ProfilePojo profilePojo, int reference, int companyId) throws ProfileException {
 
         UserReferralRecordRecord referralRecordRecord  = userReferralRecordDao.insertReferralTypeIfNotExist(reference,
@@ -749,6 +767,7 @@ public class ProfileEntity {
             shortSource = (short) source.getValue();
         }
         profilePojo.getUserRecord().setSource(shortSource);
+        profilePojo.getUserRecord().setEmailVerified((byte)0);
         UserUserRecord userUserRecord = userDao.addRecord(profilePojo.getUserRecord());
 
         logger.info("mergeProfile userId:{}", userUserRecord.getId());
