@@ -349,7 +349,7 @@ public class TalentpoolEmailService {
             //校验gdpr
             userIdList=StringUtils.convertSetToList(talentPoolEntity.filterGRPD(companyId,StringUtils.convertListToSet(userIdList)));
             if(StringUtils.isEmptyList(userIdList)){
-                throw new CommonException(1,"该简历不可操作");
+                throw new CommonException(1,"该简历无法操作");
             }
             return sendResumeEmail(idList, userIdList, companyId, hrId,emailList);
         }else{
