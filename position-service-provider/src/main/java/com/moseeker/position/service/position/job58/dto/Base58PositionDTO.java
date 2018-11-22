@@ -1,44 +1,21 @@
 package com.moseeker.position.service.position.job58.dto;
 
-import com.moseeker.position.pojo.BasePositionDTO;
-
-import java.util.Map;
+import com.moseeker.position.pojo.Base58RequestDTO;
 
 /**
  * @author cjm
  * @date 2018-10-26 15:06
  **/
-public class Base58PositionDTO extends BasePositionDTO {
+public class Base58PositionDTO extends Base58RequestDTO{
 
-    private String app_key;
-    private String timestamp;
-    private String access_token;
     private String openid;
-    private Map<String, Object> paras;
-
-    public String getApp_key() {
-        return app_key;
-    }
-
-    public void setApp_key(String app_key) {
-        this.app_key = app_key;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getAccess_token() {
-        return access_token;
-    }
-
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
-    }
+    private Integer cate_id;
+    private Integer local_id;
+    private String title;
+    private String content;
+    private String phone;
+    private String email;
+    private String paras;
 
     public String getOpenid() {
         return openid;
@@ -48,22 +25,59 @@ public class Base58PositionDTO extends BasePositionDTO {
         this.openid = openid;
     }
 
-    public Map<String, Object> getParas() {
+    public Integer getCate_id() {
+        return cate_id;
+    }
+
+    public void setCate_id(Integer cate_id) {
+        this.cate_id = cate_id;
+    }
+
+    public Integer getLocal_id() {
+        return local_id;
+    }
+
+    public void setLocal_id(Integer local_id) {
+        this.local_id = local_id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getParas() {
         return paras;
     }
 
-    public void setParas(Map<String, Object> paras) {
+    public void setParas(String paras) {
         this.paras = paras;
-    }
-
-    @Override
-    public String toString() {
-        return "Base58PositionDTO{" +
-                "app_key='" + app_key + '\'' +
-                ", timestamp='" + timestamp + '\'' +
-                ", access_token='" + access_token + '\'' +
-                ", openid='" + openid + '\'' +
-                ", paras=" + paras +
-                '}';
     }
 }
