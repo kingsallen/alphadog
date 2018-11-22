@@ -835,8 +835,8 @@ public class CompanyController {
 
     @RequestMapping(value = "v1/gdpr-examination", method = RequestMethod.GET)
     @ResponseBody
-    public String getGDPRExamination(@RequestParam Integer appid, @RequestParam List<Integer> userIds,
-                                     @RequestParam Integer companyId) throws Exception {
+    public String getGDPRExamination(@RequestParam Integer appid, @RequestParam(value = "user_ids") List<Integer> userIds,
+                                     @RequestParam(value = "company_id") Integer companyId) throws Exception {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", appid);
