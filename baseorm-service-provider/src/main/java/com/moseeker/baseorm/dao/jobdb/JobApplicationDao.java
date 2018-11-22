@@ -354,7 +354,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 
 	public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> getAppdataByApplierIdListAndCompanyId(Set<Integer> idList, int companyId) {
 		List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> list=create.select(JobApplication.JOB_APPLICATION.POSITION_ID,JobApplication.JOB_APPLICATION.APPLIER_ID).from(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.ID.in(idList)).and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.in(idList)).and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
 				.fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
 		return list;
 	}

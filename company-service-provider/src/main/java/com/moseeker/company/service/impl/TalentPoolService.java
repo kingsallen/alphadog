@@ -653,6 +653,9 @@ public class TalentPoolService {
         if(validate==0){
             return ResponseUtils.fail(1,"该hr无权操作此简历");
         }
+        if(!this.validateGDPR(companyId,userId)){
+            return ResponseUtils.fail(1,"该简历无法操作");
+        }
         TalentpoolCommentRecord record=new TalentpoolCommentRecord();
         record.setCompanyId(companyId);
         record.setHrId(hrId);
@@ -668,6 +671,18 @@ public class TalentPoolService {
         list=this.handlerHrCommentData(list);
         talentPoolEntity.realTimeUpdateComment(userId);
         return ResponseUtils.success(list);
+    }
+    /*
+     校验jdpr
+     */
+    private boolean validateGDPR(int companyId,int userId){
+        Set<Integer> userSet=new HashSet<>();
+        userSet.add(userId);
+        Set<Integer> result=talentPoolEntity.filterGRPD(companyId,userSet);
+        if(!StringUtils.isEmptySet(result)){
+            return false;
+        }
+        return true;
     }
 
     @CounterIface
