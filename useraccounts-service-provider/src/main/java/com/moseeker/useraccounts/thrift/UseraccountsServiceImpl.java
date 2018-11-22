@@ -603,6 +603,8 @@ public class UseraccountsServiceImpl implements Iface {
 		}
 	}
 
+
+
 	@Override
 	public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
 
@@ -634,4 +636,6 @@ public class UseraccountsServiceImpl implements Iface {
 			throw new SysBIZException();
 		}
 	}
+
+
 }

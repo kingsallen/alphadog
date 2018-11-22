@@ -1400,7 +1400,8 @@ public class UserHrAccountService {
         }
         // 新增数据
         if (!StringUtils.isEmptyList(userEmployeeList)) {
-            employeeEntity.addEmployeeList(userEmployeeList);
+            employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
+
         }
         // 员工导入信息日志
         ValidateUtil vu = new ValidateUtil();
@@ -2016,6 +2017,7 @@ public class UserHrAccountService {
         hrInfo.setName(hrAccountDO.getUsername());
         hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
         hrInfo.setCompany(hrCompanyDO.getName());
+        hrInfo.setCompanyId(hrCompanyDO.getId());
     }
 
     /**

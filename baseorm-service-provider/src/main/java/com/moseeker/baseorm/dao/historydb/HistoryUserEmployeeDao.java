@@ -28,11 +28,6 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
         super(HISTORY_USER_EMPLOYEE, UserEmployeeDO.class);
    }
 
-   public UserEmployeeDO getUserEmployeeById(int employeeId){
-       return create.selectFrom(HistoryUserEmployee.HISTORY_USER_EMPLOYEE)
-               .where(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.ID.eq(employeeId))
-               .fetchOneInto(UserEmployeeDO.class);
-   }
 
 
    public List<HistoryUserEmployeeDO> getHistoryEmployeeByCompanyIds(List<Integer> compantIds){
@@ -56,4 +51,10 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
         return historyUserEmployees;
 
     }
+
+   public UserEmployeeDO getUserEmployeeById(int employeeId){
+       return create.selectFrom(HistoryUserEmployee.HISTORY_USER_EMPLOYEE)
+               .where(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.ID.eq(employeeId))
+               .fetchOneInto(UserEmployeeDO.class);
+   }
 }

@@ -752,7 +752,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 
         List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> list = create.select(JobPosition.JOB_POSITION.ID).from(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
-                .and(JobPosition.JOB_POSITION.STATUS.ne((byte)2))
+                .and(JobPosition.JOB_POSITION.STATUS.ne((byte)1))
                 .fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition.class);
         return list;
 
@@ -791,6 +791,15 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
     }
 
+
+    public List<JobPositionDO> getPositionListWithoutStatus(List<Integer> list) {
+        if (StringUtils.isEmptyList(list)) {
+            return null;
+        }
+        com.moseeker.common.util.query.Condition condition = new com.moseeker.common.util.query.Condition("id", list.toArray(), ValueOp.IN);
+        Query query = new Query.QueryBuilder().where(condition).buildQuery();
+        return this.getDatas(query);
+    }
     /**
      * 更新职位的红包活动状态
      * @param positions
@@ -811,14 +820,6 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             }
 
         }
-    }
 
-    public List<JobPositionDO> getPositionListWithoutStatus(List<Integer> list){
-        if(StringUtils.isEmptyList(list)){
-            return  null;
-        }
-        com.moseeker.common.util.query.Condition condition=new com.moseeker.common.util.query.Condition("id",list.toArray(),ValueOp.IN);
-        Query query=new Query.QueryBuilder().where(condition).buildQuery();
-        return this.getDatas(query);
     }
 }

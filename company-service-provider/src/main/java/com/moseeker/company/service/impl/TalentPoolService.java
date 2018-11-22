@@ -32,6 +32,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.company.bean.*;
+import com.moseeker.company.constant.TalentPublicStatus;
 import com.moseeker.company.constant.TalentStateEnum;
 import com.moseeker.company.constant.TalentpoolTagStatus;
 import com.moseeker.company.utils.ValidateTalent;
@@ -153,12 +154,12 @@ public class TalentPoolService {
              response(status:1,message:"xxxxxx")
     */
     @Transactional
-    public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId)throws TException{
+    public Response batchAddTalent(int hrId, Set<Integer> userIdList, int companyId,int isGdpr)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
         }
-        ValidateTalentBean bean=validateTalent.handlerApplierId(hrId,userIdList,companyId);
+        ValidateTalentBean bean=validateTalent.handlerApplierId(hrId,userIdList,companyId,isGdpr);
         Set<Integer> applierIdList=bean.getUserIdSet();
         Set<Integer> unUseList=bean.getUnUseUserIdSet();
         if(StringUtils.isEmptySet(applierIdList)){
@@ -195,20 +196,23 @@ public class TalentPoolService {
      处理所有的加入人才库
      */
     @CounterIface
-    public void addAllTalent(int hrId,Map<String,String> params,int companyId){
+    public void addAllTalent(int hrId,Map<String,String> params,int companyId,int isGdpr){
         try{
             tp.startTast(() -> {
                 int total=service.talentSearchNum(params);
                 if(total>0) {
                     int totalPageNum = (int) Math.ceil((double) total / 100);
                     for(int i=1;i<=totalPageNum;i++){
+                        if(isGdpr==1){
+                            params.put("is_gdpr", 1 + "");
+                        }
                         params.put("page_number", i + "");
                         params.put("page_size", 100 + "");
                         try {
                             List<Integer> userIdList = service.getTalentUserIdList(params);
                             if (!StringUtils.isEmptyList(userIdList)) {
                                 Set<Integer> userIdSet = this.talentPoolEntity.converListToSet(userIdList);
-                                this.batchAddTalent(hrId, userIdSet, companyId);
+                                this.batchAddTalent(hrId, userIdSet, companyId,isGdpr);
                             }
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);
@@ -351,6 +355,7 @@ public class TalentPoolService {
                     int totalPageNum=(int)Math.ceil((double)total/100);
                     Set<Integer> tagIdSet=this.talentPoolEntity.converListToSet(tagIdList);
                     for(int i=1;i<=totalPageNum;i++){
+
                         params.put("page_number", i + "");
                         params.put("page_size", 100 + "");
                             try {
@@ -849,7 +854,7 @@ public class TalentPoolService {
      所有选中的人才公开处理
      */
     @CounterIface
-    public void addAllTalentPublic(Map<String,String> params,int companyId,int hrId){
+    public void addAllTalentPublic(Map<String,String> params,int companyId,int hrId,int isGdpr){
         try{
             tp.startTast(() -> {
                 int validateFlag=validateCompany(companyId);
@@ -858,6 +863,9 @@ public class TalentPoolService {
                     if(total>0){
                         int totalPageNum=(int)Math.ceil((double)total/100);
                         for(int i=1;i<=totalPageNum;i++){
+                            if(isGdpr==1){
+                                params.put("is_gdpr", 1 + "");
+                            }
                             params.put("page_number", i + "");
                             params.put("page_size", 100 + "");
                                 try {
@@ -868,7 +876,7 @@ public class TalentPoolService {
                                             userIdSet.add(userId);
                                             try {
                                                 logger.info("========执行为{}公开的操作=====",JSON.toJSON(userIdSet));
-                                                Response res=this.AddbatchPublicTalent(hrId, companyId, userIdSet);
+                                                Response res=this.AddbatchPublicTalent(hrId, companyId, userIdSet,isGdpr);
                                                 logger.info("========执行为{}公开的操作的结果为{}=====",JSON.toJSON(userIdSet),JSON.toJSONString(res));
                                             }catch(Exception e){
                                                 logger.info(e.getMessage(),e);
@@ -900,7 +908,7 @@ public class TalentPoolService {
      */
 //    @UpdateEs(tableName = "talentpool_hr_talent", argsIndex = 2, argsName = "user_id")
     @CounterIface
-    public Response AddbatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList)throws TException{
+    public Response AddbatchPublicTalent(int hrId,int companyId,Set<Integer> userIdList,int isGdpr)throws TException{
         int flag=talentPoolEntity.validateHr(hrId,companyId);
         if(flag==0){
             return ResponseUtils.fail(1,"该hr不属于该company_id");
@@ -915,12 +923,15 @@ public class TalentPoolService {
         if(validateFlag==1){
             return ResponseUtils.fail(1,"该公司是付费普通账号，无法使用公开功能");
         }
-        int validate=this.validatePublic(hrId,userIdList);
-        if(validate==0){
-            return ResponseUtils.fail(1,"无法满足操作条件");
+        int validate=this.validatePublic(hrId,userIdList,isGdpr,companyId);
+        if(validate==TalentPublicStatus.TALENT_PUBLIC_IS_ERROR.getCode()){
+            return ResponseUtils.fail(TalentPublicStatus.TALENT_PUBLIC_IS_ERROR.getCode(),TalentPublicStatus.TALENT_PUBLIC_IS_ERROR.getMessage());
         }
-        if(validate==2){
-            return ResponseUtils.fail(1,"在公开的人员中存在已公开的人员");
+        if(validate==TalentPublicStatus.TALENT_PUBLIC_HAS_DO.getCode()){
+            return ResponseUtils.fail(TalentPublicStatus.TALENT_PUBLIC_HAS_DO.getCode(),TalentPublicStatus.TALENT_PUBLIC_HAS_DO.getMessage());
+        }
+        if(validate==TalentPublicStatus.TALENT_PUBLIC_NO_PASS_GDPR.getCode()){
+            return ResponseUtils.fail(TalentPublicStatus.TALENT_PUBLIC_NO_PASS_GDPR.getCode(),TalentPublicStatus.TALENT_PUBLIC_NO_PASS_GDPR.getMessage());
         }
         List<TalentpoolHrTalentRecord> list=new ArrayList<>();
         for(Integer userId:userIdList){
@@ -2333,18 +2344,24 @@ public class TalentPoolService {
     /*
       验证是否可以公开
      */
-    private  int validatePublic(int hrId,Set<Integer> userIdList){
+    private  int validatePublic(int hrId,Set<Integer> userIdList,int isGdpr,int companyId){
         List<Map<String,Object>> list=talentPoolEntity.getTalentpoolHrTalentByIdList(hrId,userIdList);
         if(!StringUtils.isEmptyList(list)&&list.size()==userIdList.size()){
             for(Map<String,Object> map:list){
                 byte ispublic= (byte) map.get("public");
                 if(ispublic==1){
-                    return 2;
+                    return TalentPublicStatus.TALENT_PUBLIC_HAS_DO.getCode();
+                }
+            }
+            if(isGdpr==1){
+                Set<Integer> idList=talentPoolEntity.filterGRPD(companyId,userIdList);
+                if(StringUtils.isEmptySet(idList)||idList.size()!=userIdList.size()){
+                    return TalentPublicStatus.TALENT_PUBLIC_NO_PASS_GDPR.getCode();
                 }
             }
             return 1;
         }
-        return 0;
+        return TalentPublicStatus.TALENT_PUBLIC_IS_ERROR.getCode();
     }
 
     /*

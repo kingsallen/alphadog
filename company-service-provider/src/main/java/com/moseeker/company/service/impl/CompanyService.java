@@ -4,15 +4,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
-import com.moseeker.baseorm.db.hrdb.tables.*;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeePosition;
+import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeSection;
+import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyFeatureRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.tool.QueryConvert;
@@ -34,6 +43,8 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.company.constant.ResultMessage;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
+import com.moseeker.company.exception.CompanyException;
+import com.moseeker.company.service.impl.vo.GDPRProtectedInfoVO;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -131,6 +142,12 @@ public class CompanyService {
 
     @Autowired
     private HrCompanyFeatureDao hrCompanyFeatureDao;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
+
+    @Autowired
+    private JobPositionDao positionDao;
 
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
@@ -1201,5 +1218,81 @@ public class CompanyService {
             return companyWechatDOList;
         }
         return new ArrayList<>();
+    }
+
+    /**
+     * 校验用户在指定的公司下触发GDPR隐私条框保护机制
+     * @param userIds 用户信息自己和
+     * @param companyId 公司信息集合
+     * @return
+     * @throws CompanyException
+     */
+    public List<GDPRProtectedInfoVO> validateGDPR(List<Integer> userIds, int companyId) throws CompanyException {
+        HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
+        if (companyConfDO == null || companyConfDO.getIsOpenGdpr() == 0) {
+            return userIds.stream().map(userId -> {
+                GDPRProtectedInfoVO gdprProtectedInfoVO = new GDPRProtectedInfoVO();
+                gdprProtectedInfoVO.setUserId(userId);
+                gdprProtectedInfoVO.setTrigger(false);
+                return gdprProtectedInfoVO;
+            }).collect(Collectors.toList());
+        }
+        List<JobApplication> applicationList = applicationDao.fetchByApplierId(userIds, companyId);
+        List<Integer> positionIdList = applicationList
+                .stream()
+                .map(JobApplication::getPositionId)
+                .collect(Collectors.toList());
+        List<JobPosition> positionList = positionDao.fetchPosition(positionIdList);
+
+        return userIds
+                .stream()
+                .map(userId -> {
+                    GDPRProtectedInfoVO gdprProtectedInfoVO = new GDPRProtectedInfoVO();
+                    gdprProtectedInfoVO.setUserId(userId);
+                    //查找该用户投递过的但是未被删除的职位。如果存在则表示不触发 GDPR 条款保护。
+                    Optional<JobPosition> NotDeletePositionOp = positionList
+                            .stream()
+                            .filter(jobPosition -> {
+                                Optional<JobApplication> optional = applicationList
+                                        .stream()
+                                        .filter(jobApplication -> jobApplication.getApplierId().equals(userId)
+                                                && jobApplication.getPositionId().equals(jobPosition.getId()))
+                                        .findAny();
+                                return optional.isPresent() && jobPosition.getStatus() != 1;
+
+                            })
+                            .findAny();
+                    if (NotDeletePositionOp.isPresent()) {
+                        gdprProtectedInfoVO.setTrigger(false);
+                    } else {
+                        gdprProtectedInfoVO.setTrigger(true);
+                    }
+                    return gdprProtectedInfoVO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 查询指定公司GDPR是否开启
+     * @param companyId 公司编号
+     * @return
+     */
+    public boolean fetchGDPRSwitch(int companyId) throws CompanyException {
+        HrCompanyConfDO companyConfDO = hrCompanyConfDao.getHrCompanyConfByCompanyId(companyId);
+        return companyConfDO != null && companyConfDO.getIsOpenGdpr() == 1;
+    }
+
+    /**
+     * 查询指定HR所属的公司GDPR是否开启
+     * @param hrId HR编号
+     * @return
+     * @throws CompanyException
+     */
+    public boolean fetchGDPRSwitchByHR(int hrId) throws CompanyException {
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        if (hrAccountDO == null || hrAccountDO.getCompanyId() == 0) {
+            throw CompanyException.COMPANY_HR_NOT_EXISTS;
+        }
+        return fetchGDPRSwitch(hrAccountDO.getCompanyId());
     }
 }

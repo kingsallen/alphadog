@@ -35,6 +35,9 @@ public class PaginationUtils {
         } else if (startIndex == totalRows) {
             startIndex = 0;
         }
+        if(startIndex < 0){
+            startIndex = 0;
+        }
         return startIndex;
     }
 }

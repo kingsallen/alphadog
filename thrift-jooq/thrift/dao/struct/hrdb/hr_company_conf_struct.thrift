@@ -33,4 +33,5 @@ struct HrCompanyConfDO {
     27: optional i8 mallSwitch,       //商城开关  0从未开通 1 已开通 2 开通过目前停用
     28: optional string mallGoodsMethod,     //商城商品领取规则
     29: optional i8 mallGoodsMethodState         //商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+    30: optional i8 isOpenGdpr
 }

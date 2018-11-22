@@ -46,6 +46,7 @@ import com.moseeker.thrift.gen.application.struct.JobApplication;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
+import com.moseeker.thrift.gen.company.struct.GDPRProtectedInfo;
 import com.moseeker.thrift.gen.config.ConfigSysPointsConfTpl;
 import com.moseeker.thrift.gen.config.HrAwardConfigTemplate;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
@@ -223,6 +224,7 @@ public class ProfileProcessBS {
     public Response processProfile(int companyId, int progressStatus, List<Integer> appIds, int accountId) throws Exception {
         logger.info("ProfileProcessBS processProfile companyId:{}, progressStatus:{}, appIds:{}, accountId:{}", companyId, progressStatus, appIds, accountId);
         Map<String,String> dataResult=new HashMap<>();
+        String message = "";
         try {
             if (appIds == null || appIds.size() == 0) {
                 return ResponseUtils
@@ -230,8 +232,39 @@ public class ProfileProcessBS {
             }
             // 对需要修改的进行权限验证
             List<ProcessValidationStruct> list=jobApplicationDao.getAuth(appIds, companyId, progressStatus);
+            logger.info("ProfileProcessBS list:{}", JSON.toJSONString(list));
             if (list!=null&&list.size()>0) {
-
+                List<Integer> applierIdList = list
+                        .stream()
+                        .map(ProcessValidationStruct::getApplier_id)
+                        .collect(Collectors.toList());
+                List<GDPRProtectedInfo> gdprProtectedInfos = companyService.validateGDPR(applierIdList, companyId);
+                logger.info("ProfileProcessBS gdprProtectedInfos:{}", JSON.toJSONString(gdprProtectedInfos));
+                if (gdprProtectedInfos != null && gdprProtectedInfos.size() > 0) {
+                    list = list
+                            .stream()
+                            .filter(processValidationStruct -> {
+                                Optional<GDPRProtectedInfo> optional = gdprProtectedInfos
+                                        .stream()
+                                        .filter(gdprProtectedInfo -> gdprProtectedInfo.getUserId()
+                                                == processValidationStruct.getApplier_id()
+                                                && !gdprProtectedInfo.isTrigger())
+                                        .findAny();
+                                return optional.isPresent();
+                            })
+                            .collect(Collectors.toList());
+                }
+                if(StringUtils.isEmptyList(list)){
+                    return ResponseUtils
+                            .fail("{\"status\":2159, \"message\":\"GDPR检验未通过\"}");
+                }
+                Set<Integer> userIds = list
+                        .stream()
+                        .map(ProcessValidationStruct::getApplier_id)
+                        .collect(Collectors.toSet());
+                if(userIds.size() != new HashSet<>(applierIdList).size()){
+                    message = "遵守GDPR规则，"+userIds.size()+"人申请状态修改成功！";
+                }
                 boolean processStatus = true;
                 int recruitOrder = 0;
                 UserHrAccount account = this.getAccount(accountId);
@@ -425,7 +458,9 @@ public class ProfileProcessBS {
                         .fail("{\"status\":2201, \"message\":\"参数错误\"}");
             }
 
-
+            if(StringUtils.isNotNullOrEmpty(message)){
+                return ResponseUtils.fail("{\"status\":2159, \"message\":"+message+"}");
+            }
             return ResponseUtils.success(dataResult);
         } catch (Exception e) {
             e.printStackTrace();

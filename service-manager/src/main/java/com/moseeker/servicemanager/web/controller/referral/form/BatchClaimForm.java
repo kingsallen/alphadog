@@ -61,4 +61,16 @@ public class BatchClaimForm {
     public void setVcode(String vcode) {
         this.vcode = vcode;
     }
+
+    @Override
+    public String toString() {
+        return "BatchClaimForm{" +
+                "appid=" + appid +
+                ", user=" + user +
+                ", referralRecordIds=" + referralRecordIds +
+                ", name='" + name + '\'' +
+                ", mobile='" + mobile + '\'' +
+                ", vcode='" + vcode + '\'' +
+                '}';
+    }
 }
