@@ -256,14 +256,14 @@ public class ProfileProcessBS {
                 }
                 if(StringUtils.isEmptyList(list)){
                     return ResponseUtils
-                            .fail("{\"status\":2159, \"message\":\"GDPR检验未通过\"}");
+                            .fail("{\"status\":2159, \"message\":\"该简历不可操作\"}");
                 }
                 Set<Integer> userIds = list
                         .stream()
                         .map(ProcessValidationStruct::getApplier_id)
                         .collect(Collectors.toSet());
                 if(userIds.size() != new HashSet<>(applierIdList).size()){
-                    message = "遵守GDPR规则，"+userIds.size()+"人申请状态修改成功！";
+                    message = userIds.size()+"人申请状态修改成功！";
                 }
                 boolean processStatus = true;
                 int recruitOrder = 0;
