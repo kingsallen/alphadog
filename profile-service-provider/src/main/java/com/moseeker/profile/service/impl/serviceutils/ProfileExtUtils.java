@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileBasicRecord;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileOtherRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.common.constants.Constant;
@@ -16,6 +17,7 @@ import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.profile.constants.EmailVerifyState;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.vo.FileNameData;
+import java.util.Map;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -84,7 +86,19 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 		profilePojo.setProfileRecord(profileProfileRecord);
 	}
 
-	/**
+    /**
+     * 生成内推来源的profile_profile数据
+     * @return profile_profile的json格式数据
+     */
+    public static void createReferralProfileOtherData(ProfilePojo profilePojo, Map<String, Object> otherMap) {
+        ProfileOtherRecord otherRecord = new ProfileOtherRecord();
+        otherRecord.setOther(JSON.toJSONString(otherMap));
+        otherRecord.setProfileId(0);
+        profilePojo.setOtherRecord(otherRecord);
+    }
+
+
+    /**
 	 * 添加附加信息
 	 * @param jsonObject 简历数据
 	 * @param fileNameData 附件信息
@@ -136,23 +150,43 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 	}
 
 	/**
-	 * 添加profile_basic性别的设置
-	 * @param profilePojo 简历数据
-	 * @param genderType 性别
-	 */
-	public static void createProfileBasic(ProfilePojo profilePojo, GenderType genderType) {
-		if (profilePojo != null && genderType != null) {
-			if (profilePojo.getBasicRecord() != null) {
-				if (profilePojo.getBasicRecord().getGender() == null || profilePojo.getBasicRecord().getGender() == 0) {
-					profilePojo.getBasicRecord().setGender((byte) genderType.getValue());
-				}
-			} else {
-				ProfileBasicRecord basicRecord = new ProfileBasicRecord();
-				basicRecord.setGender((byte) genderType.getValue());
-				profilePojo.setBasicRecord(basicRecord);
-			}
-		}
-	}
+     * 添加profile_basic性别的设置
+     * @param profilePojo 简历数据
+     * @param genderType 性别
+     */
+    public static void createProfileBasic(ProfilePojo profilePojo, GenderType genderType) {
+        if (profilePojo != null && genderType != null) {
+            if (profilePojo.getBasicRecord() != null) {
+                if (profilePojo.getBasicRecord().getGender() == null || profilePojo.getBasicRecord().getGender() == 0) {
+                    profilePojo.getBasicRecord().setGender((byte) genderType.getValue());
+                }
+            } else {
+                ProfileBasicRecord basicRecord = new ProfileBasicRecord();
+                basicRecord.setGender((byte) genderType.getValue());
+                profilePojo.setBasicRecord(basicRecord);
+            }
+        }
+    }
+    /**
+     * 添加profile_basic现居住地的设置
+     * @param profilePojo 简历数据
+     * @param cityCode 城市code
+     * @param cityName 城市name
+     */
+    public static void createProfileBasicCity(ProfilePojo profilePojo, int cityCode, String cityName) {
+        if (profilePojo != null) {
+            if (profilePojo.getBasicRecord() != null) {
+                profilePojo.getBasicRecord().setCityCode(cityCode);
+                profilePojo.getBasicRecord().setCityName(cityName);
+            } else {
+                ProfileBasicRecord basicRecord = new ProfileBasicRecord();
+                basicRecord.setCityCode(cityCode);
+                basicRecord.setCityName(cityName);
+                profilePojo.setBasicRecord(basicRecord);
+            }
+        }
+    }
+
 	/**
 	 * 设置用户信息
 	 * @param jsonObject 简历数据

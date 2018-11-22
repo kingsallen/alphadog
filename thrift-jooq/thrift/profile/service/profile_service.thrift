@@ -79,7 +79,7 @@ service ProfileServices {
     //简历解析
     profile_struct.ProfileParseResult parseFileStreamProfile(1:i32 employeeId, 2: string fileOriginName, 3: string fileName, 4: string absoluteName, 5: string fileData)throws (1: common_struct.BIZException e)
     //员工推荐简历
-    i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 referralType)throws (1: common_struct.BIZException e)
+    i32 employeeReferralProfile(1:i32 employeeId, 2:string name, 3:string mobile, 4: list<string> referralReasons, 5: i32 position, 6: i8 relationship, 7: string recomReasonText, 8: i8 referralType)throws (1: common_struct.BIZException e)
         //用户上传简历
      i32 updateUserProfile(1:i32 employeeId, 2:string name, 3:string mobile)throws (1: common_struct.BIZException e)
 

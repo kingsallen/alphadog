@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
 
-    private static final long serialVersionUID = -432756815;
+    private static final long serialVersionUID = -1653404982;
 
     /**
      * The reference instance of <code>candidatedb.candidate_company</code>
@@ -115,6 +115,16 @@ public class CandidateCompany extends TableImpl<CandidateCompanyRecord> {
      * The column <code>candidatedb.candidate_company.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
      */
     public final TableField<CandidateCompanyRecord, Integer> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)");
+
+    /**
+     * The column <code>candidatedb.candidate_company.position_wx_layer_qrcode</code>. 微信端职位详情微信公众号弹层0 未关闭  1 已关闭
+     */
+    public final TableField<CandidateCompanyRecord, Byte> POSITION_WX_LAYER_QRCODE = createField("position_wx_layer_qrcode", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "微信端职位详情微信公众号弹层0 未关闭  1 已关闭");
+
+    /**
+     * The column <code>candidatedb.candidate_company.position_wx_layer_profile</code>. 微信端职位详情微信简历完善度弹层0 未关闭  1 已关闭
+     */
+    public final TableField<CandidateCompanyRecord, Byte> POSITION_WX_LAYER_PROFILE = createField("position_wx_layer_profile", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "微信端职位详情微信简历完善度弹层0 未关闭  1 已关闭");
 
     /**
      * Create a <code>candidatedb.candidate_company</code> table reference

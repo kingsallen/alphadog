@@ -92,4 +92,11 @@ public class ReferralCompanyConfDao extends DAOImpl<ReferralCompanyConfRecord, c
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf> fetchByUpdateTime(Timestamp... values) {
         return fetch(ReferralCompanyConf.REFERRAL_COMPANY_CONF.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>referral_key_information IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf> fetchByReferralKeyInformation(Byte... values) {
+        return fetch(ReferralCompanyConf.REFERRAL_COMPANY_CONF.REFERRAL_KEY_INFORMATION, values);
+    }
 }

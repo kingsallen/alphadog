@@ -15,6 +15,8 @@ public class ReferralForm {
     private int position;
     private int referralType;
     private List<String> referralReasons;
+    private int relationship;
+    private String recomReasonText;
     private String fileName;
 
     public int getAppid() {
@@ -71,5 +73,21 @@ public class ReferralForm {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public int getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(int relationship) {
+        this.relationship = relationship;
+    }
+
+    public String getRecomReasonText() {
+        return recomReasonText;
+    }
+
+    public void setRecomReasonText(String recomReasonText) {
+        this.recomReasonText = recomReasonText;
     }
 }

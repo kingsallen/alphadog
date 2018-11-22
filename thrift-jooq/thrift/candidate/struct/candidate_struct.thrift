@@ -75,3 +75,16 @@ struct RecentPosition {
     2: optional string positionName,        //职位名称
     3: optional list<string> cities;        //职位城市
 }
+
+//职位详情弹层信息
+struct PositionLayerInfo {
+    1: optional i32 currentPositionCount,
+    2: optional i32 positionViewCount,
+    3: optional i32 profileCompleteness,
+    4: optional i32 isSubscribe,
+    5: optional string qrcode,
+    6: optional i32 type,
+    7: optional string name,
+    8: optional i32 positionWxLayerQrcode,
+    9: optional i32 positionWxLayerProfile
+}

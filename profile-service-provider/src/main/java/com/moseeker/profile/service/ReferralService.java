@@ -49,8 +49,8 @@ public interface ReferralService {
      * @return 推荐记录编号
      * @throws ProfileException 业务异常
      */
-    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType)
-            throws ProfileException, BIZException;
+    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position,
+                                byte relationship, String referralText,  byte referralType)throws ProfileException, BIZException;
 
     /**
      * 员工提交候选人关键信息

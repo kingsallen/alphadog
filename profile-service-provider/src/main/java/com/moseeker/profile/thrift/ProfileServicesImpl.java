@@ -184,10 +184,10 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
-                                       int position, byte referralType) throws BIZException, TException {
+                                       int position, byte relationship, String referralText, byte referralType) throws BIZException, TException {
         try {
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
-                    referralType);
+                    relationship,  referralText, referralType);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
