@@ -80,12 +80,13 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             String flag=(String) data.get("flag");
+            int isGdpr= (int) data.getOrDefault("is_gdpr",0);
             if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0){
                 List<Integer> userIdList = ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
                 if (StringUtils.isEmptyList(userIdList)) {
                     return ResponseLogNotification.fail(request, "userId不能为空");
                 }
-                Response result = service.batchCancelTalent(hrId, userIdList, companyId);
+                Response result = service.batchCancelTalent(hrId, userIdList, companyId,isGdpr);
                 return ResponseLogNotification.success(request, result);
             }else{
                 Map<String,String> params=new HashMap<>();
@@ -95,7 +96,7 @@ public class TalentpoolController {
                 for(String key:data.keySet()){
                     params.put(key,String.valueOf(data.get(key)));
                 }
-                service.cancleAllTalent(hrId,params,companyId);
+                service.cancleAllTalent(hrId,params,companyId,isGdpr);
                 Response res= ResponseUtils.success("");
                 return ResponseLogNotification.success(request, res);
             }

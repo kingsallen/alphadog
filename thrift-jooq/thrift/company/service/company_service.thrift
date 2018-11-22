@@ -83,7 +83,7 @@ service TalentpoolServices {
 
     common_struct.Response batchAddTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
-    common_struct.Response batchCancelTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
+    common_struct.Response batchCancelTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     common_struct.Response hrAddTag(1:i32 hr_id,2:i32 company_id,3:string name) throws (1: common_struct.BIZException e)
 
@@ -163,7 +163,7 @@ service TalentpoolServices {
 
     void  addAllTalentPrivate(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
 
-    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     common_struct.Response updateCompanyEmailBalance(1:i32 company_id,2:i32 balance) throws (1: common_struct.BIZException e)
 
