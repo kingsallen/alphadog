@@ -42,8 +42,15 @@ public class ValidateTalent {
         ValidateTalentBean bean=new ValidateTalentBean();
         Set<Integer>applierIdList=getHandlerUserIdList(hrId,userIdList,companyId);
         // todo 新增，通过简历搬家收藏的人才不能取消收藏
-        applierIdList = filterMvHouseApplierId(companyId,applierIdList,isGdpr);
+        applierIdList = filterMvHouseApplierId(companyId,applierIdList);
         Set<Integer> unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
+        //不是很喜欢这种写法，因为感觉太死板
+        if(!StringUtils.isEmptySet(applierIdList)&&isGdpr==1){
+            applierIdList=talentPoolEntity.filterGRPD(companyId,userIdList);
+            if(StringUtils.isEmptySet(applierIdList)){
+                bean.setFlag(1);
+            }
+        }
         bean.setUnUseUserIdSet(unUsedApplierIdList);
         bean.setUserIdSet(applierIdList);
         return bean;
@@ -51,7 +58,7 @@ public class ValidateTalent {
     public ValidateTalentBean handlerApplierId(int hrId, Set<Integer> userIdList, int companyId){
         ValidateTalentBean bean=new ValidateTalentBean();
         Set<Integer>applierIdList=getHandlerUserIdList(hrId,userIdList,companyId);
-        applierIdList = filterMvHouseApplierId(companyId,applierIdList,0);
+        applierIdList = filterMvHouseApplierId(companyId,applierIdList);
         // todo 新增，通过简历搬家收藏的人才不能取消收藏
         Set<Integer> unUsedApplierIdList= this.filterIdList(userIdList,applierIdList);
         bean.setUnUseUserIdSet(unUsedApplierIdList);
@@ -82,7 +89,7 @@ public class ValidateTalent {
      * @date  2018/9/11
      * @return  过滤后的userIdList
      */
-    private Set<Integer> filterMvHouseApplierId(int companyId,Set<Integer> userIdList,int isGdpr){
+    private Set<Integer> filterMvHouseApplierId(int companyId,Set<Integer> userIdList){
         if(userIdList == null || userIdList.isEmpty()){
             return userIdList;
         }
@@ -94,9 +101,6 @@ public class ValidateTalent {
                         && !ChannelType.MVHOUSEZHILIANUPLOAD.getOrigin("").equals(profileProfileDO.getOrigin())
                 ))
                 .map(ProfileProfileDO::getUserId).collect(Collectors.toSet());
-        if(isGdpr==1){
-            userIdList=talentPoolEntity.filterGRPD(companyId,userIdList);
-        }
         return userIdList;
     }
     /*

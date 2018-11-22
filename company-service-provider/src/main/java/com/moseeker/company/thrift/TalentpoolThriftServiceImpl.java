@@ -103,9 +103,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public Response batchCancelTalent(int hr_id, List<Integer> user_ids, int company_id) throws BIZException, TException {
+    public Response batchCancelTalent(int hr_id, List<Integer> user_ids, int company_id,int isGdpr) throws BIZException, TException {
         try{
-            return talentPoolService.batchCancelTalent(hr_id,ConvertListToSet(user_ids),company_id);
+            return talentPoolService.batchCancelTalent(hr_id,ConvertListToSet(user_ids),company_id,isGdpr);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
@@ -511,9 +511,9 @@ public class TalentpoolThriftServiceImpl implements TalentpoolServices.Iface {
     }
 
     @Override
-    public void cancleAllTalent(int hrId, Map<String, String> params, int companyId) throws BIZException, TException {
+    public void cancleAllTalent(int hrId, Map<String, String> params, int companyId,int isGdpr) throws BIZException, TException {
         try{
-            talentPoolService.cancleAllTalent(hrId,params,companyId);
+            talentPoolService.cancleAllTalent(hrId,params,companyId,isGdpr);
         }catch(Exception e){
             logger.error(e.getMessage(),e);
             throw ExceptionUtils.convertException(e);
