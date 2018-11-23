@@ -12,6 +12,9 @@ import com.moseeker.baseorm.db.historydb.tables.HistoryUserEmployee;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryUserEmployeeRecord;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
 * @author xxx
 * HistoryUserEmployeeDao 实现类 （groovy 生成）
@@ -25,6 +28,11 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
         super(HISTORY_USER_EMPLOYEE, UserEmployeeDO.class);
    }
 
+   public UserEmployeeDO getUserEmployeeById(int employeeId){
+       return create.selectFrom(HistoryUserEmployee.HISTORY_USER_EMPLOYEE)
+               .where(HistoryUserEmployee.HISTORY_USER_EMPLOYEE.ID.eq(employeeId))
+               .fetchOneInto(UserEmployeeDO.class);
+   }
 
    public List<HistoryUserEmployeeDO> getHistoryEmployeeByCompanyIds(List<Integer> compantIds){
         List<HistoryUserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)

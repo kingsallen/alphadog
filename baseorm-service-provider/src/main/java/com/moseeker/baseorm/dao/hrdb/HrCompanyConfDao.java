@@ -53,6 +53,21 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 
 	}
 
+	public int updateMallSwitch(int companyId, int state) {
+		return create.update(HrCompanyConf.HR_COMPANY_CONF)
+				.set(HrCompanyConf.HR_COMPANY_CONF.MALL_SWITCH, (byte)state)
+				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
+				.execute();
+	}
+
+	public int updateMallDefaultRule(int companyId, int state, String rule) {
+		return create.update(HrCompanyConf.HR_COMPANY_CONF)
+				.set(HrCompanyConf.HR_COMPANY_CONF.MALL_GOODS_METHOD_STATE, (byte)state)
+				.set(HrCompanyConf.HR_COMPANY_CONF.MALL_GOODS_METHOD, rule)
+				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
+				.execute();
+	}
+
 	public com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf getConfbyCompanyId(int id){
 		if(id == 0){
 			return null;
