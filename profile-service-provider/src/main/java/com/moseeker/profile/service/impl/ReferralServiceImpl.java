@@ -34,7 +34,12 @@ import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojo.profile.ProfileObj;
 import com.moseeker.entity.pojo.resume.ResumeObj;
+import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.domain.ResumeEntity;
+import com.moseeker.profile.domain.referral.EmployeeReferralProfile;
+import com.moseeker.profile.domain.referral.EmployeeReferralProfileFileUpload;
+import com.moseeker.profile.domain.referral.EmployeeReferralProfileInformation;
+import com.moseeker.profile.domain.referral.EmployeeReferralProfileMobot;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
@@ -118,6 +123,15 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Resource(type=ReferralProfileParser.class)
     private AbstractResumeFileParser abstractResumeFileParser;
+
+    @Resource(type=EmployeeReferralProfileFileUpload.class)
+    private EmployeeReferralProfile referralProfileFileUpload;
+
+    @Resource(type=EmployeeReferralProfileInformation.class)
+    private EmployeeReferralProfile referralProfileInformation;
+
+    @Resource(type=EmployeeReferralProfileMobot.class)
+    private EmployeeReferralProfile referralProfileMobot;
 
 
     @Autowired
@@ -221,10 +235,13 @@ public class ReferralServiceImpl implements ReferralService {
         if(applyLimit.get("state") != null){
             return applyLimit;
         }
-        List<Integer> positionIds = jobPositionDOS.stream().map(JobPositionDO::getId).collect(Collectors.toList());
-        List<MobotReferralResultVO> referralResultVOS = employeeReferralProfileAdaptor(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
-                referralInfoCacheDTO.getReferralReasons(), positionIds, referralInfoCacheDTO.getReferralType(),
-                ReferralRelationShipType.OTHER.getScene(), "", ReferralScene.ChatBot);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
+                referralInfoCacheDTO.getReferralReasons(), ReferralScene.ChatBot)
+                .buildPosition(ids)
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileMobot.employeeReferralProfileAdaptor(profileNotice);
+
         referralResultMap.put("list", JSON.toJSONString(referralResultVOS));
         return referralResultMap;
     }
@@ -273,106 +290,106 @@ public class ReferralServiceImpl implements ReferralService {
         return getReferralCache(employeeId);
     }
 
-    /**
-     * 控制是否验证推荐原因
-     * @param employeeId 员工编号
-     * @param name 推荐者名称
-     * @param mobile 手机号码
-     * @param referralReasons 推荐理由
-     * @param positionIds 职位编号
-     * @param referralType 推荐方式
-     * @author  cjm
-     * @date  2018/10/30
-     * @return 推荐记录编号
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public List<MobotReferralResultVO> employeeReferralProfileAdaptor(int employeeId, String name, String mobile, List<String> referralReasons,
-                                                        List<Integer> positionIds, byte referralType, byte shipType,
-                                                                      String referralText, ReferralScene referralScene){
-        validateReferralInfo(name, mobile, referralType, referralReasons);
+//    /**
+//     * 控制是否验证推荐原因
+//     * @param employeeId 员工编号
+//     * @param name 推荐者名称
+//     * @param mobile 手机号码
+//     * @param referralReasons 推荐理由
+//     * @param positionIds 职位编号
+//     * @param referralType 推荐方式
+//     * @author  cjm
+//     * @date  2018/10/30
+//     * @return 推荐记录编号
+//     */
+//    @Transactional(rollbackFor = Exception.class)
+//    public List<MobotReferralResultVO> employeeReferralProfileAdaptor(int employeeId, String name, String mobile, List<String> referralReasons,
+//                                                        List<Integer> positionIds, byte referralType, byte shipType,
+//                                                                      String referralText, ReferralScene referralScene){
+//        validateReferralInfo(name, mobile, referralType, referralReasons);
+//
+//        ReferralType type = getReferralType(referralType);
+//
+//        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
+//        if (employeeDO == null || employeeDO.getId() <= 0) {
+//            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
+//        }
+//
+//        List<JobPositionDO> jobPositions = getJobPositions(positionIds, employeeDO.getCompanyId());
+//        ProfilePojo profilePojo = getRedisProfilePojo(employeeId, name, mobile);
+//        return recommend(profilePojo, employeeDO, jobPositions, name, mobile, referralReasons,
+//                 type, shipType, referralText, referralScene);
+//    }
 
-        ReferralType type = getReferralType(referralType);
+//    /**
+//     * 获取redis中存的简历信息
+//     * @param  employeeId 员工id
+//     * @param  name 被推荐人姓名
+//     * @param  mobile 被推荐人手机号
+//     * @author  cjm
+//     * @date  2018/11/2
+//     * @return ProfilePojo
+//     */
+//    private ProfilePojo getRedisProfilePojo(int employeeId, String name, String mobile) {
+//        String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
+//                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
+//        if (StringUtils.isBlank(profilePojoStr)) {
+//            throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
+//        }
+//        JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
+//        ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
+//        profilePojo.getUserRecord().setName(name);
+//        profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
+//        return profilePojo;
+//    }
 
-        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
-        if (employeeDO == null || employeeDO.getId() <= 0) {
-            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
-        }
+//    /**
+//     * 获取申请的职位信息
+//     * @param  positionIds  职位ids
+//     * @param  companyId   公司id
+//     * @author  cjm
+//     * @date  2018/11/2
+//     * @return   职位信息list
+//     */
+//    private List<JobPositionDO> getJobPositions(List<Integer> positionIds, int companyId) {
+//        List<JobPositionDO> jobPositions = jobPositionDao.getPositionList(positionIds);
+//        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
+//        for(JobPositionDO jobPosition : jobPositions){
+//            if (jobPosition == null || jobPosition.getStatus() != PositionStatus.ACTIVED.getValue()) {
+//                throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
+//            }
+//            if (!companyIdList.contains(jobPosition.getCompanyId())) {
+//                throw ApplicationException.NO_PERMISSION_EXCEPTION;
+//            }
+//        }
+//        return jobPositions;
+//    }
+//
+//    private ReferralType getReferralType(byte referralType) {
+//        ReferralType type = ReferralType.instanceFromValue(referralType);
+//        if (type == null) {
+//            throw ApplicationException.APPLICATION_REFERRAL_TYPE_NOT_EXIST;
+//        }
+//        return type;
+//    }
 
-        List<JobPositionDO> jobPositions = getJobPositions(positionIds, employeeDO.getCompanyId());
-        ProfilePojo profilePojo = getRedisProfilePojo(employeeId, name, mobile);
-        return recommend(profilePojo, employeeDO, jobPositions, name, mobile, referralReasons,
-                 type, shipType, referralText, referralScene);
-    }
-
-    /**
-     * 获取redis中存的简历信息
-     * @param  employeeId 员工id
-     * @param  name 被推荐人姓名
-     * @param  mobile 被推荐人手机号
-     * @author  cjm
-     * @date  2018/11/2
-     * @return ProfilePojo
-     */
-    private ProfilePojo getRedisProfilePojo(int employeeId, String name, String mobile) {
-        String profilePojoStr = client.get(AppId.APPID_ALPHADOG.getValue(),
-                KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
-        if (StringUtils.isBlank(profilePojoStr)) {
-            throw ProfileException.REFERRAL_PROFILE_NOT_EXIST;
-        }
-        JSONObject jsonObject = JSONObject.parseObject(profilePojoStr);
-        ProfilePojo profilePojo = ProfilePojo.parseProfile(jsonObject, profileParseUtil.initParseProfileParam());
-        profilePojo.getUserRecord().setName(name);
-        profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
-        return profilePojo;
-    }
-
-    /**
-     * 获取申请的职位信息
-     * @param  positionIds  职位ids
-     * @param  companyId   公司id
-     * @author  cjm
-     * @date  2018/11/2
-     * @return   职位信息list
-     */
-    private List<JobPositionDO> getJobPositions(List<Integer> positionIds, int companyId) {
-        List<JobPositionDO> jobPositions = jobPositionDao.getPositionList(positionIds);
-        List<Integer> companyIdList = employeeEntity.getCompanyIds(companyId);
-        for(JobPositionDO jobPosition : jobPositions){
-            if (jobPosition == null || jobPosition.getStatus() != PositionStatus.ACTIVED.getValue()) {
-                throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
-            }
-            if (!companyIdList.contains(jobPosition.getCompanyId())) {
-                throw ApplicationException.NO_PERMISSION_EXCEPTION;
-            }
-        }
-        return jobPositions;
-    }
-
-    private ReferralType getReferralType(byte referralType) {
-        ReferralType type = ReferralType.instanceFromValue(referralType);
-        if (type == null) {
-            throw ApplicationException.APPLICATION_REFERRAL_TYPE_NOT_EXIST;
-        }
-        return type;
-    }
-
-    private void validateReferralInfo(String name, String mobile, byte referralType, List<String> referralReasons) {
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
-        if (referralReasons != null) {
-            String reasons = referralReasons.stream().collect(Collectors.joining(","));
-            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
-        }
-        validateUtil.addRequiredStringValidate("候选人姓名", name);
-        validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
-        validateUtil.addRequiredStringValidate("手机号码", mobile);
-        validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
-        validateUtil.addIntTypeValidate("推荐方式", (int)referralType, 1, 4);
-        String validateResult = validateUtil.validate();
-        if (StringUtils.isNotBlank(validateResult)) {
-            throw ProfileException.validateFailed(validateResult);
-        }
-    }
+//    private void validateReferralInfo(String name, String mobile, byte referralType, List<String> referralReasons) {
+//        ValidateUtil validateUtil = new ValidateUtil();
+//        validateUtil.addRequiredOneValidate("推荐理由", referralReasons);
+//        if (referralReasons != null) {
+//            String reasons = referralReasons.stream().collect(Collectors.joining(","));
+//            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+//        }
+//        validateUtil.addRequiredStringValidate("候选人姓名", name);
+//        validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
+//        validateUtil.addRequiredStringValidate("手机号码", mobile);
+//        validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
+//        validateUtil.addIntTypeValidate("推荐方式", (int)referralType, 1, 4);
+//        String validateResult = validateUtil.validate();
+//        if (StringUtils.isNotBlank(validateResult)) {
+//            throw ProfileException.validateFailed(validateResult);
+//        }
+//    }
 
 //    /**
 //     * 员工推荐
@@ -469,10 +486,12 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte relationship, String referralText,   byte referralType) throws ProfileException, BIZException {
-        List<Integer> positionIds = new ArrayList<>();
-        positionIds.add(position);
-        List<MobotReferralResultVO> referralResultVOS = employeeReferralProfileAdaptor(employeeId, name, mobile,
-                referralReasons, positionIds, referralType, referralType, referralText, ReferralScene.Referral);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
+                .buildPosition(position)
+                .buildRecomReason(relationship,referralText,referralType)
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileFileUpload.employeeReferralProfileAdaptor(profileNotice);
         checkReferralResult(referralResultVOS);
         List<Integer> referralIds = referralResultVOS.stream().map(MobotReferralResultVO::getId).collect(Collectors.toList());
         client.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.EMPLOYEE_REFERRAL_PROFILE.toString(), String.valueOf(employeeId));
@@ -488,56 +507,15 @@ public class ReferralServiceImpl implements ReferralService {
      */
     @Override
     public int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException {
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredStringValidate("姓名", candidate.getName());
-        validateUtil.addStringLengthValidate("姓名", candidate.getName(), 0, 100);
-        validateUtil.addRequiredStringValidate("手机号码", candidate.getMobile());
-        validateUtil.addRegExpressValidate("手机号码", candidate.getMobile(), FormCheck.getMobileExp());
-        validateUtil.addRequiredStringValidate("邮箱", candidate.getEmail());
-        validateUtil.addRegExpressValidate("邮箱", candidate.getEmail(), FormCheck.getEmailExp());
-        validateUtil.addStringLengthValidate("邮箱", candidate.getEmail(), null, 50);
-        validateUtil.addRequiredStringValidate("就职公司", candidate.getCompany());
-        validateUtil.addStringLengthValidate("就职公司", candidate.getCompany(), null, 200);
-        validateUtil.addIntTypeValidate("职位信息", candidate.getPosition(), 1, null);
-        validateUtil.addRequiredStringValidate("就职职位", candidate.getJob());
-        validateUtil.addStringLengthValidate("就职职位", candidate.getJob(), null, 200);
-        validateUtil.addRequiredOneValidate("推荐理由", candidate.getReasons());
-        if (candidate.getReasons() != null) {
-            String reasons = candidate.getReasons().stream().collect(Collectors.joining(","));
-            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
-        }
-
-        String result = validateUtil.validate();
-        if (StringUtils.isNotBlank(result)) {
-            throw ProfileException.validateFailed(result);
-        }
-
-        GenderType genderType = GenderType.instanceFromValue(candidate.getGender());
-        if (genderType == null) {
-            genderType = GenderType.Secret;
-        }
-
-        UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(employeeId);
-        if (employeeDO == null || employeeDO.getId() <= 0) {
-            throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
-        }
-        JobPositionDO jobPositionDO = jobPositionDao.getJobPositionById(candidate.getPosition());
-        if (jobPositionDO == null || jobPositionDO.getStatus() != PositionStatus.ACTIVED.getValue()) {
-            throw ApplicationException.APPLICATION_POSITION_NOTEXIST;
-        }
-        List<JobPositionDO> positions = new ArrayList();
-        positions.add(jobPositionDO);
-        List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
-        if (!companyIdList.contains(jobPositionDO.getCompanyId())) {
-            throw ApplicationException.NO_PERMISSION_EXCEPTION;
-        }
-
-        ProfilePojo profilePojo = new ProfilePojo();
-        ProfileExtUtils.createReferralProfileData(profilePojo);
-        ProfileExtUtils.createProfileBasic(profilePojo, genderType);
-        ProfileExtUtils.createReferralUser(profilePojo, candidate.getName(), candidate.getMobile(), candidate.getEmail());
-        List<MobotReferralResultVO> referralResultVOS = recommend(profilePojo, employeeDO, positions, candidate.getName(), candidate.getMobile(),
-                candidate.getReasons(), ReferralType.PostInfo, ReferralRelationShipType.OTHER.getScene(), "", ReferralScene.Referral);
+        EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
+                .EmployeeReferralProfileBuilder(employeeId, candidate.getName(), candidate.getMobile(),
+                    candidate.getReasons(), ReferralScene.Referral)
+                .buildPosition(candidate.getPosition())
+                .buildRecomReason(candidate.getRelationship(),candidate.getRecomReasonText(), candidate.getReferralType())
+                .buildKeyInformation(candidate.getEmail(), candidate.getDegree(), candidate.getCompany(), candidate.getJob(),
+                    candidate.getGender(), candidate.getCity())
+                .buildEmployeeReferralProfileNotice();
+        List<MobotReferralResultVO> referralResultVOS = referralProfileInformation.employeeReferralProfileAdaptor(profileNotice);
         if(com.moseeker.common.util.StringUtils.isEmptyList(referralResultVOS)){
             throw CommonException.PROGRAM_EXCEPTION;
         }
@@ -679,200 +657,200 @@ public class ReferralServiceImpl implements ReferralService {
 //            throw ProfileException.PROGRAM_EXCEPTION;
 //        }
 //    }
+//
+//    /**
+//     * 推荐执行的业务
+//     * @param employeeDO 员工数据
+//     * @param positions 职位数据
+//     * @param name 用户姓名
+//     * @param mobile 用户手机号码
+//     * @param referralReasons 推荐理由
+//     * @param referralType 推荐方式
+//     * @throws ProfileException 业务异常
+//     */
+//    private List<MobotReferralResultVO> recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, List<JobPositionDO> positions,
+//                          String name, String mobile, List<String> referralReasons,
+//                          ReferralType referralType, byte shipType, String referralText, ReferralScene referralScene)
+//            throws ProfileException {
+//        UserUserRecord userRecord = userAccountEntity.getReferralUser(
+//                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId(), referralScene);
+//        int userId;
+//        int attachmentId=0;
+//        if (userRecord != null) {
+//            logger.info("recommend userRecord.id:{}", userRecord.getId());
+//            UserUserRecord userUserRecord = new UserUserRecord();
+//            userUserRecord.setId(userRecord.getId());
+//            boolean flag = false;
+//            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(name)) {
+//                userRecord.setName(name);
+//                userUserRecord.setName(name);
+//                flag = true;
+//            }
+//            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
+//                userRecord.setMobile(Long.valueOf(mobile));
+//                userUserRecord.setMobile(Long.valueOf(mobile));
+//                flag = true;
+//            }
+//            if (flag) {
+//                userAccountEntity.updateUserRecord(userUserRecord);
+//            }
+//            userId = userRecord.getId();
+//            profilePojo.setUserRecord(userRecord);
+//            if (StringUtils.isBlank(userRecord.getUsername())) {
+//                if (profilePojo.getProfileRecord() != null) {
+//                    profilePojo.getProfileRecord().setUserId(userRecord.getId());
+//                }
+//                ReferralLog logRecord = referralEntity.fetchReferralLog(employeeDO.getId(), userId);
+//                int id = 0;
+//                if(logRecord != null){
+//                    id = logRecord.getAttementId();
+//                }
+//                attachmentId = getAttachmentId(profilePojo, userRecord.getId(),id, referralScene);
+//
+//                tp.startTast(() -> {
+//                    companyTagService.handlerCompanyTagByUserId(userId);
+//                    return true;
+//                });
+//            }
+//        } else {
+//            userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId(), referralScene);
+//            profilePojo.getProfileRecord().setUserId(userRecord.getId());
+//            userId = userRecord.getId();
+//            ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
+//            ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
+//            attachmentId = attachmentRecord.getId();
+//            tp.startTast(() -> {
+//                companyTagService.handlerCompanyTagByUserId(userId);
+//                return true;
+//            });
+//        }
+//        int tempAttachmentId = attachmentId;
+//        int origin = referralScene.getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
+//                ApplicationSource.EMPLOYEE_CHATBOT.getValue();
+//        List<Integer> positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());
+//        List<MobotReferralResultVO> resultVOS = new ArrayList<>();
+//        CountDownLatch countDownLatch = new CountDownLatch(positionIds.size());
+//        for(JobPositionDO jobPositionDO : positions){
+//            tp.startTast(() -> {
+//                handleRecommend(employeeDO, userId, jobPositionDO, name, origin, referralType,referralReasons, mobile,
+//                        resultVOS, countDownLatch, tempAttachmentId, shipType,  referralText);
+//                return 0;
+//            });
+//        }
+//
+//        try {
+//            countDownLatch.await(60, TimeUnit.SECONDS);
+//             return resultVOS;
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            throw ProfileException.PROGRAM_EXCEPTION;
+//        }
+//    }
 
-    /**
-     * 推荐执行的业务
-     * @param employeeDO 员工数据
-     * @param positions 职位数据
-     * @param name 用户姓名
-     * @param mobile 用户手机号码
-     * @param referralReasons 推荐理由
-     * @param referralType 推荐方式
-     * @throws ProfileException 业务异常
-     */
-    private List<MobotReferralResultVO> recommend(ProfilePojo profilePojo, UserEmployeeDO employeeDO, List<JobPositionDO> positions,
-                          String name, String mobile, List<String> referralReasons,
-                          ReferralType referralType, byte shipType, String referralText, ReferralScene referralScene)
-            throws ProfileException {
-        UserUserRecord userRecord = userAccountEntity.getReferralUser(
-                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId(), referralScene);
-        int userId;
-        int attachmentId=0;
-        if (userRecord != null) {
-            logger.info("recommend userRecord.id:{}", userRecord.getId());
-            UserUserRecord userUserRecord = new UserUserRecord();
-            userUserRecord.setId(userRecord.getId());
-            boolean flag = false;
-            if (StringUtils.isBlank(userRecord.getName()) || !userRecord.getName().equals(name)) {
-                userRecord.setName(name);
-                userUserRecord.setName(name);
-                flag = true;
-            }
-            if (userRecord.getMobile() == null || userRecord.getMobile() == 0) {
-                userRecord.setMobile(Long.valueOf(mobile));
-                userUserRecord.setMobile(Long.valueOf(mobile));
-                flag = true;
-            }
-            if (flag) {
-                userAccountEntity.updateUserRecord(userUserRecord);
-            }
-            userId = userRecord.getId();
-            profilePojo.setUserRecord(userRecord);
-            if (StringUtils.isBlank(userRecord.getUsername())) {
-                if (profilePojo.getProfileRecord() != null) {
-                    profilePojo.getProfileRecord().setUserId(userRecord.getId());
-                }
-                ReferralLog logRecord = referralEntity.fetchReferralLog(employeeDO.getId(), userId);
-                int id = 0;
-                if(logRecord != null){
-                    id = logRecord.getAttementId();
-                }
-                attachmentId = getAttachmentId(profilePojo, userRecord.getId(),id, referralScene);
+//    private int getAttachmentId(ProfilePojo profilePojo, Integer userId, int tempId, ReferralScene referralScene) {
+//       int attachmentId;
+//       // mobot 在缓存简历信息时已经创建虚拟用户，所以这里不再创建合并
+//       if(referralScene.getScene() != ReferralScene.ChatBot.getScene()){
+//           attachmentId = profileEntity.mergeProfileReferral(profilePojo, userId,tempId);
+//       }else {
+//           ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
+//           ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
+//           attachmentId = attachmentRecord.getId();
+//       }
+//       return attachmentId;
+//    }
 
-                tp.startTast(() -> {
-                    companyTagService.handlerCompanyTagByUserId(userId);
-                    return true;
-                });
-            }
-        } else {
-            userRecord = profileEntity.storeReferralUser(profilePojo, employeeDO.getId(), employeeDO.getCompanyId(), referralScene);
-            profilePojo.getProfileRecord().setUserId(userRecord.getId());
-            userId = userRecord.getId();
-            ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
-            ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
-            attachmentId = attachmentRecord.getId();
-            tp.startTast(() -> {
-                companyTagService.handlerCompanyTagByUserId(userId);
-                return true;
-            });
-        }
-        int tempAttachmentId = attachmentId;
-        int origin = referralScene.getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
-                ApplicationSource.EMPLOYEE_CHATBOT.getValue();
-        List<Integer> positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());
-        List<MobotReferralResultVO> resultVOS = new ArrayList<>();
-        CountDownLatch countDownLatch = new CountDownLatch(positionIds.size());
-        for(JobPositionDO jobPositionDO : positions){
-            tp.startTast(() -> {
-                handleRecommend(employeeDO, userId, jobPositionDO, name, origin, referralType,referralReasons, mobile,
-                        resultVOS, countDownLatch, tempAttachmentId, shipType,  referralText);
-                return 0;
-            });
-        }
+//    /**
+//     * 该方法的目的是给线程中的业务加上事务
+//     * @author  cjm
+//     * @date  2018/11/4
+//     */
+//    @Transactional(rollbackFor = Exception.class)
+//    protected void handleRecommend(UserEmployeeDO employeeDO, int userId, JobPositionDO jobPositionDO, String name,
+//                                   int origin, ReferralType referralType, List<String> referralReasons, String mobile,
+//                                   List<MobotReferralResultVO> resultVOS, CountDownLatch countDownLatch,
+//                                   int attachmentId, byte shipType, String referralText)
+//            throws TException,EmployeeException {
+//        MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
+//        referralResultVO.setPosition_id(jobPositionDO.getId());
+//        referralResultVO.setTitle(jobPositionDO.getTitle());
+//        try {
+//            int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, attachmentId, jobPositionDO.getId(),
+//                    referralType);
+//            JobApplication jobApplication = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(), name, origin, employeeDO.getSysuserId());
+//            Response response = applicationService.postApplication(jobApplication);
+//            int applicationId = 0;
+//            if (response.getStatus() == 0) {
+//                referralResultVO.setSuccess(true);
+//                JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
+//                applicationId = jsonObject1.getInteger("jobApplicationId");
+//            }else {
+//                referralResultVO.setSuccess(false);
+//            }
+//            referralEntity.logReferralOperation(jobPositionDO.getId(), applicationId, referralReasons,
+//                    mobile, employeeDO, userId, shipType, referralText);
+//            addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), referralType);
+//            referralResultVO.setId(referralId);
+//            resultVOS.add(referralResultVO);
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            referralResultVO.setReason(e.getMessage());
+//            referralResultVO.setSuccess(false);
+//            resultVOS.add(referralResultVO);
+//            throw e;
+//        }finally {
+//            countDownLatch.countDown();
+//        }
+//    }
 
-        try {
-            countDownLatch.await(60, TimeUnit.SECONDS);
-             return resultVOS;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ProfileException.PROGRAM_EXCEPTION;
-        }
-    }
-
-    private int getAttachmentId(ProfilePojo profilePojo, Integer userId, int tempId, ReferralScene referralScene) {
-       int attachmentId;
-       // mobot 在缓存简历信息时已经创建虚拟用户，所以这里不再创建合并
-       if(referralScene.getScene() != ReferralScene.ChatBot.getScene()){
-           attachmentId = profileEntity.mergeProfileReferral(profilePojo, userId,tempId);
-       }else {
-           ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
-           ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
-           attachmentId = attachmentRecord.getId();
-       }
-       return attachmentId;
-    }
-
-    /**
-     * 该方法的目的是给线程中的业务加上事务
-     * @author  cjm
-     * @date  2018/11/4
-     */
-    @Transactional(rollbackFor = Exception.class)
-    protected void handleRecommend(UserEmployeeDO employeeDO, int userId, JobPositionDO jobPositionDO, String name,
-                                   int origin, ReferralType referralType, List<String> referralReasons, String mobile,
-                                   List<MobotReferralResultVO> resultVOS, CountDownLatch countDownLatch,
-                                   int attachmentId, byte shipType, String referralText)
-            throws TException,EmployeeException {
-        MobotReferralResultVO referralResultVO = new MobotReferralResultVO();
-        referralResultVO.setPosition_id(jobPositionDO.getId());
-        referralResultVO.setTitle(jobPositionDO.getTitle());
-        try {
-            int referralId = referralEntity.logReferralOperation(employeeDO.getId(), userId, attachmentId, jobPositionDO.getId(),
-                    referralType);
-            JobApplication jobApplication = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(), name, origin, employeeDO.getSysuserId());
-            Response response = applicationService.postApplication(jobApplication);
-            int applicationId = 0;
-            if (response.getStatus() == 0) {
-                referralResultVO.setSuccess(true);
-                JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
-                applicationId = jsonObject1.getInteger("jobApplicationId");
-            }else {
-                referralResultVO.setSuccess(false);
-            }
-            referralEntity.logReferralOperation(jobPositionDO.getId(), applicationId, referralReasons,
-                    mobile, employeeDO, userId, shipType, referralText);
-            addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), referralType);
-            referralResultVO.setId(referralId);
-            resultVOS.add(referralResultVO);
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            referralResultVO.setReason(e.getMessage());
-            referralResultVO.setSuccess(false);
-            resultVOS.add(referralResultVO);
-            throw e;
-        }finally {
-            countDownLatch.countDown();
-        }
-    }
-
-    private JobApplication createJobApplication(int userId, int companyId, int positionId, String name, int origin, int employeeSysUserId) {
-        JobApplication jobApplication = new JobApplication();
-        jobApplication.setApp_tpl_id(userId);
-        jobApplication.setCompany_id(companyId);
-        jobApplication.setAppid(0);
-        jobApplication.setApplier_id(userId);
-        jobApplication.setPosition_id(positionId);
-        jobApplication.setApplier_name(name);
-        jobApplication.setOrigin(origin);
-        jobApplication.setRecommender_user_id(employeeSysUserId);
-        jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
-        return jobApplication;
-    }
-
-    private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
-                                    int positionId, ReferralType referralType) throws ApplicationException {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("employeeId", employeeDO.getId());
-            jsonObject.put("companyId", employeeDO.getCompanyId());
-            jsonObject.put("positionId", positionId);
-            jsonObject.put("berecomUserId", userId);
-            jsonObject.put("applicationId", applicationId);
-            jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
-            MessageProperties mp = new MessageProperties();
-            mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
-            mp.setReceivedExchange("user_action_topic_exchange");
-            logger.info("");
-            if (!referralType.equals(ReferralType.PostInfo)) {
-                jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
-                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-            } else {
-                jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
-                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
-                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-            }
-
-            com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
-                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
-
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
-            throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
-        }
-
-    }
+//    private JobApplication createJobApplication(int userId, int companyId, int positionId, String name, int origin, int employeeSysUserId) {
+//        JobApplication jobApplication = new JobApplication();
+//        jobApplication.setApp_tpl_id(userId);
+//        jobApplication.setCompany_id(companyId);
+//        jobApplication.setAppid(0);
+//        jobApplication.setApplier_id(userId);
+//        jobApplication.setPosition_id(positionId);
+//        jobApplication.setApplier_name(name);
+//        jobApplication.setOrigin(origin);
+//        jobApplication.setRecommender_user_id(employeeSysUserId);
+//        jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+//        return jobApplication;
+//    }
+//
+//    private void addRecommandReward(UserEmployeeDO employeeDO, int userId, int applicationId,
+//                                    int positionId, ReferralType referralType) throws ApplicationException {
+//        try {
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("employeeId", employeeDO.getId());
+//            jsonObject.put("companyId", employeeDO.getCompanyId());
+//            jsonObject.put("positionId", positionId);
+//            jsonObject.put("berecomUserId", userId);
+//            jsonObject.put("applicationId", applicationId);
+//            jsonObject.put("appid", AppId.APPID_ALPHADOG.getValue());
+//            MessageProperties mp = new MessageProperties();
+//            mp.setAppId(String.valueOf(AppId.APPID_ALPHADOG.getValue()));
+//            mp.setReceivedExchange("user_action_topic_exchange");
+//            logger.info("");
+//            if (!referralType.equals(ReferralType.PostInfo)) {
+//                jsonObject.put("templateId", Constant.RECRUIT_STATUS_UPLOAD_PROFILE);
+//                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+//                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+//            } else {
+//                jsonObject.put("templateId", Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
+//                amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
+//                        MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
+//            }
+//
+//            com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
+//            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
+//                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
+//
+//        } catch (Exception e) {
+//            logger.error(e.getMessage(), e);
+//            throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
+//        }
+//
+//    }
 
     private ProfileDocParseResult parseResult(int employeeId, String fileName, String fileData,
                                               FileNameData fileNameData) throws ProfileException {

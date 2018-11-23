@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class CandidateInfo {
 
-    private int appid;
+    private List<String> reasons;
     private int position;
     private String name;
     private byte gender;
@@ -20,15 +20,12 @@ public class CandidateInfo {
     private String email;
     private String company;
     private String job;
-    private List<String> reasons;
+    private int degree;
+    private String city;
+    private String recomReasonText;
+    private byte relationship;
+    private byte referralType;
 
-    public int getAppid() {
-        return appid;
-    }
-
-    public void setAppid(int appid) {
-        this.appid = appid;
-    }
 
     public int getPosition() {
         return position;
@@ -109,5 +106,45 @@ public class CandidateInfo {
                     .collect(Collectors.toList());
         }
         this.reasons = reasons;
+    }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getRecomReasonText() {
+        return recomReasonText;
+    }
+
+    public void setRecomReasonText(String recomReasonText) {
+        this.recomReasonText = recomReasonText;
+    }
+
+    public byte getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(byte relationship) {
+        this.relationship = relationship;
+    }
+
+    public byte getReferralType() {
+        return referralType;
+    }
+
+    public void setReferralType(byte referralType) {
+        this.referralType = referralType;
     }
 }

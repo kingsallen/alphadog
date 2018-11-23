@@ -211,7 +211,7 @@ public class ReferralEntity {
         }
     }
 
-    public void logReferralOperation(int position, int applicationId,  List<String> referralReasons,String mobile,
+    public void logReferralOperation(int positionId, int applicationId,  List<String> referralReasons,String mobile,
                                      UserEmployeeDO employeeDO, int presenteeUserId, byte shipType, String referralText) {
         ReferralRecomEvaluationRecord evaluationRecord = new ReferralRecomEvaluationRecord();
         evaluationRecord.setAppId(applicationId);
@@ -221,7 +221,7 @@ public class ReferralEntity {
         evaluationRecord.setMobile(mobile);
         evaluationRecord.setPresenteeUserId(presenteeUserId);
         evaluationRecord.setPostUserId(employeeDO.getSysuserId());
-        evaluationRecord.setPositionId(position);
+        evaluationRecord.setPositionId(positionId);
         recomEvaluationDao.insertIfNotExist(evaluationRecord);
     }
 
@@ -638,6 +638,11 @@ public class ReferralEntity {
 
         return data;
 
+    }
+
+
+    public List<ReferralRecomEvaluationRecord> fetchEvaluationListByUserId(int userId, List<Integer> appidList){
+        return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
     }
 
 }

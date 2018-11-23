@@ -35,13 +35,13 @@ public class EmployeeReferralProfileNotice {
     private byte gender;
     private String city_name;
     private String currentPosition;
-    private String degree;
+    private int degree;
     private String companyBrand;
     private ReferralScene referralScene;
 
     private EmployeeReferralProfileNotice(int employeeId, String name, String mobile, List<String> referralReasons,
                                          List<Integer> positionIds, byte relationship, String referralText, ReferralType referralType,
-                                         byte gender, String email, String city_name, String currentPosition, String degree, String companyBrand,
+                                         byte gender, String email, String city_name, String currentPosition, int degree, String companyBrand,
                                           ReferralScene referralScene) {
         this.employeeId = employeeId;
         this.name = name;
@@ -78,18 +78,17 @@ public class EmployeeReferralProfileNotice {
         private String email;
         private String city_name;
         private String currentPosition;
-        private String degree;
+        private int degree;
         private String companyBrand;
         private ReferralScene referralScene;
 
-        public EmployeeReferralProfileBuilder buildBase(int employeeId, String name, String mobile, List<String> referralReasons,
+        public EmployeeReferralProfileBuilder (int employeeId, String name, String mobile, List<String> referralReasons,
                 ReferralScene referralScene) {
             this.employeeId = employeeId;
             this.name= name;
             this.mobile = mobile;
             this.referralReasons = referralReasons;
             this.referralScene = referralScene;
-            return this;
         }
 
         public EmployeeReferralProfileBuilder buildRecomReason(byte relationship, String referralText, byte referralType) {
@@ -103,7 +102,7 @@ public class EmployeeReferralProfileNotice {
             return this;
         }
 
-        public EmployeeReferralProfileBuilder buildKeyInformation(String email, String degree, String companyBrand,
+        public EmployeeReferralProfileBuilder buildKeyInformation(String email, int degree, String companyBrand,
                                                                   String currentPosition, byte gender, String city_name) {
             this.email = email;
             this.degree = degree;
@@ -246,11 +245,11 @@ public class EmployeeReferralProfileNotice {
         this.currentPosition = currentPosition;
     }
 
-    public String getDegree() {
+    public int getDegree() {
         return degree;
     }
 
-    public void setDegree(String degree) {
+    public void setDegree(int degree) {
         this.degree = degree;
     }
 

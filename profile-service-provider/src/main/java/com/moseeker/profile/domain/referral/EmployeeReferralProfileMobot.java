@@ -19,9 +19,9 @@ public class EmployeeReferralProfileMobot extends EmployeeReferralProfile {
     @Autowired
     ProfileEntity profileEntity;
 
+
     @Override
     protected void validateReferralInfo(EmployeeReferralProfileNotice profileNotice) {
-
     }
 
     @Override
@@ -36,5 +36,6 @@ public class EmployeeReferralProfileMobot extends EmployeeReferralProfile {
         ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
         attachmentId = attachmentRecord.getId();
     }
+
 
 }

@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRe
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import java.sql.Timestamp;
+import java.util.List;
 import org.jooq.Configuration;
 import org.jooq.Param;
 import static org.jooq.impl.DSL.*;
@@ -90,5 +91,15 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
                 .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
                 .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(referenceId))
                 .execute();
+    }
+
+
+    public List<ReferralRecomEvaluationRecord> getEvaluationListByUserId(int userId, List<Integer> appidList){
+        List<ReferralRecomEvaluationRecord> evaluationRecords = using(configuration())
+                .selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
+                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.APP_ID.in(appidList))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(userId))
+                .fetch();
+        return evaluationRecords;
     }
 }

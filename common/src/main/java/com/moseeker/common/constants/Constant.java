@@ -308,5 +308,7 @@ public final class Constant {
     public static final String WORD_DOCX = "docx";
     public static final String WORD_PDF = ".pdf";
 
+    public static final int ELASTIC_LAYER_QRCODE = 0;
+    public static final int ELASTIC_LAYER_PROFILE = 1;
 
 }

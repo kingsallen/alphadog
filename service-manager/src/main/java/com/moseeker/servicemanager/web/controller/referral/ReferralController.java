@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
+import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
@@ -131,6 +132,64 @@ public class ReferralController {
     }
 
     /**
+     * 获取该候选人员工内推理由
+     * @param evaluation
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/evaluation", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfile(@RequestBody Evaluation evaluation, HttpServletRequest request) throws Exception {
+        if (StringUtils.isBlank(String.valueOf(evaluation.getAppid()))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        List<ReferralReasonInfo> result = referralService.getReferralReason(evaluation.getUserId(), evaluation.getCompanyId(), evaluation.getHrId());
+        List<com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo> resultList = new ArrayList<>();
+        if (result != null && result.size() > 0) {
+            resultList = result.stream().map(tab -> {
+                com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo info =
+                        new com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo();
+                BeanUtils.copyProperties(tab, info);
+                return info;
+            }).collect(Collectors.toList());
+        }
+        return Result.success(resultList).toJson();
+
+    }
+
+    /**
+     * 获取该候选人员工内推理由
+     * @param companyId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/conf/information", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralProfile(@RequestParam(value = "company_id",required = true) Integer companyId,HttpServletRequest request) throws Exception {
+        if (StringUtils.isBlank(request.getParameter("appid"))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        int result = referralService.fetchKeyInformationStatus(companyId);
+        return Result.success(result).toJson();
+
+    }
+
+    /**
+     * 获取该候选人员工内推理由
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/conf/information", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralKeyInformation(@RequestBody KeyInformation key, HttpServletRequest request) throws Exception {
+        if (StringUtils.isBlank(String.valueOf(key.getAppid()))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        referralService.handerKeyInformationStatus(key.getCompanyId(), key.getKeyInformation());
+        return Result.success("").toJson();
+
+    }
+    /**
      * 员工删除上传的推荐简历
      * @param id 员工编号
      * @return 推荐结果
@@ -171,7 +230,7 @@ public class ReferralController {
 
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
             BeanUtils.copyProperties(form, candidateInfoStruct);
-            candidateInfoStruct.setPositionId(form.getPosition());
+            candidateInfoStruct.setPosition(form.getPosition());
             candidateInfoStruct.setReasons(form.getReferralReasons());
             int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
             return Result.success(referralLogId).toJson();

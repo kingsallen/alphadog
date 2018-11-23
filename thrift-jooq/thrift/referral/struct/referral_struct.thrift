@@ -70,3 +70,10 @@ struct ActivityDTO {
     19: optional i32 actualTotal,
     20: optional list<i32> positionIds,
 }
+
+struct ReferralReasonInfo{
+    1: optional i32 id,
+    2: optional list<string> referralReasons,
+    3: optional i32 relationship,
+    4: optional string recomReasonText
+}

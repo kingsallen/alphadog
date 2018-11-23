@@ -5,17 +5,20 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.thrift.gen.referral.struct.Bonus;
+import com.moseeker.thrift.gen.referral.struct.BonusList;
+import com.moseeker.thrift.gen.referral.struct.RedPacket;
+import com.moseeker.thrift.gen.referral.struct.RedPackets;
+import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
+import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
+import com.moseeker.useraccounts.service.impl.vo.*;
 import java.util.ArrayList;
 import java.util.List;
-import com.moseeker.thrift.gen.referral.struct.*;
-import com.moseeker.useraccounts.exception.UserAccountException;
-import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -96,5 +99,33 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public List<ReferralReasonInfo> getReferralReason(int userId, int companyId, int hrId) throws BIZException, TException {
+        try {
+            List<com.moseeker.useraccounts.service.impl.vo.ReferralReasonInfo> result = referralService.getReferralReasonInfo(userId, companyId, hrId);
+            List<ReferralReasonInfo> referralReasonInfos =new ArrayList<>();
+            if(!StringUtils.isEmptyList(result)) {
+                referralReasonInfos = result.stream().map(m -> {
+                    ReferralReasonInfo info = new ReferralReasonInfo();
+                    BeanUtils.copyProperties(m, info);
+                    return info;
+                }).collect(Collectors.toList());
+            }
+            return referralReasonInfos;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public void handerKeyInformationStatus(int companyId, int keyInformation) throws BIZException, TException {
+
+    }
+
+    @Override
+    public int fetchKeyInformationStatus(int companyId) throws BIZException, TException {
+        return 0;
     }
 }

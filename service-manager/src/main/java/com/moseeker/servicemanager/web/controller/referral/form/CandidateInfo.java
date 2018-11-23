@@ -18,6 +18,11 @@ public class CandidateInfo {
     private String company;
     private String job;
     private List<String> referralReasons;
+    private int degree;
+    private String city;
+    private String recomReasonText;
+    private byte relationship;
+    private byte referralType;
 
     public int getAppid() {
         return appid;
@@ -89,5 +94,45 @@ public class CandidateInfo {
 
     public void setGender(int gender) {
         this.gender = gender;
+    }
+
+    public int getDegree() {
+        return degree;
+    }
+
+    public void setDegree(int degree) {
+        this.degree = degree;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getRecomReasonText() {
+        return recomReasonText;
+    }
+
+    public void setRecomReasonText(String recomReasonText) {
+        this.recomReasonText = recomReasonText;
+    }
+
+    public byte getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(byte relationship) {
+        this.relationship = relationship;
+    }
+
+    public byte getReferralType() {
+        return referralType;
+    }
+
+    public void setReferralType(byte referralType) {
+        this.referralType = referralType;
     }
 }

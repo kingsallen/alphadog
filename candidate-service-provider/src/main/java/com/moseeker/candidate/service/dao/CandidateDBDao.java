@@ -110,6 +110,17 @@ public class CandidateDBDao {
         }
     }
 
+    /**
+     * 查詢
+     * @param candidateCompanyId
+     * @return
+     * @throws TException
+     */
+    public int getCandidateCompanyByCandidateCompanyID(int candidateCompanyId) throws TException {
+        Query query = new Query.QueryBuilder().where("candidate_company_id", String.valueOf(candidateCompanyId)).buildQuery();
+        return candidateCompanyDao.getCount(query);
+    }
+
     public void updateCandidateCompany(CandidateCompanyDO candidateCompany) throws TException {
         try {
             candidateCompanyDao.updateCandidateCompanys(candidateCompany);

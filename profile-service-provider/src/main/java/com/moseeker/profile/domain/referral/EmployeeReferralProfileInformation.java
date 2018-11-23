@@ -29,6 +29,7 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("推荐人与被推荐人关系", profileNotice.getRelationship());
         validateUtil.addStringLengthValidate("推荐理由文本", profileNotice.getReferralText(), null, 101);
+        validateUtil.addSensitiveValidate("推荐理由文本", profileNotice.getReferralText(), null, null);
         if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
             validateUtil.addRegExpressValidate("邮箱", profileNotice.getEmail(), FormCheck.getEmailExp());
         }
@@ -55,7 +56,7 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         ProfileExtUtils.createProfileBasic(profilePojo, genderType);
         ProfileExtUtils.createReferralUser(profilePojo, profileNotice.getName(), profileNotice.getMobile(), profileNotice.getEmail());
         Map<String, Object> params = new HashMap<>();
-        if (StringUtils.isNotNullOrEmpty(profileNotice.getDegree())) {
+        if (profileNotice.getDegree()>0) {
             params.put("degree", profileNotice.getDegree());
         }
         if (StringUtils.isNotNullOrEmpty(profileNotice.getCompanyBrand())) {

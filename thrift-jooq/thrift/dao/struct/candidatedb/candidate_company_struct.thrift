@@ -16,6 +16,8 @@ struct CandidateCompanyDO {
 	10: optional string nickname,	//wx_group_user.nickname 用户昵称
 	11: optional string headimgurl,	//wx_group_user.headimgurl 用户头像
 	12: optional i32 sysUserId,	//userdb.user_user.id C端账号编号，表示该候选人绑定的C端账号
-	13: optional i32 clickFrom	//来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
+	13: optional i32 clickFrom,	//来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage)
+	14: optional i8 positionWxLayerQrcode, //微信端职位详情微信公众号弹层0 未关闭  1 已关闭
+	15: optional i8 positionWxLayerProfile //微信端职位详情微信简历完善度弹层0 未关闭  1 已关闭
 
 }
