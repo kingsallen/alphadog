@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -57,6 +58,8 @@ public class JobApplicationFilterService {
     private LogTalentpoolProfileFilterLogDao logDao;
     @Autowired
     private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
+
+
 
 
     WholeProfileServices.Iface profileService = ServiceManager.SERVICEMANAGER.getService(WholeProfileServices.Iface.class);
@@ -202,10 +205,10 @@ public class JobApplicationFilterService {
         applicaitionIds.add(application_id);
         Response res = new Response();
         if(type == 1){
-            res = talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
+            res = talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId(), Constant.IS_NOT_OPEN_GRPD);
         }else if(type == 2){
-            talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId());
-            res = talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds);
+            talentpoolService.batchAddTalent(position.getPublisher(), userIds, position.getCompanyId(),Constant.IS_NOT_OPEN_GRPD);
+            res = talentpoolService.batchAddPublicTalent(position.getPublisher(), position.getCompanyId(), userIds,Constant.IS_NOT_OPEN_GRPD);
         }else if(type == 3){
             res = bsService.profileProcess(position.getCompanyId(), 7, applicaitionIds, position.getPublisher());
         }else if(type == 4){

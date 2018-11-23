@@ -114,19 +114,19 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
   public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
   static {
     java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-    tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.THEME_ID, new org.apache.thrift.meta_data.FieldMetaData("theme_id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.THEME_ID, new org.apache.thrift.meta_data.FieldMetaData("theme_id", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.HB_THROTTLE, new org.apache.thrift.meta_data.FieldMetaData("hb_throttle", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.HB_THROTTLE, new org.apache.thrift.meta_data.FieldMetaData("hb_throttle", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-    tmpMap.put(_Fields.APP_REPLY, new org.apache.thrift.meta_data.FieldMetaData("app_reply", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.APP_REPLY, new org.apache.thrift.meta_data.FieldMetaData("app_reply", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.JOB_CUSTOM_TITLE, new org.apache.thrift.meta_data.FieldMetaData("job_custom_title", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.JOB_CUSTOM_TITLE, new org.apache.thrift.meta_data.FieldMetaData("job_custom_title", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.JOB_OCCUPATION, new org.apache.thrift.meta_data.FieldMetaData("job_occupation", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.JOB_OCCUPATION, new org.apache.thrift.meta_data.FieldMetaData("job_occupation", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-    tmpMap.put(_Fields.EMPLOYEE_BINDING, new org.apache.thrift.meta_data.FieldMetaData("employee_binding", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+    tmpMap.put(_Fields.EMPLOYEE_BINDING, new org.apache.thrift.meta_data.FieldMetaData("employee_binding", org.apache.thrift.TFieldRequirementType.DEFAULT,
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
     metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
     org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(HRCompanyConfData.class, metaDataMap);
@@ -767,7 +767,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
       while (true)
       {
         schemeField = iprot.readFieldBegin();
-        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+        if (schemeField.type == org.apache.thrift.protocol.TType.STOP) {
           break;
         }
         switch (schemeField.id) {
@@ -775,7 +775,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.company_id = iprot.readI32();
               struct.setCompany_idIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -783,7 +783,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.theme_id = iprot.readI32();
               struct.setTheme_idIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -791,7 +791,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
               struct.hb_throttle = iprot.readI32();
               struct.setHb_throttleIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -799,7 +799,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.app_reply = iprot.readString();
               struct.setApp_replyIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -807,7 +807,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.job_custom_title = iprot.readString();
               struct.setJob_custom_titleIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -815,7 +815,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.job_occupation = iprot.readString();
               struct.setJob_occupationIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;
@@ -823,7 +823,7 @@ public class HRCompanyConfData implements org.apache.thrift.TBase<HRCompanyConfD
             if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
               struct.employee_binding = iprot.readString();
               struct.setEmployee_bindingIsSet(true);
-            } else { 
+            } else {
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
             }
             break;

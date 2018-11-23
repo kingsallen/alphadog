@@ -67,4 +67,13 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
 				.execute();
 	}
+
+	public com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf getConfbyCompanyId(int id){
+		if(id == 0){
+			return null;
+		}
+		com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf data=create.selectFrom(HrCompanyConf.HR_COMPANY_CONF).where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(id)).fetchOneInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf.class);
+		return data;
+
+	}
 }

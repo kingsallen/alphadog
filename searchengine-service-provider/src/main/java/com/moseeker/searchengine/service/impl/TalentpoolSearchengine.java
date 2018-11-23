@@ -851,6 +851,10 @@ public class TalentpoolSearchengine {
         if(queryAppScript!=null){
             ((BoolQueryBuilder) query).filter(queryAppScript);
         }
+        QueryBuilder gdprScript=this.convertGdprScript(params);
+        if(gdprScript!=null){
+            ((BoolQueryBuilder) query).filter(gdprScript);
+        }
         QueryBuilder queryNest=this.queryNest(params);
         if(queryNest!=null){
             ((BoolQueryBuilder) query).filter(queryNest);
@@ -858,6 +862,7 @@ public class TalentpoolSearchengine {
         this.queryTalentComment(params,query);
         return query;
     }
+
 
     private void handlerProvinceCity(Map<String,String> params) throws TException {
         String cityCode=params.get("city_code");
@@ -1411,6 +1416,7 @@ public class TalentpoolSearchengine {
         String isPublic=params.get("is_public");
         String companyId=params.get("company_id");
         String positionStatus=params.get("position_status");
+
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
                 &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
                 &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))){
@@ -1500,6 +1506,22 @@ public class TalentpoolSearchengine {
 
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         return script;
+    }
+    /*
+     处理Gdpr
+     */
+    private ScriptQueryBuilder convertGdprScript(Map<String,String> params){
+        String isGdpr=params.get("is_gdpr");
+        String companyId=params.get("company_id");
+        if(StringUtils.isNotNullOrEmpty(isGdpr)&&"1".equals(isGdpr)){
+            StringBuffer sb=new StringBuffer();
+            sb.append("user=_source.user;if(user){applications=user.applications;if(applications){");
+            sb.append("for(val in applications){if(val.status!=1&&val.company_id=="+companyId+"){return true}}}}");
+            ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
+            return script;
+        }
+
+        return null;
     }
     /*
       查询该hr是否在索引当中

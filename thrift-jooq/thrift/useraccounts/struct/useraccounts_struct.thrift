@@ -525,7 +525,8 @@ struct HRInfo {
     6: optional string accountType,
     7: optional string mobile, 
     8: optional string email,
-    9: optional string headImg
+    9: optional string headImg,
+    10: optional i32 companyId
 }
 
 struct ClaimReferralCardForm {
