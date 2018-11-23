@@ -591,7 +591,7 @@ public class ReferralEntity {
         Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
                 () -> attachmentDao.fetchAttachmentByIds(attementIds));
         Future<List<JobPositionDO>> positionListFuture = threadPool.startTast(
-                () -> positionDao.getPositionList(positionIds));
+                () -> positionDao.getPositionListWithoutStatus(positionIds));
         Future<List<UserEmployeeDO>> empListFuture  = threadPool.startTast(
                 () -> employeeDao.getEmployeeByIds(empolyeeReferralIds));
         Future<List<UserEmployeeDO>> historyEmpListFuture  = threadPool.startTast(
