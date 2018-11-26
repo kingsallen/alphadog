@@ -16,7 +16,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 公司和CS匹配表
+ * 邮件额度每天使用日志
  */
 @Generated(
     value = {

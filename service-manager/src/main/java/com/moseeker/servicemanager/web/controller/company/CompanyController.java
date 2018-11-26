@@ -9,12 +9,14 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.company.forms.Validator;
 import com.moseeker.servicemanager.web.controller.company.vo.Authentication;
+import com.moseeker.servicemanager.web.controller.company.vo.GDPRProtectedInfoVO;
 import com.moseeker.servicemanager.web.controller.useraccounts.UserHrAccountParamUtils;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -39,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 
@@ -827,6 +830,62 @@ public class CompanyController {
         }catch(Exception e){
             logger.info(e.getMessage(),e);
             return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "v1/gdpr-examination", method = RequestMethod.GET)
+    @ResponseBody
+    public String getGDPRExamination(@RequestParam Integer appid, @RequestParam(value = "user_ids") List<Integer> userIds,
+                                     @RequestParam(value = "company_id") Integer companyId) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredOneValidate("用户编号", userIds);
+        validateUtil.addRequiredValidate("公司", companyId);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            List<GDPRProtectedInfo> infos = companyServices.validateGDPR(userIds, companyId);
+            List<GDPRProtectedInfoVO> results = infos
+                    .stream()
+                    .map(gdprProtectedInfo -> {
+                        GDPRProtectedInfoVO gdprProtectedInfoVO = new GDPRProtectedInfoVO();
+                        org.springframework.beans.BeanUtils.copyProperties(gdprProtectedInfo, gdprProtectedInfoVO);
+                        return gdprProtectedInfoVO;
+                    })
+                    .collect(Collectors.toList());
+            return Result.success(results).toJson();
+        }
+    }
+
+    @RequestMapping(value = "v1/gdpr/{companyId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getGDPRSwitchStatus(@PathVariable Integer companyId, @RequestParam Integer appid) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("公司", companyId);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.fetchGDPRSwitch(companyId)).toJson();
+        }
+    }
+
+    @RequestMapping(value = "v1/hr/{hrId}/gdpr", method = RequestMethod.GET)
+    @ResponseBody
+    public String getGDPRSwitchStatusByHR(@PathVariable Integer hrId, @RequestParam Integer appid) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("HR", hrId);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.fetchGDPRSwitchByHR(hrId)).toJson();
         }
     }
 }

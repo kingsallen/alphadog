@@ -286,3 +286,13 @@ struct LogEmployeeOperationLog{
     7: optional i32   profileId;
     8: optional Timestamp createTime;
 }
+
+
+struct RequiredFieldInfo{
+    1: optional bool gender,
+    2: optional bool email,
+    3: optional bool degree,
+    4: optional bool companyName;
+    5: optional bool position,
+    6: optional bool city
+}

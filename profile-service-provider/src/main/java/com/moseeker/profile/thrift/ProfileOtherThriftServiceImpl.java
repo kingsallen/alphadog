@@ -24,6 +24,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import com.moseeker.thrift.gen.profile.struct.RequiredFieldInfo;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
@@ -322,6 +323,11 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
             }
         }
+    }
+
+    @Override
+    public RequiredFieldInfo fetchRequireField(int positionId) throws BIZException, TException {
+        return null;
     }
 
 

@@ -121,11 +121,13 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
 
     @Override
     public void handerKeyInformationStatus(int companyId, int keyInformation) throws BIZException, TException {
-
+        referralService.handerKeyInformationStatus(companyId, keyInformation);
     }
 
     @Override
     public int fetchKeyInformationStatus(int companyId) throws BIZException, TException {
-        return 0;
+        return referralService.fetchKeyInformationStatus(companyId);
     }
+
+
 }

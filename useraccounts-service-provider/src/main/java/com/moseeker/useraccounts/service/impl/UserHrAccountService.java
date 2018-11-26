@@ -2004,6 +2004,7 @@ public class UserHrAccountService {
         hrInfo.setName(hrAccountDO.getUsername());
         hrInfo.setCompanyAbbreviation(hrCompanyDO.getAbbreviation());
         hrInfo.setCompany(hrCompanyDO.getName());
+        hrInfo.setCompanyId(hrCompanyDO.getId());
     }
 
     /**

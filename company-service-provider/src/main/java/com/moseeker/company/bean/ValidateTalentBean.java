@@ -9,6 +9,7 @@ public class ValidateTalentBean {
 
     private Set<Integer> unUseUserIdSet;
     private Set<Integer> userIdSet;
+    private int flag;
 
     public Set<Integer> getUnUseUserIdSet() {
         return unUseUserIdSet;
@@ -24,5 +25,13 @@ public class ValidateTalentBean {
 
     public void setUserIdSet(Set<Integer> userIdSet) {
         this.userIdSet = userIdSet;
+    }
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
     }
 }
