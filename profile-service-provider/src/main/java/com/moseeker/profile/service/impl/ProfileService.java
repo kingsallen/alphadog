@@ -688,7 +688,16 @@ public class ProfileService {
                                     return org.apache.commons.lang.StringUtils
                                             .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                                 }, (oldKey, newKey) -> newKey));
-
+                        //学历，现任职位，现任公司只要other字段中存在就要展示
+                        if(profileOtherJson.getString("degree")!=null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("degree"))){
+                            parentValue.put("degree", profileOtherJson.get("degree"));
+                        }
+                        if(profileOtherJson.getString("companyBrand")!=null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("companyBrand"))){
+                            parentValue.put("companyBrand", profileOtherJson.get("companyBrand"));
+                        }
+                        if(profileOtherJson.getString("current_position")!=null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("current_position"))){
+                            parentValue.put("current_position", profileOtherJson.get("current_position"));
+                        }
                         e.put("other", parentValue);
                     }
                 }
@@ -761,6 +770,15 @@ public class ProfileService {
                         }
                     }
                 }
+            }
+            if(otherDatas.get("degree")!=null){
+                parentValues.put("degree", otherDatas.get("degree"));
+            }
+            if(otherDatas.get("companyBrand")!=null){
+                parentValues.put("companyBrand", otherDatas.get("companyBrand"));
+            }
+            if(otherDatas.get("current_position")!=null){
+                parentValues.put("current_position", otherDatas.get("current_position"));
             }
             long positionTime = System.currentTimeMillis();
             logger.info("getProfileOther others position time:{}", positionTime - infoTime);
