@@ -67,6 +67,6 @@ service DictOccupationService{
 /*
  service层第三方职位职能查询
 */
-service DictReferralEvaluteService{
+service DictReferralEvaluateService{
 	common_struct.Response getDictReferralEvalute(1: i32 code);
 }

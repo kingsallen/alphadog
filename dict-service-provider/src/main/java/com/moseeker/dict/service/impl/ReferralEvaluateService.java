@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * Created by moseeker on 2018/11/26.
  */
 @Service
-public class DictReferralEvaluateService {
+public class ReferralEvaluateService {
 
     @Autowired
     DictReferralEvaluateDao evaluateDao;
