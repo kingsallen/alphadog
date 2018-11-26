@@ -9,6 +9,7 @@ import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.ProfileOtherService;
+import com.moseeker.profile.service.impl.vo.RequireFieldInfo;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by jack on 02/01/2018.
  */
 @Service
-public class
-
-ProfileOtherServiceImpl implements ProfileOtherService {
+public class ProfileOtherServiceImpl implements ProfileOtherService {
 
     @Autowired
     private ProfileOtherDao dao;
@@ -135,6 +134,8 @@ ProfileOtherServiceImpl implements ProfileOtherService {
         }
         return 0;
     }
+
+
 
     private List<ProfileOtherDO> validateOthers(List<ProfileOtherDO> others) {
         if (others != null) {

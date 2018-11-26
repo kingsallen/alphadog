@@ -63,3 +63,10 @@ service DictOccupationDao{
 service DictOccupationService{
 	common_struct.Response getDictOccupation(1:string param);
 }
+
+/*
+ service层第三方职位职能查询
+*/
+service DictReferralEvaluteService{
+	common_struct.Response getDictReferralEvalute(1: i32 code);
+}

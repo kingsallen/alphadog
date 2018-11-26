@@ -16,6 +16,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.profile.service.ProfileOtherService;
+import com.moseeker.profile.service.impl.vo.RequireFieldInfo;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -327,7 +328,19 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
 
     @Override
     public RequiredFieldInfo fetchRequireField(int positionId) throws BIZException, TException {
-        return null;
+        try {
+            RequireFieldInfo result = profileService.fetchRequireField(positionId);
+            RequiredFieldInfo fieldInfo = new RequiredFieldInfo();
+            org.apache.commons.beanutils.BeanUtils.copyProperties(fieldInfo, result);
+            return fieldInfo;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
+        }
     }
 
 
