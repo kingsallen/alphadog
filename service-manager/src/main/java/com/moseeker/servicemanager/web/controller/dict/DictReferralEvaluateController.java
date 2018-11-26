@@ -41,7 +41,7 @@ public class DictReferralEvaluateController {
 		try {
             Map<String,Object> params = ParamUtils.parseRequestParam(request);
             if(params.get("code")!=null){
-                Response result = service.getDictReferralEvalute((Integer)params.get("code"));
+                Response result = service.getDictReferralEvalute(Integer.valueOf((String)params.get("code")));
                 return ResponseLogNotification.success(request, result);
             }else {
                 return ResponseLogNotification.fail(request, "code参数有误！");
