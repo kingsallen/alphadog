@@ -163,7 +163,7 @@ public class ReferralController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/referral/conf/information", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/referral/conf/information", method = RequestMethod.GET)
     @ResponseBody
     public String referralProfile(@RequestParam(value = "company_id",required = true) Integer companyId,HttpServletRequest request) throws Exception {
         if (StringUtils.isBlank(request.getParameter("appid"))) {
