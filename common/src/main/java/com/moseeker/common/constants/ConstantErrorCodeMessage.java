@@ -139,6 +139,9 @@ public final class ConstantErrorCodeMessage {
     public static final String HRACCOUNT_NOT_EXISTS="{'status':43003,'message':'沒有符合条件的hr账号！'}";
     public static final String HRACCOUNT_INFO_ERROR="{'status':43003,'message':'用戶信息错误！'}";
     public static final String NO_MATCH_AUTH_METHOD="{'status':43005,'message':'没有匹配的员工认证方式！'}";
+    public static final String THIRD_PARTY_ACCOUNT_58_REQUEST_ERROR="{'status':43006,'message':'http请求58返回结果为空！'}";
+    public static final String THIRD_PARTY_ACCOUNT_58_ADDRESS_FAILED="{'status':43007,'message':'获取工作地址失败！'}";
+    public static final String THIRD_PARTY_ACCOUNT_58_TOKEN_EXPIRE="{'status':43008,'message':'用户信息过期，请解绑后重新绑定58账号！'}";
 
 
     //Position服务提示信息说明
@@ -168,6 +171,7 @@ public final class ConstantErrorCodeMessage {
     public static final String REQUEST_SCRAPER_CONNECTION_ERROR="{'status':52001,'message':'访问scraper连接错误！'}";
     public static final String REQUEST_SCRAPER_URL_NOT_EXIST="{'status':52002,'message':'scraper服务URL不存在！'}";
     public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";
+    public static final String POSITION_CITY_MAPPING_NONEXIST="{'status':52004,'message':'城市字典不存在，无法发布该城市！'}";
     public static final int NO_BIND_THIRD_PARTY_ACCOUNT_STATUS = 51018;
 
     public static final String POSITION_TITLE_NOT_EMPTY="{'status':52003,'message':'职位标题不能为空!'}";
@@ -224,6 +228,7 @@ public final class ConstantErrorCodeMessage {
 
     // 工具类错误
     public static final String USER_SMS_LIMITED = "{'status':80001,'message':'短信发送异常!'}";
+    public static final String HTTP_REQUEST_FAILED = "{'status':80002,'message':'http请求失败，未获取到返回结果!'}";
 
     public static final String DB_UPDATE_FAILED = "{'status':-1,'message':'数据库更新失败!'}";
 }

@@ -4,16 +4,7 @@
 package com.moseeker.baseorm.db.thirdpartydb;
 
 
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
+import com.moseeker.baseorm.db.thirdpartydb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,6 +78,11 @@ public class Thirdpartydb extends SchemaImpl {
     public final ThirdpartyJobsdbPosition THIRDPARTY_JOBSDB_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION;
 
     /**
+     * 58同城补填字段表
+     */
+    public final ThirdpartyJob58Position THIRDPARTY_JOB58_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION;
+
+    /**
      * 最佳东方的第三方职位子表
      */
     public final ThirdpartyVeryeastPosition THIRDPARTY_VERYEAST_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION;
@@ -128,6 +124,7 @@ public class Thirdpartydb extends SchemaImpl {
             ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE,
             ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF,
             ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION,
+            ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION,
             ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION,
             ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION,
             ThirdpartyZhilianPositionAddress.THIRDPARTY_ZHILIAN_POSITION_ADDRESS);

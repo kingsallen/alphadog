@@ -1,10 +1,12 @@
 package com.moseeker.position.service.third.base;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
 import org.apache.thrift.TException;
@@ -19,10 +21,13 @@ public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoPro
     protected final static String COMPANY="company";
     protected final static String ADDRESS="address";
     protected final static String DEPARTMENT="department";
-    protected final static String FEATURE = "feature";
+    protected final static String FEATURE = "features";
 
     @Autowired
     HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
+
+    @Autowired
+    protected HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     /**
      * 获取HR账号在某个渠道下的第三方账

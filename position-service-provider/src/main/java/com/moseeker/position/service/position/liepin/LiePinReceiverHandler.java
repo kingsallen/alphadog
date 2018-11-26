@@ -19,7 +19,7 @@ import com.moseeker.position.constants.position.liepin.LiepinPositionOperateCons
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
-import com.moseeker.position.utils.LiepinHttpClientUtil;
+import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -84,7 +84,7 @@ public class LiePinReceiverHandler {
     private PositionEmailNotification emailNotification;
 
     @Autowired
-    private LiepinHttpClientUtil httpClientUtil;
+    private HttpClientUtil httpClientUtil;
 
     @Autowired
     private PositionTaskQueueDaemonThread delayQueueThread;

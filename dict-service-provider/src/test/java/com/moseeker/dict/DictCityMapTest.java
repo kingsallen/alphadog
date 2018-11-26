@@ -52,4 +52,16 @@ public class DictCityMapTest {
 
         response.toString();
     }
+
+    @Test
+    public void testGetOtherCityByLastCodes() {
+
+        List<Integer> cityCodes = new ArrayList<>();
+        cityCodes.add(110000);
+        cityCodes.add(130100);
+
+        List<List<String>> result = dictCityMapDao.getOtherCityByLastCodes(ChannelType.JOB58, cityCodes);
+
+        System.out.println("result:"+result.toString());
+    }
 }
