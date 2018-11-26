@@ -35,7 +35,7 @@ public class DictReferralEvaluateController {
 	DictReferralEvaluteService.Iface service = ServiceManager.SERVICEMANAGER
 			.getService(DictReferralEvaluteService.Iface.class);
 
-	@RequestMapping(value = "/dict/constant", method = RequestMethod.GET)
+	@RequestMapping(value = "/dict/referral/evaluate", method = RequestMethod.GET)
 	@ResponseBody
 	public String get(HttpServletRequest request, HttpServletResponse response) {
 		try {
