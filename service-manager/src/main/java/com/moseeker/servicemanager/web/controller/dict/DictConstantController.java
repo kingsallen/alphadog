@@ -1,6 +1,5 @@
 package com.moseeker.servicemanager.web.controller.dict;
 
-import com.moseeker.servicemanager.web.controller.Result;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +48,7 @@ public class DictConstantController {
 				}
 			}
 			Response result = dictConstanService.getDictConstantJsonByParentCode(parentCodeList);
-			return  Result.success(result).toJson();
+			return ResponseLogNotification.success(request, result);
 		} catch (Exception e) {
 			return ResponseLogNotification.fail(request, e.getMessage());
 		}

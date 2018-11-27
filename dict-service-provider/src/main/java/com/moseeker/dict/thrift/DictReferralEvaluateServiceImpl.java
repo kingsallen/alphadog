@@ -1,8 +1,6 @@
 package com.moseeker.dict.thrift;
 
-import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.dict.service.impl.ReferralEvaluateService;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
 import com.moseeker.thrift.gen.dict.service.DictReferralEvaluateService;
 import java.util.List;
@@ -24,8 +22,7 @@ public class DictReferralEvaluateServiceImpl implements DictReferralEvaluateServ
 
 
     @Override
-    public Response getDictReferralEvalute(int code) throws TException {
-        List<DictReferralEvaluateDO> result = evaluateService.getReferralEvaluate(code);
-        return ResponseUtils.success(result);
+    public List<DictReferralEvaluateDO> getDictReferralEvalute(int code) throws TException {
+        return evaluateService.getReferralEvaluate(code);
     }
 }

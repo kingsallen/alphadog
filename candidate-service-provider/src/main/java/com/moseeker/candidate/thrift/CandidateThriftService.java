@@ -146,12 +146,12 @@ public class CandidateThriftService implements CandidateService.Iface {
     }
 
     @Override
-    public Response getPositionLayerInfo(int userId, int companyId, int positionId) throws BIZException, TException {
+    public PositionLayerInfo getPositionLayerInfo(int userId, int companyId, int positionId) throws BIZException, TException {
         try {
             com.moseeker.candidate.service.vo.PositionLayerInfo result = candidate.getPositionLayerInfo(userId, companyId, positionId);
             PositionLayerInfo layerInfo = new PositionLayerInfo();
             BeanUtils.copyProperties(result, layerInfo);
-            return ResponseUtils.success(layerInfo);
+            return layerInfo;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

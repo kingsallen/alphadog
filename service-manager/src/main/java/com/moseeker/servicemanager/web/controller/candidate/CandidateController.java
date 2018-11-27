@@ -9,6 +9,7 @@ import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
+import com.moseeker.thrift.gen.candidate.struct.PositionLayerInfo;
 import com.moseeker.thrift.gen.candidate.struct.RecentPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.springframework.stereotype.Controller;
@@ -140,7 +141,7 @@ public class CandidateController {
             vu.addRequiredValidate("职位编号", positionId);
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
-                Response result = candidateService.getPositionLayerInfo(userId, companyId, positionId);
+                PositionLayerInfo result = candidateService.getPositionLayerInfo(userId, companyId, positionId);
                 return Result.success(result).toJson();
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());

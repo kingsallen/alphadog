@@ -4,8 +4,11 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
 import com.moseeker.thrift.gen.dict.service.DictReferralEvaluateService;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,8 +41,8 @@ public class DictReferralEvaluateController {
 		try {
             Map<String,Object> params = ParamUtils.parseRequestParam(request);
             if(params.get("code")!=null){
-                Response result = service.getDictReferralEvalute(Integer.valueOf((String)params.get("code")));
-                return ResponseLogNotification.success(request, result);
+                List<DictReferralEvaluateDO> list = service.getDictReferralEvalute(Integer.valueOf((String)params.get("code")));
+                return Result.success(list).toJson();
             }else {
                 return ResponseLogNotification.fail(request, "code参数有误！");
             }
