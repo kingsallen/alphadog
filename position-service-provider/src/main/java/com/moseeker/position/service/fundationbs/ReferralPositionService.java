@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfJooqDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
@@ -53,7 +54,7 @@ public class ReferralPositionService {
     PositionEntity positionEntity;
 
     @Autowired
-    ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
+    ReferralCompanyConfDao referralCompanyConfJooqDao;
 
     @Autowired
     ReferralPositionBonusDao referralPositionBonusDao;
@@ -93,7 +94,7 @@ public class ReferralPositionService {
     @Transactional
     public void updatePointsConfig(Integer companyId,Integer flag)  {
 
-        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
+        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.fetchOneByCompanyId(companyId);
         if(referralCompanyConf != null) {
             referralCompanyConf.setPositionPointsFlag(flag.byteValue());
             referralCompanyConf.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -113,7 +114,7 @@ public class ReferralPositionService {
     @Transactional
     public Response getPointsConfig(Integer companyId) {
 
-        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
+        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.fetchOneByCompanyId(companyId);
 
         if(referralCompanyConf != null) {
             return ResponseUtils.success(referralCompanyConf);
