@@ -19,7 +19,7 @@ public class CandidateInfo {
     private String job;
     private List<String> referralReasons;
     private int degree;
-    private String city;
+    private int city;
     private String recomReasonText;
     private byte relationship;
     private byte referralType;
@@ -104,11 +104,11 @@ public class CandidateInfo {
         this.degree = degree;
     }
 
-    public String getCity() {
+    public int getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(int city) {
         this.city = city;
     }
 

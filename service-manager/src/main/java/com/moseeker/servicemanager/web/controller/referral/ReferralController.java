@@ -133,17 +133,23 @@ public class ReferralController {
 
     /**
      * 获取该候选人员工内推理由
-     * @param evaluation
+     * @param appid
+     * @param userId
+     * @param companyId
+     * @param hrId
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/referral/evaluation", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/referral/evaluation", method = RequestMethod.GET)
     @ResponseBody
-    public String referralProfile(@RequestBody Evaluation evaluation, HttpServletRequest request) throws Exception {
-        if (StringUtils.isBlank(String.valueOf(evaluation.getAppid()))) {
+    public String referralProfile(@RequestParam(value = "appid", required = true) Integer appid,
+                                  @RequestParam(value = "user_if", required = true) Integer userId,
+                                  @RequestParam(value = "company_id", required = true) Integer companyId,
+                                  @RequestParam(value = "hr_id",required = true) Integer hrId) throws Exception {
+        if (StringUtils.isBlank(String.valueOf(appid))) {
             throw CommonException.PROGRAM_APPID_LOST;
         }
-        List<ReferralReasonInfo> result = referralService.getReferralReason(evaluation.getUserId(), evaluation.getCompanyId(), evaluation.getHrId());
+        List<ReferralReasonInfo> result = referralService.getReferralReason(userId, companyId, hrId);
         List<com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo> resultList = new ArrayList<>();
         if (result != null && result.size() > 0) {
             resultList = result.stream().map(tab -> {

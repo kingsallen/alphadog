@@ -330,7 +330,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             RequireFieldInfo result = profileService.fetchRequireField(positionId);
             RequiredFieldInfo fieldInfo = new RequiredFieldInfo();
-            org.apache.commons.beanutils.BeanUtils.copyProperties(fieldInfo, result);
+            org.springframework.beans.BeanUtils.copyProperties(result, fieldInfo);
             return fieldInfo;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

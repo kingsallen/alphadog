@@ -33,7 +33,7 @@ public class EmployeeReferralProfileNotice {
     private ReferralType referralType;
     private String email;
     private byte gender;
-    private String city_name;
+    private int city_code;
     private String currentPosition;
     private int degree;
     private String companyBrand;
@@ -41,7 +41,7 @@ public class EmployeeReferralProfileNotice {
 
     private EmployeeReferralProfileNotice(int employeeId, String name, String mobile, List<String> referralReasons,
                                          List<Integer> positionIds, byte relationship, String referralText, ReferralType referralType,
-                                         byte gender, String email, String city_name, String currentPosition, int degree, String companyBrand,
+                                         byte gender, String email, int city_code, String currentPosition, int degree, String companyBrand,
                                           ReferralScene referralScene) {
         this.employeeId = employeeId;
         this.name = name;
@@ -53,7 +53,7 @@ public class EmployeeReferralProfileNotice {
         this.referralType = referralType;
         this.gender = gender;
         this.email = email;
-        this.city_name = city_name;
+        this.city_code = city_code;
         this.currentPosition = currentPosition;
         this.degree = degree;
         this.companyBrand = companyBrand;
@@ -76,7 +76,7 @@ public class EmployeeReferralProfileNotice {
         private ReferralType referralType;
         private byte gender;
         private String email;
-        private String city_name;
+        private int city_code;
         private String currentPosition;
         private int degree;
         private String companyBrand;
@@ -103,13 +103,13 @@ public class EmployeeReferralProfileNotice {
         }
 
         public EmployeeReferralProfileBuilder buildKeyInformation(String email, int degree, String companyBrand,
-                                                                  String currentPosition, byte gender, String city_name) {
+                                                                  String currentPosition, byte gender, int city_code) {
             this.email = email;
             this.degree = degree;
             this.currentPosition = currentPosition;
             this.companyBrand = companyBrand;
             this.gender = gender;
-            this.city_name = city_name;
+            this.city_code = city_code;
             return this;
         }
         public EmployeeReferralProfileBuilder buildPosition(int positionId) {
@@ -146,7 +146,7 @@ public class EmployeeReferralProfileNotice {
             }
 
             EmployeeReferralProfileNotice profileNotice = new EmployeeReferralProfileNotice(employeeId, name, mobile,
-                    referralReasons, positionIds, relationship, referralText, referralType,gender, email,  city_name,
+                    referralReasons, positionIds, relationship, referralText, referralType,gender, email,  city_code,
                     currentPosition, degree, companyBrand, referralScene);
             logger.info("EmployeeReferralProfileNotice:{}", JSON.toJSONString(profileNotice));
             return profileNotice;
@@ -233,12 +233,12 @@ public class EmployeeReferralProfileNotice {
         this.gender = gender;
     }
 
-    public String getCity_name() {
-        return city_name;
+    public int getCity_code() {
+        return city_code;
     }
 
-    public void setCity_name(String city_name) {
-        this.city_name = city_name;
+    public void setCity_code(int city_code) {
+        this.city_code = city_code;
     }
 
     public String getCurrentPosition() {

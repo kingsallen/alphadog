@@ -272,7 +272,7 @@ struct CandidateInfo {
     10: optional i8 referralType,
     11: optional i8 relationship,
     12: optional i32 degree,
-    13: optional string city
+    13: optional i32 city
 
 }
 

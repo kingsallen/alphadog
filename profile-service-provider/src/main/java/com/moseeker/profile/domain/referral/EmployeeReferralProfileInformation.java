@@ -42,7 +42,7 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         }
         RequireFieldInfo info  = otherEntity.fetchRequireField(profileNotice.getPositionIds().get(0));
         if(info.isCity()){
-            validateUtil.addRequiredValidate("现居住城市", profileNotice.getCity_name());
+            validateUtil.addRequiredValidate("现居住城市", profileNotice.getCity_code());
         }
         if(info.isCompanyName()){
             validateUtil.addRequiredValidate("最近工作的公司/品牌", profileNotice.getCompanyBrand());
@@ -86,13 +86,13 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
             params.put("current_position", profileNotice.getCurrentPosition());
         }
         ProfileExtUtils.createReferralProfileOtherData(profilePojo, params);
-        if(StringUtils.isNotNullOrEmpty(profileNotice.getCity_name())){
-            DictCityDO cityDO = cityDao.getCityByNameOrEname(profileNotice.getCity_name());
-            int cityCode = 0;
+        if(profileNotice.getCity_code()>0){
+            DictCityDO cityDO = cityDao.getCityDOByCode(profileNotice.getCity_code());
+            String cityName = "";
             if(cityDO != null){
-                cityCode = cityDO.getCode();
+                cityName = cityDO.getName();
             }
-            ProfileExtUtils.createProfileBasicCity(profilePojo, cityCode, profileNotice.getCity_name());
+            ProfileExtUtils.createProfileBasicCity(profilePojo, profileNotice.getCity_code(), cityName);
         }
 
         return profilePojo;
