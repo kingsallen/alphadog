@@ -6,6 +6,7 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
 import com.moseeker.thrift.gen.candidate.struct.RecentPosition;
@@ -140,7 +141,7 @@ public class CandidateController {
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 Response result = candidateService.getPositionLayerInfo(userId, companyId, positionId);
-                return ResponseLogNotification.successJson(request, result);
+                return Result.success(result).toJson();
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
