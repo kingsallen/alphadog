@@ -140,7 +140,7 @@ public class CandidateController {
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 Response result = candidateService.getPositionLayerInfo(userId, companyId, positionId);
-                return ResponseLogNotification.success(request, result);
+                return ResponseLogNotification.successJson(request, result);
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
             }
