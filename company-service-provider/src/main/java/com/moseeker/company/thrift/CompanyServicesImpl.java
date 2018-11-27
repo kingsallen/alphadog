@@ -8,10 +8,13 @@ import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
+import com.moseeker.company.service.impl.vo.GDPRProtectedInfoVO;
 import com.moseeker.entity.CompanyConfigEntity;
 import com.moseeker.entity.TalentPoolEmailEntity;
 import com.moseeker.entity.TalentPoolEntity;
@@ -24,6 +27,7 @@ import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.moseeker.company.service.impl.CompanyService;
@@ -35,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class CompanyServicesImpl implements Iface {
@@ -555,6 +560,39 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public List<GDPRProtectedInfo> validateGDPR(List<Integer> userIds, int companyId) throws BIZException, TException {
+        try {
+            List<GDPRProtectedInfoVO> vos = service.validateGDPR(userIds, companyId);
+
+            return vos.stream().map(gdprProtectedInfoVO -> {
+                GDPRProtectedInfo gdprProtectedInfo = new GDPRProtectedInfo();
+                BeanUtils.copyProperties(gdprProtectedInfoVO, gdprProtectedInfo);
+                return gdprProtectedInfo;
+            }).collect(Collectors.toList());
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public boolean fetchGDPRSwitch(int companyId) throws BIZException, TException {
+        try {
+            return service.fetchGDPRSwitch(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public boolean fetchGDPRSwitchByHR(int hrId) throws BIZException, TException {
+        try {
+            return service.fetchGDPRSwitchByHR(hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
     /**
      * 获取公司员工认证后补填字段配置信息列表
      *
@@ -565,7 +603,11 @@ public class CompanyServicesImpl implements Iface {
      */
     @Override
     public List<HrEmployeeCustomFieldsVO> getHrEmployeeCustomFields(int companyId) throws BIZException, TException {
-        return service.getHrEmployeeCustomFields(companyId);
+        try {
+            return service.getHrEmployeeCustomFields(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }
 

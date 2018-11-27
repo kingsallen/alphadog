@@ -61,4 +61,30 @@ public class ProfileAttachmentDao extends JooqCrudImpl<ProfileAttachmentDO, Prof
 
         return count;
     }
+
+    public List<ProfileAttachmentDO> fetchAttachmentByIds(List<Integer> ids) {
+
+        List<ProfileAttachmentDO> result = create.selectFrom(ProfileAttachment.PROFILE_ATTACHMENT)
+                .where(ProfileAttachment.PROFILE_ATTACHMENT.ID.in(ids))
+                .fetchInto(ProfileAttachmentDO.class);
+
+        return result;
+    }
+
+
+    public ProfileAttachmentRecord fetchAttachmentById(Integer id) {
+
+        ProfileAttachmentRecord result = create.selectFrom(ProfileAttachment.PROFILE_ATTACHMENT)
+                .where(ProfileAttachment.PROFILE_ATTACHMENT.ID.eq(id))
+                .fetchOne();
+
+        return result;
+    }
+
+    public int updateAttachmentPathByName(String name, String path, String oldName){
+        return create.update(ProfileAttachment.PROFILE_ATTACHMENT)
+                .set(ProfileAttachment.PROFILE_ATTACHMENT.NAME,ProfileAttachment.PROFILE_ATTACHMENT.PATH)
+                .where(ProfileAttachment.PROFILE_ATTACHMENT.NAME.eq(oldName))
+                .execute();
+    }
 }

@@ -125,4 +125,11 @@ public class Result {
     public static Result success(Object data) {
         return new Result(data);
     }
+
+    public Result(int status, String message, Object data) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
+        config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+    }
 }

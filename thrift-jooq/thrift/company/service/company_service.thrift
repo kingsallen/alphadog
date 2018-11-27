@@ -60,7 +60,12 @@ service CompanyServices {
     common_struct.Response findSubAccountNum(1:i32 companyId) throws (1: common_struct.BIZException e)
     common_struct.Response updateWechatThenm(1:i32 status, 2:i32 companyId) throws (1: common_struct.BIZException e),
     common_struct.Response getCompanyWechatList(1:i32 companyId)throws (1: common_struct.BIZException e)
-
+    //校验申请人在某一家公司下是否触发GDPR隐私条款保护
+    list<company_struct.GDPRProtectedInfo> validateGDPR(1: list<i32> userIds, 2: i32 companyId) throws (1: common_struct.BIZException e)
+    //查看指定公司是否开启GDPR隐私保护条款
+    bool fetchGDPRSwitch(1: i32 companyId) throws (1: common_struct.BIZException e)
+    //查看指定的HR 所在的公司是否开启GDPR隐私保护条款
+    bool fetchGDPRSwitchByHR(1: i32 hrId) throws (1: common_struct.BIZException e)
 }
 
 service HrTeamServices {
@@ -76,9 +81,9 @@ service TalentpoolServices {
 
     common_struct.Response getHrTag(1:i32 hr_id,2:i32 company_id,3:i32 page_number,4:i32 page_size) throws (1: common_struct.BIZException e)
 
-    common_struct.Response batchAddTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
+    common_struct.Response batchAddTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
-    common_struct.Response batchCancelTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id) throws (1: common_struct.BIZException e)
+    common_struct.Response batchCancelTalent(1:i32 hr_id,2:list<i32> user_ids,3:i32 company_id,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     common_struct.Response hrAddTag(1:i32 hr_id,2:i32 company_id,3:string name) throws (1: common_struct.BIZException e)
 
@@ -94,7 +99,7 @@ service TalentpoolServices {
 
     common_struct.Response hrDelComment(1:i32 hr_id,2:i32 company_id,3:i32 comment_id) throws (1: common_struct.BIZException e)
 
-    common_struct.Response batchAddPublicTalent(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
+    common_struct.Response batchAddPublicTalent(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     common_struct.Response batchCancelPublicTalent(1:i32 hr_id,2:i32 company_id,3:list<i32> user_ids) throws (1: common_struct.BIZException e)
 
@@ -150,15 +155,15 @@ service TalentpoolServices {
 
     void updateEmailAccountRechargeValue(1:i32 id, 2: i32 lost) throws (1: common_struct.BIZException e)
 
-    void  addAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     void  addAllTalentTag(1:map<string,string> params,2:list<i32> tagList,3:i32 companyId,4:i32 hrId) throws (1: common_struct.BIZException e)
 
-    void  addAllTalentPublic(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  addAllTalentPublic(1:i32 hrId,2:map<string,string> params,3:i32 companyId,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     void  addAllTalentPrivate(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
 
-    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId) throws (1: common_struct.BIZException e)
+    void  cancleAllTalent(1:i32 hrId,2:map<string,string> params,3:i32 companyId,4:i32 isGdpr) throws (1: common_struct.BIZException e)
 
     common_struct.Response updateCompanyEmailBalance(1:i32 company_id,2:i32 balance) throws (1: common_struct.BIZException e)
 
