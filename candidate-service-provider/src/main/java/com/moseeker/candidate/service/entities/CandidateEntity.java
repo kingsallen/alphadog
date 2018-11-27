@@ -1322,7 +1322,7 @@ public class CandidateEntity implements Candidate {
         layer.setPositionWxLayerProfile(ccd.get().getPositionWxLayerProfile());
         layer.setPositionWxLayerQrcode(ccd.get().getPositionWxLayerQrcode());
 
-        return null;
+        return layer;
     }
 
     @Override
