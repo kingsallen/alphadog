@@ -131,11 +131,15 @@ public class EmployeeReferralProfileNotice {
                 String reasons = referralReasons.stream().collect(Collectors.joining(","));
                 validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
             }
+            validateUtil.addRequiredOneValidate("推荐职位", positionIds);
             validateUtil.addRequiredStringValidate("候选人姓名", name);
             validateUtil.addStringLengthValidate("候选人姓名", name, null, 100);
             validateUtil.addRequiredStringValidate("手机号码", mobile);
             validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
             validateUtil.addIntTypeValidate("推荐方式", referralType.getValue(), 1, 4);
+            validateUtil.addRequiredValidate("推荐人与被推荐人关系", relationship);
+            validateUtil.addStringLengthValidate("推荐理由文本", referralText, null, 101);
+            validateUtil.addSensitiveValidate("推荐理由文本", referralText, null, null);
             String validateResult = validateUtil.validate();
             if (StringUtils.isNotBlank(validateResult)) {
                 throw ProfileException.validateFailed(validateResult);

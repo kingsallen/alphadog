@@ -92,7 +92,7 @@ service ProfileServices {
     // mobot 提交推荐申请
     map<string, string> saveMobotReferralProfile(1:i32 employeeId, 2:list<i32> ids)throws (1: common_struct.BIZException e)
     // mobot 提交推荐信息缓存
-    i32 saveMobotReferralProfileCache(1:i32 employeeId, 2:string mobile, 3: string name, 4:list<string> referralReasons, 5: i8 referralType, 6: string fileName)throws (1: common_struct.BIZException e)
+    i32 saveMobotReferralProfileCache(1:i32 employeeId, 2:string mobile, 3: string name, 4:list<string> referralReasons, 5: i8 referralType, 6: string fileName, 7: i32 relationship, 8: string recomReasonText)throws (1: common_struct.BIZException e)
     // 点击告诉ta时回填推荐信息，从缓存中取
     string getMobotReferralCache(1:i32 employeeId)throws (1: common_struct.BIZException e)
 }

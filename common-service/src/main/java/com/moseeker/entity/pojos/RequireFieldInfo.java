@@ -1,4 +1,4 @@
-package com.moseeker.profile.service.impl.vo;
+package com.moseeker.entity.pojos;
 
 import java.util.Set;
 

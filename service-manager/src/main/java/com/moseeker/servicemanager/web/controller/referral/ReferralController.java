@@ -573,7 +573,8 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
 
             int userId = profileService.saveMobotReferralProfileCache(id, referralForm.getName(), referralForm.getMobile(),
-                    referralForm.getReferralReasons(), (byte) referralForm.getReferralType(), referralForm.getFileName());
+                    referralForm.getReferralReasons(), (byte) referralForm.getReferralType(), referralForm.getFileName(),
+                    referralForm.getRelationship(), referralForm.getRecomReasonText());
             return Result.success(userId).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();

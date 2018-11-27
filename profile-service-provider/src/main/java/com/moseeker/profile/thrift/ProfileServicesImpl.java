@@ -224,9 +224,10 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException, TException {
+    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons,
+                                             byte referralType, String fileName, int relationship, String referralReasonText) throws BIZException, TException {
         try {
-            return referralService.saveMobotReferralProfileCache(employeeId, name, mobile, referralReasons, referralType, fileName);
+            return referralService.saveMobotReferralProfileCache(employeeId, name, mobile, referralReasons, referralType, fileName, relationship, referralReasonText);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

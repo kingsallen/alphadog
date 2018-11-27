@@ -42,7 +42,7 @@ import com.moseeker.profile.constants.ProfileSource;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
-import com.moseeker.profile.service.impl.vo.RequireFieldInfo;
+import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -630,23 +630,7 @@ public class ProfileService {
 
 
     public RequireFieldInfo fetchRequireField(int positionId) throws CommonException {
-        int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
-        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where("id", appCvConfigId);
-        HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
-        if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
-            return  new RequireFieldInfo();
-        }
-        List<JSONObject>  appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
-                map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
-        Set<String> fieldSet = new HashSet<>();
-        for (JSONObject appCvConfig : appCvConfigJson) {
-            if (appCvConfig.containsKey("field_name") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("field_name")) &&
-                    appCvConfig.containsKey("required") && appCvConfig.getInteger("required") == 0) {
-                fieldSet.add(appCvConfig.getString("field_name"));
-            }
-        }
-        return new RequireFieldInfo(fieldSet);
+        return profileOtherEntity.fetchRequireField(positionId);
     }
 
 

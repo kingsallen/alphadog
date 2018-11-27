@@ -239,6 +239,8 @@ public class ReferralServiceImpl implements ReferralService {
                 .EmployeeReferralProfileBuilder(employeeId, referralInfoCacheDTO.getName(), referralInfoCacheDTO.getMobile(),
                 referralInfoCacheDTO.getReferralReasons(), ReferralScene.ChatBot)
                 .buildPosition(ids)
+                .buildRecomReason(referralInfoCacheDTO.getRelationship(), referralInfoCacheDTO.getReferralReasonText(),
+                        referralInfoCacheDTO.getReferralType())
                 .buildEmployeeReferralProfileNotice();
         List<MobotReferralResultVO> referralResultVOS = referralProfileMobot.employeeReferralProfileAdaptor(profileNotice);
 
@@ -255,7 +257,8 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException {
+    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons,
+                                             byte referralType, String fileName, int relationship, String referralReasonText) throws BIZException {
         UserEmployeeDO userEmployeeDO = userEmployeeDao.getUserEmployeeForUpdate(employeeId);
         if(userEmployeeDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USEREMPLOYEE_NONEXIST);
@@ -271,7 +274,7 @@ public class ReferralServiceImpl implements ReferralService {
         profilePojo.getUserRecord().setMobile(Long.parseLong(mobile));
         // 生成虚拟用户
         ReferralInfoCacheDTO referralInfoCacheDTO = new ReferralInfoCacheDTO(employeeId, userEmployeeDO.getCompanyId(),
-                name, mobile, referralReasons, referralType, fileName);
+                name, mobile, referralReasons, referralType, fileName, (byte)relationship, referralReasonText);
         UserUserRecord userRecord = userAccountEntity.getCompanyUser(mobile, userEmployeeDO.getCompanyId());
         if(userRecord == null){
             referralInfoCacheDTO.setEmployee(false);

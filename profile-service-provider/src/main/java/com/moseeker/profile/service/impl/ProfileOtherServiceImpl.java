@@ -9,7 +9,6 @@ import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfileValidation;
 import com.moseeker.entity.biz.ValidationMessage;
 import com.moseeker.profile.service.ProfileOtherService;
-import com.moseeker.profile.service.impl.vo.RequireFieldInfo;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import java.util.*;
 import java.util.stream.Collectors;

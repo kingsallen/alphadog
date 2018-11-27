@@ -1,7 +1,6 @@
 package com.moseeker.profile.service;
 
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.profile.service.impl.vo.RequireFieldInfo;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 
 import java.util.List;

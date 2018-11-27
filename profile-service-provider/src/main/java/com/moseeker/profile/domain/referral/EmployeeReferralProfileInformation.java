@@ -5,7 +5,9 @@ import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.Constant.GenderType;
+import com.moseeker.entity.ProfileOtherEntity;
 import com.moseeker.entity.biz.ProfilePojo;
+import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
@@ -24,13 +26,12 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
     @Autowired
     DictCityDao cityDao;
 
+    @Autowired
+    ProfileOtherEntity otherEntity;
+
     @Override
     protected void validateReferralInfo(EmployeeReferralProfileNotice profileNotice) {
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("推荐人与被推荐人关系", profileNotice.getRelationship());
-        validateUtil.addStringLengthValidate("推荐理由文本", profileNotice.getReferralText(), null, 101);
-        validateUtil.addSensitiveValidate("推荐理由文本", profileNotice.getReferralText(), null, null);
-        if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
+        ValidateUtil validateUtil = new ValidateUtil();if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
             validateUtil.addRegExpressValidate("邮箱", profileNotice.getEmail(), FormCheck.getEmailExp());
         }
         if(StringUtils.isNotNullOrEmpty(profileNotice.getCompanyBrand())) {
@@ -38,6 +39,25 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         }
         if(StringUtils.isNotNullOrEmpty(profileNotice.getCurrentPosition())) {
             validateUtil.addStringLengthValidate("当前职位", profileNotice.getCurrentPosition(), null, 200);
+        }
+        RequireFieldInfo info  = otherEntity.fetchRequireField(profileNotice.getPositionIds().get(0));
+        if(info.isCity()){
+            validateUtil.addRequiredValidate("现居住城市", profileNotice.getCity_name());
+        }
+        if(info.isCompanyName()){
+            validateUtil.addRequiredValidate("最近工作的公司/品牌", profileNotice.getCompanyBrand());
+        }
+        if(info.isDegree()){
+            validateUtil.addRequiredValidate("最高学历", profileNotice.getDegree());
+        }
+        if(info.isPosition()){
+            validateUtil.addRequiredValidate("最近职位", profileNotice.getCurrentPosition());
+        }
+        if(info.isEmail()){
+            validateUtil.addRequiredValidate("邮箱", profileNotice.getEmail());
+        }
+        if(info.isGender()){
+            validateUtil.addRequiredValidate("性别", profileNotice.getGender());
         }
         String result = validateUtil.validate();
         if (StringUtils.isNotNullOrEmpty(result)) {

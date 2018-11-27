@@ -26,14 +26,6 @@ public class EmployeeReferralProfileFileUpload extends EmployeeReferralProfileAp
 
     @Override
     protected void validateReferralInfo(EmployeeReferralProfileNotice profileNotice) {
-        ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("推荐人与被推荐人关系", profileNotice.getRelationship());
-        validateUtil.addStringLengthValidate("推荐理由文本", profileNotice.getReferralText(), null, 101);
-        validateUtil.addSensitiveValidate("推荐理由文本", profileNotice.getReferralText(), null, null);
-        String validateResult = validateUtil.validate();
-        if (StringUtils.isNotBlank(validateResult)) {
-            throw ProfileException.validateFailed(validateResult);
-        }
     }
 
     @Override
