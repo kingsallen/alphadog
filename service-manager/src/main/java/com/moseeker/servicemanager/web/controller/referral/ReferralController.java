@@ -143,7 +143,7 @@ public class ReferralController {
     @RequestMapping(value = "/v1/referral/evaluation", method = RequestMethod.GET)
     @ResponseBody
     public String referralProfile(@RequestParam(value = "appid", required = true) Integer appid,
-                                  @RequestParam(value = "user_if", required = true) Integer userId,
+                                  @RequestParam(value = "user_id", required = true) Integer userId,
                                   @RequestParam(value = "company_id", required = true) Integer companyId,
                                   @RequestParam(value = "hr_id",required = true) Integer hrId) throws Exception {
         if (StringUtils.isBlank(String.valueOf(appid))) {
