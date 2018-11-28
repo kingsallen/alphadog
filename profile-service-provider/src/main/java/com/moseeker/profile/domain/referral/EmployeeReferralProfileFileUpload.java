@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.KeyIdentifier;
-import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
@@ -12,10 +11,12 @@ import com.moseeker.profile.exception.ProfileException;
 import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by moseeker on 2018/11/22.
  */
+@Component
 public class EmployeeReferralProfileFileUpload extends EmployeeReferralProfileApdate {
 
     @Resource(name = "cacheClient")
