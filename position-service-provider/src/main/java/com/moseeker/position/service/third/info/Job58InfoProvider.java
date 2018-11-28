@@ -1,5 +1,7 @@
 package com.moseeker.position.service.third.info;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictFeatureJob58Dao;
 import com.moseeker.baseorm.db.dictdb.tables.records.Dict_58jobFeatureRecord;
@@ -52,8 +54,17 @@ public class Job58InfoProvider extends AbstractThirdInfoProvider {
             Job58AddressRequestDTO addressRequestDTO = new Job58AddressRequestDTO(Job58PositionOperateConstant.job58AppKey, System.currentTimeMillis(), accessToken, openId);
             JSONObject response = requestHandler.sendRequest(addressRequestDTO, Job58PositionOperateConstant.job58PositionAddress);
             if("0".equals(response.getString("code"))){
-                Job58AddressVO addressVO = new Job58AddressVO(response.getIntValue("id"), response.getString("address"));
-                obj.put(ADDRESS,addressVO);
+                List<Job58AddressVO> addressVOS = new ArrayList<>();
+                String addressData = response.getString("data");
+                JSONArray addressArr = JSON.parseArray(addressData);
+                if(addressArr != null && addressArr.size() > 0){
+                    for (Object anAddressArr : addressArr) {
+                        JSONObject address = JSONObject.parseObject(JSON.toJSONString(anAddressArr));
+                        Job58AddressVO addressVO = new Job58AddressVO(address.getIntValue("id"), address.getString("address"));
+                        addressVOS.add(addressVO);
+                    }
+                }
+                obj.put(ADDRESS,addressVOS);
             }else {
                 if("109".equals(response.getString("code"))){
                     throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_58_TOKEN_EXPIRE);
