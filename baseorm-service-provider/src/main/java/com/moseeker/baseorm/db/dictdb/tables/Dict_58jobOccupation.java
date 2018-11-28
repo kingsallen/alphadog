@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_58jobOccupation extends TableImpl<Dict_58jobOccupationRecord> {
 
-    private static final long serialVersionUID = -446129111;
+    private static final long serialVersionUID = 2046048126;
 
     /**
      * The reference instance of <code>dictdb.dict_58job_occupation</code>
@@ -51,24 +51,34 @@ public class Dict_58jobOccupation extends TableImpl<Dict_58jobOccupationRecord> 
     }
 
     /**
-     * The column <code>dictdb.dict_58job_occupation.id</code>.
-     */
-    public final TableField<Dict_58jobOccupationRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
-
-    /**
      * The column <code>dictdb.dict_58job_occupation.code</code>.
      */
-    public final TableField<Dict_58jobOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<Dict_58jobOccupationRecord, Integer> CODE = createField("code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>dictdb.dict_58job_occupation.name</code>.
+     * The column <code>dictdb.dict_58job_occupation.parent_id</code>. 职能code
      */
-    public final TableField<Dict_58jobOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
+    public final TableField<Dict_58jobOccupationRecord, String> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.VARCHAR.length(11).nullable(false), this, "职能code");
 
     /**
-     * The column <code>dictdb.dict_58job_occupation.pid</code>.
+     * The column <code>dictdb.dict_58job_occupation.name</code>. 职能名称
      */
-    public final TableField<Dict_58jobOccupationRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<Dict_58jobOccupationRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "职能名称");
+
+    /**
+     * The column <code>dictdb.dict_58job_occupation.code_other</code>.
+     */
+    public final TableField<Dict_58jobOccupationRecord, String> CODE_OTHER = createField("code_other", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
+
+    /**
+     * The column <code>dictdb.dict_58job_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+     */
+    public final TableField<Dict_58jobOccupationRecord, Short> LEVEL = createField("level", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "职能级别 1是一级2是二级依次类推");
+
+    /**
+     * The column <code>dictdb.dict_58job_occupation.status</code>.
+     */
+    public final TableField<Dict_58jobOccupationRecord, Short> STATUS = createField("status", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "");
 
     /**
      * Create a <code>dictdb.dict_58job_occupation</code> table reference

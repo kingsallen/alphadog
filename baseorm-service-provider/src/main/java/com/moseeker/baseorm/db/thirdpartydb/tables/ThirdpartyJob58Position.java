@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ThirdpartyJob58Position extends TableImpl<ThirdpartyJob58PositionRecord> {
 
-    private static final long serialVersionUID = 1430123097;
+    private static final long serialVersionUID = -16705370;
 
     /**
      * The reference instance of <code>thirdpartydb.thirdparty_job58_position</code>
@@ -105,6 +105,11 @@ public class ThirdpartyJob58Position extends TableImpl<ThirdpartyJob58PositionRe
      * The column <code>thirdpartydb.thirdparty_job58_position.show_contact</code>. 是否显示联系方式 0否1是
      */
     public final TableField<ThirdpartyJob58PositionRecord, Byte> SHOW_CONTACT = createField("show_contact", org.jooq.impl.SQLDataType.TINYINT, this, "是否显示联系方式 0否1是");
+
+    /**
+     * The column <code>thirdpartydb.thirdparty_job58_position.status</code>. 0 是有效 1是无效
+     */
+    public final TableField<ThirdpartyJob58PositionRecord, Short> STATUS = createField("status", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0 是有效 1是无效");
 
     /**
      * The column <code>thirdpartydb.thirdparty_job58_position.create_time</code>.

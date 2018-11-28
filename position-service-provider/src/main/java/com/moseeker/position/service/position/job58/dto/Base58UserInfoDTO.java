@@ -7,7 +7,10 @@ package com.moseeker.position.service.position.job58.dto;
 public class Base58UserInfoDTO extends Base58RequestDTO {
     protected String openid;
 
-    public Base58UserInfoDTO(String appKey, Long timeStamp,String accessToken, String openId) {
+    public Base58UserInfoDTO() {
+    }
+
+    public Base58UserInfoDTO(String appKey, Long timeStamp, String accessToken, String openId) {
         this.openid = openId;
         this.access_token = accessToken;
         this.app_key = appKey;

@@ -4,7 +4,7 @@ package com.moseeker.position.service.position.job58.dto;
  * @author cjm
  * @date 2018-10-26 15:06
  **/
-public class Job58PositionDTO extends Base58RequestDTO{
+public class Job58PositionDTO extends Base58UserInfoDTO{
 
     private String openid;
     private Integer cate_id;

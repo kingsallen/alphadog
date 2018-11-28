@@ -14,7 +14,7 @@ public class Job58InfoProviderTest {
     public void testGetCity() throws Exception {
         Job58RequestHandler requestHandler = new Job58RequestHandler();
         String appKey = "ad3ccb63d15a6bd3692f593a62096db3";
-        String accessToken = "98d9aef022c3985bd82fd43a2bddcf5c";
+        String accessToken = "40def1aad5e08ab0d8a9fde1d41a7207";
         String openId = "afdd050ced4076e57660991f70d0efb2";
         Job58AddressRequestDTO userInfoDTO = new Job58AddressRequestDTO(appKey, System.currentTimeMillis(), accessToken, openId);
         JSONObject response = requestHandler.sendRequest(userInfoDTO, "https://openapi.58.com/v2/workaddress/load");

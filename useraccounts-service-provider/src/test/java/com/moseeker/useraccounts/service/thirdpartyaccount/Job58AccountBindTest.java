@@ -27,9 +27,8 @@ public class Job58AccountBindTest {
     public void testBind() throws Exception {
         Job58UserAccountBindHandler bindHandler = new Job58UserAccountBindHandler();
         HrThirdPartyAccountDO hrThirdPartyAccount = new HrThirdPartyAccountDO();
-        Map<String, String> requestCode = new HashMap<>();
-        requestCode.put("ext", "14cdb8893e92c8d752d8e5f13b2f2d59");
-        bindHandler.bind(hrThirdPartyAccount, requestCode);
+        hrThirdPartyAccount.setExt("8c5772700d73fe57af1b0a430d2d7f57");
+        bindHandler.bind(hrThirdPartyAccount, null);
     }
 
 }

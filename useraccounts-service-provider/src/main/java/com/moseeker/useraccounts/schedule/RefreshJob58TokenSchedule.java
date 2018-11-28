@@ -6,7 +6,8 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.useraccounts.service.impl.Job58UserAccountBindHandler;
+import com.moseeker.useraccounts.constant.Job58Constant;
+import com.moseeker.useraccounts.service.impl.Job58BindProcessor;
 import com.moseeker.useraccounts.service.impl.pojos.Job58BindUserInfo;
 import com.moseeker.useraccounts.service.impl.vo.Job58TokenRefreshVO;
 import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
@@ -14,9 +15,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -32,13 +31,11 @@ public class RefreshJob58TokenSchedule {
 
     private static Logger logger = LoggerFactory.getLogger(RefreshJob58TokenSchedule.class);
 
-    private final Environment env;
-
     private final HRThirdPartyAccountDao thirdPartyAccountDao;
 
-    private final Job58UserAccountBindHandler bindHandler;
-
     private final EmailNotification emailNotification;
+
+    private final Job58BindProcessor bindProcessor;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -48,11 +45,10 @@ public class RefreshJob58TokenSchedule {
     private static final Long ONE_YEAR = 1000L * 60 * 60 * 24 * 365;
 
     @Autowired
-    public RefreshJob58TokenSchedule(Environment env, HRThirdPartyAccountDao thirdPartyAccountDao,
-                                     Job58UserAccountBindHandler bindHandler, EmailNotification emailNotification) {
-        this.env = env;
+    public RefreshJob58TokenSchedule(Job58BindProcessor bindProcessor, HRThirdPartyAccountDao thirdPartyAccountDao,
+                                     EmailNotification emailNotification) {
+        this.bindProcessor = bindProcessor;
         this.thirdPartyAccountDao = thirdPartyAccountDao;
-        this.bindHandler = bindHandler;
         this.emailNotification = emailNotification;
     }
 
@@ -61,7 +57,7 @@ public class RefreshJob58TokenSchedule {
      * @author  cjm
      * @date  2018/7/9
      */
-    @Scheduled(cron="0 0 0 1/1 * ? ")
+//    @Scheduled(cron="0 0 0 1/1 * ? ")
     public void refresh58Token() {
         // 避免不同服务器一起刷新
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.JOB58_TOKEN_REFRESH.toString(), "");
@@ -85,7 +81,7 @@ public class RefreshJob58TokenSchedule {
                 logger.warn("=================无需要刷新的58token");
                 return;
             }
-            String appKey = env.getProperty("58job_api_app_key");
+            String appKey = Job58Constant.APP_KEY;
             // 将所有查出得第三方账号刷新token，如果抛出bizException则是猎聘返回的业务异常，将第三方账号id和异常信息放入failRequest的map中用于发邮件
             for(HrThirdPartyAccountDO accountDO : accountDOS){
                 if(!checkNeedRefresh(accountDO)){
@@ -96,7 +92,7 @@ public class RefreshJob58TokenSchedule {
                     Job58BindUserInfo bindUserInfo = JSONObject.parseObject(accountDO.getExt(), Job58BindUserInfo.class);
                     Job58TokenRefreshVO refreshVO = new Job58TokenRefreshVO(bindUserInfo.getOpenId(), bindUserInfo.getAccessToken(),System.currentTimeMillis(),
                             appKey, bindUserInfo.getRefreshToken());
-                    accountDO = bindHandler.bindAdaptor(accountDO, refreshVO);
+                    accountDO = bindProcessor.handleBind(accountDO, refreshVO);
                     accountDO.setUpdateTime(null);
                     successRequest.add(accountDO);
                 }catch (BIZException e){

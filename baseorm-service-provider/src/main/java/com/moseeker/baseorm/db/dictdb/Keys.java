@@ -84,7 +84,7 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<Dict_51jobOccupationRecord, Integer> IDENTITY_DICT_51JOB_OCCUPATION = createIdentity(Dict_51jobOccupation.DICT_51JOB_OCCUPATION, Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE);
-        public static Identity<Dict_58jobOccupationRecord, Integer> IDENTITY_DICT_58JOB_OCCUPATION = createIdentity(Dict_58jobOccupation.DICT_58JOB_OCCUPATION, Dict_58jobOccupation.DICT_58JOB_OCCUPATION.ID);
+        public static Identity<Dict_58jobOccupationRecord, Integer> IDENTITY_DICT_58JOB_OCCUPATION = createIdentity(Dict_58jobOccupation.DICT_58JOB_OCCUPATION, Dict_58jobOccupation.DICT_58JOB_OCCUPATION.CODE);
         public static Identity<DictCityLiepinRecord, Integer> IDENTITY_DICT_CITY_LIEPIN = createIdentity(DictCityLiepin.DICT_CITY_LIEPIN, DictCityLiepin.DICT_CITY_LIEPIN.ID);
         public static Identity<DictCityMapRecord, Integer> IDENTITY_DICT_CITY_MAP = createIdentity(DictCityMap.DICT_CITY_MAP, DictCityMap.DICT_CITY_MAP.ID);
         public static Identity<DictCityPostcodeRecord, Integer> IDENTITY_DICT_CITY_POSTCODE = createIdentity(DictCityPostcode.DICT_CITY_POSTCODE, DictCityPostcode.DICT_CITY_POSTCODE.ID);
@@ -98,7 +98,7 @@ public class Keys {
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<Dict_51jobOccupationRecord> KEY_DICT_51JOB_OCCUPATION_PRIMARY = createUniqueKey(Dict_51jobOccupation.DICT_51JOB_OCCUPATION, "KEY_dict_51job_occupation_PRIMARY", Dict_51jobOccupation.DICT_51JOB_OCCUPATION.CODE);
         public static final UniqueKey<Dict_58jobFeatureRecord> KEY_DICT_58JOB_FEATURE_PRIMARY = createUniqueKey(Dict_58jobFeature.DICT_58JOB_FEATURE, "KEY_dict_58job_feature_PRIMARY", Dict_58jobFeature.DICT_58JOB_FEATURE.ID);
-        public static final UniqueKey<Dict_58jobOccupationRecord> KEY_DICT_58JOB_OCCUPATION_PRIMARY = createUniqueKey(Dict_58jobOccupation.DICT_58JOB_OCCUPATION, "KEY_dict_58job_occupation_PRIMARY", Dict_58jobOccupation.DICT_58JOB_OCCUPATION.ID);
+        public static final UniqueKey<Dict_58jobOccupationRecord> KEY_DICT_58JOB_OCCUPATION_PRIMARY = createUniqueKey(Dict_58jobOccupation.DICT_58JOB_OCCUPATION, "KEY_dict_58job_occupation_PRIMARY", Dict_58jobOccupation.DICT_58JOB_OCCUPATION.CODE);
         public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = createUniqueKey(DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY, "KEY_dict_alipaycampus_city_PRIMARY", DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY.ID);
         public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = createUniqueKey(DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY, "KEY_dict_alipaycampus_jobcategory_PRIMARY", DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY.ID);
         public static final UniqueKey<DictCarnocOccupationRecord> KEY_DICT_CARNOC_OCCUPATION_PRIMARY = createUniqueKey(DictCarnocOccupation.DICT_CARNOC_OCCUPATION, "KEY_dict_carnoc_occupation_PRIMARY", DictCarnocOccupation.DICT_CARNOC_OCCUPATION.CODE);

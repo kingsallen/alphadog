@@ -124,7 +124,7 @@ public class HttpClientUtil {
         return httpResult;
     }
 
-    public String sendRequest2Job58(String url, JSONObject params) throws IOException {
+    public String sendRequest2Job58(String url, JSONObject params) {
         //构建HttpClient实例
         HttpClient client = new DefaultHttpClient();
         //设置请求超时时间
@@ -157,10 +157,15 @@ public class HttpClientUtil {
             return buffer.toString();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("发送请求异常:{}", e.getMessage());
         } finally {
             if (in != null) {
-                in.close();
+                try {
+                    in.close();
+                }catch (Exception e){
+                    logger.error("关闭流异常:{}", e.getMessage());
+                }
+
             }
         }
         return null;

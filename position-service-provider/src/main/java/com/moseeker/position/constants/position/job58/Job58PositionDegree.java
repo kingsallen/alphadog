@@ -11,13 +11,16 @@ import java.util.Map;
 public enum Job58PositionDegree {
 
     NONE(0, 1, "无", "不限"),
-    SENIOR(7, 2, "高中", "高中"),
-    SECONDARY_SPECIALIZED(6, 4, "中专", "中专"),
     JUNIOR_COLLEGE(1, 5, "大专", "大专"),
     UNDERGRADUATE(2, 6, "本科", "本科"),
     MASTER(3, 7, "硕士", "硕士"),
     MBA(4, 7, "MBA", "硕士"),
     DOCTOR(5, 8, "博士", "博士"),
+    SECONDARY_SPECIALIZED(6, 4, "中专", "中专"),
+    SENIOR(7, 2, "高中", "高中"),
+    DOCTOR_POST(8, 8, "博士后", "博士"),
+    JUNIOR(9, 1, "初中", "不限"),
+
     ;
 
     private int moseekerDegreeNo;

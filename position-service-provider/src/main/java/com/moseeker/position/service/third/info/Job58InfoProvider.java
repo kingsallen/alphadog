@@ -8,17 +8,14 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.position.job58.Job58FeatureVO;
+import com.moseeker.position.constants.position.job58.Job58PositionOperateConstant;
 import com.moseeker.position.service.position.job58.Job58RequestHandler;
-import com.moseeker.position.service.position.job58.dto.Base58UserInfoDTO;
 import com.moseeker.position.service.position.job58.dto.Job58AddressRequestDTO;
 import com.moseeker.position.service.position.job58.vo.Job58AddressVO;
-import com.moseeker.position.service.third.ThirdPartyAccountAddressService;
-import com.moseeker.position.service.third.ThirdPartyAccountCompanyService;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,9 +27,6 @@ import java.util.List;
  **/
 @Component
 public class Job58InfoProvider extends AbstractThirdInfoProvider {
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private DictFeatureJob58Dao dictFeatureJob58Dao;
@@ -53,11 +47,10 @@ public class Job58InfoProvider extends AbstractThirdInfoProvider {
         // todo 需要处理token过期的情况
         if(!StringUtils.isNullOrEmpty(hrThirdPartyAccountDO.getExt())){
             JSONObject job58UserInfo = JSONObject.parseObject(hrThirdPartyAccountDO.getExt());
-            String appKey = env.getProperty("58job_api_app_key");
             String accessToken = job58UserInfo.getString("accessToken");
             String openId = job58UserInfo.getString("openId");
-            Job58AddressRequestDTO addressRequestDTO = new Job58AddressRequestDTO(appKey, System.currentTimeMillis(), accessToken, openId);
-            JSONObject response = requestHandler.sendRequest(addressRequestDTO, env.getProperty("58job_position_workaddress"));
+            Job58AddressRequestDTO addressRequestDTO = new Job58AddressRequestDTO(Job58PositionOperateConstant.job58AppKey, System.currentTimeMillis(), accessToken, openId);
+            JSONObject response = requestHandler.sendRequest(addressRequestDTO, Job58PositionOperateConstant.job58PositionAddress);
             if("0".equals(response.getString("code"))){
                 Job58AddressVO addressVO = new Job58AddressVO(response.getIntValue("id"), response.getString("address"));
                 obj.put(ADDRESS,addressVO);

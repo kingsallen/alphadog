@@ -205,6 +205,7 @@ public final class ConstantErrorCodeMessage {
     public static final String LIEPIN_REQUEST_RESPONSE_NULL = "{'status':61019,'message':'猎聘同步职位暂无响应，请稍后再试！'}";
     public static final String LIEPIN_REQUEST_LIMIT = "{'status':61020,'message':'今日职位同步次数已达上限！'}";
     public static final String POSITION_SALARY_NULL = "{'status':61021,'message':'职位薪资不能为空！'}";
+    public static final String POSITION_JOB58_TOKEN_EXPIRE = "{'status':61022,'message':'用户58账号信息过期，需解绑后重新绑定！'}";
 
 
     //mq服务提示信息说明

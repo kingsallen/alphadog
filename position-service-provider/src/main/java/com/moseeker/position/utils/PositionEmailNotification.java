@@ -362,13 +362,13 @@ public class PositionEmailNotification {
     /**
      * 发送猎聘同步失败邮件
      * @param mails 需要发送的邮箱地址
-     * @param liePinPositionVO 职位同步时的职位vo
+     * @param obj 职位同步时的职位vo
      * @param syncException 异常信息
      * @param ext 额外补充信息
      * @author  cjm
      * @date  2018/6/22
      */
-    public void sendSyncLiepinFailEmail(List<String> mails, LiePinPositionVO liePinPositionVO, Exception syncException, String ext){
+    public void sendSyncLiepinFailEmail(List<String> mails, Object obj, Exception syncException, String ext){
             if (mails == null || mails.size() == 0) {
                 logger.warn("没有配置同步邮箱地址!");
                 return;
@@ -381,8 +381,8 @@ public class PositionEmailNotification {
                 String titleBuilder = "【"+ emailLevel +"】【职位同步失败】";
 
                 StringBuilder messageBuilder = new StringBuilder();
-                if(liePinPositionVO!=null) {
-                    messageBuilder.append("【传送的json】：").append(JSON.toJSONString(liePinPositionVO)).append(br);
+                if(obj!=null) {
+                    messageBuilder.append("【传送的json】：").append(JSON.toJSONString(obj)).append(br);
                 }
 
                 if(syncException != null){
