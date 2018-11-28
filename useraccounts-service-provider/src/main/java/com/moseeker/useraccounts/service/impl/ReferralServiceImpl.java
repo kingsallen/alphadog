@@ -241,7 +241,7 @@ public class ReferralServiceImpl implements ReferralService {
         if(!StringUtils.isEmptyList(applicationRecords)){
             List<Integer> applicationIds = applicationRecords.stream().map(m -> m.getId()).collect(Collectors.toList());
             List<ReferralRecomEvaluationRecord> evaluationRecords = referralEntity.fetchEvaluationListByUserId(userId, applicationIds);
-            logger.info("getReferralReasonInfo evaluationRecords:{}",JSON.toJSONString(evaluationRecords));
+            logger.info("getReferralReasonInfo evaluationRecords:{}",evaluationRecords);
             if(!StringUtils.isEmptyList(evaluationRecords)){
                 List<ReferralReasonInfo> list = new ArrayList<>();
                 evaluationRecords.stream().map( m -> {
@@ -252,7 +252,7 @@ public class ReferralServiceImpl implements ReferralService {
                     info.setReferralReasons(StringUtils.stringToList(m.getRecomReasonTag(), ","));
                     return info;
                 }).collect(Collectors.toList());
-                logger.info("getReferralReasonInfo list:{}",JSON.toJSONString(list));
+                logger.info("getReferralReasonInfo list:{}",list);
                 return list;
             }
         }

@@ -120,7 +120,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
                     return info;
                 }).collect(Collectors.toList());
             }
-            logger.info("getReferralReasonInfo referralReasonInfos:{}",JSON.toJSONString(referralReasonInfos));
+            logger.info("getReferralReasonInfo referralReasonInfos:{}",referralReasonInfos);
             return referralReasonInfos;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
