@@ -236,7 +236,8 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public List<ReferralReasonInfo> getReferralReasonInfo(int userId, int companyId, int hrId) throws UserAccountException {
         List<JobApplicationRecord> applicationRecords = applicationDao.getByApplierIdAndCompanyId(userId, companyId);
-        logger.info("getReferralReasonInfo applicationRecords:{}",JSON.toJSONString(applicationRecords));
+        logger.info("getReferralReasonInfo applicationRecords:{}",applicationRecords);
+        logger.info("getReferralReasonInfo applicationRecords:{}",applicationRecords.size());
         if(!StringUtils.isEmptyList(applicationRecords)){
             List<Integer> applicationIds = applicationRecords.stream().map(m -> m.getId()).collect(Collectors.toList());
             List<ReferralRecomEvaluationRecord> evaluationRecords = referralEntity.fetchEvaluationListByUserId(userId, applicationIds);
