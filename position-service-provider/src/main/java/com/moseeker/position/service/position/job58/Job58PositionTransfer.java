@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -68,7 +69,9 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         Job58PositionDTO job58PositionDTO = new Job58PositionDTO();
         JSONObject userInfo = JSONObject.parseObject(account.getExt());
         job58PositionDTO.setOpenid(userInfo.getString("openId"));
-        job58PositionDTO.setCate_id(positionForm.getOccupation());
+        List<String> occupations = positionForm.getOccupation();
+        String occupation = occupations.get(occupations.size() - 1);
+        job58PositionDTO.setCate_id(Integer.parseInt(occupation));
         String content = "职位描述：</br>" + positionDB.getAccountabilities() + "</br>职位要求：</br>" + positionDB.getRequirement();
         job58PositionDTO.setContent(content);
         job58PositionDTO.setLocal_id(doGetCityCode(positionDB));
@@ -79,7 +82,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionDTO.setTitle(positionDB.getTitle());
         job58PositionDTO.setParas(parsePositionParam2Job58(positionForm, positionDB, userHrAccountDO));
         // todo 設置email
-        job58PositionDTO.setEmail("");
+        job58PositionDTO.setEmail(Job58PositionOperateConstant.job58ProfileEmail);
         job58PositionDTO.setAccount_id(account.getId());
         job58PositionDTO.setPid(positionDB.getId());
         return job58PositionDTO;
@@ -163,7 +166,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         thirdpartyRecord.setAddressName(position.getAddressName());
         thirdpartyRecord.setFeatures(JSON.toJSONString(position.getFeatures()));
         thirdpartyRecord.setFreshGraduate(position.getFreshGraduate());
-        thirdpartyRecord.setOccupation(position.getOccupation());
+        thirdpartyRecord.setOccupation(job58PositionDTO.getCate_id());
         thirdpartyRecord.setPid(job58PositionDTO.getPid());
         thirdpartyRecord.setSalaryBottom(position.getSalaryBottom());
         thirdpartyRecord.setSalaryTop(position.getSalaryTop());
@@ -184,7 +187,9 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         form.setAddressName(ext.getAddressName());
         form.setFeatures(JSONArray.parseArray(ext.getFeatures()).toJavaList(Integer.class));
         form.setFreshGraduate(ext.getFreshGraduate());
-        form.setOccupation(ext.getOccupation());
+        List<String> occupations = new ArrayList<>();
+        occupations.add(ext.getOccupation() + "");
+        form.setOccupation(occupations);
         form.setSalaryBottom(ext.getSalaryBottom());
         form.setSalaryTop(ext.getSalaryTop());
         form.setSalaryDiscuss(ext.getSalaryDiscuss());

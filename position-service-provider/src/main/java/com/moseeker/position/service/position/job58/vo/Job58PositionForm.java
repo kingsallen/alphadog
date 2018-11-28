@@ -11,7 +11,7 @@ public class Job58PositionForm {
     private Integer channel;
     private Integer addressId;
     private String addressName;
-    private Integer occupation;
+    private List<String> occupation;
     private List<Integer> features;
     private Integer salaryTop;
     private Integer salaryBottom;
@@ -41,14 +41,6 @@ public class Job58PositionForm {
 
     public void setAddressId(Integer addressId) {
         this.addressId = addressId;
-    }
-
-    public Integer getOccupation() {
-        return occupation;
-    }
-
-    public void setOccupation(Integer occupation) {
-        this.occupation = occupation;
     }
 
     public List<Integer> getFeatures() {
@@ -97,5 +89,13 @@ public class Job58PositionForm {
 
     public void setShowContact(Byte showContact) {
         this.showContact = showContact;
+    }
+
+    public List<String> getOccupation() {
+        return occupation;
+    }
+
+    public void setOccupation(List<String> occupation) {
+        this.occupation = occupation;
     }
 }

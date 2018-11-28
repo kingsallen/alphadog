@@ -38,6 +38,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String CONTENT_RULE_LIMIT = "工作内容和职位要求不能填写电话、QQ等联系方式!";
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
     private static final String SALARY_NOT_EMPTY = "薪资不能为空!";
+    private static final String OCCUPATION_NOT_EMPTY = "职能不能为空!";
 
     @Override
     public Class<Job58PositionForm> getFormClass() {
@@ -89,6 +90,10 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
                 }
             }else {
                 errorMsg.add(SALARY_NOT_EMPTY);
+            }
+            // 职能不能为空
+            if(job58PositionForm.getOccupation() == null || job58PositionForm.getOccupation().size() == 0){
+                errorMsg.add(OCCUPATION_NOT_EMPTY);
             }
 
         }

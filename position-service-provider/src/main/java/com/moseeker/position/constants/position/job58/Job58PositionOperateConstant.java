@@ -16,12 +16,14 @@ public class Job58PositionOperateConstant {
     public static String job58AppKey;
     public static String job58SecretKey;
     public static String job58PositionAddress;
+    public static String job58ProfileEmail;
 
     static{
         job58PositionSync = getSettingProperty("58job_position_sync_url");
         job58SecretKey = getSettingProperty("58job_api_secret");
         job58AppKey = getSettingProperty("58job_api_app_key");
         job58PositionAddress = getSettingProperty("58job_position_workaddress");
+        job58ProfileEmail = getSettingProperty("58job_profile_email");
     }
 
     public static String getSettingProperty(String key){
