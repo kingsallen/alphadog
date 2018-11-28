@@ -142,10 +142,10 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/referral/evaluation", method = RequestMethod.GET)
     @ResponseBody
-    public String referralProfile(@RequestParam(value = "appid", required = true) Integer appid,
-                                  @RequestParam(value = "user_id", required = true) Integer userId,
-                                  @RequestParam(value = "company_id", required = true) Integer companyId,
-                                  @RequestParam(value = "hr_id",required = true) Integer hrId) throws Exception {
+    public String referralProfile(@RequestParam(value = "appid") Integer appid,
+                                  @RequestParam(value = "user_id") Integer userId,
+                                  @RequestParam(value = "company_id") Integer companyId,
+                                  @RequestParam(value = "hr_id") Integer hrId) throws Exception {
         if (StringUtils.isBlank(String.valueOf(appid))) {
             throw CommonException.PROGRAM_APPID_LOST;
         }
@@ -171,7 +171,7 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/referral/conf/information", method = RequestMethod.GET)
     @ResponseBody
-    public String referralProfile(@RequestParam(value = "company_id",required = true) Integer companyId,HttpServletRequest request) throws Exception {
+    public String referralProfile(@RequestParam(value = "company_id") Integer companyId,HttpServletRequest request) throws Exception {
         if (StringUtils.isBlank(request.getParameter("appid"))) {
             throw CommonException.PROGRAM_APPID_LOST;
         }
