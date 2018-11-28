@@ -542,5 +542,15 @@ public class StringUtils {
         }
         return result;
     }
+    public static Set<Integer> convertListToSet(List<Integer> dataList){
+        if(isEmptyList(dataList)){
+            return null;
+        }
+        Set<Integer> result=new HashSet<>();
+        for(Integer data:dataList ){
+            result.add(data);
+        }
+        return result;
+    }
 
 }

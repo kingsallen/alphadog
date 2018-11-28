@@ -5,6 +5,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.pojo.CustomEmployeeInsertResult;
 import com.moseeker.baseorm.pojo.ExecuteResult;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
@@ -357,6 +358,56 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
                 .limit(1)
                 .fetchOne();
+    }
+
+    public UserEmployeeRecord insertCustomEmployeeIfNotExist(UserEmployeeRecord record) {
+
+        Param<Integer> companyIdParam = param(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), record.getCompanyId());
+        Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(),
+                record.getActivation() == null ? EmployeeActiveState.Init.getState() : record.getActivation());
+        Param<String> cnameParam = param(UserEmployee.USER_EMPLOYEE.CNAME.getName(), record.getCname());
+        Param<String> customFieldParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), record.getCustomField());
+
+        UserEmployeeRecord record1 = create.insertInto(UserEmployee.USER_EMPLOYEE)
+                .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
+                        UserEmployee.USER_EMPLOYEE.ACTIVATION,
+                        UserEmployee.USER_EMPLOYEE.CNAME,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD)
+                .select(
+                        select(
+                                companyIdParam, activationParam, cnameParam, customFieldParam
+                        )
+                        .whereNotExists(
+                                selectOne()
+                                .from(UserEmployee.USER_EMPLOYEE)
+                                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(record.getCompanyId()))
+                                .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(record.getCname()))
+                                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(record.getCustomField()))
+                        )
+                )
+                .returning()
+                .fetchOne();
+        return record1;
+    }
+
+    public UserEmployeeDO getEmployeeById(int employeeId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(employeeId))
+                .fetchOneInto(UserEmployeeDO.class);
+    }
+
+    public List<UserEmployeeDO> getEmployeeByIds(List<Integer> employeeIds) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.ID.in(employeeIds))
+                .fetchInto(UserEmployeeDO.class);
+    }
+
+
+    public List<UserEmployeeDO> getEmployeeBycompanyIds(List<Integer> companyIds) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds))
+                .fetchInto(UserEmployeeDO.class);
     }
 
 }

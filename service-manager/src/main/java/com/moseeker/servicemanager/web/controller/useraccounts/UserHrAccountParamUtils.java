@@ -1,22 +1,12 @@
 package com.moseeker.servicemanager.web.controller.useraccounts;
 
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.servicemanager.common.ParamUtils;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-
-import org.apache.commons.beanutils.BeanUtils;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
-import javax.swing.text.html.parser.Entity;
+import org.slf4j.LoggerFactory;
 
 public class UserHrAccountParamUtils extends ParamUtils {
 

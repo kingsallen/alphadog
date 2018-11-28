@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 用户登陆， 注册，合并等api的实现
@@ -582,6 +585,36 @@ public class UseraccountsServiceImpl implements Iface {
 	}
 
 	@Override
+	public String batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws BIZException, TException {
+		try {
+			return JSON.toJSONString(service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds));
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
+
+
+
+	@Override
+	public void deletePrivacyRecordByUserId(int userId) throws BIZException, TException {
+
+		try {
+			service.deletePrivacyRecordByUserId(userId);
+		} catch (Exception e) {
+			ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
+	public void insertPrivacyRecord(int userId) throws BIZException, TException {
+		try {
+			service.insertPrivacyRecord(userId);
+		} catch (Exception e) {
+			ExceptionUtils.convertException(e);
+		}
+	}
+
+	@Override
 	public Response postuserbindmobile(int appid, String unionid, String code,String countryCode,
 			String mobile, BindType bindType) throws TException {
 		try {
@@ -593,4 +626,15 @@ public class UseraccountsServiceImpl implements Iface {
 			throw new SysBIZException();
 		}
 	}
+
+			public int ifViewPrivacyProtocol(int userId) throws BIZException, TException {
+
+				try {
+					return service.ifViewPrivacyProtocol(userId);
+				} catch (Exception e) {
+					throw ExceptionUtils.convertException(e);
+				}
+			}
+
+
 }

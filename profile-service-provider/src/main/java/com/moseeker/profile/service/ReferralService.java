@@ -3,9 +3,11 @@ package com.moseeker.profile.service;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.CandidateInfo;
 import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: jack
@@ -48,7 +50,7 @@ public interface ReferralService {
      * @throws ProfileException 业务异常
      */
     int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType)
-            throws ProfileException;
+            throws ProfileException, BIZException;
 
     /**
      * 员工提交候选人关键信息
@@ -56,7 +58,7 @@ public interface ReferralService {
      * @param candidate 候选人信息
      * @return 推荐记录编号
      */
-    int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException;
+    int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException, BIZException;
 
     /**
      * 删除上传的简历数据
@@ -64,4 +66,37 @@ public interface ReferralService {
      * @throws ProfileException 异常信息
      */
     void employeeDeleteReferralProfile(int employeeId) throws ProfileException;
+
+    /**
+     * 员工推荐简历，mobot上传简历使用，走内推的员工推荐逻辑
+     * @param employeeId 员工编号
+     * @param ids 推荐职位ids
+     * @return 推荐结果
+     * @author  cjm
+     * @date  2018/10/29
+     */
+    Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException;
+
+    /**
+     * 将推荐理由员工信息等存在redis中，生成虚拟用户并返回虚拟用户id
+     * @param employeeId 员工编号
+     * @param mobile 被推荐人手机号
+     * @param name 被推荐人姓名
+     * @param referralReasons 推荐理由
+     * @param referralType 推荐类型
+     * @param fileName 文件名字
+     * @author  cjm
+     * @date  2018/10/31
+     * @return  虚拟用户或真实用户id
+     */
+    int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException;
+
+    /**
+     * 点击告诉ta时回填推荐信息，从缓存中取
+     * @param employeeId 员工编号
+     * @author  cjm
+     * @date  2018/10/31
+     * @return  缓存的推荐信息
+     */
+    String getMobotReferralCache(int employeeId) throws BIZException;
 }

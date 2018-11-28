@@ -29,5 +29,9 @@ struct HrCompanyConfDO {
     23: optional i8 talentpoolStatus,
     24: optional i16 schoolApplicationCountLimit, //一个人在一个公司下每月校招职位申请次数限制
 	25: optional i16 job51SalaryDiscuss,    //51薪资面议开关 0：未开启，1：开启
-    26: optional i16 veryeastSwitch         //最佳东方c端简历导入开关 0：未开启，1：开启
+    26: optional i16 veryeastSwitch,        //最佳东方c端简历导入开关 0：未开启，1：开启
+    27: optional i8 mallSwitch,       //商城开关  0从未开通 1 已开通 2 开通过目前停用
+    28: optional string mallGoodsMethod,     //商城商品领取规则
+    29: optional i8 mallGoodsMethodState         //商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
+    30: optional i8 isOpenGdpr
 }
