@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = -1476905260;
+    private static final long serialVersionUID = 1135109603;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -57,9 +57,9 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "编号");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * The column <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
      */
-    public final TableField<HrThirdPartyAccountRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin");
+    public final TableField<HrThirdPartyAccountRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航");
 
     /**
      * The column <code>hrdb.hr_third_party_account.username</code>. 帐号
@@ -112,9 +112,10 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, String> ERROR_MESSAGE = createField("error_message", org.jooq.impl.SQLDataType.VARCHAR.length(100).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "同步刷新失败的理由");
 
     /**
-     * The column <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称
+     * The column <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：
+会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串
      */
-    public final TableField<HrThirdPartyAccountRecord, String> EXT = createField("ext", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称");
+    public final TableField<HrThirdPartyAccountRecord, String> EXT = createField("ext", org.jooq.impl.SQLDataType.VARCHAR.length(500), this, "扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：\r\n会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串");
 
     /**
      * The column <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段，目前是由于猎聘登录时会返回token和usereid（用户在猎聘的id）两个字段，分别使用ext存储usereid和ext2存储token

@@ -260,14 +260,20 @@ struct ProfileParseResult {
 
 //候选人关键信息
 struct CandidateInfo {
-    1: optional i32 positionId,
+    1: optional i32 position,
     2: optional string name,
     3: optional i8 gender,
     4: optional string mobile,
     5: optional string email,
     6: optional string company,
     7: optional string job,
-    8: optional list<string> reasons
+    8: optional list<string> reasons,
+    9: optional string recomReasonText,
+    10: optional i8 referralType,
+    11: optional i8 relationship,
+    12: optional i32 degree,
+    13: optional i32 city
+
 }
 
 struct LogEmployeeOperationLog{
@@ -279,4 +285,14 @@ struct LogEmployeeOperationLog{
     6: optional i32   companyId;
     7: optional i32   profileId;
     8: optional Timestamp createTime;
+}
+
+
+struct RequiredFieldInfo{
+    1: optional bool gender,
+    2: optional bool email,
+    3: optional bool degree,
+    4: optional bool companyName;
+    5: optional bool position,
+    6: optional bool city
 }

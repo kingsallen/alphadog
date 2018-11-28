@@ -32,9 +32,8 @@ import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
+import com.moseeker.thrift.gen.profile.struct.RequiredFieldInfo;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import com.moseeker.thrift.gen.profile.struct.UserProfile;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,13 +48,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Controller
 @CounterIface
@@ -712,6 +704,25 @@ public class ProfileController {
             Map<String, Object> params = ParamUtils.parseRequestParam(request);
             Response result = profileOtherService.updateSpecificResource(JSON.toJSONString(params));
             return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
+    @RequestMapping(value = "/v1/referral/information/colum", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchRequireField(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            String position_id=(String)params.get("position_id");
+            if(StringUtils.isNotNullOrEmpty(position_id)) {
+                RequiredFieldInfo result = profileOtherService.fetchRequireField(Integer.valueOf(position_id));
+                return Result.success(result).toJson();
+            }else {
+                return ResponseLogNotification.fail(request, "position_id参数有误");
+            }
+
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
         }

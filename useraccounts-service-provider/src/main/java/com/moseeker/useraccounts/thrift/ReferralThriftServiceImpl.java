@@ -7,6 +7,12 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
+import com.moseeker.thrift.gen.referral.struct.Bonus;
+import com.moseeker.thrift.gen.referral.struct.BonusList;
+import com.moseeker.thrift.gen.referral.struct.RedPacket;
+import com.moseeker.thrift.gen.referral.struct.RedPackets;
+import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
+import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -101,5 +107,34 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public List<ReferralReasonInfo> getReferralReason(int userId, int companyId, int hrId) throws BIZException, TException {
+        try {
+            List<com.moseeker.useraccounts.service.impl.vo.ReferralReasonInfo> result = referralService.getReferralReasonInfo(userId, companyId, hrId);
+            List<ReferralReasonInfo> referralReasonInfos =new ArrayList<>();
+            if(!StringUtils.isEmptyList(result)) {
+                referralReasonInfos = result.stream().map(m -> {
+                    ReferralReasonInfo info = new ReferralReasonInfo();
+                    BeanUtils.copyProperties(m, info);
+                    return info;
+                }).collect(Collectors.toList());
+            }
+            return referralReasonInfos;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public void handerKeyInformationStatus(int companyId, int keyInformation) throws BIZException, TException {
+        referralService.handerKeyInformationStatus(companyId, keyInformation);
+    }
+
+    @Override
+    public int fetchKeyInformationStatus(int companyId) throws BIZException, TException {
+        return referralService.fetchKeyInformationStatus(companyId);
+    }
+
 
 }

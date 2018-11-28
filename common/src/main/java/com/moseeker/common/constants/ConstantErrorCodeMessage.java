@@ -55,6 +55,8 @@ public final class ConstantErrorCodeMessage {
     public static final String MALL_TEMPLATE_SWITCH_CLOSE = "{'status':10042,'message':'商城积分变动消息模板已关闭!'}";
     public static final String MALL_GOODS_NEED_UPSHELF = "{'status':10043,'message':'商品已下架!'}";
     public static final String USEREMPLOYEE_NONEXIST = "{'status':10029,'message':'查不到该员工!'}";
+    public static final String MALL_GOODS_DETAIL_TOO_LARGE = "{'status':10044,'message':'商品详情过长!'}";
+    public static final String MALL_GOODS_RULE_TOO_LARGE = "{'status':10045,'message':'默认规则过长!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 

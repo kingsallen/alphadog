@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record16<Integer, Short, String, String, Short, Integer, Integer, Timestamp, Timestamp, Timestamp, Integer, String, String, String, Byte, Byte> {
 
-    private static final long serialVersionUID = -1451884719;
+    private static final long serialVersionUID = 851183171;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -47,14 +47,14 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * Setter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
      */
     public void setChannel(Short value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * Getter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
      */
     public Short getChannel() {
         return (Short) get(1);
@@ -201,14 +201,16 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称
+     * Setter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：
+会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串
      */
     public void setExt(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称
+     * Getter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：
+会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串
      */
     public String getExt() {
         return (String) get(12);

@@ -11,8 +11,6 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateApplicationReferralRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
@@ -21,8 +19,6 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShare
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRemarkRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRecord;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChain_0417Record;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChain_0418Record;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateSuggestPositionRecord;
 
 import javax.annotation.Generated;
@@ -56,8 +52,6 @@ public class Keys {
     public static final Identity<CandidateRecomRecordRecord, Integer> IDENTITY_CANDIDATE_RECOM_RECORD = Identities0.IDENTITY_CANDIDATE_RECOM_RECORD;
     public static final Identity<CandidateRemarkRecord, Integer> IDENTITY_CANDIDATE_REMARK = Identities0.IDENTITY_CANDIDATE_REMARK;
     public static final Identity<CandidateShareChainRecord, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN = Identities0.IDENTITY_CANDIDATE_SHARE_CHAIN;
-    public static final Identity<CandidateShareChain_0417Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0417 = Identities0.IDENTITY_CANDIDATE_SHARE_CHAIN_0417;
-    public static final Identity<CandidateShareChain_0418Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0418 = Identities0.IDENTITY_CANDIDATE_SHARE_CHAIN_0418;
     public static final Identity<CandidateSuggestPositionRecord, Integer> IDENTITY_CANDIDATE_SUGGEST_POSITION = Identities0.IDENTITY_CANDIDATE_SUGGEST_POSITION;
 
     // -------------------------------------------------------------------------
@@ -72,8 +66,6 @@ public class Keys {
     public static final UniqueKey<CandidateRecomRecordRecord> KEY_CANDIDATE_RECOM_RECORD_PRIMARY = UniqueKeys0.KEY_CANDIDATE_RECOM_RECORD_PRIMARY;
     public static final UniqueKey<CandidateRemarkRecord> KEY_CANDIDATE_REMARK_PRIMARY = UniqueKeys0.KEY_CANDIDATE_REMARK_PRIMARY;
     public static final UniqueKey<CandidateShareChainRecord> KEY_CANDIDATE_SHARE_CHAIN_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SHARE_CHAIN_PRIMARY;
-    public static final UniqueKey<CandidateShareChain_0417Record> KEY_CANDIDATE_SHARE_CHAIN_0417_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SHARE_CHAIN_0417_PRIMARY;
-    public static final UniqueKey<CandidateShareChain_0418Record> KEY_CANDIDATE_SHARE_CHAIN_0418_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SHARE_CHAIN_0418_PRIMARY;
     public static final UniqueKey<CandidateSuggestPositionRecord> KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY;
 
     // -------------------------------------------------------------------------
@@ -92,8 +84,6 @@ public class Keys {
         public static Identity<CandidateRecomRecordRecord, Integer> IDENTITY_CANDIDATE_RECOM_RECORD = createIdentity(CandidateRecomRecord.CANDIDATE_RECOM_RECORD, CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
         public static Identity<CandidateRemarkRecord, Integer> IDENTITY_CANDIDATE_REMARK = createIdentity(CandidateRemark.CANDIDATE_REMARK, CandidateRemark.CANDIDATE_REMARK.ID);
         public static Identity<CandidateShareChainRecord, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN = createIdentity(CandidateShareChain.CANDIDATE_SHARE_CHAIN, CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID);
-        public static Identity<CandidateShareChain_0417Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0417 = createIdentity(CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417, CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417.ID);
-        public static Identity<CandidateShareChain_0418Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0418 = createIdentity(CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418, CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418.ID);
         public static Identity<CandidateSuggestPositionRecord, Integer> IDENTITY_CANDIDATE_SUGGEST_POSITION = createIdentity(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
     }
 
@@ -106,8 +96,6 @@ public class Keys {
         public static final UniqueKey<CandidateRecomRecordRecord> KEY_CANDIDATE_RECOM_RECORD_PRIMARY = createUniqueKey(CandidateRecomRecord.CANDIDATE_RECOM_RECORD, "KEY_candidate_recom_record_PRIMARY", CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID);
         public static final UniqueKey<CandidateRemarkRecord> KEY_CANDIDATE_REMARK_PRIMARY = createUniqueKey(CandidateRemark.CANDIDATE_REMARK, "KEY_candidate_remark_PRIMARY", CandidateRemark.CANDIDATE_REMARK.ID);
         public static final UniqueKey<CandidateShareChainRecord> KEY_CANDIDATE_SHARE_CHAIN_PRIMARY = createUniqueKey(CandidateShareChain.CANDIDATE_SHARE_CHAIN, "KEY_candidate_share_chain_PRIMARY", CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID);
-        public static final UniqueKey<CandidateShareChain_0417Record> KEY_CANDIDATE_SHARE_CHAIN_0417_PRIMARY = createUniqueKey(CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417, "KEY_candidate_share_chain_0417_PRIMARY", CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417.ID);
-        public static final UniqueKey<CandidateShareChain_0418Record> KEY_CANDIDATE_SHARE_CHAIN_0418_PRIMARY = createUniqueKey(CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418, "KEY_candidate_share_chain_0418_PRIMARY", CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418.ID);
         public static final UniqueKey<CandidateSuggestPositionRecord> KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY = createUniqueKey(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, "KEY_candidate_suggest_position_PRIMARY", CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
     }
 }

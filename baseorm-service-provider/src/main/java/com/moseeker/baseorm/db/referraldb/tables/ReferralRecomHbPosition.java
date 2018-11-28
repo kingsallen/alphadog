@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 推荐类红包与被推荐人关系表
+ * 推荐类红包与被推荐职位关系表
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomHbPosition extends TableImpl<ReferralRecomHbPositionRecord> {
 
-    private static final long serialVersionUID = -788544571;
+    private static final long serialVersionUID = 1193853375;
 
     /**
      * The reference instance of <code>referraldb.referral_recom_hb_position</code>
@@ -95,7 +95,7 @@ public class ReferralRecomHbPosition extends TableImpl<ReferralRecomHbPositionRe
     }
 
     private ReferralRecomHbPosition(String alias, Table<ReferralRecomHbPositionRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "推荐类红包与被推荐人关系表");
+        super(alias, null, aliased, parameters, "推荐类红包与被推荐职位关系表");
     }
 
     /**

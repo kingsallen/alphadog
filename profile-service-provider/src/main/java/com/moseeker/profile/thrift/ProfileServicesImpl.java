@@ -184,10 +184,10 @@ public class ProfileServicesImpl implements Iface {
 
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
-                                       int position, byte referralType) throws BIZException, TException {
+                                       int position, byte relationship, String referralText, byte referralType) throws BIZException, TException {
         try {
             return referralService.employeeReferralProfile(employeeId, name, mobile, referralReasons, position,
-                    referralType);
+                    relationship,  referralText, referralType);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -207,7 +207,6 @@ public class ProfileServicesImpl implements Iface {
         try {
             com.moseeker.profile.service.impl.vo.CandidateInfo candidate = new com.moseeker.profile.service.impl.vo.CandidateInfo();
             BeanUtils.copyProperties(candidateInfo, candidate);
-            candidate.setPosition(candidateInfo.getPositionId());
             return referralService.postCandidateInfo(employeeId, candidate);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -225,9 +224,10 @@ public class ProfileServicesImpl implements Iface {
     }
 
     @Override
-    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException, TException {
+    public int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons,
+                                             byte referralType, String fileName, int relationship, String referralReasonText) throws BIZException, TException {
         try {
-            return referralService.saveMobotReferralProfileCache(employeeId, name, mobile, referralReasons, referralType, fileName);
+            return referralService.saveMobotReferralProfileCache(employeeId, name, mobile, referralReasons, referralType, fileName, relationship, referralReasonText);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

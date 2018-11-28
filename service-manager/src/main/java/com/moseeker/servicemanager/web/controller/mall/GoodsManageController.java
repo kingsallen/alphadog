@@ -3,11 +3,14 @@ package com.moseeker.servicemanager.web.controller.mall;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.malldb.MallGoodsInfoDO;
 import com.moseeker.thrift.gen.mall.service.GoodsService;
 import com.moseeker.thrift.gen.mall.struct.*;
@@ -225,7 +228,7 @@ public class GoodsManageController {
      * @date  2018/10/12
      * @return 返回校验信息
      */
-    private ValidateUtil validateRequireInfo(MallGoodsInfoForm mallGoodsInfoForm) {
+    private ValidateUtil validateRequireInfo(MallGoodsInfoForm mallGoodsInfoForm) throws BIZException {
 
         ValidateUtil vu = new ValidateUtil();
         vu.addRequiredValidate("主图url", mallGoodsInfoForm.getPic_url());
@@ -234,6 +237,13 @@ public class GoodsManageController {
         vu.addRequiredValidate("积分", mallGoodsInfoForm.getCredit());
         vu.addRequiredValidate("详情", mallGoodsInfoForm.getDetail());
         vu.addRequiredValidate("领取规则", mallGoodsInfoForm.getRule());
+
+        if(mallGoodsInfoForm.getDetail().length() > 5000){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_DETAIL_TOO_LARGE);
+        }
+        if(mallGoodsInfoForm.getRule().length()> 2000){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_GOODS_RULE_TOO_LARGE);
+        }
 
         vu.addIntTypeValidate("积分", mallGoodsInfoForm.getCredit(), null, null, 0, 1000000);
         vu.addIntTypeValidate("公司id", mallGoodsInfoForm.getCompany_id(), null, null, 1, Integer.MAX_VALUE);
