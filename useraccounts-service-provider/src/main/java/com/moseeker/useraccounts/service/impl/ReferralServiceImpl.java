@@ -224,8 +224,7 @@ public class ReferralServiceImpl implements ReferralService {
             List<Integer> applicationIds = applicationRecords.stream().map(m -> m.getId()).collect(Collectors.toList());
             List<ReferralRecomEvaluationRecord> evaluationRecords = referralEntity.fetchEvaluationListByUserId(userId, applicationIds);
             if(!StringUtils.isEmptyList(evaluationRecords)){
-                List<ReferralReasonInfo> list = new ArrayList<>();
-                evaluationRecords.stream().map( m -> {
+                List<ReferralReasonInfo> list = evaluationRecords.stream().map( m -> {
                     ReferralReasonInfo info = new ReferralReasonInfo();
                     info.setId(m.getAppId());
                     info.setRecomReasonText(m.getRecomReasonText());
