@@ -109,8 +109,8 @@ public class ReferralController {
     @ResponseBody
     public String referralProfile(@PathVariable int id, @RequestBody ReferralForm referralForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addRequiredValidate("手机", referralForm.getMobile());
-        validateUtil.addRegExpressValidate("手机", referralForm.getMobile(), FormCheck.getMobileExp());
+        validateUtil.addRequiredValidate("手机号", referralForm.getMobile());
+        validateUtil.addRegExpressValidate("手机号", referralForm.getMobile(), FormCheck.getMobileExp());
         validateUtil.addRequiredValidate("姓名", referralForm.getName());
         validateUtil.addRequiredValidate("推荐关系", referralForm.getRelationship());
         validateUtil.addRequiredOneValidate("推荐理由", referralForm.getReferralReasons());
