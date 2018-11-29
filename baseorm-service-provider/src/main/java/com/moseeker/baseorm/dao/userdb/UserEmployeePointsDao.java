@@ -144,4 +144,5 @@ public class UserEmployeePointsDao extends JooqCrudImpl<UserEmployeePointsRecord
         logger.info(recordPojos.size() + "");
         return recordPojos;
     }
+
 }

@@ -4,6 +4,8 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.useraccounts.service.impl.vo.BonusList;
 import com.moseeker.useraccounts.service.impl.vo.RedPackets;
+import com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab;
+import java.util.List;
 
 /**
  * @Author: jack
@@ -31,6 +33,16 @@ public interface ReferralService {
      * @throws UserAccountException 异常
      */
     BonusList getBonus(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException;
+
+    /**
+     * 获取候选人在公司下的推荐附件简历
+     * @param usetId    候选人编号
+     * @param companyId 公司编号
+     * @return
+     * @throws UserAccountException
+     */
+    List<ReferralProfileTab> getReferralProfileTabList(int usetId, int companyId, int hrId)throws UserAccountException;
+
 
     /**
      * 修改红包活动

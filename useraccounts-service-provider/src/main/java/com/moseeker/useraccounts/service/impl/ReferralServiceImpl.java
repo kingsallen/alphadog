@@ -1,7 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
@@ -10,16 +9,18 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
-import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
+import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralService;
@@ -152,6 +153,21 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
+    public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId, int hrId) throws UserAccountException {
+        List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
+        ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
+        List<ReferralProfileTab> profileTabs = new ArrayList<>();
+        if(profileData != null){
+            for(ReferralLog log : logList){
+                profileTabs.add(HBBizTool.packageReferralTab(log, profileData));
+            }
+            return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
     @Transactional
     public void updateActivity(ActivityVO activityVO) throws UserAccountException {
 
@@ -173,7 +189,7 @@ public class ReferralServiceImpl implements ReferralService {
                     case Pause:
                         activity.pause(); break;
                     case UnChecked:
-                        activity.updateInfo(activityVO, false);
+                        activity.updateInfo(activityVO, false);break;
                     case Checked:
                     case UnStart:
                         activity.updateInfo(activityVO, true); break;

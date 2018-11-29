@@ -46,4 +46,5 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         converters.add(fastJsonpHttpMessageConverter4);
         super.configureMessageConverters(converters);
     }
+
 }
