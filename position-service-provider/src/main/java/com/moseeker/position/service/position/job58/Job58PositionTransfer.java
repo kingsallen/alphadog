@@ -35,6 +35,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionJob58MappingDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyJob58PositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,9 +101,10 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
     public HrThirdPartyPositionDO toThirdPartyPosition(Job58PositionForm thirdPartyPosition, Job58PositionDTO pwa) {
         // 转成do入库
         HrThirdPartyPositionDO data = new HrThirdPartyPositionDO();
-
+        String syncTime = (new DateTime()).toString("yyyy-MM-dd HH:mm:ss");
         data.setOccupation(thirdPartyPosition.getOccupation() + "");
         data.setChannel(getChannel().getValue());
+        data.setSyncTime(syncTime);
         data.setThirdPartyAccountId(pwa.getAccount_id());
         data.setPositionId(pwa.getPid());
         data.setIsSynchronization((byte) PositionSync.bound.getValue());
