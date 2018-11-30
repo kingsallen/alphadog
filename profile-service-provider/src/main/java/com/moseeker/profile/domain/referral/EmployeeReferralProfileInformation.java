@@ -36,6 +36,7 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
     protected void validateReferralInfo(EmployeeReferralProfileNotice profileNotice) {
         ValidateUtil validateUtil = new ValidateUtil();
         logger.info("validateReferralInfo email:{}", profileNotice.getEmail());
+        validateUtil.addRequiredOneValidate("推荐理由", profileNotice.getReferralReasons());
         if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
             validateUtil.addRegExpressValidate("邮箱", profileNotice.getEmail(), FormCheck.getEmailExp());
         }
@@ -48,6 +49,7 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         logger.info("validateReferralInfo position:{}", profileNotice.getPositionIds().get(0));
         RequireFieldInfo info  = otherEntity.fetchRequireField(profileNotice.getPositionIds().get(0));
         logger.info("validateReferralInfo info:{}", info);
+        logger.info("validateReferralInfo gender:{}", profileNotice.getGender());
         if(info.isCity()){
             validateUtil.addRequiredValidate("现居住城市", profileNotice.getCity_code());
         }
