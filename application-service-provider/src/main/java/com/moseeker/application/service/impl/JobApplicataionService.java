@@ -245,7 +245,23 @@ public class JobApplicataionService {
             //do nothing
         }
     }
+    @CounterIface
+    public int  appSendEmail(int jobApplicationId){
+        com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication  application=jobApplicationDao.fetchOneById(jobApplicationId);
+        if(application==null){
+            throw ApplicationException.APPLICATION_APPLICATION_ELLEGAL;
+        }
 
+        Query query = new QueryBuilder().where("id", application.getPositionId()).buildQuery();
+        JobPositionRecord jobPositionRecord = jobPositionDao.getRecord(query);
+        if(jobPositionRecord==null){
+            throw ApplicationException.APPLICATION_POSITION_NOT_EXIST;
+        }
+        this.sendMessageAndEmailThread(jobApplicationId,jobPositionRecord.getId(),application.getApplyType(),application.getEmailStatus(),application.getRecommenderUserId()
+                ,application.getApplierId(),application.getOrigin());
+
+        return 1;
+    }
     /**
      * 校验申请的有效性，并发送 消息通知
      * @param jobApplicationId 申请编号

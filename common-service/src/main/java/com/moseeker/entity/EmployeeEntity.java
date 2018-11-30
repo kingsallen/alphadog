@@ -32,6 +32,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeePointsRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.pojo.CustomEmployeeInsertResult;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -70,8 +71,6 @@ import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVO;
 import com.moseeker.thrift.gen.employee.struct.RewardVOPageVO;
 import com.moseeker.thrift.gen.warn.struct.WarnBean;
-import java.net.ConnectException;
-import javax.annotation.Resource;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +81,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -244,6 +245,47 @@ public class EmployeeEntity {
         }
         // 进行加积分操作
         addReward(employeeId, companyId, "", applicationId, positionId, templateId, berecomUserId);
+    }
+
+
+    /**
+     * 增加员工积点
+     *
+     * @param employeeId
+     * @return 员工信息
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public UserEmployeePointsRecordDO addRewardReturnPointDO(int employeeId, int companyId, UserEmployeePointsRecordDO ueprDo) throws EmployeeException {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", employeeId).and("disable", 0).and("activation", 0);
+        UserEmployeeDO userEmployeeDO = employeeDao.getUserEmployeeForUpdate(employeeId);
+        if (userEmployeeDO != null && userEmployeeDO.getId() > 0 && ueprDo != null) {
+            // 修改用户总积分, 积分不能扣成负数
+            int totalAward = userEmployeeDO.getAward() + ueprDo.getAward();
+            if (totalAward < 0) {
+                logger.error("增加用户积分失败，用户积分不足：为用户{},用户当前积分{}点,添加积分{}点, reason:{}", employeeId, userEmployeeDO.getAward(), ueprDo.getAward(), ueprDo.getReason());
+                throw EmployeeException.EMPLOYEE_AWARD_NOT_ENOUGH;
+            }
+            int row = employeeDao.addAward(userEmployeeDO.getId(), totalAward, userEmployeeDO.getAward());
+            // 积分记录
+            if (row > 0) {
+                ueprDo = ueprDao.addData(ueprDo);
+                if (ueprDo.getId() > 0) {
+                    logger.info("增加用户积分成功：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
+                    // 记录积分来源公司
+                    UserEmployeePointsRecordCompanyRelDO ueprcrDo = new UserEmployeePointsRecordCompanyRelDO();
+                    ueprcrDo.setCompanyId(companyId);
+                    ueprcrDo.setEmployeePointsRecordId(ueprDo.getId());
+                    ueprcrDao.addData(ueprcrDo);
+                    // 更新ES中的user_employee数据，以便积分排行实时更新
+                    searchengineEntity.updateEmployeeAwards(employeeId, ueprDo.getId());
+                } else {
+                    logger.error("增加用户积分失败：为用户{},添加积分{}点, reason:{}", employeeId, ueprDo.getAward(), ueprDo.getReason());
+                    throw EmployeeException.EMPLOYEE_AWARD_ADD_FAILED;
+                }
+            }
+        }
+        return ueprDo;
     }
 
 
@@ -1572,5 +1614,31 @@ public class EmployeeEntity {
         }
     }
 
+    /**
+     * 增加重复添加的校验
+     * @param userEmployeeList 需要添加的自定义员工信息
+     * @return 添加的数量
+     */
+    public int addEmployeeListIfNotExist(List<UserEmployeeDO> userEmployeeList) {
+        if (userEmployeeList != null && userEmployeeList.size() > 0) {
+            int count = 0;
+            List<UserEmployeeRecord> employeeDOS = new ArrayList<>();
+            for(UserEmployeeDO employee : userEmployeeList){
+                UserEmployeeRecord record = BeanUtils.structToDB(employee, UserEmployeeRecord.class);
+                record.setAuthMethod(Constant.AUTH_METHON_TYPE_CUSTOMIZE);
+                UserEmployeeRecord userEmployeeRecord = employeeDao.insertCustomEmployeeIfNotExist(record);
+
+                if (userEmployeeRecord != null) {
+                    employeeDOS.add(userEmployeeRecord);
+                    count += 1;
+                }
+            }
+            // ES 索引更新
+            searchengineEntity.updateEmployeeAwards(employeeDOS.stream().map(m -> m.getId()).collect(Collectors.toList()));
+            return count;
+        } else {
+            return 0;
+        }
+    }
 }
 

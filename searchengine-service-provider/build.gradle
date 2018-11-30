@@ -15,9 +15,12 @@ dependencies {
     compile deps["spring-rabbit"]
     testCompile deps["spring-test"]
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: '2.9.6'
 
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
 
 task copyJars(type: Copy) {

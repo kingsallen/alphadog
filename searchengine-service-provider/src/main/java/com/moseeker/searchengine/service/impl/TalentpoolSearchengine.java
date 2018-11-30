@@ -762,7 +762,7 @@ public class TalentpoolSearchengine {
                 String longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
             }
-            if(Integer.parseInt(isRecommend)>0){
+            if(StringUtils.isNotNullOrEmpty(isRecommend) && Integer.parseInt(isRecommend)>0){
                 sb.append("val.recommender_user_id>0 &&");
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
@@ -851,6 +851,10 @@ public class TalentpoolSearchengine {
         if(queryAppScript!=null){
             ((BoolQueryBuilder) query).filter(queryAppScript);
         }
+        QueryBuilder gdprScript=this.convertGdprScript(params);
+        if(gdprScript!=null){
+            ((BoolQueryBuilder) query).filter(gdprScript);
+        }
         QueryBuilder queryNest=this.queryNest(params);
         if(queryNest!=null){
             ((BoolQueryBuilder) query).filter(queryNest);
@@ -858,6 +862,7 @@ public class TalentpoolSearchengine {
         this.queryTalentComment(params,query);
         return query;
     }
+
 
     private void handlerProvinceCity(Map<String,String> params) throws TException {
         String cityCode=params.get("city_code");
@@ -1156,10 +1161,12 @@ public class TalentpoolSearchengine {
         String maxAge=params.get("max_age");
         String updateTime=params.get("update_time");
         String extsis=params.get("extsis");
+        //ats查询时使用的时间
+        String atsTime=params.get("ats_profile_update_time");
         if(
                 StringUtils.isNotNullOrEmpty(degree)||StringUtils.isNotNullOrEmpty(intentionSalaryCode)||StringUtils.isNotNullOrEmpty(sex)||
                         StringUtils.isNotNullOrEmpty(workYears)||StringUtils.isNotNullOrEmpty(updateTime)||
-                        ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge)))
+                        ((StringUtils.isNotNullOrEmpty(minAge)||StringUtils.isNotNullOrEmpty(maxAge))&&(!"0".equals(minAge)||!"0".equals(maxAge))||StringUtils.isNotNullOrEmpty(atsTime))
                 )
         {
             if(StringUtils.isNotNullOrEmpty(degree)){
@@ -1194,7 +1201,9 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(extsis)){
             this.exitsisQuery(extsis,query);
         }
-
+        if(StringUtils.isNotNullOrEmpty(atsTime)){
+            this.queryByAtsProfileUpDateTime(atsTime,query);
+        }
         return query;
     }
 
@@ -1407,6 +1416,7 @@ public class TalentpoolSearchengine {
         String isPublic=params.get("is_public");
         String companyId=params.get("company_id");
         String positionStatus=params.get("position_status");
+
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
                 &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
                 &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))){
@@ -1498,6 +1508,22 @@ public class TalentpoolSearchengine {
         return script;
     }
     /*
+     处理Gdpr
+     */
+    private ScriptQueryBuilder convertGdprScript(Map<String,String> params){
+        String isGdpr=params.get("is_gdpr");
+        String companyId=params.get("company_id");
+        if(StringUtils.isNotNullOrEmpty(isGdpr)&&"1".equals(isGdpr)){
+            StringBuffer sb=new StringBuffer();
+            sb.append("user=_source.user;if(user){applications=user.applications;if(applications){");
+            sb.append("for(val in applications){if(val.status!=1&&val.company_id=="+companyId+"){return true}}}}");
+            ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
+            return script;
+        }
+
+        return null;
+    }
+    /*
       查询该hr是否在索引当中
      */
     private Map<String,Object> getUserAnalysisIndex(Map<String,String> params,TransportClient client){
@@ -1552,6 +1578,11 @@ public class TalentpoolSearchengine {
     private void queryByProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
 
         String time=this.getLongTime(updateTime);
+        this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
+    }
+
+    private void queryByAtsProfileUpDateTime(String updateTime,QueryBuilder queryBuilder){
+        String time=updateTime.replace(" ","T");
         this.searchUtil.hanleRangeFilter(time,queryBuilder,"user.profiles.profile.update_time");
     }
 
