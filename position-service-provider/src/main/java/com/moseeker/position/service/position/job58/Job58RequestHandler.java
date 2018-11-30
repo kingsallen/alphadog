@@ -42,6 +42,7 @@ public class Job58RequestHandler<T> {
         String sign = Md5Utils.getMD5SortKeyWithEqual(Job58PositionOperateConstant.job58SecretKey, keyList, requestMap);
         requestMap.put("sig", sign);
         String response = httpClientUtil.sendRequest2Job58(url, requestMap);
+        logger.info("================job58Response:{}", response);
         if(StringUtils.isNullOrEmpty(response)){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.HTTP_REQUEST_FAILED);
         }

@@ -166,7 +166,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         upshelfDTO.setApp_key(job58PositionDTO.getApp_key());
         upshelfDTO.setOpenid(job58PositionDTO.getOpenid());
         upshelfDTO.setTimestamp(System.currentTimeMillis());
-        JSONObject response= job58RequestHandler.sendRequest(job58PositionDTO, Job58PositionOperateConstant.job58PositionShelfUp);
+        JSONObject response= job58RequestHandler.sendRequest(upshelfDTO, Job58PositionOperateConstant.job58PositionShelfUp);
         job58RequestHandler.checkValidResponse(response);
         job58PositionDO.setState((byte)1);
         job58MappingDao.updateData(job58PositionDO);
