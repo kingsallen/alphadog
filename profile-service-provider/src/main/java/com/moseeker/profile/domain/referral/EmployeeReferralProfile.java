@@ -94,7 +94,7 @@ public abstract class EmployeeReferralProfile {
         List<JobPositionDO> positions = getJobPositions(profileNotice.getPositionIds(), employeeDO.getCompanyId());
         ProfilePojo profilePojo = getProfilePojo(profileNotice);
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
-                profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
+                profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
         storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO);
         int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
                 ApplicationSource.EMPLOYEE_CHATBOT.getValue();
