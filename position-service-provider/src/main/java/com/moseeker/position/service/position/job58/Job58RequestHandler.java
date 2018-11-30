@@ -37,6 +37,7 @@ public class Job58RequestHandler<T> {
 
     public JSONObject sendRequest(T t, String url) throws Exception {
         JSONObject requestMap = JSONObject.parseObject(JSON.toJSONString(t));
+        logger.info("json:{}", JSON.toJSONString(requestMap));
         List<String> keyList = Md5Utils.mapToList(requestMap);
         String sign = Md5Utils.getMD5SortKeyWithEqual(Job58PositionOperateConstant.job58SecretKey, keyList, requestMap);
         requestMap.put("sig", sign);
@@ -59,7 +60,6 @@ public class Job58RequestHandler<T> {
             Element element = it.next();
             map.put(element.getName(), element.getTextTrim());
         }
-        System.out.println(JSON.toJSONString(map));
         return map;
     }
 

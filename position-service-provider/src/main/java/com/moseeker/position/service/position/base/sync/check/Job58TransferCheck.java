@@ -1,9 +1,12 @@
 package com.moseeker.position.service.position.base.sync.check;
 
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.position.job58.vo.Job58PositionForm;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -17,6 +20,9 @@ import java.util.regex.Pattern;
 @Component
 public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm> {
 
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
+
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
     private Pattern email = Pattern.compile(REGEX_EMAIL);
     private Pattern mobile = Pattern.compile(REGEX_MOBILE);
@@ -27,6 +33,8 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
 
     private static final int TITLE_MIN_LENGTH = 2;
     private static final int TITLE_MAX_LENGTH = 12;
+    private static final int USERNAME_MIN_LENGTH = 2;
+    private static final int USERNAME_MAX_LENGTH = 6;
     private static final int CONTENT_MAX_LENGTH = 2000;
     private static final int RECRUIT_MAX_NUMBER = 999;
 
@@ -39,6 +47,8 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
     private static final String SALARY_NOT_EMPTY = "薪资不能为空!";
     private static final String OCCUPATION_NOT_EMPTY = "职能不能为空!";
+    private static final String HR_ACCOUNT_DISABLE = "账号已停用!";
+    private static final String USERNAME_LENGTH_LIMIT = "职位联系人姓名长度范围2-6个字!";
 
     @Override
     public Class<Job58PositionForm> getFormClass() {
@@ -83,17 +93,31 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
             }
             // 薪资必须不为空，如果都为0，则是面议
             if (job58PositionForm.getSalaryTop() != null && job58PositionForm.getSalaryBottom() != null) {
-                if(job58PositionForm.getSalaryTop() == 0 && job58PositionForm.getSalaryBottom() == 0){
-                    job58PositionForm.setSalaryDiscuss((byte)1);
-                }else {
-                    job58PositionForm.setSalaryDiscuss((byte)0);
+                if (job58PositionForm.getSalaryTop() == 0 && job58PositionForm.getSalaryBottom() == 0) {
+                    job58PositionForm.setSalaryDiscuss((byte) 1);
+                } else {
+                    job58PositionForm.setSalaryDiscuss((byte) 0);
                 }
-            }else {
+            } else {
                 errorMsg.add(SALARY_NOT_EMPTY);
             }
             // 职能不能为空
-            if(job58PositionForm.getOccupation() == null || job58PositionForm.getOccupation().size() == 0){
+            if (job58PositionForm.getOccupation() == null || job58PositionForm.getOccupation().size() == 0) {
                 errorMsg.add(OCCUPATION_NOT_EMPTY);
+            }
+            // 检验职位联系人姓名长度
+            UserHrAccountDO userHrAccountDO = userHrAccountDao.getValidAccount(moseekerPosition.getPublisher());
+            if (userHrAccountDO == null) {
+                errorMsg.add(HR_ACCOUNT_DISABLE);
+            } else {
+                String username = userHrAccountDO.getUsername();
+                if(StringUtils.isNullOrEmpty(username)){
+                    errorMsg.add(USERNAME_LENGTH_LIMIT);
+                }else {
+                    if(username.length() > USERNAME_MAX_LENGTH || username.length() < USERNAME_MIN_LENGTH){
+                        errorMsg.add(USERNAME_LENGTH_LIMIT);
+                    }
+                }
             }
 
         }

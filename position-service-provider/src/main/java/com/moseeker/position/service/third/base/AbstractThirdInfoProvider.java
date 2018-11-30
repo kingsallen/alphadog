@@ -24,7 +24,7 @@ public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoPro
     protected final static String FEATURE = "features";
 
     @Autowired
-    HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
+    protected HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
 
     @Autowired
     protected HRThirdPartyAccountDao hrThirdPartyAccountDao;
@@ -64,4 +64,9 @@ public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoPro
     }
 
     public abstract ChannelType getChannel();
+
+    public HrThirdPartyAccountDO getThirdPartyAccountBindResult(int hrId, HrThirdPartyAccountDO account) {
+        return null;
+    }
+
 }

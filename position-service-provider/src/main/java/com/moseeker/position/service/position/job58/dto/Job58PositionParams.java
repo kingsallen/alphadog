@@ -13,7 +13,7 @@ public class Job58PositionParams {
     private String  qzapisource;
     private Integer gongzuodizhi;
     private Byte yingjiesheng;
-    private String  fulibaozhang;
+    private String  zhiweiliangdian;
     private Byte showcontact;
 
     public String getGoblianxiren() {
@@ -80,19 +80,19 @@ public class Job58PositionParams {
         this.yingjiesheng = yingjiesheng;
     }
 
-    public String getFulibaozhang() {
-        return fulibaozhang;
-    }
-
-    public void setFulibaozhang(String fulibaozhang) {
-        this.fulibaozhang = fulibaozhang;
-    }
-
     public Byte getShowcontact() {
         return showcontact;
     }
 
     public void setShowcontact(Byte showcontact) {
         this.showcontact = showcontact;
+    }
+
+    public String getZhiweiliangdian() {
+        return zhiweiliangdian;
+    }
+
+    public void setZhiweiliangdian(String zhiweiliangdian) {
+        this.zhiweiliangdian = zhiweiliangdian;
     }
 }

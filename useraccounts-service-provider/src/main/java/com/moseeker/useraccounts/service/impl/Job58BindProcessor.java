@@ -52,6 +52,7 @@ public class Job58BindProcessor extends AbstractBindProcessor {
         if (BindCheck.isNotNullAccount(oldAccount)) {
             oldAccount.setExt(account.getExt());
             oldAccount.setUsername(account.getUsername());
+            oldAccount.setExt2(account.getExt2());
             // 如果是之前存在的账号，为防止本次刷新token将之前的token失效，将本次刷新结果更新至数据库
             context.updateBinding(oldAccount);
             return oldAccount;

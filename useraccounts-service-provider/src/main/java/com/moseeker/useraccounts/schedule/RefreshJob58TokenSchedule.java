@@ -124,9 +124,7 @@ public class RefreshJob58TokenSchedule {
 
     private void handleExpireAccount(List<HrThirdPartyAccountDO> expireAccount) {
         for(HrThirdPartyAccountDO accountDO : expireAccount){
-            // todo 待定
-            accountDO.setErrorMessage("");
-            // todo 需要添加
+            accountDO.setErrorMessage("refreshToken过期，请重新绑定");
             accountDO.setBinding((short)10);
             accountDO.setUpdateTime(null);
         }

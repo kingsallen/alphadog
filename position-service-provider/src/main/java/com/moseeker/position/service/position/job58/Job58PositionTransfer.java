@@ -4,15 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.moseeker.baseorm.dao.dictdb.DictFeatureJob58Dao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionJob58MappingDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.Dict_58jobFeatureRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.constants.position.job58.Job58PositionDegree;
 import com.moseeker.position.constants.position.job58.Job58PositionOperateConstant;
 import com.moseeker.position.constants.position.job58.Job58WorkExperienceDegree;
@@ -26,6 +30,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionJob58MappingDO;
 import com.moseeker.thrift.gen.dao.struct.thirdpartydb.ThirdpartyJob58PositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.apache.thrift.TException;
@@ -60,8 +65,10 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
     private HRThirdPartyPositionDao thirdPartyPositionDao;
     @Autowired
     private PositionEmailNotification emailNotification;
-
-    private static final String API_SOURCE = "qianxun008";
+    @Autowired
+    private JobPositionJob58MappingDao job58MappingDao;
+    @Autowired
+    private DictFeatureJob58Dao featureJob58Dao;
 
     @Override
     public Job58PositionDTO changeToThirdPartyPosition(Job58PositionForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws BIZException {
@@ -81,7 +88,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionDTO.setPhone(userHrAccountDO.getMobile());
         job58PositionDTO.setTitle(positionDB.getTitle());
         job58PositionDTO.setParas(parsePositionParam2Job58(positionForm, positionDB, userHrAccountDO));
-        // todo 設置email
+        // 設置email
         job58PositionDTO.setEmail(Job58PositionOperateConstant.job58ProfileEmail);
         job58PositionDTO.setAccount_id(account.getId());
         job58PositionDTO.setPid(positionDB.getId());
@@ -115,9 +122,17 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         Job58PositionDTO job58PositionDTO = result.getPositionWithAccount();
         HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
         try {
+            int pid = job58PositionDTO.getPid();
             job58PositionDTO = postProcessBeforeRequest(job58PositionDTO, hrThirdPartyPositionDO.getThirdPartyAccountId());
             response = job58RequestHandler.sendRequest(job58PositionDTO, Job58PositionOperateConstant.job58PositionSync);
             job58RequestHandler.checkValidResponse(response);
+            JobPositionJob58MappingDO job58PositionDO = new JobPositionJob58MappingDO();
+            Map<String, String> job58Position = job58RequestHandler.parseXml2Map(response.getString("data"));
+            job58PositionDO.setPositionId(pid);
+            job58PositionDO.setInfoId(job58Position.get("infoid"));
+            job58PositionDO.setState((byte)1);
+            job58PositionDO.setUrl(job58Position.get("url"));
+            job58MappingDao.addData(job58PositionDO);
         } catch (BIZException e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
@@ -219,18 +234,20 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
 
     private String parsePositionParam2Job58(Job58PositionForm positionForm, JobPositionDO positionDB, UserHrAccountDO userHrAccountDO) {
         Job58PositionParams job58PositionParams = new Job58PositionParams();
-        List<String> features = positionForm.getFeatures().stream().map(String::valueOf).collect(Collectors.toList());
-        job58PositionParams.setFulibaozhang(String.join("|", features));
+        List<Dict_58jobFeatureRecord> featureRecords = featureJob58Dao.getFeatureByIds(positionForm.getFeatures());
+        List<String> features = featureRecords.stream().map(Dict_58jobFeatureRecord::getName).collect(Collectors.toList());
+        job58PositionParams.setZhiweiliangdian(String.join("|", features));
         job58PositionParams.setGoblianxiren(userHrAccountDO.getUsername());
         job58PositionParams.setGongzuodizhi(positionForm.getAddressId());
         // 工作年限映射
         int workExperienceDegree = Job58WorkExperienceDegree.getWorkExperienceDegree(Integer.parseInt(positionDB.getExperience())).getDegree();
         job58PositionParams.setGongzuonianxian(workExperienceDegree);
-        // 是否面议
+        // 是否面议 0 非面议，1 面议
         int salaryDiscuss = positionForm.getSalaryDiscuss() == null ? 0 : 1;
         job58PositionParams.setMinxinzi(salaryDiscuss == 1 ? "面议" : positionForm.getSalaryBottom() + "_" + positionForm.getSalaryTop());
-        job58PositionParams.setQzapisource(API_SOURCE);
-        job58PositionParams.setShowcontact(positionForm.getShowContact());
+        job58PositionParams.setQzapisource(Job58PositionOperateConstant.job58ApiSource);
+        // 58技术对接人表示，不传为显示联系方式，传就不显示
+        job58PositionParams.setShowcontact(positionForm.getShowContact() == 1 ? null : (byte)0);
         job58PositionParams.setYingjiesheng(positionForm.getFreshGraduate());
         // 学历映射
         int degree = (int) positionDB.getDegree();

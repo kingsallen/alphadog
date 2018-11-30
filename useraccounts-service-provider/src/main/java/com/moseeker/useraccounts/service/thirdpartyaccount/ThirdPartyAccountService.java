@@ -443,4 +443,12 @@ public class ThirdPartyAccountService {
         }
         return "success";
     }
+
+    public HrThirdPartyAccountDO getJob58BindResult(int channel, String key){
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = thirdPartyAccountDao.getJob58BindResult(channel, key);
+        if(hrThirdPartyAccountDO == null){
+            return new HrThirdPartyAccountDO();
+        }
+        return hrThirdPartyAccountDO;
+    }
 }

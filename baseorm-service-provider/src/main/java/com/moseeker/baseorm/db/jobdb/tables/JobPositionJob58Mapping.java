@@ -7,20 +7,13 @@ package com.moseeker.baseorm.db.jobdb.tables;
 import com.moseeker.baseorm.db.jobdb.Jobdb;
 import com.moseeker.baseorm.db.jobdb.Keys;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionJob58MappingRecord;
+import org.jooq.*;
+import org.jooq.impl.TableImpl;
 
+import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.Identity;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
-import org.jooq.impl.TableImpl;
 
 
 /**
@@ -36,7 +29,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionJob58Mapping extends TableImpl<JobPositionJob58MappingRecord> {
 
-    private static final long serialVersionUID = -1589185925;
+    private static final long serialVersionUID = -1616188619;
 
     /**
      * The reference instance of <code>jobdb.job_position_job58_mapping</code>
@@ -59,7 +52,7 @@ public class JobPositionJob58Mapping extends TableImpl<JobPositionJob58MappingRe
     /**
      * The column <code>jobdb.job_position_job58_mapping.info_id</code>. 58职位id
      */
-    public final TableField<JobPositionJob58MappingRecord, Integer> INFO_ID = createField("info_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "58职位id");
+    public final TableField<JobPositionJob58MappingRecord, String> INFO_ID = createField("info_id", org.jooq.impl.SQLDataType.VARCHAR.length(30).nullable(false), this, "58职位id");
 
     /**
      * The column <code>jobdb.job_position_job58_mapping.position_id</code>. 仟寻职位id

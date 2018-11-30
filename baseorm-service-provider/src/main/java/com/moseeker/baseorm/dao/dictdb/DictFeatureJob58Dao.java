@@ -22,4 +22,9 @@ public class DictFeatureJob58Dao {
                 .fetchInto(Dict_58jobFeatureRecord.class);
     }
 
+    public List<Dict_58jobFeatureRecord> getFeatureByIds(List<Integer> features) {
+        return create.selectFrom(DICT_58JOB_FEATURE)
+                .where(DICT_58JOB_FEATURE.ID.in(features))
+                .fetchInto(Dict_58jobFeatureRecord.class);
+    }
 }

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.dictdb.DictFeatureJob58Dao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.Dict_58jobFeatureRecord;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
@@ -16,6 +17,7 @@ import com.moseeker.position.service.position.job58.dto.Job58AddressRequestDTO;
 import com.moseeker.position.service.position.job58.vo.Job58AddressVO;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,9 @@ public class Job58InfoProvider extends AbstractThirdInfoProvider {
 
     @Autowired
     private Job58RequestHandler<Job58AddressRequestDTO> requestHandler;
+
+    @Autowired
+    private UserHrAccountDao userHrAccountDao;
 
     @Override
     public ChannelType getChannel() {
@@ -74,6 +79,14 @@ public class Job58InfoProvider extends AbstractThirdInfoProvider {
         }
         obj.put(FEATURE, getAll58Features());
         return obj.toJSONString();
+    }
+
+    @Override
+    public HrThirdPartyAccountDO getThirdPartyAccountBindResult(int hrId, HrThirdPartyAccountDO account) {
+        UserHrAccountDO hrAccountDO = userHrAccountDao.getValidAccount(hrId);
+        int companyId = hrAccountDO.getCompanyId();
+//        return hrThirdPartyAccountDao.getThirdPartyAccountBindResult(hrId, account);
+        return null;
     }
 
     /**
