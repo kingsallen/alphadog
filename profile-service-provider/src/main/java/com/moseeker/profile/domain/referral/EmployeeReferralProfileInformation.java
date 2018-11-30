@@ -14,6 +14,8 @@ import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import java.util.HashMap;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmployeeReferralProfileInformation extends EmployeeReferralProfileApdate {
 
+    private static final Logger logger = LoggerFactory.getLogger(EmployeeReferralProfileInformation.class);
     @Autowired
     DictCityDao cityDao;
 
@@ -40,7 +43,9 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         if(StringUtils.isNotNullOrEmpty(profileNotice.getCurrentPosition())) {
             validateUtil.addStringLengthValidate("当前职位", profileNotice.getCurrentPosition(), null, 200);
         }
+        logger.info("validateReferralInfo position:{}", profileNotice.getPositionIds().get(0));
         RequireFieldInfo info  = otherEntity.fetchRequireField(profileNotice.getPositionIds().get(0));
+        logger.info("validateReferralInfo info:{}", info);
         if(info.isCity()){
             validateUtil.addRequiredValidate("现居住城市", profileNotice.getCity_code());
         }

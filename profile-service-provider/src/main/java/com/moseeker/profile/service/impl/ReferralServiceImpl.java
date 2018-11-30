@@ -486,6 +486,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @return 推荐记录编号
      * @throws ProfileException
      */
+    @CounterIface
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte relationship, String referralText,   byte referralType) throws ProfileException, BIZException {
@@ -508,6 +509,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @return 推荐记录编号
      * @throws ProfileException 业务异常
      */
+    @CounterIface
     @Override
     public int postCandidateInfo(int employeeId, CandidateInfo candidate) throws ProfileException {
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
