@@ -18,6 +18,7 @@ public class Job58PositionOperateConstant {
     public static String job58PositionAddress;
     public static String job58ProfileEmail;
     public static String job58ApiSource;
+    public static String job58PositionShelfUp;
 
     static{
         job58PositionSync = getSettingProperty("58job_position_sync_url");
@@ -26,6 +27,7 @@ public class Job58PositionOperateConstant {
         job58PositionAddress = getSettingProperty("58job_position_workaddress");
         job58ProfileEmail = getSettingProperty("58job_profile_email");
         job58ApiSource = getSettingProperty("58job_api_source");
+        job58PositionShelfUp = getSettingProperty("58job_position_shelfup");
     }
 
     public static String getSettingProperty(String key){

@@ -23,6 +23,7 @@ import com.moseeker.position.constants.position.job58.Job58WorkExperienceDegree;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.position.job58.dto.Job58PositionDTO;
 import com.moseeker.position.service.position.job58.dto.Job58PositionParams;
+import com.moseeker.position.service.position.job58.dto.Job58PositionUpshelfDTO;
 import com.moseeker.position.service.position.job58.vo.Job58PositionForm;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -126,13 +127,12 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             job58PositionDTO = postProcessBeforeRequest(job58PositionDTO, hrThirdPartyPositionDO.getThirdPartyAccountId());
             response = job58RequestHandler.sendRequest(job58PositionDTO, Job58PositionOperateConstant.job58PositionSync);
             job58RequestHandler.checkValidResponse(response);
-            JobPositionJob58MappingDO job58PositionDO = new JobPositionJob58MappingDO();
+            // 58返回结果data中是xml格式，转为map
             Map<String, String> job58Position = job58RequestHandler.parseXml2Map(response.getString("data"));
-            job58PositionDO.setPositionId(pid);
-            job58PositionDO.setInfoId(job58Position.get("infoid"));
-            job58PositionDO.setState((byte)1);
-            job58PositionDO.setUrl(job58Position.get("url"));
-            job58MappingDao.addData(job58PositionDO);
+            // 入库，此时是下架状态需要上架
+            JobPositionJob58MappingDO job58PositionDO = addJob58Position(job58Position, pid);
+            // 将职位上架
+            upshelfJob58Position(job58PositionDTO, job58PositionDO);
         } catch (BIZException e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
@@ -148,6 +148,38 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         TwoParam<HrThirdPartyPositionDO, ThirdpartyJob58PositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, extDO);
         twoParam = thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
         return twoParam;
+    }
+
+    /**
+     * 上架职位
+     * @param job58PositionDTO 职位同步dto
+     * @param job58PositionDO 58职位mapping
+     * @author  cjm
+     * @date  2018/11/30
+     */
+    private void upshelfJob58Position(Job58PositionDTO job58PositionDTO, JobPositionJob58MappingDO job58PositionDO) throws Exception {
+        Job58PositionUpshelfDTO upshelfDTO = new Job58PositionUpshelfDTO();
+        upshelfDTO.setExtension("开始招聘");
+        upshelfDTO.setInfoId(job58PositionDO.getInfoId());
+        upshelfDTO.setUseFreeResourceOnly(false);
+        upshelfDTO.setAccess_token(job58PositionDTO.getAccess_token());
+        upshelfDTO.setApp_key(job58PositionDTO.getApp_key());
+        upshelfDTO.setOpenid(job58PositionDTO.getOpenid());
+        upshelfDTO.setTimestamp(System.currentTimeMillis());
+        JSONObject response= job58RequestHandler.sendRequest(job58PositionDTO, Job58PositionOperateConstant.job58PositionShelfUp);
+        job58RequestHandler.checkValidResponse(response);
+        job58PositionDO.setState((byte)1);
+        job58MappingDao.updateData(job58PositionDO);
+    }
+
+    private JobPositionJob58MappingDO addJob58Position(Map<String, String> job58Position, int pid) {
+        JobPositionJob58MappingDO job58PositionDO = new JobPositionJob58MappingDO();
+        job58PositionDO.setPositionId(pid);
+        job58PositionDO.setInfoId(job58Position.get("infoid"));
+        job58PositionDO.setState((byte)0);
+        job58PositionDO.setUrl(job58Position.get("url"));
+        job58PositionDO = job58MappingDao.addData(job58PositionDO);
+        return job58PositionDO;
     }
 
     /**
