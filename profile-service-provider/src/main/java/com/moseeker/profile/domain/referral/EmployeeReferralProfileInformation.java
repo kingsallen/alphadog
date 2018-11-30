@@ -34,7 +34,9 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
 
     @Override
     protected void validateReferralInfo(EmployeeReferralProfileNotice profileNotice) {
-        ValidateUtil validateUtil = new ValidateUtil();if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
+        ValidateUtil validateUtil = new ValidateUtil();
+        logger.info("validateReferralInfo email:{}", profileNotice.getEmail());
+        if(StringUtils.isNotNullOrEmpty(profileNotice.getEmail())) {
             validateUtil.addRegExpressValidate("邮箱", profileNotice.getEmail(), FormCheck.getEmailExp());
         }
         if(StringUtils.isNotNullOrEmpty(profileNotice.getCompanyBrand())) {
