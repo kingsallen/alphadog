@@ -82,7 +82,9 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             userId = userRecord.getId();
             ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
             ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
-            attachmentId = attachmentRecord.getId();
+            if(attachmentRecord!=null) {
+                attachmentId = attachmentRecord.getId();
+            }
             tp.startTast(() -> {
                 companyTagService.handlerCompanyTagByUserId(userId);
                 return true;
