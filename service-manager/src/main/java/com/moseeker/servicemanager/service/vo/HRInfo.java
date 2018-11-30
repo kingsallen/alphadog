@@ -17,6 +17,7 @@ public class HRInfo {
     private String email;
     private String headImgUrl;
     private String remarkName;
+    private int companyId;
 
     public int getId() {
         return id;
@@ -96,5 +97,13 @@ public class HRInfo {
 
     public void setRemarkName(String remarkName) {
         this.remarkName = remarkName;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }

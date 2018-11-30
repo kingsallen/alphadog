@@ -13,6 +13,7 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionProfileFilterRecord;
@@ -1221,7 +1222,7 @@ public class TalentPoolEntity {
     /*
      获取职位id List
      */
-    public Set<Integer> getPidList(List<JobPositionRecord> list){
+    public Set<Integer> getPidListFromRecord(List<JobPositionRecord> list){
         if(StringUtils.isEmptyList(list)){
             return null;
         }
@@ -1236,7 +1237,7 @@ public class TalentPoolEntity {
      */
     public Set<Integer> getPositionIdByPublisher(int hrId){
         List<JobPositionRecord> list=this.getJobPositionList(hrId);
-        Set<Integer> result=this.getPidList(list);
+        Set<Integer> result=this.getPidListFromRecord(list);
         return result;
     }
     /*
@@ -2437,4 +2438,75 @@ public class TalentPoolEntity {
         List<TalentpoolExecute> filterExecuteList = talentpoolExcuteDao.getTalentpoolExecuteByExcuteId(excureIds);
         return filterExecuteList;
     }
+    public Set<Integer> filterGRPD(int companyId,Set<Integer> userIdList){
+        com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf conf=hrCompanyConfDao.getConfbyCompanyId(companyId);
+        if(conf==null||conf.getIsOpenGdpr()==0){
+            return userIdList;
+        }
+
+        Set<Integer> applierIdList=this.getApplierIdListByAppList(userIdList,companyId);
+        return applierIdList;
+    }
+    /*
+     过滤掉全部删除的投递的人
+     */
+    private Set<Integer> getApplierIdListByAppList(Set<Integer> userIdList,int companyId){
+        List<JobApplication> dataList=jobApplicationDao.getAppdataByApplierIdListAndCompanyId(userIdList,companyId);
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        List<Integer> pidList=this.getPositionIdList(dataList);
+        if(StringUtils.isEmptyList(pidList)){
+            return null;
+        }
+        List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList=jobPositionDao.getPositionNotDelByIdList(pidList);
+        if(StringUtils.isEmptyList(positionList)){
+            return null;
+        }
+        List<Integer> positionIdList=this.getPidList(positionList);
+        if(StringUtils.isEmptyList(positionIdList)){
+            return null;
+        }
+        Set<Integer> applierIdList=new HashSet<>();
+        for(JobApplication app:dataList){
+            int positionId=app.getPositionId();
+
+            if(positionIdList.contains(positionId)){
+                int applierId=app.getApplierId();
+                applierIdList.add(applierId);
+            }
+        }
+        return applierIdList;
+    }
+    /*
+     根据投递信息列表获取职位列表
+     */
+    private List<Integer> getPositionIdList(List<JobApplication> dataList){
+        if(StringUtils.isEmptyList(dataList)){
+            return null;
+        }
+        List<Integer> pidList=new ArrayList<>();
+        for(JobApplication app:dataList){
+            if(!pidList.contains(app.getPositionId())){
+                pidList.add(app.getPositionId());
+            }
+        }
+        return pidList;
+    }
+    /*
+     根据职位信息列表获取职位的id列表
+     */
+    private List<Integer> getPidList(List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList){
+        if(StringUtils.isEmptyList(positionList)){
+            return null;
+        }
+        List<Integer> pidList=new ArrayList<>();
+        for(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position:positionList){
+            if(!pidList.contains(position.getId())){
+                pidList.add(position.getId());
+            }
+        }
+        return pidList;
+    }
+
 }

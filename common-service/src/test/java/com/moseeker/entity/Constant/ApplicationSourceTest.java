@@ -1,7 +1,15 @@
 package com.moseeker.entity.Constant;
 
+import com.moseeker.baseorm.constant.EmployeeActiveState;
+import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
+import org.jooq.Param;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DefaultDSLContext;
 import org.junit.Test;
 
+import static org.jooq.impl.DSL.param;
+import static org.jooq.impl.DSL.select;
+import static org.jooq.impl.DSL.selectOne;
 import static org.junit.Assert.*;
 
 /**
@@ -40,5 +48,33 @@ public class ApplicationSourceTest {
     public void testChannelToOrigin() {
         int origin = ApplicationSource.channelToOrigin(6);
         System.out.println(origin);
+    }
+
+    @Test
+    public void testSQL() {
+        Param<Integer> companyIdParam = param(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), 1);
+        Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte)3);
+        Param<String> cnameParam = param(UserEmployee.USER_EMPLOYEE.CNAME.getName(), "wjf");
+        Param<String> customFieldParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), "1111");
+        DefaultDSLContext create = new DefaultDSLContext(SQLDialect.MYSQL);
+        String sql = create.insertInto(UserEmployee.USER_EMPLOYEE)
+                .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
+                        UserEmployee.USER_EMPLOYEE.ACTIVATION,
+                        UserEmployee.USER_EMPLOYEE.CNAME,
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD)
+                .select(
+                        select(
+                                companyIdParam, activationParam, cnameParam, customFieldParam
+                        )
+                                .whereNotExists(
+                                        selectOne()
+                                                .from(UserEmployee.USER_EMPLOYEE)
+                                                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(1))
+                                                .and(UserEmployee.USER_EMPLOYEE.CNAME.eq("wjf"))
+                                                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq("1111"))
+                                )
+                )
+                .returning().getSQL();
+        System.out.println(sql);
     }
 }

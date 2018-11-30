@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = 186143591;
+    private static final long serialVersionUID = -989785865;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -49,8 +49,12 @@ public class HrCompanyConf implements Serializable {
     private String    employeeSlug;
     private String    displayLocale;
     private Byte      talentpoolStatus;
-    private Byte      job51SalaryDiscuss;
     private Byte      veryeastSwitch;
+    private Byte      mallSwitch;
+    private String    mallGoodsMethod;
+    private Byte      mallGoodsMethodState;
+    private Byte      job51SalaryDiscuss;
+    private Byte      isOpenGdpr;
 
     public HrCompanyConf() {}
 
@@ -79,8 +83,12 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
-        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.veryeastSwitch = value.veryeastSwitch;
+        this.mallSwitch = value.mallSwitch;
+        this.mallGoodsMethod = value.mallGoodsMethod;
+        this.mallGoodsMethodState = value.mallGoodsMethodState;
+        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
+        this.isOpenGdpr = value.isOpenGdpr;
     }
 
     public HrCompanyConf(
@@ -108,8 +116,12 @@ public class HrCompanyConf implements Serializable {
         String    employeeSlug,
         String    displayLocale,
         Byte      talentpoolStatus,
+        Byte      veryeastSwitch,
+        Byte      mallSwitch,
+        String    mallGoodsMethod,
+        Byte      mallGoodsMethodState,
         Byte      job51SalaryDiscuss,
-        Byte      veryeastSwitch
+        Byte      isOpenGdpr
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -135,8 +147,12 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.veryeastSwitch = veryeastSwitch;
+        this.mallSwitch = mallSwitch;
+        this.mallGoodsMethod = mallGoodsMethod;
+        this.mallGoodsMethodState = mallGoodsMethodState;
+        this.job51SalaryDiscuss = job51SalaryDiscuss;
+        this.isOpenGdpr = isOpenGdpr;
     }
 
     public Integer getCompanyId() {
@@ -331,6 +347,38 @@ public class HrCompanyConf implements Serializable {
         this.talentpoolStatus = talentpoolStatus;
     }
 
+    public Byte getVeryeastSwitch() {
+        return this.veryeastSwitch;
+    }
+
+    public void setVeryeastSwitch(Byte veryeastSwitch) {
+        this.veryeastSwitch = veryeastSwitch;
+    }
+
+    public Byte getMallSwitch() {
+        return this.mallSwitch;
+    }
+
+    public void setMallSwitch(Byte mallSwitch) {
+        this.mallSwitch = mallSwitch;
+    }
+
+    public String getMallGoodsMethod() {
+        return this.mallGoodsMethod;
+    }
+
+    public void setMallGoodsMethod(String mallGoodsMethod) {
+        this.mallGoodsMethod = mallGoodsMethod;
+    }
+
+    public Byte getMallGoodsMethodState() {
+        return this.mallGoodsMethodState;
+    }
+
+    public void setMallGoodsMethodState(Byte mallGoodsMethodState) {
+        this.mallGoodsMethodState = mallGoodsMethodState;
+    }
+
     public Byte getJob51SalaryDiscuss() {
         return this.job51SalaryDiscuss;
     }
@@ -339,12 +387,12 @@ public class HrCompanyConf implements Serializable {
         this.job51SalaryDiscuss = job51SalaryDiscuss;
     }
 
-    public Byte getVeryeastSwitch() {
-        return this.veryeastSwitch;
+    public Byte getIsOpenGdpr() {
+        return this.isOpenGdpr;
     }
 
-    public void setVeryeastSwitch(Byte veryeastSwitch) {
-        this.veryeastSwitch = veryeastSwitch;
+    public void setIsOpenGdpr(Byte isOpenGdpr) {
+        this.isOpenGdpr = isOpenGdpr;
     }
 
     @Override
@@ -375,8 +423,12 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
-        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(veryeastSwitch);
+        sb.append(", ").append(mallSwitch);
+        sb.append(", ").append(mallGoodsMethod);
+        sb.append(", ").append(mallGoodsMethodState);
+        sb.append(", ").append(job51SalaryDiscuss);
+        sb.append(", ").append(isOpenGdpr);
 
         sb.append(")");
         return sb.toString();

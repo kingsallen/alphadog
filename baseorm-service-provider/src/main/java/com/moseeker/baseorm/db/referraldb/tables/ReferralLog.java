@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLog extends TableImpl<ReferralLogRecord> {
 
-    private static final long serialVersionUID = 962900889;
+    private static final long serialVersionUID = -501774116;
 
     /**
      * The reference instance of <code>referraldb.referral_log</code>
@@ -100,6 +100,16 @@ public class ReferralLog extends TableImpl<ReferralLogRecord> {
      * The column <code>referraldb.referral_log.update_time</code>. 更新时间
      */
     public final TableField<ReferralLogRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>referraldb.referral_log.attement_id</code>. 简历附件编号
+     */
+    public final TableField<ReferralLogRecord, Integer> ATTEMENT_ID = createField("attement_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "简历附件编号");
+
+    /**
+     * The column <code>referraldb.referral_log.old_reference_id</code>. 简历附件编号
+     */
+    public final TableField<ReferralLogRecord, Integer> OLD_REFERENCE_ID = createField("old_reference_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "简历附件编号");
 
     /**
      * Create a <code>referraldb.referral_log</code> table reference
