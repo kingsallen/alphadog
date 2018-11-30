@@ -784,4 +784,12 @@ public class ProfileController {
         }
     }
 
+    @RequestMapping(value = "/v4/profile/reCalculateUserCompleteness", method = RequestMethod.POST)
+    @ResponseBody
+    public String reCalculateUserCompleteness(@RequestBody int id) throws Exception {
+        service.reCalculateUserCompleteness(id, null);
+        return Result.SUCCESS;
+    }
+
+
 }
