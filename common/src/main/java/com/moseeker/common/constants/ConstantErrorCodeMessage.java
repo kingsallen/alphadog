@@ -168,6 +168,7 @@ public final class ConstantErrorCodeMessage {
     public static final String POSITION_ALREADY_BANNED = "{'status':51022,'message':'该职位已撤下!'}";
     public static final String POSITION_PUBLISHER_NOT_EXIST = "{'status':51023,'message':'发布者不存在'}";
     public static final String SOURCE_ERROR = "{'status':51024,'message':'来源错误！'}";
+    public static final String POSITION_ALREADY_SYNC = "{'status':51025,'message':'职位已同步至第三方，请勿重复同步'}";
     public static final String REQUEST_SCRAPER_CONNECTION_ERROR="{'status':52001,'message':'访问scraper连接错误！'}";
     public static final String REQUEST_SCRAPER_URL_NOT_EXIST="{'status':52002,'message':'scraper服务URL不存在！'}";
     public static final String FEATURE_MUST_EXISTS="{'status':52003,'message':'福利特色不存在！'}";

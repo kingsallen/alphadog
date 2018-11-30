@@ -124,6 +124,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         JSONObject response;
         Job58PositionDTO job58PositionDTO = result.getPositionWithAccount();
         HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
+        ThirdpartyJob58PositionDO extDO = result.getExtPosition();
         try {
             int pid = job58PositionDTO.getPid();
             job58PositionDTO = postProcessBeforeRequest(job58PositionDTO, hrThirdPartyPositionDO.getThirdPartyAccountId());
@@ -131,8 +132,8 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             job58RequestHandler.checkValidResponse(response);
             // 58返回结果data中是xml格式，转为map
             Map<String, String> job58Position = job58RequestHandler.parseXml2Map(response.getString("data"));
-            // 入库，此时是下架状态需要上架
-            JobPositionJob58MappingDO job58PositionDO = addJob58Position(job58Position, pid);
+            // 入库，此时是下架状态需要上架，如果是下架后重新发布，则更新职位id
+            JobPositionJob58MappingDO job58PositionDO = addOrUpdateJob58Position(job58Position, extDO, pid);
             // 将职位上架
             upshelfJob58Position(job58PositionDTO, job58PositionDO);
         } catch (BIZException e) {
@@ -146,7 +147,6 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, job58PositionDTO, e, null);
         }
         hrThirdPartyPositionDO.setChannel(ChannelType.JOB58.getValue());
-        ThirdpartyJob58PositionDO extDO = result.getExtPosition();
         TwoParam<HrThirdPartyPositionDO, ThirdpartyJob58PositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, extDO);
         twoParam = thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
         return twoParam;
@@ -174,13 +174,23 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58MappingDao.updateData(job58PositionDO);
     }
 
-    private JobPositionJob58MappingDO addJob58Position(Map<String, String> job58Position, int pid) {
-        JobPositionJob58MappingDO job58PositionDO = new JobPositionJob58MappingDO();
+    private JobPositionJob58MappingDO addOrUpdateJob58Position(Map<String, String> job58Position, ThirdpartyJob58PositionDO extDO, int pid) {
+        JobPositionJob58MappingDO job58PositionDO = job58MappingDao.getJob58PositionByPid(pid);
+        boolean addFlag = false;
+        if(job58PositionDO == null){
+            job58PositionDO = new JobPositionJob58MappingDO();
+            addFlag = true;
+        }
         job58PositionDO.setPositionId(pid);
         job58PositionDO.setInfoId(job58Position.get("infoid"));
         job58PositionDO.setState((byte)0);
         job58PositionDO.setUrl(job58Position.get("url"));
-        job58PositionDO = job58MappingDao.addData(job58PositionDO);
+        if(addFlag){
+            job58PositionDO = job58MappingDao.addData(job58PositionDO);
+        }else {
+            job58MappingDao.updateData(job58PositionDO);
+        }
+
         return job58PositionDO;
     }
 
