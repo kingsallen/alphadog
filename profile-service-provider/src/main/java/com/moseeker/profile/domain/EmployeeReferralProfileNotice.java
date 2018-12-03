@@ -138,7 +138,7 @@ public class EmployeeReferralProfileNotice {
             validateUtil.addRegExpressValidate("手机号码", mobile, FormCheck.getMobileExp());
             validateUtil.addIntTypeValidate("推荐方式", referralType.getValue(), 1, 4);
             validateUtil.addRequiredValidate("推荐人与被推荐人关系", relationship);
-            validateUtil.addStringLengthValidate("推荐理由文本", referralText, null, 101);
+            validateUtil.addStringLengthValidate("推荐理由文本", referralText, "推荐理由文本长度过长", "推荐理由文本长度过长",null, 201);
             validateUtil.addSensitiveValidate("推荐理由文本", referralText, null, null);
             String validateResult = validateUtil.validate();
             if (StringUtils.isNotBlank(validateResult)) {
