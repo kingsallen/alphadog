@@ -11,6 +11,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
@@ -60,6 +61,17 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	public List<JobApplicationDO> getApplications(Query query) {
 		return getDatas(query);
 	}
+
+
+    public List<JobApplicationDO> getApplicationsByApplierAndPosition(List<Integer> positionIds, List<Integer> userIds) {
+       if(StringUtils.isEmptyList(positionIds) || StringUtils.isEmptyList(userIds)){
+           return new ArrayList<>();
+       }
+       return create.selectFrom(JobApplication.JOB_APPLICATION)
+               .where(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIds))
+               .and(JobApplication.JOB_APPLICATION.APPLIER_ID.in(userIds))
+               .fetchInto(JobApplicationDO.class);
+    }
 
 	public List<ProcessValidationStruct> getAuth(List<Integer> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();

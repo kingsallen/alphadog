@@ -113,6 +113,9 @@ public class ProfileService {
     private ProfileOtherDao profileOtherDao;
 
     @Autowired
+    private ProfileProfileDao profileProfileDao;
+
+    @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
 
     @Autowired
@@ -647,6 +650,11 @@ public class ProfileService {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition("profile_id", profileIds, ValueOp.IN));
         List<ProfileOtherDO> profileOtherDOList = profileOtherDao.getDatas(queryBuilder.buildQuery());
+        List<ProfileProfileDO> profileProfileDOList = profileProfileDao.getProfileByProfileList(profileIds);
+
+        List<Integer> userIds = (profileProfileDOList == null || profileProfileDOList.isEmpty()) ? new ArrayList<>() :
+                profileProfileDOList.stream().map(m -> m.getUserId()).collect(Collectors.toList());
+        boolean isReferral = isReferral(userIds, positionIds);
         Map<Integer, String> profileOtherMap = (profileOtherDOList == null || profileOtherDOList.isEmpty()) ? new HashMap<>() :
                 profileOtherDOList.parallelStream().collect(Collectors.toMap(k -> k.getProfileId(), v -> v.getOther(), (oldKey, newKey) -> newKey));
         Map<Integer, Integer> positionCustomConfigMap =  positionEntity.getAppCvConfigIdByPositions(positionIds);
@@ -672,15 +680,17 @@ public class ProfileService {
                                     return org.apache.commons.lang.StringUtils
                                             .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                                 }, (oldKey, newKey) -> newKey));
-                        //学历，现任职位，现任公司只要other字段中存在就要展示
-                        if(profileOtherJson.getString("degree")!=null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("degree"))){
-                            parentValue.put("degree", profileOtherJson.get("degree"));
-                        }
-                        if(profileOtherJson.getString("companyBrand")!=null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("companyBrand"))){
-                            parentValue.put("companyBrand", profileOtherJson.get("companyBrand"));
-                        }
-                        if(profileOtherJson.getString("current_position")!=null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("current_position"))){
-                            parentValue.put("current_position", profileOtherJson.get("current_position"));
+                        if(isReferral) {
+                            //学历，现任职位，现任公司只要other字段中存在就要展示
+                            if (profileOtherJson.getString("degree") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("degree"))) {
+                                parentValue.put("degree", profileOtherJson.get("degree"));
+                            }
+                            if (profileOtherJson.getString("companyBrand") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("companyBrand"))) {
+                                parentValue.put("companyBrand", profileOtherJson.get("companyBrand"));
+                            }
+                            if (profileOtherJson.getString("current_position") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("current_position"))) {
+                                parentValue.put("current_position", profileOtherJson.get("current_position"));
+                            }
                         }
                         e.put("other", parentValue);
                     }
@@ -695,13 +705,13 @@ public class ProfileService {
     /**
      * 根据申请者的简历编号和申请的有效职位获取申请者自定义简历的自定义数据结构
      *
-     * @param positionIds   申请的有效职位
+     * @param positionIdList   申请的有效职位
      * @param profileId     申请者的简历编号
      * @return
      * @throws CommonException
      */
-    public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
-        positionIds=filterPositionHasProfileTemplate(positionIds);
+    public Map<String, Object> getProfileOther(List<Integer> positionIdList, int profileId, int userId) throws CommonException{
+        List<Integer> positionIds=filterPositionHasProfileTemplate(positionIdList);
         if(StringUtils.isEmptyList(positionIds)){
             return null;
         }
@@ -734,6 +744,9 @@ public class ProfileService {
             long infoTime = System.currentTimeMillis();
             logger.info("getProfileOther others info time:{}", profileTime - infoTime);
             logger.info("getProfileOther others info time:{}", infoTime - start);
+            List<Integer> userIds = new ArrayList<>();
+            userIds.add(userId);
+            boolean isReferral = isReferral(userIds, positionIds);
             for(Integer positionId : positionIds){
                 if(positionCustomConfigMap.containsKey(positionId)){
                     JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
@@ -755,13 +768,13 @@ public class ProfileService {
                     }
                 }
             }
-            if(otherDatas.get("degree")!=null){
+            if(otherDatas.get("degree")!=null && isReferral){
                 parentValues.put("degree", otherDatas.get("degree"));
             }
-            if(otherDatas.get("companyBrand")!=null){
+            if(otherDatas.get("companyBrand")!=null && isReferral){
                 parentValues.put("companyBrand", otherDatas.get("companyBrand"));
             }
-            if(otherDatas.get("current_position")!=null){
+            if(otherDatas.get("current_position")!=null && isReferral){
                 parentValues.put("current_position", otherDatas.get("current_position"));
             }
             long positionTime = System.currentTimeMillis();
@@ -775,6 +788,20 @@ public class ProfileService {
 //        }
 //        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
+    }
+
+    private boolean isReferral(List<Integer> userIds, List<Integer> positionIds){
+        List<JobApplicationDO> applicationDOS = jobApplicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
+        boolean isReferral = false;
+        if(!StringUtils.isEmptyList(applicationDOS)){
+            for (JobApplicationDO applicationDO : applicationDOS){
+                if(applicationDO.getOrigin() == (applicationDO.getOrigin()|65536)){
+                    isReferral = true;
+                    break;
+                }
+            }
+        }
+        return isReferral;
     }
     /*
      过滤职位是否包含自定义简历模板

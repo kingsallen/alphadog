@@ -272,7 +272,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             profileService.viewApplicationsByApplication(accountId, updateList);
             List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
             Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
-            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id);
+            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id, userId);
             Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
@@ -294,7 +294,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             Map<String, Object> others = profileService.getApplicationOtherCommon(userId, accountId, positionId);
             List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
             Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
-            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id);
+            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id, userId);
             Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
