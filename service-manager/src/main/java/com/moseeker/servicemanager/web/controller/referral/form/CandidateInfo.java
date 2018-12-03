@@ -12,7 +12,7 @@ public class CandidateInfo {
     private int appid;
     private int position;
     private String name;
-    private int gender;
+    private byte gender;
     private String mobile;
     private String email;
     private String company;
@@ -88,11 +88,11 @@ public class CandidateInfo {
         this.referralReasons = referralReasons;
     }
 
-    public int getGender() {
+    public byte getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(byte gender) {
         this.gender = gender;
     }
 
