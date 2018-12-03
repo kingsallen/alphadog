@@ -1,40 +1,32 @@
 package com.moseeker.profile.thrift;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.tool.QueryConvert;
-import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.profile.service.ReferralService;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.profile.service.impl.ProfileService;
-import com.moseeker.profile.service.impl.resumefileupload.ReferralProfileParser;
 import com.moseeker.profile.service.impl.resumefileupload.ResumeFileParserFactory;
-import com.moseeker.profile.service.impl.resumefileupload.iface.AbstractResumeFileParser;
-import com.moseeker.profile.service.impl.vo.ProfileDocParseResult;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.profile.service.ProfileServices.Iface;
 import com.moseeker.thrift.gen.profile.struct.*;
+import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class ProfileServicesImpl implements Iface {
