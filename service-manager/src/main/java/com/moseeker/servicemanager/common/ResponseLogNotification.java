@@ -163,4 +163,32 @@ public class ResponseLogNotification {
         //logger.info("下线日志记录功能");
     }
 
+    /**
+     *  为alphacloud提供接口成功调用返回值
+     * @param data
+     * @return
+     */
+    public static CleanJsonResponse4Alphacloud success4Alphacloud(Object data) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "success");
+        result.put("code", "0");
+        result.put("data", data);
+        //转换json的时候去掉thrift结构体中的set方法
+        return CleanJsonResponse4Alphacloud.convertFrom(result);
+    }
+
+    /**
+     *  为alphacloud提供接口失败调用返回值
+     * @param data
+     * @return
+     */
+    public static CleanJsonResponse4Alphacloud fail4Alphacloud(Object data) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("message", "fail");
+        result.put("code", "1");
+        result.put("data", data);
+        //转换json的时候去掉thrift结构体中的set方法
+        return CleanJsonResponse4Alphacloud.convertFrom(result);
+    }
+
 }

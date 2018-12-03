@@ -79,66 +79,68 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     }
 
     public UserEmployeeDO getUserEmployeeForUpdate(int id) {
-        UserEmployeeRecord record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.eq(id)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).
-                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).forUpdate().fetchOne();
+        UserEmployeeRecord record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.eq(id)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).
+                and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).forUpdate().fetchOne();
         return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
     }
 
-    public int addAward(Integer employeeId, int award, int oldAward){
+    public int addAward(Integer employeeId, int award, int oldAward) {
         return create.update(table).set(UserEmployee.USER_EMPLOYEE.AWARD, award).where(UserEmployee.USER_EMPLOYEE.ID.eq(employeeId)).and(UserEmployee.USER_EMPLOYEE.AWARD.eq(oldAward)).execute();
     }
+
     /*
     获取有邮箱认证的雇员信息
      */
-    public List<Map<String,Object>> getUserEmployeeLike(int companyId,String email,int pageNum,int pageSize){
-        List<Map<String,Object>> list=create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserEmployee.USER_EMPLOYEE.EMAIL.as("email"))
-                .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%"+email+"%"))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+    public List<Map<String, Object>> getUserEmployeeLike(int companyId, String email, int pageNum, int pageSize) {
+        List<Map<String, Object>> list = create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.CNAME, UserEmployee.USER_EMPLOYEE.SYSUSER_ID, UserEmployee.USER_EMPLOYEE.EMAIL.as("email"))
+                .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%" + email + "%"))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
                 .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc())
                 .union(
-                        create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserUser.USER_USER.EMAIL.as("email"))
+                        create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.CNAME, UserEmployee.USER_EMPLOYEE.SYSUSER_ID, UserUser.USER_USER.EMAIL.as("email"))
                                 .from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
-                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).and(UserUser.USER_USER.EMAIL.like("%"+email+"%"))
+                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte) 1)).and(UserUser.USER_USER.EMAIL.like("%" + email + "%"))
                                 .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(""))
-                ).limit((pageNum-1)*pageSize,pageSize).fetchMaps();
+                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.EMAIL.eq(""))
+                ).limit((pageNum - 1) * pageSize, pageSize).fetchMaps();
         return list;
     }
+
     /*
    获取有邮箱雇员数量
      */
-    public int getUserEmployeeLikeCount(int companyId,String email){
-        int count=create.selectCount()
-                .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%"+email+"%"))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+    public int getUserEmployeeLikeCount(int companyId, String email) {
+        int count = create.selectCount()
+                .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId)).and(UserEmployee.USER_EMPLOYEE.EMAIL.like("%" + email + "%"))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
                 .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc()).fetchOne().value1();
-        int count1=create.selectCount()
+        int count1 = create.selectCount()
                 .from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
-                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).and(UserUser.USER_USER.EMAIL.like("%"+email+"%"))
+                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte) 1)).and(UserUser.USER_USER.EMAIL.like("%" + email + "%"))
                 .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
-                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.EMAIL.eq("")).fetchOne().value1();
-        return count+count1;
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.EMAIL.eq("")).fetchOne().value1();
+        return count + count1;
     }
 
     /*
     根据id获取有邮箱的雇员信息
      */
-    public List<Map<String,Object>> getUserEmployeeInfoById(List<Integer> idList){
-        List<Map<String,Object>> list=create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserEmployee.USER_EMPLOYEE.EMAIL.as("email"))
+    public List<Map<String, Object>> getUserEmployeeInfoById(List<Integer> idList) {
+        List<Map<String, Object>> list = create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.CNAME, UserEmployee.USER_EMPLOYEE.SYSUSER_ID, UserEmployee.USER_EMPLOYEE.EMAIL.as("email"))
                 .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.ID.in(idList))
-                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.eq((byte)0))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.eq((byte) 0))
                 .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc())
                 .union(
-                        create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserUser.USER_USER.EMAIL.as("email")).from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
-                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).where(UserEmployee.USER_EMPLOYEE.ID.in(idList))
-                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.ne((byte)0))
+                        create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.CNAME, UserEmployee.USER_EMPLOYEE.SYSUSER_ID, UserUser.USER_USER.EMAIL.as("email")).from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
+                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte) 1)).where(UserEmployee.USER_EMPLOYEE.ID.in(idList))
+                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.ne((byte) 0))
                 ).fetchMaps();
         return list;
     }
 
 
     public List<UserEmployeeDO> getUserEmployeeForidList(Set<Integer> idList) {
-        if(idList != null && idList.size()>0) {
+        if (idList != null && idList.size() > 0) {
             List<UserEmployeeRecord> record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).
                     and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).fetch();
             return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
@@ -148,7 +150,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
 
     public Map<Integer, Integer> getEmployeeNum(List<Integer> idList) {
-        if(!StringUtils.isEmptyList(idList)) {
+        if (!StringUtils.isEmptyList(idList)) {
             Result<Record2<Integer, Integer>> result = create.select(UserEmployee.USER_EMPLOYEE.COMPANY_ID, DSL.count(UserEmployee.USER_EMPLOYEE.ID))
                     .from(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(idList)).and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).
                             and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
@@ -167,6 +169,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
 
     /**
      * 查找用户的员工信息
+     *
      * @param userId 用户编号
      * @return 员工信息
      */
@@ -179,6 +182,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .limit(1)
                 .fetchOne();
     }
+
     public void unFollowWechat(int id) {
         create.update(UserEmployee.USER_EMPLOYEE)
                 .set(UserEmployee.USER_EMPLOYEE.ACTIVATION, EmployeeActiveState.UnFollow.getState())
@@ -199,7 +203,8 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
     /**
      * 叫取消关注状态的员工转回认证成功的状态。
      * 但是必须保证一个sysuser_id 只能对应一个认证成功的员工
-     * @param id 员工编号
+     *
+     * @param id        员工编号
      * @param sysuserId 用户编号
      */
     public void followWechat(int id, int sysuserId, String time) {
@@ -209,12 +214,12 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 "left join (" +
                 "  select uu.id, uu.sysuser_id as user_id " +
                 "  from userdb.user_employee uu " +
-                "  where uu.sysuser_id = "+sysuserId+" and uu.activation = 0 and uu.disable = 0) ut " +
+                "  where uu.sysuser_id = " + sysuserId + " and uu.activation = 0 and uu.disable = 0) ut " +
                 " on u.sysuser_id = ut.user_id " +
-                " set u.activation = "+EmployeeActiveState.Actived.getState() +
+                " set u.activation = " + EmployeeActiveState.Actived.getState() +
                 " , set u.binding_time = " + time +
-                " where u.activation = "+ EmployeeActiveState.UnFollow.getState() + " " +
-                " and u.id = "+ id + " and ut.id is null");
+                " where u.activation = " + EmployeeActiveState.UnFollow.getState() + " " +
+                " and u.id = " + id + " and ut.id is null");
     }
 
     @Transactional
@@ -233,9 +238,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 org.apache.commons.lang.StringUtils.defaultIfBlank(useremployee.getEmail(), ""));
         Param<Integer> wxUserIdParam = param(UserEmployee.USER_EMPLOYEE.WXUSER_ID.getName(), useremployee.getWxuserId());
         Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), useremployee.getAuthMethod());
-        Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte)useremployee.getActivation());
+        Param<Byte> activationParam = param(UserEmployee.USER_EMPLOYEE.ACTIVATION.getName(), (byte) useremployee.getActivation());
         Param<String> customFieldValueParam;
-        if(StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
+        if (StringUtils.isNotNullOrEmpty(useremployee.getCustomFieldValues())) {
             customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), useremployee.getCustomFieldValues());
         } else {
             customFieldValueParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD_VALUES.getName(), Constant.EMPLOYEE_DEFAULT_CUSTOM_FIELD_VALUE);
@@ -246,7 +251,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             createTimeParam = param(UserEmployee.USER_EMPLOYEE.CREATE_TIME.getName(),
                     new Timestamp(LocalDateTime.parse(useremployee.getCreateTime(),
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond() * 1000));
         } else {
             createTimeParam = param(UserEmployee.USER_EMPLOYEE.CREATE_TIME.getName(), now);
         }
@@ -255,7 +260,7 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
             BindingTimeParam = param(UserEmployee.USER_EMPLOYEE.BINDING_TIME.getName(),
                     new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
                             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond()* 1000));
+                            .atZone(ZoneId.systemDefault()).toInstant().getEpochSecond() * 1000));
         } else {
             BindingTimeParam = param(UserEmployee.USER_EMPLOYEE.BINDING_TIME.getName(), now);
         }
@@ -289,12 +294,12 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                                 BindingTimeParam,
                                 customFieldValueParam
                         )
-                        .whereNotExists(
-                                selectOne()
-                                .from(UserEmployee.USER_EMPLOYEE)
-                                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(useremployee.getSysuserId()))
-                                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(useremployee.getCompanyId()))
-                        )
+                                .whereNotExists(
+                                        selectOne()
+                                                .from(UserEmployee.USER_EMPLOYEE)
+                                                .where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(useremployee.getSysuserId()))
+                                                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(useremployee.getCompanyId()))
+                                )
                 )
                 .execute();
         executeResult.setExecute(execute);
@@ -397,13 +402,13 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                         select(
                                 companyIdParam, activationParam, cnameParam, customFieldParam
                         )
-                        .whereNotExists(
-                                selectOne()
-                                .from(UserEmployee.USER_EMPLOYEE)
-                                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(record.getCompanyId()))
-                                .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(record.getCname()))
-                                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(record.getCustomField()))
-                        )
+                                .whereNotExists(
+                                        selectOne()
+                                                .from(UserEmployee.USER_EMPLOYEE)
+                                                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(record.getCompanyId()))
+                                                .and(UserEmployee.USER_EMPLOYEE.CNAME.eq(record.getCname()))
+                                                .and(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.eq(record.getCustomField()))
+                                )
                 )
                 .returning()
                 .fetchOne();
