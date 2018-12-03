@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyFeatureDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
@@ -25,6 +26,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,6 +46,9 @@ public class PositionEntity {
 
     @Autowired
     private JobPositionDao positionDao;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     @Autowired
     private JobPositionCityDao positionCityDao;
@@ -228,7 +233,28 @@ public class PositionEntity {
         }
         return appConfigCvIds;
     }
-
+    public boolean isReferralByHr(int companyId, int hrAccountId) {
+        List<Integer> appConfigCvIds = new ArrayList<>();
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("company_id", companyId);
+        if (hrAccountId != 0) {
+            queryBuilder.and("publisher", hrAccountId);
+        }
+        queryBuilder.and(new Condition("status", 1, ValueOp.NEQ));
+        List<JobPositionDO> list = positionDao.getDatas(queryBuilder.buildQuery());
+        if (list != null && !list.isEmpty()) {
+            List<Integer> positionIds = list.stream().map(m -> m.getId()).collect(Collectors.toList());
+            List<JobApplicationDO> applicationDOS = applicationDao.getApplicationsByPosition(positionIds);
+            if(applicationDOS != null){
+                for(JobApplicationDO applicationDO : applicationDOS){
+                    if(applicationDO.getOrigin() == (applicationDO.getOrigin()|65536)){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
     public int getAppCvConfigIdByPosition(int positionId) {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", positionId);

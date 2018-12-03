@@ -72,6 +72,14 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
                .and(JobApplication.JOB_APPLICATION.APPLIER_ID.in(userIds))
                .fetchInto(JobApplicationDO.class);
     }
+    public List<JobApplicationDO> getApplicationsByPosition(List<Integer> positionIds) {
+        if(StringUtils.isEmptyList(positionIds)){
+            return new ArrayList<>();
+        }
+        return create.selectFrom(JobApplication.JOB_APPLICATION)
+                .where(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIds))
+                .fetchInto(JobApplicationDO.class);
+    }
 
 	public List<ProcessValidationStruct> getAuth(List<Integer> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();

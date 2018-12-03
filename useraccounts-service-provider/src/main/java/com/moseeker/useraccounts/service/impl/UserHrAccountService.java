@@ -1732,6 +1732,7 @@ public class UserHrAccountService {
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.orderBy("display_order");
         List<HrAppExportFieldsDO> hrAppExportFieldsDOList = exportFieldsDao.getDatas(query.buildQuery());
+        boolean isReferral = positionEntity.isReferralByHr(companyId, hraccountId);
         if (!appConfigCvIds.isEmpty()) {
             query.clear();
             query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
@@ -1760,6 +1761,9 @@ public class UserHrAccountService {
                             }
                         }
                     }
+                }
+                if(isReferral){
+                    configFieldName.add("companyBrand");
                 }
                 hrAppExportFieldsDOList.stream().forEach(e -> {
                     if (configFieldName.contains(e.getFieldName())) {
