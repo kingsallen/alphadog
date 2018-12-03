@@ -64,6 +64,7 @@ public class RefreshJob58TokenSchedule {
      * @date  2018/7/9
      */
     @Scheduled(cron="0 0 0 1 3,6,9,12 ? ")
+//    @Scheduled(cron="0 0/2 * * * ?")
     public void refresh58Token() {
         // 避免不同服务器一起刷新
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.JOB58_TOKEN_REFRESH.toString(), "");
@@ -135,7 +136,7 @@ public class RefreshJob58TokenSchedule {
     private void handleExpireAccount(List<HrThirdPartyAccountDO> expireAccount) {
         for(HrThirdPartyAccountDO accountDO : expireAccount){
             accountDO.setErrorMessage("用户信息过期，请重新绑定");
-            accountDO.setBinding((short)10);
+            accountDO.setBinding((short)4);
             accountDO.setUpdateTime(null);
         }
         thirdPartyAccountDao.updateDatas(expireAccount);

@@ -15,6 +15,7 @@ import com.moseeker.useraccounts.constant.UserAccountConstant;
 import com.moseeker.useraccounts.service.impl.pojos.Job58BindUserInfo;
 import com.moseeker.useraccounts.service.impl.vo.Job58BaseVO;
 import com.moseeker.useraccounts.service.impl.vo.Job58BindVO;
+import com.moseeker.useraccounts.service.impl.vo.Job58TokenRefreshVO;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.AbstractBindProcessor;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ThirdPartyAccountContext;
 import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindCheck;
@@ -48,6 +49,11 @@ public class Job58BindProcessor extends AbstractBindProcessor {
         String code = account.getExt();
         Job58BindVO job58BindVO = new Job58BindVO(code, System.currentTimeMillis(), Job58Constant.APP_KEY);
         account = handleBind(account, job58BindVO, UserAccountConstant.job58UserBindUrl);
+        Job58BindUserInfo bindUserInfo = JSONObject.parseObject(account.getExt(), Job58BindUserInfo.class);
+        // 58第一次请求时token有效期是1天，刷新token的有效期是3个月，所以绑定后直接刷新
+        Job58TokenRefreshVO refreshVO = new Job58TokenRefreshVO(bindUserInfo.getOpenId(), bindUserInfo.getAccessToken(),System.currentTimeMillis(),
+                Job58Constant.APP_KEY, bindUserInfo.getRefreshToken());
+        account = handleBind(account, refreshVO, UserAccountConstant.job58UserRefreshUrl);
         HrThirdPartyAccountDO oldAccount = thirdPartyAccountDao.getEQThirdPartyAccount(account);
         if (BindCheck.isNotNullAccount(oldAccount)) {
             oldAccount.setExt(account.getExt());
