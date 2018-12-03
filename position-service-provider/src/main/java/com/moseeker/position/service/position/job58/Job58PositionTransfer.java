@@ -221,6 +221,11 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
     public ThirdpartyJob58PositionDO toExtThirdPartyPosition(Job58PositionForm position, Job58PositionDTO job58PositionDTO) {
         // 补填字段record
         ThirdpartyJob58PositionDO thirdpartyRecord = new ThirdpartyJob58PositionDO();
+        if(position.getSalaryTop() == 0 && position.getSalaryBottom() == 0){
+            thirdpartyRecord.setSalaryDiscuss((byte)1);
+        }else {
+            thirdpartyRecord.setSalaryDiscuss((byte)0);
+        }
         thirdpartyRecord.setAddressId(position.getAddressId());
         thirdpartyRecord.setAddressName(position.getAddressName());
         thirdpartyRecord.setFeatures(JSON.toJSONString(position.getFeatures()));
@@ -288,8 +293,13 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         int workExperienceDegree = Job58WorkExperienceDegree.getWorkExperienceDegree(Integer.parseInt(positionDB.getExperience())).getDegree();
         job58PositionParams.setGongzuonianxian(workExperienceDegree);
         // 是否面议 0 非面议，1 面议
-        int salaryDiscuss = positionForm.getSalaryDiscuss() == null ? 0 : 1;
-        job58PositionParams.setMinxinzi(salaryDiscuss == 1 ? "面议" : positionForm.getSalaryBottom() + "_" + positionForm.getSalaryTop());
+        String salary;
+        if(positionForm.getSalaryBottom() == 0 && positionForm.getSalaryTop() == 0){
+            salary = "面议";
+        }else {
+            salary = positionForm.getSalaryBottom() + "_" + positionForm.getSalaryTop();
+        }
+        job58PositionParams.setMinxinzi(salary);
         job58PositionParams.setQzapisource(Job58PositionOperateConstant.job58ApiSource);
         // 58技术对接人表示，不传为显示联系方式，传就不显示
         job58PositionParams.setShowcontact(positionForm.getShowContact() == 1 ? null : (byte)0);

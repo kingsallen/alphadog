@@ -46,6 +46,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String CONTENT_RULE_LIMIT = "工作内容和职位要求不能填写电话、QQ等联系方式!";
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
     private static final String SALARY_NOT_EMPTY = "薪资不能为空!";
+    private static final String SALARY_AMOUT_LIMIT = "薪资上限不能超过下限的两倍!";
     private static final String OCCUPATION_NOT_EMPTY = "职能不能为空!";
     private static final String HR_ACCOUNT_DISABLE = "账号已停用!";
     private static final String USERNAME_LENGTH_LIMIT = "职位联系人姓名长度范围2-6个字!";
@@ -92,15 +93,14 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
                 errorMsg.add(RECRUIT_NUMBER_LIMIT);
             }
             // 薪资必须不为空，如果都为0，则是面议
-            if (job58PositionForm.getSalaryTop() != null && job58PositionForm.getSalaryBottom() != null) {
-                if (job58PositionForm.getSalaryTop() == 0 && job58PositionForm.getSalaryBottom() == 0) {
-                    job58PositionForm.setSalaryDiscuss((byte) 1);
-                } else {
-                    job58PositionForm.setSalaryDiscuss((byte) 0);
-                }
-            } else {
+            if (job58PositionForm.getSalaryTop() == null || job58PositionForm.getSalaryBottom() == null) {
                 errorMsg.add(SALARY_NOT_EMPTY);
+            }else {
+                if(job58PositionForm.getSalaryTop() > job58PositionForm.getSalaryBottom() * 2){
+                    errorMsg.add(SALARY_AMOUT_LIMIT);
+                }
             }
+
             // 职能不能为空
             if (job58PositionForm.getOccupation() == null || job58PositionForm.getOccupation().size() == 0) {
                 errorMsg.add(OCCUPATION_NOT_EMPTY);
