@@ -385,6 +385,8 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		return list;
 	}
 
+
+
 	public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> fetchByApplierId(List<Integer> userIds, int companyId) {
 		Result<JobApplicationRecord> result = create
 				.selectFrom(JobApplication.JOB_APPLICATION)
