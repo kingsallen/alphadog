@@ -253,7 +253,9 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         form.setSalaryTop(ext.getSalaryTop());
         form.setSalaryDiscuss(ext.getSalaryDiscuss());
         form.setShowContact(ext.getShowContact());
-        return JSONObject.parseObject(JSON.toJSONString(form));
+        JSONObject jsonObject = JSONObject.parseObject(JSON.toJSONString(form));
+        jsonObject.put("channel", getChannel().getValue());
+        return jsonObject;
     }
 
     @Override

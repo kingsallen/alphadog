@@ -7,18 +7,21 @@ import com.moseeker.common.constants.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.useraccounts.constant.Job58Constant;
+import com.moseeker.useraccounts.constant.UserAccountConstant;
 import com.moseeker.useraccounts.service.impl.Job58BindProcessor;
 import com.moseeker.useraccounts.service.impl.pojos.Job58BindUserInfo;
 import com.moseeker.useraccounts.service.impl.vo.Job58TokenRefreshVO;
 import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -40,6 +43,8 @@ public class RefreshJob58TokenSchedule {
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     private static List<String> emailList = new ArrayList<>();
 
     private static final Long ONE_YEAR = 1000L * 60 * 60 * 24 * 365;
@@ -53,11 +58,12 @@ public class RefreshJob58TokenSchedule {
     }
 
     /**
+     * 每3个月的1日刷新58token
      * {秒数} {分钟} {小时} {日期} {月份} {星期} {年份(可为空)}
      * @author  cjm
      * @date  2018/7/9
      */
-//    @Scheduled(cron="0 0 0 1/1 * ? ")
+    @Scheduled(cron="0 0 0 1 3,6,9,12 ? ")
     public void refresh58Token() {
         // 避免不同服务器一起刷新
         long check= redisClient.incrIfNotExist(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.JOB58_TOKEN_REFRESH.toString(), "");
@@ -68,8 +74,11 @@ public class RefreshJob58TokenSchedule {
         }
         redisClient.expire(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.JOB58_TOKEN_REFRESH.toString(), "", RefreshConstant.REFRESH_THIRD_PARTY_TOKEN_TIMEOUT);
         try {
+            // 刷新成功的账号
             List<HrThirdPartyAccountDO> successRequest = new ArrayList<>();
+            // 用户信息过期的账号，需要重新绑定
             List<HrThirdPartyAccountDO> expireAccount = new ArrayList<>();
+            // 业务异常刷新失败的账号
             Map<Integer, String> failRequest = new HashMap<>(1 >> 4);
             emailList = emailNotification.getRefreshMails();
             int channel = ChannelType.JOB58.getValue();
@@ -85,6 +94,7 @@ public class RefreshJob58TokenSchedule {
             // 将所有查出得第三方账号刷新token，如果抛出bizException则是猎聘返回的业务异常，将第三方账号id和异常信息放入failRequest的map中用于发邮件
             for(HrThirdPartyAccountDO accountDO : accountDOS){
                 if(!checkNeedRefresh(accountDO)){
+                    expireAccount.add(accountDO);
                     continue;
                 }
                 try{
@@ -92,13 +102,13 @@ public class RefreshJob58TokenSchedule {
                     Job58BindUserInfo bindUserInfo = JSONObject.parseObject(accountDO.getExt(), Job58BindUserInfo.class);
                     Job58TokenRefreshVO refreshVO = new Job58TokenRefreshVO(bindUserInfo.getOpenId(), bindUserInfo.getAccessToken(),System.currentTimeMillis(),
                             appKey, bindUserInfo.getRefreshToken());
-                    accountDO = bindProcessor.handleBind(accountDO, refreshVO);
+                    accountDO = bindProcessor.handleBind(accountDO, refreshVO, UserAccountConstant.job58UserRefreshUrl);
                     accountDO.setUpdateTime(null);
                     successRequest.add(accountDO);
                 }catch (BIZException e){
                     logger.warn("=================errormsg:{},username:{}===================", e.getMessage(), accountDO.getUsername());
                     // 如果返回值是109表示token过期无法刷新
-                    if(e.getCode() == 109){
+                    if(e.getCode() == 109 || e.getCode() == 108){
                         expireAccount.add(accountDO);
                     }else{
                         failRequest.put(accountDO.getId(), e.getMessage());
@@ -124,7 +134,7 @@ public class RefreshJob58TokenSchedule {
 
     private void handleExpireAccount(List<HrThirdPartyAccountDO> expireAccount) {
         for(HrThirdPartyAccountDO accountDO : expireAccount){
-            accountDO.setErrorMessage("refreshToken过期，请重新绑定");
+            accountDO.setErrorMessage("用户信息过期，请重新绑定");
             accountDO.setBinding((short)10);
             accountDO.setUpdateTime(null);
         }
@@ -134,13 +144,13 @@ public class RefreshJob58TokenSchedule {
     private void handleFailRequest(Map<Integer, String> failRequest) {
         // 刷新token失败的信息发邮件
         if(failRequest.size() > 0){
-            StringBuilder faileRequestContent = new StringBuilder("请求刷新第三方token失败，第三方账号HrThirdPartyAccountDO.id失败列表:");
+            StringBuilder failRequestContent = new StringBuilder("请求刷新第三方token失败，第三方账号HrThirdPartyAccountDO.id失败列表:");
             String faileRequestSubject = "58token刷新失败项";
             Set<Integer> idSet = failRequest.keySet();
             for(Integer id : idSet){
-                faileRequestContent.append(id).append(":").append(failRequest.get(id)).append("</br>");
+                failRequestContent.append(id).append(":").append(failRequest.get(id)).append("</br>");
             }
-            emailNotification.sendCustomEmail(emailList, faileRequestContent.toString(), faileRequestSubject);
+            emailNotification.sendCustomEmail(emailList, failRequestContent.toString(), faileRequestSubject);
         }
     }
 
@@ -153,9 +163,15 @@ public class RefreshJob58TokenSchedule {
      */
     private boolean checkNeedRefresh(HrThirdPartyAccountDO accountDO) {
         String syncTimeStr = accountDO.getSyncTime();
-        DateTime dateTime = DateTime.parse(syncTimeStr);
+        Date date;
+        try {
+            date = sdf.parse(syncTimeStr);
+        } catch (ParseException e) {
+            logger.info("58刷新token绑定时间解析异常，msg:{}", e.getMessage());
+            return false;
+        }
         long currentTime = System.currentTimeMillis();
-        long syncTime = dateTime.getMillis();
+        long syncTime = date.getTime();
         return currentTime - syncTime < ONE_YEAR;
     }
 }

@@ -132,7 +132,7 @@ public enum ChannelType {
             if (StringUtils.isNullOrEmpty(origin)) {
                 result = "10000000000000000000000000000000000";
             } else {
-                result = getResult(origin, 10);
+                result = getResult(origin, 35);
             }
             return result;
         }

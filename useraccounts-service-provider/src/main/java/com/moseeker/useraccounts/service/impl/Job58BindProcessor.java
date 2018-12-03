@@ -47,7 +47,7 @@ public class Job58BindProcessor extends AbstractBindProcessor {
     public HrThirdPartyAccountDO postProcessorBeforeBind(int hrId, HrThirdPartyAccountDO account) throws Exception {
         String code = account.getExt();
         Job58BindVO job58BindVO = new Job58BindVO(code, System.currentTimeMillis(), Job58Constant.APP_KEY);
-        account = handleBind(account, job58BindVO);
+        account = handleBind(account, job58BindVO, UserAccountConstant.job58UserBindUrl);
         HrThirdPartyAccountDO oldAccount = thirdPartyAccountDao.getEQThirdPartyAccount(account);
         if (BindCheck.isNotNullAccount(oldAccount)) {
             oldAccount.setExt(account.getExt());
@@ -60,9 +60,9 @@ public class Job58BindProcessor extends AbstractBindProcessor {
         return account;
     }
 
-    public HrThirdPartyAccountDO handleBind(HrThirdPartyAccountDO account, Object obj) throws Exception {
+    public HrThirdPartyAccountDO handleBind(HrThirdPartyAccountDO account, Object obj, String url) throws Exception {
         // 请求绑定
-        JSONObject result = doBind(obj);
+        JSONObject result = doBind(obj, url);
         // 请求结果处理
         if ("0".equals(String.valueOf(result.get("code")))) {
             JSONObject bindInfo = JSONObject.parseObject(result.getString("data"));
@@ -87,13 +87,13 @@ public class Job58BindProcessor extends AbstractBindProcessor {
      * @date  2018/11/28
      * @return 绑定结果
      */
-    private JSONObject doBind(Object obj) throws Exception {
+    private JSONObject doBind(Object obj, String url) throws Exception {
         TypeReference<Map<String, String>> reference = new TypeReference<Map<String, String>>() {};
         Map<String, String> requestMap = JSONObject.parseObject(JSON.toJSONString(obj), reference);
         String sign = Md5Utils.getMD5SortKeyWithEqual(Job58Constant.SECRECT_KEY, Md5Utils.mapToList(requestMap), requestMap);
         requestMap.put("sig", sign);
         logger.info("======================requestParam:{}", JSON.toJSONString(requestMap));
-        String bindResult = HttpClientUtil.sentFormHttpPostRequest(UserAccountConstant.job58UserBindUrl, requestMap);
+        String bindResult = HttpClientUtil.sentFormHttpPostRequest(url, requestMap);
         if (StringUtils.isNullOrEmpty(bindResult)) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.THIRD_PARTY_ACCOUNT_58_REQUEST_ERROR);
         }

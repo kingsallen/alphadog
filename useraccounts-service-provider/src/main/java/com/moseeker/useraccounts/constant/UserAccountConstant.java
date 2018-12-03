@@ -13,12 +13,14 @@ public class UserAccountConstant {
 
     public static String liepinUserBindUrl;
     public static String job58UserBindUrl;
+    public static String job58UserRefreshUrl;
     public static String job58UserGetUrl;
 
     static {
         liepinUserBindUrl = EmailNotification.getConfig("liepin_user_bind_url");
         job58UserBindUrl = EmailNotification.getConfig("58job_user_bind_url");
         job58UserGetUrl = EmailNotification.getConfig("58job_userinfo_get_url");
+        job58UserRefreshUrl = EmailNotification.getConfig("58job_user_refresh_url");
     }
 
 }
