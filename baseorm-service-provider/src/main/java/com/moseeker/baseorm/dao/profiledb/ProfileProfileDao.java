@@ -1926,4 +1926,10 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 .where(ProfileProfile.PROFILE_PROFILE.USER_ID.in(userIdList))
                 .fetchInto(ProfileProfileDO.class);
     }
+
+    public List<ProfileProfileDO> getProfileByProfileList(List<Integer> profileIdList) {
+        return create.selectFrom(ProfileProfile.PROFILE_PROFILE)
+                .where(ProfileProfile.PROFILE_PROFILE.ID.in(profileIdList))
+                .fetchInto(ProfileProfileDO.class);
+    }
 }
