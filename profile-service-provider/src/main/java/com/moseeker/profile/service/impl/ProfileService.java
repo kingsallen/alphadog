@@ -666,12 +666,13 @@ public class ProfileService {
         paramsStream.stream().forEach((JSONObject e) -> {
             int positionId = e.getIntValue("positionId");
             int profileId = e.getIntValue("profileId");
+            JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
+            Map<String, Object> parentValue = new HashMap<>();
             e.put("other", "");
             try {
                 if (positionCustomConfigMap.containsKey(positionId)) {
-                    JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
                     if (profileOtherJson != null) {
-                        Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
+                        parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
                                 .stream()
                                 .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                                 map(m -> JSONObject.parseObject(String.valueOf(m)))
@@ -680,24 +681,24 @@ public class ProfileService {
                                     return org.apache.commons.lang.StringUtils
                                             .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                                 }, (oldKey, newKey) -> newKey));
-                        if(isReferral) {
-                            //学历，现任职位，现任公司只要other字段中存在就要展示
-                            if (profileOtherJson.getString("degree") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("degree"))) {
-                                parentValue.put("degree", profileOtherJson.get("degree"));
-                            }
-                            if (profileOtherJson.getString("companyBrand") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("companyBrand"))) {
-                                parentValue.put("companyBrand", profileOtherJson.get("companyBrand"));
-                            }
-                            if (profileOtherJson.getString("current_position") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("current_position"))) {
-                                parentValue.put("current_position", profileOtherJson.get("current_position"));
-                            }
-                        }
-                        e.put("other", parentValue);
                     }
                 }
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
             }
+            if(isReferral) {
+                //学历，现任职位，现任公司只要other字段中存在就要展示
+                if (profileOtherJson.getString("degree") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("degree"))) {
+                    parentValue.put("degree", profileOtherJson.get("degree"));
+                }
+                if (profileOtherJson.getString("companyBrand") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("companyBrand"))) {
+                    parentValue.put("companyBrand", profileOtherJson.get("companyBrand"));
+                }
+                if (profileOtherJson.getString("current_position") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("current_position"))) {
+                    parentValue.put("current_position", profileOtherJson.get("current_position"));
+                }
+            }
+            e.put("other", parentValue);
         });
         return ResponseUtils.success(paramsStream);
     }
