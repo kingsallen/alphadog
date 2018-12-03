@@ -228,11 +228,12 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("appid", form.getAppid(), 0, null);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-
+            logger.info("postCandidateInfo gender:{}",form.getGender());
             com.moseeker.thrift.gen.profile.struct.CandidateInfo candidateInfoStruct = new com.moseeker.thrift.gen.profile.struct.CandidateInfo();
             BeanUtils.copyProperties(form, candidateInfoStruct);
             candidateInfoStruct.setPosition(form.getPosition());
             candidateInfoStruct.setReasons(form.getReferralReasons());
+            logger.info("postCandidateInfo candidateInfoStruct gender:{}",candidateInfoStruct.getGender());
             int referralLogId = profileService.postCandidateInfo(id, candidateInfoStruct);
             return Result.success(referralLogId).toJson();
         } else {
