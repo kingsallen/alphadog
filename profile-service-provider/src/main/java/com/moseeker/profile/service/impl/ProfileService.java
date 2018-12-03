@@ -663,7 +663,10 @@ public class ProfileService {
 
         List<Integer> userIds = (profileProfileDOList == null || profileProfileDOList.isEmpty()) ? new ArrayList<>() :
                 profileProfileDOList.stream().map(m -> m.getUserId()).collect(Collectors.toList());
+        logger.info("getProfileOther userIds:{}",userIds);
+        logger.info("getProfileOther positionIds:{}",positionIds);
         boolean isReferral = isReferral(userIds, positionIds);
+        logger.info("getProfileOther isReferral:{}",isReferral);
         Map<Integer, String> profileOtherMap = (profileOtherDOList == null || profileOtherDOList.isEmpty()) ? new HashMap<>() :
                 profileOtherDOList.parallelStream().collect(Collectors.toMap(k -> k.getProfileId(), v -> v.getOther(), (oldKey, newKey) -> newKey));
         Map<Integer, Integer> positionCustomConfigMap =  positionEntity.getAppCvConfigIdByPositions(positionIds);
@@ -708,6 +711,7 @@ public class ProfileService {
                 logger.error(e1.getMessage(), e1);
             }
         });
+        logger.info("getProfileOther paramsStream:{}",paramsStream);
         return ResponseUtils.success(paramsStream);
     }
 
@@ -804,6 +808,8 @@ public class ProfileService {
         boolean isReferral = false;
         if(!StringUtils.isEmptyList(applicationDOS)){
             for (JobApplicationDO applicationDO : applicationDOS){
+                logger.info("getProfileOther isReferral origin:{}", applicationDO.getOrigin());
+                logger.info("getProfileOther isReferral origin:{}", applicationDO.getOrigin()|65536);
                 if(applicationDO.getOrigin() == (applicationDO.getOrigin()|65536)){
                     isReferral = true;
                     break;
