@@ -11,6 +11,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.UserSource;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.pojo.profile.ProfileObj;
@@ -144,7 +145,9 @@ public class ProfileExtUtils extends com.moseeker.entity.biz.ProfileUtils {
 		UserUserRecord userUserRecord = new UserUserRecord();
 		userUserRecord.setName(name);
 		userUserRecord.setMobile(Long.valueOf(mobile));
-		userUserRecord.setEmail(email);
+		if(StringUtils.isNotNullOrEmpty(email)) {
+            userUserRecord.setEmail(email);
+        }
 		userUserRecord.setEmailVerified(EmailVerifyState.UnVerified.getValue());
 		profilePojo.setUserRecord(userUserRecord);
 	}
