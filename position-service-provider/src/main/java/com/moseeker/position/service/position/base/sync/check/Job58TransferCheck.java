@@ -29,7 +29,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String ENGLISH = ".*[a-zA-z].*";
     private static final String NUMBER = ".*[0-9].*";
     private static final String REGEX_EMAIL = "([a-z0-9_.-]+)@([\\da-z.-]+)\\.([a-z]{2,6})";
-    private static final String REGEX_MOBILE = "^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(17[0,35-8])|(18[0-9])|166|198|199|(147))\\\\d{8}$";
+    private static final String REGEX_MOBILE = "1[3|4|5|7|8][0-9]{9}";
 
     private static final int TITLE_MIN_LENGTH = 2;
     private static final int TITLE_MAX_LENGTH = 12;
