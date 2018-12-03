@@ -16,6 +16,7 @@ public class Job58PositionDTO extends Base58UserInfoDTO{
     private String paras;
     private Integer account_id;
     private Integer pid;
+    private Integer third_pid;
 
     public Integer getPid() {
         return pid;
@@ -95,5 +96,13 @@ public class Job58PositionDTO extends Base58UserInfoDTO{
 
     public void setParas(String paras) {
         this.paras = paras;
+    }
+
+    public Integer getThird_pid() {
+        return third_pid;
+    }
+
+    public void setThird_pid(Integer third_pid) {
+        this.third_pid = third_pid;
     }
 }

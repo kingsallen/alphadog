@@ -226,7 +226,6 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         thirdpartyRecord.setFeatures(JSON.toJSONString(position.getFeatures()));
         thirdpartyRecord.setFreshGraduate(position.getFreshGraduate());
         thirdpartyRecord.setOccupation(job58PositionDTO.getCate_id());
-        thirdpartyRecord.setPid(job58PositionDTO.getPid());
         thirdpartyRecord.setSalaryBottom(position.getSalaryBottom());
         thirdpartyRecord.setSalaryTop(position.getSalaryTop());
         thirdpartyRecord.setShowContact(position.getShowContact());
