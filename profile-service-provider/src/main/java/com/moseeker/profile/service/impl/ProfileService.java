@@ -746,8 +746,8 @@ public class ProfileService {
             logger.info("getProfileOther others info time:{}", infoTime - start);
             List<Integer> userIds = new ArrayList<>();
             userIds.add(userId);
-            boolean isReferral = isReferral(userIds, positionIds);
-            for(Integer positionId : positionIds){
+            boolean isReferral = isReferral(userIds, positionIdList);
+            for(Integer positionId : positionIdList){
                 if(positionCustomConfigMap.containsKey(positionId)){
                     JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
                     if(otherCvTplMap != null && otherCvTplMap.size()>0){
@@ -767,16 +767,17 @@ public class ProfileService {
                         }
                     }
                 }
+                if(otherDatas.get("degree")!=null && isReferral){
+                    parentValues.put("degree", otherDatas.get("degree"));
+                }
+                if(otherDatas.get("companyBrand")!=null && isReferral){
+                    parentValues.put("companyBrand", otherDatas.get("companyBrand"));
+                }
+                if(otherDatas.get("current_position")!=null && isReferral){
+                    parentValues.put("current_position", otherDatas.get("current_position"));
+                }
             }
-            if(otherDatas.get("degree")!=null && isReferral){
-                parentValues.put("degree", otherDatas.get("degree"));
-            }
-            if(otherDatas.get("companyBrand")!=null && isReferral){
-                parentValues.put("companyBrand", otherDatas.get("companyBrand"));
-            }
-            if(otherDatas.get("current_position")!=null && isReferral){
-                parentValues.put("current_position", otherDatas.get("current_position"));
-            }
+
             long positionTime = System.currentTimeMillis();
             logger.info("getProfileOther others position time:{}", positionTime - infoTime);
         }else{
