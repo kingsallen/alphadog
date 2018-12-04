@@ -74,7 +74,7 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     /**
      * The column <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 0：成功，1：失败
      */
-    public final TableField<LogEmployeeOperationLogRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否成功 0：成功，1：失败");
+    public final TableField<LogEmployeeOperationLogRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否成功 1：成功，0：失败");
 
     /**
      * The column <code>logdb.log_employee_operation_log.company_id</code>. hr_company id

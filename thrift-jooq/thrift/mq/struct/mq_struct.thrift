@@ -63,7 +63,8 @@ struct MandrillEmailStruct {
        3: optional string mergeVars,
        4: optional string from_email,
        5: optional string from_name,
-       6: optional string subject
+       6: optional string subject,
+       7: optional i32    type
 
    }
 

@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.logdb;
 import com.moseeker.baseorm.db.logdb.tables.LogAiRecom;
 import com.moseeker.baseorm.db.logdb.tables.LogCronjob;
 import com.moseeker.baseorm.db.logdb.tables.LogDeadLetter;
+import com.moseeker.baseorm.db.logdb.tables.LogEmailProfileSendLog;
 import com.moseeker.baseorm.db.logdb.tables.LogEmailSendrecord;
 import com.moseeker.baseorm.db.logdb.tables.LogEmployeeOperationLog;
 import com.moseeker.baseorm.db.logdb.tables.LogHrOperationRecord;
@@ -54,6 +55,11 @@ public class Tables {
      * 死信队列日志记录表
      */
     public static final LogDeadLetter LOG_DEAD_LETTER = com.moseeker.baseorm.db.logdb.tables.LogDeadLetter.LOG_DEAD_LETTER;
+
+    /**
+     * 简历被转发记录表
+     */
+    public static final LogEmailProfileSendLog LOG_EMAIL_PROFILE_SEND_LOG = com.moseeker.baseorm.db.logdb.tables.LogEmailProfileSendLog.LOG_EMAIL_PROFILE_SEND_LOG;
 
     /**
      * 短信发送记录表

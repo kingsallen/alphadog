@@ -854,6 +854,13 @@ public class TalentpoolEmailService {
                         mqService.sendMandrilEmailList(struct);
                     }
                 }
+                /*
+                 * @Author zztaiwll
+                 * @Description  ji
+                 * @Date 下午3:01 18/12/4
+                 * @Param [employeeList, params, companyId, hrId, context, totalNum]
+                 * @return void
+                 **/
 
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
@@ -926,6 +933,7 @@ public class TalentpoolEmailService {
             logger.info(merges);
             result.setMergeVars(merges);
             result.setTo(toReceive);
+            result.setType(SendEmailTypeEnum.TALENT_INVATE_EMAIL.getValue());
             dataList.add(result);
         }
         return dataList;
