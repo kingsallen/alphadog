@@ -1720,13 +1720,13 @@ public class UserHrAccountService {
         query.orderBy("display_order");
         List<HrAppExportFieldsDO> hrAppExportFieldsDOList = exportFieldsDao.getDatas(query.buildQuery());
         boolean isReferral = positionEntity.isReferralByHr(companyId, hraccountId);
+        Set<String> configFieldName=new HashSet<>();
         if (!appConfigCvIds.isEmpty()) {
             query.clear();
             query.where(new Condition("id", appConfigCvIds, ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = appCvConfDao.getDatas(query.buildQuery());
             if (hrAppCvConfDOList != null && !hrAppCvConfDOList.isEmpty()) {
 //                Set<String> configFieldName = hrAppCvConfDOList.stream().flatMap(m -> JSONArray.parseArray(m.getFieldValue()).getJSONObject(0).getJSONArray("fields").stream()).map(p -> JSONObject.parseObject(String.valueOf(p)).getString("field_name")).collect(Collectors.toSet());
-                Set<String> configFieldName=new HashSet<>();
                 for(HrAppCvConfDO hrAppCvConfDO:hrAppCvConfDOList){
                     String fieldValue=hrAppCvConfDO.getFieldValue();
                     if(StringUtils.isNotNullOrEmpty(fieldValue)){
@@ -1749,19 +1749,19 @@ public class UserHrAccountService {
                         }
                     }
                 }
-                if(isReferral){
-                    configFieldName.add("companyBrand");
-                    configFieldName.add("degree");
-                    configFieldName.add("current_position");
-                }
-                hrAppExportFieldsDOList.stream().forEach(e -> {
-                    if (configFieldName.contains(e.getFieldName())) {
-                        e.showed = 1;
-                    }
-                });
-            }
 
+            }
         }
+        if(isReferral){
+            configFieldName.add("companyBrand");
+            configFieldName.add("degree");
+            configFieldName.add("current_position");
+        }
+        hrAppExportFieldsDOList.stream().forEach(e -> {
+            if (configFieldName.contains(e.getFieldName())) {
+                e.showed = 1;
+            }
+        });
         List<HrAppExportFieldsDO> showedApplicationExportFieldsList = hrAppExportFieldsDOList.stream().filter(f -> f.showed == 1).collect(Collectors.toList());
         List<HrAppExportFieldsDO> result=new ArrayList<>();
         if (showedApplicationExportFieldsList != null) {
