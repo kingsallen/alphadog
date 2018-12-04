@@ -726,7 +726,7 @@ public class ProfileService {
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
-        if(positionIds != null && positionIds.size()>0 && profileId > 0) {
+        if(!StringUtils.isEmptyList(positionIdList) && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
             queryBuilder.clear();
