@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRecord> {
 
-    private static final long serialVersionUID = 109961032;
+    private static final long serialVersionUID = 690977932;
 
     /**
      * The reference instance of <code>logdb.log_employee_operation_log</code>
@@ -72,7 +72,7 @@ public class LogEmployeeOperationLog extends TableImpl<LogEmployeeOperationLogRe
     public final TableField<LogEmployeeOperationLogRecord, Byte> OPERATION_TYPE = createField("operation_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "操作类型  0：员工认证， 1：推荐简历");
 
     /**
-     * The column <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 0：成功，1：失败
+     * The column <code>logdb.log_employee_operation_log.is_success</code>. 是否成功 1：成功，0：失败
      */
     public final TableField<LogEmployeeOperationLogRecord, Byte> IS_SUCCESS = createField("is_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否成功 1：成功，0：失败");
 

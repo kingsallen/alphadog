@@ -171,6 +171,7 @@ public class MandrillMailListConsumer {
                             record.setEmail(recipient.getEmail());
                             record.setUserId(userId);
                             record.setType(mandrillEmailListStruct.getType());
+                            record.setCompanyId(mandrillEmailListStruct.getCompany_id());
                             recordList.add(record);
                             logger.info("LogEmailProfileSendLogRecord record :{}",record.toString());
                         }

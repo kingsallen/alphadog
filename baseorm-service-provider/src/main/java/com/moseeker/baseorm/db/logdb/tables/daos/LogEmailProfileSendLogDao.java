@@ -92,4 +92,11 @@ public class LogEmailProfileSendLogDao extends DAOImpl<LogEmailProfileSendLogRec
     public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogEmailProfileSendLog> fetchByCreateTime(Timestamp... values) {
         return fetch(LogEmailProfileSendLog.LOG_EMAIL_PROFILE_SEND_LOG.CREATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.logdb.tables.pojos.LogEmailProfileSendLog> fetchByCompanyId(Integer... values) {
+        return fetch(LogEmailProfileSendLog.LOG_EMAIL_PROFILE_SEND_LOG.COMPANY_ID, values);
+    }
 }
