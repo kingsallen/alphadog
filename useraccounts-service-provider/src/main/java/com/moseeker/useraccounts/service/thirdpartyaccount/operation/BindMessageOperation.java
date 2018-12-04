@@ -5,9 +5,9 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
-import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindUtil;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ChaosHandler;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ThirdPartyAccountContext;
+import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,8 +30,7 @@ public class BindMessageOperation {
     @Autowired
     UserHrAccountService userHrAccountService;
 
-    public HrThirdPartyAccountDO bindMessage(int hrId, int accountId, String code) throws Exception {
-        HrThirdPartyAccountDO thirdPartyAccount=thirdPartyAccountDao.getAccountById(accountId);
+    public HrThirdPartyAccountDO bindMessage(int hrId, HrThirdPartyAccountDO thirdPartyAccount, String code) throws Exception {
         UserHrAccountDO userHrAccount = userHrAccountService.requiresNotNullAccount(hrId);
 
         if (thirdPartyAccount == null) {
