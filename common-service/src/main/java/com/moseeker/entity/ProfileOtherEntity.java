@@ -163,7 +163,10 @@ public class ProfileOtherEntity {
         for(ConfigSysCvTplDO tplDO : tplDOList) {
             String fieldName=tplDO.getFieldName();
             for(String key:parentValues.keySet()){
-                if(parentValues.get(key) instanceof String){
+                logger.info("getProfileOther key:{}",key);
+                logger.info("getProfileOther key:{}", (parentValues.get(key) instanceof String) );
+                logger.info("getProfileOther key:{}", (parentValues.get(key) instanceof Integer) );
+                if(parentValues.get(key) instanceof String || parentValues.get(key) instanceof Integer){
                     if(fieldName.equals(key)){
                         Map<String,Object> map=new HashMap<>();
                         map.put("key",tplDO.getFieldTitle());
