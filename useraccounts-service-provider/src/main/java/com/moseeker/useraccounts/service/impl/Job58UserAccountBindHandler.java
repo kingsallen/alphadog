@@ -18,6 +18,7 @@ public class Job58UserAccountBindHandler implements IBindRequest {
     @Override
     public HrThirdPartyAccountDO bind(HrThirdPartyAccountDO hrThirdPartyAccount, Map<String, String> extras) {
         hrThirdPartyAccount.setBinding((short) BindingStatus.BOUND.getValue());
+        hrThirdPartyAccount.setErrorMessage("");
         return hrThirdPartyAccount;
     }
 
