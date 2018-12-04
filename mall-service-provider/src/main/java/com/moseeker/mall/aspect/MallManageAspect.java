@@ -1,10 +1,12 @@
 package com.moseeker.mall.aspect;
 
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,6 +30,9 @@ public class MallManageAspect {
     @Autowired
     private UserHrAccountDao userHrAccountDao;
 
+    @Autowired
+    private HrCompanyDao hrCompanyDao;
+
 
     @Pointcut("@annotation(com.moseeker.mall.annotation.OnlySuperAccount)")
     private void cut() {
@@ -49,8 +54,12 @@ public class MallManageAspect {
      * @date  2018/10/12
      */
     private void checkSuperAccount(int hrId, int companyId) throws BIZException {
+        HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(companyId);
+        if(hrCompanyDO == null || hrCompanyDO.getType() != 0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_LIMIT_SUPER_ACCOUNT);
+        }
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if(userHrAccountDO == null || userHrAccountDO.getCompanyId() != companyId || userHrAccountDO.getAccountType() != 0){
+        if(userHrAccountDO == null || userHrAccountDO.getCompanyId() != companyId || userHrAccountDO.getAccountType() != 0 || userHrAccountDO.getAccountType() != 2){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_LIMIT_SUPER_ACCOUNT);
         }
     }
