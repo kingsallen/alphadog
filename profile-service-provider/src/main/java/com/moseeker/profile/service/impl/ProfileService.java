@@ -726,9 +726,6 @@ public class ProfileService {
      */
     public Map<String, Object> getProfileOther(List<Integer> positionIdList, int profileId, int userId) throws CommonException{
         List<Integer> positionIds=filterPositionHasProfileTemplate(positionIdList);
-        if(StringUtils.isEmptyList(positionIds)){
-            return null;
-        }
         long start = System.currentTimeMillis();
         Map<String, Object> otherMap = new HashMap<>();
         Map<String, Object> parentValues = new HashMap<>();
