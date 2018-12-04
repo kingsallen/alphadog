@@ -81,10 +81,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         List<String> occupations = positionForm.getOccupation();
         String occupation = occupations.get(occupations.size() - 1);
         job58PositionDTO.setCate_id(Integer.parseInt(occupation));
-        String content = "职位描述：</br>工作内容：" + positionDB.getAccountabilities() + "</br>职位要求：" + positionDB.getRequirement();
-        if(content.length() > 2000){
-            content = content.substring(0, 2001);
-        }
+        String content = "职位描述：</br>工作内容：" + positionDB.getAccountabilities() + "</br>职位要求：</br>" + positionDB.getRequirement();
         job58PositionDTO.setContent(content);
         job58PositionDTO.setLocal_id(doGetCityCode(positionDB));
         // 获取仟寻账号的信息
@@ -293,7 +290,14 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionParams.setGoblianxiren(userHrAccountDO.getUsername());
         job58PositionParams.setGongzuodizhi(positionForm.getAddressId());
         // 工作年限映射
-        int workExperienceDegree = Job58WorkExperienceDegree.getWorkExperienceDegree(Integer.parseInt(positionDB.getExperience())).getDegree();
+        String experience = positionDB.getExperience();
+        int expYear;
+        try{
+            expYear = StringUtils.isNullOrEmpty(experience) ? 1:Integer.parseInt(experience);
+        }catch (Exception e){
+            expYear = 0;
+        }
+        int workExperienceDegree = Job58WorkExperienceDegree.getWorkExperienceDegree(expYear).getDegree();
         job58PositionParams.setGongzuonianxian(workExperienceDegree);
         // 是否面议 0 非面议，1 面议
         String salary;
