@@ -781,6 +781,7 @@ public class ProfileService {
         }else{
             parentValues.putAll(otherDatas);
         }
+        logger.info("getProfileOther otherDatas:{}", otherDatas);
         if(otherDatas.get("degree")!=null && isReferral){
             parentValues.put("degree", otherDatas.get("degree"));
         }
