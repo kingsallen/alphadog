@@ -5,9 +5,9 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.useraccounts.service.impl.UserHrAccountService;
-import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindUtil;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ChaosHandler;
 import com.moseeker.useraccounts.service.thirdpartyaccount.base.ThirdPartyAccountContext;
+import com.moseeker.useraccounts.service.thirdpartyaccount.util.BindUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,7 +31,7 @@ public class BindConfirmOperation {
     UserHrAccountService userHrAccountService;
 
     public HrThirdPartyAccountDO bindConfirm(int hrId, int accountId, boolean confirm) throws Exception {
-        HrThirdPartyAccountDO account=thirdPartyAccountDao.getAccountById(accountId);
+        HrThirdPartyAccountDO account = thirdPartyAccountDao.getAccountById(accountId);
         UserHrAccountDO hrAccount = userHrAccountService.requiresNotNullAccount(hrId);
 
         if (bindUtil.getCache(account) == null) {
