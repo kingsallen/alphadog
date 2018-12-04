@@ -739,7 +739,10 @@ public class ProfileService {
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
-        if(!StringUtils.isEmptyList(positionIdList) && profileId > 0) {
+        List<Integer> userIds = new ArrayList<>();
+        userIds.add(userId);
+        boolean isReferral = isReferral(userIds, positionIdList);
+        if(!StringUtils.isEmptyList(positionIds) && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
             queryBuilder.clear();
@@ -749,9 +752,7 @@ public class ProfileService {
             Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                     hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
             //遍历职位获取职位与人自定义字段交集
-            List<Integer> userIds = new ArrayList<>();
-            userIds.add(userId);
-            boolean isReferral = isReferral(userIds, positionIdList);
+
             logger.info("getProfileOther isReferral:{}", isReferral);
             for(Integer positionId : positionIdList){
                 if(positionCustomConfigMap.containsKey(positionId)){
@@ -774,18 +775,18 @@ public class ProfileService {
                     }
                 }
                 logger.info("getProfileOther parentValues:{}", parentValues);
-                if(otherDatas.get("degree")!=null && isReferral){
-                    parentValues.put("degree", otherDatas.get("degree"));
-                }
-                if(otherDatas.get("companyBrand")!=null && isReferral){
-                    parentValues.put("companyBrand", otherDatas.get("companyBrand"));
-                }
-                if(otherDatas.get("current_position")!=null && isReferral){
-                    parentValues.put("current_position", otherDatas.get("current_position"));
-                }
             }
         }else{
             parentValues.putAll(otherDatas);
+        }
+        if(otherDatas.get("degree")!=null && isReferral){
+            parentValues.put("degree", otherDatas.get("degree"));
+        }
+        if(otherDatas.get("companyBrand")!=null && isReferral){
+            parentValues.put("companyBrand", otherDatas.get("companyBrand"));
+        }
+        if(otherDatas.get("current_position")!=null && isReferral){
+            parentValues.put("current_position", otherDatas.get("current_position"));
         }
         logger.info("getProfileOther parentValues:{}", parentValues);
         otherMap = profileOtherEntity.handerOtherInfo(parentValues);
