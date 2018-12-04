@@ -1764,6 +1764,8 @@ public class UserHrAccountService {
                 }
                 if(isReferral){
                     configFieldName.add("companyBrand");
+                    configFieldName.add("degree");
+                    configFieldName.add("current_position");
                 }
                 hrAppExportFieldsDOList.stream().forEach(e -> {
                     if (configFieldName.contains(e.getFieldName())) {
