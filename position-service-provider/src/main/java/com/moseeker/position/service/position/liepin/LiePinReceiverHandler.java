@@ -320,7 +320,6 @@ public class LiePinReceiverHandler {
 
         } catch (BIZException e) {
             log.warn(e.getMessage(), e);
-            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, "【调用api批量修改职位信息时发生错误】:" + msgBody);
         } catch (Exception e1) {
             emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, liePinPositionVO, e1, "【调用api批量修改职位信息时发生错误】:" + msgBody);
             log.error(e1.getMessage(), e1);
@@ -503,7 +502,6 @@ public class LiePinReceiverHandler {
                         }
                     }
                 } catch (BIZException e) {
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位重新发布失败】msgBody:" + msgBody);
                     liepinMappingDao.updateErrMsgBatch(positionId, e.getMessage());
                 } catch (Exception e1) {
                     emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinProdMails, null, e1, "【调用api猎聘api处理职位重新发布失败】msgBody:" + msgBody);
@@ -591,7 +589,6 @@ public class LiePinReceiverHandler {
                 } catch (BIZException e) {
                     log.info("=============下架猎聘职位失败：requestIds:{},失败信息:msg:{}=================", requestIds.toString(), e.getMessage());
                     liepinMappingDao.updateErrMsgBatch(requestIds, e.getMessage());
-                    emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, null, e, "【调用api猎聘api处理职位下架失败】mappingId:" + requestIds.toString());
                 } catch (Exception e1) {
                     log.error(e1.getMessage(), e1);
                     liepinMappingDao.updateErrMsgBatch(requestIds, "后台异常");

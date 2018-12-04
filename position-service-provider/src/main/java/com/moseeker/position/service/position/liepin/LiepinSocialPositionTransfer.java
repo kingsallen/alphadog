@@ -263,7 +263,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
             logger.warn(e.getMessage(), e);
-            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
         } catch (Exception e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.bindingError.getValue());
             hrThirdPartyPositionDO.setSyncFailReason("后台异常");
