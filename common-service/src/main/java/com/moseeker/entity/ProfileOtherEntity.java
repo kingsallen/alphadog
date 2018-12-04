@@ -1,18 +1,14 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
@@ -26,8 +22,6 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.entity.biz.ProfileCompletenessImpl;
-import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.pojo.profile.info.Internship;
 import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.entity.pojo.profile.info.SchoolWork;
@@ -153,7 +147,7 @@ public class ProfileOtherEntity {
             }else if(entry.getValue() instanceof List){
                 List infoList= (List)entry.getValue();
                 if(infoList!=null && infoList.size()>0) {
-                        otherMap.put(entry.getKey(), infoList);
+                    otherMap.put(entry.getKey(), infoList);
                 }
             }
             long end = System.currentTimeMillis();
@@ -163,7 +157,7 @@ public class ProfileOtherEntity {
         for(ConfigSysCvTplDO tplDO : tplDOList) {
             String fieldName=tplDO.getFieldName();
             for(String key:parentValues.keySet()){
-                if(parentValues.get(key) instanceof String){
+                if(parentValues.get(key) instanceof String || parentValues.get(key) instanceof Integer){
                     if(fieldName.equals(key)){
                         Map<String,Object> map=new HashMap<>();
                         map.put("key",tplDO.getFieldTitle());
