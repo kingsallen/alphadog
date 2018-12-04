@@ -728,26 +728,18 @@ public class ProfileService {
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
         if(positionIds != null && positionIds.size()>0 && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
-            long profileTime = System.currentTimeMillis();
-            logger.info("getProfileOther others profile time:{}", profileTime - start);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
             queryBuilder.clear();
-            long configTime = System.currentTimeMillis();
-            logger.info("getProfileOther others config time:{}", configTime - profileTime);
             queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
             //获取申请职位的自定义简历字段
-            long cvConfTime = System.currentTimeMillis();
-            logger.info("getProfileOther others cvConfTime time:{}", cvConfTime - configTime);
             Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                     hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
             //遍历职位获取职位与人自定义字段交集
-            long infoTime = System.currentTimeMillis();
-            logger.info("getProfileOther others info time:{}", profileTime - infoTime);
-            logger.info("getProfileOther others info time:{}", infoTime - start);
             List<Integer> userIds = new ArrayList<>();
             userIds.add(userId);
             boolean isReferral = isReferral(userIds, positionIdList);
+            logger.info("getProfileOther isReferral:{}", isReferral);
             for(Integer positionId : positionIdList){
                 if(positionCustomConfigMap.containsKey(positionId)){
                     JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
@@ -768,6 +760,7 @@ public class ProfileService {
                         }
                     }
                 }
+                logger.info("getProfileOther parentValues:{}", parentValues);
                 if(otherDatas.get("degree")!=null && isReferral){
                     parentValues.put("degree", otherDatas.get("degree"));
                 }
@@ -778,15 +771,12 @@ public class ProfileService {
                     parentValues.put("current_position", otherDatas.get("current_position"));
                 }
             }
-
-            long positionTime = System.currentTimeMillis();
-            logger.info("getProfileOther others position time:{}", positionTime - infoTime);
         }else{
             parentValues.putAll(otherDatas);
         }
+        logger.info("getProfileOther parentValues:{}", parentValues);
         otherMap = profileOtherEntity.handerOtherInfo(parentValues);
         long end = System.currentTimeMillis();
-        logger.info("getProfileOther others time:{}", end-start);
 //        }
 //        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
