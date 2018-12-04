@@ -31,21 +31,19 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String ENGLISH = ".*[a-zA-z].*";
     private static final String NUMBER = ".*[0-9].*";
     private static final String REGEX_EMAIL = "([a-z0-9_.-]+)@([\\da-z.-]+)\\.([a-z]{2,6})";
-    private static final String REGEX_MOBILE = "1[3|4|5|7|8][0-9]{9}";
+    private static final String REGEX_MOBILE = "1[3|4|5|6|7|8|9][0-9]{9}";
     private static final String TITLE_TYPE = "[^\\u4e00-\\u9fa5a-zA-Z\\d]+";
 
     private static final int TITLE_MIN_LENGTH = 2;
     private static final int TITLE_MAX_LENGTH = 12;
     private static final int USERNAME_MIN_LENGTH = 2;
     private static final int USERNAME_MAX_LENGTH = 6;
-    private static final int CONTENT_MAX_LENGTH = 2000;
     private static final int RECRUIT_MAX_NUMBER = 999;
 
     private static final String TITLE_NOT_EMPTY = "标题不为空!";
     private static final String TITLE_LENGTH_LIMIT = "职位标题长度范围为2~12!";
     private static final String TITLE_NEED_CONTAINS_CHINESE = "职位标题需要包含中文!";
     private static final String TITLE_TYPE_LIMIT = "只支持汉字字母和数字!";
-    private static final String CONTENT_LENGTH_LIMIT = "58职位描述字数限制为20-2000!";
     private static final String CONTENT_RULE_LIMIT = "工作内容和职位要求不能填写电话、QQ等联系方式!";
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
     private static final String SALARY_NOT_EMPTY = "薪资不能为空!";
@@ -86,10 +84,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
                 errorMsg.add(TITLE_TYPE_LIMIT);
             }
             // 职位描述长度限制
-            String content = "职位描述：</br>工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：</br>" + moseekerPosition.getRequirement();
-            if (content.length() > CONTENT_MAX_LENGTH) {
-                errorMsg.add(CONTENT_LENGTH_LIMIT);
-            }
+            String content = "职位描述：</br>工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：" + moseekerPosition.getRequirement();
             // 职位详情不能包括手机和qq
             boolean containMobile = mobile.matcher(content).find();
             boolean containEmail = email.matcher(content).find();
