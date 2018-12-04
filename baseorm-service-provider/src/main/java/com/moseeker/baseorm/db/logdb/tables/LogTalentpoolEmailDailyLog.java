@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 邮件额度每天消耗日志
+ * 邮件额度每天使用日志
  */
 @Generated(
     value = {
@@ -67,9 +67,9 @@ public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDail
     public final TableField<LogTalentpoolEmailDailyLogRecord, Integer> LOST = createField("lost", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本日使用点数");
 
     /**
-     * The column <code>logdb.log_talentpool_email_daily_log.date</code>. 使用时间
+     * The column <code>logdb.log_talentpool_email_daily_log.date</code>.
      */
-    public final TableField<LogTalentpoolEmailDailyLogRecord, Date> DATE = createField("date", org.jooq.impl.SQLDataType.DATE, this, "使用时间");
+    public final TableField<LogTalentpoolEmailDailyLogRecord, Date> DATE = createField("date", org.jooq.impl.SQLDataType.DATE, this, "");
 
     /**
      * Create a <code>logdb.log_talentpool_email_daily_log</code> table reference
@@ -90,7 +90,7 @@ public class LogTalentpoolEmailDailyLog extends TableImpl<LogTalentpoolEmailDail
     }
 
     private LogTalentpoolEmailDailyLog(String alias, Table<LogTalentpoolEmailDailyLogRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "邮件额度每天消耗日志");
+        super(alias, null, aliased, parameters, "邮件额度每天使用日志");
     }
 
     /**

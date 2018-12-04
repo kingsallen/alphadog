@@ -7,7 +7,9 @@ import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVar;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.MergeVarBucket;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessage.Recipient;
 import com.microtripit.mandrillapp.lutung.view.MandrillMessageStatus;
+import com.moseeker.baseorm.dao.logdb.LogEmailProfileSendLogDao;
 import com.moseeker.baseorm.dao.logdb.LogEmailSendrecordDao;
+import com.moseeker.baseorm.db.logdb.tables.records.LogEmailProfileSendLogRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
@@ -57,6 +59,9 @@ public class MandrillMailListConsumer {
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
+
+    @Autowired
+    private LogEmailProfileSendLogDao logEmailProfileSendLogDao;
 
 
 	/**
@@ -144,7 +149,28 @@ public class MandrillMailListConsumer {
                 MandrillMessageStatus[] messageStatus = mandrillApi.messages().sendTemplate(mandrillEmailListStruct.getTemplateName(),
                         null,message, false);
                 logger.info("messageStatus :{}",messageStatus);
+                /*
+                 * @Author zztaiwll
+                 * @Description  添加关于转发的日志
+                 * @Date 下午3:08 18/12/4
+                 * @Param [mandrillEmailListStruct]
+                 * @return void
+                 **/
+                if(mandrillEmailListStruct.getType()>0){
+                    List<LogEmailProfileSendLogRecord> recordList=new ArrayList<>();
+                    for(Recipient recipient:recipients){
+                        for(Map<String,Object> data:varList){
+                            LogEmailProfileSendLogRecord record=new LogEmailProfileSendLogRecord();
+                            record.setEmail(recipient.getEmail());
+                            int userId=(int)data.get("userId");
+                            record.setUserId(userId);
+                            record.setType(mandrillEmailListStruct.getType());
+                            recordList.add(record);
+                        }
 
+                    }
+                    logEmailProfileSendLogDao.addAllRecord(recordList);
+                }
             } catch (Exception e) {
                 logger.error(e.getMessage());
             }
