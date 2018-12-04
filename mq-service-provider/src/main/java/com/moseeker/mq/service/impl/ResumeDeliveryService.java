@@ -679,6 +679,7 @@ public class ResumeDeliveryService {
             record.setEmail(accountDO.getEmail());
             record.setUserId(userUserDO.getId());
             record.setType(SendEmailTypeEnum.POSITION_INVATE_EMAIL.getValue());
+            record.setCompanyId(accountDO.getCompanyId());
             logEmailProfileSendLogDao.addRecord(record);
         }
 
@@ -703,6 +704,7 @@ public class ResumeDeliveryService {
                         record1.setEmail(ccmail.getToEmail());
                         record1.setUserId(userUserDO.getId());
                         record1.setType(SendEmailTypeEnum.POSITION_INVATE_EMAIL.getValue());
+                        record1.setCompanyId(accountDO.getCompanyId());
                         logEmailProfileSendLogDao.addRecord(record1);
 
                     }catch(Exception e){

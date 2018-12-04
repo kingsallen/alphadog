@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmailProfileSendLog implements Serializable {
 
-    private static final long serialVersionUID = -1883825888;
+    private static final long serialVersionUID = -1258576894;
 
     private Integer   id;
     private String    email;
     private Integer   userId;
     private Integer   type;
     private Timestamp createTime;
+    private Integer   companyId;
 
     public LogEmailProfileSendLog() {}
 
@@ -39,6 +40,7 @@ public class LogEmailProfileSendLog implements Serializable {
         this.userId = value.userId;
         this.type = value.type;
         this.createTime = value.createTime;
+        this.companyId = value.companyId;
     }
 
     public LogEmailProfileSendLog(
@@ -46,13 +48,15 @@ public class LogEmailProfileSendLog implements Serializable {
         String    email,
         Integer   userId,
         Integer   type,
-        Timestamp createTime
+        Timestamp createTime,
+        Integer   companyId
     ) {
         this.id = id;
         this.email = email;
         this.userId = userId;
         this.type = type;
         this.createTime = createTime;
+        this.companyId = companyId;
     }
 
     public Integer getId() {
@@ -95,6 +99,14 @@ public class LogEmailProfileSendLog implements Serializable {
         this.createTime = createTime;
     }
 
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogEmailProfileSendLog (");
@@ -104,6 +116,7 @@ public class LogEmailProfileSendLog implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(type);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(companyId);
 
         sb.append(")");
         return sb.toString();

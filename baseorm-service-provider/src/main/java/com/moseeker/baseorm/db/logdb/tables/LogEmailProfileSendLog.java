@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmailProfileSendLog extends TableImpl<LogEmailProfileSendLogRecord> {
 
-    private static final long serialVersionUID = 311856578;
+    private static final long serialVersionUID = -397284710;
 
     /**
      * The reference instance of <code>logdb.log_email_profile_send_log</code>
@@ -75,6 +75,11 @@ public class LogEmailProfileSendLog extends TableImpl<LogEmailProfileSendLogReco
      * The column <code>logdb.log_email_profile_send_log.create_time</code>. 发送日期
      */
     public final TableField<LogEmailProfileSendLogRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "发送日期");
+
+    /**
+     * The column <code>logdb.log_email_profile_send_log.company_id</code>. 公司编号
+     */
+    public final TableField<LogEmailProfileSendLogRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司编号");
 
     /**
      * Create a <code>logdb.log_email_profile_send_log</code> table reference

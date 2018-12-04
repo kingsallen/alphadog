@@ -18,6 +18,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
     private static final org.apache.thrift.protocol.TField FROM_NAME_FIELD_DESC = new org.apache.thrift.protocol.TField("from_name", org.apache.thrift.protocol.TType.STRING, (short)5);
     private static final org.apache.thrift.protocol.TField SUBJECT_FIELD_DESC = new org.apache.thrift.protocol.TField("subject", org.apache.thrift.protocol.TType.STRING, (short)6);
     private static final org.apache.thrift.protocol.TField TYPE_FIELD_DESC = new org.apache.thrift.protocol.TField("type", org.apache.thrift.protocol.TType.I32, (short)7);
+    private static final org.apache.thrift.protocol.TField COMPANY_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("company_id", org.apache.thrift.protocol.TType.I32, (short)8);
 
     private static final org.apache.thrift.scheme.SchemeFactory STANDARD_SCHEME_FACTORY = new MandrillEmailListStructStandardSchemeFactory();
     private static final org.apache.thrift.scheme.SchemeFactory TUPLE_SCHEME_FACTORY = new MandrillEmailListStructTupleSchemeFactory();
@@ -29,6 +30,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
     public java.lang.String from_name; // optional
     public java.lang.String subject; // optional
     public int type; // optional
+    public int company_id; // optional
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
@@ -38,7 +40,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         FROM_EMAIL((short)4, "from_email"),
         FROM_NAME((short)5, "from_name"),
         SUBJECT((short)6, "subject"),
-        TYPE((short)7, "type");
+        TYPE((short)7, "type"),
+        COMPANY_ID((short)8, "company_id");
 
         private static final java.util.Map<java.lang.String, _Fields> byName = new java.util.HashMap<java.lang.String, _Fields>();
 
@@ -67,6 +70,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                     return SUBJECT;
                 case 7: // TYPE
                     return TYPE;
+                case 8: // COMPANY_ID
+                    return COMPANY_ID;
                 default:
                     return null;
             }
@@ -108,8 +113,9 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
 
     // isset id assignments
     private static final int __TYPE_ISSET_ID = 0;
+    private static final int __COMPANY_ID_ISSET_ID = 1;
     private byte __isset_bitfield = 0;
-    private static final _Fields optionals[] = {_Fields.MERGE_VARS,_Fields.FROM_EMAIL,_Fields.FROM_NAME,_Fields.SUBJECT,_Fields.TYPE};
+    private static final _Fields optionals[] = {_Fields.MERGE_VARS,_Fields.FROM_EMAIL,_Fields.FROM_NAME,_Fields.SUBJECT,_Fields.TYPE,_Fields.COMPANY_ID};
     public static final java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
         java.util.Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new java.util.EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
@@ -129,6 +135,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         tmpMap.put(_Fields.SUBJECT, new org.apache.thrift.meta_data.FieldMetaData("subject", org.apache.thrift.TFieldRequirementType.OPTIONAL,
                 new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
         tmpMap.put(_Fields.TYPE, new org.apache.thrift.meta_data.FieldMetaData("type", org.apache.thrift.TFieldRequirementType.OPTIONAL,
+                new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
+        tmpMap.put(_Fields.COMPANY_ID, new org.apache.thrift.meta_data.FieldMetaData("company_id", org.apache.thrift.TFieldRequirementType.OPTIONAL,
                 new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
         metaDataMap = java.util.Collections.unmodifiableMap(tmpMap);
         org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(MandrillEmailListStruct.class, metaDataMap);
@@ -175,6 +183,7 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             this.subject = other.subject;
         }
         this.type = other.type;
+        this.company_id = other.company_id;
     }
 
     public MandrillEmailListStruct deepCopy() {
@@ -191,6 +200,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         this.subject = null;
         setTypeIsSet(false);
         this.type = 0;
+        setCompany_idIsSet(false);
+        this.company_id = 0;
     }
 
     public java.lang.String getTemplateName() {
@@ -375,6 +386,29 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __TYPE_ISSET_ID, value);
     }
 
+    public int getCompany_id() {
+        return this.company_id;
+    }
+
+    public MandrillEmailListStruct setCompany_id(int company_id) {
+        this.company_id = company_id;
+        setCompany_idIsSet(true);
+        return this;
+    }
+
+    public void unsetCompany_id() {
+        __isset_bitfield = org.apache.thrift.EncodingUtils.clearBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
+    }
+
+    /** Returns true if field company_id is set (has been assigned a value) and false otherwise */
+    public boolean isSetCompany_id() {
+        return org.apache.thrift.EncodingUtils.testBit(__isset_bitfield, __COMPANY_ID_ISSET_ID);
+    }
+
+    public void setCompany_idIsSet(boolean value) {
+        __isset_bitfield = org.apache.thrift.EncodingUtils.setBit(__isset_bitfield, __COMPANY_ID_ISSET_ID, value);
+    }
+
     public void setFieldValue(_Fields field, java.lang.Object value) {
         switch (field) {
             case TEMPLATE_NAME:
@@ -433,6 +467,14 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 }
                 break;
 
+            case COMPANY_ID:
+                if (value == null) {
+                    unsetCompany_id();
+                } else {
+                    setCompany_id((java.lang.Integer)value);
+                }
+                break;
+
         }
     }
 
@@ -459,6 +501,9 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             case TYPE:
                 return getType();
 
+            case COMPANY_ID:
+                return getCompany_id();
+
         }
         throw new java.lang.IllegalStateException();
     }
@@ -484,6 +529,8 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 return isSetSubject();
             case TYPE:
                 return isSetType();
+            case COMPANY_ID:
+                return isSetCompany_id();
         }
         throw new java.lang.IllegalStateException();
     }
@@ -566,6 +613,15 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 return false;
         }
 
+        boolean this_present_company_id = true && this.isSetCompany_id();
+        boolean that_present_company_id = true && that.isSetCompany_id();
+        if (this_present_company_id || that_present_company_id) {
+            if (!(this_present_company_id && that_present_company_id))
+                return false;
+            if (this.company_id != that.company_id)
+                return false;
+        }
+
         return true;
     }
 
@@ -600,6 +656,10 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         hashCode = hashCode * 8191 + ((isSetType()) ? 131071 : 524287);
         if (isSetType())
             hashCode = hashCode * 8191 + type;
+
+        hashCode = hashCode * 8191 + ((isSetCompany_id()) ? 131071 : 524287);
+        if (isSetCompany_id())
+            hashCode = hashCode * 8191 + company_id;
 
         return hashCode;
     }
@@ -678,6 +738,16 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
         }
         if (isSetType()) {
             lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.type, other.type);
+            if (lastComparison != 0) {
+                return lastComparison;
+            }
+        }
+        lastComparison = java.lang.Boolean.valueOf(isSetCompany_id()).compareTo(other.isSetCompany_id());
+        if (lastComparison != 0) {
+            return lastComparison;
+        }
+        if (isSetCompany_id()) {
+            lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.company_id, other.company_id);
             if (lastComparison != 0) {
                 return lastComparison;
             }
@@ -761,6 +831,12 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             if (!first) sb.append(", ");
             sb.append("type:");
             sb.append(this.type);
+            first = false;
+        }
+        if (isSetCompany_id()) {
+            if (!first) sb.append(", ");
+            sb.append("company_id:");
+            sb.append(this.company_id);
             first = false;
         }
         sb.append(")");
@@ -886,6 +962,14 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                             org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                         }
                         break;
+                    case 8: // COMPANY_ID
+                        if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
+                            struct.company_id = iprot.readI32();
+                            struct.setCompany_idIsSet(true);
+                        } else {
+                            org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+                        }
+                        break;
                     default:
                         org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
                 }
@@ -959,6 +1043,11 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
                 oprot.writeI32(struct.type);
                 oprot.writeFieldEnd();
             }
+            if (struct.isSetCompany_id()) {
+                oprot.writeFieldBegin(COMPANY_ID_FIELD_DESC);
+                oprot.writeI32(struct.company_id);
+                oprot.writeFieldEnd();
+            }
             oprot.writeFieldStop();
             oprot.writeStructEnd();
         }
@@ -998,7 +1087,10 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             if (struct.isSetType()) {
                 optionals.set(6);
             }
-            oprot.writeBitSet(optionals, 7);
+            if (struct.isSetCompany_id()) {
+                optionals.set(7);
+            }
+            oprot.writeBitSet(optionals, 8);
             if (struct.isSetTemplateName()) {
                 oprot.writeString(struct.templateName);
             }
@@ -1033,12 +1125,15 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             if (struct.isSetType()) {
                 oprot.writeI32(struct.type);
             }
+            if (struct.isSetCompany_id()) {
+                oprot.writeI32(struct.company_id);
+            }
         }
 
         @Override
         public void read(org.apache.thrift.protocol.TProtocol prot, MandrillEmailListStruct struct) throws org.apache.thrift.TException {
             org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
-            java.util.BitSet incoming = iprot.readBitSet(7);
+            java.util.BitSet incoming = iprot.readBitSet(8);
             if (incoming.get(0)) {
                 struct.templateName = iprot.readString();
                 struct.setTemplateNameIsSet(true);
@@ -1086,6 +1181,10 @@ public class MandrillEmailListStruct implements org.apache.thrift.TBase<Mandrill
             if (incoming.get(6)) {
                 struct.type = iprot.readI32();
                 struct.setTypeIsSet(true);
+            }
+            if (incoming.get(7)) {
+                struct.company_id = iprot.readI32();
+                struct.setCompany_idIsSet(true);
             }
         }
     }

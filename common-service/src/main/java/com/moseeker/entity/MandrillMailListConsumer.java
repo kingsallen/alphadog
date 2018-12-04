@@ -100,6 +100,7 @@ public class MandrillMailListConsumer {
                 List<MergeVarBucket> mergeVars = new ArrayList<MergeVarBucket>();
 
                 List<Map<String,Object>> varList = (List<Map<String,Object>>)JSON.parse(mandrillEmailListStruct.getMergeVars());
+                List<Integer> userIdList=new ArrayList<>();
                 for (Map<String, Object> var : varList) {
                     String rcpt = "";
                     MergeVarBucket mergeVar = new MergeVarBucket();
@@ -112,6 +113,12 @@ public class MandrillMailListConsumer {
                         vars_i++;
                         if("rcpt".equals(entry.getKey())){
                             rcpt = (String)entry.getValue();
+                        }
+                        if("user_id".equals(entry.getKey())){
+                            int userId=(int)entry.getValue();
+                            if(!userIdList.contains(userId)){
+                                userIdList.add(userId);
+                            }
                         }
                     }
 
@@ -159,16 +166,18 @@ public class MandrillMailListConsumer {
                 if(mandrillEmailListStruct.getType()>0){
                     List<LogEmailProfileSendLogRecord> recordList=new ArrayList<>();
                     for(Recipient recipient:recipients){
-                        for(Map<String,Object> data:varList){
+                        for(Integer userId:userIdList){
                             LogEmailProfileSendLogRecord record=new LogEmailProfileSendLogRecord();
                             record.setEmail(recipient.getEmail());
-                            int userId=(int)data.get("userId");
                             record.setUserId(userId);
                             record.setType(mandrillEmailListStruct.getType());
+                            record.setCompanyId(mandrillEmailListStruct.getCompany_id());
                             recordList.add(record);
+                            logger.info("LogEmailProfileSendLogRecord record :{}",record.toString());
                         }
 
                     }
+                    logger.info("List<LogEmailProfileSendLogRecord> recordList :{}",recordList.toString());
                     logEmailProfileSendLogDao.addAllRecord(recordList);
                 }
             } catch (Exception e) {
