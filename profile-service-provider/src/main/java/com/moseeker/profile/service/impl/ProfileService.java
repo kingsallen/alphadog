@@ -741,7 +741,9 @@ public class ProfileService {
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
         List<Integer> userIds = new ArrayList<>();
         userIds.add(userId);
+        logger.info("getProfileOther positionIdList:{}",positionIdList);
         boolean isReferral = isReferral(userIds, positionIdList);
+        logger.info("getProfileOther isReferral:{}",isReferral);
         if(!StringUtils.isEmptyList(positionIds) && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
