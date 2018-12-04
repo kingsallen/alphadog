@@ -26,10 +26,13 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
     private Pattern email = Pattern.compile(REGEX_EMAIL);
     private Pattern mobile = Pattern.compile(REGEX_MOBILE);
+    private Pattern titleTypeLimit = Pattern.compile(TITLE_TYPE);
+
     private static final String ENGLISH = ".*[a-zA-z].*";
     private static final String NUMBER = ".*[0-9].*";
     private static final String REGEX_EMAIL = "([a-z0-9_.-]+)@([\\da-z.-]+)\\.([a-z]{2,6})";
     private static final String REGEX_MOBILE = "1[3|4|5|7|8][0-9]{9}";
+    private static final String TITLE_TYPE = "[^\\u4e00-\\u9fa5a-zA-Z\\d]+";
 
     private static final int TITLE_MIN_LENGTH = 2;
     private static final int TITLE_MAX_LENGTH = 12;
@@ -41,7 +44,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String TITLE_NOT_EMPTY = "标题不为空!";
     private static final String TITLE_LENGTH_LIMIT = "职位标题长度范围为2~12!";
     private static final String TITLE_NEED_CONTAINS_CHINESE = "职位标题需要包含中文!";
-    private static final String TITLE_NEED_CONTAINS = "只支持汉字字母和数字!";
+    private static final String TITLE_TYPE_LIMIT = "只支持汉字字母和数字!";
     private static final String CONTENT_LENGTH_LIMIT = "58职位描述字数限制为20-2000!";
     private static final String CONTENT_RULE_LIMIT = "工作内容和职位要求不能填写电话、QQ等联系方式!";
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
@@ -71,11 +74,16 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
             boolean containEnglish = title.matches(ENGLISH);
             boolean containNumber = title.matches(NUMBER);
             boolean containChinese = chinese.matcher(title).find();
+            boolean contailOthers = titleTypeLimit.matcher(title).find();
             if (!containChinese) {
                 errorMsg.add(TITLE_NEED_CONTAINS_CHINESE);
             }
             if (!containEnglish && !containChinese && !containNumber) {
-                errorMsg.add(TITLE_NEED_CONTAINS);
+                errorMsg.add(TITLE_TYPE_LIMIT);
+            }
+            // 如果标题包含除汉字字母数字外的其他字符，不符合规则
+            if(contailOthers){
+                errorMsg.add(TITLE_TYPE_LIMIT);
             }
             // 职位描述长度限制
             String content = "职位描述：</br>工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：</br>" + moseekerPosition.getRequirement();
