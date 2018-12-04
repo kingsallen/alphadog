@@ -762,7 +762,7 @@ public class TalentpoolSearchengine {
                 String longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
             }
-            if(Integer.parseInt(isRecommend)>0){
+            if(StringUtils.isNotNullOrEmpty(isRecommend) && Integer.parseInt(isRecommend)>0){
                 sb.append("val.recommender_user_id>0 &&");
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
