@@ -1,6 +1,9 @@
 package com.moseeker.profile.domain.referral;
 
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
+import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
@@ -12,6 +15,7 @@ import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantPojo;
 import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -28,6 +32,9 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
     private static final Logger logger = LoggerFactory.getLogger(EmployeeReferralProfileInformation.class);
     @Autowired
     DictCityDao cityDao;
+
+    @Autowired
+    DictConstantDao constantDao;
 
     @Autowired
     ProfileOtherEntity otherEntity;
@@ -86,7 +93,16 @@ public class EmployeeReferralProfileInformation extends EmployeeReferralProfileA
         ProfileExtUtils.createReferralUser(profilePojo, profileNotice.getName(), profileNotice.getMobile(), profileNotice.getEmail());
         Map<String, Object> params = new HashMap<>();
         if (profileNotice.getDegree()>0) {
-            params.put("degree", profileNotice.getDegree());
+            try {
+                DictConstantPojo pojo = constantDao.getDictConstantJson(Constant.DICT_CONSTANT_DEGREE_USER, profileNotice.getDegree());
+                if(pojo!= null) {
+                    params.put("degree", pojo.getName());
+                }
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+                throw CommonException.PROGRAM_EXCEPTION;
+            }
+
         }
         if (StringUtils.isNotNullOrEmpty(profileNotice.getCompanyBrand())) {
             params.put("companyBrand", profileNotice.getCompanyBrand());
