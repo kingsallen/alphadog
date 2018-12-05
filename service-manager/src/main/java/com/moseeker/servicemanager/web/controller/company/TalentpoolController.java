@@ -80,7 +80,7 @@ public class TalentpoolController {
             int hrId=Integer.parseInt(String.valueOf( data.get("hr_id")));
             int companyId=Integer.parseInt(String.valueOf(data.get("company_id")));
             String flag=(String) data.get("flag");
-            int isGdpr= (int) data.getOrDefault("is_gdpr",0);
+            int isGdpr= Integer.parseInt(String.valueOf(data.getOrDefault("is_gdpr","0")));
             if(StringUtils.isNullOrEmpty(flag)||Integer.parseInt(flag)==0){
                 List<Integer> userIdList = ParamUtils.convertIntList(String.valueOf(data.get("user_ids")));
                 if (StringUtils.isEmptyList(userIdList)) {

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogEmployeeOperationLog implements Serializable {
 
-    private static final long serialVersionUID = 556060012;
+    private static final long serialVersionUID = 2008012700;
 
     private Integer   id;
     private Integer   userId;
@@ -33,7 +33,6 @@ public class LogEmployeeOperationLog implements Serializable {
     private Integer   companyId;
     private Integer   profileId;
     private Timestamp createTime;
-    private Timestamp updateTiem;
 
     public LogEmployeeOperationLog() {}
 
@@ -46,7 +45,6 @@ public class LogEmployeeOperationLog implements Serializable {
         this.companyId = value.companyId;
         this.profileId = value.profileId;
         this.createTime = value.createTime;
-        this.updateTiem = value.updateTiem;
     }
 
     public LogEmployeeOperationLog(
@@ -57,8 +55,7 @@ public class LogEmployeeOperationLog implements Serializable {
         Byte      isSuccess,
         Integer   companyId,
         Integer   profileId,
-        Timestamp createTime,
-        Timestamp updateTiem
+        Timestamp createTime
     ) {
         this.id = id;
         this.userId = userId;
@@ -68,7 +65,6 @@ public class LogEmployeeOperationLog implements Serializable {
         this.companyId = companyId;
         this.profileId = profileId;
         this.createTime = createTime;
-        this.updateTiem = updateTiem;
     }
 
     public Integer getId() {
@@ -135,14 +131,6 @@ public class LogEmployeeOperationLog implements Serializable {
         this.createTime = createTime;
     }
 
-    public Timestamp getUpdateTiem() {
-        return this.updateTiem;
-    }
-
-    public void setUpdateTiem(Timestamp updateTiem) {
-        this.updateTiem = updateTiem;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("LogEmployeeOperationLog (");
@@ -155,7 +143,6 @@ public class LogEmployeeOperationLog implements Serializable {
         sb.append(", ").append(companyId);
         sb.append(", ").append(profileId);
         sb.append(", ").append(createTime);
-        sb.append(", ").append(updateTiem);
 
         sb.append(")");
         return sb.toString();

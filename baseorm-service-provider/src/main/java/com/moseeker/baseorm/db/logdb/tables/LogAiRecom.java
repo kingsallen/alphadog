@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
 
-    private static final long serialVersionUID = -1206056958;
+    private static final long serialVersionUID = 1524205969;
 
     /**
      * The reference instance of <code>logdb.log_ai_recom</code>
@@ -67,14 +67,17 @@ public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
     public final TableField<LogAiRecomRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_company.id");
 
     /**
-     * The column <code>logdb.log_ai_recom.action</code>. 发送行为，当type为2，3时这里发送职位时的职位id，当为1时不写入
+     * The column <code>logdb.log_ai_recom.action</code>. 发送行为，这里发送职位时的职位id
      */
-    public final TableField<LogAiRecomRecord, String> ACTION = createField("action", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发送行为，当type为2，3时这里发送职位时的职位id，当为1时不写入");
+    public final TableField<LogAiRecomRecord, String> ACTION = createField("action", org.jooq.impl.SQLDataType.VARCHAR.length(256).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "发送行为，这里发送职位时的职位id");
 
     /**
-     * The column <code>logdb.log_ai_recom.type</code>. type=1粉丝简历完善 type=2粉丝职位推荐 type=3员工职位推荐 type=4员工简历完善(已弃用)
+     * The column <code>logdb.log_ai_recom.type</code>. type=1粉丝简历完善
+type=2粉丝职位推荐
+type=3员工职位推荐
+type=4员工简历完善
      */
-    public final TableField<LogAiRecomRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "type=1粉丝简历完善 type=2粉丝职位推荐 type=3员工职位推荐 type=4员工简历完善(已弃用)");
+    public final TableField<LogAiRecomRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "type=1粉丝简历完善\ntype=2粉丝职位推荐\ntype=3员工职位推荐\ntype=4员工简历完善");
 
     /**
      * The column <code>logdb.log_ai_recom.send_time</code>.
@@ -82,14 +85,14 @@ public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
     public final TableField<LogAiRecomRecord, Timestamp> SEND_TIME = createField("send_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
-     * The column <code>logdb.log_ai_recom.md_code</code>. 唯一的标识串，通过user_user.id,hr_company.id和时间戳取 16位 md5
+     * The column <code>logdb.log_ai_recom.md_code</code>.
      */
-    public final TableField<LogAiRecomRecord, String> MD_CODE = createField("md_code", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "唯一的标识串，通过user_user.id,hr_company.id和时间戳取 16位 md5");
+    public final TableField<LogAiRecomRecord, String> MD_CODE = createField("md_code", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
-     * The column <code>logdb.log_ai_recom.algorithm_name</code>. 算法名称
+     * The column <code>logdb.log_ai_recom.algorithm_name</code>.
      */
-    public final TableField<LogAiRecomRecord, String> ALGORITHM_NAME = createField("algorithm_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "算法名称");
+    public final TableField<LogAiRecomRecord, String> ALGORITHM_NAME = createField("algorithm_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * The column <code>logdb.log_ai_recom.wx_id</code>.
@@ -97,9 +100,9 @@ public class LogAiRecom extends TableImpl<LogAiRecomRecord> {
     public final TableField<LogAiRecomRecord, Integer> WX_ID = createField("wx_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>logdb.log_ai_recom.is_send</code>. 消息是否发送 0未发送 1已发送
+     * The column <code>logdb.log_ai_recom.is_send</code>.
      */
-    public final TableField<LogAiRecomRecord, Byte> IS_SEND = createField("is_send", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "消息是否发送 0未发送 1已发送");
+    public final TableField<LogAiRecomRecord, Byte> IS_SEND = createField("is_send", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * Create a <code>logdb.log_ai_recom</code> table reference
