@@ -242,10 +242,16 @@ public class ReferralServiceImpl implements ReferralService {
                     //把国际化的标签英文转化为中文展示
                     if(!StringUtils.isEmptyList(referralReasons)) {
                         for (String reason : referralReasons) {
+                            boolean status = true;
                             for(DictReferralEvaluateRecord evaluateRecord : dictReferralEvaluateDOS){
                                 if(reason.equals(evaluateRecord.getTagEn())){
                                     reasons.add(evaluateRecord.getTag());
+                                    status = false;
+                                    break;
                                 }
+                            }
+                            if(status){
+                                reasons.add(reason);
                             }
                         }
                     }
