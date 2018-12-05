@@ -296,6 +296,6 @@ public class ReferralServiceImpl implements ReferralService {
         if(companyConf != null){
             return companyConf.getReferralKeyInformation();
         }
-        throw CommonException.NODATA_EXCEPTION;
+       return 1;
     }
 }
