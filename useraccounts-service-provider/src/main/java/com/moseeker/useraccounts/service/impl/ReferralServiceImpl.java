@@ -281,9 +281,12 @@ public class ReferralServiceImpl implements ReferralService {
         if(companyConf!=null){
             companyConf.setReferralKeyInformation((byte) keyInformation);
             companyConfDao.update(companyConf);
-            return;
+        }else{
+            companyConf = new ReferralCompanyConf();
+            companyConf.setCompanyId(companyId);
+            companyConf.setReferralKeyInformation((byte)keyInformation);
+            companyConfDao.insertReferralCompanyConf(companyConf);
         }
-        throw CommonException.PROGRAM_PARAM_NOTEXIST;
     }
 
     @Override
