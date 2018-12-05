@@ -3,7 +3,6 @@
 */
 package com.moseeker.baseorm.db.dictdb;
 
-
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;

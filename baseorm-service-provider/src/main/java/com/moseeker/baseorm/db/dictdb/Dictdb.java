@@ -3,7 +3,6 @@
 */
 package com.moseeker.baseorm.db.dictdb;
 
-
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
@@ -209,6 +208,8 @@ public class Dictdb extends SchemaImpl {
             Dict_58jobFeature.DICT_58JOB_FEATURE,
             Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
+            Dict_58jobFeature.DICT_58JOB_FEATURE,
+            Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,

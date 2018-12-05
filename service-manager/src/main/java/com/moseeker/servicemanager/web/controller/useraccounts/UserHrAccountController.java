@@ -1346,4 +1346,35 @@ public class UserHrAccountController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/v1/hrAccount/getJob58BindResult", method = RequestMethod.GET)
+    @ResponseBody
+    public String getThirdPartyAccountBindResult(HttpServletRequest request) {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            String key = params.getString("ext2");
+            int channel = params.getInt("channel", 0);
+            ValidateUtil validateUtil = new ValidateUtil();
+            validateUtil.addRequiredValidate("58账号key", key, null, null);
+            validateUtil.addStringLengthValidate("58账号key", key, null, null, 0, 500);
+            validateUtil.addRequiredValidate("渠道channel", channel, null, null);
+            validateUtil.addIntTypeValidate("渠道channel", channel, null, null, 1, Integer.MAX_VALUE);
+
+            String message = validateUtil.validate();
+
+            if (StringUtils.isNullOrEmpty(message)) {
+                HrThirdPartyAccountDO accountBindResult=userHrAccountService.getJob58BindResult(channel, key);
+                int status = accountBindResult.getBinding();
+                JSONObject result = new JSONObject();
+                result.put("status", status);
+                return ResponseLogNotification.successJson(request, result);
+            } else {
+                logger.info("==================message:{}================", message);
+                return ResponseLogNotification.fail(request, message);
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
 }

@@ -1,11 +1,6 @@
 package com.moseeker.useraccounts.utils;
 
-import com.moseeker.common.util.MD5Util;
-import com.moseeker.useraccounts.service.thirdpartyaccount.EmailNotification;
-import org.apache.http.message.BasicNameValuePair;
-
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -16,12 +11,6 @@ import java.util.*;
  **/
 public class Md5Utils {
 
-    private static final String SECRECT_KEY;
-
-    static{
-        SECRECT_KEY = EmailNotification.getConfig("liepin_position_api_secretkey");
-    }
-
     /**
      * 用于猎聘对接时的md5加密字符串
      * @param
@@ -29,13 +18,13 @@ public class Md5Utils {
      * @date  2018/5/28
      * @return
      */
-    public static String getMD5SortKey(List<String> list, Map<String , String> map) throws Exception {
+    public static String getMD5SortKey(String secret, List<String> list, Map<String , String> map) throws Exception {
         StringBuilder paras = new StringBuilder();
         Collections.sort(list);
         for(String paraName : list) {
             paras.append(map.get(paraName));
         }
-        paras.append(SECRECT_KEY);
+        paras.append(secret);
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(paras.toString().getBytes("UTF-8"));
         byte b[] = md.digest();
@@ -60,6 +49,38 @@ public class Md5Utils {
             list.add(key);
         }
         return list;
+    }
+
+    /**
+     * md5加密字符串，key与value用=号连接
+     * @param
+     * @author  cjm
+     * @date  2018/5/28
+     * @return
+     */
+    public static String getMD5SortKeyWithEqual(String secret, List<String> list, Map<String , String> map) throws Exception {
+        StringBuilder paras = new StringBuilder();
+        Collections.sort(list);
+        for(String paraName : list) {
+            paras.append(paraName).append("=").append(map.get(paraName));
+        }
+        paras.append(secret);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(paras.toString().getBytes("UTF-8"));
+        byte[] byteArr = md.digest();
+        StringBuilder sb = new StringBuilder("");
+        int i;
+        for (byte aByte : byteArr) {
+            i = aByte;
+            if (i < 0){
+                i += 256;
+            }
+            if (i < 16){
+                sb.append("0");
+            }
+            sb.append(Integer.toHexString(i));
+        }
+        return sb.toString();
     }
 
 }
