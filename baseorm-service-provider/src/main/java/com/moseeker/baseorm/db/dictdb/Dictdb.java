@@ -26,8 +26,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +51,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -921271837;
+    private static final long serialVersionUID = 415873090;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -64,16 +62,6 @@ public class Dictdb extends SchemaImpl {
      * 51的职位表
      */
     public final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
-
-    /**
-     * 58福利特色表
-     */
-    public final Dict_58jobFeature DICT_58JOB_FEATURE = com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature.DICT_58JOB_FEATURE;
-
-    /**
-     * 58职能表
-     */
-    public final Dict_58jobOccupation DICT_58JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation.DICT_58JOB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_alipaycampus_city</code>.
@@ -126,7 +114,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -206,8 +194,6 @@ public class Dictdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
-            Dict_58jobFeature.DICT_58JOB_FEATURE,
-            Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,

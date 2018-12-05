@@ -26,8 +26,6 @@ import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
 
 import javax.annotation.Generated;
 
@@ -49,16 +47,6 @@ public class Tables {
      * 51的职位表
      */
     public static final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
-
-    /**
-     * 58福利特色表
-     */
-    public static final Dict_58jobFeature DICT_58JOB_FEATURE = com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature.DICT_58JOB_FEATURE;
-
-    /**
-     * 58职能表
-     */
-    public static final Dict_58jobOccupation DICT_58JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation.DICT_58JOB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_alipaycampus_city</code>.
@@ -111,7 +99,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 

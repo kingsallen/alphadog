@@ -30,17 +30,17 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilianOccupationRecord> implements Record7<Integer, Integer, String, String, Short, Short, Timestamp> {
 
-    private static final long serialVersionUID = -273739931;
+    private static final long serialVersionUID = -35075227;
 
     /**
-     * Setter for <code>dictdb.dict_zhilian_occupation.code</code>. 职能id
+     * Setter for <code>dictdb.dict_zhilian_occupation.CODE</code>. 职能id
      */
     public void setCode(Integer value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_zhilian_occupation.code</code>. 职能id
+     * Getter for <code>dictdb.dict_zhilian_occupation.CODE</code>. 职能id
      */
     public Integer getCode() {
         return (Integer) get(0);
@@ -61,14 +61,14 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
     }
 
     /**
-     * Setter for <code>dictdb.dict_zhilian_occupation.name</code>. 职能名称
+     * Setter for <code>dictdb.dict_zhilian_occupation.NAME</code>. 职能名称
      */
     public void setName(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_zhilian_occupation.name</code>. 职能名称
+     * Getter for <code>dictdb.dict_zhilian_occupation.NAME</code>. 职能名称
      */
     public String getName() {
         return (String) get(2);
@@ -89,28 +89,28 @@ public class DictZhilianOccupationRecord extends UpdatableRecordImpl<DictZhilian
     }
 
     /**
-     * Setter for <code>dictdb.dict_zhilian_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+     * Setter for <code>dictdb.dict_zhilian_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
      */
     public void setLevel(Short value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_zhilian_occupation.level</code>. 职能级别 1是一级2是二级依次类推
+     * Getter for <code>dictdb.dict_zhilian_occupation.LEVEL</code>. 职能级别 1是一级2是二级依次类推
      */
     public Short getLevel() {
         return (Short) get(4);
     }
 
     /**
-     * Setter for <code>dictdb.dict_zhilian_occupation.status</code>. 只能状态 0 是有效 1是无效
+     * Setter for <code>dictdb.dict_zhilian_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
      */
     public void setStatus(Short value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_zhilian_occupation.status</code>. 只能状态 0 是有效 1是无效
+     * Getter for <code>dictdb.dict_zhilian_occupation.STATUS</code>. 只能状态 0 是有效 1是无效
      */
     public Short getStatus() {
         return (Short) get(5);

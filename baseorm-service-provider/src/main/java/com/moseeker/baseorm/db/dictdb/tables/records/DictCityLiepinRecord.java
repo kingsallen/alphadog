@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityLiepinRecord extends UpdatableRecordImpl<DictCityLiepinRecord> implements Record9<Integer, String, String, String, Byte, String, String, String, String> {
 
-    private static final long serialVersionUID = 1141571140;
+    private static final long serialVersionUID = 287599010;
 
     /**
      * Setter for <code>dictdb.dict_city_liepin.id</code>.
@@ -45,112 +45,112 @@ public class DictCityLiepinRecord extends UpdatableRecordImpl<DictCityLiepinReco
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.code</code>.
+     * Setter for <code>dictdb.dict_city_liepin.code</code>. 猎聘citycode
      */
     public void setCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.code</code>.
+     * Getter for <code>dictdb.dict_city_liepin.code</code>. 猎聘citycode
      */
     public String getCode() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.cname</code>.
+     * Setter for <code>dictdb.dict_city_liepin.cname</code>. 中文名称
      */
     public void setCname(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.cname</code>.
+     * Getter for <code>dictdb.dict_city_liepin.cname</code>. 中文名称
      */
     public String getCname() {
         return (String) get(2);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.ename</code>.
+     * Setter for <code>dictdb.dict_city_liepin.ename</code>. 英语名称
      */
     public void setEname(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.ename</code>.
+     * Getter for <code>dictdb.dict_city_liepin.ename</code>. 英语名称
      */
     public String getEname() {
         return (String) get(3);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.flag</code>.
+     * Setter for <code>dictdb.dict_city_liepin.flag</code>. 级别
      */
     public void setFlag(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.flag</code>.
+     * Getter for <code>dictdb.dict_city_liepin.flag</code>. 级别
      */
     public Byte getFlag() {
         return (Byte) get(4);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.pcode</code>.
+     * Setter for <code>dictdb.dict_city_liepin.pcode</code>. 父code
      */
     public void setPcode(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.pcode</code>.
+     * Getter for <code>dictdb.dict_city_liepin.pcode</code>. 父code
      */
     public String getPcode() {
         return (String) get(5);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.seouri</code>.
+     * Setter for <code>dictdb.dict_city_liepin.seouri</code>. 猎聘dictcity字段，目前没用到
      */
     public void setSeouri(String value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.seouri</code>.
+     * Getter for <code>dictdb.dict_city_liepin.seouri</code>. 猎聘dictcity字段，目前没用到
      */
     public String getSeouri() {
         return (String) get(6);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.shortname</code>.
+     * Setter for <code>dictdb.dict_city_liepin.shortname</code>. 简称
      */
     public void setShortname(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.shortname</code>.
+     * Getter for <code>dictdb.dict_city_liepin.shortname</code>. 简称
      */
     public String getShortname() {
         return (String) get(7);
     }
 
     /**
-     * Setter for <code>dictdb.dict_city_liepin.othercode</code>.
+     * Setter for <code>dictdb.dict_city_liepin.othercode</code>. 猎聘对应的仟寻citycode
      */
     public void setOthercode(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>dictdb.dict_city_liepin.othercode</code>.
+     * Getter for <code>dictdb.dict_city_liepin.othercode</code>. 猎聘对应的仟寻citycode
      */
     public String getOthercode() {
         return (String) get(8);

@@ -11,7 +11,10 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom;
 
 import javax.annotation.Generated;
 
@@ -65,7 +68,22 @@ public class Tables {
     public static final CandidateShareChain CANDIDATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain.CANDIDATE_SHARE_CHAIN;
 
     /**
+     * 链路信息表
+     */
+    public static final CandidateShareChain_0417 CANDIDATE_SHARE_CHAIN_0417 = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417;
+
+    /**
+     * 链路信息表
+     */
+    public static final CandidateShareChain_0418 CANDIDATE_SHARE_CHAIN_0418 = com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418;
+
+    /**
      * HR手动添加相关职位表
      */
     public static final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
+
+    /**
+     * VIEW
+     */
+    public static final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
 }
