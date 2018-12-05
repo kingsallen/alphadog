@@ -20,9 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Created by jack on 02/01/2018.
  */
 @Service
-public class
-
-ProfileOtherServiceImpl implements ProfileOtherService {
+public class ProfileOtherServiceImpl implements ProfileOtherService {
 
     @Autowired
     private ProfileOtherDao dao;
@@ -135,6 +133,8 @@ ProfileOtherServiceImpl implements ProfileOtherService {
         }
         return 0;
     }
+
+
 
     private List<ProfileOtherDO> validateOthers(List<ProfileOtherDO> others) {
         if (others != null) {

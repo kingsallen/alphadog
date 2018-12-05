@@ -2,25 +2,34 @@ package com.moseeker.useraccounts.service.impl;
 
 
 import com.moseeker.baseorm.constant.ActivityStatus;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralService;
@@ -28,16 +37,15 @@ import com.moseeker.useraccounts.service.impl.activity.Activity;
 import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -60,6 +68,9 @@ public class ReferralServiceImpl implements ReferralService {
     private ReferralEntity referralEntity;
 
     @Autowired
+    private ReferralCompanyConfDao companyConfDao;
+
+    @Autowired
     private HrHbConfigDao configDao;
 
     @Autowired
@@ -67,6 +78,12 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private HrHbItemsDao itemsDao;
+
+    @Autowired
+    private HrCompanyDao companyDao;
+
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     @Autowired
     private JobPositionDao positionDao;
@@ -198,5 +215,61 @@ public class ReferralServiceImpl implements ReferralService {
         } else {
             activity.updateInfo(activityVO, true);
         }
+    }
+
+    @Override
+    public List<ReferralReasonInfo> getReferralReasonInfo(int userId, int companyId, int hrId) throws UserAccountException {
+        List<JobApplicationRecord> applicationRecords = applicationDao.getByApplierIdAndCompanyId(userId, companyId);
+        if(!StringUtils.isEmptyList(applicationRecords)){
+            List<Integer> applicationIds = applicationRecords.stream().map(m -> m.getId()).collect(Collectors.toList());
+            List<ReferralRecomEvaluationRecord> evaluationRecords = referralEntity.fetchEvaluationListByUserId(userId, applicationIds);
+            if(!StringUtils.isEmptyList(evaluationRecords)){
+                List<ReferralReasonInfo> list = evaluationRecords.stream().map( m -> {
+                    ReferralReasonInfo info = new ReferralReasonInfo();
+                    info.setId(m.getAppId());
+                    info.setRecomReasonText(m.getRecomReasonText());
+                    info.setRelationship(m.getRelationship());
+                    info.setReferralReasons(StringUtils.stringToList(m.getRecomReasonTag(), ","));
+                    return info;
+                }).collect(Collectors.toList());
+                return list;
+            }
+        }
+
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void handerKeyInformationStatus(int companyId, int keyInformation) throws UserAccountException {
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("状态", keyInformation, 0, 2);
+        String message = vu.validate();
+        if(StringUtils.isNotNullOrEmpty(message)){
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        HrCompanyDO company = companyDao.getCompanyById(companyId);
+        if(company!= null && company.getParentId()>0 ){
+            companyId= company.getParentId();
+        }
+        ReferralCompanyConf companyConf = companyConfDao.fetchOneByCompanyId(companyId);
+        if(companyConf!=null){
+            companyConf.setReferralKeyInformation((byte) keyInformation);
+            companyConfDao.update(companyConf);
+            return;
+        }
+        throw CommonException.PROGRAM_PARAM_NOTEXIST;
+    }
+
+    @Override
+    public int fetchKeyInformationStatus(int companyId) throws UserAccountException {
+        HrCompanyDO company = companyDao.getCompanyById(companyId);
+        if(company!= null && company.getParentId()>0 ){
+            companyId= company.getParentId();
+        }
+        ReferralCompanyConf companyConf = companyConfDao.fetchOneByCompanyId(companyId);
+        if(companyConf != null){
+            return companyConf.getReferralKeyInformation();
+        }
+        throw CommonException.NODATA_EXCEPTION;
     }
 }

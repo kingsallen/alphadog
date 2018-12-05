@@ -49,8 +49,8 @@ public interface ReferralService {
      * @return 推荐记录编号
      * @throws ProfileException 业务异常
      */
-    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position, byte referralType)
-            throws ProfileException, BIZException;
+    int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons, int position,
+                                byte relationship, String referralText,  byte referralType)throws ProfileException, BIZException;
 
     /**
      * 员工提交候选人关键信息
@@ -89,7 +89,8 @@ public interface ReferralService {
      * @date  2018/10/31
      * @return  虚拟用户或真实用户id
      */
-    int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons, byte referralType, String fileName) throws BIZException;
+    int saveMobotReferralProfileCache(int employeeId, String name, String mobile, List<String> referralReasons,
+                                      byte referralType, String fileName, int relationship, String referralReasonText) throws BIZException;
 
     /**
      * 点击告诉ta时回填推荐信息，从缓存中取

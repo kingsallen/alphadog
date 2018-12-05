@@ -17,6 +17,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import javafx.scene.Scene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,7 @@ public class UserAccountEntity {
 
     @Autowired
     private UserWxUserDao wxUserDao;
+
 
     /**
      * 获取用户的称呼

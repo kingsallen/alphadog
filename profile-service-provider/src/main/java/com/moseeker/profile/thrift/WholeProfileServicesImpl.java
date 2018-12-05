@@ -45,7 +45,8 @@ public class WholeProfileServicesImpl implements Iface {
 
 
     @Override
-    public Response getResource(int userId, int profileId, String uuid) throws TException {
+    public Response
+    getResource(int userId, int profileId, String uuid) throws TException {
         try {
             return service.getResource(userId, profileId, uuid);
         } catch (Exception e) {

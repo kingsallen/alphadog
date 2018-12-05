@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateCompany implements Serializable {
 
-    private static final long serialVersionUID = 1607288922;
+    private static final long serialVersionUID = 1945986703;
 
     private Integer   id;
     private Integer   companyId;
@@ -38,6 +38,8 @@ public class CandidateCompany implements Serializable {
     private String    headimgurl;
     private Integer   sysUserId;
     private Integer   clickFrom;
+    private Byte      positionWxLayerQrcode;
+    private Byte      positionWxLayerProfile;
 
     public CandidateCompany() {}
 
@@ -55,6 +57,8 @@ public class CandidateCompany implements Serializable {
         this.headimgurl = value.headimgurl;
         this.sysUserId = value.sysUserId;
         this.clickFrom = value.clickFrom;
+        this.positionWxLayerQrcode = value.positionWxLayerQrcode;
+        this.positionWxLayerProfile = value.positionWxLayerProfile;
     }
 
     public CandidateCompany(
@@ -70,7 +74,9 @@ public class CandidateCompany implements Serializable {
         String    nickname,
         String    headimgurl,
         Integer   sysUserId,
-        Integer   clickFrom
+        Integer   clickFrom,
+        Byte      positionWxLayerQrcode,
+        Byte      positionWxLayerProfile
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -85,6 +91,8 @@ public class CandidateCompany implements Serializable {
         this.headimgurl = headimgurl;
         this.sysUserId = sysUserId;
         this.clickFrom = clickFrom;
+        this.positionWxLayerQrcode = positionWxLayerQrcode;
+        this.positionWxLayerProfile = positionWxLayerProfile;
     }
 
     public Integer getId() {
@@ -191,6 +199,22 @@ public class CandidateCompany implements Serializable {
         this.clickFrom = clickFrom;
     }
 
+    public Byte getPositionWxLayerQrcode() {
+        return this.positionWxLayerQrcode;
+    }
+
+    public void setPositionWxLayerQrcode(Byte positionWxLayerQrcode) {
+        this.positionWxLayerQrcode = positionWxLayerQrcode;
+    }
+
+    public Byte getPositionWxLayerProfile() {
+        return this.positionWxLayerProfile;
+    }
+
+    public void setPositionWxLayerProfile(Byte positionWxLayerProfile) {
+        this.positionWxLayerProfile = positionWxLayerProfile;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidateCompany (");
@@ -208,6 +232,8 @@ public class CandidateCompany implements Serializable {
         sb.append(", ").append(headimgurl);
         sb.append(", ").append(sysUserId);
         sb.append(", ").append(clickFrom);
+        sb.append(", ").append(positionWxLayerQrcode);
+        sb.append(", ").append(positionWxLayerProfile);
 
         sb.append(")");
         return sb.toString();

@@ -40,4 +40,6 @@ public interface ProfileOtherService {
     int putOther(ProfileOtherDO other) throws CommonException;
 
     int putSpecificOther(Map<String,Object> params, Integer profileId);
+
+
 }

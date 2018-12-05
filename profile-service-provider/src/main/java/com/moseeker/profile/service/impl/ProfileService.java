@@ -42,6 +42,7 @@ import com.moseeker.profile.constants.ProfileSource;
 import com.moseeker.profile.domain.ResumeEntity;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.serviceutils.ProfileExtUtils;
+import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -110,6 +111,9 @@ public class ProfileService {
 
     @Autowired
     private ProfileOtherDao profileOtherDao;
+
+    @Autowired
+    private ProfileProfileDao profileProfileDao;
 
     @Autowired
     private ConfigSysCvTplDao configSysCvTplDao;
@@ -628,6 +632,11 @@ public class ProfileService {
     }
 
 
+    public RequireFieldInfo fetchRequireField(int positionId) throws CommonException {
+        return profileOtherEntity.fetchRequireField(positionId);
+    }
+
+
     /**
      * 获取自定义简历数据
      * @param params
@@ -641,6 +650,11 @@ public class ProfileService {
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where(new Condition("profile_id", profileIds, ValueOp.IN));
         List<ProfileOtherDO> profileOtherDOList = profileOtherDao.getDatas(queryBuilder.buildQuery());
+        List<ProfileProfileDO> profileProfileDOList = profileProfileDao.getProfileByProfileList(profileIds);
+
+        List<Integer> userIds = (profileProfileDOList == null || profileProfileDOList.isEmpty()) ? new ArrayList<>() :
+                profileProfileDOList.stream().map(m -> m.getUserId()).collect(Collectors.toList());
+        boolean isReferral = isReferral(userIds, positionIds);
         Map<Integer, String> profileOtherMap = (profileOtherDOList == null || profileOtherDOList.isEmpty()) ? new HashMap<>() :
                 profileOtherDOList.parallelStream().collect(Collectors.toMap(k -> k.getProfileId(), v -> v.getOther(), (oldKey, newKey) -> newKey));
         Map<Integer, Integer> positionCustomConfigMap =  positionEntity.getAppCvConfigIdByPositions(positionIds);
@@ -652,12 +666,13 @@ public class ProfileService {
         paramsStream.stream().forEach((JSONObject e) -> {
             int positionId = e.getIntValue("positionId");
             int profileId = e.getIntValue("profileId");
+            JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
+            Map<String, Object> parentValue = new HashMap<>();
             e.put("other", "");
             try {
                 if (positionCustomConfigMap.containsKey(positionId)) {
-                    JSONObject profileOtherJson = JSONObject.parseObject(profileOtherMap.get(profileId));
                     if (profileOtherJson != null) {
-                        Map<String, Object> parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
+                        parentValue = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)))
                                 .stream()
                                 .flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                                 map(m -> JSONObject.parseObject(String.valueOf(m)))
@@ -666,13 +681,24 @@ public class ProfileService {
                                     return org.apache.commons.lang.StringUtils
                                             .defaultIfBlank(profileOtherJson.getString(v.getString("field_name")), "");
                                 }, (oldKey, newKey) -> newKey));
-
-                        e.put("other", parentValue);
                     }
                 }
             } catch (Exception e1) {
                 logger.error(e1.getMessage(), e1);
             }
+            if(isReferral) {
+                //学历，现任职位，现任公司只要other字段中存在就要展示
+                if (profileOtherJson.getString("degree") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("degree"))) {
+                    parentValue.put("degree", profileOtherJson.get("degree"));
+                }
+                if (profileOtherJson.getString("companyBrand") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("companyBrand"))) {
+                    parentValue.put("companyBrand", profileOtherJson.get("companyBrand"));
+                }
+                if (profileOtherJson.getString("current_position") != null && StringUtils.isNotNullOrEmpty(profileOtherJson.getString("current_position"))) {
+                    parentValue.put("current_position", profileOtherJson.get("current_position"));
+                }
+            }
+            e.put("other", parentValue);
         });
         return ResponseUtils.success(paramsStream);
     }
@@ -680,16 +706,13 @@ public class ProfileService {
     /**
      * 根据申请者的简历编号和申请的有效职位获取申请者自定义简历的自定义数据结构
      *
-     * @param positionIds   申请的有效职位
+     * @param positionIdList   申请的有效职位
      * @param profileId     申请者的简历编号
      * @return
      * @throws CommonException
      */
-    public Map<String, Object> getProfileOther(List<Integer> positionIds, int profileId) throws CommonException{
-        positionIds=filterPositionHasProfileTemplate(positionIds);
-        if(StringUtils.isEmptyList(positionIds)){
-            return null;
-        }
+    public Map<String, Object> getProfileOther(List<Integer> positionIdList, int profileId, int userId) throws CommonException{
+        List<Integer> positionIds=filterPositionHasProfileTemplate(positionIdList);
         long start = System.currentTimeMillis();
         Map<String, Object> otherMap = new HashMap<>();
         Map<String, Object> parentValues = new HashMap<>();
@@ -700,26 +723,22 @@ public class ProfileService {
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
-        if(positionIds != null && positionIds.size()>0 && profileId > 0) {
+        List<Integer> userIds = new ArrayList<>();
+        userIds.add(userId);
+        boolean isReferral = isReferral(userIds, positionIdList);
+        if(!StringUtils.isEmptyList(positionIds) && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
-            long profileTime = System.currentTimeMillis();
-            logger.info("getProfileOther others profile time:{}", profileTime - start);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
             queryBuilder.clear();
-            long configTime = System.currentTimeMillis();
-            logger.info("getProfileOther others config time:{}", configTime - profileTime);
             queryBuilder.where(new Condition("id", new ArrayList<>(positionCustomConfigMap.values()), ValueOp.IN));
             List<HrAppCvConfDO> hrAppCvConfDOList = hrAppCvConfDao.getDatas(queryBuilder.buildQuery());
             //获取申请职位的自定义简历字段
-            long cvConfTime = System.currentTimeMillis();
-            logger.info("getProfileOther others cvConfTime time:{}", cvConfTime - configTime);
             Map<Integer, String> positionOtherMap = (hrAppCvConfDOList == null || hrAppCvConfDOList.isEmpty()) ? new HashMap<>() :
                     hrAppCvConfDOList.stream().collect(Collectors.toMap(k -> k.getId(), v -> v.getFieldValue()));
             //遍历职位获取职位与人自定义字段交集
-            long infoTime = System.currentTimeMillis();
-            logger.info("getProfileOther others info time:{}", profileTime - infoTime);
-            logger.info("getProfileOther others info time:{}", infoTime - start);
-            for(Integer positionId : positionIds){
+
+            logger.info("getProfileOther isReferral:{}", isReferral);
+            for(Integer positionId : positionIdList){
                 if(positionCustomConfigMap.containsKey(positionId)){
                     JSONArray otherCvTplMap = JSONArray.parseArray(positionOtherMap.get(positionCustomConfigMap.get(positionId)));
                     if(otherCvTplMap != null && otherCvTplMap.size()>0){
@@ -739,18 +758,38 @@ public class ProfileService {
                         }
                     }
                 }
+                logger.info("getProfileOther parentValues:{}", parentValues);
             }
-            long positionTime = System.currentTimeMillis();
-            logger.info("getProfileOther others position time:{}", positionTime - infoTime);
-        }else{
-            parentValues.putAll(otherDatas);
         }
+        if(otherDatas.get("degree")!=null && isReferral){
+            parentValues.put("degree", otherDatas.get("degree"));
+        }
+        if(otherDatas.get("companyBrand")!=null && isReferral){
+            parentValues.put("companyBrand", otherDatas.get("companyBrand"));
+        }
+        if(otherDatas.get("current_position")!=null && isReferral){
+            parentValues.put("current_position", otherDatas.get("current_position"));
+        }
+        logger.info("getProfileOther parentValues:{}", parentValues);
         otherMap = profileOtherEntity.handerOtherInfo(parentValues);
         long end = System.currentTimeMillis();
-        logger.info("getProfileOther others time:{}", end-start);
 //        }
 //        profileParseUtil.handerSortprofileOtherMap(otherMap);
         return otherMap;
+    }
+
+    private boolean isReferral(List<Integer> userIds, List<Integer> positionIds){
+        List<JobApplicationDO> applicationDOS = jobApplicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
+        boolean isReferral = false;
+        if(!StringUtils.isEmptyList(applicationDOS)){
+            for (JobApplicationDO applicationDO : applicationDOS){
+                if(applicationDO.getOrigin() == (applicationDO.getOrigin()|65536)){
+                    isReferral = true;
+                    break;
+                }
+            }
+        }
+        return isReferral;
     }
     /*
      过滤职位是否包含自定义简历模板

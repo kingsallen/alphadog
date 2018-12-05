@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralApplicationStatusCountRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralCompanyConfRecord;
@@ -19,6 +20,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeRegiste
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomHbPositionRecord;
 
 import javax.annotation.Generated;
@@ -53,6 +55,7 @@ public class Keys {
     public static final Identity<ReferralLogRecord, Integer> IDENTITY_REFERRAL_LOG = Identities0.IDENTITY_REFERRAL_LOG;
     public static final Identity<ReferralPositionBonusRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS = Identities0.IDENTITY_REFERRAL_POSITION_BONUS;
     public static final Identity<ReferralPositionBonusStageDetailRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS_STAGE_DETAIL = Identities0.IDENTITY_REFERRAL_POSITION_BONUS_STAGE_DETAIL;
+    public static final Identity<ReferralRecomEvaluationRecord, Integer> IDENTITY_REFERRAL_RECOM_EVALUATION = Identities0.IDENTITY_REFERRAL_RECOM_EVALUATION;
     public static final Identity<ReferralRecomHbPositionRecord, Integer> IDENTITY_REFERRAL_RECOM_HB_POSITION = Identities0.IDENTITY_REFERRAL_RECOM_HB_POSITION;
 
     // -------------------------------------------------------------------------
@@ -69,6 +72,8 @@ public class Keys {
     public static final UniqueKey<ReferralPositionBonusRecord> KEY_REFERRAL_POSITION_BONUS_PRIMARY = UniqueKeys0.KEY_REFERRAL_POSITION_BONUS_PRIMARY;
     public static final UniqueKey<ReferralPositionBonusRecord> KEY_REFERRAL_POSITION_BONUS_UNIQUE_IDX = UniqueKeys0.KEY_REFERRAL_POSITION_BONUS_UNIQUE_IDX;
     public static final UniqueKey<ReferralPositionBonusStageDetailRecord> KEY_REFERRAL_POSITION_BONUS_STAGE_DETAIL_PRIMARY = UniqueKeys0.KEY_REFERRAL_POSITION_BONUS_STAGE_DETAIL_PRIMARY;
+    public static final UniqueKey<ReferralRecomEvaluationRecord> KEY_REFERRAL_RECOM_EVALUATION_PRIMARY = UniqueKeys0.KEY_REFERRAL_RECOM_EVALUATION_PRIMARY;
+    public static final UniqueKey<ReferralRecomEvaluationRecord> KEY_REFERRAL_RECOM_EVALUATION_REFERRAL_RECOM_EVALUATION_POSITION_ID_POS_ID_PRESENTEE_PK = UniqueKeys0.KEY_REFERRAL_RECOM_EVALUATION_REFERRAL_RECOM_EVALUATION_POSITION_ID_POS_ID_PRESENTEE_PK;
     public static final UniqueKey<ReferralRecomHbPositionRecord> KEY_REFERRAL_RECOM_HB_POSITION_PRIMARY = UniqueKeys0.KEY_REFERRAL_RECOM_HB_POSITION_PRIMARY;
 
     // -------------------------------------------------------------------------
@@ -88,6 +93,7 @@ public class Keys {
         public static Identity<ReferralLogRecord, Integer> IDENTITY_REFERRAL_LOG = createIdentity(ReferralLog.REFERRAL_LOG, ReferralLog.REFERRAL_LOG.ID);
         public static Identity<ReferralPositionBonusRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS = createIdentity(ReferralPositionBonus.REFERRAL_POSITION_BONUS, ReferralPositionBonus.REFERRAL_POSITION_BONUS.ID);
         public static Identity<ReferralPositionBonusStageDetailRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS_STAGE_DETAIL = createIdentity(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL, ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.ID);
+        public static Identity<ReferralRecomEvaluationRecord, Integer> IDENTITY_REFERRAL_RECOM_EVALUATION = createIdentity(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.ID);
         public static Identity<ReferralRecomHbPositionRecord, Integer> IDENTITY_REFERRAL_RECOM_HB_POSITION = createIdentity(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION, ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.ID);
     }
 
@@ -102,6 +108,8 @@ public class Keys {
         public static final UniqueKey<ReferralPositionBonusRecord> KEY_REFERRAL_POSITION_BONUS_PRIMARY = createUniqueKey(ReferralPositionBonus.REFERRAL_POSITION_BONUS, "KEY_referral_position_bonus_PRIMARY", ReferralPositionBonus.REFERRAL_POSITION_BONUS.ID);
         public static final UniqueKey<ReferralPositionBonusRecord> KEY_REFERRAL_POSITION_BONUS_UNIQUE_IDX = createUniqueKey(ReferralPositionBonus.REFERRAL_POSITION_BONUS, "KEY_referral_position_bonus_unique_idx", ReferralPositionBonus.REFERRAL_POSITION_BONUS.POSITION_ID);
         public static final UniqueKey<ReferralPositionBonusStageDetailRecord> KEY_REFERRAL_POSITION_BONUS_STAGE_DETAIL_PRIMARY = createUniqueKey(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL, "KEY_referral_position_bonus_stage_detail_PRIMARY", ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.ID);
+        public static final UniqueKey<ReferralRecomEvaluationRecord> KEY_REFERRAL_RECOM_EVALUATION_PRIMARY = createUniqueKey(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION, "KEY_referral_recom_evaluation_PRIMARY", ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.ID);
+        public static final UniqueKey<ReferralRecomEvaluationRecord> KEY_REFERRAL_RECOM_EVALUATION_REFERRAL_RECOM_EVALUATION_POSITION_ID_POS_ID_PRESENTEE_PK = createUniqueKey(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION, "KEY_referral_recom_evaluation_referral_recom_evaluation_position_id_pos_id_presentee_pk", ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID);
         public static final UniqueKey<ReferralRecomHbPositionRecord> KEY_REFERRAL_RECOM_HB_POSITION_PRIMARY = createUniqueKey(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION, "KEY_referral_recom_hb_position_PRIMARY", ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.ID);
     }
 }

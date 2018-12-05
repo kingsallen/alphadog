@@ -15,4 +15,11 @@ service ReferralService {
     list<referral_struct.ReferralProfileTab> getReferralProfileList(1: i32 userId, 2: i32 companyId,3: i32 hrId) throws (1: common_struct.BIZException e);
     //修改红包活动
     void updateActivity(1: referral_struct.ActivityDTO activityDTO) throws (1: common_struct.BIZException e);
+    //获取推荐填写的推荐信息
+    list<referral_struct.ReferralReasonInfo> getReferralReason(1: i32 userId, 2: i32 companyId, 3: i32 hrId) throws (1: common_struct.BIZException e);
+    //修改内推规则关键信息推荐配置
+    void handerKeyInformationStatus(1: i32 companyId, 2: i32 keyInformation) throws (1: common_struct.BIZException e);
+    //获取内推规则关键信息推荐配置
+    i32 fetchKeyInformationStatus(1: i32 companyId) throws (1: common_struct.BIZException e);
+
 }

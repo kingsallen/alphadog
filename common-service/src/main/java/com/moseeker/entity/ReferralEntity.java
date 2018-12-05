@@ -2,6 +2,7 @@ package com.moseeker.entity;
 
 import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.baseorm.constant.HBType;
+import com.moseeker.baseorm.constant.ReferralRelationShipType;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
@@ -16,6 +17,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
@@ -32,6 +34,7 @@ import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -102,7 +105,7 @@ public class ReferralEntity {
     private ReferralLogDao referralLogDao;
 
     @Autowired
-    private CandidateRecomRecordDao candidateRecomRecordDao;
+    private ReferralRecomEvaluationDao recomEvaluationDao;
 
     @Autowired
     private ProfileProfileDao profileDao;
@@ -208,19 +211,18 @@ public class ReferralEntity {
         }
     }
 
-    public void logReferralOperation(int position, int applicationId, int depth, List<String> referralReasons,
-                                     String mobile, UserEmployeeDO employeeDO, int presenteeUserId, byte gender, String email) {
-        CandidateRecomRecordRecord recomRecordRecord = new CandidateRecomRecordRecord();
-        recomRecordRecord.setPositionId(position);
-        recomRecordRecord.setAppId(applicationId);
-        recomRecordRecord.setDepth(depth);
-        recomRecordRecord.setRecomReason(referralReasons.stream().collect(Collectors.joining(",")));
-        recomRecordRecord.setMobile(mobile);
-        recomRecordRecord.setPresenteeUserId(presenteeUserId);
-        recomRecordRecord.setPostUserId(employeeDO.getSysuserId());
-        recomRecordRecord.setGender(gender);
-        recomRecordRecord.setEmail(email);
-        candidateRecomRecordDao.insertIfNotExist(recomRecordRecord);
+    public void logReferralOperation(int positionId, int applicationId,  List<String> referralReasons,String mobile,
+                                     UserEmployeeDO employeeDO, int presenteeUserId, byte shipType, String referralText) {
+        ReferralRecomEvaluationRecord evaluationRecord = new ReferralRecomEvaluationRecord();
+        evaluationRecord.setAppId(applicationId);
+        evaluationRecord.setRecomReasonTag(referralReasons.stream().collect(Collectors.joining(",")));
+        evaluationRecord.setRelationship(shipType);
+        evaluationRecord.setRecomReasonText(referralText);
+        evaluationRecord.setMobile(mobile);
+        evaluationRecord.setPresenteeUserId(presenteeUserId);
+        evaluationRecord.setPostUserId(employeeDO.getSysuserId());
+        evaluationRecord.setPositionId(positionId);
+        recomEvaluationDao.insertIfNotExist(evaluationRecord);
     }
 
     public int logReferralOperation(int employeeId, int userId, int attachmentId, int position, ReferralType referralType)
@@ -278,7 +280,7 @@ public class ReferralEntity {
             }
         }
         if (postUserId > 0) {
-            candidateRecomRecordDao.changePostUserId(postUserId, referralLog.getReferenceId(), userUserDO.getId());
+            recomEvaluationDao.changePostUserId(postUserId, referralLog.getReferenceId(), userUserDO.getId());
         }
     }
 
@@ -636,6 +638,11 @@ public class ReferralEntity {
 
         return data;
 
+    }
+
+
+    public List<ReferralRecomEvaluationRecord> fetchEvaluationListByUserId(int userId, List<Integer> appidList){
+        return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
     }
 
 }
