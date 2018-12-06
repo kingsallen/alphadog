@@ -791,5 +791,10 @@ public class ProfileController {
         return Result.SUCCESS;
     }
 
-
+    @RequestMapping(value = "/v4/profile/moveProfile", method = RequestMethod.POST)
+    @ResponseBody
+    public String moveProfile(@RequestParam int destId,@RequestParam int originId) throws Exception {
+        profileService.moveProfile(destId, originId);
+        return Result.SUCCESS;
+    }
 }
