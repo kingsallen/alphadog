@@ -1375,6 +1375,7 @@ public class UserHrAccountService {
                     if (userEmployeeDOTemp.getMobile().equals(user.getMobile())) {
                         userEmployeeDOTemp.setId(user.getId());
                         userEmployeeDOTemp.setSource(8);
+                        userEmployeeDOTemp.setAuthMethod((byte)1);
                         updateUserEmployee.add(userEmployeeDOTemp);
                     }
                 }
