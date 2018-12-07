@@ -1371,7 +1371,6 @@ public class UserHrAccountService {
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
         logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
         userEmployeeMap.forEach((k, v) -> {
-            v.setAuthMethod((byte)1);
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
