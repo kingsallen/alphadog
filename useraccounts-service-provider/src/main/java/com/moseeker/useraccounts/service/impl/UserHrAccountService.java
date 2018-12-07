@@ -1369,11 +1369,13 @@ public class UserHrAccountService {
         // 通过手机号查询那些员工数据是更新，那些数据是新增
         List<String> moblies = new ArrayList<>();
         List<UserEmployeeDO> userEmployeeList = new ArrayList<>();
+        logger.info("employeeImport userEmployeeMap:{}", userEmployeeMap);
         userEmployeeMap.forEach((k, v) -> {
             v.setAuthMethod((byte)1);
             userEmployeeList.add(v);
             moblies.add(v.getMobile());
         });
+        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         Condition condition = new Condition(UserEmployee.USER_EMPLOYEE.MOBILE.getName(), moblies, ValueOp.IN);
         queryBuilder.where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.getName(), companyId).and(condition);
@@ -1393,6 +1395,7 @@ public class UserHrAccountService {
             }
             if (!StringUtils.isEmptyList(updateUserEmployee)) {
                 // 更新数据
+                logger.info("employeeImport updateUserEmployee:{}", updateUserEmployee);
                 userEmployeeDao.updateDatas(updateUserEmployee);
                 searchengineEntity.updateEmployeeAwards(updateUserEmployee.stream().filter(f -> f.getId() > 0).map(m -> m.getId()).collect(Collectors.toList()));
                 // 去掉需要更新的数据
@@ -1400,6 +1403,7 @@ public class UserHrAccountService {
             }
         }
         // 新增数据
+        logger.info("employeeImport userEmployeeList:{}", userEmployeeList);
         if (!StringUtils.isEmptyList(userEmployeeList)) {
             employeeEntity.addEmployeeListIfNotExist(userEmployeeList);
 
