@@ -1766,7 +1766,6 @@ public class UserHrAccountService {
                 }
 
             }
-
         }
         if(isReferral){
             configFieldName.add("companyBrand");

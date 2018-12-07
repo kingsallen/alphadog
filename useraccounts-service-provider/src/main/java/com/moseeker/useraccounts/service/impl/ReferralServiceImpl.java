@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.ActivityStatus;
+import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
@@ -12,6 +13,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
@@ -30,6 +32,7 @@ import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
@@ -85,6 +88,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private JobApplicationDao applicationDao;
+
+    @Autowired
+    private DictReferralEvaluateDao evaluateDao;
 
     @Autowired
     private JobPositionDao positionDao;
@@ -243,15 +249,34 @@ public class ReferralServiceImpl implements ReferralService {
             List<ReferralRecomEvaluationRecord> evaluationRecords = referralEntity.fetchEvaluationListByUserId(userId, applicationIds);
             logger.info("getReferralReasonInfo evaluationRecords:{}",evaluationRecords);
             if(!StringUtils.isEmptyList(evaluationRecords)){
-                List<ReferralReasonInfo> list = evaluationRecords.stream().map( m -> {
+                List<DictReferralEvaluateRecord> dictReferralEvaluateDOS = evaluateDao.getDictReferralEvaluate();
+                List<ReferralReasonInfo> list = new ArrayList<>();
+                for(ReferralRecomEvaluationRecord record: evaluationRecords){
                     ReferralReasonInfo info = new ReferralReasonInfo();
-                    info.setId(m.getAppId());
-                    info.setRecomReasonText(m.getRecomReasonText());
-                    info.setRelationship(m.getRelationship());
-                    info.setReferralReasons(StringUtils.stringToList(m.getRecomReasonTag(), ","));
-                    return info;
-                }).collect(Collectors.toList());
-                logger.info("getReferralReasonInfo list:{}",list);
+                    info.setId(record.getAppId());
+                    info.setRecomReasonText(record.getRecomReasonText());
+                    info.setRelationship(record.getRelationship());
+                    List<String> referralReasons = StringUtils.stringToList(record.getRecomReasonTag(), ",");
+                    List<String> reasons = new ArrayList<>();
+                    //把国际化的标签英文转化为中文展示
+                    if(!StringUtils.isEmptyList(referralReasons)) {
+                        for (String reason : referralReasons) {
+                            boolean status = true;
+                            for(DictReferralEvaluateRecord evaluateRecord : dictReferralEvaluateDOS){
+                                if(reason.equals(evaluateRecord.getTagEn())){
+                                    reasons.add(evaluateRecord.getTag());
+                                    status = false;
+                                    break;
+                                }
+                            }
+                            if(status){
+                                reasons.add(reason);
+                            }
+                        }
+                    }
+                    info.setReferralReasons(reasons);
+                    list.add(info);
+                };
                 return list;
             }
         }
@@ -275,9 +300,12 @@ public class ReferralServiceImpl implements ReferralService {
         if(companyConf!=null){
             companyConf.setReferralKeyInformation((byte) keyInformation);
             companyConfDao.update(companyConf);
-            return;
+        }else{
+            companyConf = new ReferralCompanyConf();
+            companyConf.setCompanyId(companyId);
+            companyConf.setReferralKeyInformation((byte)keyInformation);
+            companyConfDao.insertReferralCompanyConf(companyConf);
         }
-        throw CommonException.PROGRAM_PARAM_NOTEXIST;
     }
 
     @Override
@@ -290,6 +318,6 @@ public class ReferralServiceImpl implements ReferralService {
         if(companyConf != null){
             return companyConf.getReferralKeyInformation();
         }
-        throw CommonException.NODATA_EXCEPTION;
+       return 1;
     }
 }

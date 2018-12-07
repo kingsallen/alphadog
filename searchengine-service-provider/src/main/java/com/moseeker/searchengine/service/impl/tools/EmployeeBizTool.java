@@ -134,6 +134,7 @@ public class EmployeeBizTool {
             }
 
         }
+        addOrder(searchRequestBuilder, UserEmployee.USER_EMPLOYEE.field("id").getName(), 1, timeSpan);
     }
 
     private static void addOrder(SearchRequestBuilder searchRequestBuilder, String field, int asc, String timeSpan) {

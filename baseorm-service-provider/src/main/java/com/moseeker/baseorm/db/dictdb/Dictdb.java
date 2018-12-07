@@ -3,6 +3,7 @@
 */
 package com.moseeker.baseorm.db.dictdb;
 
+
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
@@ -52,7 +53,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -921271837;
+    private static final long serialVersionUID = 386007665;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -125,7 +126,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -208,8 +209,6 @@ public class Dictdb extends SchemaImpl {
             Dict_58jobFeature.DICT_58JOB_FEATURE,
             Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
-            Dict_58jobFeature.DICT_58JOB_FEATURE,
-            Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,

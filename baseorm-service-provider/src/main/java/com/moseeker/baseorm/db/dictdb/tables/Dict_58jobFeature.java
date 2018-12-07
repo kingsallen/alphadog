@@ -34,7 +34,6 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dict_58jobFeature extends TableImpl<Dict_58jobFeatureRecord> {
 
-
     private static final long serialVersionUID = 165631531;
 
     /**

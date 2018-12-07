@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DictCityLiepin extends TableImpl<DictCityLiepinRecord> {
 
-    private static final long serialVersionUID = -1636202092;
+    private static final long serialVersionUID = 885184832;
 
     /**
      * The reference instance of <code>dictdb.dict_city_liepin</code>
@@ -56,44 +56,44 @@ public class DictCityLiepin extends TableImpl<DictCityLiepinRecord> {
     public final TableField<DictCityLiepinRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.code</code>.
+     * The column <code>dictdb.dict_city_liepin.code</code>. 猎聘citycode
      */
-    public final TableField<DictCityLiepinRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "猎聘citycode");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.cname</code>.
+     * The column <code>dictdb.dict_city_liepin.cname</code>. 中文名称
      */
-    public final TableField<DictCityLiepinRecord, String> CNAME = createField("cname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, String> CNAME = createField("cname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "中文名称");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.ename</code>.
+     * The column <code>dictdb.dict_city_liepin.ename</code>. 英语名称
      */
-    public final TableField<DictCityLiepinRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, String> ENAME = createField("ename", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "英语名称");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.flag</code>.
+     * The column <code>dictdb.dict_city_liepin.flag</code>. 级别
      */
-    public final TableField<DictCityLiepinRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "级别");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.pcode</code>.
+     * The column <code>dictdb.dict_city_liepin.pcode</code>. 父code
      */
-    public final TableField<DictCityLiepinRecord, String> PCODE = createField("pcode", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, String> PCODE = createField("pcode", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "父code");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.seouri</code>.
+     * The column <code>dictdb.dict_city_liepin.seouri</code>. 猎聘dictcity字段，目前没用到
      */
-    public final TableField<DictCityLiepinRecord, String> SEOURI = createField("seouri", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, String> SEOURI = createField("seouri", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "猎聘dictcity字段，目前没用到");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.shortname</code>.
+     * The column <code>dictdb.dict_city_liepin.shortname</code>. 简称
      */
-    public final TableField<DictCityLiepinRecord, String> SHORTNAME = createField("shortname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
+    public final TableField<DictCityLiepinRecord, String> SHORTNAME = createField("shortname", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "简称");
 
     /**
-     * The column <code>dictdb.dict_city_liepin.othercode</code>.
+     * The column <code>dictdb.dict_city_liepin.othercode</code>. 猎聘对应的仟寻citycode
      */
-    public final TableField<DictCityLiepinRecord, String> OTHERCODE = createField("othercode", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "");
+    public final TableField<DictCityLiepinRecord, String> OTHERCODE = createField("othercode", org.jooq.impl.SQLDataType.VARCHAR.length(20), this, "猎聘对应的仟寻citycode");
 
     /**
      * Create a <code>dictdb.dict_city_liepin</code> table reference

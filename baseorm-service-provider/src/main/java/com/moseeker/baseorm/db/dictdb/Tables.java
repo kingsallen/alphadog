@@ -3,6 +3,7 @@
 */
 package com.moseeker.baseorm.db.dictdb;
 
+
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
 import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
 import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
@@ -110,7 +111,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * The table <code>dictdb.dict_industry</code>.
+     * 行业二级分类字典表
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
