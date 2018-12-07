@@ -1,6 +1,7 @@
 package com.moseeker.profile.thrift;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.PropertyFilter;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
 import com.moseeker.baseorm.dao.dictdb.DictConstantDao;
@@ -292,8 +293,11 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
         try {
             long start = System.currentTimeMillis();
             Map<String, Object> others = profileService.getApplicationOtherCommon(userId, accountId, positionId);
+            logger.info("=================others:{}", JSONObject.toJSONString(others));
             List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
+            logger.info("=================positionList:{}", JSONObject.toJSONString(positionList));
             Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
+            logger.info("=================profile_id:{}", profile_id);
             Map<String, Object> result = profileService.getProfileOther(positionList, profile_id, userId);
             Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
             long end = System.currentTimeMillis();
