@@ -91,7 +91,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionDTO.setTitle(positionDB.getTitle());
         job58PositionDTO.setParas(parsePositionParam2Job58(positionForm, positionDB, userHrAccountDO));
         // 設置email
-        job58PositionDTO.setEmail(Job58PositionOperateConstant.job58ProfileEmail);
+        job58PositionDTO.setEmail("cv_" + positionDB.getId() + "@dqprism.com");
         job58PositionDTO.setAccount_id(account.getId());
         job58PositionDTO.setPid(positionDB.getId());
         return job58PositionDTO;
