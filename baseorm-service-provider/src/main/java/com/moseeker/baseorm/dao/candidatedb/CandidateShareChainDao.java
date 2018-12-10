@@ -5,6 +5,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRecord;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.count;
+import static org.jooq.impl.DSL.e;
 
 /**
  * Created by jack on 15/02/2017.
@@ -83,4 +86,19 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .fetch();
     }
 
+    public List<CandidateShareChainDO> getRadarCards(ReferralCardInfo cardInfo) {
+        Long timstamp = cardInfo.getTimestamp();
+        Timestamp tenMinite = new Timestamp(timstamp);
+        Timestamp beforeTenMinite = new Timestamp(timstamp - 1000 * 60 * 10);
+        List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(cardInfo.getUserId()))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.between(beforeTenMinite, tenMinite))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE.ne((byte)1))
+                .fetchInto(CandidateShareChainDO.class);
+        if(list == null){
+            return new ArrayList<>();
+        }else {
+            return list;
+        }
+    }
 }

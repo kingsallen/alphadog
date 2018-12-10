@@ -1,7 +1,12 @@
 package com.moseeker.useraccounts.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ActivityStatus;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
@@ -11,6 +16,8 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
@@ -31,9 +38,15 @@ import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralService;
 import com.moseeker.useraccounts.service.impl.activity.Activity;
@@ -41,8 +54,7 @@ import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +105,18 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private JobPositionDao positionDao;
+
+    @Autowired
+    private CandidateShareChainDao shareChainDao;
+
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
+
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+
+    @Autowired
+    private UserWxUserDao userWxUserDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -300,5 +324,80 @@ public class ReferralServiceImpl implements ReferralService {
             return companyConf.getReferralKeyInformation();
         }
        return 1;
+    }
+
+    @Override
+    public String getRadarCards(ReferralCardInfo cardInfo) {
+        // 获取指定时间前十分钟内的职位浏览人
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo);
+        // 获取浏览人的userId
+        Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        // 查找浏览人中的员工
+        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
+        // 获取员工的userId
+        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getId).collect(Collectors.toSet());
+        // 将员工过滤掉，获取职位浏览人中非员工的userId
+        beRecomUserIds.removeAll(userEmployeeIds);
+        // 将过滤后的员工id对应员工信息
+        List<UserWxUserDO> userUserDOS = userWxUserDao.getWXUserMapByUserIds(beRecomUserIds);
+        Map<Integer, UserWxUserDO> idUserMap = getIdWxUserMap(userUserDOS);
+        // 通过职位id和职位浏览人idSet获取转发的信息
+        List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIds(cardInfo.getPid(), beRecomUserIds);
+        JobPositionDO jobPosition = positionDao.getJobPositionById(cardInfo.getPid());
+        List<JSONObject> cards = new ArrayList<>();
+        for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
+            // 构造单个职位浏览人的卡片
+            cards.add(doCreateCard(cardInfo, candidatePositionDO, jobPosition, shareChainDOS, idUserMap));
+        }
+        return JSON.toJSONString(cards);
+    }
+
+    private Map<Integer,UserWxUserDO> getIdWxUserMap(List<UserWxUserDO> userWxUserDOS) {
+        Map<Integer,UserWxUserDO> map = new HashMap<>(1024);
+        for(UserWxUserDO userWxUserDO : userWxUserDOS){
+            map.put((int)userWxUserDO.getId(), userWxUserDO);
+        }
+        return map;
+    }
+
+    private JSONObject doCreateCard(ReferralCardInfo cardInfo, CandidatePositionDO candidatePositionDO, JobPositionDO jobPosition,
+                                    List<CandidateShareChainDO> shareChainDOS, Map<Integer, UserWxUserDO> idUserMap) {
+        JSONObject card = new JSONObject();
+        JSONObject position = new JSONObject();
+        position.put("title", jobPosition.getTitle());
+        position.put("pid", jobPosition.getId());
+        position.put("pv", candidatePositionDO.getViewNumber());
+        card.put("position", position);
+        JSONObject user = new JSONObject();
+        UserWxUserDO userWxUserDO = idUserMap.get(candidatePositionDO.getUserId());
+        user.put("nickname", userWxUserDO.getNickname());
+        user.put("avatar", userWxUserDO.getHeadimgurl());
+        card.put("user", user);
+        JSONArray chain = new JSONArray();
+        for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
+            if(candidateShareChainDO.getPositionId() == jobPosition.getId() && candidateShareChainDO.getRootRecomUserId() == cardInfo.getUserId()){
+                JSONObject presenteeUser = new JSONObject();
+                presenteeUser.put("nickname", idUserMap.get(candidateShareChainDO.getPresenteeUserId()).getNickname());
+                presenteeUser.put("avatar", idUserMap.get(candidateShareChainDO.getPresenteeUserId()).getHeadimgurl());
+                chain.add(presenteeUser);
+            }
+        }
+        card.put("chain", chain);
+        return card;
+    }
+
+    @Override
+    public String inviteApplication(ReferralInviteInfo inviteInfo) {
+        return null;
+    }
+
+    @Override
+    public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
+        return null;
+    }
+
+    @Override
+    public String connectRadar(ConnectRadarInfo radarInfo) {
+        return null;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by jack on 15/02/2017.
@@ -86,5 +87,19 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
                 .values(cp.getPositionId(),cp.getWxuserId(),cp.getIsInterested(),cp.getCandidateCompanyId(),cp.getViewNumber(),cp.getSharedFromEmployee(),cp.getUserId())
                 .onDuplicateKeyIgnore()
                 .execute();
+    }
+
+    /**
+     * 查找最近浏览的职位信息
+     * @param positionId 职位id
+     * @param userIdSet 查询用户idSet
+     * @return list
+     */
+    public List<CandidatePositionDO> fetchRecentViewedByUserIds(int positionId, Set<Integer> userIdSet) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.eq(positionId))
+                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(userIdSet))
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
+                .fetchInto(CandidatePositionDO.class);
     }
 }

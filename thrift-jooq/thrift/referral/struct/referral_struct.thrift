@@ -1,7 +1,5 @@
 namespace java com.moseeker.thrift.gen.referral.struct
 
-typedef string Timestamp
-
 struct RedPacket {
     1 : optional i32 type,
     2 : optional string name,
@@ -76,6 +74,26 @@ struct ReferralReasonInfo{
     2: optional list<string> referralReasons,
     3: optional i32 relationship,
     4: optional string recomReasonText
+}
+
+struct ReferralCardInfo{
+    1: optional i32 userId,
+    2: optional i32 pageNumber,
+    3: optional i32 pageSize,
+    4: optional i64 timestamp
+}
+
+struct ReferralInviteInfo{
+    1: optional i32 pid,
+    2: optional i32 userId,
+    3: optional i32 endUserId,
+    4: optional i64 timestamp
+}
+
+struct ConnectRadarInfo{
+    1: optional i32 chainId,
+    2: optional i32 recomUserId,
+    3: optional i32 nextUserId
 }
 
 

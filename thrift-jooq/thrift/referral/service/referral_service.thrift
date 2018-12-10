@@ -22,4 +22,12 @@ service ReferralService {
     //获取内推规则关键信息推荐配置
     i32 fetchKeyInformationStatus(1: i32 companyId) throws (1: common_struct.BIZException e);
 
+    // 10分钟消息模板-人脉筛选，获取卡片数据
+    string getRadarCards(1:referral_struct.ReferralCardInfo cardInfo) throws (1: common_struct.BIZException e);
+    // 10分钟消息模板-邀请投递
+    string inviteApplication(1:referral_struct.ReferralInviteInfo inviteInfo) throws (1: common_struct.BIZException e);
+    // 10分钟消息模板-我不熟悉
+    string ignoreCurrentViewer(1:referral_struct.ReferralInviteInfo ignoreInfo) throws (1: common_struct.BIZException e);
+    // 点击人脉连连看按钮/点击分享的人脉连连看页面
+    string connectRadar(1:referral_struct.ConnectRadarInfo radarInfo) throws (1: common_struct.BIZException e);
 }

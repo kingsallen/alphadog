@@ -1,5 +1,8 @@
 package com.moseeker.useraccounts.service;
 
+import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.util.List;
@@ -71,4 +74,40 @@ public interface ReferralService {
      * @return
      */
     int fetchKeyInformationStatus(int companyId)throws UserAccountException;
+
+    /**
+     * 10分钟消息模板-人脉筛选，获取卡片数据
+     * @param cardInfo 查找员工10分钟内转发职位的浏览记录所需信息
+     * @author  cjm
+     * @date  2018/12/7
+     * @return json
+     */
+    String getRadarCards(ReferralCardInfo cardInfo);
+
+    /**
+     * 10分钟消息模板-邀请投递
+     * @param inviteInfo 邀请浏览职位的员工投递
+     * @author  cjm
+     * @date  2018/12/7
+     * @return json
+     */
+    String inviteApplication(ReferralInviteInfo inviteInfo);
+
+    /**
+     * 10分钟消息模板-我不熟悉
+     * @param ignoreInfo 跳过当前不熟悉的浏览人
+     * @author  cjm
+     * @date  2018/12/7
+     * @return json
+     */
+    String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo);
+
+    /**
+     * 点击人脉连连看按钮/点击分享的人脉连连看页面
+     * @param radarInfo 连接人脉雷达的参数
+     * @author  cjm
+     * @date  2018/12/7
+     * @return json
+     */
+    String connectRadar(ConnectRadarInfo radarInfo);
 }

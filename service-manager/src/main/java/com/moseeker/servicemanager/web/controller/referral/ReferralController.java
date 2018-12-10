@@ -23,6 +23,9 @@ import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
+import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
@@ -618,6 +621,135 @@ public class ReferralController {
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             String jsonResult = profileService.getMobotReferralCache(id);
             jsonResult = (jsonResult == null ? "":jsonResult);
+            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
+            return Result.success(referralInfoCache).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 10分钟消息模板-人脉筛选，获取卡片数据
+     * @param referralCard 查找员工10分钟内转发职位的浏览记录所需信息
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/radar/cards", method = RequestMethod.GET)
+    @ResponseBody
+    public String getRadarCards(@RequestBody ReferralCardForm referralCard) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工userId", referralCard.getUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", referralCard.getAppid(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", referralCard.getUserId());
+        validateUtil.addRequiredValidate("appid", referralCard.getAppid());
+        validateUtil.addRequiredValidate("timestamp", referralCard.getTimestamp());
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            if(referralCard.getPageNumber() == null || referralCard.getPageNumber() <= 0){
+                referralCard.setPageNumber(1);
+            }
+            if(referralCard.getPageSize() == null || referralCard.getPageSize() <= 0){
+                referralCard.setPageSize(10);
+            }
+            ReferralCardInfo cardInfo = new ReferralCardInfo();
+            BeanUtils.copyProperties(referralCard, cardInfo);
+            String jsonResult = referralService.getRadarCards(cardInfo);
+            jsonResult = (jsonResult == null ? "":jsonResult);
+            //
+            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
+            return Result.success(referralInfoCache).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 10分钟消息模板-邀请投递
+     * @param inviteForm 邀请浏览职位的员工投递
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/radar/invite", method = RequestMethod.POST)
+    @ResponseBody
+    public String inviteApplication(@RequestBody ReferralInviteForm inviteForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateInviteInfo(validateUtil, inviteForm);
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
+            BeanUtils.copyProperties(inviteForm, inviteInfo);
+            String jsonResult = referralService.inviteApplication(inviteInfo);
+            jsonResult = (jsonResult == null ? "":jsonResult);
+            //
+            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
+            return Result.success(referralInfoCache).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    private void validateInviteInfo(ValidateUtil validateUtil, ReferralInviteForm inviteForm){
+        validateUtil.addIntTypeValidate("员工userId", inviteForm.getUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("被邀请人id", inviteForm.getEndUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", inviteForm.getAppid(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("职位id", inviteForm.getPid(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", inviteForm.getUserId());
+        validateUtil.addRequiredValidate("appid", inviteForm.getAppid());
+        validateUtil.addRequiredValidate("职位id", inviteForm.getPid());
+        validateUtil.addRequiredValidate("timestamp", inviteForm.getTimestamp());
+        validateUtil.addRequiredValidate("当前处理的endUserId", inviteForm.getEndUserId());
+    }
+
+    /**
+     * 10分钟消息模板-我不熟悉
+     * @param inviteForm 跳过当前不熟悉的浏览人
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/radar/invite", method = RequestMethod.POST)
+    @ResponseBody
+    public String ignoreCurrentViewer(@RequestBody ReferralInviteForm inviteForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateInviteInfo(validateUtil, inviteForm);
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
+            BeanUtils.copyProperties(inviteForm, inviteInfo);
+            String jsonResult = referralService.ignoreCurrentViewer(inviteInfo);
+            jsonResult = (jsonResult == null ? "":jsonResult);
+            //
+            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
+            return Result.success(referralInfoCache).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     * 点击人脉连连看按钮/点击分享的人脉连连看页面
+     * @param radarForm 连接人脉雷达的参数
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/radar/connect", method = RequestMethod.POST)
+    @ResponseBody
+    public String connectRadar(@RequestBody ConnectRadarForm radarForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("转发人", radarForm.getRecomUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("被邀请连线人id", radarForm.getNextUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", radarForm.getAppid(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("人脉连连看id", radarForm.getChainId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("转发人", radarForm.getRecomUserId());
+        validateUtil.addRequiredValidate("被邀请连线人id", radarForm.getNextUserId());
+        validateUtil.addRequiredValidate("appid", radarForm.getAppid());
+        validateUtil.addRequiredValidate("人脉连连看id", radarForm.getChainId());
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            ConnectRadarInfo radarInfo = new ConnectRadarInfo();
+            BeanUtils.copyProperties(radarForm, radarInfo);
+            String jsonResult = referralService.connectRadar(radarInfo);
+            jsonResult = (jsonResult == null ? "":jsonResult);
+            //
             ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
             return Result.success(referralInfoCache).toJson();
         } else {
