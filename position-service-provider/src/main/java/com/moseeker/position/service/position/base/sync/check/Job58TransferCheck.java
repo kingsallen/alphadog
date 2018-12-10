@@ -84,7 +84,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
                 errorMsg.add(TITLE_TYPE_LIMIT);
             }
             // 职位描述长度限制
-            String content = "职位描述：</br>工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：" + moseekerPosition.getRequirement();
+            String content = "工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：" + moseekerPosition.getRequirement();
             // 职位详情不能包括手机和qq
             boolean containMobile = mobile.matcher(content).find();
             boolean containEmail = email.matcher(content).find();
