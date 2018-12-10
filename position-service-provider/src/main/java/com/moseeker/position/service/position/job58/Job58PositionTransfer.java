@@ -81,7 +81,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         List<String> occupations = positionForm.getOccupation();
         String occupation = occupations.get(occupations.size() - 1);
         job58PositionDTO.setCate_id(Integer.parseInt(occupation));
-        String content = "职位描述：</br>工作内容：" + positionDB.getAccountabilities() + "</br>职位要求：" + positionDB.getRequirement();
+        String content = "工作内容：" + positionDB.getAccountabilities() + "</br>职位要求：" + positionDB.getRequirement();
         // 职位描述超过2000字时截断到2000字
         if(content.length() > 2000){
             content = content.substring(0, 2000);
@@ -89,8 +89,8 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionDTO.setContent(content);
         job58PositionDTO.setLocal_id(doGetCityCode(positionDB));
         // 获取仟寻账号的信息
-        HrThirdPartyAccountHrDO accountHrDO = hrThirdPartyHrDao.getHrAccountByThirdPartyId(account.getId());
-        UserHrAccountDO userHrAccountDO = userHrAccountDao.getUserHrAccountById(accountHrDO.getHrAccountId());
+//        HrThirdPartyAccountHrDO accountHrDO = hrThirdPartyHrDao.getHrAccountByThirdPartyId(account.getId());
+        UserHrAccountDO userHrAccountDO = userHrAccountDao.getUserHrAccountById(positionDB.getPublisher());
         job58PositionDTO.setPhone(userHrAccountDO.getMobile());
         job58PositionDTO.setTitle(positionDB.getTitle());
         job58PositionDTO.setParas(parsePositionParam2Job58(positionForm, positionDB, userHrAccountDO));
@@ -319,7 +319,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         // 学历映射
         int degree = (int) positionDB.getDegree();
         job58PositionParams.setXueliyaoqiu(Job58PositionDegree.getPositionDegree(degree).getJob58DegreeNo());
-        job58PositionParams.setZhaopinrenshu((int)positionDB.getCount() + "");
+        job58PositionParams.setZhaopinrenshu((int)positionDB.getCount() == 0 ? "若干" : (int)positionDB.getCount() + "");
         TypeReference<Map<String, String>> typeReference = new TypeReference<Map<String, String>>() {};
         // map转xml格式发请求
         Map<String, String> params = JSONObject.parseObject(JSON.toJSONString(job58PositionParams), typeReference);
