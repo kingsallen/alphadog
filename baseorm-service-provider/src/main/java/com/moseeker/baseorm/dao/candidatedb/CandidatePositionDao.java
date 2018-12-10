@@ -9,6 +9,8 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -91,14 +93,14 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
 
     /**
      * 查找最近浏览的职位信息
-     * @param positionId 职位id
-     * @param userIdSet 查询用户idSet
+     * @param beRecomUserIds 被推荐人ids
+     * @param positionIds 职位ids
      * @return list
      */
-    public List<CandidatePositionDO> fetchRecentViewedByUserIds(int positionId, Set<Integer> userIdSet) {
+    public List<CandidatePositionDO> fetchRecentViewedByUserIdsAndPids(Set<Integer> beRecomUserIds, List<Integer> positionIds) {
         return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
-                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.eq(positionId))
-                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(userIdSet))
+                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
+                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(beRecomUserIds))
                 .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
                 .fetchInto(CandidatePositionDO.class);
     }

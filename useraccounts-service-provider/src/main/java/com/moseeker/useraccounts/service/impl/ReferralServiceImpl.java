@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -39,6 +40,7 @@ import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -54,6 +56,7 @@ import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -111,6 +114,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private CandidatePositionDao candidatePositionDao;
+
+    @Autowired
+    private CandidatePositionShareRecordDao positionShareRecordDao;
 
     @Autowired
     private UserEmployeeDao userEmployeeDao;
@@ -328,36 +334,48 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public String getRadarCards(ReferralCardInfo cardInfo) {
+        Long timstamp = cardInfo.getTimestamp();
+        Timestamp tenMinite = new Timestamp(timstamp);
+        Timestamp beforeTenMinite = new Timestamp(timstamp - 1000 * 60 * 10);
         // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo);
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         // 获取浏览人的userId
         Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
-        // 查找浏览人中的员工
-        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
-        // 获取员工的userId
-        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getId).collect(Collectors.toSet());
         // 将员工过滤掉，获取职位浏览人中非员工的userId
-        beRecomUserIds.removeAll(userEmployeeIds);
-        // 将过滤后的员工id对应员工信息
+        beRecomUserIds = getUnEmployeeUserIds(beRecomUserIds);
+        // 后边需要用到员工头像和昵称，在这里一并查出来
+        beRecomUserIds.add(cardInfo.getUserId());
+        // 将过滤后的员工id对应员工信息，用于后续数据组装
         List<UserWxUserDO> userUserDOS = userWxUserDao.getWXUserMapByUserIds(beRecomUserIds);
-        Map<Integer, UserWxUserDO> idUserMap = getIdWxUserMap(userUserDOS);
-        // 通过职位id和职位浏览人idSet获取转发的信息
-        List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIds(cardInfo.getPid(), beRecomUserIds);
-        JobPositionDO jobPosition = positionDao.getJobPositionById(cardInfo.getPid());
+        Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(userWxUserDO->(int)userWxUserDO.getId(), userWxUserDO->userWxUserDO));
+        // 通过职位浏览人idSet和10分钟时间段获取转发的信息
+        List<CandidatePositionShareRecordDO> positionShareDOS = positionShareRecordDao.fetchPositionShareByUserIds(beRecomUserIds, cardInfo.getUserId(), beforeTenMinite, tenMinite);
+        List<Integer> positionIds = positionShareDOS.stream().map(positionShareDO -> (int)positionShareDO.getPositionId()).collect(Collectors.toList());
+        List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(positionIds);
+        // 将职位id和职位映射，用于后续数据组装
+        Map<Integer, JobPositionDO> idPositionMap = jobPositions.stream().collect(Collectors.toMap(JobPositionDO::getId, jobPositionDO -> jobPositionDO));
+        //
+        List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIdsAndPids(beRecomUserIds, positionIds);
         List<JSONObject> cards = new ArrayList<>();
-        for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
-            // 构造单个职位浏览人的卡片
-            cards.add(doCreateCard(cardInfo, candidatePositionDO, jobPosition, shareChainDOS, idUserMap));
+        int startIndex = (cardInfo.getPageNumber()-1)*cardInfo.getPageSize();
+        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber()*cardInfo.getPageSize();i++){
+            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
+            if(candidatePositionDO != null){
+                // 构造单个职位浏览人的卡片
+                cards.add(doCreateCard(cardInfo, candidatePositionDO, idPositionMap.get(candidatePositionDO.getPositionId()), shareChainDOS, idUserMap));
+            }
         }
         return JSON.toJSONString(cards);
     }
 
-    private Map<Integer,UserWxUserDO> getIdWxUserMap(List<UserWxUserDO> userWxUserDOS) {
-        Map<Integer,UserWxUserDO> map = new HashMap<>(1024);
-        for(UserWxUserDO userWxUserDO : userWxUserDOS){
-            map.put((int)userWxUserDO.getId(), userWxUserDO);
-        }
-        return map;
+    private Set<Integer> getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {
+        // 查找浏览人中的员工
+        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
+        // 获取员工的userId
+        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getId).collect(Collectors.toSet());
+        // 将员工过滤掉
+        beRecomUserIds.removeAll(userEmployeeIds);
+        return beRecomUserIds;
     }
 
     private JSONObject doCreateCard(ReferralCardInfo cardInfo, CandidatePositionDO candidatePositionDO, JobPositionDO jobPosition,
@@ -372,10 +390,22 @@ public class ReferralServiceImpl implements ReferralService {
         UserWxUserDO userWxUserDO = idUserMap.get(candidatePositionDO.getUserId());
         user.put("nickname", userWxUserDO.getNickname());
         user.put("avatar", userWxUserDO.getHeadimgurl());
+        user.put("uid", userWxUserDO.getSysuserId());
+        // todo neo4j查询
+        user.put("degree", 0);
         card.put("user", user);
         JSONArray chain = new JSONArray();
+        JSONObject employee = new JSONObject();
+        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUserId());
+        employee.put("nickname", wxUserDO.getNickname());
+        employee.put("avatar", wxUserDO.getHeadimgurl());
+        chain.add(employee);
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
             if(candidateShareChainDO.getPositionId() == jobPosition.getId() && candidateShareChainDO.getRootRecomUserId() == cardInfo.getUserId()){
+                if(chain.size() == 3){
+                    chain.add(user);
+                    break;
+                }
                 JSONObject presenteeUser = new JSONObject();
                 presenteeUser.put("nickname", idUserMap.get(candidateShareChainDO.getPresenteeUserId()).getNickname());
                 presenteeUser.put("avatar", idUserMap.get(candidateShareChainDO.getPresenteeUserId()).getHeadimgurl());
