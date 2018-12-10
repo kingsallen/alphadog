@@ -1,8 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
-
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
@@ -18,7 +16,6 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
@@ -125,6 +122,8 @@ public class ReferralServiceImpl implements ReferralService {
     private UserWxUserDao userWxUserDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private static final Integer CHAIN_LIMIT = 5;
 
     @Override
     public RedPackets getRedPackets(int userId, int companyId, int pageNum, int pageSize) throws UserAccountException {
@@ -368,6 +367,36 @@ public class ReferralServiceImpl implements ReferralService {
         return JSON.toJSONString(cards);
     }
 
+
+    @Override
+    public String inviteApplication(ReferralInviteInfo inviteInfo) {
+        return null;
+    }
+
+    @Override
+    public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
+        Long timstamp = ignoreInfo.getTimestamp();
+        Timestamp tenMinite = new Timestamp(timstamp);
+        Timestamp beforeTenMinite = new Timestamp(timstamp - 1000 * 60 * 10);
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(ignoreInfo.getUserId(), beforeTenMinite, tenMinite);
+        CandidateShareChainDO ignoreShareDO = null;
+        for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
+            findByPid(candidateShareChainDO, ignoreInfo.getEndUserId());
+        }
+        return null;
+    }
+
+    private void findByPid(CandidateShareChainDO candidateShareChainDO, int userId) {
+        if(candidateShareChainDO.getPresenteeUserId() == userId){
+
+        }
+    }
+
+    @Override
+    public String connectRadar(ConnectRadarInfo radarInfo) {
+        return null;
+    }
+
     private Set<Integer> getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {
         // 查找浏览人中的员工
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
@@ -381,34 +410,27 @@ public class ReferralServiceImpl implements ReferralService {
     private JSONObject doCreateCard(ReferralCardInfo cardInfo, CandidatePositionDO candidatePositionDO, JobPositionDO jobPosition,
                                     List<CandidateShareChainDO> shareChainDOS, Map<Integer, UserWxUserDO> idUserMap) {
         JSONObject card = new JSONObject();
-        JSONObject position = new JSONObject();
-        position.put("title", jobPosition.getTitle());
-        position.put("pid", jobPosition.getId());
-        position.put("pv", candidatePositionDO.getViewNumber());
-        card.put("position", position);
-        JSONObject user = new JSONObject();
-        UserWxUserDO userWxUserDO = idUserMap.get(candidatePositionDO.getUserId());
-        user.put("nickname", userWxUserDO.getNickname());
-        user.put("avatar", userWxUserDO.getHeadimgurl());
-        user.put("uid", userWxUserDO.getSysuserId());
-        // todo neo4j查询
-        user.put("degree", 0);
+
+        card.put("position", doInitPosition(jobPosition, candidatePositionDO));
+        JSONObject user = doInitUser(idUserMap, candidatePositionDO);
         card.put("user", user);
-        JSONArray chain = new JSONArray();
-        JSONObject employee = new JSONObject();
-        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUserId());
-        employee.put("nickname", wxUserDO.getNickname());
-        employee.put("avatar", wxUserDO.getHeadimgurl());
-        chain.add(employee);
+        List<JSONObject> chain = new ArrayList<>();
+        chain.add(doInitEmployee(idUserMap, cardInfo));
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
             if(candidateShareChainDO.getPositionId() == jobPosition.getId() && candidateShareChainDO.getRootRecomUserId() == cardInfo.getUserId()){
-                if(chain.size() == 3){
+                UserWxUserDO userWxUserDO = idUserMap.get(candidateShareChainDO.getPresenteeUserId());
+                if(chain.size() == (CHAIN_LIMIT-1)){
+                    if(chain.get(CHAIN_LIMIT-2).getString("uid").equals(user.getString("uid"))){
+                        break;
+                    }
                     chain.add(user);
                     break;
                 }
+                // 链路中的用户信息
                 JSONObject presenteeUser = new JSONObject();
-                presenteeUser.put("nickname", idUserMap.get(candidateShareChainDO.getPresenteeUserId()).getNickname());
-                presenteeUser.put("avatar", idUserMap.get(candidateShareChainDO.getPresenteeUserId()).getHeadimgurl());
+                presenteeUser.put("nickname", userWxUserDO.getNickname());
+                presenteeUser.put("avatar", userWxUserDO.getHeadimgurl());
+                presenteeUser.put("uid", userWxUserDO.getSysuserId());
                 chain.add(presenteeUser);
             }
         }
@@ -416,18 +438,37 @@ public class ReferralServiceImpl implements ReferralService {
         return card;
     }
 
-    @Override
-    public String inviteApplication(ReferralInviteInfo inviteInfo) {
-        return null;
+    private JSONObject doInitEmployee(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo) {
+        JSONObject employee = new JSONObject();
+        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUserId());
+        employee.put("nickname", wxUserDO.getNickname());
+        employee.put("avatar", wxUserDO.getHeadimgurl());
+        return employee;
     }
 
-    @Override
-    public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
-        return null;
+    /**
+     * 组装链路结束的用户信息
+     * @author  cjm
+     * @date  2018/12/10
+     * @return JSONObject
+     */
+    private JSONObject doInitUser(Map<Integer, UserWxUserDO> idUserMap, CandidatePositionDO candidatePositionDO) {
+        JSONObject user = new JSONObject();
+        UserWxUserDO userWxUserDO = idUserMap.get(candidatePositionDO.getUserId());
+        user.put("nickname", userWxUserDO.getNickname());
+        user.put("avatar", userWxUserDO.getHeadimgurl());
+        user.put("uid", userWxUserDO.getSysuserId());
+        // todo neo4j查询
+        user.put("degree", 0);
+        return user;
     }
 
-    @Override
-    public String connectRadar(ConnectRadarInfo radarInfo) {
-        return null;
+    private JSONObject doInitPosition(JobPositionDO jobPosition, CandidatePositionDO candidatePositionDO) {
+        JSONObject position = new JSONObject();
+        position.put("title", jobPosition.getTitle());
+        position.put("pid", jobPosition.getId());
+        position.put("pv", candidatePositionDO.getViewNumber());
+        return position;
     }
+
 }

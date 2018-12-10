@@ -715,11 +715,8 @@ public class ReferralController {
         if (StringUtils.isBlank(result)) {
             ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
             BeanUtils.copyProperties(inviteForm, inviteInfo);
-            String jsonResult = referralService.ignoreCurrentViewer(inviteInfo);
-            jsonResult = (jsonResult == null ? "":jsonResult);
-            //
-            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
-            return Result.success(referralInfoCache).toJson();
+            referralService.ignoreCurrentViewer(inviteInfo);
+            return Result.success().toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
