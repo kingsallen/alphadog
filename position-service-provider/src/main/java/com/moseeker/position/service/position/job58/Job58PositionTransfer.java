@@ -297,7 +297,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         String experience = positionDB.getExperience();
         int expYear;
         try{
-            expYear = StringUtils.isNullOrEmpty(experience) ? 1:Integer.parseInt(experience);
+            expYear = StringUtils.isNullOrEmpty(experience) ? 0:Integer.parseInt(experience);
         }catch (Exception e){
             expYear = 0;
         }
