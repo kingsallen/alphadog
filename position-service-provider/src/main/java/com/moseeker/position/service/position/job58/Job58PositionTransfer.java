@@ -295,13 +295,14 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionParams.setGongzuodizhi(positionForm.getAddressId());
         // 工作年限映射
         String experience = positionDB.getExperience();
+        int experienceAbove = positionDB.getExperienceAbove();
         int expYear;
         try{
             expYear = StringUtils.isNullOrEmpty(experience) ? 0:Integer.parseInt(experience);
         }catch (Exception e){
             expYear = 0;
         }
-        int workExperienceDegree = Job58WorkExperienceDegree.getWorkExperienceDegree(expYear).getDegree();
+        int workExperienceDegree = Job58WorkExperienceDegree.getWorkExperienceDegree(expYear, experienceAbove).getDegree();
         job58PositionParams.setGongzuonianxian(workExperienceDegree);
         // 是否面议 0 非面议，1 面议
         String salary;
