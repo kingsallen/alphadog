@@ -81,7 +81,11 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         List<String> occupations = positionForm.getOccupation();
         String occupation = occupations.get(occupations.size() - 1);
         job58PositionDTO.setCate_id(Integer.parseInt(occupation));
-        String content = "职位描述：</br>工作内容：" + positionDB.getAccountabilities() + "</br>职位要求：</br>" + positionDB.getRequirement();
+        String content = "职位描述：</br>工作内容：" + positionDB.getAccountabilities() + "</br>职位要求：" + positionDB.getRequirement();
+        // 职位描述超过2000字时截断到2000字
+        if(content.length() > 2000){
+            content = content.substring(0, 2000);
+        }
         job58PositionDTO.setContent(content);
         job58PositionDTO.setLocal_id(doGetCityCode(positionDB));
         // 获取仟寻账号的信息
