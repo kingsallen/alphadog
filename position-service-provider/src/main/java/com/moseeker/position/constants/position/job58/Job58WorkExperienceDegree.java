@@ -31,10 +31,13 @@ public enum Job58WorkExperienceDegree {
         this.degree = degree;
     }
 
-    public static Job58WorkExperienceDegree getWorkExperienceDegree(int workExperience){
+    public static Job58WorkExperienceDegree getWorkExperienceDegree(int workExperience, int experienceAbove){
         if(workExperience == 0){
             return NONE;
         }else if(workExperience <= 1){
+            if(experienceAbove == 1){
+                return ONE_TWO;
+            }
             return UNDER_ONE;
         }else if(workExperience <= 2){
             return ONE_TWO;
@@ -43,6 +46,9 @@ public enum Job58WorkExperienceDegree {
         }else if(workExperience <= 7){
             return SIX_SEVEN;
         }else if(workExperience <= 10){
+            if(workExperience == 10 && experienceAbove == 1){
+                return MORE_TEN;
+            }
             return EIGHT_TEN;
         }else {
             return MORE_TEN;
