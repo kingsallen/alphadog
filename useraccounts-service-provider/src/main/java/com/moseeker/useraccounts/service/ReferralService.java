@@ -1,10 +1,13 @@
 package com.moseeker.useraccounts.service;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.*;
+
+import java.net.ConnectException;
 import java.util.List;
 
 /**
@@ -91,7 +94,7 @@ public interface ReferralService {
      * @date  2018/12/7
      * @return json
      */
-    String inviteApplication(ReferralInviteInfo inviteInfo);
+    String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException, ConnectException;
 
     /**
      * 10分钟消息模板-我不熟悉

@@ -268,6 +268,20 @@ public class ConfigSysTemplateMessageLibraryRecord extends UpdatableRecordImpl<C
         return (String) get(16);
     }
 
+    /**
+     * Setter for <code>configdb.config_sys_template_message_library.color_json</code>. 消息模板字体默认颜色
+     */
+    public void setColorJson(String value) {
+        set(17, value);
+    }
+
+    /**
+     * Getter for <code>configdb.config_sys_template_message_library.color_json</code>. 消息模板字体默认颜色
+     */
+    public String getColorJson() {
+        return (String) get(17);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------

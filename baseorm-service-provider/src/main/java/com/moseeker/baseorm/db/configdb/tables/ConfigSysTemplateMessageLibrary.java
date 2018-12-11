@@ -136,6 +136,11 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
     public final TableField<ConfigSysTemplateMessageLibraryRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(20).nullable(false), this, "跳转页面");
 
     /**
+     * The column <code>configdb.config_sys_template_message_library.color_json</code>. 消息模板字体默认颜色
+     */
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> COLOR_JSON = createField("color_json", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息模板字体默认颜色");
+
+    /**
      * Create a <code>configdb.config_sys_template_message_library</code> table reference
      */
     public ConfigSysTemplateMessageLibrary() {

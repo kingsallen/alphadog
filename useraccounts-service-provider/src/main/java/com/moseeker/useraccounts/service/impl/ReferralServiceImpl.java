@@ -16,6 +16,7 @@ import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
@@ -403,7 +404,7 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public String inviteApplication(ReferralInviteInfo inviteInfo) {
         // 发送消息模板
-        boolean isSent = sendInviteTemplate();
+        boolean isSent = sendInviteTemplate(inviteInfo);
         // 查询最短路径
 
         // 生成人脉连连看链路
@@ -412,13 +413,17 @@ public class ReferralServiceImpl implements ReferralService {
         return null;
     }
 
-    private boolean sendInviteTemplate(int sysUserId, int positionId, int endUserId, int companyId) throws ConnectException, BIZException {
-        UserEmployeeDO employee = employeeEntity.getCompanyEmployee(sysUserId, companyId);
-        JobPositionDO jobPosition = positionDao.getJobPositionById(positionId);
-        HrCompanyDO hrCompanyDO = companyDao.getCompanyById(companyId);
-
-        InviteTemplateVO inviteTemplateVO = initTemplateVO(jobPosition, hrCompanyDO, employee);
-        sendInviteTemplate(endUserId, companyId, inviteTemplateVO);
+    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo) {
+        try{
+            UserEmployeeDO employee = employeeEntity.getCompanyEmployee(inviteInfo.getUserId(), inviteInfo.getCompanyId());
+            JobPositionDO jobPosition = positionDao.getJobPositionById(inviteInfo.getPid());
+            HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
+            InviteTemplateVO inviteTemplateVO = initTemplateVO(jobPosition, hrCompanyDO, employee);
+            sendInviteTemplate(inviteInfo.getEndUserId(), inviteInfo.getCompanyId(), inviteTemplateVO);
+            return true;
+        }catch (Exception e){
+            logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
+        }
         return false;
     }
 
@@ -442,65 +447,37 @@ public class ReferralServiceImpl implements ReferralService {
         HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyId).buildQuery());
         UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(endUserId, hrWxWechatDO.getId());
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, inviteTemplateVO.getTemplateId());
-        String requestUrl = environment.getProperty("template.referral.invite.url");
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
         Map<String, TemplateBaseVO> dataMap = createDataMap(inviteTemplateVO);
         requestMap.put("data", dataMap);
         requestMap.put("touser", userWxUserRecord.getOpenid());
         requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
-        requestMap.put("url", );
+        requestMap.put("url", environment.getProperty("template.referral.show.url"));
         requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
-        String result = HttpClient.sendPost(requestUrl, JSON.toJSONString(requestMap));
+        String result = HttpClient.sendPost(environment.getProperty("template.referral.invite.url"), JSON.toJSONString(requestMap));
         Map<String, Object> params = JSON.parseObject(result);
         requestMap.put("response", params);
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        insertLogWxMessageRecord(inviteTemplateVO.getTemplateId(), hrWxWechatDO.getId(), requestMap);
-    }
-
-    private void insertLogWxMessageRecord(int templateId, int wechatId, Map<String, Object> templateValueMap) {
-        LogWxMessageRecordDO messageRecord = new LogWxMessageRecordDO();
-        messageRecord.setTemplateId(templateId);
-        messageRecord.setOpenId(String.valueOf(templateValueMap.get("touser")));
-        messageRecord.setAccessToken(String.valueOf(templateValueMap.get("accessToken")));
-        messageRecord.setJsondata(JSON.toJSONString(templateValueMap.get("data")));
-        messageRecord.setUrl(String.valueOf(templateValueMap.get("url")));
-        messageRecord.setWechatId(wechatId);
-        messageRecord.setTopcolor(String.valueOf(templateValueMap.get("topcolor")));
-        Map<String, Object> response = (Map<String, Object>)templateValueMap.get("response");
-        String errcode = String.valueOf(response.get("errcode"));
-        if("0".equals(errcode)){
-            messageRecord.setSendstatus("success");
-            messageRecord.setMsgid(Long.parseLong(String.valueOf(response.get("msgid"))));
-        }else {
-            messageRecord.setSendstatus("failed");
-        }
-        messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
-        messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
-        messageRecord.setSendtype(0);
-        messageRecord.setErrcode(Integer.parseInt(errcode));
-        messageRecord.setErrmsg(String.valueOf(response.get("errmsg")));
-        wxMessageRecordDao.addData(messageRecord);
+        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getTemplateId(), hrWxWechatDO.getId(), requestMap);
     }
 
     private Map<String,TemplateBaseVO> createDataMap(InviteTemplateVO inviteTemplateVO) {
+        ConfigSysTemplateMessageLibraryRecord record = templateDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(inviteTemplateVO.getTemplateId());
+        JSONObject color = JSONObject.parseObject(record.getColorJson());
         Map<String, TemplateBaseVO> dataMap = new HashMap<>(1 >> 4);
-        TemplateBaseVO first = createTplVO(inviteTemplateVO.getFirst());
-        TemplateBaseVO keyWord1 = createTplVO(inviteTemplateVO.getKeyWord1());
-        TemplateBaseVO keyWord2 = createTplVO(inviteTemplateVO.getKeyWord2());
-        TemplateBaseVO keyWord3 = createTplVO(inviteTemplateVO.getKeyWord3());
-        TemplateBaseVO remark = createTplVO(inviteTemplateVO.getRemark());
+        TemplateBaseVO first = createTplVO(inviteTemplateVO.getFirst(), color.getString("first"));
+        TemplateBaseVO keyWord1 = createTplVO(inviteTemplateVO.getKeyWord1(), color.getString("keyword1"));
+        TemplateBaseVO keyWord2 = createTplVO(inviteTemplateVO.getKeyWord2(), color.getString("keyword2"));
+        TemplateBaseVO keyWord3 = createTplVO(inviteTemplateVO.getKeyWord3(), color.getString("keyword3"));
+        TemplateBaseVO remark = createTplVO(inviteTemplateVO.getRemark(), color.getString("remark"));
         dataMap.put("first", first);
         dataMap.put("keyword1", keyWord1);
         dataMap.put("keyword2", keyWord2);
         dataMap.put("keyword3", keyWord3);
         dataMap.put("remark", remark);
         return dataMap;
-    }
-
-    private TemplateBaseVO createTplVO(String value){
-        return createTplVO(COLOR, value);
     }
 
     private TemplateBaseVO createTplVO(String color, String value){
