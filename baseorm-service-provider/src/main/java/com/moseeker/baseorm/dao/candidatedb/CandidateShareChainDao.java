@@ -6,6 +6,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRec
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
+import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -105,6 +106,31 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE,(byte)type)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.in(chainIds))
+                .execute();
+    }
+
+    public List<CandidateShareChainDO> getRadarCardsByPid(ReferralInviteInfo inviteInfo) {
+        Timestamp tenMinite = new Timestamp(inviteInfo.getTimestamp());
+        Timestamp beforeTenMinite = new Timestamp(inviteInfo.getTimestamp() - 1000 * 60 * 10);
+        List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(inviteInfo.getUserId()))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CREATE_TIME.between(beforeTenMinite, tenMinite))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.eq(inviteInfo.getPid()))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(0))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE.ne((byte)1))
+                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH)
+                .fetchInto(CandidateShareChainDO.class);
+        if(list == null){
+            return new ArrayList<>();
+        }else {
+            return list;
+        }
+    }
+
+    public int updateTypeById(int chainId, int type) {
+        return create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)type)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(chainId))
                 .execute();
     }
 }

@@ -6,54 +6,39 @@ import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
-import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
-import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
-import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.util.DateUtils;
-import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Query;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMessageRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
@@ -65,7 +50,6 @@ import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
-import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -76,7 +60,6 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,25 +117,12 @@ public class ReferralServiceImpl implements ReferralService {
     private CandidatePositionShareRecordDao positionShareRecordDao;
 
     @Autowired
-    private HrWxTemplateMessageDao wxTemplateMessageDao;
-
-    @Autowired
     private UserEmployeeDao userEmployeeDao;
 
     @Autowired
-    private UserWxUserDao userWxUserDao;
+    private TemplateHelper templateHelper;
 
-    @Autowired
-    private Environment environment;
 
-    @Autowired
-    private HrWxWechatDao hrWxWechatDao;
-
-    @Autowired
-    private ConfigSysTemplateMessageLibraryDao templateDao;
-
-    @Autowired
-    private LogWxMessageRecordDao wxMessageRecordDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -366,19 +336,19 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public String getRadarCards(ReferralCardInfo cardInfo) {
-        Long timstamp = cardInfo.getTimestamp();
-        Timestamp tenMinite = new Timestamp(timstamp);
-        Timestamp beforeTenMinite = new Timestamp(timstamp - 1000 * 60 * 10);
+        // todo 来自谁谁的转发还没写
+        Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
+        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         // 获取浏览人的userId
         Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         // 将员工过滤掉，获取职位浏览人中非员工的userId
-        beRecomUserIds = getUnEmployeeUserIds(beRecomUserIds);
+        getUnEmployeeUserIds(beRecomUserIds);
         // 后边需要用到员工头像和昵称，在这里一并查出来
         beRecomUserIds.add(cardInfo.getUserId());
         // 将过滤后的员工id对应员工信息，用于后续数据组装
-        List<UserWxUserDO> userUserDOS = userWxUserDao.getWXUserMapByUserIds(beRecomUserIds);
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(beRecomUserIds);
         Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(userWxUserDO->(int)userWxUserDO.getId(), userWxUserDO->userWxUserDO));
         // 通过职位浏览人idSet和10分钟时间段获取转发的信息
         List<CandidatePositionShareRecordDO> positionShareDOS = positionShareRecordDao.fetchPositionShareByUserIds(beRecomUserIds, cardInfo.getUserId(), beforeTenMinite, tenMinite);
@@ -405,12 +375,32 @@ public class ReferralServiceImpl implements ReferralService {
     public String inviteApplication(ReferralInviteInfo inviteInfo) {
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo);
-        // 查询最短路径
-
-        // 生成人脉连连看链路
-
+        // 查询最短路径 todo neo4j
+        Set<Integer> userIds = new HashSet<>();
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(userIds);
+        List<JSONObject> userChains = new ArrayList<>();
+        for(UserWxUserDO userWxUserDO : userUserDOS){
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("user_id", userWxUserDO.getSysuserId());
+            userInfo.put("nickname", userWxUserDO.getNickname());
+            userInfo.put("avatar", userWxUserDO.getHeadimgurl());
+            userChains.add(userInfo);
+        }
+        int chainId = 0;
         // 修改shareChain处理状态
-        return null;
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCardsByPid(inviteInfo);
+        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getRootRecomUserId() == inviteInfo.getUserId() && shareChainDO.getPresenteeUserId() == inviteInfo.getEndUserId()){
+                chainId = shareChainDO.getId();
+                break;
+            }
+        }
+        shareChainDao.updateTypeById(chainId, 1);
+        JSONObject result = new JSONObject();
+        result.put("notified", isSent ? 1 : 0);
+        result.put("degree", 3);
+        result.put("chain", userChains);
+        return JSON.toJSONString(result);
     }
 
     private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo) {
@@ -419,7 +409,7 @@ public class ReferralServiceImpl implements ReferralService {
             JobPositionDO jobPosition = positionDao.getJobPositionById(inviteInfo.getPid());
             HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
             InviteTemplateVO inviteTemplateVO = initTemplateVO(jobPosition, hrCompanyDO, employee);
-            sendInviteTemplate(inviteInfo.getEndUserId(), inviteInfo.getCompanyId(), inviteTemplateVO);
+            templateHelper.sendInviteTemplate(inviteInfo.getEndUserId(), inviteInfo.getCompanyId(), inviteTemplateVO);
             return true;
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
@@ -443,65 +433,11 @@ public class ReferralServiceImpl implements ReferralService {
         return inviteTemplateVO;
     }
 
-    private void sendInviteTemplate(int endUserId, int companyId, InviteTemplateVO inviteTemplateVO) throws ConnectException, BIZException {
-        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyId).buildQuery());
-        UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(endUserId, hrWxWechatDO.getId());
-        HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, inviteTemplateVO.getTemplateId());
-        Map<String, Object> requestMap = new HashMap<>(1 >> 4);
-        Map<String, TemplateBaseVO> dataMap = createDataMap(inviteTemplateVO);
-        requestMap.put("data", dataMap);
-        requestMap.put("touser", userWxUserRecord.getOpenid());
-        requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
-        requestMap.put("url", environment.getProperty("template.referral.show.url"));
-        requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
-        String result = HttpClient.sendPost(environment.getProperty("template.referral.invite.url"), JSON.toJSONString(requestMap));
-        Map<String, Object> params = JSON.parseObject(result);
-        requestMap.put("response", params);
-        requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
-        logger.info("====================requestMap:{}", requestMap);
-        // 插入模板消息发送记录
-        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getTemplateId(), hrWxWechatDO.getId(), requestMap);
-    }
-
-    private Map<String,TemplateBaseVO> createDataMap(InviteTemplateVO inviteTemplateVO) {
-        ConfigSysTemplateMessageLibraryRecord record = templateDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(inviteTemplateVO.getTemplateId());
-        JSONObject color = JSONObject.parseObject(record.getColorJson());
-        Map<String, TemplateBaseVO> dataMap = new HashMap<>(1 >> 4);
-        TemplateBaseVO first = createTplVO(inviteTemplateVO.getFirst(), color.getString("first"));
-        TemplateBaseVO keyWord1 = createTplVO(inviteTemplateVO.getKeyWord1(), color.getString("keyword1"));
-        TemplateBaseVO keyWord2 = createTplVO(inviteTemplateVO.getKeyWord2(), color.getString("keyword2"));
-        TemplateBaseVO keyWord3 = createTplVO(inviteTemplateVO.getKeyWord3(), color.getString("keyword3"));
-        TemplateBaseVO remark = createTplVO(inviteTemplateVO.getRemark(), color.getString("remark"));
-        dataMap.put("first", first);
-        dataMap.put("keyword1", keyWord1);
-        dataMap.put("keyword2", keyWord2);
-        dataMap.put("keyword3", keyWord3);
-        dataMap.put("remark", remark);
-        return dataMap;
-    }
-
-    private TemplateBaseVO createTplVO(String color, String value){
-        TemplateBaseVO templateBaseVO = new TemplateBaseVO();
-        templateBaseVO.setColor(color);
-        templateBaseVO.setValue(value);
-        return templateBaseVO;
-    }
-
-    private HrWxTemplateMessageDO getHrWxTemplateMessageByWechatIdAndSysTemplateId(HrWxWechatDO hrWxWechatDO, int sysTemplateId) throws BIZException {
-        HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                hrWxWechatDO.getId()).and("sys_template_id", sysTemplateId).and("disable","0").buildQuery());
-        if(hrWxTemplateMessageDO == null){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_TEMPLATE_SWITCH_CLOSE);
-        }
-        return hrWxTemplateMessageDO;
-    }
 
     @Override
     public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
-        Long timstamp = ignoreInfo.getTimestamp();
-        Timestamp tenMinite = new Timestamp(timstamp);
-        Timestamp beforeTenMinite = new Timestamp(timstamp - 1000 * 60 * 10);
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(ignoreInfo.getUserId(), beforeTenMinite, tenMinite);
+        List<CandidateShareChainDO> shareChainDOS = getRadarCards(ignoreInfo.getUserId(), ignoreInfo.getTimestamp());
+
         int parentId = 0;
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
             if(candidateShareChainDO.getPresenteeUserId() == ignoreInfo.getEndUserId()){
@@ -537,6 +473,12 @@ public class ReferralServiceImpl implements ReferralService {
         shareChainDao.updateTypeByIds(chainIds, 1);
     }
 
+    private List<CandidateShareChainDO> getRadarCards(int userId, long timeStamp){
+        Timestamp tenMinite = new Timestamp(timeStamp);
+        Timestamp beforeTenMinite = new Timestamp(timeStamp - 1000 * 60 * 10);
+        return shareChainDao.getRadarCards(userId, beforeTenMinite, tenMinite);
+    }
+
     private int findByPid(List<CandidateShareChainDO> shareChainDOS, int endUserId, int parentId) {
         int id = 0;
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
@@ -555,17 +497,28 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public String connectRadar(ConnectRadarInfo radarInfo) {
+        Set<Integer> userIds = new HashSet<>();
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(userIds);
+        List<JSONObject> userChains = new ArrayList<>();
+        for(UserWxUserDO userWxUserDO : userUserDOS){
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("user_id", userWxUserDO.getSysuserId());
+            userInfo.put("nickname", userWxUserDO.getNickname());
+            userInfo.put("avatar", userWxUserDO.getHeadimgurl());
+            userChains.add(userInfo);
+        }
+
+
         return null;
     }
 
-    private Set<Integer> getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {
+    private void getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {
         // 查找浏览人中的员工
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
         // 获取员工的userId
         Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getId).collect(Collectors.toSet());
         // 将员工过滤掉
         beRecomUserIds.removeAll(userEmployeeIds);
-        return beRecomUserIds;
     }
 
     private JSONObject doCreateCard(ReferralCardInfo cardInfo, CandidatePositionDO candidatePositionDO, JobPositionDO jobPosition,
