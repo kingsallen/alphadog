@@ -416,7 +416,16 @@ public class ReferralServiceImpl implements ReferralService {
         card.put("user", user);
         List<JSONObject> chain = new ArrayList<>();
         chain.add(doInitEmployee(idUserMap, cardInfo));
+        List<RecommendCard> recommendCards = new ArrayList<>();
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
+            // 由于目前数据库中的数据有重复的，如果关键信息相同，则跳过
+            RecommendCard recommendCard = new RecommendCard();
+            recommendCard.cloneFromCandidateShareChainDO(candidateShareChainDO);
+            if(recommendCards.contains(recommendCard)){
+                continue;
+            }else {
+                recommendCards.add(recommendCard);
+            }
             if(candidateShareChainDO.getPositionId() == jobPosition.getId() && candidateShareChainDO.getRootRecomUserId() == cardInfo.getUserId()){
                 UserWxUserDO userWxUserDO = idUserMap.get(candidateShareChainDO.getPresenteeUserId());
                 if(chain.size() == (CHAIN_LIMIT-1)){
