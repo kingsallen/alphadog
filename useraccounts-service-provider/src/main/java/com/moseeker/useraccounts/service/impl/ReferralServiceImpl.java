@@ -380,16 +380,39 @@ public class ReferralServiceImpl implements ReferralService {
         Timestamp beforeTenMinite = new Timestamp(timstamp - 1000 * 60 * 10);
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(ignoreInfo.getUserId(), beforeTenMinite, tenMinite);
         CandidateShareChainDO ignoreShareDO = null;
+        int parentId = 0;
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
-            findByPid(candidateShareChainDO, ignoreInfo.getEndUserId());
+            if(candidateShareChainDO.getPresenteeUserId() == ignoreInfo.getEndUserId()){
+                parentId = candidateShareChainDO.getParentId();
+            }
         }
+        List<RadarCard> radarCards = new ArrayList<>();
+        for(CandidateShareChainDO candidateShareChainDO : shareChainDOS) {
+            // 由于目前数据库中的数据有重复的，如果关键信息相同，则跳过
+            RadarCard radarCard = new RadarCard();
+            radarCard.cloneFromCandidateShareChainDO(candidateShareChainDO);
+            radarCard.setId(candidateShareChainDO.getId());
+            radarCards.add(radarCard);
+        }
+        int chainId = findByPid(shareChainDOS, ignoreInfo.getEndUserId(), parentId);
+
         return null;
     }
 
-    private void findByPid(CandidateShareChainDO candidateShareChainDO, int userId) {
-        if(candidateShareChainDO.getPresenteeUserId() == userId){
-
+    private int findByPid(List<CandidateShareChainDO> shareChainDOS, int endUserId, int parentId) {
+        int id = 0;
+        for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
+            if(candidateShareChainDO.getPresenteeUserId() == endUserId){
+                parentId = candidateShareChainDO.getParentId();
+                if(parentId != 0){
+                    return findByPid(shareChainDOS, endUserId, parentId);
+                }else{
+                    id = candidateShareChainDO.getId();
+                    break;
+                }
+            }
         }
+        return id;
     }
 
     @Override
@@ -416,15 +439,15 @@ public class ReferralServiceImpl implements ReferralService {
         card.put("user", user);
         List<JSONObject> chain = new ArrayList<>();
         chain.add(doInitEmployee(idUserMap, cardInfo));
-        List<RecommendCard> recommendCards = new ArrayList<>();
+        List<RadarCard> radarCards = new ArrayList<>();
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
             // 由于目前数据库中的数据有重复的，如果关键信息相同，则跳过
-            RecommendCard recommendCard = new RecommendCard();
-            recommendCard.cloneFromCandidateShareChainDO(candidateShareChainDO);
-            if(recommendCards.contains(recommendCard)){
+            RadarCard radarCard = new RadarCard();
+            radarCard.cloneFromCandidateShareChainDO(candidateShareChainDO);
+            if(radarCards.contains(radarCard)){
                 continue;
             }else {
-                recommendCards.add(recommendCard);
+                radarCards.add(radarCard);
             }
             if(candidateShareChainDO.getPositionId() == jobPosition.getId() && candidateShareChainDO.getRootRecomUserId() == cardInfo.getUserId()){
                 UserWxUserDO userWxUserDO = idUserMap.get(candidateShareChainDO.getPresenteeUserId());
