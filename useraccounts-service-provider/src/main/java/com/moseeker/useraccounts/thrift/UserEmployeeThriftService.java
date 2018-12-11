@@ -12,6 +12,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
@@ -183,6 +184,16 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             }
             return pagination;
         } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response addUserEmployeePointRecord(int employeeId, int companyId, UserEmployeePointsRecordDO record) throws TException {
+        try {
+            employeeEntity.addReward(employeeId, companyId, record);
+            return ResponseUtils.success(true);
+        }catch (Exception e){
             throw ExceptionUtils.convertException(e);
         }
     }

@@ -26,6 +26,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyReferralConfDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
@@ -527,4 +528,20 @@ public class UserEmployeeController {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
     }
+    @RequestMapping(value="/employee/addpoint", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String userEmployeeAddPoint(HttpServletRequest request,  HttpServletResponse response) throws Exception {
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            int companyId= (int) params.get("company_id");
+            int employeeId= (int) params.get("employee_id");
+            UserEmployeePointsRecordDO data=JSON.parseObject(JSON.toJSONString(params.get("data")),UserEmployeePointsRecordDO.class);
+            Response res=service.addUserEmployeePointRecord(employeeId,companyId,data);
+            return ResponseLogNotification.successJson(request, res);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
+
 }
