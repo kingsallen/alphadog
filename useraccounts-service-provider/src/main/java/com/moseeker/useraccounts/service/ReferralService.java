@@ -100,7 +100,7 @@ public interface ReferralService {
      * @date  2018/12/7
      * @return json
      */
-    String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo);
+    void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo);
 
     /**
      * 点击人脉连连看按钮/点击分享的人脉连连看页面

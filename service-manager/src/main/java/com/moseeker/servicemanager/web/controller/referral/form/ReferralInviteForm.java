@@ -10,6 +10,7 @@ public class ReferralInviteForm {
     private Integer userId;
     private Long timestamp;
     private Integer endUserId;
+    private Integer companyId;
 
     public Integer getPid() {
         return pid;
@@ -49,5 +50,13 @@ public class ReferralInviteForm {
 
     public void setEndUserId(Integer endUserId) {
         this.endUserId = endUserId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 }

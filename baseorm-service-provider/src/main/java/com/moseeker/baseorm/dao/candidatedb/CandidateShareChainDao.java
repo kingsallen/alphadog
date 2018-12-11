@@ -89,7 +89,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
     public List<CandidateShareChainDO> getRadarCards(int rootUserId, Timestamp startTime, Timestamp endTime) {
         List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.between(startTime, endTime))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CREATE_TIME.between(startTime, endTime))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(0))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE.ne((byte)1))
                 .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH)
@@ -99,5 +99,12 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         }else {
             return list;
         }
+    }
+
+    public void updateTypeByIds(List<Integer> chainIds, int type) {
+        create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE,(byte)type)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.in(chainIds))
+                .execute();
     }
 }

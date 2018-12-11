@@ -674,6 +674,8 @@ public class ReferralController {
     public String inviteApplication(@RequestBody ReferralInviteForm inviteForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateInviteInfo(validateUtil, inviteForm);
+        validateUtil.addIntTypeValidate("公司id", inviteForm.getCompanyId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("公司id", inviteForm.getCompanyId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ReferralInviteInfo inviteInfo = new ReferralInviteInfo();

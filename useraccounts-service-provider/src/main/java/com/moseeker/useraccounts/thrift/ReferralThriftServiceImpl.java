@@ -150,7 +150,8 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException, TException {
         try {
-            return referralService.ignoreCurrentViewer(ignoreInfo);
+            referralService.ignoreCurrentViewer(ignoreInfo);
+            return "success";
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
