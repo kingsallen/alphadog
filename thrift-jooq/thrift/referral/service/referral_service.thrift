@@ -21,5 +21,6 @@ service ReferralService {
     void handerKeyInformationStatus(1: i32 companyId, 2: i32 keyInformation) throws (1: common_struct.BIZException e);
     //获取内推规则关键信息推荐配置
     i32 fetchKeyInformationStatus(1: i32 companyId) throws (1: common_struct.BIZException e);
-
+    //候选人求推荐记录保存
+    void addUserSeekRecommend(1:i32 userId, 2:i32 postUserId, 3:i32 positionId)throws (1: common_struct.BIZException e);
 }

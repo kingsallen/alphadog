@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service;
 
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.util.List;
@@ -71,4 +72,13 @@ public interface ReferralService {
      * @return
      */
     int fetchKeyInformationStatus(int companyId)throws UserAccountException;
+
+    /**
+     * 增加候选人求内推记录信息，并通知员工
+     * @param userId        候选人编号
+     * @param postUserId    员工C端编号
+     * @param positionId    职位编号
+     * @throws UserAccountException
+     */
+    void addReferralSeekRecommend(int userId, int postUserId, int positionId)throws CommonException;
 }

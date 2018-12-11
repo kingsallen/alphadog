@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
@@ -19,6 +20,7 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
@@ -31,8 +33,8 @@ import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralService;
@@ -60,6 +62,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private ReferralTemplateSender sender;
 
     @Autowired
     private CustomReferralEmployeeBonusDao referralEmployeeBonusDao;
@@ -90,6 +95,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private DictReferralEvaluateDao evaluateDao;
+
+    @Autowired
+    private ReferralSeekRecommendDao recommendDao;
 
     @Autowired
     private JobPositionDao positionDao;
@@ -301,4 +309,38 @@ public class ReferralServiceImpl implements ReferralService {
         }
        return 1;
     }
+
+    @Override
+    public void addReferralSeekRecommend(int userId, int postUserId, int positionId) throws CommonException {
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("候选人编号", userId, 1, null);
+        vu.addIntTypeValidate("员工C端编号", postUserId, 1, null);
+        vu.addIntTypeValidate("职位编号", userId, 1, null);
+        if(StringUtils.isNotNullOrEmpty(vu.validate())){
+            logger.info("参数错误：{}",vu.validate());
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+        if(position == null || position.getStatus() != Constant.POSITION_STATUS_START){
+            throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
+        }
+        ReferralSeekRecommendRecord record = new ReferralSeekRecommendRecord();
+        record.setPostUserId(postUserId);
+        record.setPresenteeUserId(userId);
+        record.setPositionId(positionId);
+        int i =0;
+        int id = 0;
+        while (i<3 && id ==0){
+            id = recommendDao.insertIfNotExist(record);
+            i++;
+        }
+        if(id<=0){
+            throw UserAccountException.REFERRAL_SEEK_RECOMMEND_FAIL;
+        }
+
+    }
+
+
+
+
 }

@@ -3,20 +3,18 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Repository;
-
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.jooq.Record;
+import org.jooq.Result;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOperationRecordRecord> {

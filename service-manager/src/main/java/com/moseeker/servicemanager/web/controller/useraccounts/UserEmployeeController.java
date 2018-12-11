@@ -31,9 +31,11 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
+import com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -526,5 +528,22 @@ public class UserEmployeeController {
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
+    }
+
+    @RequestMapping(value="/v1/contact/referral/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String getPositionReferralInfo(@RequestParam("appid") int appid,
+                                          @RequestParam("user_id") int userId,
+                                          @RequestParam("position_id") int positionId) throws Exception {
+
+        if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        PositionReferralInfo info = service.getPositionReferralInfo(userId, positionId);
+        com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo result =
+                new com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo();
+        BeanUtils.copyProperties(info, result);
+        return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
+
     }
 }

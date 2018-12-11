@@ -6,6 +6,7 @@ import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
 import com.moseeker.common.log.ReqParams;
@@ -120,6 +121,25 @@ public class ReceiverHandler {
             log.info("bonusNotice jsonObject:{}", jsonObject);
             templateMsgHttp.noticeEmployeeReferralBonus(jsonObject.getInteger("applicationId"),
                     jsonObject.getLong("operationTime"), jsonObject.getInteger("nextStage"));
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+    @RabbitListener(queues = "#{seekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  seekReferralReceive(Message message){
+        String msgBody = "{}";
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            Integer userId = jsonObject.getIntValue("user_id");
+            Integer postUserId = jsonObject.getIntValue("post_user_id");
+            Integer positionId = jsonObject.getIntValue("position_name");
+            Integer referralId = jsonObject.getIntValue("referral_id");
+            templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

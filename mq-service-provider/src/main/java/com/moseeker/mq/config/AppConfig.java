@@ -114,6 +114,12 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue sendSeekReferralTemplateQueue() {
+        Queue queue = new Queue("seek_referral_template_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
     public Queue employeeFirstRegisterQueue() {
         Queue queue = new Queue("employee_first_register_exchange", true, false, false);
         return queue;
@@ -124,6 +130,13 @@ public class AppConfig {
         TopicExchange topicExchange = new TopicExchange("employee_register_exchange", true, false);
         return topicExchange;
     }
+
+    @Bean
+    public TopicExchange seekReferralTemplateExchange() {
+        TopicExchange topicExchange = new TopicExchange("referral_seek_exchange", true, false);
+        return topicExchange;
+    }
+
     @Bean
     public TopicExchange templateExchange() {
         TopicExchange topicExchange = new TopicExchange("message_template_exchange", true, false);

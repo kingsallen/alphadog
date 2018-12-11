@@ -237,6 +237,9 @@ public final class Constant {
     public static final int TEMPLATES_REFERRAL_BONUS_NOTICE_TPL = 81; // 内推入职奖金
     public static final int TEMPLATES_AWARD_CONSUME_NOTICE_TPL = 83; // 积分商城积分消费模板消息ID
     public static final int TEMPLATES_AWARD_RETURN_NOTICE_TPL = 84; // 积分商城积分返还模板消息ID
+    public static final int REFERRAL_INVITE_APPLICATION = 85; // 员工邀请候选人进行职位投递
+    public static final int REFERRA_RECOMMEND_EVALUATE = 86; // 员工完成推荐评价进行内推之后发送给候选人
+    public static final int REFERRAL_SEEK_REFERRAL = 87; // 联系内推发送给员工的模板消息ID
 
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
@@ -312,5 +315,8 @@ public final class Constant {
 
     public static final int ELASTIC_LAYER_QRCODE = 0;
     public static final int ELASTIC_LAYER_PROFILE = 1;
+
+    public static final int POSITION_STATUS_START = 0;
+
 
 }

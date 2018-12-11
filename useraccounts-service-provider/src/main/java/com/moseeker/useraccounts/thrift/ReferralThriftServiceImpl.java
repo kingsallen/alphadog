@@ -129,5 +129,10 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         return referralService.fetchKeyInformationStatus(companyId);
     }
 
+    @Override
+    public void addUserSeekRecommend(int userId, int postUserId, int positionId) throws BIZException, TException {
+
+    }
+
 
 }

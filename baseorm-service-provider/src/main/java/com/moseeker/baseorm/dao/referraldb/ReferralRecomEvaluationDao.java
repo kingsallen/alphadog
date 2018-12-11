@@ -1,7 +1,5 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import java.sql.Timestamp;
