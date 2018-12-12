@@ -15,6 +15,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
@@ -45,6 +46,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
@@ -133,6 +135,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private ReferralConnectionLogDao connectionLogDao;
+
+    @Autowired
+    private UserUserDao userUserDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -448,36 +453,20 @@ public class ReferralServiceImpl implements ReferralService {
     public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
         List<CandidateShareChainDO> shareChainDOS = getRadarCards(ignoreInfo.getUserId(), ignoreInfo.getTimestamp());
 
-        int parentId = 0;
-        for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
-            if(candidateShareChainDO.getPresenteeUserId() == ignoreInfo.getEndUserId()){
-                parentId = candidateShareChainDO.getParentId();
-            }
-        }
         List<RadarCard> radarCards = new ArrayList<>();
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS) {
-            // 由于目前数据库中的数据有重复的，如果关键信息相同，则跳过
             RadarCard radarCard = new RadarCard();
             radarCard.cloneFromCandidateShareChainDO(candidateShareChainDO);
             radarCard.setId(candidateShareChainDO.getId());
             radarCards.add(radarCard);
         }
-        int chainId = findByPid(shareChainDOS, ignoreInfo.getEndUserId(), parentId);
+        // 根据endUserId，查出员工推荐的起始chainId
+        int parentChainId = findParentChainId(shareChainDOS, ignoreInfo.getEndUserId());
         List<RadarCard> updateCards = new ArrayList<>();
-        RadarCard destCard = null;
-        for(RadarCard radarCard : radarCards){
-            if(radarCard.getId() == chainId){
-                destCard = radarCard;
-                break;
-            }
-        }
-        if(destCard == null){
-            return;
-        }
         for(RadarCard radarCard1 : radarCards){
-            if(radarCard1.equals(destCard)){
+//            if(radarCard1.equals(destCard)){
                 updateCards.add(radarCard1);
-            }
+//            }
         }
         List<Integer> chainIds = updateCards.stream().map(RadarCard::getId).collect(Collectors.toList());
         shareChainDao.updateTypeByIds(chainIds, 1);
@@ -489,13 +478,14 @@ public class ReferralServiceImpl implements ReferralService {
         return shareChainDao.getRadarCards(userId, beforeTenMinite, tenMinite);
     }
 
-    private int findByPid(List<CandidateShareChainDO> shareChainDOS, int endUserId, int parentId) {
+    private int findParentChainId(List<CandidateShareChainDO> shareChainDOS, int endUserId) {
         int id = 0;
+        int parentId = 0;
         for(CandidateShareChainDO candidateShareChainDO : shareChainDOS){
             if(candidateShareChainDO.getPresenteeUserId() == endUserId){
                 parentId = candidateShareChainDO.getParentId();
                 if(parentId != 0){
-                    return findByPid(shareChainDOS, endUserId, parentId);
+                    return findParentChainId(shareChainDOS, candidateShareChainDO.getPresenteeUserId());
                 }else{
                     id = candidateShareChainDO.getId();
                     break;
@@ -505,22 +495,36 @@ public class ReferralServiceImpl implements ReferralService {
         return id;
     }
 
+    // todo 玲玲需要传个pid
     @Override
     public String connectRadar(ConnectRadarInfo radarInfo) {
+        int pid = 0;
+        // todo neo4j取出关系链，将关系链中的userid取出
         Set<Integer> userIds = new HashSet<>();
         List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(userIds);
-        List<JSONObject> userChains = new ArrayList<>();
-        // todo 员工需要查员工姓名，如果链路大于3，返回空
-        for(UserWxUserDO userWxUserDO : userUserDOS){
-            JSONObject userInfo = new JSONObject();
-            userInfo.put("user_id", userWxUserDO.getSysuserId());
-            userInfo.put("nickname", userWxUserDO.getNickname());
-            userInfo.put("avatar", userWxUserDO.getHeadimgurl());
-            userChains.add(userInfo);
+        List<RadarUserInfo> userChains = new ArrayList<>();
+        int degree = userChains.size()-1;
+        // todo 员工需要查员工姓名，如果度数等于1 或着 大于3，说明可能是bug或者恶意请求，直接返回空
+        if(degree > 1 && degree <= 3){
+            for(UserWxUserDO userWxUserDO : userUserDOS){
+                RadarUserInfo userInfo = new RadarUserInfo();
+                userInfo.setUser_id(userWxUserDO.getSysuserId());
+                userInfo.setNickname(userWxUserDO.getNickname());
+                userInfo.setAvatar(userWxUserDO.getHeadimgurl());
+                userChains.add(userInfo);
+            }
         }
+
         List<ReferralConnectionChainRecord> connectionChainRecords = new ArrayList<>();
         int chainId = 0;
+        int chainState = 0;
         if(radarInfo.getNextUserId() == 0 && radarInfo.getChainId() == 0){
+            UserUserDO employee = userUserDao.getUser(radarInfo.getRecomUserId());
+            for(RadarUserInfo userInfo : userChains){
+                if(userInfo.getUser_id() == radarInfo.getRecomUserId()){
+                    userInfo.setName(employee.getUsername());
+                }
+            }
             // 认为是员工触发开启连连看，遍历每个员工入库，添加连连看记录
             for(Integer userId : userIds){
                 ReferralConnectionChainRecord connectionChainRecord = new ReferralConnectionChainRecord();
@@ -532,16 +536,26 @@ public class ReferralServiceImpl implements ReferralService {
             connectionLogRecord.setChainId(chainId);
             connectionLogRecord.setState((byte)0);
             connectionLogRecord = connectionLogDao.insertRecord(connectionLogRecord);
-            chainId = connectionLogRecord.getChainId();
+            chainId = connectionLogRecord.getId();
         }else if(radarInfo.getNextUserId() != 0 && radarInfo.getChainId() != 0){
             // 认为是粉丝认领连连看，查询连连看状态是否正确
             ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(chainId);
-            
+            chainState = connectionLogRecord.getState();
+            ReferralConnectionChainRecord parentChain = connectionChainDao.fetchRecordById(chainId);
+            pid = parentChain.getPositionId();
+            List<ReferralConnectionChainRecord> chainRecords = connectionChainDao.fetchChainsByParentChain(parentChain);
+            // todo 加度数，排序
+
+
         }else {
             throw UserAccountException.PROGRAM_PARAM_NOTEXIST;
         }
-
-        return null;
+        RadarConnectResult result = new RadarConnectResult();
+        result.setDegree(degree);
+        result.setPid(pid);
+        result.setState(chainState);
+        result.setRadarUserInfos(userChains);
+        return JSON.toJSONString(result);
     }
 
     private void getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {

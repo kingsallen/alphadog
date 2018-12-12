@@ -16,7 +16,7 @@ import static com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain.
  **/
 @Repository
 public class ReferralConnectionChainDao {
-
+// todo 目前打算将pid放到log表中，根据pid，root，end 判定一条链路，将chain中的pid删除，人脉连连看链路图不再和职位相关
     @Autowired
     private DSLContext create;
 
@@ -34,5 +34,21 @@ public class ReferralConnectionChainDao {
             return new ArrayList<>();
         }
        return insertSetMoreStep.returning().fetch();
+    }
+
+    public ReferralConnectionChainRecord fetchRecordById(int chainId) {
+        return create.selectFrom(REFERRAL_CONNECTION_CHAIN)
+                .where(REFERRAL_CONNECTION_CHAIN.ID.eq(chainId))
+                .fetchOne();
+    }
+
+    public List<ReferralConnectionChainRecord> fetchChainsByParentChain(ReferralConnectionChainRecord parentChain) {
+        if(parentChain == null){
+            return new ArrayList<>();
+        }
+        return create.selectFrom(REFERRAL_CONNECTION_CHAIN)
+                .where(REFERRAL_CONNECTION_CHAIN.ROOT_USER_ID.eq(parentChain.getRootUserId()))
+                .and(REFERRAL_CONNECTION_CHAIN.POSITION_ID.eq(parentChain.getPositionId()))
+                .fetchInto(ReferralConnectionChainRecord.class);
     }
 }

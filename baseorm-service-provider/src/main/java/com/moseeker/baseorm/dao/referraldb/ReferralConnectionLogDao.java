@@ -25,7 +25,7 @@ public class ReferralConnectionLogDao {
 
     public ReferralConnectionLogRecord fetchByChainId(int chainId) {
         return create.selectFrom(REFERRAL_CONNECTION_LOG)
-                .where(REFERRAL_CONNECTION_LOG.CHAIN_ID.eq(chainId))
+                .where(REFERRAL_CONNECTION_LOG.ID.eq(chainId))
                 .fetchOne();
     }
 }
