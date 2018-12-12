@@ -12,6 +12,8 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
@@ -20,12 +22,16 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.EmployeeEntity;
@@ -122,7 +128,11 @@ public class ReferralServiceImpl implements ReferralService {
     @Autowired
     private TemplateHelper templateHelper;
 
+    @Autowired
+    private ReferralConnectionChainDao connectionChainDao;
 
+    @Autowired
+    private ReferralConnectionLogDao connectionLogDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -500,6 +510,7 @@ public class ReferralServiceImpl implements ReferralService {
         Set<Integer> userIds = new HashSet<>();
         List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(userIds);
         List<JSONObject> userChains = new ArrayList<>();
+        // todo 员工需要查员工姓名，如果链路大于3，返回空
         for(UserWxUserDO userWxUserDO : userUserDOS){
             JSONObject userInfo = new JSONObject();
             userInfo.put("user_id", userWxUserDO.getSysuserId());
@@ -507,7 +518,28 @@ public class ReferralServiceImpl implements ReferralService {
             userInfo.put("avatar", userWxUserDO.getHeadimgurl());
             userChains.add(userInfo);
         }
+        List<ReferralConnectionChainRecord> connectionChainRecords = new ArrayList<>();
+        int chainId = 0;
+        if(radarInfo.getNextUserId() == 0 && radarInfo.getChainId() == 0){
+            // 认为是员工触发开启连连看，遍历每个员工入库，添加连连看记录
+            for(Integer userId : userIds){
+                ReferralConnectionChainRecord connectionChainRecord = new ReferralConnectionChainRecord();
 
+                connectionChainRecords.add(connectionChainRecord);
+            }
+            connectionChainDao.insertRecords(connectionChainRecords);
+            ReferralConnectionLogRecord connectionLogRecord = new ReferralConnectionLogRecord();
+            connectionLogRecord.setChainId(chainId);
+            connectionLogRecord.setState((byte)0);
+            connectionLogRecord = connectionLogDao.insertRecord(connectionLogRecord);
+            chainId = connectionLogRecord.getChainId();
+        }else if(radarInfo.getNextUserId() != 0 && radarInfo.getChainId() != 0){
+            // 认为是粉丝认领连连看，查询连连看状态是否正确
+            ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(chainId);
+            
+        }else {
+            throw UserAccountException.PROGRAM_PARAM_NOTEXIST;
+        }
 
         return null;
     }

@@ -4,15 +4,7 @@
 package com.moseeker.baseorm.db.referraldb;
 
 
-import com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
+import com.moseeker.baseorm.db.referraldb.tables.*;
 
 import javax.annotation.Generated;
 
@@ -74,4 +66,15 @@ public class Tables {
      * 推荐类红包与被推荐人关系表
      */
     public static final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
+
+    /**
+     * 人脉连连看链路表
+     */
+    public static final ReferralConnectionChain REFERRAL_CONNECTION_CHAIN = com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN;
+
+    /**
+     * 用于记录人脉连连看当前连接状态（未开始 已完成 连接中）
+     */
+    public static final ReferralConnectionLog REFERRAL_CONNECTION_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionLog.REFERRAL_CONNECTION_LOG;
+
 }

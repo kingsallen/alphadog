@@ -4,15 +4,7 @@
 package com.moseeker.baseorm.db.referraldb;
 
 
-import com.moseeker.baseorm.db.referraldb.tables.ReferralApplicationStatusCount;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
+import com.moseeker.baseorm.db.referraldb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,6 +83,15 @@ public class Referraldb extends SchemaImpl {
     public final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
 
     /**
+     * 人脉连连看链路表
+     */
+    public final ReferralConnectionChain REFERRAL_CONNECTION_CHAIN = com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN;
+
+    /**
+     * 用于记录人脉连连看当前连接状态（未开始 已完成 连接中）
+     */
+    public final ReferralConnectionLog REFERRAL_CONNECTION_LOG = com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionLog.REFERRAL_CONNECTION_LOG;
+    /**
      * No further instances allowed
      */
     private Referraldb() {
@@ -120,6 +121,8 @@ public class Referraldb extends SchemaImpl {
             ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD,
             ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG,
             ReferralLog.REFERRAL_LOG,
+            ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN,
+            ReferralConnectionLog.REFERRAL_CONNECTION_LOG,
             ReferralPositionBonus.REFERRAL_POSITION_BONUS,
             ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL,
             ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION,
