@@ -137,7 +137,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             // 58返回结果data中是xml格式，转为map
             Map<String, String> job58Position = job58RequestHandler.parseXml2Map(response.getString("data"));
             // 入库，此时是下架状态需要上架，如果是下架后重新发布，则更新职位id
-            JobPositionJob58MappingDO job58PositionDO = addOrUpdateJob58Position(job58Position, extDO, pid);
+            JobPositionJob58MappingDO job58PositionDO = addOrUpdateJob58Position(job58Position, job58PositionDTO.getOpenid(), pid);
             // 将职位上架
             upshelfJob58Position(job58PositionDTO, job58PositionDO);
         } catch (BIZException e) {
@@ -178,7 +178,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58MappingDao.updateData(job58PositionDO);
     }
 
-    private JobPositionJob58MappingDO addOrUpdateJob58Position(Map<String, String> job58Position, ThirdpartyJob58PositionDO extDO, int pid) {
+    private JobPositionJob58MappingDO addOrUpdateJob58Position(Map<String, String> job58Position, String openId, int pid) {
         JobPositionJob58MappingDO job58PositionDO = job58MappingDao.getJob58PositionByPid(pid);
         boolean addFlag = false;
         if(job58PositionDO == null){
@@ -186,6 +186,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             addFlag = true;
         }
         job58PositionDO.setPositionId(pid);
+        job58PositionDO.setOpenId(openId);
         job58PositionDO.setInfoId(job58Position.get("infoid"));
         job58PositionDO.setState((byte)0);
         job58PositionDO.setUrl(job58Position.get("url"));
