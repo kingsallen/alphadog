@@ -22,9 +22,10 @@ public class JobPositionJob58MappingDao extends JooqCrudImpl<JobPositionJob58Map
         super(table, jobPositionJob58MappingDOClass);
     }
 
-    public JobPositionJob58MappingDO getJob58PositionByPid(int positionId){
+    public JobPositionJob58MappingDO getJob58PositionByPid(int positionId, String openId){
         return create.selectFrom(JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING)
                 .where(JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING.POSITION_ID.eq(positionId))
+                .and(JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING.OPEN_ID.eq(openId))
                 .fetchOneInto(JobPositionJob58MappingDO.class);
     }
 }
