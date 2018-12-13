@@ -180,7 +180,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
     }
 
     private JobPositionJob58MappingDO addOrUpdateJob58Position(Map<String, String> job58Position, String openId, int pid) {
-        JobPositionJob58MappingDO job58PositionDO = job58MappingDao.getJob58PositionByPid(pid);
+        JobPositionJob58MappingDO job58PositionDO = job58MappingDao.getJob58PositionByPid(pid, openId);
         boolean addFlag = false;
         if(job58PositionDO == null){
             job58PositionDO = new JobPositionJob58MappingDO();
