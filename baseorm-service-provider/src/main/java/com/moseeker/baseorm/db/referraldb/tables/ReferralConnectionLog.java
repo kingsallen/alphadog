@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord> {
 
-    private static final long serialVersionUID = -837268413;
+    private static final long serialVersionUID = -1826759098;
 
     /**
      * The reference instance of <code>referraldb.referral_connection_log</code>
@@ -57,9 +57,24 @@ public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord
     public final TableField<ReferralConnectionLogRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>referraldb.referral_connection_log.chain_id</code>.
+     * The column <code>referraldb.referral_connection_log.root_chain_id</code>. 链路起始id
      */
-    public final TableField<ReferralConnectionLogRecord, Integer> CHAIN_ID = createField("chain_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<ReferralConnectionLogRecord, Integer> ROOT_CHAIN_ID = createField("root_chain_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路起始id");
+
+    /**
+     * The column <code>referraldb.referral_connection_log.position_id</code>. 职位id
+     */
+    public final TableField<ReferralConnectionLogRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位id");
+
+    /**
+     * The column <code>referraldb.referral_connection_log.root_user_id</code>. 链路起始用户id
+     */
+    public final TableField<ReferralConnectionLogRecord, Integer> ROOT_USER_ID = createField("root_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路起始用户id");
+
+    /**
+     * The column <code>referraldb.referral_connection_log.end_user_id</code>. 链路结束用户id
+     */
+    public final TableField<ReferralConnectionLogRecord, Integer> END_USER_ID = createField("end_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路结束用户id");
 
     /**
      * The column <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中

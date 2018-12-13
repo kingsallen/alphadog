@@ -1,21 +1,15 @@
 package com.moseeker.useraccounts.service.impl.vo;
 
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+
 public class RadarUserInfo {
 
-    private Integer user_id;
+    private Integer uid;
     private String name;
     private String nickname;
     private String avatar;
     private Integer degree;
     private Integer order;
-
-    public Integer getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
-    }
 
     public String getName() {
         return name;
@@ -55,5 +49,20 @@ public class RadarUserInfo {
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public RadarUserInfo initFromUserWxUser(UserWxUserDO userWxUserDO){
+        this.avatar = userWxUserDO.getHeadimgurl();
+        this.nickname = userWxUserDO.getNickname();
+        this.uid = userWxUserDO.getSysuserId();
+        return this;
     }
 }

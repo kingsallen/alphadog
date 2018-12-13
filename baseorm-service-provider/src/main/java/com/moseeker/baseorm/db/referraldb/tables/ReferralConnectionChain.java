@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionChain extends TableImpl<ReferralConnectionChainRecord> {
 
-    private static final long serialVersionUID = -1234283769;
+    private static final long serialVersionUID = 1132224137;
 
     /**
      * The reference instance of <code>referraldb.referral_connection_chain</code>
@@ -57,16 +57,6 @@ public class ReferralConnectionChain extends TableImpl<ReferralConnectionChainRe
     public final TableField<ReferralConnectionChainRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>referraldb.referral_connection_chain.position_id</code>. 职位id
-     */
-    public final TableField<ReferralConnectionChainRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "职位id");
-
-    /**
-     * The column <code>referraldb.referral_connection_chain.root_user_id</code>. 最初转发人的 user_user.id
-     */
-    public final TableField<ReferralConnectionChainRecord, Integer> ROOT_USER_ID = createField("root_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "最初转发人的 user_user.id");
-
-    /**
      * The column <code>referraldb.referral_connection_chain.recom_user_id</code>. 转发人，本次转发人脉连连看的user_user.id
      */
     public final TableField<ReferralConnectionChainRecord, Integer> RECOM_USER_ID = createField("recom_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "转发人，本次转发人脉连连看的user_user.id");
@@ -80,6 +70,11 @@ public class ReferralConnectionChain extends TableImpl<ReferralConnectionChainRe
      * The column <code>referraldb.referral_connection_chain.parent_id</code>. 本条记录的上级转发记录id，无上级默认为0
      */
     public final TableField<ReferralConnectionChainRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "本条记录的上级转发记录id，无上级默认为0");
+
+    /**
+     * The column <code>referraldb.referral_connection_chain.root_parent_id</code>. 链路起始id
+     */
+    public final TableField<ReferralConnectionChainRecord, Integer> ROOT_PARENT_ID = createField("root_parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路起始id");
 
     /**
      * The column <code>referraldb.referral_connection_chain.state</code>. 这条记录表示的转发连接是否在人脉连连看中连接起来 0 未生效 1 生效
