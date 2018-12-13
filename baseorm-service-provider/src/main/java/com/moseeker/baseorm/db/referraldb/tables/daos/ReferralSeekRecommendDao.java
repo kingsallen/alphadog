@@ -106,4 +106,11 @@ public class ReferralSeekRecommendDao extends DAOImpl<ReferralSeekRecommendRecor
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralSeekRecommend> fetchByUpdateTime(Timestamp... values) {
         return fetch(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>origin IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralSeekRecommend> fetchByOrigin(Integer... values) {
+        return fetch(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.ORIGIN, values);
+    }
 }

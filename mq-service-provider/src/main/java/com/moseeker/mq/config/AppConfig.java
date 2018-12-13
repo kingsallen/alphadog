@@ -119,6 +119,7 @@ public class AppConfig {
         return queue;
     }
 
+
     @Bean
     public Queue employeeFirstRegisterQueue() {
         Queue queue = new Queue("employee_first_register_exchange", true, false, false);
@@ -187,6 +188,8 @@ public class AppConfig {
             add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
             add(BindingBuilder.bind(bonusNoticeQueue()).to(applicationStateChangeExchange()).with("add_bonus_change_routingkey.add_bonus"));
             add(BindingBuilder.bind(employeeFirstRegisterQueue()).to(employeeRegisterExchange()).with("employee_register_routingkey.first_register"));
+            add(BindingBuilder.bind(sendSeekReferralTemplateQueue()).to(seekReferralTemplateExchange()).with("*.referral_template"));
+
         }};
     }
 }

@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommend implements Serializable {
 
-    private static final long serialVersionUID = 166311794;
+    private static final long serialVersionUID = -693634666;
 
     private Integer   id;
     private Integer   postUserId;
@@ -32,6 +32,7 @@ public class ReferralSeekRecommend implements Serializable {
     private Integer   appId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   origin;
 
     public ReferralSeekRecommend() {}
 
@@ -43,6 +44,7 @@ public class ReferralSeekRecommend implements Serializable {
         this.appId = value.appId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.origin = value.origin;
     }
 
     public ReferralSeekRecommend(
@@ -52,7 +54,8 @@ public class ReferralSeekRecommend implements Serializable {
         Integer   positionId,
         Integer   appId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   origin
     ) {
         this.id = id;
         this.postUserId = postUserId;
@@ -61,6 +64,7 @@ public class ReferralSeekRecommend implements Serializable {
         this.appId = appId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.origin = origin;
     }
 
     public Integer getId() {
@@ -119,6 +123,14 @@ public class ReferralSeekRecommend implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getOrigin() {
+        return this.origin;
+    }
+
+    public void setOrigin(Integer origin) {
+        this.origin = origin;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralSeekRecommend (");
@@ -130,6 +142,7 @@ public class ReferralSeekRecommend implements Serializable {
         sb.append(", ").append(appId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(origin);
 
         sb.append(")");
         return sb.toString();

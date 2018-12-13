@@ -60,6 +60,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException ACTIVITY_POSITION_ALREADY_IN_ACTIVITY = new UserAccountException(42050, "所选职位已经参与红包活动!");
     public static final UserAccountException ACTIVITY_CONFLICT = new UserAccountException(42051, "红包活动时间重叠，请重新选择时间!");
     public static final UserAccountException REFERRAL_SEEK_RECOMMEND_FAIL = new UserAccountException(42052, "候选人联系内推数据保存失败！");
+    public static final UserAccountException REFERRAL_SEEK_RECOMMEND_NULL = new UserAccountException(42053, "候选人联系内推数据不存在！");
     public static final UserAccountException INVALID_SMS_CODE = new UserAccountException(10011, "无效验证码！");
 
     private final int code;

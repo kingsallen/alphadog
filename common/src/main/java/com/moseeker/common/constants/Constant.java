@@ -67,7 +67,8 @@ public final class Constant {
 
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
-
+    public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
+    public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";
@@ -97,6 +98,7 @@ public final class Constant {
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
     public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
+    public static final int RECRUIT_STATUS_EMPLOYEE_RECOMMEND   = 16;      // 员工完成联系内推推荐评价
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,

@@ -21,6 +21,7 @@ import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Envelope;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -125,18 +126,25 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
-    @RabbitListener(queues = "#{seekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitListener(queues = "#{sendSeekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void  seekReferralReceive(Message message){
+    public void  seekReferralReceive(Message message, Envelope envelope){
         String msgBody = "{}";
+
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
             Integer userId = jsonObject.getIntValue("user_id");
-            Integer postUserId = jsonObject.getIntValue("post_user_id");
-            Integer positionId = jsonObject.getIntValue("position_name");
+            Integer positionId = jsonObject.getIntValue("position_id");
             Integer referralId = jsonObject.getIntValue("referral_id");
-            templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+            if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(envelope.getRoutingKey())) {
+                Integer postUserId = jsonObject.getIntValue("post_user_id");
+                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+            }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(envelope.getRoutingKey())){
+                Integer applicationId= jsonObject.getIntValue("application_id");
+                Integer employeeId= jsonObject.getIntValue("employee_id");
+                templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
+            }
 
         } catch (CommonException e) {
             log.info(e.getMessage(), e);

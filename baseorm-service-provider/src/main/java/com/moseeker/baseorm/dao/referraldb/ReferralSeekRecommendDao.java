@@ -2,6 +2,7 @@ package com.moseeker.baseorm.dao.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
+import static com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import java.sql.Timestamp;
@@ -31,13 +32,13 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
     public int insertIfNotExist(ReferralSeekRecommendRecord recomRecordRecord) {
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        Param<Integer> positionIdParam = param(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POSITION_ID.getName(), recomRecordRecord.getPositionId());
-        Param<Integer> presenteeUserIdParam = param(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPresenteeUserId());
-        Param<Integer> postUserIdParam = param(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
-        using(configuration()).insertInto(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND,
-                ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POSITION_ID,
-                ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID,
-                ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POST_USER_ID
+        Param<Integer> positionIdParam = param(REFERRAL_SEEK_RECOMMEND.POSITION_ID.getName(), recomRecordRecord.getPositionId());
+        Param<Integer> presenteeUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPresenteeUserId());
+        Param<Integer> postUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
+        using(configuration()).insertInto(REFERRAL_SEEK_RECOMMEND,
+                REFERRAL_SEEK_RECOMMEND.POSITION_ID,
+                REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID,
+                REFERRAL_SEEK_RECOMMEND.POST_USER_ID
         ).select(
                 select(
                         positionIdParam,
@@ -46,22 +47,45 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 )
                         .whereNotExists(
                                 selectOne()
-                                        .from(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND)
-                                        .where(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
-                                        .and(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
-                                        .and(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                                        .from(REFERRAL_SEEK_RECOMMEND)
+                                        .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
+                                        .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                                        .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
                         )
         ).execute();
 
-        ReferralSeekRecommendRecord recommendRecord = using(configuration()).selectFrom(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND)
-                .where(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
-                .and(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
-                .and(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
-                .orderBy(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.ID.desc())
+        ReferralSeekRecommendRecord recommendRecord = using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
+                .orderBy(REFERRAL_SEEK_RECOMMEND.ID.desc())
                 .limit(1)
                 .fetchOne();
 
         return recommendRecord.getId();
     }
 
+
+    public ReferralSeekRecommendRecord fetchByIdAndPostUserId(int referralId, int postUserId){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
+                .and(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .fetchOneInto(ReferralSeekRecommendRecord.class);
+
+    }
+
+    public ReferralSeekRecommendRecord fetchById(int referralId){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
+                .fetchOneInto(ReferralSeekRecommendRecord.class);
+
+    }
+
+    public int updateReferralSeekRecommendRecordForAppId(int referralId, int appId ){
+        return using(configuration()).update(REFERRAL_SEEK_RECOMMEND)
+                .set(REFERRAL_SEEK_RECOMMEND.APP_ID, appId)
+                .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
+                .execute();
+
+    }
 }
