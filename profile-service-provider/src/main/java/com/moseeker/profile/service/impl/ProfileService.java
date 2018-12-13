@@ -720,7 +720,7 @@ public class ProfileService {
         queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileId);
         ProfileOtherDO profileOtherDO = profileOtherDao.getData(queryBuilder.buildQuery());
         if (profileOtherDO == null) {
-            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+            throw null;
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
         List<Integer> userIds = new ArrayList<>();
