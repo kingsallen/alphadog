@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
@@ -29,6 +30,7 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXC
 @EnableRabbit
 @ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
 @PropertySource("classpath:common.properties")
+@EnableNeo4jRepositories()
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
 
