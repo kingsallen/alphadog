@@ -68,6 +68,29 @@ public class MqController {
         }
     }
 
+    @RequestMapping(value = "/v4/email/sendAuthEMail", method = RequestMethod.POST)
+    public String sendAuthEMail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+
+            Map<String, String> params = (Map<String, String>) param.get("params");
+            int eventType = param.getInt("eventType");
+            String email = param.getString("email");
+            String subject = param.getString("subject");
+            String senderName = param.getString("senderName");
+            String senderDisplay = param.getString("senderDisplay");
+
+            logger.info("send auth email params:{},eventType:{},email:{},subject:{},senderName:{},senderDisplay:{}",
+                    param,eventType,email,subject,senderName,senderDisplay);
+
+            Response result = mqService.sendAuthEMail(params, eventType, email, subject, senderName, senderDisplay);
+            return ResponseLogNotification.success(request, result);
+        }catch (Exception e){
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
     @RequestMapping(value = "/email/sendMandrillEmail", method = RequestMethod.POST)
     @ResponseBody
     public String sendMandrillEmail(HttpServletRequest request, HttpServletResponse response) {
