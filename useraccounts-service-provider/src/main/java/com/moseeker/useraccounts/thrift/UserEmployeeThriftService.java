@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
@@ -194,6 +195,26 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             employeeEntity.addReward(employeeId, companyId, record);
             return ResponseUtils.success(true);
         }catch (Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getUserEmployeeList(int companyId, List<Integer> userIdList) throws TException {
+        try {
+            List<UserEmployee> result=employeeService.getuserEmployeeList(companyId,userIdList);
+            return ResponseUtils.success(result);
+        }catch (Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getUserEmployeeByuserId(int userId) throws TException {
+        try{
+            UserEmployee result=employeeService.getSingleUserEmployee(userId);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
             throw ExceptionUtils.convertException(e);
         }
     }

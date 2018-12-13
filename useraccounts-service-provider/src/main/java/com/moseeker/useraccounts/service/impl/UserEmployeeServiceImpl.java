@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -439,5 +440,15 @@ public class UserEmployeeServiceImpl {
         }
 
         return paginationUtil;
+    }
+
+    public List<UserEmployee> getuserEmployeeList(int companyId,List<Integer> userIdList){
+        List<UserEmployee> result= userEmployeeDao.getEmployeeList(userIdList,companyId);
+        return result;
+    }
+
+    public UserEmployee getSingleUserEmployee(int userId){
+        UserEmployee result= userEmployeeDao.getSingleEmployeeByUserId(userId);
+        return result;
     }
 }
