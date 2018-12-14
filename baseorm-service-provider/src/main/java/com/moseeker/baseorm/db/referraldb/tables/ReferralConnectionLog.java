@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord> {
 
-    private static final long serialVersionUID = -1826759098;
+    private static final long serialVersionUID = 431730940;
 
     /**
      * The reference instance of <code>referraldb.referral_connection_log</code>
@@ -75,6 +75,11 @@ public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord
      * The column <code>referraldb.referral_connection_log.end_user_id</code>. 链路结束用户id
      */
     public final TableField<ReferralConnectionLogRecord, Integer> END_USER_ID = createField("end_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路结束用户id");
+
+    /**
+     * The column <code>referraldb.referral_connection_log.degree</code>. 候选人连连看度数
+     */
+    public final TableField<ReferralConnectionLogRecord, Byte> DEGREE = createField("degree", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "候选人连连看度数");
 
     /**
      * The column <code>referraldb.referral_connection_log.state</code>. 人脉连连看是否已连接完成 0 未开始 1 已完成 2 连接中

@@ -35,9 +35,6 @@ public class TemplateHelper {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private Environment environment;
-
-    @Autowired
     private HrWxWechatDao hrWxWechatDao;
 
     @Autowired
@@ -52,7 +49,7 @@ public class TemplateHelper {
     @Autowired
     private UserWxUserDao userWxUserDao;
 
-    public void sendInviteTemplate(int endUserId, int companyId, InviteTemplateVO inviteTemplateVO) throws ConnectException, BIZException {
+    public void sendInviteTemplate(int endUserId, int companyId, InviteTemplateVO inviteTemplateVO, String requestUrl, String redirectUrl) throws ConnectException, BIZException {
         HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyId).buildQuery());
         UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(endUserId, hrWxWechatDO.getId());
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, inviteTemplateVO.getTemplateId());
@@ -61,9 +58,9 @@ public class TemplateHelper {
         requestMap.put("data", dataMap);
         requestMap.put("touser", userWxUserRecord.getOpenid());
         requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
-        requestMap.put("url", environment.getProperty("template.referral.show.url"));
+        requestMap.put("url", redirectUrl);
         requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
-        String result = HttpClient.sendPost(environment.getProperty("template.referral.invite.url"), JSON.toJSONString(requestMap));
+        String result = HttpClient.sendPost(requestUrl, JSON.toJSONString(requestMap));
         Map<String, Object> params = JSON.parseObject(result);
         requestMap.put("response", params);
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());

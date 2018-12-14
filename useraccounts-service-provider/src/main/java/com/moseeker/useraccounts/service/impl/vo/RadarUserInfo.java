@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl.vo;
 
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 
 public class RadarUserInfo {
@@ -59,10 +60,20 @@ public class RadarUserInfo {
         this.uid = uid;
     }
 
-    public RadarUserInfo initFromUserWxUser(UserWxUserDO userWxUserDO){
-        this.avatar = userWxUserDO.getHeadimgurl();
-        this.nickname = userWxUserDO.getNickname();
-        this.uid = userWxUserDO.getSysuserId();
+    public RadarUserInfo initFromUserWxUser(Object userWxUser){
+        if(userWxUser instanceof UserWxUserRecord){
+            UserWxUserRecord userWxUserRecord = (UserWxUserRecord)userWxUser;
+            this.avatar = userWxUserRecord.getHeadimgurl();
+            this.nickname = userWxUserRecord.getNickname();
+            this.uid = userWxUserRecord.getSysuserId();
+        }else if(userWxUser instanceof UserWxUserDO){
+            UserWxUserDO userWxUserDO = (UserWxUserDO)userWxUser;
+            this.avatar = userWxUserDO.getHeadimgurl();
+            this.nickname = userWxUserDO.getNickname();
+            this.uid = userWxUserDO.getSysuserId();
+        }else {
+            return null;
+        }
         return this;
     }
 }

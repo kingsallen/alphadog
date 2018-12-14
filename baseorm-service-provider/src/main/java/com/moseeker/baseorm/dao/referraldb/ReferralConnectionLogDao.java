@@ -28,4 +28,12 @@ public class ReferralConnectionLogDao {
                 .where(REFERRAL_CONNECTION_LOG.ID.eq(chainId))
                 .fetchOne();
     }
+
+    public ReferralConnectionLogRecord fetchChainLogRecord(int userId, int endUserId, int positionId) {
+        return create.selectFrom(REFERRAL_CONNECTION_LOG)
+                .where(REFERRAL_CONNECTION_LOG.POSITION_ID.eq(positionId))
+                .and(REFERRAL_CONNECTION_LOG.ROOT_USER_ID.eq(userId))
+                .and(REFERRAL_CONNECTION_LOG.END_USER_ID.eq(endUserId))
+                .fetchOne();
+    }
 }

@@ -9,7 +9,6 @@ public class ConnectRadarForm {
     private Integer recomUserId;
     private Integer nextUserId;
     private Integer chainId;
-    private Integer pid;
 
     public Integer getAppid() {
         return appid;
@@ -41,13 +40,5 @@ public class ConnectRadarForm {
 
     public void setChainId(Integer chainId) {
         this.chainId = chainId;
-    }
-
-    public Integer getPid() {
-        return pid;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
     }
 }
