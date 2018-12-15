@@ -1,5 +1,6 @@
 include "../struct/dict_struct.thrift"
 include "../../dao/struct/db/dictdb_struct.thrift"
+include "../../dao/struct/dictdb/dict_referral_evaluate_struct.thrift"
 include "../../common/struct/common_struct.thrift"
 
 namespace java com.moseeker.thrift.gen.dict.service
@@ -62,4 +63,11 @@ service DictOccupationDao{
 */
 service DictOccupationService{
 	common_struct.Response getDictOccupation(1:string param);
+}
+
+/*
+ service层第三方职位职能查询
+*/
+service DictReferralEvaluateService{
+	list<dict_referral_evaluate_struct.DictReferralEvaluateDO> getDictReferralEvalute(1: i32 code);
 }

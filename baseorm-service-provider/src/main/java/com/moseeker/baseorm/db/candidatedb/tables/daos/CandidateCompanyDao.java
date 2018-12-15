@@ -148,4 +148,18 @@ public class CandidateCompanyDao extends DAOImpl<CandidateCompanyRecord, com.mos
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateCompany> fetchByClickFrom(Integer... values) {
         return fetch(CandidateCompany.CANDIDATE_COMPANY.CLICK_FROM, values);
     }
+
+    /**
+     * Fetch records that have <code>position_wx_layer_qrcode IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateCompany> fetchByPositionWxLayerQrcode(Byte... values) {
+        return fetch(CandidateCompany.CANDIDATE_COMPANY.POSITION_WX_LAYER_QRCODE, values);
+    }
+
+    /**
+     * Fetch records that have <code>position_wx_layer_profile IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateCompany> fetchByPositionWxLayerProfile(Byte... values) {
+        return fetch(CandidateCompany.CANDIDATE_COMPANY.POSITION_WX_LAYER_PROFILE, values);
+    }
 }

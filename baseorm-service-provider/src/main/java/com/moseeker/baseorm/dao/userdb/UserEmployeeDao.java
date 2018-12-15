@@ -367,15 +367,17 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 record.getActivation() == null ? EmployeeActiveState.Init.getState() : record.getActivation());
         Param<String> cnameParam = param(UserEmployee.USER_EMPLOYEE.CNAME.getName(), record.getCname());
         Param<String> customFieldParam = param(UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD.getName(), record.getCustomField());
+        Param<Byte> authMethodParam = param(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.getName(), record.getAuthMethod());
 
         UserEmployeeRecord record1 = create.insertInto(UserEmployee.USER_EMPLOYEE)
                 .columns(UserEmployee.USER_EMPLOYEE.COMPANY_ID,
                         UserEmployee.USER_EMPLOYEE.ACTIVATION,
                         UserEmployee.USER_EMPLOYEE.CNAME,
-                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD)
+                        UserEmployee.USER_EMPLOYEE.CUSTOM_FIELD,
+                        UserEmployee.USER_EMPLOYEE.AUTH_METHOD)
                 .select(
                         select(
-                                companyIdParam, activationParam, cnameParam, customFieldParam
+                                companyIdParam, activationParam, cnameParam, customFieldParam, authMethodParam
                         )
                         .whereNotExists(
                                 selectOne()

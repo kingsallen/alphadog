@@ -6,8 +6,10 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
+import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.candidate.service.CandidateService;
+import com.moseeker.thrift.gen.candidate.struct.PositionLayerInfo;
 import com.moseeker.thrift.gen.candidate.struct.RecentPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.springframework.stereotype.Controller;
@@ -115,6 +117,56 @@ public class CandidateController {
             String message = vu.validate();
             if (StringUtils.isNullOrEmpty(message)) {
                 Response result = candidateService.getApplicationReferral(applicationId);
+                return ResponseLogNotification.success(request, result);
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/v1/candidate/position/info", method = RequestMethod.GET)
+    @ResponseBody
+    public String candidatePositionInfo(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer userId = params.getInt("user_id");
+            Integer companyId = params.getInt("company_id");
+            Integer positionId = params.getInt("position_id");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("候选人编号", userId);
+            vu.addRequiredValidate("公司编号", companyId);
+            vu.addRequiredValidate("职位编号", positionId);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                PositionLayerInfo result = candidateService.getPositionLayerInfo(userId, companyId, positionId);
+                return Result.success(result).toJson();
+            } else {
+                return ResponseLogNotification.fail(request, vu.validate());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @RequestMapping(value = "/v1/candidate/elastic/layer", method = RequestMethod.PUT)
+    @ResponseBody
+    public String closeElasticLayer(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Integer userId = params.getInt("user_id");
+            Integer companyId = params.getInt("company_id");
+            Integer type = params.getInt("type");
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredValidate("候选人编号", userId);
+            vu.addRequiredValidate("公司编号", companyId);
+            vu.addRequiredValidate("弹层类型", type);
+            String message = vu.validate();
+            if (StringUtils.isNullOrEmpty(message)) {
+                Response result = candidateService.handerElasticLayer(userId, companyId, type);
                 return ResponseLogNotification.success(request, result);
             } else {
                 return ResponseLogNotification.fail(request, vu.validate());
