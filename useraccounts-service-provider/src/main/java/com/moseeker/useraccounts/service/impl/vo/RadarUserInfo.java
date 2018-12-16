@@ -1,7 +1,12 @@
 package com.moseeker.useraccounts.service.impl.vo;
 
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RadarUserInfo {
 
@@ -75,5 +80,78 @@ public class RadarUserInfo {
             return null;
         }
         return this;
+    }
+
+    /**
+     *
+     * @param userDO 需要初始化的用户
+     * @param chainRecords 人脉连连看记录
+     * @return 返回人脉雷达该用户数据
+     */
+    public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        // 获取连连看最长路径，用于定位度数，这里会对记录排序
+        List<ReferralConnectionChainRecord> newChainRecords = getNewChainRecords(chainRecords);
+        this.setUid(userDO.getSysuserId());
+        this.setNickname(userDO.getNickname());
+        this.setAvatar(userDO.getHeadimgurl());
+        for(int i = 0; i < newChainRecords.size(); i++){
+            ReferralConnectionChainRecord connectionChain = newChainRecords.get(i);
+            if(connectionChain.getRecomUserId() == userDO.getSysuserId()){
+                if(connectionChain.getParentId() == 0){
+                    this.setDegree(0);
+                    break;
+                }else {
+                    this.setDegree(i);
+                    break;
+                }
+            }else if(connectionChain.getNextUserId() == userDO.getSysuserId()){
+                this.setDegree(i+1);
+                break;
+            }
+        }
+        return this;
+    }
+
+    private List<ReferralConnectionChainRecord> getNewChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
+        List<ReferralConnectionChainRecord> newChainRecords = new ArrayList<>();
+        int rootParentId = chainRecords.get(0).getRootParentId();
+        Timestamp createTime = null;
+        for(ReferralConnectionChainRecord connectionChainRecord : chainRecords){
+            if(rootParentId == connectionChainRecord.getId()){
+                createTime = connectionChainRecord.getCreateTime();
+                break;
+            }
+        }
+        for(ReferralConnectionChainRecord connectionChainRecord : chainRecords){
+            if(connectionChainRecord.getCreateTime().equals(createTime)){
+                newChainRecords.add(connectionChainRecord);
+            }
+        }
+        // 这里保证链路按度数排序
+        return getOrderedChainRecords(newChainRecords);
+    }
+
+    private List<ReferralConnectionChainRecord> getOrderedChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
+        List<ReferralConnectionChainRecord> orderedChainRecords = new ArrayList<>();
+        int parentId = 0;
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getParentId() == 0){
+                parentId = chainRecord.getId();
+                orderedChainRecords.add(chainRecord);
+                break;
+            }
+        }
+        // 递归排序
+        return findByParentId(parentId, orderedChainRecords, chainRecords);
+    }
+
+    private List<ReferralConnectionChainRecord> findByParentId(int parentId, List<ReferralConnectionChainRecord> orderedChainRecords, List<ReferralConnectionChainRecord> chainRecords) {
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getParentId() == parentId){
+                orderedChainRecords.add(chainRecord);
+                return findByParentId(chainRecord.getId(), orderedChainRecords, chainRecords);
+            }
+        }
+        return orderedChainRecords;
     }
 }
