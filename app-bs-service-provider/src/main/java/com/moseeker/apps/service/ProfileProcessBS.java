@@ -307,8 +307,8 @@ public class ProfileProcessBS {
                     RecruitmentResult result = BusinessUtil.excuteRecruitRewardOperation(recruitOrder, progressStatus, recruitProcesses);
                     logger.info("ProfileProcessBS processProfile result:{}", JSON.toJSONString(result));
                     if (result.getStatus() == 0) {
-                        List<Integer> recommenderIds = new ArrayList<Integer>();
-                        List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<RewardsToBeAddBean>();
+                        List<Integer> recommenderIds = new ArrayList<>();
+                        List<RewardsToBeAddBean> rewardsToBeAdd = new ArrayList<>();
                         // 简历还未被浏览就被拒绝，则视为已被浏览，需要在添加角色操作的历史记录之前插入建立被查看的历史记录
                         List<HrOperationRecordDO> turnToCVCheckeds = new ArrayList<>();
                         RewardsToBeAddBean reward = null;
@@ -832,6 +832,9 @@ public class ProfileProcessBS {
             for (RewardsToBeAddBean reward : rewardsToBeAdd) {
                 reward.setOperate_tpl_id(app_tpl_id);
             }
+            turnToCVCheckeds.forEach(hrOperationRecordDO -> {
+                hrOperationRecordDO.setOptTime(operationTime.toString("yyyy-MM-dd HH:mm:ss"));
+            });
             hrOperationRecordDao.addAllData(turnToCVCheckeds);
         }
         return rewardsToBeAdd;
