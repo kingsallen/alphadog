@@ -11,6 +11,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1614073899;
+    private static final long serialVersionUID = -2097834238;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -80,6 +81,11 @@ public class Referraldb extends SchemaImpl {
     public final ReferralPositionBonusStageDetail REFERRAL_POSITION_BONUS_STAGE_DETAIL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL;
 
     /**
+     * 推荐人推荐理由信息
+     */
+    public final ReferralRecomEvaluation REFERRAL_RECOM_EVALUATION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION;
+
+    /**
      * 推荐类红包与被推荐人关系表
      */
     public final ReferralRecomHbPosition REFERRAL_RECOM_HB_POSITION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION;
@@ -116,6 +122,7 @@ public class Referraldb extends SchemaImpl {
             ReferralLog.REFERRAL_LOG,
             ReferralPositionBonus.REFERRAL_POSITION_BONUS,
             ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL,
+            ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION,
             ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION);
     }
 }

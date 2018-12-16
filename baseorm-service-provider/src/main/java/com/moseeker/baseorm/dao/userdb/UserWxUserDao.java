@@ -127,6 +127,15 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .fetchOne();
     }
 
+    public UserWxUserRecord getWxUserByUserIdAndWechatIdAndSubscribe(int userId, int wechatId) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.SYSUSER_ID.eq(userId))
+                .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
+                .and(USER_WX_USER.IS_SUBSCRIBE.eq((byte)1))
+                .limit(1)
+                .fetchOne();
+    }
+
     public List<UserWxUserRecord> fetchByIdList(List<Integer> wxUserIdList) {
         return create.selectFrom(USER_WX_USER)
                 .where(USER_WX_USER.ID.in(wxUserIdList))

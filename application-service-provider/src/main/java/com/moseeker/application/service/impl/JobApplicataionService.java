@@ -925,7 +925,7 @@ public class JobApplicataionService {
         logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
 
         ApplicationSaveResultVO resultVO = jobApplicationDao.addIfNotExists(jobApplicationRecord);
-        if (!resultVO.isCreate()) {
+        if (resultVO.isCreate()) {
             HrOperationRecordRecord hrOperationRecord = applicationEntity.getHrOperationRecordRecord(resultVO.getApplicationId(), jobApplicationRecord, jobPositionRecord);
             hrOperationRecordDao.addRecord(hrOperationRecord);
         }

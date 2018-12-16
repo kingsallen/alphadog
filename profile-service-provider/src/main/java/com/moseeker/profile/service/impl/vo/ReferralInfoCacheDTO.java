@@ -19,9 +19,11 @@ public class ReferralInfoCacheDTO {
     private Boolean employee;
     private Integer userId;
     private String fileName;
+    private Byte relationship;
+    private String referralReasonText;
 
-    public ReferralInfoCacheDTO(Integer employeeId, Integer companyId, String name, String mobile,
-                                List<String> referralReasons, Byte referralType, String fileName) {
+    public ReferralInfoCacheDTO(Integer employeeId, Integer companyId, String name, String mobile, List<String> referralReasons,
+                                Byte referralType, String fileName, Byte relationship, String referralReasonText) {
         this.employeeId = employeeId;
         this.companyId = companyId;
         this.name = name;
@@ -29,6 +31,9 @@ public class ReferralInfoCacheDTO {
         this.referralReasons = referralReasons;
         this.referralType = referralType;
         this.fileName = fileName;
+        this.relationship = relationship;
+        this.referralReasonText = referralReasonText;
+
     }
 
     public ReferralInfoCacheDTO() {
@@ -121,4 +126,19 @@ public class ReferralInfoCacheDTO {
         this.fileName = fileName;
     }
 
+    public Byte getRelationship() {
+        return relationship;
+    }
+
+    public void setRelationship(Byte relationship) {
+        this.relationship = relationship;
+    }
+
+    public String getReferralReasonText() {
+        return referralReasonText;
+    }
+
+    public void setReferralReasonText(String referralReasonText) {
+        this.referralReasonText = referralReasonText;
+    }
 }

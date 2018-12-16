@@ -1,15 +1,14 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysCvTplDao;
+import com.moseeker.baseorm.dao.hrdb.HrAppCvConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.profiledb.*;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
@@ -23,12 +22,12 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.entity.biz.ProfileCompletenessImpl;
-import com.moseeker.entity.biz.ProfileParseUtil;
 import com.moseeker.entity.pojo.profile.info.Internship;
 import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.entity.pojo.profile.info.SchoolWork;
+import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysCvTplDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrAppCvConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -148,7 +147,7 @@ public class ProfileOtherEntity {
             }else if(entry.getValue() instanceof List){
                 List infoList= (List)entry.getValue();
                 if(infoList!=null && infoList.size()>0) {
-                        otherMap.put(entry.getKey(), infoList);
+                    otherMap.put(entry.getKey(), infoList);
                 }
             }
             long end = System.currentTimeMillis();
@@ -158,7 +157,7 @@ public class ProfileOtherEntity {
         for(ConfigSysCvTplDO tplDO : tplDOList) {
             String fieldName=tplDO.getFieldName();
             for(String key:parentValues.keySet()){
-                if(parentValues.get(key) instanceof String){
+                if(parentValues.get(key) instanceof String || parentValues.get(key) instanceof Integer){
                     if(fieldName.equals(key)){
                         Map<String,Object> map=new HashMap<>();
                         map.put("key",tplDO.getFieldTitle());
@@ -193,6 +192,29 @@ public class ProfileOtherEntity {
         return companyDO;
     }
 
+    public RequireFieldInfo fetchRequireField(int positionId) throws CommonException {
+        Query.QueryBuilder query = new Query.QueryBuilder();
+        query.where("id", positionId);
+        JobPositionDO jobPositionDO = jobPositionDao.getData(query.buildQuery());
+        int appCvConfigId = jobPositionDO == null ? 0 : jobPositionDO.getAppCvConfigId();
+        Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+        queryBuilder.where("id", appCvConfigId);
+        HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+            return  new RequireFieldInfo();
+        }
+        List<JSONObject>  appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
+                map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
+        Set<String> fieldSet = new HashSet<>();
+        for (JSONObject appCvConfig : appCvConfigJson) {
+            if (appCvConfig.containsKey("field_name") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("field_name")) &&
+                    appCvConfig.containsKey("required") && appCvConfig.getInteger("required") == 0) {
+                fieldSet.add(appCvConfig.getString("field_name"));
+            }
+        }
+        return new RequireFieldInfo(fieldSet);
+    }
+
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
 
@@ -210,5 +232,8 @@ public class ProfileOtherEntity {
 
     @Autowired
     private ConfigSysCvTplDao cvTplDao;
+
+    @Autowired
+    private HrAppCvConfDao hrAppCvConfDao;
 }
 

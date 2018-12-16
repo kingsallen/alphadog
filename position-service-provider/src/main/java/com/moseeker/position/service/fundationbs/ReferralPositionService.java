@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfJooqDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
@@ -25,13 +25,6 @@ import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusStageDetailD
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -41,6 +34,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 /**
  * @Date: 2018/9/4
@@ -53,7 +52,7 @@ public class ReferralPositionService {
     PositionEntity positionEntity;
 
     @Autowired
-    ReferralCompanyConfJooqDao referralCompanyConfJooqDao;
+    ReferralCompanyConfDao referralCompanyConfJooqDao;
 
     @Autowired
     ReferralPositionBonusDao referralPositionBonusDao;
@@ -93,7 +92,7 @@ public class ReferralPositionService {
     @Transactional
     public void updatePointsConfig(Integer companyId,Integer flag)  {
 
-        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
+        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.fetchOneByCompanyId(companyId);
         if(referralCompanyConf != null) {
             referralCompanyConf.setPositionPointsFlag(flag.byteValue());
             referralCompanyConf.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -113,7 +112,7 @@ public class ReferralPositionService {
     @Transactional
     public Response getPointsConfig(Integer companyId) {
 
-        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.findByCompnayId(companyId);
+        ReferralCompanyConf referralCompanyConf = referralCompanyConfJooqDao.fetchOneByCompanyId(companyId);
 
         if(referralCompanyConf != null) {
             return ResponseUtils.success(referralCompanyConf);

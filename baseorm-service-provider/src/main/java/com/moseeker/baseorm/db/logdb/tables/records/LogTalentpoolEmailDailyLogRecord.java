@@ -18,7 +18,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 
 
 /**
- * 邮件额度每天消耗日志
+ * 邮件额度每天使用日志
  */
 @Generated(
     value = {
@@ -75,14 +75,14 @@ public class LogTalentpoolEmailDailyLogRecord extends UpdatableRecordImpl<LogTal
     }
 
     /**
-     * Setter for <code>logdb.log_talentpool_email_daily_log.date</code>. 使用时间
+     * Setter for <code>logdb.log_talentpool_email_daily_log.date</code>.
      */
     public void setDate(Date value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>logdb.log_talentpool_email_daily_log.date</code>. 使用时间
+     * Getter for <code>logdb.log_talentpool_email_daily_log.date</code>.
      */
     public Date getDate() {
         return (Date) get(3);

@@ -11,6 +11,7 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
@@ -60,6 +61,25 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	public List<JobApplicationDO> getApplications(Query query) {
 		return getDatas(query);
 	}
+
+
+    public List<JobApplicationDO> getApplicationsByApplierAndPosition(List<Integer> positionIds, List<Integer> userIds) {
+       if(StringUtils.isEmptyList(positionIds) || StringUtils.isEmptyList(userIds)){
+           return new ArrayList<>();
+       }
+       return create.selectFrom(JobApplication.JOB_APPLICATION)
+               .where(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIds))
+               .and(JobApplication.JOB_APPLICATION.APPLIER_ID.in(userIds))
+               .fetchInto(JobApplicationDO.class);
+    }
+    public List<JobApplicationDO> getApplicationsByPosition(List<Integer> positionIds) {
+        if(StringUtils.isEmptyList(positionIds)){
+            return new ArrayList<>();
+        }
+        return create.selectFrom(JobApplication.JOB_APPLICATION)
+                .where(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIds))
+                .fetchInto(JobApplicationDO.class);
+    }
 
 	public List<ProcessValidationStruct> getAuth(List<Integer> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
@@ -224,6 +244,20 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	 */
 	public Result<Record2<Integer,Integer>> countEmployeeApply(List<Integer> userIdList, List<Integer> positionIdList,
 															   LocalDateTime lastFriday, LocalDateTime currentFriday) {
+
+		System.out.println(create.select(
+				JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
+				count(JobApplication.JOB_APPLICATION.ID).as("count")
+		)
+				.from(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIdList))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
+						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
+								.toEpochMilli())))
+				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
+						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
+				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).getSQL());
 		return create.select(
 					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
 					count(JobApplication.JOB_APPLICATION.ID).as("count")
@@ -358,6 +392,8 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
 		return list;
 	}
+
+
 
 	public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> fetchByApplierId(List<Integer> userIds, int companyId) {
 		Result<JobApplicationRecord> result = create

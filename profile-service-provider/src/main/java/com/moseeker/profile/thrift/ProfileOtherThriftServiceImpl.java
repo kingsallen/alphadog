@@ -14,8 +14,8 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.entity.pojo.profile.info.ProfileEmailInfo;
 import com.moseeker.profile.service.ProfileOtherService;
+import com.moseeker.entity.pojos.RequireFieldInfo;
 import com.moseeker.thrift.gen.config.ConfigCustomMetaVO;
 import com.moseeker.profile.service.impl.ProfileService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -24,6 +24,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileOtherDO;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import com.moseeker.thrift.gen.profile.struct.RequiredFieldInfo;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.lang.ArrayUtils;
@@ -271,7 +272,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             profileService.viewApplicationsByApplication(accountId, updateList);
             List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
             Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
-            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id);
+            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id, userId);
             Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
@@ -293,7 +294,7 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             Map<String, Object> others = profileService.getApplicationOtherCommon(userId, accountId, positionId);
             List<Integer> positionList = (List<Integer>)others.getOrDefault("positionList", null);
             Integer profile_id = (Integer)others.getOrDefault("profile_id", 0);
-            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id);
+            Map<String, Object> result = profileService.getProfileOther(positionList, profile_id, userId);
             Map<String, Object> profilrCamle = StringUtils.convertUnderKeyToCamel(result);
             long end = System.currentTimeMillis();
             logger.info("getProfileOtherByPosition others time :{}", end-start);
@@ -314,6 +315,23 @@ public class ProfileOtherThriftServiceImpl implements ProfileOtherThriftService.
             Map<String, Object> resume = JSON.parseObject(params);
             int result = otherService.putSpecificOther((Map<String, Object>) resume.get("data"), (Integer) resume.get("profile_id"));
             return ResponseUtils.success(result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            if (e instanceof BIZException) {
+                throw (BIZException) e;
+            } else {
+                throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS, e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public RequiredFieldInfo fetchRequireField(int positionId) throws BIZException, TException {
+        try {
+            RequireFieldInfo result = profileService.fetchRequireField(positionId);
+            RequiredFieldInfo fieldInfo = new RequiredFieldInfo();
+            org.springframework.beans.BeanUtils.copyProperties(result, fieldInfo);
+            return fieldInfo;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             if (e instanceof BIZException) {

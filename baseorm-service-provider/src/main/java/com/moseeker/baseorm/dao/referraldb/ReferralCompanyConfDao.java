@@ -32,4 +32,15 @@ public class ReferralCompanyConfDao extends com.moseeker.baseorm.db.referraldb.t
             return null;
         }
     }
+
+    public int insertReferralCompanyConf(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf companyConf) {
+
+        int record = using(configuration()).insertInto(ReferralCompanyConf.REFERRAL_COMPANY_CONF)
+                .columns(ReferralCompanyConf.REFERRAL_COMPANY_CONF.COMPANY_ID, ReferralCompanyConf.REFERRAL_COMPANY_CONF.REFERRAL_KEY_INFORMATION)
+                .values(companyConf.getCompanyId(), companyConf.getReferralKeyInformation())
+                .onDuplicateKeyUpdate()
+                .set(ReferralCompanyConf.REFERRAL_COMPANY_CONF.REFERRAL_KEY_INFORMATION, companyConf.getReferralKeyInformation())
+                .execute();
+        return record;
+    }
 }
