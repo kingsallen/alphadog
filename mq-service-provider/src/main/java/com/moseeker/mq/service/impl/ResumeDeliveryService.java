@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCcmailDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.logdb.LogEmailProfileSendLogDao;
 import com.moseeker.baseorm.dao.logdb.LogEmailSendrecordDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileEducationDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
@@ -20,12 +21,14 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCcmailRecord;
+import com.moseeker.baseorm.db.logdb.tables.records.LogEmailProfileSendLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.SendEmailTypeEnum;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.DateUtils;
@@ -114,6 +117,8 @@ public class ResumeDeliveryService {
     private HrCompanyConfDao hrCompanyConfDao;
     @Autowired
     private TalentPoolEmailEntity emailEntity;
+    @Autowired
+    private LogEmailProfileSendLogDao logEmailProfileSendLogDao;
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -669,6 +674,13 @@ public class ResumeDeliveryService {
             emailrecord.setEmail(accountDO.getEmail());
             emailrecord.setContent(sendEmail.getMessage());
             emailSendrecordDao.addData(emailrecord);
+
+            LogEmailProfileSendLogRecord record=new LogEmailProfileSendLogRecord();
+            record.setEmail(accountDO.getEmail());
+            record.setUserId(userUserDO.getId());
+            record.setType(SendEmailTypeEnum.POSITION_INVATE_EMAIL.getValue());
+            record.setCompanyId(accountDO.getCompanyId());
+            logEmailProfileSendLogDao.addRecord(record);
         }
 
         logger.info("是否启用抄送邮箱："+positionDO.getProfile_cc_mail_enabled());
@@ -687,6 +699,14 @@ public class ResumeDeliveryService {
                         emailrecord1.setEmail(ccmail.getToEmail());
                         emailrecord1.setContent(sendEmail.getMessage());
                         emailSendrecordDao.addData(emailrecord1);
+
+                        LogEmailProfileSendLogRecord record1=new LogEmailProfileSendLogRecord();
+                        record1.setEmail(ccmail.getToEmail());
+                        record1.setUserId(userUserDO.getId());
+                        record1.setType(SendEmailTypeEnum.POSITION_INVATE_EMAIL.getValue());
+                        record1.setCompanyId(accountDO.getCompanyId());
+                        logEmailProfileSendLogDao.addRecord(record1);
+
                     }catch(Exception e){
                         logger.error("简历抄送邮箱日记记录失败：{}", e.getMessage());
                     }

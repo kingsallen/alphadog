@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = 1411495133;
+    private static final long serialVersionUID = -1329936901;
 
     private Integer   id;
     private Integer   companyId;
     private Byte      positionPointsFlag;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Byte      referralKeyInformation;
 
     public ReferralCompanyConf() {}
 
@@ -39,6 +40,7 @@ public class ReferralCompanyConf implements Serializable {
         this.positionPointsFlag = value.positionPointsFlag;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.referralKeyInformation = value.referralKeyInformation;
     }
 
     public ReferralCompanyConf(
@@ -46,13 +48,15 @@ public class ReferralCompanyConf implements Serializable {
         Integer   companyId,
         Byte      positionPointsFlag,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      referralKeyInformation
     ) {
         this.id = id;
         this.companyId = companyId;
         this.positionPointsFlag = positionPointsFlag;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.referralKeyInformation = referralKeyInformation;
     }
 
     public Integer getId() {
@@ -95,6 +99,14 @@ public class ReferralCompanyConf implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getReferralKeyInformation() {
+        return this.referralKeyInformation;
+    }
+
+    public void setReferralKeyInformation(Byte referralKeyInformation) {
+        this.referralKeyInformation = referralKeyInformation;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralCompanyConf (");
@@ -104,6 +116,7 @@ public class ReferralCompanyConf implements Serializable {
         sb.append(", ").append(positionPointsFlag);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(referralKeyInformation);
 
         sb.append(")");
         return sb.toString();

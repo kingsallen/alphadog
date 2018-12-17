@@ -1,10 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.moseeker.useraccounts.exception.UserAccountException;
-import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
-import com.moseeker.useraccounts.service.impl.vo.BonusList;
-import com.moseeker.useraccounts.service.impl.vo.RedPackets;
-import com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab;
+import com.moseeker.useraccounts.service.impl.vo.*;
 import java.util.List;
 
 /**
@@ -50,4 +47,28 @@ public interface ReferralService {
      * @throws UserAccountException 业务异常
      */
     void updateActivity(ActivityVO activityVO) throws UserAccountException;
+
+    /**
+     * 获取候选人公司申请推荐信息
+     * @param userId        候选人编号
+     * @param companyId     公司编号
+     * @param hrId          hr编号
+     * @return
+     * @throws UserAccountException
+     */
+    List<ReferralReasonInfo> getReferralReasonInfo(int userId, int companyId, int hrId) throws UserAccountException;
+
+    /**
+     * 修改企业内推规则-关键信息内推方法
+     * @param companyId     公司编号
+     * @param keyInformation 关键信息推荐方式是否生效 0 关闭 1 开启
+     */
+    void handerKeyInformationStatus(int companyId, int keyInformation)throws UserAccountException;
+
+    /**
+     * 查询企业内推规则-关键词信息内推状态
+     * @param companyId 公司编号
+     * @return
+     */
+    int fetchKeyInformationStatus(int companyId)throws UserAccountException;
 }

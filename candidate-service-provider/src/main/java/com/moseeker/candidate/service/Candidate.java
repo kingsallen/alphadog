@@ -1,5 +1,7 @@
 package com.moseeker.candidate.service;
 
+import com.moseeker.candidate.service.vo.*;
+import com.moseeker.candidate.service.vo.PositionLayerInfo;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.candidate.struct.*;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -7,6 +9,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
 import java.util.List;
 import java.util.Map;
+import org.apache.thrift.TException;
 
 /**
  * 候选人
@@ -112,4 +115,22 @@ public interface Candidate {
      * @return
      */
     CandidateApplicationReferralDO getApplicationReferralByApplication(int applicationId);
+
+    /**
+     * 获取候选人在这家公司下面的查看职位数据
+     * @param userId    候选人编号
+     * @param companyId 公司编号
+     * @return
+     */
+    PositionLayerInfo getPositionLayerInfo(int userId, int companyId, int position_id) throws TException;
+
+    /**
+     * 获取候选人在这家公司下面的查看职位数据
+     * @param userId    候选人编号
+     * @param companyId 公司编号
+     * @return
+     */
+    void closeElasticLayer(int userId, int companyId, int type);
+
+    Response getCandidateRecoms(List<Integer> appIds);
 }

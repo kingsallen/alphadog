@@ -536,15 +536,15 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
 	/*
 	 * 根据职位id列表获取职位列表
 	 */
-	public List<JobPositionDO> getPositionList(List<Integer> list){
-		if(StringUtils.isEmptyList(list)){
-			 return  null;
-		 }
-		com.moseeker.common.util.query.Condition condition=new com.moseeker.common.util.query.Condition("id",list.toArray(),ValueOp.IN);
-		Query query=new Query.QueryBuilder().where(condition).and("status",0).buildQuery();
-		List<JobPositionDO> result=this.getDatas(query);
-		return result;
-	}
+    public List<JobPositionDO> getPositionList(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return  null;
+        }
+        com.moseeker.common.util.query.Condition condition=new com.moseeker.common.util.query.Condition("id",list.toArray(),ValueOp.IN);
+        Query query=new Query.QueryBuilder().where(condition).and("status",0).buildQuery();
+        List<JobPositionDO> result=this.getDatas(query);
+        return result;
+    }
 
     public List<Integer> getPositionIds(List<Integer> companyId) {
 

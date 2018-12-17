@@ -648,7 +648,7 @@ public class TalentpoolEmailService {
         EmailResumeBean emailList = this.convertResumeEmailData(employeeList, userIdList, companyId, context, hrId);
         logger.info(JSON.toJSONString(emailList));
         updateEmailInfoBalance(companyId, lost,5);
-        List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList);
+        List<MandrillEmailListStruct> struct = convertToEmailStruct(emailList,companyId);
         logger.info(JSON.toJSONString(struct));
         if(!StringUtils.isEmptyList(struct)){
             for(MandrillEmailListStruct item:struct){
@@ -847,13 +847,20 @@ public class TalentpoolEmailService {
             try{
                 EmailResumeBean emailList=this.convertResumeEmailData(employeeList,params,companyId,context,hrId);
                 logger.info(JSON.toJSONString(emailList));
-                List<MandrillEmailListStruct> structs = convertToEmailStruct(emailList);
+                List<MandrillEmailListStruct> structs = convertToEmailStruct(emailList,companyId);
                 logger.info(JSON.toJSONString(structs));
                 if(!StringUtils.isEmptyList(structs)){
                     for(MandrillEmailListStruct struct:structs){
                         mqService.sendMandrilEmailList(struct);
                     }
                 }
+                /*
+                 * @Author zztaiwll
+                 * @Description  ji
+                 * @Date 下午3:01 18/12/4
+                 * @Param [employeeList, params, companyId, hrId, context, totalNum]
+                 * @return void
+                 **/
 
             }catch(Exception e){
                 logger.error(e.getMessage(),e);
@@ -896,7 +903,7 @@ public class TalentpoolEmailService {
         return result;
     }
 
-    private List<MandrillEmailListStruct> convertToEmailStruct(EmailResumeBean emailInviteBean){
+    private List<MandrillEmailListStruct> convertToEmailStruct(EmailResumeBean emailInviteBean,int companyId){
         List<MandrillEmailListStruct> dataList=new ArrayList<>();
         List<TalentEmailForwardsResumeInfo> merge=emailInviteBean.getMergeVars();
         List<ReceiveInfo> to=emailInviteBean.getTo();
@@ -926,6 +933,8 @@ public class TalentpoolEmailService {
             logger.info(merges);
             result.setMergeVars(merges);
             result.setTo(toReceive);
+            result.setType(SendEmailTypeEnum.TALENT_INVATE_EMAIL.getValue());
+            result.setCompany_id(companyId);
             dataList.add(result);
         }
         return dataList;
@@ -1886,7 +1895,6 @@ public class TalentpoolEmailService {
             basicInfo.setDegree((String)education.get("degree_name"));
             basicInfo.setMajor((String)education.getOrDefault("major_name",""));
             basicInfo.setCollege((String)education.getOrDefault("college_name",""));
-
         }
         if(!StringUtils.isEmptyMap(works)){
             basicInfo.setPosition((String)works.getOrDefault("job_name",""));

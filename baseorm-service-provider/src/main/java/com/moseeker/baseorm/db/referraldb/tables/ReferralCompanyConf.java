@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralCompanyConf extends TableImpl<ReferralCompanyConfRecord> {
 
-    private static final long serialVersionUID = 1338491630;
+    private static final long serialVersionUID = 578157457;
 
     /**
      * The reference instance of <code>referraldb.referral_company_conf</code>
@@ -75,6 +75,11 @@ public class ReferralCompanyConf extends TableImpl<ReferralCompanyConfRecord> {
      * The column <code>referraldb.referral_company_conf.update_time</code>. 更新时间
      */
     public final TableField<ReferralCompanyConfRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>referraldb.referral_company_conf.referral_key_information</code>. 内推规则-关键信息推荐配置 0 关闭  1 开启
+     */
+    public final TableField<ReferralCompanyConfRecord, Byte> REFERRAL_KEY_INFORMATION = createField("referral_key_information", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "内推规则-关键信息推荐配置 0 关闭  1 开启");
 
     /**
      * Create a <code>referraldb.referral_company_conf</code> table reference
