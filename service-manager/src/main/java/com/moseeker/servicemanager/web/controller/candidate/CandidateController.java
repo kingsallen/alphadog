@@ -1,9 +1,11 @@
 package com.moseeker.servicemanager.web.controller.candidate;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.CleanJsonResponse4Alphacloud;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.Result;
@@ -13,12 +15,16 @@ import com.moseeker.thrift.gen.candidate.struct.PositionLayerInfo;
 import com.moseeker.thrift.gen.candidate.struct.RecentPosition;
 import com.moseeker.thrift.gen.common.struct.Response;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhangdi on 2017/8/24.
@@ -90,7 +96,7 @@ public class CandidateController {
             ValidateUtil vu = new ValidateUtil();
             vu.addRequiredValidate("申请编号", applicationId, null, null);
             String message = vu.validate();
-            if(pscId.intValue() <=0 && directReferralUserId.intValue()<=0){
+            if (pscId.intValue() <= 0 && directReferralUserId.intValue() <= 0) {
                 message = "传入参数有误！";
             }
             if (StringUtils.isNullOrEmpty(message)) {
@@ -174,6 +180,25 @@ public class CandidateController {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseLogNotification.failJson(request, e);
+        }
+    }
+
+    @PostMapping("/v4/alphadog/candidateRecomsAppIds")
+    @ResponseBody
+    public CleanJsonResponse4Alphacloud getCandidateRecomRecordsByAppIds(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail4Alphacloud("参数不能为空");
+            }
+
+            List<Integer> appIds = (List<Integer>) reqParams.get("appIds");
+
+            Response res = candidateService.getCandidateRecoms(appIds);
+            return ResponseLogNotification.success4Alphacloud(JSON.parse(res.getData()));
+        } catch (Exception e) {
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
         }
     }
 }

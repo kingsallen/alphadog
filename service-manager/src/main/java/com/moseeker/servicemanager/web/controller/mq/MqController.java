@@ -217,6 +217,27 @@ public class MqController {
         }
         return null;
     }
+    /*
+     * @Author zztaiwll
+     * @Description  申请职位发送邮件
+     * @Date 下午5:58 18/12/11
+     * @Param
+     * @return
+     **/
+    @RequestMapping(value = "/email/app", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendEMailApp(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+            MessageEmailStruct emailStruct = ParamUtils.initModelForm(request, MessageEmailStruct.class);
+
+            Response result = mqService.sendMessageAndEmailToDelivery(emailStruct);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
     /**
      * 转换消息模板通知的thrift MessageTplDataCol struct 对象

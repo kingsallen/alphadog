@@ -131,9 +131,9 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.eq((byte) 0))
                 .orderBy(UserEmployee.USER_EMPLOYEE.UPDATE_TIME.desc())
                 .union(
-                        create.select(UserEmployee.USER_EMPLOYEE.ID, UserEmployee.USER_EMPLOYEE.CNAME, UserEmployee.USER_EMPLOYEE.SYSUSER_ID, UserUser.USER_USER.EMAIL.as("email")).from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
-                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte) 1)).where(UserEmployee.USER_EMPLOYEE.ID.in(idList))
-                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.ne((byte) 0))
+                        create.select(UserEmployee.USER_EMPLOYEE.ID,UserEmployee.USER_EMPLOYEE.CNAME,UserEmployee.USER_EMPLOYEE.SYSUSER_ID,UserUser.USER_USER.EMAIL.as("email")).from(UserEmployee.USER_EMPLOYEE).join(UserUser.USER_USER).on(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(UserUser.USER_USER.ID))
+                                .and(UserUser.USER_USER.EMAIL_VERIFIED.eq((byte)1)).where(UserEmployee.USER_EMPLOYEE.ID.in(idList))
+                                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.AUTH_METHOD.ne((byte)0))
                 ).fetchMaps();
         return list;
     }
@@ -365,25 +365,6 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .fetchOne();
     }
 
-    public UserEmployeeDO getEmployeeById(int employeeId) {
-        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                .where(UserEmployee.USER_EMPLOYEE.ID.eq(employeeId))
-                .fetchOneInto(UserEmployeeDO.class);
-    }
-
-    public List<UserEmployeeDO> getEmployeeByIds(List<Integer> employeeIds) {
-        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                .where(UserEmployee.USER_EMPLOYEE.ID.in(employeeIds))
-                .fetchInto(UserEmployeeDO.class);
-    }
-
-
-    public List<UserEmployeeDO> getEmployeeBycompanyIds(List<Integer> companyIds) {
-
-        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
-                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds))
-                .fetchInto(UserEmployeeDO.class);
-    }
 
     public UserEmployeeRecord insertCustomEmployeeIfNotExist(UserEmployeeRecord record) {
 
@@ -416,4 +397,38 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .fetchOne();
         return record1;
     }
+
+    public UserEmployeeDO getEmployeeById(int employeeId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.ID.eq(employeeId))
+                .fetchOneInto(UserEmployeeDO.class);
+    }
+
+    public List<UserEmployeeDO> getEmployeeByIds(List<Integer> employeeIds) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.ID.in(employeeIds))
+                .fetchInto(UserEmployeeDO.class);
+    }
+
+
+    public List<UserEmployeeDO> getEmployeeBycompanyIds(List<Integer> companyIds) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds))
+                .fetchInto(UserEmployeeDO.class);
+    }
+
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> getEmployeeList(List<Integer> userIdList,int companyId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(userIdList)).and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
+    }
+
+    public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee getSingleEmployeeByUserId(int userId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
+    }
+
+
 }

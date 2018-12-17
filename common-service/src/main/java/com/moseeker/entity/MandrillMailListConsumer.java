@@ -14,17 +14,18 @@ import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.mq.struct.MandrillEmailListStruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
-import javax.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * 

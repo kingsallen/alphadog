@@ -709,5 +709,23 @@ public class SearchengineController {
 //
 //    @RequestMapping(value = "/v4/searchengine/updateCompanyTagByIdAndType", method = RequestMethod.PUT)
 //    Result updateCompanyTagByIdAndType(@RequestBody EsUpdateCompanyTagAndTypeVO vo  );
-
+    @RequestMapping(value = "/api/position/mini", method = RequestMethod.GET)
+    @ResponseBody
+    public String positionMiniQuery(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Map<String, Object> reqParams = ParamUtils.parseRequestParam(request);
+            Map<String, String> params = new HashMap<>();
+            if (reqParams == null || reqParams.isEmpty()) {
+                return ResponseLogNotification.fail(request, "参数不能为空");
+            }
+            for (String key : reqParams.keySet()) {
+                params.put(key, StringUtils.filterStringForSearch((String) reqParams.get(key)));
+            }
+            Response res = searchengineServices.queryPositionMini(params);
+            return ResponseLogNotification.success(request, res);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }
