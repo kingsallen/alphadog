@@ -630,26 +630,27 @@ public class ReferralController {
 
     /**
      * 10分钟消息模板-人脉筛选，获取卡片数据
-     * @param referralCard 查找员工10分钟内转发职位的浏览记录所需信息
      * @return 推荐结果
      * @throws Exception
      */
     @RequestMapping(value = "/v1/referral/radar/cards", method = RequestMethod.GET)
     @ResponseBody
-    public String getRadarCards(@RequestBody ReferralCardForm referralCard) throws Exception {
+    public String getRadarCards(HttpServletRequest request) throws Exception {
+        Params<String, Object> params = ParamUtils.parseRequestParam(request);
+        ReferralCardForm referralCard = ParamUtils.initModelForm(params, ReferralCardForm.class);
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addIntTypeValidate("员工userId", referralCard.getUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("员工userId", referralCard.getUser_id(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", referralCard.getAppid(), 1, Integer.MAX_VALUE);
-        validateUtil.addRequiredValidate("员工userId", referralCard.getUserId());
+        validateUtil.addRequiredValidate("员工userId", referralCard.getUser_id());
         validateUtil.addRequiredValidate("appid", referralCard.getAppid());
         validateUtil.addRequiredValidate("timestamp", referralCard.getTimestamp());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-            if(referralCard.getPageNumber() == null || referralCard.getPageNumber() <= 0){
-                referralCard.setPageNumber(1);
+            if(referralCard.getPage_number() == null || referralCard.getPage_number() <= 0){
+                referralCard.setPage_number(1);
             }
-            if(referralCard.getPageSize() == null || referralCard.getPageSize() <= 0){
-                referralCard.setPageSize(10);
+            if(referralCard.getPage_size() == null || referralCard.getPage_size() <= 0){
+                referralCard.setPage_size(10);
             }
             ReferralCardInfo cardInfo = new ReferralCardInfo();
             BeanUtils.copyProperties(referralCard, cardInfo);
@@ -708,7 +709,7 @@ public class ReferralController {
      * @return 推荐结果
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/referral/radar/invite", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/referral/radar/ignore", method = RequestMethod.POST)
     @ResponseBody
     public String ignoreCurrentViewer(@RequestBody ReferralInviteForm inviteForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();

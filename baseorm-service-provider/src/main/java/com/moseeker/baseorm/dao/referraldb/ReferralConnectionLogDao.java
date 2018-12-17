@@ -36,4 +36,10 @@ public class ReferralConnectionLogDao {
                 .and(REFERRAL_CONNECTION_LOG.END_USER_ID.eq(endUserId))
                 .fetchOne();
     }
+
+    public void updateRecord(ReferralConnectionLogRecord connectionLogRecord) {
+        create.execute("set names utf8mb4");
+        create.attach(connectionLogRecord);
+        create.executeUpdate(connectionLogRecord);
+    }
 }

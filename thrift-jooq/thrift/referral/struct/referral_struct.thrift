@@ -77,10 +77,11 @@ struct ReferralReasonInfo{
 }
 
 struct ReferralCardInfo{
-    1: optional i32 userId,
-    2: optional i32 pageNumber,
-    3: optional i32 pageSize,
-    4: optional i64 timestamp
+    1: optional i32 user_id,
+    2: optional i32 company_id,
+    3: optional i32 page_number,
+    4: optional i32 page_size,
+    5: optional i64 timestamp
 }
 
 struct ReferralInviteInfo{

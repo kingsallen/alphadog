@@ -101,7 +101,16 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
         return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
                 .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
                 .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(beRecomUserIds))
+                .and(CandidatePosition.CANDIDATE_POSITION.TYPE.ne((byte)1))
                 .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
                 .fetchInto(CandidatePositionDO.class);
+    }
+
+    public void updateTypeByPidAndUid(int pid, int endUserId) {
+        create.update(CandidatePosition.CANDIDATE_POSITION)
+                .set(CandidatePosition.CANDIDATE_POSITION.TYPE, (byte)1)
+                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.eq(pid))
+                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.eq(endUserId))
+                .execute();
     }
 }

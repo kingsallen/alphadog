@@ -6,10 +6,10 @@ package com.moseeker.servicemanager.web.controller.referral.form;
  **/
 public class ReferralCardForm {
     private Integer appid;
-    private Integer userId;
+    private Integer user_id;
     private Long timestamp;
-    private Integer pageNumber;
-    private Integer pageSize;
+    private Integer page_number;
+    private Integer page_size;
 
     public Integer getAppid() {
         return appid;
@@ -17,14 +17,6 @@ public class ReferralCardForm {
 
     public void setAppid(Integer appid) {
         this.appid = appid;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
 
     public Long getTimestamp() {
@@ -35,19 +27,27 @@ public class ReferralCardForm {
         this.timestamp = timestamp;
     }
 
-    public Integer getPageNumber() {
-        return pageNumber;
+    public Integer getUser_id() {
+        return user_id;
     }
 
-    public void setPageNumber(Integer pageNumber) {
-        this.pageNumber = pageNumber;
+    public void setUser_id(Integer user_id) {
+        this.user_id = user_id;
     }
 
-    public Integer getPageSize() {
-        return pageSize;
+    public Integer getPage_number() {
+        return page_number;
     }
 
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
+    public void setPage_number(Integer page_number) {
+        this.page_number = page_number;
+    }
+
+    public Integer getPage_size() {
+        return page_size;
+    }
+
+    public void setPage_size(Integer page_size) {
+        this.page_size = page_size;
     }
 }

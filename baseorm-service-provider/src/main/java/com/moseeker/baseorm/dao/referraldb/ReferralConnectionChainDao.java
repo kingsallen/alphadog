@@ -36,12 +36,6 @@ public class ReferralConnectionChainDao {
        return insertSetMoreStep.returning().fetch();
     }
 
-    public ReferralConnectionChainRecord fetchRecordById(int chainId) {
-        return create.selectFrom(REFERRAL_CONNECTION_CHAIN)
-                .where(REFERRAL_CONNECTION_CHAIN.ID.eq(chainId))
-                .fetchOne();
-    }
-
     public List<ReferralConnectionChainRecord> fetchChainsByRootChainId(int parentChainId) {
         return create.selectFrom(REFERRAL_CONNECTION_CHAIN)
                 .where(REFERRAL_CONNECTION_CHAIN.ROOT_PARENT_ID.eq(parentChainId))
@@ -53,5 +47,19 @@ public class ReferralConnectionChainDao {
                 .values(newChainRecord)
                 .returning()
                 .fetchOne();
+    }
+
+    public ReferralConnectionChainRecord updateRecord(ReferralConnectionChainRecord chainRecord) {
+        create.execute("set names utf8mb4");
+        create.attach(chainRecord);
+        create.executeUpdate(chainRecord);
+        return chainRecord;
+    }
+
+    public void updateStateByIds(List<Integer> linkedIds) {
+        create.update(REFERRAL_CONNECTION_CHAIN)
+                .set(REFERRAL_CONNECTION_CHAIN.STATE, (byte)0)
+                .where(REFERRAL_CONNECTION_CHAIN.ID.in(linkedIds))
+                .execute();
     }
 }

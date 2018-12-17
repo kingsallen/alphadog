@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 人脉连连看用户信息vo
+ */
 public class RadarUserInfo {
 
     private Integer uid;
@@ -153,5 +156,48 @@ public class RadarUserInfo {
             }
         }
         return orderedChainRecords;
+    }
+
+    /**
+     * 填充order字段
+     * @param   userDO  用户微信信息
+     * @param   chainRecords 连连看已连接记录
+     * @author  cjm
+     * @date  2018/12/16
+     * @return   当前链路用户信息
+     */
+    public RadarUserInfo fillOrderFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        int parentId = 0;
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getNextUserId() == userDO.getSysuserId()){
+                parentId = chainRecord.getParentId();
+                break;
+            }
+        }
+        Integer order = 0;
+        order = getOrderByRecurrence(order, parentId, chainRecords);
+        setOrder(order);
+        return this;
+    }
+
+    /**
+     * 递归排序 从0开始
+     * @param order 当前顺序
+     * @param parentId 当前parentId
+     * @param chainRecords 已连接链路
+     * @author  cjm
+     * @date  2018/12/16
+     * @return 排序后的序号
+     */
+    private Integer getOrderByRecurrence(Integer order, int parentId, List<ReferralConnectionChainRecord> chainRecords) {
+        if(parentId == 0){
+            return ++order;
+        }
+        for(ReferralConnectionChainRecord chainRecord : chainRecords) {
+            if(chainRecord.getId() == parentId){
+                return getOrderByRecurrence(++order, chainRecord.getParentId(), chainRecords);
+            }
+        }
+        return order;
     }
 }

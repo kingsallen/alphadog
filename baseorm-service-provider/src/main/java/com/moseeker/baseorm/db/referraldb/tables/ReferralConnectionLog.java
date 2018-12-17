@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord> {
 
-    private static final long serialVersionUID = 431730940;
+    private static final long serialVersionUID = 587879995;
 
     /**
      * The reference instance of <code>referraldb.referral_connection_log</code>
@@ -60,6 +60,11 @@ public class ReferralConnectionLog extends TableImpl<ReferralConnectionLogRecord
      * The column <code>referraldb.referral_connection_log.root_chain_id</code>. 链路起始id
      */
     public final TableField<ReferralConnectionLogRecord, Integer> ROOT_CHAIN_ID = createField("root_chain_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "链路起始id");
+
+    /**
+     * The column <code>referraldb.referral_connection_log.company_id</code>.
+     */
+    public final TableField<ReferralConnectionLogRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>referraldb.referral_connection_log.position_id</code>. 职位id
