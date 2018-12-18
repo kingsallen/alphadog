@@ -8,7 +8,7 @@ import org.neo4j.ogm.annotation.StartNode;
 /**
  * Created by moseeker on 2018/12/14.
  */
-@RelationshipEntity(type = "relation")
+@RelationshipEntity(type = "Relation")
 public class Relation {
 
     @GraphId

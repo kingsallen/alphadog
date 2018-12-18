@@ -16,8 +16,10 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
     @Query("merge (u:UserNode:UserUser{user_id:{userId},wxuser_id:{wxuserId},nickname:{nickname},headimgurl:{headimgurl}," +
                    "employee_company:{employeeCompany},employee_id:{employeeId}}) return u")
     List<UserNode> addUserNodeList(@Param("userId") int userId, @Param("wxuserId") int name, @Param("nickname") String nickname,
-                                   @Param("headimgurl") String headimgurl,@Param("employee_company") String employeeCompany,@Param("employee_id") String employeeId);
+                                   @Param("headimgurl") String headimgurl,@Param("employeeCompany") String employeeCompany,@Param("employeeId") String employeeId);
 
-    @Query("MATCH (u:UserNode{user_id:{userId}}) return u limit 1")
+    @Query("MATCH (u:UserUser{user_id:{userId}}) return u limit 1")
     UserNode getUserNodeById(@Param("userId") int userId);
+
+
 }

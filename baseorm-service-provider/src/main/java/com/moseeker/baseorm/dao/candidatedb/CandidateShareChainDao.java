@@ -37,6 +37,12 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         this.deleteData(p);
     }
 
+    public CandidateShareChainDO getCandidateShareChainById(int id){
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(id))
+                .fetchOneInto(CandidateShareChainDO.class);
+    }
+
     public Result<Record2<Integer, Integer>> countEmployeeForward(List<Integer> userIdList,
                                                                   List<Integer> positionIdList,
                                                                   LocalDateTime lastFriday,

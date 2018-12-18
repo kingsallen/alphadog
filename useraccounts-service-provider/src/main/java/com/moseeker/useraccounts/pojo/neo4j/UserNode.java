@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.pojo.neo4j;
 
 import org.neo4j.ogm.annotation.GraphId;
+import org.neo4j.ogm.annotation.Index;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 
@@ -12,6 +13,7 @@ public class UserNode {
 
     @GraphId
     Long id;
+    @Index(unique = true, primary = true)
     private int user_id;
     @Property
     private int wxuser_id;

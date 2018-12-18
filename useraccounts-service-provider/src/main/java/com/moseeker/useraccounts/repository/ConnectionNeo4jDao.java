@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 public interface ConnectionNeo4jDao extends GraphRepository<Connection> {
 
-    @Query("match (u1:UserNode),(u2:UserNode) where u1.user_id={firstUserId} and u2.user_id = {secondUserId} merge (u1)-[f:Connection{conn_chain_id:{connChainId}}]->(u2) return f")
+    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id={firstUserId} and u2.user_id = {secondUserId} merge (u1)-[f:Connection{conn_chain_id:{connChainId}}]->(u2) return f")
     List<Connection> addConnection(@Param("firstUserId") int firstUserId, @Param("secondUserId") int secondUserId, @Param("conn_chain_id") int connChainId);
 
-    @Query("match (u1:UserNode{user_id:{firstUserId}}),(u2:UserNode{user_id:{secondUserId}}) match p=(u1)-[f:Connection]-(u2) return p")
-    List<Connection> getTwoUserFriend(@Param("firstUserId") int firstUserId, @Param("secondUserId") int secondUserId);
+    @Query("match (u1:UserUser{user_id:{firstUserId}}),(u2:UserUser{user_id:{secondUserId}}),p=(u1)-[r:Connection]-(u2) where r.position_id ={positionId} return p")
+    List<Connection> getTwoUserConn(@Param("firstUserId") int firstUserId, @Param("secondUserId") int secondUserId, @Param("positionId") int positionId);
 
 }
