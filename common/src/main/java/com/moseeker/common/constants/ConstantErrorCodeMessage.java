@@ -57,6 +57,7 @@ public final class ConstantErrorCodeMessage {
     public static final String USEREMPLOYEE_NONEXIST = "{'status':10029,'message':'查不到该员工!'}";
     public static final String MALL_GOODS_DETAIL_TOO_LARGE = "{'status':10044,'message':'商品详情过长!'}";
     public static final String MALL_GOODS_RULE_TOO_LARGE = "{'status':10045,'message':'默认规则过长!'}";
+    public static final String USER_USER_NOTEXIST = "{'status':10046,'message':'用户不存在!'}";
 
     public static final String HR_ACCOUNT_SIGNUP_VALIDATE_SOURCE = "{'status':12001,'message':'source >=1 && <=5!'}";
 
