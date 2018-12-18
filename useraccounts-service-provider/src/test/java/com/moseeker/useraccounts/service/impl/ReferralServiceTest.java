@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.referral.struct.CheckEmployeeInfo;
 import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
@@ -58,5 +60,14 @@ public class ReferralServiceTest {
     public void connectRadarTest(){
         ConnectRadarInfo radarInfo = new ConnectRadarInfo();
         referralService.connectRadar(radarInfo);
+    }
+
+    @Test
+    public void checkEmployeeTest() throws BIZException {
+        CheckEmployeeInfo checkInfo = new CheckEmployeeInfo();
+        checkInfo.setParentChainId(5044);
+        checkInfo.setPid(19501370);
+        checkInfo.setRecomUserId(5291680);
+        referralService.checkEmployee(checkInfo);
     }
 }

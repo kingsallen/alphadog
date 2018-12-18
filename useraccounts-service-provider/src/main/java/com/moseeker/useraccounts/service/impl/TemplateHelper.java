@@ -17,6 +17,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.vo.InviteTemplateVO;
 import com.moseeker.useraccounts.service.impl.vo.TemplateBaseVO;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class TemplateHelper {
         HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
                 hrWxWechatDO.getId()).and("sys_template_id", sysTemplateId).and("disable","0").buildQuery());
         if(hrWxTemplateMessageDO == null){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_TEMPLATE_SWITCH_CLOSE);
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
         }
         return hrWxTemplateMessageDO;
     }

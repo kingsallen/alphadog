@@ -10,6 +10,7 @@ public class ReferralCardForm {
     private Long timestamp;
     private Integer page_number;
     private Integer page_size;
+    private Integer company_id;
 
     public Integer getAppid() {
         return appid;
@@ -49,5 +50,13 @@ public class ReferralCardForm {
 
     public void setPage_size(Integer page_size) {
         this.page_size = page_size;
+    }
+
+    public Integer getCompany_id() {
+        return company_id;
+    }
+
+    public void setCompany_id(Integer company_id) {
+        this.company_id = company_id;
     }
 }

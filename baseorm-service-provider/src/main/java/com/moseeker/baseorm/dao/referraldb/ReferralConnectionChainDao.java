@@ -6,6 +6,7 @@ import org.jooq.InsertSetMoreStep;
 import org.jooq.InsertSetStep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class ReferralConnectionChainDao {
     @Autowired
     private DSLContext create;
 
+    @Transactional(rollbackFor = Exception.class)
     public List<ReferralConnectionChainRecord> insertRecords(List<ReferralConnectionChainRecord> records){
         InsertSetStep<ReferralConnectionChainRecord> insertSetStep = create.insertInto(REFERRAL_CONNECTION_CHAIN);
         InsertSetMoreStep<ReferralConnectionChainRecord> insertSetMoreStep = null;
@@ -30,10 +32,12 @@ public class ReferralConnectionChainDao {
                 insertSetMoreStep = insertSetMoreStep.newRecord().set(records.get(i));
             }
         }
+        List<ReferralConnectionChainRecord> list = new ArrayList<>();
         if(insertSetMoreStep == null){
-            return new ArrayList<>();
+            return list;
         }
-       return insertSetMoreStep.returning().fetch();
+        list = insertSetMoreStep.returning().fetch();
+        return list;
     }
 
     public List<ReferralConnectionChainRecord> fetchChainsByRootChainId(int parentChainId) {

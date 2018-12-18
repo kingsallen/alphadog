@@ -518,6 +518,9 @@ public class ReferralServiceImpl implements ReferralService {
             if(shareChainDO == null){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
             }
+            if(shareChainDO.getRecomUserId() != checkInfo.getRecomUserId()){
+                throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
+            }
             recomUserId = shareChainDO.getRootRecomUserId();
         }
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
@@ -697,10 +700,11 @@ public class ReferralServiceImpl implements ReferralService {
             int rootParentId = doCreateConnectionChainRecords(shortestChain);
             // 反填后入库
             connectionLogRecord = doCreateConnectionLogRecord(rootParentId, inviteInfo, shortestChain.size());
-        }else{
-            // 如果之前该职位已经连接过连连看，那么直接将连连看链路返回
-            connectionChainDao.fetchChainsByRootChainId(connectionLogRecord.getRootChainId());
         }
+//        else{
+//            // 如果之前该职位已经连接过连连看，那么直接将连连看链路返回
+//            connectionChainDao.fetchChainsByRootChainId(connectionLogRecord.getRootChainId());
+//        }
         return connectionLogRecord.getId();
     }
 
@@ -732,7 +736,7 @@ public class ReferralServiceImpl implements ReferralService {
             connectionChainRecord.setUpdateTime(current);
             connectionChainRecords.add(connectionChainRecord);
         }
-        connectionChainDao.insertRecords(connectionChainRecords);
+         connectionChainRecords = connectionChainDao.insertRecords(connectionChainRecords);
         int rootParentId = connectionChainRecords.get(0).getId();
         // 填充parentId, rootParentId
         fillParentChainId(connectionChainRecords, rootParentId);
@@ -761,7 +765,11 @@ public class ReferralServiceImpl implements ReferralService {
      * @return 返回最短路径
      */
     private List<Integer> getShortestChain(int rootUserId, int endUserId) {
-        return new ArrayList<>();
+        List<Integer> list = new ArrayList<>();
+        list.add(5283788);
+        list.add(5291680);
+        list.add(5291588);
+        return list;
     }
 
     /**

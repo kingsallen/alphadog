@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRe
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionLog.REFERRAL_CONNECTION_LOG;
 /**
@@ -16,11 +17,12 @@ public class ReferralConnectionLogDao {
     @Autowired
     private DSLContext create;
 
+
+    @Transactional(rollbackFor = Exception.class)
     public ReferralConnectionLogRecord insertRecord(ReferralConnectionLogRecord connectionLogRecord) {
-        return create.insertInto(REFERRAL_CONNECTION_LOG)
-                .values(connectionLogRecord)
-        .returning()
-        .fetchOne();
+        create.attach(connectionLogRecord);
+        connectionLogRecord.insert();
+        return connectionLogRecord;
     }
 
     public ReferralConnectionLogRecord fetchByChainId(int chainId) {
