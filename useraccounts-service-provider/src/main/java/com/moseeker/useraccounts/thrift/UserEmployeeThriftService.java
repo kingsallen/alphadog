@@ -14,8 +14,10 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.pojo.*;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
@@ -185,5 +187,13 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public PositionReferralInfo getPositionReferralInfo(int userId, int positionId) throws BIZException, TException {
+        com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
+        PositionReferralInfo referralInfo = new PositionReferralInfo();
+        BeanUtils.copyProperties(info, referralInfo);
+        return referralInfo;
     }
 }

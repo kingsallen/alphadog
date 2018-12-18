@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.config;
 
 import com.moseeker.common.util.query.Query;
 import com.rabbitmq.client.ConnectionFactory;
+import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
@@ -14,6 +15,8 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
+import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 
@@ -27,8 +30,9 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXC
  */
 @Configuration
 @EnableRabbit
-@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
+@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface"})
 @PropertySource("classpath:common.properties")
+@EnableNeo4jRepositories("com.moseeker.useraccounts.repository")
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
 
@@ -72,6 +76,16 @@ public class AppConfig {
         RabbitAdmin rabbitAdmin = new RabbitAdmin(cachingConnectionFactory());
         rabbitAdmin.setIgnoreDeclarationExceptions(true);
         return rabbitAdmin;
+    }
+
+    @Bean
+    public Neo4jTransactionManager neo4jTransactionManager() {
+        return new Neo4jTransactionManager(sessionFactory());
+    }
+
+    @Bean
+    public SessionFactory sessionFactory(){
+        return new SessionFactory("com.moseeker.useraccounts.pojo.neo4j");
     }
 
     /**

@@ -15,6 +15,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
@@ -27,18 +28,24 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChain
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
@@ -47,9 +54,15 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.thrift.gen.referral.struct.CheckEmployeeInfo;
 import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
+import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.thrift.gen.application.service.JobApplicationServices;
+import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
@@ -65,6 +78,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
+import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,8 +94,17 @@ import org.springframework.transaction.annotation.Transactional;
 @CounterIface
 public class ReferralServiceImpl implements ReferralService {
 
+    JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
+            .getService(JobApplicationServices.Iface.class);
+
     @Autowired
     private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private ReferralTemplateSender sender;
 
     @Autowired
     private CustomReferralEmployeeBonusDao referralEmployeeBonusDao;
@@ -112,6 +135,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private DictReferralEvaluateDao evaluateDao;
+
+    @Autowired
+    private ReferralSeekRecommendDao recommendDao;
 
     @Autowired
     private JobPositionDao positionDao;
@@ -145,6 +171,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+
+    @Autowired
+    ReferralTemplateSender templateSender;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -413,7 +442,7 @@ public class ReferralServiceImpl implements ReferralService {
         // 查询最短路径 todo neo4j
         List<Integer> shortestChain = getShortestChain(inviteInfo.getUserId(), inviteInfo.getEndUserId());
         // 只有两度和三度的情况下才会产生连连看链路
-        if(shortestChain.size() >= 3 && shortestChain.size() <= 4){
+        if(shortestChain.size() >= 3 && shortestChain.size() <= 4 && (connectionLogRecord == null || connectionLogRecord.getState() == 1)){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
             result.put("chain_id", doInsertConnection(connectionLogRecord, shortestChain, inviteInfo));
         }
@@ -475,6 +504,43 @@ public class ReferralServiceImpl implements ReferralService {
         result.setPid(connectionLogRecord.getPositionId());
         result.setState(connectionLogRecord.getState().intValue());
         result.setRadarUserInfos(userChains);
+        return JSON.toJSONString(result);
+    }
+
+    @Override
+    public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException {
+        JSONObject result = new JSONObject();
+        int parentChainId = checkInfo.getParentChainId();
+        int pid = checkInfo.getPid();
+        int recomUserId = checkInfo.getRecomUserId();
+        if(parentChainId != 0){
+            CandidateShareChainDO shareChainDO = shareChainDao.getRecordById(parentChainId);
+            if(shareChainDO == null){
+                throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
+            }
+            recomUserId = shareChainDO.getRootRecomUserId();
+        }
+        UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
+        if(employeeRecord == null){
+            result.put("employee", 0);
+            return JSON.toJSONString(result);
+        }
+        int companyId = employeeRecord.getCompanyId();
+        JobPositionDO jobPositionDO = positionDao.getJobPositionById(pid);
+        if(jobPositionDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+        }
+        if(companyId != jobPositionDO.getCompanyId()){
+            throw UserAccountException.COMPANY_DATA_EMPTY;
+        }
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
+        UserWxUserRecord wxUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(recomUserId, hrWxWechatDO.getId());
+        result.put("employee", 1);
+        RadarUserInfo userInfo = new RadarUserInfo();
+        userInfo.setUid(recomUserId);
+        userInfo.setName(employeeRecord.getCname());
+        userInfo.setAvatar(wxUserRecord.getHeadimgurl());
+        result.put("user", userInfo);
         return JSON.toJSONString(result);
     }
 
@@ -856,4 +922,117 @@ public class ReferralServiceImpl implements ReferralService {
         return position;
     }
 
+    @Override
+    public void addReferralSeekRecommend(int userId, int postUserId, int positionId, int origin) throws CommonException {
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("候选人编号", userId, 1, null);
+        vu.addIntTypeValidate("员工C端编号", postUserId, 1, null);
+        vu.addIntTypeValidate("职位编号", userId, 1, null);
+        if(StringUtils.isNotNullOrEmpty(vu.validate())){
+            logger.info("参数错误：{}",vu.validate());
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+        if(position == null || position.getStatus() != Constant.POSITION_STATUS_START){
+            throw UserAccountException.AWARD_POSITION_ALREADY_DELETED;
+        }
+        ReferralSeekRecommendRecord record = new ReferralSeekRecommendRecord();
+        record.setPostUserId(postUserId);
+        record.setPresenteeUserId(userId);
+        record.setPositionId(positionId);
+        record.setOrigin(origin);
+        int i =0;
+        int id = 0;
+        while (i<3 && id ==0){
+            id = recommendDao.insertIfNotExist(record);
+            i++;
+        }
+        if(id<=0){
+            throw UserAccountException.REFERRAL_SEEK_RECOMMEND_FAIL;
+        }
+        templateSender.publishSeekReferralEvent(postUserId, id, userId, positionId);
+    }
+
+    @Override
+    public ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws CommonException {
+        ContactPushInfo info = new ContactPushInfo();
+        ReferralSeekRecommendRecord record = recommendDao.fetchByIdAndPostUserId(referralId, postUserId);
+        if(record == null){
+            throw UserAccountException.REFERRAL_SEEK_RECOMMEND_NULL;
+        }
+        UserUserRecord user = userDao.getUserById(record.getPresenteeUserId());
+        if(user == null){
+            throw UserAccountException.NODATA_EXCEPTION;
+        }
+        info.setUserId(user.getId());
+        info.setUsername(user.getNickname());
+        if(StringUtils.isNullOrEmpty(user.getNickname())){
+            UserWxUserRecord wxUser = wxUserDao.getWXUserByUserId(user.getId());
+            if(wxUser!= null && StringUtils.isNotNullOrEmpty(wxUser.getNickname())){
+                info.setUsername(wxUser.getNickname());
+            }
+        }
+        JobPositionDO position = positionDao.getJobPositionById(record.getPositionId());
+        if(position != null){
+            info.setPositionName(position.getTitle());
+        }
+        info.setPositionId(record.getPositionId());
+        return info;
+    }
+
+    @Transactional
+    @Override
+    public void employeeReferralReason(int userId, int positionId, int postUserId, int referralId, List<String> referralReasons,
+                                       byte relationship, String recomReasonText) throws CommonException {
+
+        JobPositionDO positionDO = positionDao.getJobPositionById(positionId);
+        UserUserDO user = userDao.getUser(userId);
+        ReferralSeekRecommendRecord recommendRecord = recommendDao.fetchById(referralId);
+        if(positionDO == null || positionDO.getStatus() != 0 || recommendRecord ==null || user == null){
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        if(recommendRecord.getPostUserId()!= postUserId){
+            throw UserAccountException.REFERRAL_SEEK_RECOMMEND_NULL;
+        }
+        if(!employeeEntity.isEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId())){
+            throw UserAccountException.PERMISSION_DENIED;
+        }
+        UserEmployeeDO employee = employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId());
+        int origin = recommendRecord.getOrigin()==1 ? ApplicationSource.SEEK_REFERRAL.getValue():
+                ApplicationSource.INVITE_REFERRAL.getValue();
+        int applicationId = 0;
+        try {
+            applicationId = createJobApplication(userId, positionDO.getCompanyId(), positionId, user.getName(), origin, recommendRecord.getPostUserId());
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw CommonException.PROGRAM_EXCEPTION;
+        }
+        if(applicationId > 0) {
+            recommendDao.updateReferralSeekRecommendRecordForAppId(referralId, applicationId);
+            referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, userId, relationship, recomReasonText);
+            sender.addRecommandReward(employee, userId, applicationId, positionId);
+            sender.publishReferralEvaluateEvent(referralId, userId, positionId, applicationId, employee.getId());
+        }
+
+    }
+
+    private int createJobApplication(int userId, int companyId, int positionId, String name, int origin,
+                                     int employeeSysUserId) throws TException {
+        JobApplication jobApplication = new JobApplication();
+        jobApplication.setCompany_id(companyId);
+        jobApplication.setAppid(0);
+        jobApplication.setApplier_id(userId);
+        jobApplication.setPosition_id(positionId);
+        jobApplication.setApplier_name(name);
+        jobApplication.setOrigin(origin);
+        jobApplication.setRecommender_user_id(employeeSysUserId);
+        jobApplication.setApp_tpl_id(Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
+        Response response = applicationService.postApplication(jobApplication);
+        int applicationId = 0;
+        if (response.getStatus() == 0) {
+            JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
+            applicationId = jsonObject1.getInteger("jobApplicationId");
+        }
+        return applicationId;
+    }
 }

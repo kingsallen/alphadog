@@ -31,4 +31,13 @@ public class HrWxTemplateMessageDao extends JooqCrudImpl<HrWxTemplateMessageDO, 
                 .fetchInto(HrWxTemplateMessageDO.class);
         return result;
     }
+
+    public HrWxTemplateMessageDO getHrWxTemplateMessageDOByWechatId(Integer wechatId, int sysTemplateId){
+        HrWxTemplateMessageDO result = create.selectFrom(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE)
+                .where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.eq(wechatId))
+                .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.eq(sysTemplateId))
+                .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.eq(0))
+                .fetchOneInto(HrWxTemplateMessageDO.class);
+        return result;
+    }
 }

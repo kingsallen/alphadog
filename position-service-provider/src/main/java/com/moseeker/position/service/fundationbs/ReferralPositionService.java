@@ -13,10 +13,12 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStageDetail;
+import com.moseeker.baseorm.db.userdb.tables.daos.UserUserDao;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -62,6 +64,12 @@ public class ReferralPositionService {
 
     @Autowired
     JobPositionDao jobPositionDao;
+
+    @Autowired
+    EmployeeEntity employeeEntity;
+
+    @Autowired
+    UserUserDao userUserDao;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 

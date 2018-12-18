@@ -76,6 +76,13 @@ struct ReferralReasonInfo{
     4: optional string recomReasonText
 }
 
+struct ContactPushInfo{
+    1: optional i32 userId;
+    2: optional string username;
+    3: optional i32 positionId;
+    4: optional string positionName
+}
+
 struct ReferralCardInfo{
     1: optional i32 user_id,
     2: optional i32 company_id,
@@ -97,5 +104,12 @@ struct ConnectRadarInfo{
     2: optional i32 recomUserId,
     3: optional i32 nextUserId,
 }
+
+struct CheckEmployeeInfo{
+    1: optional i32 parentChainId,
+    2: optional i32 recomUserId,
+    3: optional i32 pid
+}
+
 
 

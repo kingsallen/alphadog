@@ -543,3 +543,11 @@ struct CenterUserInfo {
     3 : optional string name,
     4 : optional string headimg
 }
+struct PositionReferralInfo {
+    1:optional i32 userId,
+    2:optional string employeeName,
+    3:optional i32 employeeId,
+    4:optional string positionName,
+    5:optional i32 positionId
+
+}

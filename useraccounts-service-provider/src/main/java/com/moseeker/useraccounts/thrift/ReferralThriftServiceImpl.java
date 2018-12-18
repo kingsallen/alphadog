@@ -7,6 +7,7 @@ import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.thrift.gen.referral.struct.Bonus;
 import com.moseeker.thrift.gen.referral.struct.BonusList;
+import com.moseeker.thrift.gen.referral.struct.ContactPushInfo;
 import com.moseeker.thrift.gen.referral.struct.RedPacket;
 import com.moseeker.thrift.gen.referral.struct.RedPackets;
 import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
@@ -130,6 +131,24 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
+    public void addUserSeekRecommend(int userId, int postUserId, int positionId, int origin) throws BIZException, TException {
+        referralService.addReferralSeekRecommend(userId, postUserId, positionId, origin);
+    }
+
+    @Override
+    public void employeeReferralReason(int userId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText, int postUserId) throws BIZException, TException {
+        referralService.employeeReferralReason(userId, positionId, postUserId, referralId, referralReasons, relationship, recomReasonText);
+    }
+
+    @Override
+    public ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws BIZException, TException {
+        com.moseeker.useraccounts.service.impl.vo.ContactPushInfo result = referralService.fetchSeekRecommend(referralId, postUserId);
+        ContactPushInfo info = new ContactPushInfo();
+        BeanUtils.copyProperties(result, info);
+        return info;
+    }
+
+    @Override
     public String getRadarCards(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
             return referralService.getRadarCards(cardInfo);
@@ -161,6 +180,15 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     public String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException {
         try {
             return referralService.connectRadar(radarInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException {
+        try {
+            return referralService.checkEmployee(checkInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
