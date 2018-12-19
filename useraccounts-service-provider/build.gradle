@@ -1,15 +1,5 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
-    }
-}
 
 dependencies {
 
@@ -19,12 +9,9 @@ dependencies {
 
     compile deps["spring-core"]
     compile deps["spring-context"]
-//    compile deps["neo4j-kernel"]
-//    compile deps["neo4j-server"]
     compile deps["neo4j-ogm-http"]  //http驱动
     compile deps["neo4j-ogm-embedded"]   //  嵌入式驱动
     compile deps["spring-data-neo4j"]
-
     testCompile deps["junit"]
     testCompile deps["mockito"]
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
@@ -60,14 +47,6 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-shadowJar {
-    zip64 true
-    mergeServiceFiles()
-    exclude "META-INF/*.SF"
-    exclude 'META-INF/*.DSA'
-    exclude 'META-INF/*.RSA'
-    exclude "LICENSE*"
-}
 project.description = '''
     1) User Service
     2) We call them "service-provider" in this project
