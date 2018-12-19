@@ -424,6 +424,8 @@ public class ReferralServiceImpl implements ReferralService {
         JobPositionDO positionDO = positionDao.getJobPositionById(positionId);
 
         ReferralSeekRecommendRecord recommendRecord = recommendDao.getById(referralId);
+        logger.info("employeeReferralReason position:{}",positionDO);
+        logger.info("employeeReferralReason recommendRecord:{}", recommendRecord);
         if(positionDO == null || positionDO.getStatus() != 0 || recommendRecord ==null ){
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
