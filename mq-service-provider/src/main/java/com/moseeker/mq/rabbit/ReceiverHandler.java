@@ -128,7 +128,7 @@ public class ReceiverHandler {
     }
     @RabbitListener(queues = "#{sendSeekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
-    public void  seekReferralReceive(Message message, Envelope envelope){
+    public void  seekReferralReceive(Message message){
         String msgBody = "{}";
 
         try {
@@ -137,10 +137,11 @@ public class ReceiverHandler {
             Integer userId = jsonObject.getIntValue("user_id");
             Integer positionId = jsonObject.getIntValue("position_id");
             Integer referralId = jsonObject.getIntValue("referral_id");
-            if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(envelope.getRoutingKey())) {
+            log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
-            }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(envelope.getRoutingKey())){
+            }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);

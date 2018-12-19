@@ -351,7 +351,7 @@ public class ReferralPositionController {
 
 
     /**
-     * 根据PositionID获取内推奖金信息
+     * 根据user_id获取匹配的职位信息
      * @param request
      * @param response
      * @return
