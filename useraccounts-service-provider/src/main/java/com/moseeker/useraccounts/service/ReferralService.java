@@ -95,7 +95,7 @@ public interface ReferralService {
      * @author cjm
      * @date 2018/12/7
      */
-    String getRadarCards(ReferralCardInfo cardInfo);
+    String getRadarCards(ReferralCardInfo cardInfo) throws TException;
 
     /**
      * 10分钟消息模板-邀请投递
@@ -105,7 +105,7 @@ public interface ReferralService {
      * @author cjm
      * @date 2018/12/7
      */
-    String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException, ConnectException;
+    String inviteApplication(ReferralInviteInfo inviteInfo) throws TException, ConnectException;
 
     /**
      * 10分钟消息模板-我不熟悉
@@ -115,7 +115,7 @@ public interface ReferralService {
      * @author cjm
      * @date 2018/12/7
      */
-    void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo);
+    void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws TException;
 
     /**
      * 点击人脉连连看按钮/点击分享的人脉连连看页面
@@ -125,7 +125,7 @@ public interface ReferralService {
      * @author cjm
      * @date 2018/12/7
      */
-    String connectRadar(ConnectRadarInfo radarInfo);
+    String connectRadar(ConnectRadarInfo radarInfo) throws TException;
 
     /**
      * 增加候选人求内推记录信息，并通知员工
@@ -168,7 +168,7 @@ public interface ReferralService {
      * @author cjm
      * @date 2018/12/7
      */
-    String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException;
+    String checkEmployee(CheckEmployeeInfo checkInfo) throws TException;
 }
 
 

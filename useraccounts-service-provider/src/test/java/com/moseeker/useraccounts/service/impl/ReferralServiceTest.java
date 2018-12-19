@@ -6,11 +6,14 @@ import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.config.AppConfig;
+import org.apache.thrift.TException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.net.ConnectException;
 
 /**
  * @author cjm
@@ -24,7 +27,7 @@ public class ReferralServiceTest {
     private ReferralServiceImpl referralService;
 
     @Test
-    public void testGetRadar(){
+    public void testGetRadar() throws TException {
         ReferralCardInfo  cardInfo = new ReferralCardInfo();
         cardInfo.setUser_id(5283788);
         cardInfo.setTimestamp(1545034217595L);
@@ -35,7 +38,7 @@ public class ReferralServiceTest {
     }
 
     @Test
-    public void inviteApplicationTest(){
+    public void inviteApplicationTest() throws TException, ConnectException {
         ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
         inviteInfo.setCompanyId(39978);
         inviteInfo.setEndUserId(5291537);
@@ -46,7 +49,7 @@ public class ReferralServiceTest {
     }
 
     @Test
-    public void ignoreCurrentViewerTest(){
+    public void ignoreCurrentViewerTest() throws TException {
         ReferralInviteInfo ignoreInfo = new ReferralInviteInfo();
         ignoreInfo.setCompanyId(39978);
         ignoreInfo.setEndUserId(5291680);
@@ -57,13 +60,13 @@ public class ReferralServiceTest {
     }
 
     @Test
-    public void connectRadarTest(){
+    public void connectRadarTest() throws TException {
         ConnectRadarInfo radarInfo = new ConnectRadarInfo();
         referralService.connectRadar(radarInfo);
     }
 
     @Test
-    public void checkEmployeeTest() throws BIZException {
+    public void checkEmployeeTest() throws TException {
         CheckEmployeeInfo checkInfo = new CheckEmployeeInfo();
         checkInfo.setParentChainId(5044);
         checkInfo.setPid(19501370);
