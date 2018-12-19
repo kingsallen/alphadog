@@ -7,7 +7,7 @@ public class RadarConnectResult {
     private Integer degree;
     private Integer state;
     private Integer pid;
-    private List<RadarUserInfo> radarUserInfos;
+    private List<RadarUserInfo> chain;
 
     public Integer getDegree() {
         return degree;
@@ -33,11 +33,11 @@ public class RadarConnectResult {
         this.pid = pid;
     }
 
-    public List<RadarUserInfo> getRadarUserInfos() {
-        return radarUserInfos;
+    public List<RadarUserInfo> getChain() {
+        return chain;
     }
 
-    public void setRadarUserInfos(List<RadarUserInfo> radarUserInfos) {
-        this.radarUserInfos = radarUserInfos;
+    public void setChain(List<RadarUserInfo> chain) {
+        this.chain = chain;
     }
 }

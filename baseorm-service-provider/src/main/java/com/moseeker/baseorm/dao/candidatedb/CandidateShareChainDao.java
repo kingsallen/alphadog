@@ -5,8 +5,6 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRecord;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
-import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -19,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.count;
-import static org.jooq.impl.DSL.e;
 
 /**
  * Created by jack on 15/02/2017.
@@ -107,40 +104,10 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         }
     }
 
-//    public void updateTypeByIds(List<Integer> chainIds, int type) {
-//        create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-//                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE,(byte)type)
-//                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.in(chainIds))
-//                .execute();
-//    }
-
-    public List<CandidateShareChainDO> getRadarCardsByPid(ReferralInviteInfo inviteInfo) {
-        Timestamp tenMinite = new Timestamp(inviteInfo.getTimestamp());
-        Timestamp beforeTenMinite = new Timestamp(inviteInfo.getTimestamp() - 1000 * 60 * 10);
-        List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(inviteInfo.getUserId()))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.between(beforeTenMinite, tenMinite))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.eq(inviteInfo.getPid()))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(0))
-                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH)
-                .fetchInto(CandidateShareChainDO.class);
-        if(list == null){
-            return new ArrayList<>();
-        }else {
-            return list;
-        }
-    }
-
     public CandidateShareChainDO getRecordById(int parentChainId) {
         return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(parentChainId))
                 .fetchOneInto(CandidateShareChainDO.class);
     }
 
-//    public int updateTypeById(int chainId, int type) {
-//        return create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-//                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)type)
-//                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(chainId))
-//                .execute();
-//    }
 }
