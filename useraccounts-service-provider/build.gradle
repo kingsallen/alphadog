@@ -32,6 +32,7 @@ tasks.withType(JavaCompile) {
 }
 jar {
 
+    zip64 true
     // build one flat jar
      from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
