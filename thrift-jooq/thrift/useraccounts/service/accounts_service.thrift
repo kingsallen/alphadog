@@ -274,4 +274,6 @@ service UserEmployeeService {
     common_struct.Response getPastUserEmployee(1: i32 company_id) throws (1:common_struct.BIZException e);
 
     useraccounts_struct.Pagination getContributions(1: i32 companyId, 2: i32 pageNum, 3: i32 pageSize) throws (1:common_struct.BIZException e);
+
+    useraccounts_struct.PositionReferralInfo getPositionReferralInfo(1: i32 userId, 2:i32 positionId)  throws (1: common_struct.BIZException e);
 }

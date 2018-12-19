@@ -467,3 +467,4 @@ struct ReferralPositionBonusStageDetailDO {
     6:optional i32 stage_type
 
 }
+

@@ -78,4 +78,11 @@ struct ReferralReasonInfo{
     4: optional string recomReasonText
 }
 
+struct ContactPushInfo{
+    1: optional i32 userId;
+    2: optional string username;
+    3: optional i32 positionId;
+    4: optional string positionName
+}
+
 
