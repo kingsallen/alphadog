@@ -77,7 +77,6 @@ public class AppConfig {
     }
 
     @Bean
-    @Primary
     public DataSourceTransactionManager transactionManager() {
         return new DataSourceTransactionManager(lazyConnectionDataSource());
     }
