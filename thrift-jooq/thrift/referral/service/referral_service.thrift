@@ -33,7 +33,7 @@ service ReferralService {
     //候选人求推荐记录保存
     void addUserSeekRecommend(1:i32 userId, 2:i32 postUserId, 3:i32 positionId, 4: i32 origin)throws (1: common_struct.BIZException e);
     //员工推荐评价
-    void employeeReferralReason(1: i32 userId, 2:i32 positionId, 3:i32 referralId, 4: list<string> referralReasons, 5: i8 relationship, 6: string recomReasonText, 7: i32 postUserId) throws (1: common_struct.BIZException e);
+    void employeeReferralReason(1: i32 postUserId, 2:i32 positionId, 3:i32 referralId, 4: list<string> referralReasons, 5: i8 relationship, 6: string recomReasonText) throws (1: common_struct.BIZException e);
     //候选人联系内推模板消息发送之后员工点击之后展示内容
     referral_struct.ContactPushInfo fetchSeekRecommend(1: i32 referralId, 2:i32 postUserId) throws (1: common_struct.BIZException e);
     // 候选人打开职位连接判断推荐人是否是员工

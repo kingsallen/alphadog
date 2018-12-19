@@ -74,7 +74,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
     }
 
-    public ReferralSeekRecommendRecord fetchById(int referralId){
+    public ReferralSeekRecommendRecord getById(int referralId){
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
                 .fetchOneInto(ReferralSeekRecommendRecord.class);

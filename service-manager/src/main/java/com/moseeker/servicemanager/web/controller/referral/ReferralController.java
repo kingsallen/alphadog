@@ -763,9 +763,8 @@ public class ReferralController {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", form
                 .getAppid());
-        validateUtil.addRequiredValidate("用户编号", form.getUserId());
         validateUtil.addRequiredValidate("职位编号", form.getPositionId());
-        validateUtil.addRequiredValidate("员工user编号", form.getPostUseId());
+        validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
         validateUtil.addRequiredValidate("内推编号", form.getReferralId());
         validateUtil.addRequiredValidate("推荐人与被推荐人关系", form.getRelationship());
         validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
@@ -778,8 +777,8 @@ public class ReferralController {
         }
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            referralService.employeeReferralReason(form.getUserId(),form.getPostUseId(), form.getReferralId(), form.getReferralReasons(),
-                    form.getRelationship(), form.getRecomReasonText(), form.getPostUseId());
+            referralService.employeeReferralReason(form.getPostUserId(),form.getPositionId(), form.getReferralId(), form.getReferralReasons(),
+                    form.getRelationship(), form.getRecomReasonText());
             return Result.success().toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();

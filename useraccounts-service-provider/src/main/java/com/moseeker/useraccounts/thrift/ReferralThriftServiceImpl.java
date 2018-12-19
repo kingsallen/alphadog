@@ -148,9 +148,9 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public void employeeReferralReason(int userId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText, int postUserId) throws BIZException, TException {
+    public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
         try{
-            referralService.employeeReferralReason(userId, positionId, postUserId, referralId, referralReasons, relationship, recomReasonText);
+            referralService.employeeReferralReason(postUserId, positionId,  referralId, referralReasons, relationship, recomReasonText);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
