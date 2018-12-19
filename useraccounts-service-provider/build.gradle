@@ -49,6 +49,15 @@ jar {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
+shadowJar {
+    zip64 true
+    mergeServiceFiles()
+    exclude "META-INF/*.SF"
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    exclude "LICENSE*"
+}
 project.description = '''
     1) User Service
     2) We call them "service-provider" in this project
