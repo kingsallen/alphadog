@@ -520,6 +520,10 @@ public class ChatService {
     /**
      * 添加聊天内容，并修改未读消息数量
      *
+     * 应Mobot需求，去除聊天保存限制
+     *
+     * 如以后有数据问题，可以先查询是否为Mobot入库数据
+     *
      * @param chat 聊天信息
      */
 
