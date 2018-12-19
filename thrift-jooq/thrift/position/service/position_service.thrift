@@ -150,7 +150,7 @@ service ReferralPositionServices{
     common_struct.Response getPointsConfig(1:i32 companyId);
     common_struct.Response putReferralPositionBonus(1:position_struct.ReferralPositionBonusVO referralPositionBonusVO);
     position_struct.ReferralPositionBonusVO getReferralPositionBonus(1:i32 positionId);
-
+    list<position_struct.ReferralPositionMatchDO> getMatchPositionInfo(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
 }
 
 /*

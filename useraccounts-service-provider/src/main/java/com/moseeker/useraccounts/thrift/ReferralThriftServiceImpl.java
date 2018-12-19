@@ -122,30 +122,50 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
 
     @Override
     public void handerKeyInformationStatus(int companyId, int keyInformation) throws BIZException, TException {
-        referralService.handerKeyInformationStatus(companyId, keyInformation);
+        try {
+            referralService.handerKeyInformationStatus(companyId, keyInformation);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public int fetchKeyInformationStatus(int companyId) throws BIZException, TException {
-        return referralService.fetchKeyInformationStatus(companyId);
+        try{
+            return referralService.fetchKeyInformationStatus(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public void addUserSeekRecommend(int userId, int postUserId, int positionId, int origin) throws BIZException, TException {
-        referralService.addReferralSeekRecommend(userId, postUserId, positionId, origin);
+        try{
+            referralService.addReferralSeekRecommend(userId, postUserId, positionId, origin);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public void employeeReferralReason(int userId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText, int postUserId) throws BIZException, TException {
-        referralService.employeeReferralReason(userId, positionId, postUserId, referralId, referralReasons, relationship, recomReasonText);
+        try{
+            referralService.employeeReferralReason(userId, positionId, postUserId, referralId, referralReasons, relationship, recomReasonText);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws BIZException, TException {
-        com.moseeker.useraccounts.service.impl.vo.ContactPushInfo result = referralService.fetchSeekRecommend(referralId, postUserId);
-        ContactPushInfo info = new ContactPushInfo();
-        BeanUtils.copyProperties(result, info);
-        return info;
+        try{
+            com.moseeker.useraccounts.service.impl.vo.ContactPushInfo result = referralService.fetchSeekRecommend(referralId, postUserId);
+            ContactPushInfo info = new ContactPushInfo();
+            BeanUtils.copyProperties(result, info);
+            return info;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
 
