@@ -196,6 +196,7 @@ public class TemplateMsgHttp {
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
 
+
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
                     String url=env.getProperty("message.template.delivery.url").replace("{}", hrChatDO.getAccessToken());
@@ -307,8 +308,10 @@ public class TemplateMsgHttp {
         applierTemplate.put("touser", postWxUser.getOpenid());
         applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
         applierTemplate.put("topcolor", "#FF0000");
-        applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", wxWechatDO.getSignature()));
-
+        applierTemplate.put("url", env.getProperty("message.template.delivery.applier.link")
+                .replace("{}", String.valueOf(applicationId))+"?wechat_signature="+wxWechatDO.getSignature()
+                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + new Date().getTime()
+        );
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
         String url=env.getProperty("message.template.delivery.url").replace("{}", wxWechatDO.getAccessToken());
@@ -405,7 +408,10 @@ public class TemplateMsgHttp {
         applierTemplate.put("touser", postWxUser.getOpenid());
         applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
         applierTemplate.put("topcolor", "#FF0000");
-        applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", wxWechatDO.getSignature()));
+        applierTemplate.put("url", env.getProperty("message.template.employee.recommend")
+                .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
+                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime()
+        );
 
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 

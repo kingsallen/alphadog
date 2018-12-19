@@ -27,7 +27,8 @@ public enum RecruitmentScheduleEnum {
     CV_PASSED(Constant.RECRUIT_STATUS_CVPASSED),
     OFFER_ACCEPT(Constant.RECRUIT_STATUS_OFFERACCEPTED),
     OFFERED(Constant.RECRUIT_STATUS_OFFERED),
-    IMPROVE_CANDIDATE(Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
+    IMPROVE_CANDIDATE(Constant.RECRUIT_STATUS_FULL_RECOM_INFO),
+    EMPLOYEE_RECOMMEND(Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
 
     RecruitmentScheduleEnum(int value) {
         init(value);
@@ -331,6 +332,16 @@ public enum RecruitmentScheduleEnum {
                 this.recuritOrder = 2;
                 this.applierView = "";
                 break;
+            case 16:
+                this.id = value;
+                this.status = "内部员工推荐";
+                this.award = 20;
+                this.description = "联系内推员工完善推荐评价投递职位";
+                this.disable = true;
+                this.priority = 2;
+                this.recuritOrder = 2;
+                this.applierView = "员工推荐评价投递职位";
+                break;
         }
     }
 
@@ -435,6 +446,12 @@ public enum RecruitmentScheduleEnum {
         if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
             if (StringUtils.isNotBlank(name)) {
                 return name+"推荐了您的简历";
+            }
+            return "恭喜您已被内部员工推荐";
+        }
+        if (id == RecruitmentScheduleEnum.EMPLOYEE_RECOMMEND.getId()) {
+            if (StringUtils.isNotBlank(name)) {
+                return "【"+name+"】推荐了您的简历";
             }
             return "恭喜您已被内部员工推荐";
         }

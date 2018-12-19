@@ -349,6 +349,34 @@ public class ReferralPositionController {
         }
     }
 
+
+    /**
+     * 根据PositionID获取内推奖金信息
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/v1/match/position", method = RequestMethod.GET)
+    @ResponseBody
+    public String getReferralPositionMatch(HttpServletRequest request, HttpServletResponse response) {
+        try {
+
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            ValidateUtil validateUtil = new ValidateUtil();
+            Integer userId = params.getInt("user_id");
+            Integer companyId = params.getInt("company_id");
+            validateUtil.addRequiredValidate("user_id", userId);
+            validateUtil.addRequiredValidate("company_id", companyId);
+            if (org.apache.commons.lang.StringUtils.isNotBlank(validateUtil.validate())) {
+                return ResponseLogNotification.failJson(request, validateUtil.getResult());
+            }
+            List<ReferralPositionMatchDO> match =  referralPositionService.getMatchPositionInfo(userId,companyId);
+            return ResponseLogNotification.successJson(request, match);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     private ReferralPositionBonusVO convertReferralPositionBonusVO(ReferralBonusForm referralBonusForm) {
         Integer positionId = referralBonusForm.getPosition_id();
         List<ReferralBonusStageData> datas = referralBonusForm.getStage_data();
