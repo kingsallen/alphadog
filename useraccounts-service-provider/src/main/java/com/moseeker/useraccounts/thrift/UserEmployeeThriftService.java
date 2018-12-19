@@ -195,7 +195,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
             PositionReferralInfo referralInfo = new PositionReferralInfo();
             BeanUtils.copyProperties(info, referralInfo);
-        return referralInfo;
+            return referralInfo;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
