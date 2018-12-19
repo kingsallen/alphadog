@@ -1,7 +1,16 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
-  
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.1'
+    }
+}
+
 dependencies {
 
     compile project(":rpc-center")
