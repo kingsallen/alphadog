@@ -8,7 +8,7 @@ import java.util.List;
 public class ReferralEvaluateForm {
 
     private int appid;
-    private int postUseId;
+    private int postUserId;
     private int positionId;
     private int referralId;
     private List<String> referralReasons;
@@ -23,12 +23,12 @@ public class ReferralEvaluateForm {
         this.appid = appid;
     }
 
-    public int getPostUseId() {
-        return postUseId;
+    public int getPostUserId() {
+        return postUserId;
     }
 
-    public void setPostUseId(int postUseId) {
-        this.postUseId = postUseId;
+    public void setPostUserId(int postUserId) {
+        this.postUserId = postUserId;
     }
 
     public int getPositionId() {

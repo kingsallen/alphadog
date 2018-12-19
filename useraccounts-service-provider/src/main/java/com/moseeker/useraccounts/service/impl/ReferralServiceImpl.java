@@ -17,6 +17,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
@@ -421,11 +422,9 @@ public class ReferralServiceImpl implements ReferralService {
     public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) throws CommonException {
 
-        JobPositionDO positionDO = positionDao.getJobPositionById(positionId);
+        JobPositionRecord positionDO = positionDao.getPositionById(positionId);
 
         ReferralSeekRecommendRecord recommendRecord = recommendDao.getById(referralId);
-        logger.info("employeeReferralReason position:{}",positionDO);
-        logger.info("employeeReferralReason recommendRecord:{}", recommendRecord);
         if(positionDO == null || positionDO.getStatus() != 0 || recommendRecord ==null ){
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
