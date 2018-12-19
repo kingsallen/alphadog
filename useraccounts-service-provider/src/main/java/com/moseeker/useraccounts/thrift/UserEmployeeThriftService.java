@@ -191,9 +191,13 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId) throws BIZException, TException {
-        com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
-        PositionReferralInfo referralInfo = new PositionReferralInfo();
-        BeanUtils.copyProperties(info, referralInfo);
+        try {
+            com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
+            PositionReferralInfo referralInfo = new PositionReferralInfo();
+            BeanUtils.copyProperties(info, referralInfo);
         return referralInfo;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 }
