@@ -19,6 +19,7 @@ import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,7 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXC
  */
 @Configuration
 @EnableRabbit
-@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
+@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface"})
 @PropertySource("classpath:common.properties")
 @EnableNeo4jRepositories("com.moseeker.useraccounts.repository")
 @Import({com.moseeker.baseorm.config.AppConfig.class})

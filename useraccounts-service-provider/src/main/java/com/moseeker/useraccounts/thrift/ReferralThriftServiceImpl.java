@@ -168,5 +168,50 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         }
     }
 
+    @Override
+    public String getRadarCards(ReferralCardInfo cardInfo) throws BIZException, TException {
+        try {
+            return referralService.getRadarCards(cardInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException, TException {
+        try {
+            return referralService.inviteApplication(inviteInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException, TException {
+        try {
+            referralService.ignoreCurrentViewer(ignoreInfo);
+            return "success";
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException {
+        try {
+            return referralService.connectRadar(radarInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException {
+        try {
+            return referralService.checkEmployee(checkInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
 }

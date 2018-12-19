@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTheme extends TableImpl<ConfigSysThemeRecord> {
 
-    private static final long serialVersionUID = 1411823767;
+    private static final long serialVersionUID = -1577232583;
 
     /**
      * The reference instance of <code>configdb.config_sys_theme</code>
@@ -104,7 +104,7 @@ public class ConfigSysTheme extends TableImpl<ConfigSysThemeRecord> {
     /**
      * The column <code>configdb.config_sys_theme.company_id</code>. hr_company.id, 用于隔离企业自定义的颜色
      */
-    public final TableField<ConfigSysThemeRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_company.id, 用于隔离企业自定义的颜色");
+    public final TableField<ConfigSysThemeRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "hr_company.id, 用于隔离企业自定义的颜色");
 
     /**
      * Create a <code>configdb.config_sys_theme</code> table reference
