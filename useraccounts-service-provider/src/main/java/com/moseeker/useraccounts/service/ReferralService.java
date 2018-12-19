@@ -158,7 +158,7 @@ public interface ReferralService {
      * @param recomReasonText
      * @throws CommonException
      */
-    void employeeReferralReason(int userId, int positionId, int postUserId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
+    void employeeReferralReason(int postUserId, int positionId,  int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
 
     /**
      * 候选人打开职位连接判断推荐人是否是员工
