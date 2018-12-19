@@ -47,17 +47,12 @@ public class TemplateHelper {
     @Autowired
     private HrWxTemplateMessageDao wxTemplateMessageDao;
 
-    @Autowired
-    private UserWxUserDao userWxUserDao;
-
-    public void sendInviteTemplate(int endUserId, int companyId, InviteTemplateVO inviteTemplateVO, String requestUrl, String redirectUrl) throws ConnectException, BIZException {
-        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(), companyId).buildQuery());
-        UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(endUserId, hrWxWechatDO.getId());
+    public Map<String, Object> sendInviteTemplate(HrWxWechatDO hrWxWechatDO, String openId, InviteTemplateVO inviteTemplateVO, String requestUrl, String redirectUrl) throws ConnectException, BIZException {
         HrWxTemplateMessageDO hrWxTemplateMessageDO = getHrWxTemplateMessageByWechatIdAndSysTemplateId(hrWxWechatDO, inviteTemplateVO.getTemplateId());
         Map<String, Object> requestMap = new HashMap<>(1 >> 4);
         Map<String, TemplateBaseVO> dataMap = createDataMap(inviteTemplateVO);
         requestMap.put("data", dataMap);
-        requestMap.put("touser", userWxUserRecord.getOpenid());
+        requestMap.put("touser", openId);
         requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
         requestMap.put("url", redirectUrl);
         requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
@@ -68,6 +63,7 @@ public class TemplateHelper {
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
         wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getTemplateId(), hrWxWechatDO.getId(), requestMap);
+        return params;
     }
 
     private Map<String,TemplateBaseVO> createDataMap(InviteTemplateVO inviteTemplateVO) {

@@ -167,14 +167,19 @@ public class RadarUserInfo {
      * @return   当前链路用户信息
      */
     public RadarUserInfo fillOrderFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        Integer order = null;
         int parentId = 0;
         for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getRecomUserId() == userDO.getSysuserId() && chainRecord.getParentId() == 0){
+                order = 1;
+                break;
+            }
             if(chainRecord.getNextUserId() == userDO.getSysuserId()){
                 parentId = chainRecord.getParentId();
+                order = 2;
                 break;
             }
         }
-        Integer order = 0;
         order = getOrderByRecurrence(order, parentId, chainRecords);
         setOrder(order);
         return this;
@@ -190,8 +195,11 @@ public class RadarUserInfo {
      * @return 排序后的序号
      */
     private Integer getOrderByRecurrence(Integer order, int parentId, List<ReferralConnectionChainRecord> chainRecords) {
+        if(order == null){
+            return null;
+        }
         if(parentId == 0){
-            return ++order;
+            return order;
         }
         for(ReferralConnectionChainRecord chainRecord : chainRecords) {
             if(chainRecord.getId() == parentId){

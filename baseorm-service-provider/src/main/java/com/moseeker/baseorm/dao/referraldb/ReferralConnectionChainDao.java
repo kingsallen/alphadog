@@ -66,4 +66,8 @@ public class ReferralConnectionChainDao {
                 .where(REFERRAL_CONNECTION_CHAIN.ID.in(linkedIds))
                 .execute();
     }
+
+    public void updateRecords(List<ReferralConnectionChainRecord> connectionChainRecords) {
+        create.batchUpdate(connectionChainRecords).execute();
+    }
 }

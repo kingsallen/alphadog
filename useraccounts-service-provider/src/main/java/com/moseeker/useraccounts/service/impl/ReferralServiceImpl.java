@@ -396,7 +396,7 @@ public class ReferralServiceImpl implements ReferralService {
         // 将员工过滤掉，获取职位浏览人中非员工的userId
         getUnEmployeeUserIds(beRecomUserIds);
         if(beRecomUserIds.size() == 0){
-            return null;
+            return "";
         }
         // 后边需要用到员工头像和昵称，在这里一并查出来
         Set<Integer> allUsers = new HashSet<>(beRecomUserIds);
@@ -408,7 +408,7 @@ public class ReferralServiceImpl implements ReferralService {
         // 通过职位浏览人idSet和10分钟时间段获取转发的信息
         List<CandidatePositionShareRecordDO> positionShareDOS = positionShareRecordDao.fetchPositionShareByUserIds(beRecomUserIds, cardInfo.getUser_id(), beforeTenMinite, tenMinite);
         if(positionShareDOS.size() == 0){
-            return null;
+            return "";
         }
         List<Integer> positionIds = positionShareDOS.stream().map(positionShareDO -> (int)positionShareDO.getPositionId()).distinct().collect(Collectors.toList());
         List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(positionIds);
@@ -435,7 +435,7 @@ public class ReferralServiceImpl implements ReferralService {
         JSONObject result = new JSONObject();
         // 检验是否关注公众号
         if(!checkIsSubscribe(inviteInfo.getEndUserId(), inviteInfo.getCompanyId())){
-            return null;
+            return "";
         }
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
@@ -447,11 +447,15 @@ public class ReferralServiceImpl implements ReferralService {
             result.put("chain_id", doInsertConnection(connectionLogRecord, shortestChain, inviteInfo));
         }
         // 组装连连看链路返回数据
-        result.put("chain", doInitRadarUsers(shortestChain));
+        Set<Integer> userIds = new HashSet<>(shortestChain);
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(inviteInfo.getCompanyId());
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(userIds, hrWxWechatDO.getId());
+        Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
+        result.put("chain", doInitRadarUsers(shortestChain, idUserMap));
         // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
         candidatePositionDao.updateTypeByPidAndUid(inviteInfo.getPid(), inviteInfo.getEndUserId());
         // 发送消息模板
-        boolean isSent = sendInviteTemplate(inviteInfo);
+        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
         result.put("notified", isSent ? 1 : 0);
         result.put("degree", shortestChain.size());
         return JSON.toJSONString(result);
@@ -467,13 +471,13 @@ public class ReferralServiceImpl implements ReferralService {
     public String connectRadar(ConnectRadarInfo radarInfo) {
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(radarInfo.getChainId());
         if(connectionLogRecord == null){
-            return null;
+            return "";
         }
         List<ReferralConnectionChainRecord> chainRecords = connectionChainDao.fetchChainsByRootChainId(connectionLogRecord.getRootChainId());
         Set<Integer> userIds = getChainRecordsUserIds(chainRecords);
         // 检验当前参数：recomUserId/nextUserId是否在链路中
         if(!userIds.contains(radarInfo.getNextUserId()) || !userIds.contains(radarInfo.getRecomUserId())){
-            return null;
+            return "";
         }
         // todo 校验当前链接是否合法
         ReferralConnectionChainRecord currentRecord = null;
@@ -492,6 +496,7 @@ public class ReferralServiceImpl implements ReferralService {
                 connectionChainDao.updateRecord(currentRecord);
             }
         }
+        // todo 反向链接
         UserEmployeeRecord userEmployee = userEmployeeDao.getActiveEmployee(connectionLogRecord.getRootUserId(), connectionLogRecord.getCompanyId());
         // 获取排好序并包括连接状态的人脉连连看链路
         List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
@@ -671,13 +676,12 @@ public class ReferralServiceImpl implements ReferralService {
         return endUserRecord != null && endUserRecord.getIsSubscribe() != 0;
     }
 
-    private List<RadarUserInfo> doInitRadarUsers(List<Integer> shortestChain) {
+    private List<RadarUserInfo> doInitRadarUsers(List<Integer> shortestChain, Map<Integer, UserWxUserDO> idUserMap) {
         // 最短路径的userChains信息
         List<RadarUserInfo> userChains = new ArrayList<>();
-        List<UserWxUserRecord> userRecords = wxUserDao.getWXUserMapByUserIds(shortestChain);
-        for(UserWxUserRecord userRecord : userRecords){
+        for(Integer userId : shortestChain){
             RadarUserInfo userInfo = new RadarUserInfo();
-            userChains.add(userInfo.initFromUserWxUser(userRecord));
+            userChains.add(userInfo.initFromUserWxUser(idUserMap.get(userId)));
         }
         return userChains;
     }
@@ -740,6 +744,7 @@ public class ReferralServiceImpl implements ReferralService {
         int rootParentId = connectionChainRecords.get(0).getId();
         // 填充parentId, rootParentId
         fillParentChainId(connectionChainRecords, rootParentId);
+        connectionChainDao.updateRecords(connectionChainRecords);
         return rootParentId;
     }
 
@@ -775,24 +780,38 @@ public class ReferralServiceImpl implements ReferralService {
     /**
      * 邀请投递发送消息模板
      * @param  inviteInfo 邀请投递相关参数
+     * @param hrWxWechatDO
      * @author  cjm
      * @date  2018/12/13
      * @return  是否发送成功
      */
-    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo) {
+    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS) {
         try{
+            UserWxUserDO userWxUserDO = getWxUser(inviteInfo.getEndUserId(), userWxUserDOS);
+            if(userWxUserDO == null){
+                return false;
+            }
             UserEmployeeDO employee = employeeEntity.getCompanyEmployee(inviteInfo.getUserId(), inviteInfo.getCompanyId());
             JobPositionDO jobPosition = positionDao.getJobPositionById(inviteInfo.getPid());
             HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
             InviteTemplateVO inviteTemplateVO = initTemplateVO(jobPosition, hrCompanyDO, employee);
             String redirectUrl = environment.getProperty("template.referral.show.url");
-            String requestUrl = environment.getProperty("template.referral.invite.url");
-            templateHelper.sendInviteTemplate(inviteInfo.getEndUserId(), inviteInfo.getCompanyId(), inviteTemplateVO, requestUrl, redirectUrl);
-            return true;
+            String requestUrl = environment.getProperty("template.referral.invite.url").replace("{}", hrWxWechatDO.getAccessToken());
+            Map<String, Object> response = templateHelper.sendInviteTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
+            return "0".equals(response.get("errcode"));
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
         }
         return false;
+    }
+
+    private UserWxUserDO getWxUser(int endUserId, List<UserWxUserDO> userWxUserDOS) {
+        for(UserWxUserDO userWxUserDO : userWxUserDOS){
+            if(userWxUserDO.getSysuserId() == endUserId){
+                return userWxUserDO;
+            }
+        }
+        return null;
     }
 
     private InviteTemplateVO initTemplateVO(JobPositionDO jobPosition, HrCompanyDO hrCompanyDO, UserEmployeeDO employee) {

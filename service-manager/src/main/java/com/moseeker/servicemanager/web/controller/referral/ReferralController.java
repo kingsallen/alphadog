@@ -810,9 +810,8 @@ public class ReferralController {
             BeanUtils.copyProperties(radarForm, radarInfo);
             String jsonResult = referralService.connectRadar(radarInfo);
             jsonResult = (jsonResult == null ? "":jsonResult);
-            //
-            ReferralInfoCache referralInfoCache = JSONObject.parseObject(jsonResult, ReferralInfoCache.class);
-            return Result.success(referralInfoCache).toJson();
+            JSONObject response = JSONObject.parseObject(jsonResult);
+            return Result.success(response).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
