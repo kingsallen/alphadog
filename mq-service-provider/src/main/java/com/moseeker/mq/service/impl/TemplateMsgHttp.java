@@ -330,6 +330,7 @@ public class TemplateMsgHttp {
         UserUserDO user = userDao.getUser(userId);
         if(user == null){
             logger.info("求内推候选人数据为空");
+            return;
         }
         String username = user.getNickname();
         if(StringUtils.isNullOrEmpty(username)) {
