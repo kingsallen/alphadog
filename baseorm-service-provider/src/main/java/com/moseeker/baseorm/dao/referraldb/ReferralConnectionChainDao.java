@@ -47,10 +47,9 @@ public class ReferralConnectionChainDao {
     }
 
     public ReferralConnectionChainRecord insertRecord(ReferralConnectionChainRecord newChainRecord) {
-        return create.insertInto(REFERRAL_CONNECTION_CHAIN)
-                .values(newChainRecord)
-                .returning()
-                .fetchOne();
+        create.attach(newChainRecord);
+        newChainRecord.insert();
+        return newChainRecord;
     }
 
     public ReferralConnectionChainRecord updateRecord(ReferralConnectionChainRecord chainRecord) {

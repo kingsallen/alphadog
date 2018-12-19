@@ -96,9 +96,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private ReferralConnectionLogDao connectionLogDao;
 
     @Autowired
-    private Environment environment;
-
-    @Autowired
     private HrWxWechatDao wechatDao;
 
     @Autowired
@@ -220,7 +217,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         // 检验是否需要新增链路
         if(currentRecord == null && !isReverseLink){
-            chainRecords.add(insertExtraRecord(radarInfo, chainRecords));
+            ReferralConnectionChainRecord extraRecord = insertExtraRecord(radarInfo, chainRecords);
+            chainRecords.add(extraRecord);
+            logger.info("addConnection，userId:{}，endUserId:{}", radarInfo.getRecomUserId(), radarInfo.getNextUserId());
+            neo4jService.addConnRelation(radarInfo.getRecomUserId(), radarInfo.getNextUserId(), extraRecord.getId(), connectionLogRecord.getPositionId());
         }else {
             if(currentRecord != null && currentRecord.getState() != 1){
                 // 已有链路，修改连接状态
