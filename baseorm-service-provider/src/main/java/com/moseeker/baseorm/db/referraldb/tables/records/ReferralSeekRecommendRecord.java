@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSeekRecommendRecord> implements Record8<Integer, Integer, Integer, Integer, Integer, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = -214900652;
+    private static final long serialVersionUID = -1673071596;
 
     /**
      * Setter for <code>referraldb.referral_seek_recommend.id</code>.
@@ -131,14 +131,14 @@ public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSee
     }
 
     /**
-     * Setter for <code>referraldb.referral_seek_recommend.origin</code>. 间接内推来源，1 直接转发求内推，2连连看转发求内推 
+     * Setter for <code>referraldb.referral_seek_recommend.origin</code>.
      */
     public void setOrigin(Integer value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_seek_recommend.origin</code>. 间接内推来源，1 直接转发求内推，2连连看转发求内推 
+     * Getter for <code>referraldb.referral_seek_recommend.origin</code>.
      */
     public Integer getOrigin() {
         return (Integer) get(7);

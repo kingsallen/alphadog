@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary implements Serializable {
 
-    private static final long serialVersionUID = 793797446;
+    private static final long serialVersionUID = -1884090126;
 
     private Integer id;
     private String  title;

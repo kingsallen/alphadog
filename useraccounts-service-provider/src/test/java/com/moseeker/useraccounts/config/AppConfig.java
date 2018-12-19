@@ -19,6 +19,8 @@ import org.springframework.retry.support.RetryTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+
 /**
  * Created by lucky8987 on 17/5/12.
  */
@@ -129,12 +131,102 @@ public class AppConfig {
         return queue;
     }
 
-
-
     @Bean
     public List<Binding> webBindingPreset() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(presetQueue()).to(webPresetExchange()).with("preset.response"));
+        }};
+    }
+
+    @Bean
+    public Queue followWechatQueue() {
+        Queue queue = new Queue("user_follow_wechat_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange followWechatExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_follow_wechat_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> bingFollowWechat() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(followWechatQueue()).to(followWechatExchange())
+                    .with("user_follow_wechat_check_employee_identity"));
+        }};
+    }
+
+    @Bean
+    public Queue unFollowWechatQueue() {
+        Queue queue = new Queue("user_unfollow_wechat_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange unFollowWechatExchange() {
+        TopicExchange topicExchange = new TopicExchange("user_unfollow_wechat_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> bingUnFollowWechat() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(unFollowWechatQueue()).to(unFollowWechatExchange())
+                    .with("user_unfollow_wechat_check_employee_identity"));
+        }};
+    }
+
+    @Bean
+    public Queue clearUnViewdUpVoteQueue() {
+        Queue queue = new Queue("employee_view_leader_board_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange clearUnViewdUpVoteExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_view_leader_board_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public List<Binding> binglearUnViewdUpVote() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(clearUnViewdUpVoteQueue()).to(clearUnViewdUpVoteExchange())
+                    .with("employee_view_leader_board_routing_key"));
+        }};
+    }
+
+    @Bean
+    public Queue addBonusQueue() {
+        Queue queue = new Queue("add_bonus_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public TopicExchange addBonusExchange() {
+        TopicExchange topicExchange = new TopicExchange("application_state_change_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public TopicExchange employeeRegisterExchange() {
+        return new TopicExchange("employee_first_register_exchange", true, false);
+    }
+
+    @Autowired
+    public Queue employeeRegisterQueue() {
+        return new Queue("add_redpacket_queue", true, false, false);
+    }
+
+    @Bean
+    public List<Binding> bindBonus() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
+                    .with("application_state_change_routingkey.change_state"));
+            add(BindingBuilder.bind(employeeRegisterQueue()).to(employeeRegisterExchange())
+                    .with(EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY));
         }};
     }
 }

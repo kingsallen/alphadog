@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 推荐人推荐理由信息
+ * 候选人查看职位详情次数
  */
 @Generated(
     value = {
@@ -23,19 +23,19 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomEvaluation implements Serializable {
 
-    private static final long serialVersionUID = 1366003067;
+    private static final long serialVersionUID = 135436035;
 
     private Integer   id;
     private Integer   postUserId;
     private Integer   presenteeUserId;
     private String    mobile;
     private Integer   appId;
-    private Integer   positionId;
     private String    recomReasonTag;
     private Byte      relationship;
     private String    recomReasonText;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   positionId;
 
     public ReferralRecomEvaluation() {}
 
@@ -45,12 +45,12 @@ public class ReferralRecomEvaluation implements Serializable {
         this.presenteeUserId = value.presenteeUserId;
         this.mobile = value.mobile;
         this.appId = value.appId;
-        this.positionId = value.positionId;
         this.recomReasonTag = value.recomReasonTag;
         this.relationship = value.relationship;
         this.recomReasonText = value.recomReasonText;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.positionId = value.positionId;
     }
 
     public ReferralRecomEvaluation(
@@ -59,24 +59,24 @@ public class ReferralRecomEvaluation implements Serializable {
         Integer   presenteeUserId,
         String    mobile,
         Integer   appId,
-        Integer   positionId,
         String    recomReasonTag,
         Byte      relationship,
         String    recomReasonText,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   positionId
     ) {
         this.id = id;
         this.postUserId = postUserId;
         this.presenteeUserId = presenteeUserId;
         this.mobile = mobile;
         this.appId = appId;
-        this.positionId = positionId;
         this.recomReasonTag = recomReasonTag;
         this.relationship = relationship;
         this.recomReasonText = recomReasonText;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.positionId = positionId;
     }
 
     public Integer getId() {
@@ -119,14 +119,6 @@ public class ReferralRecomEvaluation implements Serializable {
         this.appId = appId;
     }
 
-    public Integer getPositionId() {
-        return this.positionId;
-    }
-
-    public void setPositionId(Integer positionId) {
-        this.positionId = positionId;
-    }
-
     public String getRecomReasonTag() {
         return this.recomReasonTag;
     }
@@ -167,6 +159,14 @@ public class ReferralRecomEvaluation implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getPositionId() {
+        return this.positionId;
+    }
+
+    public void setPositionId(Integer positionId) {
+        this.positionId = positionId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralRecomEvaluation (");
@@ -176,12 +176,12 @@ public class ReferralRecomEvaluation implements Serializable {
         sb.append(", ").append(presenteeUserId);
         sb.append(", ").append(mobile);
         sb.append(", ").append(appId);
-        sb.append(", ").append(positionId);
         sb.append(", ").append(recomReasonTag);
         sb.append(", ").append(relationship);
         sb.append(", ").append(recomReasonText);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(positionId);
 
         sb.append(")");
         return sb.toString();
