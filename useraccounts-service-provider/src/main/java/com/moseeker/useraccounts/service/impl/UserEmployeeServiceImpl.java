@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
@@ -86,6 +87,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private UserUserDao userDao;
+
+    @Autowired
+    private UserWxUserDao wxUserDao;
 
     @Autowired
     PositionEntity positionEntity;
@@ -467,6 +471,7 @@ public class UserEmployeeServiceImpl {
         info.setPositionName(position.getTitle());
         if(employeeEntity.isEmployee(userId, position.getCompanyId())){
             UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
+            UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
             info.setUserId(userId);
             info.setEmployeeId(employeeDO.getId());
             if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
@@ -474,6 +479,9 @@ public class UserEmployeeServiceImpl {
             }else{
                 UserUserDO user = userDao.getUser(userId);
                 info.setEmployeeName(user.getName());
+            }
+            if(wxUserRecord != null){
+                info.setEmployee_icon(wxUserRecord.getHeadimgurl());
             }
             return info;
         }
