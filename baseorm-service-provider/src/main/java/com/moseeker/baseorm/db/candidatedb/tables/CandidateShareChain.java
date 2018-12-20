@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
 
-    private static final long serialVersionUID = -496798018;
+    private static final long serialVersionUID = -203922140;
 
     /**
      * The reference instance of <code>candidatedb.candidate_share_chain</code>
@@ -90,6 +90,11 @@ public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
      * The column <code>candidatedb.candidate_share_chain.parent_id</code>. candidatedb.candidate_share_chain.id,上一条 share_chain.id
      */
     public final TableField<CandidateShareChainRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "candidatedb.candidate_share_chain.id,上一条 share_chain.id");
+
+    /**
+     * The column <code>candidatedb.candidate_share_chain.type</code>.
+     */
+    public final TableField<CandidateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * The column <code>candidatedb.candidate_share_chain.click_time</code>. candidatedb.candidate_position_share_record.click_time,点击时间
