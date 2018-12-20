@@ -43,6 +43,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,6 +96,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private Neo4jService neo4jService;
 
+    @Autowired
+    private Environment env;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final Integer CHAIN_LIMIT = 5;
@@ -106,7 +110,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
         // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUser_id(), beforeTenMinite, tenMinite);
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         // 获取浏览人的userId
         Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         // 将员工过滤掉，获取职位浏览人中非员工的userId
@@ -116,9 +120,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         // 后边需要用到员工头像和昵称，在这里一并查出来
         Set<Integer> allUsers = new HashSet<>(beRecomUserIds);
-        allUsers.add(cardInfo.getUser_id());
+        allUsers.add(cardInfo.getUserId());
         // 将过滤后的员工id对应员工信息，用于后续数据组装
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(cardInfo.getCompany_id());
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(cardInfo.getCompanyId());
         List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(allUsers, hrWxWechatDO.getId());
         Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
         // 获取十分钟内转发的职位
@@ -128,9 +132,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         Map<Integer, JobPositionDO> idPositionMap = jobPositions.stream().collect(Collectors.toMap(JobPositionDO::getId, jobPositionDO -> jobPositionDO));
         // 通过职位id和userid获取职位转发记录
         List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIdsAndPids(beRecomUserIds, positionIds);
+        // 过滤掉员工已处理过的候选人
+        List<CandidateShareChainDO> handledRecords = shareChainDOS.stream().filter(record -> record.getType() == 1).collect(Collectors.toList());
+        candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
         List<JSONObject> cards = new ArrayList<>();
-        int startIndex = (cardInfo.getPage_number() - 1) * cardInfo.getPage_size();
-        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPage_number() * cardInfo.getPage_size();i++){
+        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
+        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
             CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
             if(candidatePositionDO != null){
                 // 构造单个职位浏览人的卡片
@@ -139,6 +146,24 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         return JSON.toJSONString(cards);
+    }
+
+    private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateShareChainDO> handledRecords) {
+        List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
+        for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
+            boolean flag = true;
+            for(int i=0;i<handledRecords.size() && flag;i++){
+                CandidateShareChainDO shareChainDO = handledRecords.get(i);
+                if(candidatePositionDO.getPositionId() == shareChainDO.getPositionId()
+                        && candidatePositionDO.getUserId() == shareChainDO.getPresenteeUserId()){
+                    flag = false;
+                }
+            }
+            if(flag){
+                filteredCandidateDOs.add(candidatePositionDO);
+            }
+        }
+        return filteredCandidateDOs;
     }
 
     @Override
@@ -169,18 +194,31 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
         // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
-        candidatePositionDao.updateTypeByPidAndUid(inviteInfo.getPid(), inviteInfo.getEndUserId());
+        updateCandidateType(inviteInfo);
         result.put("notified", isSent ? 1 : 0);
         result.put("degree", shortestChain.size()-1);
         logger.info("inviteApplication:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
+    private void updateCandidateType(ReferralInviteInfo inviteInfo) {
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(inviteInfo);
+        List<CandidateShareChainDO> updateRecords = new ArrayList<>();
+        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getPresenteeUserId() == inviteInfo.getEndUserId()){
+                shareChainDO.setType((byte)1);
+                updateRecords.add(shareChainDO);
+            }
+        }
+        logger.info("=====更新typeIds:{}", updateRecords.stream().map(CandidateShareChainDO::getId).collect(Collectors.toList()));
+        shareChainDao.updateDatas(updateRecords);
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
-        candidatePositionDao.updateTypeByPidAndUid(ignoreInfo.getPid(), ignoreInfo.getEndUserId());
+        updateCandidateType(ignoreInfo);
     }
 
     @Override
@@ -518,7 +556,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             JobPositionDO jobPosition = positionDao.getJobPositionById(inviteInfo.getPid());
             HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
             InviteTemplateVO inviteTemplateVO = initTemplateVO(jobPosition, hrCompanyDO, employee);
-            String redirectUrl = TemplateConstant.inviteApplyRedirectUrl.replace("{}", String.valueOf(inviteInfo.getPid()));
+            String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()));
             String requestUrl = TemplateConstant.inviteApplyRequestUrl.replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendInviteTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             return "0".equals(response.get("errcode"));
@@ -570,7 +608,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 查找来自【】转发
         int recomUser = getRecomUser(candidatePositionDO, jobPosition, shareChainDOS);
         // 组装该粉丝信息
-        RadarUserInfo user = doInitUser(idUserMap, cardInfo.getUser_id(), candidatePositionDO.getUserId(), cardInfo.getCompany_id());
+        RadarUserInfo user = doInitUser(idUserMap, cardInfo.getUserId(), candidatePositionDO.getUserId(), cardInfo.getCompanyId());
         List<RadarUserInfo> chain = new ArrayList<>();
         // 链路第一个放员工信息
         chain.add(doInitEmployee(idUserMap, cardInfo));
@@ -603,7 +641,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         int depth = 0;
         int presenteeUserId = 0;
         for(CandidateShareChainDO shareChainDO : shareChainDOS){
-            if(shareChainDO.getRootRecomUserId() == cardInfo.getUser_id() && shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()
+            if(shareChainDO.getRootRecomUserId() == cardInfo.getUserId() && shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()
                 && shareChainDO.getPositionId() == candidatePositionDO.getPositionId()){
                 presenteeUserId = shareChainDO.getPresenteeUserId();
                 if(depth < shareChainDO.getDepth()) {
@@ -635,7 +673,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private int getRecomUser(CandidatePositionDO candidatePosition, JobPositionDO jobPosition, List<CandidateShareChainDO> shareChainDOS) {
         int userId = 0;
-        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            for(CandidateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getPresenteeUserId() == candidatePosition.getUserId() && jobPosition.getId() == shareChainDO.getPositionId()){
                 userId = shareChainDO.getRecomUserId();
             }
@@ -645,7 +683,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private RadarUserInfo doInitEmployee(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo) {
         RadarUserInfo employee = new RadarUserInfo();
-        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUser_id());
+        UserWxUserDO wxUserDO = idUserMap.get(cardInfo.getUserId());
         return employee.initFromUserWxUser(wxUserDO);
     }
 

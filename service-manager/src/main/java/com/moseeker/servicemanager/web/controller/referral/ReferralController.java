@@ -640,18 +640,20 @@ public class ReferralController {
     @ResponseBody
     public String getRadarCards(@RequestBody ReferralCardForm referralCard) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addIntTypeValidate("员工userId", referralCard.getUser_id(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("员工userId", referralCard.getUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", referralCard.getAppid(), 0, Integer.MAX_VALUE);
-        validateUtil.addRequiredValidate("员工userId", referralCard.getUser_id());
+        validateUtil.addIntTypeValidate("companyId", referralCard.getCompanyId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", referralCard.getUserId());
         validateUtil.addRequiredValidate("appid", referralCard.getAppid());
         validateUtil.addRequiredValidate("timestamp", referralCard.getTimestamp());
+        validateUtil.addRequiredValidate("companyId", referralCard.getCompanyId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-            if(referralCard.getPage_number() == null || referralCard.getPage_number() <= 0){
-                referralCard.setPage_number(1);
+            if(referralCard.getPageNumber() == null || referralCard.getPageNumber() <= 0){
+                referralCard.setPageNumber(1);
             }
-            if(referralCard.getPage_size() == null || referralCard.getPage_size() <= 0){
-                referralCard.setPage_size(10);
+            if(referralCard.getPageSize() == null || referralCard.getPageSize() <= 0){
+                referralCard.setPageSize(10);
             }
             ReferralCardInfo cardInfo = new ReferralCardInfo();
             BeanUtils.copyProperties(referralCard, cardInfo);
