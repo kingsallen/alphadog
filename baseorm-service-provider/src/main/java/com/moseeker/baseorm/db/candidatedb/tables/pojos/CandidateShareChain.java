@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain implements Serializable {
 
-    private static final long serialVersionUID = 1194848393;
+    private static final long serialVersionUID = -1583872857;
 
     private Integer   id;
     private Integer   positionId;
@@ -33,6 +33,7 @@ public class CandidateShareChain implements Serializable {
     private Integer   presenteeUserId;
     private Integer   depth;
     private Integer   parentId;
+    private Byte      type;
     private Timestamp clickTime;
     private Timestamp createTime;
 
@@ -47,6 +48,7 @@ public class CandidateShareChain implements Serializable {
         this.presenteeUserId = value.presenteeUserId;
         this.depth = value.depth;
         this.parentId = value.parentId;
+        this.type = value.type;
         this.clickTime = value.clickTime;
         this.createTime = value.createTime;
     }
@@ -60,6 +62,7 @@ public class CandidateShareChain implements Serializable {
         Integer   presenteeUserId,
         Integer   depth,
         Integer   parentId,
+        Byte      type,
         Timestamp clickTime,
         Timestamp createTime
     ) {
@@ -71,6 +74,7 @@ public class CandidateShareChain implements Serializable {
         this.presenteeUserId = presenteeUserId;
         this.depth = depth;
         this.parentId = parentId;
+        this.type = type;
         this.clickTime = clickTime;
         this.createTime = createTime;
     }
@@ -139,6 +143,14 @@ public class CandidateShareChain implements Serializable {
         this.parentId = parentId;
     }
 
+    public Byte getType() {
+        return this.type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
     public Timestamp getClickTime() {
         return this.clickTime;
     }
@@ -167,6 +179,7 @@ public class CandidateShareChain implements Serializable {
         sb.append(", ").append(presenteeUserId);
         sb.append(", ").append(depth);
         sb.append(", ").append(parentId);
+        sb.append(", ").append(type);
         sb.append(", ").append(clickTime);
         sb.append(", ").append(createTime);
 

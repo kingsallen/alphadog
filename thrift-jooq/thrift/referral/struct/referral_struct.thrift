@@ -84,10 +84,10 @@ struct ContactPushInfo{
 }
 
 struct ReferralCardInfo{
-    1: optional i32 user_id,
-    2: optional i32 company_id,
-    3: optional i32 page_number,
-    4: optional i32 page_size,
+    1: optional i32 userId,
+    2: optional i32 companyId,
+    3: optional i32 pageNumber,
+    4: optional i32 pageSize,
     5: optional i64 timestamp
 }
 
