@@ -639,11 +639,9 @@ public class ReferralController {
      * @return 推荐结果
      * @throws Exception
      */
-    @RequestMapping(value = "/v1/referral/radar/cards", method = RequestMethod.GET)
+    @RequestMapping(value = "/v1/referral/radar/cards", method = RequestMethod.POST)
     @ResponseBody
-    public String getRadarCards(HttpServletRequest request) throws Exception {
-        Params<String, Object> params = ParamUtils.parseRequestParam(request);
-        ReferralCardForm referralCard = ParamUtils.initModelForm(params, ReferralCardForm.class);
+    public String getRadarCards(@RequestBody ReferralCardForm referralCard) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("员工userId", referralCard.getUser_id(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", referralCard.getAppid(), 0, Integer.MAX_VALUE);
