@@ -548,6 +548,7 @@ struct PositionReferralInfo {
     2:optional string employeeName,
     3:optional i32 employeeId,
     4:optional string positionName,
-    5:optional i32 positionId
+    5:optional i32 positionId,
+    6:optional string employeeIcon
 
 }
