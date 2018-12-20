@@ -137,13 +137,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 cards.add(doCreateCard(cardInfo, candidatePositionDO, idPositionMap.get(candidatePositionDO.getPositionId()), shareChainDOS, idUserMap));
             }
         }
-        logger.info(JSON.toJSONString(cards));
+        logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         return JSON.toJSONString(cards);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String inviteApplication(ReferralInviteInfo inviteInfo) {
+        logger.info("inviteInfo:{}", inviteInfo);
         // todo 消息模板发不出去，neo4j沙河环境查不了
         JSONObject result = new JSONObject();
         // 检验是否关注公众号
@@ -153,12 +154,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
-//        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
-        List<Integer> shortestChain = new ArrayList<>();
-        shortestChain.add(5283788);
-        shortestChain.add(5291537);
-        shortestChain.add(5291588);
-        shortestChain.add(5290340);
+        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
         // 只有两度和三度的情况下才会产生连连看链路
         if(shortestChain.size() >= 3 && shortestChain.size() <= 4 && (connectionLogRecord == null || connectionLogRecord.getState() == 1)){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
@@ -176,6 +172,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         candidatePositionDao.updateTypeByPidAndUid(inviteInfo.getPid(), inviteInfo.getEndUserId());
         result.put("notified", isSent ? 1 : 0);
         result.put("degree", shortestChain.size()-1);
+        logger.info("inviteApplication:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
@@ -240,6 +237,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setPid(connectionLogRecord.getPositionId());
         result.setState(connectionLogRecord.getState().intValue());
         result.setChain(userChains);
+        logger.info("connectRadar:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
@@ -262,6 +260,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
         if(employeeRecord == null){
             result.put("employee", 0);
+            logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
+            logger.info("checkEmployee:{}", JSON.toJSONString(result));
             return JSON.toJSONString(result);
         }
         int companyId = employeeRecord.getCompanyId();
@@ -280,6 +280,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         userInfo.setName(employeeRecord.getCname());
         userInfo.setAvatar(wxUserRecord.getHeadimgurl());
         result.put("user", userInfo);
+        logger.info("connectRadar:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
@@ -310,7 +311,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private List<ReferralConnectionChainRecord> updateChangedConnectionChain(ConnectRadarInfo radarInfo, ReferralConnectionLogRecord connectionLogRecord,
                                        List<ReferralConnectionChainRecord> chainRecords) {
         // 如果没有连接完成，返回neo4j最短路径
-        if(connectionLogRecord.getEndUserId() != radarInfo.getNextUserId()){
+        if(connectionLogRecord.getEndUserId() != radarInfo.getNextUserId() && connectionLogRecord.getState() != 1){
             return chainRecords;
         }
         // 如果连接完成，返回实际用户连接最短路径
