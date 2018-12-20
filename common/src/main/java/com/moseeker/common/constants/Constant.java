@@ -61,7 +61,8 @@ public final class Constant {
 
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
-
+    public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
+    public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";
@@ -91,6 +92,7 @@ public final class Constant {
     public static final int RECRUIT_STATUS_FULL_RECOM_INFO  = 13;      // 完善被推荐人信息
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
     public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
+    public static final int RECRUIT_STATUS_EMPLOYEE_RECOMMEND   = 16;      // 员工完成联系内推推荐评价
     
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,
@@ -231,6 +233,9 @@ public final class Constant {
     public static final int TEMPLATES_REFERRAL_BONUS_NOTICE_TPL = 81; // 内推入职奖金
     public static final int TEMPLATES_AWARD_CONSUME_NOTICE_TPL = 83; // 积分商城积分消费模板消息ID
     public static final int TEMPLATES_AWARD_RETURN_NOTICE_TPL = 84; // 积分商城积分返还模板消息ID
+    public static final int REFERRAL_INVITE_APPLICATION = 85; // 员工邀请候选人进行职位投递
+    public static final int REFERRA_RECOMMEND_EVALUATE = 86; // 员工完成推荐评价进行内推之后发送给候选人
+    public static final int REFERRAL_SEEK_REFERRAL = 87; // 联系内推发送给员工的模板消息ID
 
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
@@ -311,5 +316,8 @@ public final class Constant {
 
     public static final int ELASTIC_LAYER_QRCODE = 0;
     public static final int ELASTIC_LAYER_PROFILE = 1;
+
+    public static final int POSITION_STATUS_START = 0;
+
 
 }

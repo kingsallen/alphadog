@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.jooq.impl.DSL.count;
@@ -35,6 +36,12 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         CandidateShareChainDO p = new CandidateShareChainDO();
         p.setId(id);
         this.deleteData(p);
+    }
+
+    public CandidateShareChainDO getCandidateShareChainById(int id){
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(id))
+                .fetchOneInto(CandidateShareChainDO.class);
     }
 
     public Result<Record2<Integer, Integer>> countEmployeeForward(List<Integer> userIdList,
@@ -82,6 +89,26 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                         CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID)
                 .having(count().gt(1))
                 .fetch();
+    }
+
+    public List<CandidateShareChainDO> getRadarCards(int rootUserId, Timestamp startTime, Timestamp endTime) {
+        List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.between(startTime, endTime))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(0))
+                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH)
+                .fetchInto(CandidateShareChainDO.class);
+        if(list == null){
+            return new ArrayList<>();
+        }else {
+            return list;
+        }
+    }
+
+    public CandidateShareChainDO getRecordById(int parentChainId) {
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(parentChainId))
+                .fetchOneInto(CandidateShareChainDO.class);
     }
 
 }

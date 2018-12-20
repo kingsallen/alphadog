@@ -9,9 +9,12 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import org.jooq.Condition;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by jack on 15/02/2017.
@@ -85,6 +88,29 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
                 .columns(T.POSITION_ID,T.WXUSER_ID,T.IS_INTERESTED,T.CANDIDATE_COMPANY_ID,T.VIEW_NUMBER,T.SHARED_FROM_EMPLOYEE,T.USER_ID)
                 .values(cp.getPositionId(),cp.getWxuserId(),cp.getIsInterested(),cp.getCandidateCompanyId(),cp.getViewNumber(),cp.getSharedFromEmployee(),cp.getUserId())
                 .onDuplicateKeyIgnore()
+                .execute();
+    }
+
+    /**
+     * 查找最近浏览的职位信息
+     * @param beRecomUserIds 被推荐人ids
+     * @param positionIds 职位ids
+     * @return list
+     */
+    public List<CandidatePositionDO> fetchRecentViewedByUserIdsAndPids(Set<Integer> beRecomUserIds, List<Integer> positionIds) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
+                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(beRecomUserIds))
+                .and(CandidatePosition.CANDIDATE_POSITION.TYPE.ne((byte)1))
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
+                .fetchInto(CandidatePositionDO.class);
+    }
+
+    public void updateTypeByPidAndUid(int pid, int endUserId) {
+        create.update(CandidatePosition.CANDIDATE_POSITION)
+                .set(CandidatePosition.CANDIDATE_POSITION.TYPE, (byte)1)
+                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.eq(pid))
+                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.eq(endUserId))
                 .execute();
     }
 }

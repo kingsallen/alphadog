@@ -9,6 +9,7 @@ import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.service.impl.vo.ActivityVO;
 import com.moseeker.thrift.gen.referral.struct.Bonus;
 import com.moseeker.thrift.gen.referral.struct.BonusList;
+import com.moseeker.thrift.gen.referral.struct.ContactPushInfo;
 import com.moseeker.thrift.gen.referral.struct.RedPacket;
 import com.moseeker.thrift.gen.referral.struct.RedPackets;
 import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
@@ -129,13 +130,96 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
 
     @Override
     public void handerKeyInformationStatus(int companyId, int keyInformation) throws BIZException, TException {
-        referralService.handerKeyInformationStatus(companyId, keyInformation);
+        try {
+            referralService.handerKeyInformationStatus(companyId, keyInformation);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public int fetchKeyInformationStatus(int companyId) throws BIZException, TException {
-        return referralService.fetchKeyInformationStatus(companyId);
+        try{
+            return referralService.fetchKeyInformationStatus(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
+    @Override
+    public void addUserSeekRecommend(int userId, int postUserId, int positionId, int origin) throws BIZException, TException {
+        try{
+            referralService.addReferralSeekRecommend(userId, postUserId, positionId, origin);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
+        try{
+            referralService.employeeReferralReason(postUserId, positionId,  referralId, referralReasons, relationship, recomReasonText);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws BIZException, TException {
+        try{
+            com.moseeker.useraccounts.service.impl.vo.ContactPushInfo result = referralService.fetchSeekRecommend(referralId, postUserId);
+            ContactPushInfo info = new ContactPushInfo();
+            BeanUtils.copyProperties(result, info);
+            return info;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String getRadarCards(ReferralCardInfo cardInfo) throws BIZException, TException {
+        try {
+            return referralService.getRadarCards(cardInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException, TException {
+        try {
+            return referralService.inviteApplication(inviteInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException, TException {
+        try {
+            referralService.ignoreCurrentViewer(ignoreInfo);
+            return "success";
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException {
+        try {
+            return referralService.connectRadar(radarInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException {
+        try {
+            return referralService.checkEmployee(checkInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
 }

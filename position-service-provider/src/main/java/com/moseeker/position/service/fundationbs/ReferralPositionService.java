@@ -5,10 +5,15 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountType;
+import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralCompanyConf;
@@ -16,10 +21,16 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralPositionBonusStag
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
+import com.moseeker.position.pojo.ReferralPositionMatchInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusStageDetailDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
@@ -28,15 +39,15 @@ import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -62,6 +73,21 @@ public class ReferralPositionService {
 
     @Autowired
     JobPositionDao jobPositionDao;
+
+    @Autowired
+    private JobPositionCityDao positionCityDao;
+
+    @Autowired
+    EmployeeEntity employeeEntity;
+
+    @Autowired
+    UserUserDao userUserDao;
+
+    @Autowired
+    DictCityDao cityDao;
+
+    @Autowired
+    Environment env;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -412,5 +438,67 @@ public class ReferralPositionService {
         }
     }
 
+    public List<ReferralPositionMatchInfo> fetchPositionMatchByUserId(int userId, int companyId){
+
+        List<ReferralPositionMatchInfo> list = new ArrayList<>();
+        Map<String, Object> params = new HashMap<>();
+        params.put("company_id",companyId);
+        params.put("user_id", userId);
+        try {
+            String result = HttpClient.sendPost(env.getProperty("ai.position.match.url"), JSON.toJSONString(params));
+            if (StringUtils.isNotNullOrEmpty(result)) {
+                Map<String, Object> map = JSON.parseObject(result, Map.class);
+                if (map.get("pids") != null) {
+                    String pids = (String) map.get("pids");
+                    List<String> pidList = StringUtils.stringToList(pids, ",");
+                    if (!StringUtils.isEmptyList(pidList)) {
+                        List<Integer> idList = pidList.subList(0, 3).stream().map(m ->Integer.valueOf(m)).collect(Collectors.toList());
+                        List<JobPosition> positionList = positionEntity.getPositionInfoByIdList(idList);
+                        List<JobPositionCityDO> positionCityList = positionCityDao.getPositionCityBypids(idList);
+                        Set<Integer> cityIds = new HashSet<>();
+                        for (JobPositionCityDO positionCity : positionCityList) {
+                            cityIds.add(positionCity.getCode());
+                        }
+                        Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
+                        List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
+                        if (!StringUtils.isEmptyList(positionList)) {
+                            for (JobPosition position : positionList) {
+                                ReferralPositionMatchInfo match = new ReferralPositionMatchInfo();
+                                BeanUtils.copyProperties(position, match);
+                                /** 职位城市关系记录 */
+                                List<JobPositionCityDO> positionCityRecordList = positionCityList.stream()
+                                        .filter(jobPositionCity ->
+                                                jobPositionCity.getPid() == position.getId().intValue())
+                                        .collect(Collectors.toList());
+
+                                if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
+                                    StringBuffer cityNameBuffer = new StringBuffer();
+                                    StringBuffer cityENameBuffer = new StringBuffer();
+                                    for (JobPositionCityDO positionCityRecord : positionCityRecordList) {
+                                        Optional<DictCityRecord> optionalDictCity = dictCityRecordList.stream()
+                                                .filter(dictCityRecord ->
+                                                        dictCityRecord.getCode().intValue() == positionCityRecord.getCode())
+                                                .findAny();
+                                        if (optionalDictCity.isPresent()) {
+                                            cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
+                                        }
+                                    }
+                                    if (cityNameBuffer.length() > 0) {
+                                        cityNameBuffer.deleteCharAt(cityNameBuffer.length() - 1);
+                                        match.setCity(cityNameBuffer.toString());
+                                    }
+                                }
+                                list.add(match);
+                            }
+                        }
+                    }
+                }
+            }
+        }catch(Exception e){
+            logger.error( e.getMessage());
+            return new ArrayList<>();
+        }
+        return list;
+    }
 
 }

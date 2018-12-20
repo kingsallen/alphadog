@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -13,38 +15,42 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
 import com.moseeker.useraccounts.domain.AwardEntity;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
+import com.moseeker.useraccounts.pojo.PositionReferralInfo;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+import javax.annotation.Resource;
 import org.apache.thrift.TException;
 import org.apache.thrift.TSerializer;
 import org.apache.thrift.protocol.TSimpleJSONProtocol;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -78,6 +84,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private HrWxWechatDao wechatDao;
+
+    @Autowired
+    private UserUserDao userDao;
 
     @Autowired
     PositionEntity positionEntity;
@@ -456,8 +465,38 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
-    public UserEmployee getSingleUserEmployee(int userId){
-        UserEmployee result= userEmployeeDao.getSingleEmployeeByUserId(userId);
+    public UserEmployee getSingleUserEmployee(int userId) {
+        UserEmployee result = userEmployeeDao.getSingleEmployeeByUserId(userId);
         return result;
+    }
+
+    public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
+        ValidateUtil vu = new ValidateUtil();
+        vu.addIntTypeValidate("员工用户编号", userId, 1,null);
+        vu.addIntTypeValidate("职位编号", positionId, 1, null);
+        String message = vu.validate();
+        if(StringUtils.isNotNullOrEmpty(message)){
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        JobPositionRecord position = positionEntity.getPositionByID(positionId);
+        if(position==null){
+            throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        PositionReferralInfo info = new PositionReferralInfo();
+        info.setPositionId(position.getId());
+        info.setPositionName(position.getTitle());
+        if(employeeEntity.isEmployee(userId, position.getCompanyId())){
+            UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
+            info.setUserId(userId);
+            info.setEmployeeId(employeeDO.getId());
+            if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
+                info.setEmployeeName(employeeDO.getCname());
+            }else{
+                UserUserDO user = userDao.getUser(userId);
+                info.setEmployeeName(user.getName());
+            }
+            return info;
+        }
+        throw UserAccountException.USEREMPLOYEES_EMPTY;
     }
 }
