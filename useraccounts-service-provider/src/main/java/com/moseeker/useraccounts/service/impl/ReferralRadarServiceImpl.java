@@ -252,7 +252,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             if(shareChainDO == null){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
             }
-            if(shareChainDO.getRecomUserId() != checkInfo.getRecomUserId()){
+            if(shareChainDO.getPresenteeUserId() != checkInfo.getRecomUserId()){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
             }
             recomUserId = shareChainDO.getRootRecomUserId();
