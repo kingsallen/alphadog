@@ -6,11 +6,11 @@ package com.moseeker.servicemanager.web.controller.referral.form;
  **/
 public class ReferralCardForm {
     private Integer appid;
-    private Integer user_id;
+    private Integer userId;
     private Long timestamp;
-    private Integer page_number;
-    private Integer page_size;
-    private Integer company_id;
+    private Integer pageNumber;
+    private Integer pageSize;
+    private Integer companyId;
 
     public Integer getAppid() {
         return appid;
@@ -28,35 +28,35 @@ public class ReferralCardForm {
         this.timestamp = timestamp;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getPage_number() {
-        return page_number;
+    public Integer getPageNumber() {
+        return pageNumber;
     }
 
-    public void setPage_number(Integer page_number) {
-        this.page_number = page_number;
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
-    public Integer getPage_size() {
-        return page_size;
+    public Integer getPageSize() {
+        return pageSize;
     }
 
-    public void setPage_size(Integer page_size) {
-        this.page_size = page_size;
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
     }
 
-    public Integer getCompany_id() {
-        return company_id;
+    public Integer getCompanyId() {
+        return companyId;
     }
 
-    public void setCompany_id(Integer company_id) {
-        this.company_id = company_id;
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 }
