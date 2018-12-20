@@ -252,7 +252,7 @@ public class ResumeDeliveryService {
                 case 262144:
                 case 524288:{
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
-                            workExp, lastWorkName);
+                            workExp, lastWorkName, companyDO);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
