@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
@@ -21,6 +22,7 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
@@ -36,6 +38,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
+import com.moseeker.useraccounts.service.impl.pojos.RecomRecordVO;
 import com.moseeker.useraccounts.service.impl.vo.InviteTemplateVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.service.impl.vo.RadarUserInfo;
@@ -99,6 +102,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private CandidateRecomRecordDao recomRecordDao;
+
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final Integer CHAIN_LIMIT = 5;
@@ -110,6 +116,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
         // 获取指定时间前十分钟内的职位浏览人
+        List<CandidateShareChainDO> recomRecordVOS = getDistinctRecomRecord(cardInfo);
+
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         // 获取浏览人的userId
         Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
@@ -146,6 +154,29 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         return JSON.toJSONString(cards);
+    }
+
+    private List<CandidateShareChainDO> getDistinctRecomRecord(ReferralCardInfo cardInfo) {
+        List<CandidateRecomRecordDO> recomRecordDOS = recomRecordDao.listTenMinuteRecomRecords(cardInfo);
+        List<RecomRecordVO> recomRecordVOS = new ArrayList<>();
+        for(CandidateRecomRecordDO recomRecordDO : recomRecordDOS){
+            RecomRecordVO recomRecordVO = new RecomRecordVO();
+            recomRecordVO.initFromCandidateRecomDO(recomRecordDO);
+            if(!recomRecordVOS.contains(recomRecordVO)){
+                recomRecordVOS.add(recomRecordVO);
+            }
+        }
+        List<CandidateShareChainDO> result = new ArrayList<>();
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainDOByRootUserAndTime(cardInfo.getUserId(), cardInfo.getTimestamp());
+        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            for(RecomRecordVO recomRecordVO : recomRecordVOS){
+                if(shareChainDO.getRootRecomUserId() == recomRecordVO.getRootUserId()){
+
+                }
+            }
+        }
+        return result;
+
     }
 
     private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateShareChainDO> handledRecords) {
@@ -237,6 +268,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         //
         boolean isReverseLink = false;
         ReferralConnectionChainRecord currentRecord = null;
+        // todo 少情景判断
         for(ReferralConnectionChainRecord chainRecord : chainRecords){
             if(chainRecord.getRecomUserId() == radarInfo.getRecomUserId() && radarInfo.getNextUserId() == chainRecord.getNextUserId()){
                 currentRecord = chainRecord;
