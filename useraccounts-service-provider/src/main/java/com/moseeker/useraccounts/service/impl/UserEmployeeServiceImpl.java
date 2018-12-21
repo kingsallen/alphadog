@@ -481,7 +481,7 @@ public class UserEmployeeServiceImpl {
                 info.setEmployeeName(user.getName());
             }
             if(wxUserRecord != null){
-                info.setEmployee_icon(wxUserRecord.getHeadimgurl());
+                info.setEmployeeIcon(wxUserRecord.getHeadimgurl());
             }
             return info;
         }
