@@ -10,7 +10,7 @@ public class PositionReferralInfo {
     public int employeeId; // optional
     public String positionName; // optional
     public int positionId; // optional
-    public String employee_icon;
+    public String employeeIcon;
 
     public int getUserId() {
         return userId;
@@ -52,11 +52,11 @@ public class PositionReferralInfo {
         this.positionId = positionId;
     }
 
-    public String getEmployee_icon() {
-        return employee_icon;
+    public String getEmployeeIcon() {
+        return employeeIcon;
     }
 
-    public void setEmployee_icon(String employee_icon) {
-        this.employee_icon = employee_icon;
+    public void setEmployeeIcon(String employeeIcon) {
+        this.employeeIcon = employeeIcon;
     }
 }
