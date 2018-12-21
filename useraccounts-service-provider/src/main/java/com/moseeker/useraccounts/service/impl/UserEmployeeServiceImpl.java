@@ -504,7 +504,7 @@ public class UserEmployeeServiceImpl {
             if(wxUserRecord != null){
                 info.setEmployee_icon(wxUserRecord.getHeadimgurl());
             }
-            logger.info("getPositionReferralInfo info:{}",info);
+            logger.info("getPositionReferralInfo info:{}",JSON.toJSONString(info));
             return info;
         }
         throw UserAccountException.USEREMPLOYEES_EMPTY;

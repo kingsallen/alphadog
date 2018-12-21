@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.Category;
@@ -225,8 +226,10 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId) throws BIZException, TException {
         try {
             com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
+            logger.info("getPositionReferralInfo info:{}",JSON.toJSONString(info));
             PositionReferralInfo referralInfo = new PositionReferralInfo();
             BeanUtils.copyProperties(info, referralInfo);
+            logger.info("getPositionReferralInfo referralInfo:{}", JSON.toJSONString(referralInfo));
             return referralInfo;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);

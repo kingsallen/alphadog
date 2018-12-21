@@ -590,7 +590,7 @@ public class UserEmployeeController {
         com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo result =
                 new com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo();
         BeanUtils.copyProperties(info, result);
-        logger.info("getPositionReferralInfo info:{}",result);
+        logger.info("getPositionReferralInfo result:{}",JSON.toJSONString(result));
         return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
 
     }
