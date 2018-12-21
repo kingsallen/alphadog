@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
 
-    private static final long serialVersionUID = -206109320;
+    private static final long serialVersionUID = -1792064987;
 
     /**
      * The reference instance of <code>candidatedb.candidate_position</code>
@@ -89,6 +89,11 @@ public class CandidatePosition extends TableImpl<CandidatePositionRecord> {
      * The column <code>candidatedb.candidate_position.user_id</code>. userdb.user_user.id 候选人代表的C端用户
      */
     public final TableField<CandidatePositionRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "userdb.user_user.id 候选人代表的C端用户");
+
+    /**
+     * The column <code>candidatedb.candidate_position.type</code>.
+     */
+    public final TableField<CandidatePositionRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "");
 
     /**
      * Create a <code>candidatedb.candidate_position</code> table reference
