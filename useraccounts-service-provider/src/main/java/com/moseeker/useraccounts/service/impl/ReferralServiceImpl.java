@@ -40,6 +40,7 @@ import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -460,7 +461,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) {
+    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
         radarService.saveTenMinuteCandidateShareChain(cardInfo);
     }
 

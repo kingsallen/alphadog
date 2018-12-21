@@ -3,7 +3,6 @@ package com.moseeker.useraccounts.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
-import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -17,12 +16,18 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChain
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -32,28 +37,30 @@ import com.moseeker.thrift.gen.referral.struct.CheckEmployeeInfo;
 import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
-import com.moseeker.useraccounts.constant.TemplateConstant;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
-import com.moseeker.useraccounts.service.impl.pojos.RecomRecordVO;
-import com.moseeker.useraccounts.service.impl.vo.InviteTemplateVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.service.impl.vo.RadarUserInfo;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE;
 
 /**
  * @author cjm
@@ -98,14 +105,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private Neo4jService neo4jService;
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
     @Autowired
     private Environment env;
 
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
-
-    @Autowired
-    private CandidateRecomRecordDao recomRecordDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -141,10 +148,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         Map<Integer, JobPositionDO> idPositionMap = jobPositions.stream().collect(Collectors.toMap(JobPositionDO::getId, jobPositionDO -> jobPositionDO));
         // 过滤掉员工已处理过的候选人
         List<CandidateTemplateShareChainDO> handledRecords = shareChainDOS.stream().filter(record -> (record.getType() != 0)).collect(Collectors.toList());
-        Set<Integer> handledUserIds = handledRecords.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         // 通过职位id和userid获取职位转发记录
-        List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIdsAndPids(handledUserIds, positionIds);
-//        candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
+        List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIdsAndPids(beRecomUserIds, positionIds);
+        candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
         List<JSONObject> cards = new ArrayList<>();
         int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
         for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
@@ -157,29 +163,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         return JSON.toJSONString(cards);
     }
-
-//    private List<CandidateShareChainDO> getDistinctRecomRecord(ReferralCardInfo cardInfo) {
-//        List<CandidateRecomRecordDO> recomRecordDOS = recomRecordDao.listTenMinuteRecomRecords(cardInfo);
-//        List<RecomRecordVO> recomRecordVOS = new ArrayList<>();
-//        for(CandidateRecomRecordDO recomRecordDO : recomRecordDOS){
-//            RecomRecordVO recomRecordVO = new RecomRecordVO();
-//            recomRecordVO.initFromCandidateRecomDO(recomRecordDO);
-//            if(!recomRecordVOS.contains(recomRecordVO)){
-//                recomRecordVOS.add(recomRecordVO);
-//            }
-//        }
-//        List<CandidateShareChainDO> result = new ArrayList<>();
-//        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainDOByRootUserAndTime(cardInfo.getUserId(), cardInfo.getTimestamp());
-//        for(CandidateShareChainDO shareChainDO : shareChainDOS){
-//            for(RecomRecordVO recomRecordVO : recomRecordVOS){
-//                if(shareChainDO.getRootRecomUserId() == recomRecordVO.getRootUserId()){
-//
-//                }
-//            }
-//        }
-//        return result;
-//
-//    }
 
     private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> handledRecords) {
         List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
@@ -212,7 +195,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
-        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
+//        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
+        List<Integer> shortestChain = new ArrayList<>();
+        shortestChain.add(5283788);
+        shortestChain.add(5291537);
+        shortestChain.add(5291588);
+        shortestChain.add(5290340);
         // 只有两度和三度的情况下才会产生连连看链路
         if(shortestChain.size() >= 3 && shortestChain.size() <= 4 && (connectionLogRecord == null || connectionLogRecord.getState() == 1)){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
@@ -226,32 +214,49 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.put("chain", doInitRadarUsers(shortestChain, idUserMap));
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
-        // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
-        updateCandidateType(inviteInfo, 1);
+        if(isSent){
+            // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
+            shareChainDao.updateTypeByIds(getUpdateCandidateIds(inviteInfo));
+            templateShareChainDao.updateHandledRadarCardTypeByIds(inviteInfo, 1);
+        }
         result.put("notified", isSent ? 1 : 0);
-        result.put("degree", shortestChain.size()-1);
+        int degree = shortestChain.size()-1;
+        result.put("degree", degree >= 0 ? degree : 0);
         logger.info("inviteApplication:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
-    private void updateCandidateType(ReferralInviteInfo inviteInfo, int type) {
+    private List<Integer> getUpdateCandidateIds(ReferralInviteInfo inviteInfo) {
         List<Integer> updateIds = new ArrayList<>();
         // 分两步，将share_chain中状态改掉，将template_share_chain状态改掉
         List<CandidateTemplateShareChainDO> templateShareChainDOS = templateShareChainDao.getRadarCards(inviteInfo.getTimestamp());
         for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
-            if(shareChainDO.getPresenteeUserId() == inviteInfo.getEndUserId()){
+            if(shareChainDO.getPresenteeUserId() == inviteInfo.getEndUserId() && shareChainDO.getPositionId() == inviteInfo.getPid()){
                 updateIds.add(shareChainDO.getId());
             }
         }
-        shareChainDao.updateTypeByIds(updateIds);
-        templateShareChainDao.updateHandledRadarCardTypeByIds(inviteInfo, type);
+        return updateIds;
+
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) {
+    public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
-        updateCandidateType(ignoreInfo, 0);
+        List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(ignoreInfo.getTimestamp());
+        if(shareChainDOS.size() == 0){
+            return;
+        }
+        Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        int employeeUserId = shareChainDOS.get(0).getRootUserId();
+        if(ignoreInfo.getUserId() != employeeUserId){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+        }
+        beRecomUserIds.add(employeeUserId);
+        if(!beRecomUserIds.contains(ignoreInfo.getEndUserId())){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
+        }
+        templateShareChainDao.updateTypeBySendTime(ignoreInfo, 2);
     }
 
     @Override
@@ -281,20 +286,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 break;
             }
         }
-        // 检验是否需要新增链路
-        if(currentRecord == null && !isReverseLink){
-            ReferralConnectionChainRecord extraRecord = insertExtraRecord(radarInfo, chainRecords);
-            chainRecords.add(extraRecord);
-            logger.info("addConnection，userId:{}，endUserId:{}", radarInfo.getRecomUserId(), radarInfo.getNextUserId());
-            neo4jService.addConnRelation(radarInfo.getRecomUserId(), radarInfo.getNextUserId(), extraRecord.getId(), connectionLogRecord.getPositionId());
-        }else {
-            if(currentRecord != null && currentRecord.getState() != 1){
-                // 已有链路，修改连接状态
-                currentRecord.setState((byte)1);
-                currentRecord.setClickTime(new Timestamp(System.currentTimeMillis()));
-                connectionChainDao.updateRecord(currentRecord);
-            }
+        if(radarInfo.getNextUserId() == connectionLogRecord.getRootUserId()){
+            isReverseLink = true;
         }
+        // 检验是否需要新增链路
+        handleExtraRecord(currentRecord, isReverseLink, radarInfo, chainRecords, currentRecord, connectionLogRecord);
+
         UserEmployeeRecord userEmployee = userEmployeeDao.getActiveEmployee(connectionLogRecord.getRootUserId(), connectionLogRecord.getCompanyId());
         // 如果是连连看链路连接顺序发生变化，当连接完成时，将链路之外已连接的链路设为未连接
         chainRecords = updateChangedConnectionChain(radarInfo, connectionLogRecord, chainRecords);
@@ -311,6 +308,29 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setChain(userChains);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
+    }
+
+    private void handleExtraRecord(ReferralConnectionChainRecord currentRecord, boolean isReverseLink,
+                                   ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords,
+                                   ReferralConnectionChainRecord record, ReferralConnectionLogRecord connectionLogRecord) {
+        if(currentRecord == null && !isReverseLink){
+            ReferralConnectionChainRecord extraRecord = insertExtraRecord(radarInfo, chainRecords);
+            chainRecords.add(extraRecord);
+            logger.info("addConnection，userId:{}，endUserId:{}", radarInfo.getRecomUserId(), radarInfo.getNextUserId());
+            try {
+                neo4jService.addConnRelation(radarInfo.getRecomUserId(), radarInfo.getNextUserId(), extraRecord.getId(), connectionLogRecord.getPositionId());
+            }catch (Exception e){
+                logger.error("neo4j添加关系失败，radarInfo.getRecomUserId:{}, radarInfo.getNextUserId:{}, extraRecord.getId:{}",
+                        radarInfo.getRecomUserId(), radarInfo.getNextUserId(), extraRecord.getId());
+            }
+        }else {
+            if(currentRecord != null && currentRecord.getState() != 1){
+                // 已有链路，修改连接状态
+                currentRecord.setState((byte)1);
+                currentRecord.setClickTime(new Timestamp(System.currentTimeMillis()));
+                connectionChainDao.updateRecord(currentRecord);
+            }
+        }
     }
 
     @Override
@@ -357,7 +377,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) {
+    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
+        long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
+                String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
+        if(flag == 0){
+            return;
+        }
         logger.info("ReferralCardInfo:{}", cardInfo);
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
@@ -366,6 +391,15 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
         shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
         templateShareChainDao.addAllData(templateShareChainDOS);
+        templateShareChainDOS.removeIf(record -> record.getType() != 0);
+        Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        int visitNum = userIds.size();
+        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+
+        if(visitNum > 0){
+            UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
+            templateHelper.sendTenMinuteTemplate(positionIds, cardInfo, visitNum, employee.getId());
+        }
     }
 
     private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
@@ -615,10 +649,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             UserEmployeeDO employee = employeeEntity.getCompanyEmployee(inviteInfo.getUserId(), inviteInfo.getCompanyId());
             JobPositionDO jobPosition = positionDao.getJobPositionById(inviteInfo.getPid());
             HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
-            InviteTemplateVO inviteTemplateVO = initTemplateVO(jobPosition, hrCompanyDO, employee);
+            JSONObject inviteTemplateVO = initInviteTemplateVO(jobPosition, hrCompanyDO, employee);
             String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()));
-            String requestUrl = TemplateConstant.inviteApplyRequestUrl.replace("{}", hrWxWechatDO.getAccessToken());
-            Map<String, Object> response = templateHelper.sendInviteTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
+            String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
+            Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             return "0".equals(response.get("errcode"));
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
@@ -635,19 +669,19 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return null;
     }
 
-    private InviteTemplateVO initTemplateVO(JobPositionDO jobPosition, HrCompanyDO hrCompanyDO, UserEmployeeDO employee) {
-        InviteTemplateVO inviteTemplateVO = new InviteTemplateVO();
+    private JSONObject initInviteTemplateVO(JobPositionDO jobPosition, HrCompanyDO hrCompanyDO, UserEmployeeDO employee) {
+        JSONObject inviteTemplateVO = new JSONObject();
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         String current = dateFormat.format(dateTime.toDate());
         String title = "内推大使【%s】邀请您投递简历，不要错过这个内推机会哦~";
         String templateTile = String.format(title, employee.getCname());
-        inviteTemplateVO.setFirst(templateTile);
-        inviteTemplateVO.setKeyWord1(jobPosition.getTitle());
-        inviteTemplateVO.setKeyWord2(hrCompanyDO.getName());
-        inviteTemplateVO.setKeyWord3(current);
-        inviteTemplateVO.setRemark("点击查看职位详情并投递简历");
-        inviteTemplateVO.setTemplateId(Constant.REFERRAL_INVITE_APPLICATION);
+        inviteTemplateVO.put("first", templateTile);
+        inviteTemplateVO.put("keyWord1", jobPosition.getTitle());
+        inviteTemplateVO.put("keyWord2", hrCompanyDO.getName());
+        inviteTemplateVO.put("keyWord3", current);
+        inviteTemplateVO.put("remark", "点击查看职位详情并投递简历");
+        inviteTemplateVO.put("templateId", Constant.REFERRAL_INVITE_APPLICATION);
         return inviteTemplateVO;
     }
 

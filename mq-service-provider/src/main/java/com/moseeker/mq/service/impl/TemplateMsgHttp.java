@@ -25,6 +25,7 @@ import static com.moseeker.common.constants.Constant.REFERRAL_SEEK_REFERRAL;
 import static com.moseeker.common.constants.Constant.REFERRA_RECOMMEND_EVALUATE;
 import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NOTICE_TPL;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.HttpClient;
@@ -33,6 +34,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
@@ -47,7 +49,11 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import java.net.ConnectException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -787,4 +793,90 @@ public class TemplateMsgHttp {
         return wxMessageRecordDao.addData(messageRecord).getId();
     }
 
+    public void sendTenMinuteTemplate(List<Integer> positionIds, int visitNum, int companyId, int employeeId) throws BIZException, ConnectException {
+        UserEmployeeDO employee = employeeEntity.getEmployeeByID(employeeId);
+        if(employee == null){
+            return;
+        }
+        List<JobPositionDO> positionDOS = positionDao.getPositionList(positionIds);
+        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(companyId);
+        UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(employee.getSysuserId(), hrWxWechatDO.getId());
+        JSONObject inviteTemplateVO = new JSONObject();
+        DateTime dateTime = DateTime.now();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+        String current = dateFormat.format(dateTime.toDate());
+        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~";
+        String templateTile = String.format(title, String.valueOf(visitNum));
+        List<String> positionNameList = positionDOS.stream().map(JobPositionDO::getTitle).collect(Collectors.toList());
+        String positionsName = String.join(",", positionNameList) + "等";
+        inviteTemplateVO.put("first", templateTile);
+        inviteTemplateVO.put("keyWord1", String.format("已有%s人浏览该职位", visitNum));
+        inviteTemplateVO.put("keyWord2", positionsName);
+        inviteTemplateVO.put("keyWord3", "薪资面议");
+        inviteTemplateVO.put("keyWord4", current);
+        inviteTemplateVO.put("remark", "详情");
+        inviteTemplateVO.put("templateId", Constant.POSITION_SHARE_NOTICE_TPL);
+        // todo
+        String redirectUrl = env.getProperty("template.redirect.url.tenminute");
+        String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
+        // 发送十分钟消息模板
+        HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                hrWxWechatDO.getId()).and("sys_template_id", inviteTemplateVO.getIntValue("templateId")).and("disable","0").buildQuery());
+        if(hrWxTemplateMessageDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
+        }
+        Map<String, Object> requestMap = new HashMap<>(1 >> 4);
+        Map<String, JSONObject> dataMap = createDataMap(inviteTemplateVO);
+        requestMap.put("data", dataMap);
+        requestMap.put("touser", userWxUserRecord.getOpenid());
+        requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
+        requestMap.put("url", redirectUrl);
+        requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
+        String result = HttpClient.sendPost(requestUrl, JSON.toJSONString(requestMap));
+        Map<String, Object> params = JSON.parseObject(result);
+        requestMap.put("response", params);
+        requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
+        logger.info("====================requestMap:{}", requestMap);
+        // 插入模板消息发送记录
+        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
+    }
+
+    private Map<String,JSONObject> createDataMap(JSONObject templateVO) {
+        ConfigSysTemplateMessageLibraryRecord record =
+                templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(templateVO.getIntValue("templateId"));
+        JSONObject color = JSONObject.parseObject(record.getColorJson());
+        Map<String, JSONObject> dataMap = new HashMap<>(1 >> 4);
+        String first = templateVO.getString("first");
+        if(StringUtils.isNotNullOrEmpty(first)){
+            dataMap.put("first", createTplVO(first, color.getString("first")));
+        }
+        String keyWord1 = templateVO.getString("keyWord1");
+        if(StringUtils.isNotNullOrEmpty(keyWord1)){
+            dataMap.put("keyword1", createTplVO(keyWord1, color.getString("keyWord1")));
+        }
+        String keyWord2 = templateVO.getString("keyWord2");
+        if(StringUtils.isNotNullOrEmpty(keyWord2)){
+            dataMap.put("keyword2", createTplVO(keyWord2, color.getString("keyWord2")));
+        }
+        String keyWord3 = templateVO.getString("keyWord3");
+        if(StringUtils.isNotNullOrEmpty(keyWord3)){
+            dataMap.put("keyword3", createTplVO(keyWord3, color.getString("keyWord3")));
+        }
+        String keyWord4 = templateVO.getString("keyWord4");
+        if(StringUtils.isNotNullOrEmpty(keyWord4)){
+            dataMap.put("keyword4", createTplVO(keyWord4, color.getString("keyWord4")));
+        }
+        String remark = templateVO.getString("remark");
+        if(StringUtils.isNotNullOrEmpty(remark)){
+            dataMap.put("remark", createTplVO(remark, color.getString("remark")));
+        }
+        return dataMap;
+    }
+
+    private JSONObject createTplVO(String color, String value){
+        JSONObject templateBaseVO = new JSONObject();
+        templateBaseVO.put("color", color);
+        templateBaseVO.put("value", value);
+        return templateBaseVO;
+    }
 }
