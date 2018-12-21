@@ -586,9 +586,11 @@ public class UserEmployeeController {
             throw CommonException.PROGRAM_APPID_LOST;
         }
         PositionReferralInfo info = service.getPositionReferralInfo(userId, positionId);
+        logger.info("getPositionReferralInfo info:{}",info);
         com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo result =
                 new com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo();
         BeanUtils.copyProperties(info, result);
+        logger.info("getPositionReferralInfo info:{}",result);
         return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
 
     }

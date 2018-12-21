@@ -492,6 +492,7 @@ public class UserEmployeeServiceImpl {
         if(employeeEntity.isEmployee(userId, position.getCompanyId())){
             UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
             UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
+            logger.info("getPositionReferralInfo wxUserRecord:{}",wxUserRecord);
             info.setUserId(userId);
             info.setEmployeeId(employeeDO.getId());
             if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
@@ -503,6 +504,7 @@ public class UserEmployeeServiceImpl {
             if(wxUserRecord != null){
                 info.setEmployee_icon(wxUserRecord.getHeadimgurl());
             }
+            logger.info("getPositionReferralInfo info:{}",info);
             return info;
         }
         throw UserAccountException.USEREMPLOYEES_EMPTY;
