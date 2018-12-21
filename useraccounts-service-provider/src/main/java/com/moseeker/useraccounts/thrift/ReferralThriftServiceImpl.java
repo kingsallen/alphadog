@@ -222,4 +222,13 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         }
     }
 
+    @Override
+    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, TException {
+        try {
+            referralService.saveTenMinuteCandidateShareChain(cardInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

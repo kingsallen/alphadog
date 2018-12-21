@@ -169,6 +169,8 @@ public interface ReferralService {
      * @date 2018/12/7
      */
     String checkEmployee(CheckEmployeeInfo checkInfo) throws TException;
+
+    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo);
 }
 
 

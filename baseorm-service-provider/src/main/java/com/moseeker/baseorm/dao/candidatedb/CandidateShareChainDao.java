@@ -130,4 +130,18 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
     }
 
 
+    public List<CandidateShareChainDO> getShareChainDOByRootUserAndTime(int rootUserId, long timestamp) {
+        Timestamp current = new Timestamp(timestamp);
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.le(current))
+                .fetchInto(CandidateShareChainDO.class);
+    }
+
+    public void updateTypeByIds(List<Integer> updateIds) {
+        create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)1)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.in(updateIds))
+                .execute();
+    }
 }

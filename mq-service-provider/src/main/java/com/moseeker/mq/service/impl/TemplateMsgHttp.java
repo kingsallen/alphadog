@@ -370,7 +370,7 @@ public class TemplateMsgHttp {
             logger.info("公众号信息为空");
             return;
         }
-        UserWxUserRecord postWxUser = userWxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(postUserId, wxWechatDO.getCompanyId());
+        UserWxUserRecord postWxUser = userWxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(postUserId, wxWechatDO.getId());
         if(postWxUser == null){
             logger.info("员工微信信息为空");
             return;

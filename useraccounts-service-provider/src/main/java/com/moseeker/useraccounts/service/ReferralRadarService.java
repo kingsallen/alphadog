@@ -24,4 +24,6 @@ public interface ReferralRadarService {
     String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException;
 
     String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException;
+
+    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo);
 }

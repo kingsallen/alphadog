@@ -478,6 +478,11 @@ public class ReferralServiceImpl implements ReferralService {
         return radarService.checkEmployee(checkInfo);
     }
 
+    @Override
+    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) {
+        radarService.saveTenMinuteCandidateShareChain(cardInfo);
+    }
+
     private int createJobApplication(int userId, int companyId, int positionId, String name, int origin,
                                      int employeeSysUserId) throws TException {
         JobApplication jobApplication = new JobApplication();
