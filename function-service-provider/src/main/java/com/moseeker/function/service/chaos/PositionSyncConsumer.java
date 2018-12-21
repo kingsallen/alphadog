@@ -82,6 +82,8 @@ public class PositionSyncConsumer  {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("positionId", Integer.valueOf(pojo.getData().getPositionId()));
+            jsonObject.put("message", pojo.getMessage());
+            jsonObject.put("channal", pojo.getData().getChannel());
             amqpTemplate.sendAndReceive(MESSAGE_TEMPLATE_EXCHANGE,
                     POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());

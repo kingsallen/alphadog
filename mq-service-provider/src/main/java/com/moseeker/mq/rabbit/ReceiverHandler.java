@@ -171,7 +171,11 @@ public class ReceiverHandler {
         try{
             msgBody = new String(message.getBody(), "UTF-8");
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
-
+                JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                int positionId = jsonObject.getIntValue("positionId");
+                String msg = jsonObject.getString("message");
+                int channal = jsonObject.getIntValue("channal");
+                templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int type = jsonObject.getIntValue("type");
