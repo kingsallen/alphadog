@@ -873,4 +873,29 @@ public class ReferralController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
+    /**
+     * 保存十分钟消息模板的sharechain记录
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/radar/saveTemp", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveTenMinuteCandidateShareChain(@RequestBody ReferralCardForm referralCard) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工userId", referralCard.getUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", referralCard.getAppid(), 0, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", referralCard.getUserId());
+        validateUtil.addRequiredValidate("appid", referralCard.getAppid());
+        validateUtil.addRequiredValidate("timestamp", referralCard.getTimestamp());
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            ReferralCardInfo cardInfo = new ReferralCardInfo();
+            BeanUtils.copyProperties(referralCard, cardInfo);
+            referralService.saveTenMinuteCandidateShareChain(cardInfo);
+            return Result.success().toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
 }

@@ -136,4 +136,11 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.le(current))
                 .fetchInto(CandidateShareChainDO.class);
     }
+
+    public void updateTypeByIds(List<Integer> updateIds) {
+        create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)1)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.in(updateIds))
+                .execute();
+    }
 }

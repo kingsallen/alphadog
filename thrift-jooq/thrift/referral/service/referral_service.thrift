@@ -38,4 +38,6 @@ service ReferralService {
     referral_struct.ContactPushInfo fetchSeekRecommend(1: i32 referralId, 2:i32 postUserId) throws (1: common_struct.BIZException e);
     // 候选人打开职位连接判断推荐人是否是员工
     string checkEmployee(1: referral_struct.CheckEmployeeInfo checkInfo) throws (1: common_struct.BIZException e);
+     // 10分钟消息模板-人脉筛选，存储十分钟内的卡片数据
+    void saveTenMinuteCandidateShareChain(1:referral_struct.ReferralCardInfo cardInfo) throws (1: common_struct.BIZException e);
 }
