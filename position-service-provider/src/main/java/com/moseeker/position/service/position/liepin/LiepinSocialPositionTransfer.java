@@ -16,6 +16,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
+import static com.moseeker.common.constants.Constant.POSITION_SYNC_FAIL_ROUTINGKEY;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -41,6 +42,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +86,12 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
 
     @Autowired
     private PositionEmailNotification emailNotification;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    private static final String MESSAGE_TEMPLATE_EXCHANGE = "message_template_exchange";
+
 
     @Autowired
     HttpClientUtil httpClientUtil;
@@ -262,6 +271,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         } catch (BIZException e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("positionId", Integer.valueOf(liePinPositionVO.getPositionId()));
+            jsonObject.put("message", e.getMessage());
+            jsonObject.put("channal", channel);
+            amqpTemplate.sendAndReceive(MESSAGE_TEMPLATE_EXCHANGE,
+                    POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                            .build());
             logger.warn(e.getMessage(), e);
         } catch (Exception e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.bindingError.getValue());

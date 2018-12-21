@@ -200,25 +200,33 @@ public class ReceiverHandler {
         LogVO logVo=this.handlerLogVO();
         try{
             msgBody = new String(message.getBody(), "UTF-8");
-            JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            int type=jsonObject.getIntValue("type");
-            log.info("type========================:{}",type);
-            this.addPropertyLogVO(logVo,jsonObject);
-            this.handlerTempLateLog(logVo,type);
-            if(type!=0){
-                AIRecomParams params=this.initRecomParams(message);
-                MessageTemplateNoticeStruct messageTemplate=messageTemplateEntity.handlerTemplate(params);
-                log.info("messageTemplate========"+JSONObject.toJSONString(messageTemplate));
-                if(messageTemplate!=null){
-                    templateMsgProducer.messageTemplateNotice(messageTemplate);
-                    this.handlerPosition(params);
-                    logVo.setStatus_code(0);
-                }else{
-                    this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
-                    logVo.setStatus_code(1);
+            if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
+                JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                int positionId = jsonObject.getIntValue("positionId");
+                String msg = jsonObject.getString("message");
+                int channal = jsonObject.getIntValue("channal");
+                templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
+            }else {
+                JSONObject jsonObject = JSONObject.parseObject(msgBody);
+                int type = jsonObject.getIntValue("type");
+                log.info("type========================:{}", type);
+                this.addPropertyLogVO(logVo, jsonObject);
+                this.handlerTempLateLog(logVo, type);
+                if (type != 0) {
+                    AIRecomParams params = this.initRecomParams(message);
+                    MessageTemplateNoticeStruct messageTemplate = messageTemplateEntity.handlerTemplate(params);
+                    log.info("messageTemplate========" + JSONObject.toJSONString(messageTemplate));
+                    if (messageTemplate != null) {
+                        templateMsgProducer.messageTemplateNotice(messageTemplate);
+                        this.handlerPosition(params);
+                        logVo.setStatus_code(0);
+                    } else {
+                        this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
+                        logVo.setStatus_code(1);
+                    }
+                } else {
+                    logVo.setStatus_code(2);
                 }
-            }else{
-                logVo.setStatus_code(2);
             }
         }catch(Exception e){
             this.handleTemplateLogDeadLetter(message,msgBody,"没有查到模板所需的具体内容");
