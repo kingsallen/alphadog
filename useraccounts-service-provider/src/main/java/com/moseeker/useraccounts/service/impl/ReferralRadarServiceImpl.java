@@ -695,7 +695,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             JobPositionDO jobPosition = positionDao.getJobPositionById(inviteInfo.getPid());
             HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
             JSONObject inviteTemplateVO = initInviteTemplateVO(jobPosition, hrCompanyDO, employee);
-            String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()));
+            String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()))
+                    + "?wechat_signature=" + hrWxWechatDO.getSignature();
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             return "0".equals(String.valueOf(response.get("errcode")));
