@@ -572,21 +572,21 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private ReferralConnectionChainRecord insertExtraRecord(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
-        int parentId = 0;
-        for(ReferralConnectionChainRecord connectionChain : chainRecords){
-            if(connectionChain.getRecomUserId() == radarInfo.getRecomUserId()){
-                if(connectionChain.getParentId() != 0){
-                    parentId = connectionChain.getParentId();
-                }
-                break;
-            }
-        }
+//        int parentId = 0;
+//        for(ReferralConnectionChainRecord connectionChain : chainRecords){
+//            if(connectionChain.getRecomUserId() == radarInfo.getRecomUserId()){
+//                if(connectionChain.getParentId() != 0){
+//                    parentId = connectionChain.getParentId();
+//                }
+//                break;
+//            }
+//        }
         Timestamp current = new Timestamp(System.currentTimeMillis());
         ReferralConnectionChainRecord newChainRecord = new ReferralConnectionChainRecord();
         newChainRecord.setRecomUserId(radarInfo.getRecomUserId());
         newChainRecord.setNextUserId(radarInfo.getNextUserId());
-        newChainRecord.setParentId(parentId);
-//        newChainRecord.setParentId(radarInfo.getParentId());
+//        newChainRecord.setParentId(parentId);
+        newChainRecord.setParentId(radarInfo.getParentId());
         newChainRecord.setClickTime(current);
         newChainRecord.setCreateTime(current);
         newChainRecord.setUpdateTime(current);
