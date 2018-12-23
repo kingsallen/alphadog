@@ -190,10 +190,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
-//        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
-        List<Integer> shortestChain = new ArrayList<>();
-        shortestChain.add(5283788);
-        shortestChain.add(5290424);
+        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
+//        List<Integer> shortestChain = new ArrayList<>();
+//        shortestChain.add(5283788);
+//        shortestChain.add(5290424);
 //        shortestChain.add(5291588);
 //        shortestChain.add(5290340);
         // 只有两度和三度的情况下才会产生连连看链路
@@ -577,21 +577,21 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private ReferralConnectionChainRecord insertExtraRecord(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
-        int parentId = 0;
-        for(ReferralConnectionChainRecord connectionChain : chainRecords){
-            if(connectionChain.getRecomUserId() == radarInfo.getRecomUserId()){
-                if(connectionChain.getParentId() != 0){
-                    parentId = connectionChain.getParentId();
-                }
-                break;
-            }
-        }
+//        int parentId = 0;
+//        for(ReferralConnectionChainRecord connectionChain : chainRecords){
+//            if(connectionChain.getRecomUserId() == radarInfo.getRecomUserId()){
+//                if(connectionChain.getParentId() != 0){
+//                    parentId = connectionChain.getParentId();
+//                }
+//                break;
+//            }
+//        }
         Timestamp current = new Timestamp(System.currentTimeMillis());
         ReferralConnectionChainRecord newChainRecord = new ReferralConnectionChainRecord();
         newChainRecord.setRecomUserId(radarInfo.getRecomUserId());
         newChainRecord.setNextUserId(radarInfo.getNextUserId());
-        newChainRecord.setParentId(parentId);
-//        newChainRecord.setParentId(radarInfo.getParentId());
+//        newChainRecord.setParentId(parentId);
+        newChainRecord.setParentId(radarInfo.getParentId());
         newChainRecord.setClickTime(current);
         newChainRecord.setCreateTime(current);
         newChainRecord.setUpdateTime(current);
