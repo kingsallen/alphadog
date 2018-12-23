@@ -8,11 +8,11 @@ import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_REFERRAL_EVALUATE;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE;
+import static com.moseeker.common.constants.Constant.REFERRAL_RADAR_TEMPLATE;
 
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
@@ -55,6 +55,8 @@ public class ReferralTemplateSender {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final String SEEK_REFERRAL_EXCHNAGE = "referral_seek_exchange";
+
+    private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -141,14 +143,17 @@ public class ReferralTemplateSender {
         request.put("employeeId", employeeId);
         request.put("visitNum", visitNum);
         request.put("companyId", cardInfo.getCompanyId());
-        scheduledThread.startTast(new Runnable(){
-            @Override
-            public void run() {
-                amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
-                        EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
-                                .build());
-            }
-        },10*60*1000);
+        amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
+                REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+                        .build());
+//        scheduledThread.startTast(new Runnable(){
+//            @Override
+//            public void run() {
+//                amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
+//                        EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+//                                .build());
+//            }
+//        },10*60*1000);
 
 
     }

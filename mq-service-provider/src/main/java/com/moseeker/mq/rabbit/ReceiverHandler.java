@@ -156,8 +156,8 @@ public class ReceiverHandler {
         }
     }
 
-    @RabbitListener(queues = "#{sendTenMinuteTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = "#{sendTenMinuteTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+////    @RabbitHandler
     public void  sendTenMinuteTemplate(Message message){
         String msgBody = "{}";
         try {
