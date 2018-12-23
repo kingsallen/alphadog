@@ -191,11 +191,17 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
         List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
+//        List<Integer> shortestChain = new ArrayList<>();
+//        shortestChain.add(5283788);
+//        shortestChain.add(5291537);
+//        shortestChain.add(5291588);
+//        shortestChain.add(5290340);
         // 只有两度和三度的情况下才会产生连连看链路
         boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
+        int chainId = 0;
         if(isChainLimit && (connectionLogRecord == null || connectionLogRecord.getState() == 1)){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
-            result.put("chain_id", doInsertConnection(connectionLogRecord, shortestChain, inviteInfo));
+            chainId = doInsertConnection(connectionLogRecord, shortestChain, inviteInfo);
         }
         // 组装连连看链路返回数据
         Set<Integer> userIds = new HashSet<>(shortestChain);
@@ -213,6 +219,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.put("notified", isSent ? 1 : 0);
         int degree = shortestChain.size()-1;
         result.put("degree", degree >= 0 ? degree : 0);
+        result.put("chain_id", chainId);
         logger.info("inviteApplication:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
