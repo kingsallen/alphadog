@@ -899,6 +899,7 @@ public class TemplateMsgHttp {
         long timestamp = jsonObject.getLong("timestamp");
         UserEmployeeDO employee = employeeEntity.getEmployeeByID(employeeId);
         if(employee == null){
+            logger.info("======无员工信息");
             return;
         }
         List<JobPositionDO> positionDOS = positionDao.getPositionList(positionIds);

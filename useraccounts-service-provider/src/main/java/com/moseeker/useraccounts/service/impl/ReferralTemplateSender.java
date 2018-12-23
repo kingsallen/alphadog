@@ -143,22 +143,25 @@ public class ReferralTemplateSender {
     }
 
     public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
-
+        logger.info("=========发送10分钟消息模板");
         scheduledThread.startTast(new Runnable(){
             @Override
             public void run() {
+                logger.info("=========发送10分钟消息模板开始");
                 long timestamp = System.currentTimeMillis();
                 cardInfo.setTimestamp(timestamp);
                 Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
                 Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 3);
                 // 获取指定时间前十分钟内的职位浏览人
                 List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+                logger.info("浏览人次:{}", shareChainDOS.size());
                 List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
                 shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
                 templateShareChainDao.addAllData(templateShareChainDOS);
                 templateShareChainDOS.removeIf(record -> record.getType() != 0);
                 Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
                 int visitNum = userIds.size();
+                logger.info("visitNum:{}", visitNum);
                 List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
 
                 if(visitNum > 0){
