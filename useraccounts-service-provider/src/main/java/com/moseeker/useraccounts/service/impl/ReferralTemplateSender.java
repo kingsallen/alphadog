@@ -238,27 +238,27 @@ public class ReferralTemplateSender {
         Map<String, TemplateBaseVO> dataMap = new HashMap<>(1 >> 4);
         String first = templateVO.getString("first");
         if(StringUtils.isNotNullOrEmpty(first)){
-            dataMap.put("first", createTplVO(first, color.getString("first")));
+            dataMap.put("first", createTplVO(color.getString("first"), first));
         }
         String keyWord1 = templateVO.getString("keyWord1");
         if(StringUtils.isNotNullOrEmpty(keyWord1)){
-            dataMap.put("keyword1", createTplVO(keyWord1, color.getString("keyWord1")));
+            dataMap.put("keyword1", createTplVO(color.getString("keyWord1"), keyWord1));
         }
         String keyWord2 = templateVO.getString("keyWord2");
         if(StringUtils.isNotNullOrEmpty(keyWord2)){
-            dataMap.put("keyword2", createTplVO(keyWord2, color.getString("keyWord2")));
+            dataMap.put("keyword2", createTplVO(color.getString("keyWord2"), keyWord2));
         }
         String keyWord3 = templateVO.getString("keyWord3");
         if(StringUtils.isNotNullOrEmpty(keyWord3)){
-            dataMap.put("keyword3", createTplVO(keyWord3, color.getString("keyWord3")));
+            dataMap.put("keyword3", createTplVO(color.getString("keyWord3"), keyWord3));
         }
         String keyWord4 = templateVO.getString("keyWord4");
         if(StringUtils.isNotNullOrEmpty(keyWord4)){
-            dataMap.put("keyword4", createTplVO(keyWord4, color.getString("keyWord4")));
+            dataMap.put("keyword4", createTplVO(color.getString("keyWord4"), keyWord4));
         }
         String remark = templateVO.getString("remark");
         if(StringUtils.isNotNullOrEmpty(remark)){
-            dataMap.put("remark", createTplVO(remark, color.getString("remark")));
+            dataMap.put("remark", createTplVO(color.getString("remark"), remark));
         }
         return dataMap;
     }

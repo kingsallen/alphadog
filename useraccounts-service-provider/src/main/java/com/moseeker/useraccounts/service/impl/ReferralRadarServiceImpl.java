@@ -698,7 +698,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()));
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
-            return "0".equals(response.get("errcode"));
+            return "0".equals(String.valueOf(response.get("errcode")));
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
         }
