@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl.vo;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 
 import java.sql.Timestamp;
@@ -71,11 +72,20 @@ public class RadarUserInfo {
     public RadarUserInfo initFromUserWxUser(Object userWxUser){
         if(userWxUser instanceof UserWxUserRecord){
             UserWxUserRecord userWxUserRecord = (UserWxUserRecord)userWxUser;
-            this.avatar = userWxUserRecord.getHeadimgurl();
+            if(StringUtils.isNullOrEmpty(userWxUserRecord.getHeadimgurl())){
+                this.avatar = "";
+            }else {
+                this.avatar = userWxUserRecord.getHeadimgurl();
+            }
             this.nickname = userWxUserRecord.getNickname();
             this.uid = userWxUserRecord.getSysuserId();
         }else if(userWxUser instanceof UserWxUserDO){
             UserWxUserDO userWxUserDO = (UserWxUserDO)userWxUser;
+            if(StringUtils.isNullOrEmpty(userWxUserDO.getHeadimgurl())){
+                this.avatar = "";
+            }else {
+                this.avatar = userWxUserDO.getHeadimgurl();
+            }
             this.avatar = userWxUserDO.getHeadimgurl();
             this.nickname = userWxUserDO.getNickname();
             this.uid = userWxUserDO.getSysuserId();
