@@ -103,6 +103,7 @@ struct ConnectRadarInfo{
     1: optional i32 chainId,
     2: optional i32 recomUserId,
     3: optional i32 nextUserId,
+    4: optional i32 parentId
 }
 
 struct CheckEmployeeInfo{

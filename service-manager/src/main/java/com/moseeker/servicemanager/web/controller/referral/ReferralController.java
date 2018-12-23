@@ -798,11 +798,13 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("转发人", radarForm.getRecomUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("被邀请连线人id", radarForm.getNextUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", radarForm.getAppid(), 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("parentId", radarForm.getParentId(), 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("人脉连连看id", radarForm.getChainId(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("转发人", radarForm.getRecomUserId());
         validateUtil.addRequiredValidate("被邀请连线人id", radarForm.getNextUserId());
         validateUtil.addRequiredValidate("appid", radarForm.getAppid());
         validateUtil.addRequiredValidate("人脉连连看id", radarForm.getChainId());
+        validateUtil.addRequiredValidate("parentId", radarForm.getParentId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ConnectRadarInfo radarInfo = new ConnectRadarInfo();
