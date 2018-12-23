@@ -1,6 +1,7 @@
 package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
@@ -37,6 +38,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 import static com.alibaba.fastjson.serializer.SerializerFeature.WriteMapNullValue;
@@ -147,6 +149,21 @@ public class ReceiverHandler {
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
             }
 
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @RabbitListener(queues = "#{referralRadarTenMinuteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  sendTenMinuteTemplate(Message message){
+        String msgBody = "{}";
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            templateMsgHttp.sendTenMinuteTemplate(jsonObject);
         } catch (CommonException e) {
             log.info(e.getMessage(), e);
         } catch (Exception e) {

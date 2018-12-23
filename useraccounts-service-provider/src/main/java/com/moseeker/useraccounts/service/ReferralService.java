@@ -170,7 +170,7 @@ public interface ReferralService {
      */
     String checkEmployee(CheckEmployeeInfo checkInfo) throws TException;
 
-    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo);
+    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException;
 }
 
 
