@@ -263,8 +263,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(connectionLogRecord == null){
             return "";
         }
-//        checkParentId();
         List<ReferralConnectionChainRecord> chainRecords = connectionChainDao.fetchChainsByRootChainId(connectionLogRecord.getRootChainId());
+        checkParentId(radarInfo, chainRecords);
         Set<Integer> userIds = getChainRecordsUserIds(chainRecords);
         // 检验当前参数：recomUserId/nextUserId是否在链路中
         if(!userIds.contains(radarInfo.getNextUserId()) || !userIds.contains(radarInfo.getRecomUserId())){
@@ -289,6 +289,23 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setChain(userChains);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
+    }
+
+    private void checkParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
+//        ReferralConnectionChainRecord currentChain = null;
+//        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+//            if(radarInfo.getParentId() == chainRecord.getId()){
+//                if(radarInfo.getRecomUserId() != chainRecord.getNextUserId()){
+//                    throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
+//                }
+//                currentChain = chainRecord;
+//                break;
+//            }
+//        }
+//        if(currentChain == null){
+//            logger.info("==========根据parentId检验链路不存在");
+//            throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
+//        }
     }
 
     private List<ReferralConnectionChainRecord> filterNotLinkedChain(List<ReferralConnectionChainRecord> chainRecords, Byte radarState) {
