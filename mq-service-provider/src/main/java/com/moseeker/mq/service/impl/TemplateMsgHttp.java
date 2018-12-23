@@ -917,10 +917,9 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("keyWord2", positionsName);
         inviteTemplateVO.put("keyWord3", "薪资面议");
         inviteTemplateVO.put("keyWord4", current);
-        inviteTemplateVO.put("remark", "详情");
         inviteTemplateVO.put("templateId", Constant.POSITION_SHARE_NOTICE_TPL);
-        // todo
-        String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" + timestamp + "&page_size=10&page_number=1";
+        String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
+                timestamp + "&page_size=10&page_number=1&wechat_signature=" + hrWxWechatDO.getSignature();
         String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
         // 发送十分钟消息模板
         HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
