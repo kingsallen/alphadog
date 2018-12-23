@@ -7,6 +7,7 @@ public class RadarConnectResult {
     private Integer degree;
     private Integer state;
     private Integer pid;
+    private Integer parentId;
     private List<RadarUserInfo> chain;
 
     public Integer getDegree() {
@@ -39,5 +40,13 @@ public class RadarConnectResult {
 
     public void setChain(List<RadarUserInfo> chain) {
         this.chain = chain;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 }

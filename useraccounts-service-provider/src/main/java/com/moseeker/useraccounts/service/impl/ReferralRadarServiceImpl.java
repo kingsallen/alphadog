@@ -182,7 +182,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Transactional(rollbackFor = Exception.class)
     public String inviteApplication(ReferralInviteInfo inviteInfo) {
         logger.info("inviteInfo:{}", inviteInfo);
-        // todo 消息模板发不出去，neo4j沙河环境查不了
         JSONObject result = new JSONObject();
         // 检验是否关注公众号
         if(!checkIsSubscribe(inviteInfo.getEndUserId(), inviteInfo.getCompanyId())){
@@ -191,12 +190,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
-//        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
-        List<Integer> shortestChain = new ArrayList<>();
-        shortestChain.add(5283788);
-        shortestChain.add(5291537);
-        shortestChain.add(5291588);
-        shortestChain.add(5290340);
+        List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
         // 只有两度和三度的情况下才会产生连连看链路
         boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
         if(isChainLimit && (connectionLogRecord == null || connectionLogRecord.getState() == 1)){
@@ -264,7 +258,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             return "";
         }
         List<ReferralConnectionChainRecord> chainRecords = connectionChainDao.fetchChainsByRootChainId(connectionLogRecord.getRootChainId());
-        checkParentId(radarInfo, chainRecords);
+        checkParentId(radarInfo, chainRecords, connectionLogRecord.getRootUserId());
         Set<Integer> userIds = getChainRecordsUserIds(chainRecords);
         // 检验当前参数：recomUserId/nextUserId是否在链路中
         if(!userIds.contains(radarInfo.getNextUserId()) || !userIds.contains(radarInfo.getRecomUserId())){
@@ -274,7 +268,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 以下三种情况，1、当前点击人是员工，2、2度反向转给1度，3、连连看之前已完成，认为该点击人是查看连连看链接状态
         Boolean isViewer = checkClickUserIsViewer(chainRecords, radarInfo, connectionLogRecord, currentRecord);
         // 处理原链路或新增链路
-        handleExtraRecord(currentRecord, isViewer, radarInfo, chainRecords);
+        int parentId = handleExtraRecord(currentRecord, isViewer, connectionLogRecord.getPositionId(), radarInfo, chainRecords);
         // 修改连连看是否连接完成的状态
         updateConnectionInfo(radarInfo, isViewer, connectionLogRecord, chainRecords);
         // 获取排好序并包括连接状态的人脉连连看链路
@@ -286,29 +280,33 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setDegree(connectionLogRecord.getDegree().intValue());
         result.setPid(connectionLogRecord.getPositionId());
         result.setState(connectionLogRecord.getState().intValue());
+        result.setParentId(parentId);
         result.setChain(userChains);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
-    private void checkParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
-//        ReferralConnectionChainRecord currentChain = null;
-//        for(ReferralConnectionChainRecord chainRecord : chainRecords){
-//            if(radarInfo.getParentId() == 0){
-//
-//            }
-//            if(radarInfo.getParentId() == chainRecord.getId()){
-//                if(radarInfo.getRecomUserId() != chainRecord.getNextUserId()){
-//                    throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
-//                }
-//                currentChain = chainRecord;
-//                break;
-//            }
-//        }
-//        if(currentChain == null){
-//            logger.info("==========根据parentId检验链路不存在");
-//            throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
-//        }
+    private void checkParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords, Integer rootUserId) {
+        ReferralConnectionChainRecord currentChain = null;
+        if(radarInfo.getParentId() == 0){
+            if(radarInfo.getRecomUserId() != rootUserId){
+                logger.info("==========parentId为0时，链路不存在");
+                throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
+            }
+        }
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(radarInfo.getParentId() == chainRecord.getId()){
+                if(radarInfo.getRecomUserId() != chainRecord.getNextUserId()){
+                    throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
+                }
+                currentChain = chainRecord;
+                break;
+            }
+        }
+        if(currentChain == null){
+            logger.info("==========根据parentId检验链路不存在");
+            throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
+        }
     }
 
     private List<ReferralConnectionChainRecord> filterNotLinkedChain(List<ReferralConnectionChainRecord> chainRecords, Byte radarState) {
@@ -357,30 +355,31 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return isViewer;
     }
 
-    private void handleExtraRecord(ReferralConnectionChainRecord currentRecord, Boolean isViewer,
+    private int handleExtraRecord(ReferralConnectionChainRecord currentRecord, Boolean isViewer, int positionId,
                                    ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
         if(isViewer){
-            return;
+            return 0;
         }
         if(currentRecord == null){
-            ReferralConnectionChainRecord extraRecord = insertExtraRecord(radarInfo, chainRecords);
-            chainRecords.add(extraRecord);
+            currentRecord = insertExtraRecord(radarInfo, chainRecords);
+            chainRecords.add(currentRecord);
             logger.info("addConnection，userId:{}，endUserId:{}", radarInfo.getRecomUserId(), radarInfo.getNextUserId());
             try {
-//                neo4jService.addConnRelation(radarInfo.getRecomUserId(), radarInfo.getNextUserId(), extraRecord.getId(), connectionLogRecord.getPositionId());
+                neo4jService.addConnRelation(radarInfo.getRecomUserId(), radarInfo.getNextUserId(), currentRecord.getId(), positionId);
             }catch (Exception e){
                 logger.error("neo4j添加关系失败，radarInfo.getRecomUserId:{}, radarInfo.getNextUserId:{}, extraRecord.getId:{}",
-                        radarInfo.getRecomUserId(), radarInfo.getNextUserId(), extraRecord.getId());
+                        radarInfo.getRecomUserId(), radarInfo.getNextUserId(), currentRecord.getId());
             }
         }else {
             if(currentRecord.getState() != 1){
                 // 已有链路，修改连接状态
-                // todo 需要修改parent_id为上级链路，考虑让玲玲传
                 currentRecord.setState((byte)1);
+                currentRecord.setParentId(radarInfo.getParentId());
                 currentRecord.setClickTime(new Timestamp(System.currentTimeMillis()));
                 connectionChainDao.updateRecord(currentRecord);
             }
         }
+        return currentRecord.getId();
     }
 
     @Override
@@ -836,9 +835,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         RadarUserInfo user = new RadarUserInfo();
         UserWxUserDO userWxUserDO = idUserMap.get(endUserId);
         user.initFromUserWxUser(userWxUserDO);
-//        List<Integer> shortestChain = neo4jService.fetchShortestPath(rootUserId, endUserId, companyId);
-//        user.setDegree(shortestChain.size());
-        user.setDegree(3);
+        List<Integer> shortestChain = neo4jService.fetchShortestPath(rootUserId, endUserId, companyId);
+        user.setDegree(shortestChain.size());
         return user;
     }
 
