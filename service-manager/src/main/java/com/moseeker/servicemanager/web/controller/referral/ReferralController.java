@@ -888,7 +888,6 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("companyId", tempForm.getCompanyId(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("员工userId", tempForm.getUserId());
         validateUtil.addRequiredValidate("appid", tempForm.getAppid());
-        validateUtil.addRequiredValidate("timestamp", tempForm.getTimestamp());
         validateUtil.addRequiredValidate("companyId", tempForm.getCompanyId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {

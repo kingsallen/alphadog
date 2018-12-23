@@ -1,6 +1,7 @@
 package com.moseeker.mq.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.*;
@@ -793,7 +794,12 @@ public class TemplateMsgHttp {
         return wxMessageRecordDao.addData(messageRecord).getId();
     }
 
-    public void sendTenMinuteTemplate(List<Integer> positionIds, int visitNum, int companyId, int employeeId) throws BIZException, ConnectException {
+    public void sendTenMinuteTemplate(JSONObject jsonObject) throws BIZException, ConnectException {
+        int employeeId = jsonObject.getIntValue("employeeId");
+        List<Integer> positionIds = JSONArray.parseArray(jsonObject.getString("pids")).toJavaList(Integer.class);
+        int visitNum = jsonObject.getIntValue("visitNum");
+        int companyId = jsonObject.getIntValue("companyId");
+        long timestamp = jsonObject.getLong("timestamp");
         UserEmployeeDO employee = employeeEntity.getEmployeeByID(employeeId);
         if(employee == null){
             return;
@@ -817,7 +823,7 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("remark", "详情");
         inviteTemplateVO.put("templateId", Constant.POSITION_SHARE_NOTICE_TPL);
         // todo
-        String redirectUrl = env.getProperty("template.redirect.url.tenminute");
+        String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" + timestamp + "&page_size=10&page_number=1";
         String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
         // 发送十分钟消息模板
         HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",

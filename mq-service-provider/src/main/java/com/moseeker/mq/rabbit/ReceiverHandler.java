@@ -156,18 +156,14 @@ public class ReceiverHandler {
         }
     }
 
-//    @RabbitListener(queues = "#{sendTenMinuteTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
-////    @RabbitHandler
+    @RabbitListener(queues = "#{referralRadarTenMinuteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
     public void  sendTenMinuteTemplate(Message message){
         String msgBody = "{}";
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            int employeeId = jsonObject.getIntValue("employeeId");
-            List<Integer> positionIds = JSONArray.parseArray(jsonObject.getString("pids")).toJavaList(Integer.class);
-            int visitNum = jsonObject.getIntValue("visitNum");
-            int companyId = jsonObject.getIntValue("companyId");
-            templateMsgHttp.sendTenMinuteTemplate(positionIds, employeeId, companyId, visitNum);
+            templateMsgHttp.sendTenMinuteTemplate(jsonObject);
         } catch (CommonException e) {
             log.info(e.getMessage(), e);
         } catch (Exception e) {

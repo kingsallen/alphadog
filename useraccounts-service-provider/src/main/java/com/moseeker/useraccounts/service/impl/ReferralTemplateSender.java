@@ -2,6 +2,8 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
@@ -21,8 +23,11 @@ import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
@@ -40,10 +45,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * 目前该类中发消息模板有两种方式，一种是异步的不关心发送结果，一种是同步的需要知道是否发送成功
@@ -75,6 +79,15 @@ public class ReferralTemplateSender {
 
     @Autowired
     private HrWxTemplateMessageDao wxTemplateMessageDao;
+
+    @Autowired
+    private CandidateTemplateShareChainDao templateShareChainDao;
+
+    @Autowired
+    private CandidateShareChainDao shareChainDao;
+
+    @Autowired
+    private EmployeeEntity employeeEntity;
 
     ScheduledThread scheduledThread = ScheduledThread.Instance;
 
@@ -129,33 +142,63 @@ public class ReferralTemplateSender {
 
     }
 
-    public void sendTenMinuteTemplate(List<Integer> positionIds, ReferralCardInfo cardInfo, int visitNum, int employeeId) throws BIZException, ConnectException {
+    public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
 
-        List<Integer> newPositionIds = new ArrayList<>();
-        if(positionIds.size() > 2){
-            newPositionIds.add(positionIds.get(0));
-            newPositionIds.add(positionIds.get(1));
-        }else {
-            newPositionIds = positionIds;
-        }
-        JSONObject request = new JSONObject();
-        request.put("pids", JSON.toJSONString(newPositionIds));
-        request.put("employeeId", employeeId);
-        request.put("visitNum", visitNum);
-        request.put("companyId", cardInfo.getCompanyId());
-        amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
-                REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
-                        .build());
-//        scheduledThread.startTast(new Runnable(){
-//            @Override
-//            public void run() {
-//                amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
-//                        EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
-//                                .build());
-//            }
-//        },10*60*1000);
+        scheduledThread.startTast(new Runnable(){
+            @Override
+            public void run() {
+                long timestamp = System.currentTimeMillis();
+                cardInfo.setTimestamp(timestamp);
+                Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
+                Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
+                // 获取指定时间前十分钟内的职位浏览人
+                List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+                List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
+                shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
+                templateShareChainDao.addAllData(templateShareChainDOS);
+                templateShareChainDOS.removeIf(record -> record.getType() != 0);
+                Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+                int visitNum = userIds.size();
+                List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+
+                if(visitNum > 0){
+                    UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
+
+                    List<Integer> newPositionIds = new ArrayList<>();
+                    if(positionIds.size() > 2){
+                        newPositionIds.add(positionIds.get(0));
+                        newPositionIds.add(positionIds.get(1));
+                    }else {
+                        newPositionIds = positionIds;
+                    }
+                    JSONObject request = new JSONObject();
+                    request.put("pids", JSON.toJSONString(newPositionIds));
+                    request.put("employeeId", employee.getId());
+                    request.put("visitNum", visitNum);
+                    request.put("companyId", cardInfo.getCompanyId());
+                    request.put("timestamp", visitNum);
+                    logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
+                    amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
+                            EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+                                    .build());
+                }
+            }
+        },10*60*1000);
+    }
 
 
+    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
+        CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
+        templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
+        templateShareChainDO.setId(candidateShareChainDO.getId());
+        templateShareChainDO.setParentId(candidateShareChainDO.getParentId());
+        templateShareChainDO.setPositionId(candidateShareChainDO.getPositionId());
+        templateShareChainDO.setPresenteeUserId(candidateShareChainDO.getPresenteeUserId());
+        templateShareChainDO.setType(candidateShareChainDO.getType());
+        templateShareChainDO.setSendTime(timestamp);
+        templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
+        templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
+        return templateShareChainDO;
     }
 
 

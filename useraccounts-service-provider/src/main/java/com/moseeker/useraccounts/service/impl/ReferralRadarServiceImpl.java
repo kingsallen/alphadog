@@ -414,36 +414,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             return;
         }
         logger.info("ReferralCardInfo:{}", cardInfo);
-        Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
-        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
-        // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-        List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
-        templateShareChainDao.addAllData(templateShareChainDOS);
-        templateShareChainDOS.removeIf(record -> record.getType() != 0);
-        Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
-        int visitNum = userIds.size();
-        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
 
-        if(visitNum > 0){
-            UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
-            templateHelper.sendTenMinuteTemplate(positionIds, cardInfo, visitNum, employee.getId());
-        }
-    }
-
-    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
-        CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
-        templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
-        templateShareChainDO.setId(candidateShareChainDO.getId());
-        templateShareChainDO.setParentId(candidateShareChainDO.getParentId());
-        templateShareChainDO.setPositionId(candidateShareChainDO.getPositionId());
-        templateShareChainDO.setPresenteeUserId(candidateShareChainDO.getPresenteeUserId());
-        templateShareChainDO.setType(candidateShareChainDO.getType());
-        templateShareChainDO.setSendTime(timestamp);
-        templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
-        templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
-        return templateShareChainDO;
+        templateHelper.sendTenMinuteTemplate(cardInfo);
     }
 
     private void updateConnectionInfo(ConnectRadarInfo radarInfo, Boolean isViewer, ReferralConnectionLogRecord connectionLogRecord, List<ReferralConnectionChainRecord> chainRecords) {
