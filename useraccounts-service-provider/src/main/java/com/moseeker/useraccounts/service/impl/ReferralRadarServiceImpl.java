@@ -253,6 +253,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String connectRadar(ConnectRadarInfo radarInfo) {
+        RadarConnectResult result = new RadarConnectResult();
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(radarInfo.getChainId());
         if(connectionLogRecord == null){
             return "";
@@ -268,7 +269,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 以下三种情况，1、当前点击人是员工，2、2度反向转给1度，3、连连看之前已完成，认为该点击人是查看连连看链接状态
         Boolean isViewer = checkClickUserIsViewer(chainRecords, radarInfo, connectionLogRecord, currentRecord);
         // 处理原链路或新增链路
-        int parentId = handleExtraRecord(currentRecord, isViewer, connectionLogRecord.getPositionId(), radarInfo, chainRecords);
+        if(isViewer){
+            int parentId = handleExtraRecord(currentRecord, connectionLogRecord.getPositionId(), radarInfo, chainRecords);
+            result.setParentId(parentId);
+        }
         // 修改连连看是否连接完成的状态
         updateConnectionInfo(radarInfo, isViewer, connectionLogRecord, chainRecords);
         // 获取排好序并包括连接状态的人脉连连看链路
@@ -276,11 +280,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 填充员工姓名
         UserEmployeeRecord userEmployee = userEmployeeDao.getActiveEmployee(connectionLogRecord.getRootUserId(), connectionLogRecord.getCompanyId());
         fillEmployeeName(userEmployee, userChains);
-        RadarConnectResult result = new RadarConnectResult();
         result.setDegree(connectionLogRecord.getDegree().intValue());
         result.setPid(connectionLogRecord.getPositionId());
         result.setState(connectionLogRecord.getState().intValue());
-        result.setParentId(parentId);
         result.setChain(userChains);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
@@ -355,11 +357,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return isViewer;
     }
 
-    private int handleExtraRecord(ReferralConnectionChainRecord currentRecord, Boolean isViewer, int positionId,
+    private int handleExtraRecord(ReferralConnectionChainRecord currentRecord, int positionId,
                                    ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
-        if(isViewer){
-            return 0;
-        }
         if(currentRecord == null){
             currentRecord = insertExtraRecord(radarInfo, chainRecords);
             chainRecords.add(currentRecord);
@@ -836,7 +835,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         UserWxUserDO userWxUserDO = idUserMap.get(endUserId);
         user.initFromUserWxUser(userWxUserDO);
         List<Integer> shortestChain = neo4jService.fetchShortestPath(rootUserId, endUserId, companyId);
-        user.setDegree(shortestChain.size());
+        user.setDegree(shortestChain.size()-1);
         return user;
     }
 
