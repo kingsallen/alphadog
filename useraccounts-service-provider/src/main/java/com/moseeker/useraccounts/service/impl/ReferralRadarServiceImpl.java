@@ -294,6 +294,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private void checkParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
 //        ReferralConnectionChainRecord currentChain = null;
 //        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+//            if(radarInfo.getParentId() == 0){
+//
+//            }
 //            if(radarInfo.getParentId() == chainRecord.getId()){
 //                if(radarInfo.getRecomUserId() != chainRecord.getNextUserId()){
 //                    throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
@@ -583,6 +586,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         newChainRecord.setRecomUserId(radarInfo.getRecomUserId());
         newChainRecord.setNextUserId(radarInfo.getNextUserId());
         newChainRecord.setParentId(parentId);
+//        newChainRecord.setParentId(radarInfo.getParentId());
         newChainRecord.setClickTime(current);
         newChainRecord.setCreateTime(current);
         newChainRecord.setUpdateTime(current);
