@@ -150,7 +150,7 @@ public class ReferralTemplateSender {
                 long timestamp = System.currentTimeMillis();
                 cardInfo.setTimestamp(timestamp);
                 Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
-                Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
+                Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 5);
                 // 获取指定时间前十分钟内的职位浏览人
                 List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
                 List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
@@ -178,12 +178,12 @@ public class ReferralTemplateSender {
                     request.put("companyId", cardInfo.getCompanyId());
                     request.put("timestamp", visitNum);
                     logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
-                    amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
-                            EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+                    amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
+                            REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
                                     .build());
                 }
             }
-        },10*60*1000);
+        },5*60*1000);
     }
 
 
