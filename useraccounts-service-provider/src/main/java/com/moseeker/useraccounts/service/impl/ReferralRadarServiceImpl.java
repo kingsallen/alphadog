@@ -196,6 +196,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 //        shortestChain.add(5290424);
 //        shortestChain.add(5291588);
 //        shortestChain.add(5290340);
+        logger.info("shortestChain:{}", shortestChain);
         // 只有两度和三度的情况下才会产生连连看链路
         boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
         int chainId = 0;
