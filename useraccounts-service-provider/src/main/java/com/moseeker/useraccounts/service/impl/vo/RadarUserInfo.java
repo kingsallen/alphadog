@@ -86,7 +86,6 @@ public class RadarUserInfo {
             }else {
                 this.avatar = userWxUserDO.getHeadimgurl();
             }
-            this.avatar = userWxUserDO.getHeadimgurl();
             this.nickname = userWxUserDO.getNickname();
             this.uid = userWxUserDO.getSysuserId();
         }else {
