@@ -176,14 +176,14 @@ public class ReferralTemplateSender {
                     request.put("employeeId", employee.getId());
                     request.put("visitNum", visitNum);
                     request.put("companyId", cardInfo.getCompanyId());
-                    request.put("timestamp", visitNum);
+                    request.put("timestamp", cardInfo.getTimestamp());
                     logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
                     amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
                             REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
                                     .build());
                 }
             }
-        },5*60*1000);
+        },5*1000);
     }
 
 
