@@ -854,32 +854,32 @@ public class TemplateMsgHttp {
         Map<String, JSONObject> dataMap = new HashMap<>(1 >> 4);
         String first = templateVO.getString("first");
         if(StringUtils.isNotNullOrEmpty(first)){
-            dataMap.put("first", createTplVO(first, "#173177"));
+            dataMap.put("first", createTplVO("#173177", first));
 //            dataMap.put("first", createTplVO(first, color.getString("first")));
         }
         String keyWord1 = templateVO.getString("keyWord1");
         if(StringUtils.isNotNullOrEmpty(keyWord1)){
-            dataMap.put("keyword1", createTplVO(keyWord1, "#173177"));
+            dataMap.put("keyword1", createTplVO("#173177", keyWord1));
 //            dataMap.put("keyword1", createTplVO(keyWord1, color.getString("keyWord1")));
         }
         String keyWord2 = templateVO.getString("keyWord2");
         if(StringUtils.isNotNullOrEmpty(keyWord2)){
-            dataMap.put("keyword2", createTplVO(keyWord2, "#173177"));
+            dataMap.put("keyword2", createTplVO("#173177", keyWord2));
 //            dataMap.put("keyword2", createTplVO(keyWord2, color.getString("keyWord2")));
         }
         String keyWord3 = templateVO.getString("keyWord3");
         if(StringUtils.isNotNullOrEmpty(keyWord3)){
-            dataMap.put("keyword3", createTplVO(keyWord3, "#173177"));
+            dataMap.put("keyword3", createTplVO("#173177", keyWord3));
 //            dataMap.put("keyword3", createTplVO(keyWord3, color.getString("keyWord3")));
         }
         String keyWord4 = templateVO.getString("keyWord4");
         if(StringUtils.isNotNullOrEmpty(keyWord4)){
-            dataMap.put("keyword4", createTplVO(keyWord4, "#173177"));
+            dataMap.put("keyword4", createTplVO("#173177", keyWord4));
 //            dataMap.put("keyword4", createTplVO(keyWord4, color.getString("keyWord4")));
         }
         String remark = templateVO.getString("remark");
         if(StringUtils.isNotNullOrEmpty(remark)){
-            dataMap.put("remark", createTplVO(remark, "#173177"));
+            dataMap.put("remark", createTplVO("#173177", remark));
 //            dataMap.put("remark", createTplVO(remark, color.getString("remark")));
         }
         return dataMap;
