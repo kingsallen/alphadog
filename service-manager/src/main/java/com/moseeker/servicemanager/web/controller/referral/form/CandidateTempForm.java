@@ -3,7 +3,6 @@ package com.moseeker.servicemanager.web.controller.referral.form;
 public class CandidateTempForm {
     private Integer appid;
     private Integer userId;
-    private Long timestamp;
     private Integer companyId;
 
     public Integer getCompanyId() {
@@ -30,11 +29,4 @@ public class CandidateTempForm {
         this.userId = userId;
     }
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
 }
