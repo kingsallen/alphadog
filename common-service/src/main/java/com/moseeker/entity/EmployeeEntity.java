@@ -187,6 +187,9 @@ public class EmployeeEntity {
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
     private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
 
+    private static final String EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE = "employee_neo4j_exchange";
+    private static final String EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY = "user_neo4j.employee_company";
+
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
     /**
@@ -670,6 +673,9 @@ public class EmployeeEntity {
     public boolean unbind(List<UserEmployeeDO> employees) throws CommonException {
         if (employees != null && employees.size() > 0) {
             String now = DateUtils.dateToShortTime(new Date());
+            List<Integer> idList = employees.stream()
+                    .filter(f -> f.getActivation() == EmployeeType.AUTH_SUCCESS.getValue())
+                    .map(employee ->employee.getSysuserId()).collect(Collectors.toList());
             employees.stream().filter(f -> f.getActivation() == 0).forEach(e -> {
                 e.setActivation((byte) 1);
                 e.setEmailIsvalid((byte) 0);
@@ -698,6 +704,12 @@ public class EmployeeEntity {
                     client.set(Constant.APPID_ALPHADOG, KeyIdentifier.USER_EMPLOYEE_UNBIND.toString(),
                             String.valueOf(companyId),  JSON.toJSONString(employeeIdList));
                 });
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("companyId", 0);
+                jsonObject.put("userIds", idList);
+                amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                        EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                .build());
 
                 return true;
             } else {
@@ -738,6 +750,15 @@ public class EmployeeEntity {
                 tp.startTast(() -> {
                     // 更新ES中useremployee信息
                     this.deleteEsEmployee(employeeIds);
+                    List<Integer> idList = userEmployeeDOList.stream()
+                            .filter(f -> f.getActivation() == EmployeeType.AUTH_SUCCESS.getValue())
+                            .map(employee ->employee.getSysuserId()).collect(Collectors.toList());
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("companyId", 0);
+                    jsonObject.put("userIds", idList);
+                    amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
+                            EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                    .build());
                     return 0;
                 });
                 if(params != null){

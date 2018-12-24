@@ -142,6 +142,18 @@ public class AppConfig {
     }
 
     @Bean
+    public TopicExchange employeeActivationChangeExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_neo4j_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public Queue employeeChangeQueue() {
+        Queue queue = new Queue("employee_change_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
     public Queue presetQueue() {
         Queue queue = new Queue("chaos.preset.response", true, false, false);
         return queue;
@@ -241,6 +253,8 @@ public class AppConfig {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
                     .with("application_state_change_routingkey.change_state"));
+            add(BindingBuilder.bind(employeeChangeQueue()).to(employeeActivationChangeExchange())
+                    .with("user_neo4j.*"));
             add(BindingBuilder.bind(employeeRegisterQueue()).to(employeeRegisterExchange())
                     .with(EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY));
         }};

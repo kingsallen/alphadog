@@ -21,5 +21,11 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
     @Query("MATCH (u:UserUser{user_id:{userId}}) return u limit 1")
     UserNode getUserNodeById(@Param("userId") int userId);
 
+    @Query("MATCH (u:UserUser) where u.user_id in {userIds} set u.employee_company={employeeCompany}")
+    void updateUserEmployeeCompanyList(@Param("userIds") List<Integer> idList, @Param("employeeCompany") int employeeCompany);
+
+    @Query("MATCH (u:UserUser) where u.user_id = {userId} set u.employee_company={employeeCompany} return u limit 1")
+    UserNode updateUserEmployeeCompany(@Param("userId") Integer userId, @Param("employeeCompany") int employeeCompany);
+
 
 }

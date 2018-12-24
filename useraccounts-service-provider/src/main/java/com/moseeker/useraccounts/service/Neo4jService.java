@@ -36,5 +36,21 @@ public interface Neo4jService {
      */
     List<Integer> fetchShortestPath(int startUserId, int endUserId, int companyId)throws CommonException;
 
+    /**
+     * 更新UserUser节点的employee_company属性
+     * @param userId    节点的userId
+     * @param companyId 公司编号
+     * @return
+     * @throws CommonException
+     */
+    boolean updateUserEmployeeCompany(int userId, int companyId) throws CommonException;
+
+    /**
+     * 批量更新UserUser节点的employee_company属性
+     * @param userIds   加点的userId集合
+     * @param companyId 公司编号
+     * @throws CommonException
+     */
+    void updateUserEmployeeCompany(List<Integer> userIds, int companyId) throws CommonException;
 
 }
