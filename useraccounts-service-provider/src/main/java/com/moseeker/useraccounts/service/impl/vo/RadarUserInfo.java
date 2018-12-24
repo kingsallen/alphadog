@@ -20,6 +20,7 @@ public class RadarUserInfo {
     private String avatar;
     private Integer degree;
     private Integer order;
+    private List<Integer> pnodes;
 
     public String getName() {
         return name;
@@ -67,6 +68,14 @@ public class RadarUserInfo {
 
     public void setUid(Integer uid) {
         this.uid = uid;
+    }
+
+    public List<Integer> getPnodes() {
+        return pnodes;
+    }
+
+    public void setPnodes(List<Integer> pnodes) {
+        this.pnodes = pnodes;
     }
 
     public RadarUserInfo initFromUserWxUser(Object userWxUser){
@@ -216,5 +225,16 @@ public class RadarUserInfo {
             }
         }
         return order;
+    }
+
+    public RadarUserInfo fillNodesFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        List<Integer> pnodes = new ArrayList<>();
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getNextUserId() == userDO.getSysuserId() && chainRecord.getState() == 1){
+                pnodes.add(chainRecord.getRecomUserId());
+            }
+        }
+        this.setPnodes(pnodes);
+        return this;
     }
 }

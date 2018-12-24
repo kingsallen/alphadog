@@ -167,9 +167,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         logger.info("inviteInfo:{}", inviteInfo);
         JSONObject result = new JSONObject();
         // 检验是否关注公众号
-        if(!checkIsSubscribe(inviteInfo.getEndUserId(), inviteInfo.getCompanyId())){
-            return "";
-        }
+//        if(!checkIsSubscribe(inviteInfo.getEndUserId(), inviteInfo.getCompanyId())){
+//            return "";
+//        }
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
@@ -600,7 +600,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 初始化连连看信息
             userInfo = userInfo.initFromChainsRecord(userDO, chainRecords);
             // 填充连连看排序
-            userInfo = userInfo.fillOrderFromChainsRecord(userDO, linkedChain);
+//            userInfo = userInfo.fillOrderFromChainsRecord(userDO, linkedChain);
+            userInfo = userInfo.fillNodesFromChainsRecord(userDO, chainRecords);
             userChains.add(userInfo);
         }
         return userChains;
