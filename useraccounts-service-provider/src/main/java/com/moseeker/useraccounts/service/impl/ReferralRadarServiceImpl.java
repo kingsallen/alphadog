@@ -250,7 +250,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             parentId = getParentId(radarInfo, chainRecords);
         }
         // 修改连连看是否连接完成的状态
-        updateConnectionInfo(radarInfo, isViewer, connectionLogRecord, chainRecords);
+        chainRecords = updateConnectionInfo(radarInfo, isViewer, connectionLogRecord, chainRecords);
         // 获取排好序并包括连接状态的人脉连连看链路
         List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
         // 填充员工姓名
@@ -274,6 +274,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         for(ReferralConnectionChainRecord chainRecord : chainRecords){
             if(chainRecord.getRecomUserId() == radarInfo.getRecomUserId() && radarInfo.getNextUserId() == chainRecord.getNextUserId()){
+                return chainRecord.getId();
+            }
+        }
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getNextUserId() == radarInfo.getNextUserId() && chainRecord.getState() == 1){
                 return chainRecord.getId();
             }
         }
@@ -417,8 +422,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         boolean isViewer = false;
         for(ReferralConnectionChainRecord chainRecord : chainRecords){
-            if(chainRecord.getRecomUserId() == radarInfo.getNextUserId()
-                    && chainRecord.getNextUserId() == radarInfo.getRecomUserId()){
+            if(chainRecord.getRecomUserId() == radarInfo.getNextUserId() && chainRecord.getNextUserId() == radarInfo.getRecomUserId()){
                 //如果是反向连接，不插入新记录，认为是查看连连看的，不做数据库增删改操作
                 isViewer = checkCorrectReverse(chainRecord, radarInfo, chainRecords);
                 break;
@@ -439,12 +443,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @return
      */
     private boolean checkCorrectReverse(ReferralConnectionChainRecord chainRecord, ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
+        if(chainRecord.getState() == 1){
+            return true;
+        }
         for(ReferralConnectionChainRecord chainRecord1 : chainRecords){
-            if(chainRecord1.getNextUserId() == radarInfo.getNextUserId()
-                    && chainRecord1.getRecomUserId() == radarInfo.getRecomUserId()) {
-                boolean correctReverse = (chainRecord.getState() == 0 && chainRecord1.getState() == 1)
-                        || (chainRecord.getState() == 1 && chainRecord1.getState() == 0);
-                if(!correctReverse){
+            if(chainRecord1.getNextUserId() == radarInfo.getNextUserId() && chainRecord1.getRecomUserId() == radarInfo.getRecomUserId()) {
+                if(chainRecord.getState() == 0 && chainRecord1.getState() == 1){
                     return true;
                 }
             }
@@ -476,7 +480,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return currentRecord.getId();
     }
 
-    private void updateConnectionInfo(ConnectRadarInfo radarInfo, Boolean isViewer, ReferralConnectionLogRecord connectionLogRecord, List<ReferralConnectionChainRecord> chainRecords) {
+    private List<ReferralConnectionChainRecord> updateConnectionInfo(ConnectRadarInfo radarInfo, Boolean isViewer, ReferralConnectionLogRecord connectionLogRecord, List<ReferralConnectionChainRecord> chainRecords) {
         // 更新连连看总链路当前状态
         boolean needUpdate = false;
         if(!isViewer){
@@ -493,6 +497,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             connectionLogRecord.setUpdateTime(null);
             connectionLogDao.updateRecord(connectionLogRecord);
         }
+        return chainRecords;
     }
 
     private boolean updateConnectionLogState(ConnectRadarInfo radarInfo, ReferralConnectionLogRecord connectionLogRecord, List<ReferralConnectionChainRecord> chainRecords) {
