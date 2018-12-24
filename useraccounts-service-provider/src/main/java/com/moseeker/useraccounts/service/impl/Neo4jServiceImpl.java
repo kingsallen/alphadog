@@ -5,7 +5,6 @@ import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.exception.CommonException;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -136,6 +134,23 @@ public class Neo4jServiceImpl implements Neo4jService {
             return idList;
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean updateUserEmployeeCompany(int userId, int companyId) throws CommonException {
+        UserNode node = userNeo4jDao.updateUserEmployeeCompany(userId, companyId);
+        if(node != null && node.getEmployee_company() == companyId){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void updateUserEmployeeCompany(List<Integer> userIds, int companyId) throws CommonException {
+        if(StringUtils.isEmptyList(userIds) || companyId<=0){
+            return;
+        }
+        userNeo4jDao.updateUserEmployeeCompanyList(userIds, companyId);
     }
 
     private UserNode addUserNode(int userId){

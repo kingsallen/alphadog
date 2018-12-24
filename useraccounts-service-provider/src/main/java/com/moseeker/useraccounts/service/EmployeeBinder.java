@@ -96,6 +96,9 @@ public abstract class EmployeeBinder {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
+    @Autowired
+    private Neo4jService neo4jService;
+
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
     /**
@@ -253,7 +256,7 @@ public abstract class EmployeeBinder {
         }
 
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
-
+        neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
