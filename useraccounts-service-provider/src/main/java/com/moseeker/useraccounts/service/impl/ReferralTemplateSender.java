@@ -161,6 +161,7 @@ public class ReferralTemplateSender {
         templateShareChainDOS.removeIf(record -> record.getType() != 0);
         Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         int visitNum = userIds.size();
+        logger.info("visitNum:{}", visitNum);
         List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
 
         if(visitNum > 0){
