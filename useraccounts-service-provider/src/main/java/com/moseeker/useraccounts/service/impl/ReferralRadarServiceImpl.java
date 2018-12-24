@@ -257,7 +257,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             parentId = -1;
         }
         fillEmployeeName(userEmployee, userChains);
-        result.setParentId(parentId);
+        result.setParent_id(parentId);
         result.setDegree(connectionLogRecord.getDegree().intValue());
         result.setPid(connectionLogRecord.getPositionId());
         result.setState(connectionLogRecord.getState().intValue());
