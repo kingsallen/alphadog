@@ -43,6 +43,7 @@ import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.ConnectException;
 import java.sql.Timestamp;
@@ -142,51 +143,47 @@ public class ReferralTemplateSender {
 
     }
 
-    public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
-        logger.info("=========发送10分钟消息模板");
-        scheduledThread.startTast(new Runnable(){
-            @Override
-            public void run() {
-                logger.info("=========发送10分钟消息模板开始");
-                long timestamp = System.currentTimeMillis();
-                cardInfo.setTimestamp(timestamp);
-                Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
-                Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
-                // 获取指定时间前十分钟内的职位浏览人
-                List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-                logger.info("浏览人次:{}", shareChainDOS.size());
-                List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-                shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
-                templateShareChainDao.addAllData(templateShareChainDOS);
-                templateShareChainDOS.removeIf(record -> record.getType() != 0);
-                Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
-                int visitNum = userIds.size();
-                logger.info("visitNum:{}", visitNum);
-                List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+    public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
+        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo),3*60*1000);
+    }
 
-                if(visitNum > 0){
-                    UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
+    @Transactional(rollbackFor = Exception.class)
+    public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
+        long timestamp = System.currentTimeMillis();
+        cardInfo.setTimestamp(timestamp);
+        Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
+        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 3);
+        // 获取指定时间前十分钟内的职位浏览人
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+        List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
+        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
+        templateShareChainDao.addAllData(templateShareChainDOS);
+        templateShareChainDOS.removeIf(record -> record.getType() != 0);
+        Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        int visitNum = userIds.size();
+        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
 
-                    List<Integer> newPositionIds = new ArrayList<>();
-                    if(positionIds.size() > 2){
-                        newPositionIds.add(positionIds.get(0));
-                        newPositionIds.add(positionIds.get(1));
-                    }else {
-                        newPositionIds = positionIds;
-                    }
-                    JSONObject request = new JSONObject();
-                    request.put("pids", JSON.toJSONString(newPositionIds));
-                    request.put("employeeId", employee.getId());
-                    request.put("visitNum", visitNum);
-                    request.put("companyId", cardInfo.getCompanyId());
-                    request.put("timestamp", cardInfo.getTimestamp());
-                    logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
-                    amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
-                            REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
-                                    .build());
-                }
+        if(visitNum > 0){
+            UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
+
+            List<Integer> newPositionIds = new ArrayList<>();
+            if(positionIds.size() > 2){
+                newPositionIds.add(positionIds.get(0));
+                newPositionIds.add(positionIds.get(1));
+            }else {
+                newPositionIds = positionIds;
             }
-        },2*60*1000);
+            JSONObject request = new JSONObject();
+            request.put("pids", JSON.toJSONString(newPositionIds));
+            request.put("employeeId", employee.getId());
+            request.put("visitNum", visitNum);
+            request.put("companyId", cardInfo.getCompanyId());
+            request.put("timestamp", cardInfo.getTimestamp());
+            logger.info("=======tenminuteTemplate:{}", JSON.toJSONString(request));
+            amqpTemplate.sendAndReceive(REFERRAL_RADAR_SAVE_TEMP,
+                    REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
+                            .build());
+        }
     }
 
 
