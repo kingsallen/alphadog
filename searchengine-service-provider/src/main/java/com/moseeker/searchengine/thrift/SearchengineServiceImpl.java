@@ -7,7 +7,6 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.searchengine.domain.MeetBotResult;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
