@@ -2678,7 +2678,7 @@ public class PositionService {
         public void run() {
             String position = "";
             try {
-                logger.info("---Start ES Search Engine---");
+                //logger.info("---Start ES Search Engine---");
                 Thread.sleep(400);
                 for (Integer jobPositionId : list) {
                     Response result = getPositionById(jobPositionId);
@@ -2707,13 +2707,13 @@ public class PositionService {
                         }
                         position_map.put("degree_name", degree_name);
                         position_map.put("scale", scale);
-                        logger.info("position_map:" + position_map.toString());
+                        //logger.info("position_map:" + position_map.toString());
                     }
                     position = JSON.toJSONString(position_map);
-                    logger.info("position:" + position);
+                    //logger.info("position:" + position);
                     searchengineServices.updateposition(position, jobPositionId);
                 }
-                logger.info("--- ES Search Engine end---");
+                //logger.info("--- ES Search Engine end---");
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

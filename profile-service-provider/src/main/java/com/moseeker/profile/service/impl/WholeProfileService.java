@@ -201,13 +201,13 @@ public class WholeProfileService {
     }
 
     public Response getResource(int userId, int profileId, String uuid) throws Exception {
-        logger.info("WholeProfileService getResource start : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+        //logger.info("WholeProfileService getResource start : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
         Response response = new Response();
         HashMap<String, Object> profile = new HashMap<String, Object>();
 
         ProfileProfileRecord profileRecord = profileDao.getProfileByIdOrUserIdOrUUID(userId, profileId, uuid);
 
-        logger.debug("WholeProfileService getResource after  profileDao.getProfileByIdOrUserIdOrUUID: {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+        //logger.debug("WholeProfileService getResource after  profileDao.getProfileByIdOrUserIdOrUUID: {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
         if (profileRecord != null) {
             if (profileRecord.getCompleteness().intValue() == 0
@@ -217,17 +217,17 @@ public class WholeProfileService {
                 profileRecord.setCompleteness((byte) (completeness));
             }
 
-            logger.debug("WholeProfileService getResource before  constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource before  constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<DictConstantRecord> constantRecords = constantDao
                     .getCitiesByParentCodes(Arrays.asList(3109, 3105, 3102, 2105, 3120, 3115, 3114, 3119, 3120, 1102, 1103));
 
-            logger.debug("WholeProfileService getResource after constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource after constantDao.getCitiesByParentCodes : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             Map<String, Object> profileprofile = buildProfile(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords);
             profile.put("profile", profileprofile);
 
-            logger.debug("WholeProfileService getResource after buildProfile : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource after buildProfile : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             Future<Map<String, Object>> basicFuture = pool.startTast(() -> buildBasic(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords));
             Future<List<Map<String, Object>>> workexpsFuture = pool.startTast(() -> buildWorkexps(profileRecord, getProfileQuery(profileRecord.getId()), constantRecords));
@@ -255,70 +255,70 @@ public class WholeProfileService {
             basic.put("country_code", countryCode);
             profile.put("basic", basic);
 
-            logger.debug("WholeProfileService getResource basicFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource basicFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> workexps = workexpsFuture.get();
             profile.put("workexps", workexps);
 
-            logger.debug("WholeProfileService getResource workexpsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource workexpsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> educations = educationsFuture.get();
             profile.put("educations", educations);
 
-            logger.debug("WholeProfileService getResource educationsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource educationsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> projectexps = projectexpsFuture.get();
             profile.put("projectexps", projectexps);
 
-            logger.debug("WholeProfileService getResource projectexpsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource projectexpsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> languages = buildLanguageFuture.get();
             profile.put("languages", languages);
 
-            logger.debug("WholeProfileService getResource buildLanguageFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource buildLanguageFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> skills = buildskillsFuture.get();
             profile.put("skills", skills);
 
-            logger.debug("WholeProfileService getResource buildskillsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource buildskillsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> credentials = buildsCredentialsFuture.get();
             profile.put("credentials", credentials);
 
-            logger.debug("WholeProfileService getResource buildsCredentialsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource buildsCredentialsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> awards = buildsAwardsFuture.get();
             profile.put("awards", awards);
 
-            logger.debug("WholeProfileService getResource buildsAwardsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource buildsAwardsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> works = buildsWorksFuture.get();
             profile.put("works", works);
 
-            logger.debug("WholeProfileService getResource buildsWorksFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource buildsWorksFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<Map<String, Object>> intentions = intentionsFuture.get();
             profile.put("intentions", intentions);
 
-            logger.debug("WholeProfileService getResource intentionsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource intentionsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<ProfileAttachmentRecord> attachmentRecords = attachmentRecordsFuture.get();
             List<Map<String, Object>> attachments = profileUtils.buildAttachments(profileRecord, attachmentRecords);
             profile.put("attachments", attachments);
 
-            logger.debug("WholeProfileService getResource attachmentRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource attachmentRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<ProfileImportRecord> importRecords = importRecordsFuture.get();
             List<Map<String, Object>> imports = profileUtils.buildImports(profileRecord, importRecords);
             profile.put("imports", imports);
 
-            logger.debug("WholeProfileService getResource importRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.debug("WholeProfileService getResource importRecordsFuture.get() : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             List<ProfileOtherRecord> otherRecords = otherRecordsFuture.get();
             profileParseUtil.handerSortOtherList(otherRecords);
             List<Map<String, Object>> others = profileUtils.buildOthers(profileRecord, otherRecords);
 
-            logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
+            //logger.info("WholeProfileService getResource done : {}", new DateTime().toString("yyyy-MM-dd HH:mm:ss SSS"));
 
             profile.put("others", others);
 
