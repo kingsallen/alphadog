@@ -21,6 +21,7 @@ import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -101,28 +102,34 @@ public class Neo4jServiceImpl implements Neo4jService {
         List<Relation> relationList = forwardNeo4jDao.getTwoUserShortFriend(startUserId, endUserId, companyId);
         if(!StringUtils.isEmptyList(relationList)){
             List<Integer> idList = new ArrayList<>();
-            Map<Integer, Integer> keyMap = relationList.stream().collect(Collectors.toMap(k -> k.getStartNode().getUser_id(),
-                    v -> v.getEndNode().getUser_id(),(key1,key2)->key1));
-            Map<Integer, Integer> valueMap = relationList.stream().collect(Collectors.toMap(k -> k.getEndNode().getUser_id(),
-                    v -> v.getStartNode().getUser_id(),(key1,key2)->key1));
+            Map<Integer, Integer> keyMap = new IdentityHashMap<>();
+            Map<Integer, Integer> valueMap = new IdentityHashMap<>();
+            for(Relation relation: relationList){
+                keyMap.put(relation.getStartNode().getUser_id(), relation.getEndNode().getUser_id());
+                valueMap.put(relation.getEndNode().getUser_id(), relation.getStartNode().getUser_id());
+            }
             idList.add(startUserId);
             int tempId=startUserId;
             for(int i =0; i< relationList.size(); i++){
                 int id = 0;
-                if(keyMap.get(tempId)!=null){
-                    id = keyMap.get(tempId);
-                    if(!idList.contains(id)){
-                        idList.add(id);
-                        tempId = id;
-                        continue;
+                for(Map.Entry<Integer, Integer> entry : keyMap.entrySet()){
+                    if(entry.getKey().intValue() == tempId) {
+                        id = entry.getValue();
+                        if (!idList.contains(id)) {
+                            idList.add(id);
+                            tempId = id;
+                            continue;
+                        }
                     }
                 }
-                if(valueMap.get(tempId)!=null){
-                    id = valueMap.get(tempId);
-                    if(!idList.contains(id)){
-                        idList.add(id);
-                        tempId = id;
-                        continue;
+                for(Map.Entry<Integer, Integer> entry : valueMap.entrySet()) {
+                    if (entry.getKey().intValue() == tempId) {
+                        id = entry.getValue();
+                        if (!idList.contains(id)) {
+                            idList.add(id);
+                            tempId = id;
+                            continue;
+                        }
                     }
                 }
             }
