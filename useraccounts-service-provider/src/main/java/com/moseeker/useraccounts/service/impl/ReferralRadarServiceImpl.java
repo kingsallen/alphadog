@@ -42,6 +42,7 @@ import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.service.impl.vo.RadarUserInfo;
+import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -294,7 +295,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             if(shareChainDO == null){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
             }
-            if(shareChainDO.getRecomUserId() != checkInfo.getRecomUserId()){
+            if(shareChainDO.getPresenteeUserId() != checkInfo.getRecomUserId()){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
             }
             recomUserId = shareChainDO.getRootRecomUserId();
@@ -740,7 +741,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             HrCompanyDO hrCompanyDO = companyDao.getCompanyById(inviteInfo.getCompanyId());
             JSONObject inviteTemplateVO = initInviteTemplateVO(jobPosition, hrCompanyDO, employee);
             String redirectUrl = env.getProperty("template.redirect.url.invite").replace("{}", String.valueOf(inviteInfo.getPid()))
-                    + "?wechat_signature=" + hrWxWechatDO.getSignature();
+                    + "?wechat_signature=" + hrWxWechatDO.getSignature() + "&recom=" + WxUseridEncryUtil.encry(employee.getSysuserId(), 10) + "&psc=0";
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             return "0".equals(String.valueOf(response.get("errcode")));
