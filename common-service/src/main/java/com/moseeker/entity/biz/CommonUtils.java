@@ -95,6 +95,7 @@ public class CommonUtils {
 
 
 
+
     private static PublicKey getPublicKey(String publicKey) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(publicKey.getBytes());
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
