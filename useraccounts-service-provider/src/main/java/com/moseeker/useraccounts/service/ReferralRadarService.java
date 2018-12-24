@@ -7,6 +7,8 @@ import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import org.apache.thrift.TException;
 
+import java.net.ConnectException;
+
 /**
  * 人脉雷达service
  *
@@ -25,5 +27,5 @@ public interface ReferralRadarService {
 
     String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException;
 
-    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo);
+    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException;
 }

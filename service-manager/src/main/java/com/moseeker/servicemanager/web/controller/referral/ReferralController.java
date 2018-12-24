@@ -801,11 +801,13 @@ public class ReferralController {
         validateUtil.addIntTypeValidate("转发人", radarForm.getRecomUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("被邀请连线人id", radarForm.getNextUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", radarForm.getAppid(), 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("parentId", radarForm.getParentId(), 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("人脉连连看id", radarForm.getChainId(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("转发人", radarForm.getRecomUserId());
         validateUtil.addRequiredValidate("被邀请连线人id", radarForm.getNextUserId());
         validateUtil.addRequiredValidate("appid", radarForm.getAppid());
         validateUtil.addRequiredValidate("人脉连连看id", radarForm.getChainId());
+        validateUtil.addRequiredValidate("parentId", radarForm.getParentId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ConnectRadarInfo radarInfo = new ConnectRadarInfo();
@@ -884,17 +886,18 @@ public class ReferralController {
      */
     @RequestMapping(value = "/v1/referral/radar/saveTemp", method = RequestMethod.POST)
     @ResponseBody
-    public String saveTenMinuteCandidateShareChain(@RequestBody ReferralCardForm referralCard) throws Exception {
+    public String saveTenMinuteCandidateShareChain(@RequestBody CandidateTempForm tempForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
-        validateUtil.addIntTypeValidate("员工userId", referralCard.getUserId(), 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("appid", referralCard.getAppid(), 0, Integer.MAX_VALUE);
-        validateUtil.addRequiredValidate("员工userId", referralCard.getUserId());
-        validateUtil.addRequiredValidate("appid", referralCard.getAppid());
-        validateUtil.addRequiredValidate("timestamp", referralCard.getTimestamp());
+        validateUtil.addIntTypeValidate("员工userId", tempForm.getUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", tempForm.getAppid(), 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("companyId", tempForm.getCompanyId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", tempForm.getUserId());
+        validateUtil.addRequiredValidate("appid", tempForm.getAppid());
+        validateUtil.addRequiredValidate("companyId", tempForm.getCompanyId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ReferralCardInfo cardInfo = new ReferralCardInfo();
-            BeanUtils.copyProperties(referralCard, cardInfo);
+            BeanUtils.copyProperties(tempForm, cardInfo);
             referralService.saveTenMinuteCandidateShareChain(cardInfo);
             return Result.success().toJson();
         } else {

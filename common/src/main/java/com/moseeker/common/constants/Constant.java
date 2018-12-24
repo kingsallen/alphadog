@@ -65,6 +65,7 @@ public final class Constant {
 
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
+    public static final String REFERRAL_RADAR_TEMPLATE = "referral_radar.referral_radar_template";
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";
@@ -232,6 +233,7 @@ public final class Constant {
     public static final int TEMPLATES_APPLY_NOTICE_TPL = 3; //申请成功时的消息通知ID
     public static final int TEMPLATES_NEW_RESUME_TPL = 24; // 新简历通知的消息通知ID
     public static final int EMPLOYEE_EMAILVERIFY_NOT_VERIFY_NOTICE_TPL = 79; // 新简历通知的消息通知ID
+    public static final int POSITION_SHARE_NOTICE_TPL = 74; // 新简历通知的消息通知ID
     public static final int TEMPLATES_REFERRAL_BONUS_NOTICE_TPL = 81; // 内推入职奖金
     public static final int TEMPLATES_AWARD_CONSUME_NOTICE_TPL = 83; // 积分商城积分消费模板消息ID
     public static final int TEMPLATES_AWARD_RETURN_NOTICE_TPL = 84; // 积分商城积分返还模板消息ID
