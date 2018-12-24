@@ -41,6 +41,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -467,20 +468,29 @@ public class TemplateMsgHttp {
             logger.info("公众号信息为空或者是订阅号");
             return;
         }
+
         UserHrAccountDO account = accountDao.getValidAccount(position.getPublisher());
         if(account == null){
             logger.info("Hr信息为空");
             return;
         }
-        UserWxUserDO wxUser = userWxUserDao.getWXUserById(account.getWxuserId());
+
+        //仟寻招聘助手
+        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
+                env.getProperty("wechat.helper.signature")).buildQuery());
+        HrWxTemplateMessageDO hrWxTemplateMessage = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                hrWxWechatDO.getId()).and("sys_template_id", Constant.POSITION_SYNC_FAIL_NOTICE_TPL).and("disable", "0").buildQuery());
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatDO.getId(),  Constant.POSITION_SYNC_FAIL_NOTICE_TPL);
+
+        if(messageDO == null){
+            logger.info("该模板消息开关没有开启！");
+        }
+
+        UserWxUserDO wxUser  = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
+                account.getWxuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrWxWechatDO.getId()).buildQuery());
         if(wxUser == null){
             logger.info("hr账号没有绑定微信");
             return;
-        }
-        HrWxTemplateMessageDO hrWxTemplateMessage = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
-                wechatDO.getId()).and("sys_template_id", Constant.POSITION_SYNC_FAIL_NOTICE_TPL).and("disable", "0").buildQuery());
-        if(hrWxTemplateMessage == null){
-            logger.info("该公司公众号号没有配置该模板消息");
         }
 
 
@@ -514,7 +524,7 @@ public class TemplateMsgHttp {
 
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
-        String url=env.getProperty("message.template.delivery.url").replace("{}", wechatDO.getAccessToken());
+        String url=env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
         logger.info("noticeEmployeeVerify url : {}", url);
 
         try {
