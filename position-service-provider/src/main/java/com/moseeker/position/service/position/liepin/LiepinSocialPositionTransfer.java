@@ -26,7 +26,7 @@ import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
-import com.moseeker.position.utils.LiepinHttpClientUtil;
+import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -85,7 +85,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     private PositionEmailNotification emailNotification;
 
     @Autowired
-    LiepinHttpClientUtil httpClientUtil;
+    HttpClientUtil httpClientUtil;
 
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
@@ -263,7 +263,6 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
             logger.warn(e.getMessage(), e);
-            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
         } catch (Exception e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.bindingError.getValue());
             hrThirdPartyPositionDO.setSyncFailReason("后台异常");

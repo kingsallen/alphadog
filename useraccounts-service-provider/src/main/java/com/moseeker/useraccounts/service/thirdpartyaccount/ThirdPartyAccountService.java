@@ -1,6 +1,5 @@
 package com.moseeker.useraccounts.service.thirdpartyaccount;
 
-import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
@@ -12,12 +11,12 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Update;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.useraccounts.service.impl.LiePinUserAccountBindHandler;
+import com.moseeker.useraccounts.service.thirdpartyaccount.base.AbstractBindProcessor;
+import com.moseeker.useraccounts.service.thirdpartyaccount.base.BindProcessorFactory;
 import com.moseeker.useraccounts.service.thirdpartyaccount.info.ThirdPartyAcountEntity;
 import com.moseeker.entity.pojos.ThirdPartyAccountExt;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -86,7 +85,7 @@ public class ThirdPartyAccountService {
     BindCheck bindCheck;
 
     @Autowired
-    LiePinUserAccountBindHandler bindHandler;
+    BindProcessorFactory bindProcessorFactory;
 
     /**
      * 第三方账号绑定
@@ -97,8 +96,10 @@ public class ThirdPartyAccountService {
      */
     public HrThirdPartyAccountDO bindThirdAccount(int hrId, HrThirdPartyAccountDO account,boolean sync) throws Exception {
         UserHrAccountDO hrAccount = userHrAccountService.requiresNotNullAccount(hrId);
-
         account.setCompanyId(hrAccount.getCompanyId());
+        // 前置处理，用于绑定前各渠道的特殊处理
+        account = bindProcessorFactory.getBindProcessorByChannel(account.getChannel()).postProcessorBeforeBind(hrId, account);
+
         HrThirdPartyAccountDO oldAccount = thirdPartyAccountDao.getEQThirdPartyAccount(account);
 
         if(BindCheck.isSubUserHrAccount(hrAccount)){
@@ -441,5 +442,13 @@ public class ThirdPartyAccountService {
             return "failed";
         }
         return "success";
+    }
+
+    public HrThirdPartyAccountDO getJob58BindResult(int channel, String key){
+        HrThirdPartyAccountDO hrThirdPartyAccountDO = thirdPartyAccountDao.getJob58BindResult(channel, key);
+        if(hrThirdPartyAccountDO == null){
+            return new HrThirdPartyAccountDO();
+        }
+        return hrThirdPartyAccountDO;
     }
 }
