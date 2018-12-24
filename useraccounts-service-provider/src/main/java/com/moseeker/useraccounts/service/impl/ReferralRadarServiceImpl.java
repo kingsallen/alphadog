@@ -188,11 +188,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.put("chain", doInitRadarUsers(shortestChain, idUserMap));
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
-        if(isSent){
-            // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
-            shareChainDao.updateTypeByIds(getUpdateCandidateIds(inviteInfo));
-            templateShareChainDao.updateHandledRadarCardTypeByIds(inviteInfo, 1);
-        }
+        // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
+        shareChainDao.updateTypeByIds(getUpdateCandidateIds(inviteInfo));
+        templateShareChainDao.updateHandledRadarCardTypeByIds(inviteInfo, 1);
         result.put("notified", isSent ? 1 : 0);
         int degree = shortestChain.size()-1;
         result.put("degree", degree >= 0 ? degree : 0);
