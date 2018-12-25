@@ -567,9 +567,9 @@ public class SearchengineController {
                 return ResponseLogNotification.fail4Alphacloud("参数不能为空");
             }
             //解析请求体参数
-            List<Map<String, String>> filterMapList = (List<Map<String, String>>) reqParams.get("filterMapList");
-            Integer pageNumber = BeanUtils.converToInteger(reqParams.get("pageNumber"));
-            Integer pageSize = BeanUtils.converToInteger(reqParams.get("pageSize"));
+            List<Map<String, String>> filterMapList = (List<Map<String, String>>) reqParams.get("filter_map_list");
+            Integer pageNumber = BeanUtils.converToInteger(reqParams.get("page_number"));
+            Integer pageSize = BeanUtils.converToInteger(reqParams.get("page_size"));
 
             Response res = searchengineServices.queryProfileFilterUserIdList(filterMapList, pageNumber, pageSize);
             return ResponseLogNotification.success4Alphacloud(JSON.parse(res.getData()));

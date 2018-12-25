@@ -26,8 +26,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +52,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 386007665;
+    private static final long serialVersionUID = 415873090;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -206,9 +205,9 @@ public class Dictdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
+            DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             Dict_58jobFeature.DICT_58JOB_FEATURE,
             Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
-            DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,

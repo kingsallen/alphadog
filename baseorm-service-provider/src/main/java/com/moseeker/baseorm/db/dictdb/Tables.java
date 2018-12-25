@@ -4,30 +4,7 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
-import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
-import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
-import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.DictCity;
-import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
-import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
-import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
-import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
-import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
-import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
-import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
-import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
-import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
-import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
-import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
-import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
-import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
-import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
-import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.*;
 
 import javax.annotation.Generated;
 
