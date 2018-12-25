@@ -220,6 +220,10 @@ service UserHrAccountService {
 
     // 获取员工内推奖金明细
     employee_struct.BonusVOPageVO getEmployeeBonus(1: i32 employeeId, 2: i32 companyId, 3: i32 pageNumber, 4: i32 pageSize);
+
+    //获取58帐号绑定信息
+    hr_third_party_account_struct.HrThirdPartyAccountDO getJob58BindResult(1:i32 channel, 2:string key) throws (1: common_struct.BIZException e);
+
 }
 
 

@@ -291,6 +291,13 @@ public class HRThirdPartyAccountDao extends JooqCrudImpl<HrThirdPartyAccountDO, 
                 .fetchInto(HrThirdPartyAccountDO.class);
     }
 
+    public HrThirdPartyAccountDO getJob58BindResult(int channel, String key) {
+        return create.selectFrom(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
+                .where(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.CHANNEL.eq((short)channel))
+                .and(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.EXT2.eq(key))
+                .fetchOneInto(HrThirdPartyAccountDO.class);
+    }
+
 //    public void updateBindState(int hrAccountId, int state) {
 //        create.update(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT)
 //                .set(HrThirdPartyAccount.HR_THIRD_PARTY_ACCOUNT.BINDING, (short)state)

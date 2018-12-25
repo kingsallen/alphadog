@@ -760,4 +760,17 @@ public class UserHrAccountServiceImpl implements Iface {
     public BonusVOPageVO getEmployeeBonus(int employeeId, int companyId, int pageNumber, int pageSize) throws TException {
         return service.getEmployeeBonus(employeeId,companyId,pageNumber,pageSize);
     }
+
+    @Override
+    public HrThirdPartyAccountDO getJob58BindResult(int channel, String key) throws BIZException, TException {
+        try {
+            return thirdPartyAccountService.getJob58BindResult(channel, key);
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }
