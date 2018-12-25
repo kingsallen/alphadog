@@ -923,18 +923,18 @@ public class JobApplicataionService {
         // TODO Auto-generated method stub
         if (jobApplicationRecord.getRecommenderUserId() != null && jobApplicationRecord.getRecommenderUserId().intValue() > 0) {
             boolean existUserEmployee = employeeEntity.isEmployee(jobApplicationRecord.getRecommenderUserId(), jobApplicationRecord.getCompanyId());
-            logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
+            //logger.info("JobApplicataionService saveJobApplication existUserEmployee:{}", existUserEmployee);
             if (!existUserEmployee) {
-                logger.info("JobApplicataionService saveJobAp plication not employee");
+                //logger.info("JobApplicataionService saveJobAp plication not employee");
                 jobApplicationRecord.setRecommenderUserId(0);
             }
             if (jobApplicationRecord.getApplierId() != null && jobApplicationRecord.getApplierId().intValue() == jobApplicationRecord.getRecommenderUserId().intValue()) {
-                logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
+                //logger.info("JobApplicataionService saveJobApplication applier_id equals recommender_user_id");
                 jobApplicationRecord.setRecommenderUserId(0);
             }
 
         }
-        logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
+        //logger.info("JobApplicataionService saveJobApplication jobApplicationRecord:{}", jobApplicationRecord);
 
         ApplicationSaveResultVO resultVO = jobApplicationDao.addIfNotExists(jobApplicationRecord);
         if (resultVO.isCreate()) {
@@ -943,7 +943,7 @@ public class JobApplicataionService {
         }
         try {
             ThreadPool.Instance.startTast(() -> {
-                logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}", jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
+                //logger.info("saveJobApplication updateApplyStatus applier_id:{}, position_id:{}", jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
                 chatService.updateApplyStatus(jobApplicationRecord.getApplierId(), jobApplicationRecord.getPositionId());
                 return 0;
             });
