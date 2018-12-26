@@ -25,7 +25,13 @@ public class ProfileBSThriftService implements Iface {
 	
 	@Override
 	public Response retrieveProfile(int positionId, int channel, String profile) throws TException {
-		return profileBS.retrieveProfile(positionId, profile, channel);
+		try {
+			return profileBS.retrieveProfile(positionId, profile, channel);
+		}catch (Exception e){
+			logger.info("简历回流:{}", e.getMessage());
+			throw e;
+		}
+
 	}
 
 	public ProfileBS getProfileBS() {
