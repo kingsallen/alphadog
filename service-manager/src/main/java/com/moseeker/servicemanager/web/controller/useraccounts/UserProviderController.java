@@ -7,6 +7,7 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.rpccenter.client.ServiceManager;
+import com.moseeker.servicemanager.common.CleanJsonResponse4Alphacloud;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.servicemanager.web.controller.util.Params;
@@ -50,7 +51,7 @@ public class UserProviderController {
 
     @RequestMapping(value = "/v4/user/storeChatBotUser", method = RequestMethod.POST)
     @ResponseBody
-    public String storeChatBotUser(HttpServletRequest request) {
+    public CleanJsonResponse4Alphacloud storeChatBotUser(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
             String profilePojo = params.getString("profilePojo");
@@ -60,10 +61,10 @@ public class UserProviderController {
             int appid = params.getInt("appid");
             UserUserDO result = userProviderService.storeChatBotUser(profilePojo,reference,companyId,source,appid);
 
-            return ResponseLogNotification.successJson(request, result);
+            return ResponseLogNotification.success4Alphacloud(result);
         } catch (Exception e) {
             logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail(request, e.getMessage());
+            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
         }
     }
 
