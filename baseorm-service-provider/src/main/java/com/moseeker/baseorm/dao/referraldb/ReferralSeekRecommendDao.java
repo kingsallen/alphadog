@@ -6,6 +6,7 @@ import static com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.RE
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import org.jooq.Configuration;
 import org.jooq.Param;
@@ -29,7 +30,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
         super(configuration);
     }
 
-    public int insertIfNotExist(ReferralSeekRecommendRecord recomRecordRecord) {
+    public ReferralSeekRecommendRecord insertIfNotExist(ReferralSeekRecommendRecord recomRecordRecord) {
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Param<Integer> positionIdParam = param(REFERRAL_SEEK_RECOMMEND.POSITION_ID.getName(), recomRecordRecord.getPositionId());
@@ -62,7 +63,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .limit(1)
                 .fetchOne();
 
-        return recommendRecord.getId();
+        return recommendRecord;
     }
 
 
@@ -84,6 +85,14 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
     public int updateReferralSeekRecommendRecordForAppId(int referralId, int appId ){
         return using(configuration()).update(REFERRAL_SEEK_RECOMMEND)
                 .set(REFERRAL_SEEK_RECOMMEND.APP_ID, appId)
+                .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
+                .execute();
+
+    }
+
+    public int updateReferralSeekRecommendRecordForRecommendTime(int referralId){
+        return using(configuration()).update(REFERRAL_SEEK_RECOMMEND)
+                .set(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME, new Timestamp(new Date().getTime()))
                 .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
                 .execute();
 

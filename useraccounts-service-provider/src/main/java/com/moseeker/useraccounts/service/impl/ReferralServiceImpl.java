@@ -59,7 +59,9 @@ import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
 import java.net.ConnectException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
@@ -379,16 +381,19 @@ public class ReferralServiceImpl implements ReferralService {
         record.setPresenteeUserId(userId);
         record.setPositionId(positionId);
         record.setOrigin(origin);
+        ReferralSeekRecommendRecord recommendRecord = new ReferralSeekRecommendRecord();
         int i =0;
-        int id = 0;
-        while (i<3 && id ==0){
-            id = recommendDao.insertIfNotExist(record);
+        while (i<3 && recommendRecord.getId() ==0){
+            recommendRecord = recommendDao.insertIfNotExist(record);
             i++;
         }
-        if(id<=0){
+        if(recommendRecord.getId()<=0){
             throw UserAccountException.REFERRAL_SEEK_RECOMMEND_FAIL;
         }
-        templateSender.publishSeekReferralEvent(postUserId, id, userId, positionId);
+        if(recommendRecord.getAppId()<=0) {
+            recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
+            templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+        }
     }
 
     @Override
@@ -415,6 +420,7 @@ public class ReferralServiceImpl implements ReferralService {
             info.setPositionName(position.getTitle());
         }
         info.setPositionId(record.getPositionId());
+        info.setApplicationId(record.getAppId());
         return info;
     }
 

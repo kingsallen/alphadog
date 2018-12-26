@@ -39,7 +39,10 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
 
     private static final String CHANNEL;
 
+    private static final String SECRECT_KEY;
+
     static{
+        SECRECT_KEY = EmailNotification.getConfig("liepin_position_api_secretkey");
         CHANNEL = EmailNotification.getConfig("liepin_position_api_channel");
     }
 
@@ -135,7 +138,7 @@ public class LiePinUserAccountBindHandler implements IBindRequest {
         requestMap.put("t", t);
 
         //生成签名
-        String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(requestMap), requestMap);
+        String sign = Md5Utils.getMD5SortKey(SECRECT_KEY, Md5Utils.mapToList(requestMap), requestMap);
         requestMap.put("sign", sign);
 
         //设置请求头

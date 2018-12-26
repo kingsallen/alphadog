@@ -6,6 +6,7 @@ import com.moseeker.position.constants.position.liepin.LiepinPositionOperateCons
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.MessageDigest;
 import java.util.*;
 
 /**
@@ -25,7 +26,7 @@ public class Md5Utils {
      * @date  2018/5/28
      * @return
      */
-    public static String getMD5SortKey(List<String> list, Map<String , Object> map) {
+    public static String getMD5SortKey(List<String> list, Map<String , Object> map, String secret) {
         StringBuilder paras = new StringBuilder();
         Collections.sort(list);
         for(String paraName : list) {
@@ -35,7 +36,7 @@ public class Md5Utils {
             }
             paras.append(paramValue);
         }
-        paras.append(LiepinPositionOperateConstant.liepinSecretKey);
+        paras.append(secret);
         logger.info("==============paras:{}=============", paras.toString());
         return MD5Util.md5(paras.toString()).toLowerCase();
     }
@@ -50,6 +51,37 @@ public class Md5Utils {
         return list;
     }
 
+    /**
+     * md5加密字符串，key与value用=号连接
+     * @param
+     * @author  cjm
+     * @date  2018/5/28
+     * @return
+     */
+    public static String getMD5SortKeyWithEqual(String secret, List<String> list, Map<String , Object> map) throws Exception {
+        StringBuilder paras = new StringBuilder();
+        Collections.sort(list);
+        for(String paraName : list) {
+            paras.append(paraName).append("=").append(map.get(paraName));
+        }
+        paras.append(secret);
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(paras.toString().getBytes("UTF-8"));
+        byte[] byteArr = md.digest();
+        StringBuilder sb = new StringBuilder("");
+        int i;
+        for (byte aByte : byteArr) {
+            i = aByte;
+            if (i < 0){
+                i += 256;
+            }
+            if (i < 16){
+                sb.append("0");
+            }
+            sb.append(Integer.toHexString(i));
+        }
+        return sb.toString();
+    }
 
 
 }

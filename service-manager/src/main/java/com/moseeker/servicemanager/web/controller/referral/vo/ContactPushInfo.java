@@ -9,6 +9,7 @@ public class ContactPushInfo {
     public String username; // optional
     public int positionId; // optional
     public String positionName; // optional
+    public int applicationId;
 
     public int getUserId() {
         return userId;
@@ -40,5 +41,13 @@ public class ContactPushInfo {
 
     public void setPositionName(String positionName) {
         this.positionName = positionName;
+    }
+
+    public int getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(int applicationId) {
+        this.applicationId = applicationId;
     }
 }

@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 候选人查看职位详情次数
+ * 推荐人推荐理由信息
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralRecomEvaluation extends TableImpl<ReferralRecomEvaluationRecord> {
 
-    private static final long serialVersionUID = 664079018;
+    private static final long serialVersionUID = -32293210;
 
     /**
      * The reference instance of <code>referraldb.referral_recom_evaluation</code>
@@ -77,6 +77,11 @@ public class ReferralRecomEvaluation extends TableImpl<ReferralRecomEvaluationRe
     public final TableField<ReferralRecomEvaluationRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "申请编号 ");
 
     /**
+     * The column <code>referraldb.referral_recom_evaluation.position_id</code>. 职位编号
+     */
+    public final TableField<ReferralRecomEvaluationRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "职位编号");
+
+    /**
      * The column <code>referraldb.referral_recom_evaluation.recom_reason_tag</code>. 推荐标签, 用,隔开
      */
     public final TableField<ReferralRecomEvaluationRecord, String> RECOM_REASON_TAG = createField("recom_reason_tag", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "推荐标签, 用,隔开");
@@ -89,7 +94,7 @@ public class ReferralRecomEvaluation extends TableImpl<ReferralRecomEvaluationRe
     /**
      * The column <code>referraldb.referral_recom_evaluation.recom_reason_text</code>. 推荐理由-文本
      */
-    public final TableField<ReferralRecomEvaluationRecord, String> RECOM_REASON_TEXT = createField("recom_reason_text", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "推荐理由-文本");
+    public final TableField<ReferralRecomEvaluationRecord, String> RECOM_REASON_TEXT = createField("recom_reason_text", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "推荐理由-文本");
 
     /**
      * The column <code>referraldb.referral_recom_evaluation.create_time</code>. 创建时间
@@ -100,11 +105,6 @@ public class ReferralRecomEvaluation extends TableImpl<ReferralRecomEvaluationRe
      * The column <code>referraldb.referral_recom_evaluation.update_time</code>. 更新时间
      */
     public final TableField<ReferralRecomEvaluationRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>referraldb.referral_recom_evaluation.position_id</code>.
-     */
-    public final TableField<ReferralRecomEvaluationRecord, Integer> POSITION_ID = createField("position_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>referraldb.referral_recom_evaluation</code> table reference
@@ -125,7 +125,7 @@ public class ReferralRecomEvaluation extends TableImpl<ReferralRecomEvaluationRe
     }
 
     private ReferralRecomEvaluation(String alias, Table<ReferralRecomEvaluationRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "候选人查看职位详情次数");
+        super(alias, null, aliased, parameters, "推荐人推荐理由信息");
     }
 
     /**

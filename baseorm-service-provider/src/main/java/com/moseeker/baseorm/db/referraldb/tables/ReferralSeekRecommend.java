@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommend extends TableImpl<ReferralSeekRecommendRecord> {
 
-    private static final long serialVersionUID = 1201658392;
+    private static final long serialVersionUID = 1295643260;
 
     /**
      * The reference instance of <code>referraldb.referral_seek_recommend</code>
@@ -87,9 +87,14 @@ public class ReferralSeekRecommend extends TableImpl<ReferralSeekRecommendRecord
     public final TableField<ReferralSeekRecommendRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
-     * The column <code>referraldb.referral_seek_recommend.origin</code>.
+     * The column <code>referraldb.referral_seek_recommend.origin</code>. 间接内推来源，1 直接转发求内推，2连连看转发求内推 
      */
-    public final TableField<ReferralSeekRecommendRecord, Integer> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<ReferralSeekRecommendRecord, Integer> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "间接内推来源，1 直接转发求内推，2连连看转发求内推 ");
+
+    /**
+     * The column <code>referraldb.referral_seek_recommend.recommend_time</code>.
+     */
+    public final TableField<ReferralSeekRecommendRecord, Timestamp> RECOMMEND_TIME = createField("recommend_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>referraldb.referral_seek_recommend</code> table reference

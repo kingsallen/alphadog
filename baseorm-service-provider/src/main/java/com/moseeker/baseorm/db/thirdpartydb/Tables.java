@@ -4,16 +4,7 @@
 package com.moseeker.baseorm.db.thirdpartydb;
 
 
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
+import com.moseeker.baseorm.db.thirdpartydb.tables.*;
 
 import javax.annotation.Generated;
 
@@ -65,6 +56,11 @@ public class Tables {
      * 一览人才的第三方职位子表
      */
     public static final ThirdpartyJob1001Position THIRDPARTY_JOB1001_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION;
+
+    /**
+     * 58同城补填字段表
+     */
+    public static final ThirdpartyJob58Position THIRDPARTY_JOB58_POSITION = com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION;
 
     /**
      * JobsDB的第三方职位子表

@@ -138,4 +138,12 @@ public class HRThirdPartyAccountHrDao extends JooqCrudImpl<HrThirdPartyAccountHr
                 .limit(1)
                 .fetchOneInto(HrThirdPartyAccountHrDO.class);
     }
+
+    public HrThirdPartyAccountHrDO getHrAccountByThirdPartyId(int thirdPartyId) {
+        return create.selectFrom(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR)
+                .where(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.THIRD_PARTY_ACCOUNT_ID.eq(thirdPartyId))
+                .and(HrThirdPartyAccountHr.HR_THIRD_PARTY_ACCOUNT_HR.STATUS.eq((byte)1))
+                .limit(1)
+                .fetchOneInto(HrThirdPartyAccountHrDO.class);
+    }
 }

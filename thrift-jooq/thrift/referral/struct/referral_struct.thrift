@@ -80,7 +80,8 @@ struct ContactPushInfo{
     1: optional i32 userId;
     2: optional string username;
     3: optional i32 positionId;
-    4: optional string positionName
+    4: optional string positionName,
+    5: optional i32 applicationId
 }
 
 struct ReferralCardInfo{
