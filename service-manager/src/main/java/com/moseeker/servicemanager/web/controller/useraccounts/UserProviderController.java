@@ -53,12 +53,12 @@ public class UserProviderController {
     public String storeChatBotUser(HttpServletRequest request) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            ProfilePojo profilePojo = (ProfilePojo) params.get("profilePojo");
+            String profilePojo = params.getString("profilePojo");
             int reference = params.getInt("reference");
             int companyId = params.getInt("companyId");
             int source = params.getInt("source");
             int appid = params.getInt("appid");
-            UserUserDO result = userProviderService.storeChatBotUser(JSON.toJSONString(profilePojo),reference,companyId,source,appid);
+            UserUserDO result = userProviderService.storeChatBotUser(profilePojo,reference,companyId,source,appid);
 
             return ResponseLogNotification.successJson(request, result);
         } catch (Exception e) {
