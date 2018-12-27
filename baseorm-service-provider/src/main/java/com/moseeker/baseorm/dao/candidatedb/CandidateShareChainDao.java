@@ -6,6 +6,8 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRec
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
+import java.util.stream.Collectors;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -144,4 +146,15 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .execute();
     }
 
+    public List<Integer> fetchRootIdByPresentee(int presentee_user_id){
+        Result<Record1<Integer>>  result = create.selectDistinct(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID)
+                .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(presentee_user_id))
+                .fetch();
+        if(!result.isEmpty()){
+            List<Integer> idList = result.stream().map(m -> m.value1()).collect(Collectors.toList());
+            return idList;
+        }
+        return new ArrayList<>();
+    }
 }

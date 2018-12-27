@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,7 +157,19 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
-        List<CandidateShareChainDO> shareChainList = candidateShareChainDao.
+        List<Integer> rootUserList = candidateShareChainDao.fetchRootIdByPresentee(userId);
+        if(StringUtils.isEmptyList(rootUserList)){
+            return new ArrayList<>();
+        }
+        if(companyId >0) {
+            List<UserEmployeeDO> employeeList = employeeDao.getActiveEmployee(rootUserList, companyId);
+            rootUserList.clear();
+            if(StringUtils.isEmptyList(employeeList)){
+                return new ArrayList<>();
+            }
+            rootUserList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+        }
+//        List<>
         return null;
     }
 
