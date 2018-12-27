@@ -156,6 +156,7 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
+        List<CandidateShareChainDO> shareChainList = candidateShareChainDao.
         return null;
     }
 
