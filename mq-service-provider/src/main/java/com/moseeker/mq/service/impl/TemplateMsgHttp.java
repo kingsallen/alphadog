@@ -27,6 +27,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.DecodeUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -269,7 +270,7 @@ public class TemplateMsgHttp {
 
         JSONObject keywords2 = new JSONObject();
         keywords2.put("color", "#173177");
-        keywords2.put("value", message);
+        keywords2.put("value", DecodeUtils.decodeUnicode(message));
         colMap.put("keyword2", keywords2);
 
         JSONObject keywords3 = new JSONObject();
@@ -655,5 +656,8 @@ public class TemplateMsgHttp {
         }
         return wxMessageRecordDao.addData(messageRecord).getId();
     }
+
+
+
 
 }
