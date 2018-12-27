@@ -482,8 +482,12 @@ public class TemplateMsgHttp {
                 hrWxWechatDO.getId()).and("sys_template_id", Constant.POSITION_SYNC_FAIL_NOTICE_TPL).and("disable", "0").buildQuery());
         HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatDO.getId(),  Constant.POSITION_SYNC_FAIL_NOTICE_TPL);
 
+        if (hrWxTemplateMessage == null){
+            logger.info("仟寻招聘助手没有配置该模板消息");
+        }
         if(messageDO == null){
             logger.info("该模板消息开关没有开启！");
+            return;
         }
 
         UserWxUserDO wxUser  = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
