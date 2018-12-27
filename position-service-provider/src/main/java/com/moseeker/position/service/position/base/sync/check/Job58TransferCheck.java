@@ -76,13 +76,13 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
             if (!containChinese) {
                 errorMsg.add(TITLE_NEED_CONTAINS_CHINESE);
             }
-            if (!containEnglish && !containChinese && !containNumber) {
-                errorMsg.add(TITLE_TYPE_LIMIT);
-            }
-            // 如果标题包含除汉字字母数字外的其他字符，不符合规则
-            if(contailOthers){
-                errorMsg.add(TITLE_TYPE_LIMIT);
-            }
+//            if (!containEnglish && !containChinese && !containNumber) {
+//                errorMsg.add(TITLE_TYPE_LIMIT);
+//            }
+//            // 如果标题包含除汉字字母数字外的其他字符，不符合规则
+//            if(contailOthers){
+//                errorMsg.add(TITLE_TYPE_LIMIT);
+//            }
             // 职位描述长度限制
             String content = "工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：" + moseekerPosition.getRequirement();
             // 职位详情不能包括手机和qq
