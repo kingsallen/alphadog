@@ -149,7 +149,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             upshelfJob58Position(job58PositionDTO, job58PositionDO);
         } catch (BIZException e) {
             // 发送同步失败消息模板
-            sendSyncFailedTemplate(pid);
+            sendSyncFailedTemplate(pid, e.getMessage());
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
             logger.warn(e.getMessage(), e);
@@ -165,10 +165,10 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         return twoParam;
     }
 
-    private void sendSyncFailedTemplate(int positionId) {
+    private void sendSyncFailedTemplate(int positionId, String message) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("positionId", positionId);
-        jsonObject.put("message", "职位同步失败");
+        jsonObject.put("message", message);
         jsonObject.put("channal", getChannel().getValue());
         amqpTemplate.sendAndReceive(PositionSyncApiConstant.MESSAGE_TEMPLATE_EXCHANGE,
                 POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
