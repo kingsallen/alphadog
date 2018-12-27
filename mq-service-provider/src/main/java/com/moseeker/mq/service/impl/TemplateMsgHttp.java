@@ -497,7 +497,9 @@ public class TemplateMsgHttp {
             logger.info("hr账号没有绑定微信");
             return;
         }
-
+        if(channal != ChannelType.LIEPIN.getValue()) {
+            message = DecodeUtils.decodeUnicode(message);
+        }
 
         JSONObject colMap = new JSONObject();
 
@@ -513,7 +515,7 @@ public class TemplateMsgHttp {
 
         JSONObject keywords2 = new JSONObject();
         keywords2.put("color", "#173177");
-        keywords2.put("value", DecodeUtils.decodeUnicode(message));
+        keywords2.put("value", message);
         colMap.put("keyword2", keywords2);
 
         JSONObject keywords3 = new JSONObject();
