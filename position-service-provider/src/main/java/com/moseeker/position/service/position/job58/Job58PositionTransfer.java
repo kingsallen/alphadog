@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictFeatureJob58Dao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
-import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionJob58MappingDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
@@ -28,7 +27,6 @@ import com.moseeker.position.service.position.job58.vo.Job58PositionForm;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionJob58MappingDO;
@@ -39,6 +37,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * todo 全局异常码和token过期暂未处理
+ *
  * @author cjm
  * @date 2018-10-26 14:00
  **/
@@ -56,7 +55,7 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
 
     private static Logger logger = LoggerFactory.getLogger(Job58PositionTransfer.class);
     @Autowired
-    private HRThirdPartyAccountHrDao hrThirdPartyHrDao;
+    private Environment env;
     @Autowired
     private UserHrAccountDao userHrAccountDao;
     @Autowired
@@ -90,13 +89,12 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         job58PositionDTO.setContent(content);
         job58PositionDTO.setLocal_id(doGetCityCode(positionDB));
         // 获取仟寻账号的信息
-//        HrThirdPartyAccountHrDO accountHrDO = hrThirdPartyHrDao.getHrAccountByThirdPartyId(account.getId());
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getUserHrAccountById(positionDB.getPublisher());
         job58PositionDTO.setPhone(userHrAccountDO.getMobile());
         job58PositionDTO.setTitle(positionDB.getTitle());
         job58PositionDTO.setParas(parsePositionParam2Job58(positionForm, positionDB, userHrAccountDO));
         // 設置email
-        job58PositionDTO.setEmail("cv_" + positionDB.getId() + "@dqprism.com");
+        job58PositionDTO.setEmail(env.getProperty("position.sync.job58.retrive.email").replace("{}", positionDB.getId()+""));
         job58PositionDTO.setAccount_id(account.getId());
         job58PositionDTO.setPid(positionDB.getId());
         return job58PositionDTO;

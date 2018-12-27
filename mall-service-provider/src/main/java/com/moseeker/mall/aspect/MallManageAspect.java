@@ -33,7 +33,6 @@ public class MallManageAspect {
     @Autowired
     private HrCompanyDao hrCompanyDao;
 
-
     @Pointcut("@annotation(com.moseeker.mall.annotation.OnlySuperAccount)")
     private void cut() {
     }
@@ -49,18 +48,21 @@ public class MallManageAspect {
 
     /**
      * 非主账号无法操作积分商城
-     * @param   hrId hrId
-     * @author  cjm
-     * @date  2018/10/12
+     *
+     * @param hrId hrId
+     * @author cjm
+     * @date 2018/10/12
      */
     private void checkSuperAccount(int hrId, int companyId) throws BIZException {
         HrCompanyDO hrCompanyDO = hrCompanyDao.getCompanyById(companyId);
-        if(hrCompanyDO == null || hrCompanyDO.getType() != 0){
+        if (hrCompanyDO == null || hrCompanyDO.getType() != 0) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_LIMIT_SUPER_ACCOUNT);
         }
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getValidAccount(hrId);
-        if(userHrAccountDO == null || userHrAccountDO.getCompanyId() != companyId || userHrAccountDO.getAccountType() == 1){
+        if (userHrAccountDO == null || userHrAccountDO.getCompanyId() != companyId
+                || userHrAccountDO.getAccountType() != 0 || userHrAccountDO.getAccountType() != 2) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_LIMIT_SUPER_ACCOUNT);
         }
+
     }
 }
