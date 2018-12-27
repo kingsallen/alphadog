@@ -16,6 +16,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.constants.position.PositionSyncApiConstant;
 import com.moseeker.position.constants.position.job58.Job58PositionDegree;
 import com.moseeker.position.constants.position.job58.Job58PositionOperateConstant;
 import com.moseeker.position.constants.position.job58.Job58WorkExperienceDegree;
@@ -24,6 +25,7 @@ import com.moseeker.position.service.position.job58.dto.Job58PositionDTO;
 import com.moseeker.position.service.position.job58.dto.Job58PositionParams;
 import com.moseeker.position.service.position.job58.dto.Job58PositionUpshelfDTO;
 import com.moseeker.position.service.position.job58.vo.Job58PositionForm;
+import static com.moseeker.common.constants.Constant.POSITION_SYNC_FAIL_ROUTINGKEY;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
@@ -36,6 +38,8 @@ import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -44,6 +48,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.POSITION_SYNC_FAIL_ROUTINGKEY;
 
 /**
  *
@@ -70,6 +76,8 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
     private JobPositionJob58MappingDao job58MappingDao;
     @Autowired
     private DictFeatureJob58Dao featureJob58Dao;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     @Override
     public Job58PositionDTO changeToThirdPartyPosition(Job58PositionForm positionForm, JobPositionDO positionDB, HrThirdPartyAccountDO account) throws BIZException {
@@ -128,8 +136,8 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         Job58PositionDTO job58PositionDTO = result.getPositionWithAccount();
         HrThirdPartyPositionDO hrThirdPartyPositionDO = result.getThirdPartyPositionDO();
         ThirdpartyJob58PositionDO extDO = result.getExtPosition();
+        int pid = job58PositionDTO.getPid();
         try {
-            int pid = job58PositionDTO.getPid();
             job58PositionDTO = postProcessBeforeRequest(job58PositionDTO, hrThirdPartyPositionDO.getThirdPartyAccountId());
             response = job58RequestHandler.sendRequest(job58PositionDTO, Job58PositionOperateConstant.job58PositionSync);
             job58RequestHandler.checkValidResponse(response);
@@ -140,6 +148,8 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
             // 将职位上架
             upshelfJob58Position(job58PositionDTO, job58PositionDO);
         } catch (BIZException e) {
+            // 发送同步失败消息模板
+            sendSyncFailedTemplate(pid);
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
             logger.warn(e.getMessage(), e);
@@ -153,6 +163,16 @@ public class Job58PositionTransfer extends AbstractPositionTransfer<Job58Positio
         TwoParam<HrThirdPartyPositionDO, ThirdpartyJob58PositionDO> twoParam = new TwoParam<>(hrThirdPartyPositionDO, extDO);
         twoParam = thirdPartyPositionDao.upsertThirdPartyPosition(twoParam);
         return twoParam;
+    }
+
+    private void sendSyncFailedTemplate(int positionId) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("positionId", positionId);
+        jsonObject.put("message", "职位同步失败");
+        jsonObject.put("channal", getChannel().getValue());
+        amqpTemplate.sendAndReceive(PositionSyncApiConstant.MESSAGE_TEMPLATE_EXCHANGE,
+                POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                        .build());
     }
 
     /**

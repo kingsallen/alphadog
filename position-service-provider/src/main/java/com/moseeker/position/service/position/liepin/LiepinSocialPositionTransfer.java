@@ -21,6 +21,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.constants.position.PositionSyncApiConstant;
 import com.moseeker.position.constants.position.liepin.LiePinPositionDegree;
 import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import com.moseeker.position.pojo.LiePinPositionVO;
@@ -275,7 +276,7 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
             jsonObject.put("positionId", Integer.valueOf(liePinPositionVO.getPositionId()));
             jsonObject.put("message", e.getMessage());
             jsonObject.put("channal", channel);
-            amqpTemplate.sendAndReceive(MESSAGE_TEMPLATE_EXCHANGE,
+            amqpTemplate.sendAndReceive(PositionSyncApiConstant.MESSAGE_TEMPLATE_EXCHANGE,
                     POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());
             logger.warn(e.getMessage(), e);
