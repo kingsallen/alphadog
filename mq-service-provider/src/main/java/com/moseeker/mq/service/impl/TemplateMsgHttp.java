@@ -12,6 +12,7 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
@@ -21,10 +22,12 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.DecodeUtils;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
@@ -33,6 +36,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
@@ -97,6 +101,9 @@ public class TemplateMsgHttp {
     private UserAccountEntity userAccountEntity;
 
     @Autowired
+    private UserHrAccountDao accountDao;
+
+    @Autowired
     private Environment env;
 
     @Autowired
@@ -109,7 +116,8 @@ public class TemplateMsgHttp {
     private static String NoticeEmployeeReferralBonusRemark = "请点击查看详情";
     private static String NoticeEmployeeReferralBonusTemplateId = "OPENTM411613026";
     private static String NoticeEmployeeReferralBonusTitle = "简历推荐成功提醒";
-
+    private static String PositionSyncFailFirst = "抱歉，您的职位同步到渠道失败";
+    private static String PositionSyncFailKeyword3 = "如有疑问请联系您的客户成功经理";
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
     public void noticeEmployeeVerify(int userId, int companyId, String companyName) {
@@ -207,6 +215,90 @@ public class TemplateMsgHttp {
         }
     }
 
+    public void positionSyncFailTemplate(int positionId, String message, int channal) {
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+        if (position == null) {
+            logger.info("职位信息为空");
+            return;
+        }
+        HrWxWechatDO wechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+        if(wechatDO == null || wechatDO.getType() == 0){
+            logger.info("公众号信息为空或者是订阅号");
+            return;
+        }
+
+        UserHrAccountDO account = accountDao.getValidAccount(position.getPublisher());
+        if(account == null){
+            logger.info("Hr信息为空");
+            return;
+        }
+
+        //仟寻招聘助手
+        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.SIGNATURE.getName(),
+                env.getProperty("wechat.helper.signature")).buildQuery());
+        HrWxTemplateMessageDO hrWxTemplateMessage = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                hrWxWechatDO.getId()).and("sys_template_id", Constant.POSITION_SYNC_FAIL_NOTICE_TPL).and("disable", "0").buildQuery());
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatDO.getId(),  Constant.POSITION_SYNC_FAIL_NOTICE_TPL);
+
+        if (hrWxTemplateMessage == null){
+            logger.info("仟寻招聘助手没有配置该模板消息");
+        }
+        if(messageDO == null){
+            logger.info("该模板消息开关没有开启！");
+            return;
+        }
+
+        UserWxUserDO wxUser  = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.ID.getName(),
+                account.getWxuserId()).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrWxWechatDO.getId()).buildQuery());
+        if(wxUser == null){
+            logger.info("hr账号没有绑定微信");
+            return;
+        }
+        if(channal != ChannelType.LIEPIN.getValue()) {
+            message = DecodeUtils.decodeUnicode(message);
+        }
+
+        JSONObject colMap = new JSONObject();
+
+        JSONObject firstJson = new JSONObject();
+        firstJson.put("color", "#173177");
+        firstJson.put("value", PositionSyncFailFirst);
+        colMap.put("first", firstJson);
+
+        JSONObject keywords1 = new JSONObject();
+        keywords1.put("color", "#173177");
+        keywords1.put("value", position.getTitle()+" - "+ ChannelType.instaceFromInteger(channal).getAlias());
+        colMap.put("keyword1", keywords1);
+
+        JSONObject keywords2 = new JSONObject();
+        keywords2.put("color", "#173177");
+        keywords2.put("value", message);
+        colMap.put("keyword2", keywords2);
+
+        JSONObject keywords3 = new JSONObject();
+        keywords3.put("color", "#173177");
+        keywords3.put("value", PositionSyncFailKeyword3);
+        colMap.put("keyword3", keywords3);
+
+        Map<String, Object> applierTemplate = new HashMap<>();
+        applierTemplate.put("data", colMap);
+        applierTemplate.put("touser", wxUser.getOpenid());
+        applierTemplate.put("template_id", hrWxTemplateMessage.getWxTemplateId());
+        applierTemplate.put("topcolor", "#FF0000");
+
+        logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+        String url=env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
+        logger.info("noticeEmployeeVerify url : {}", url);
+
+        try {
+            String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            logger.info("noticeEmployeeVerify result:{}", result);
+        } catch (ConnectException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+    }
     public void noticeEmployeeReferralBonus(int applicationId, long operationTIme, Integer nowStage) {
         JobApplication application = applicationDao.fetchOneById(applicationId);
         if (application != null && nowStage == BonusStage.Hired.getValue()
@@ -566,5 +658,8 @@ public class TemplateMsgHttp {
         }
         return wxMessageRecordDao.addData(messageRecord).getId();
     }
+
+
+
 
 }
