@@ -3,7 +3,9 @@ package com.moseeker.useraccounts.thrift;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
+import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
 import com.moseeker.useraccounts.service.Neo4jService;
+import java.util.List;
 import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,5 +26,15 @@ public class Neo4jServicesImpl implements Neo4jServices.Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws BIZException, TException {
+        return null;
+    }
+
+    @Override
+    public List<UserDepth> fetchEmployeeThreeDepthUser(int userId) throws BIZException, TException {
+        return null;
     }
 }

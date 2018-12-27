@@ -19,6 +19,7 @@ import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
+import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -151,6 +152,16 @@ public class Neo4jServiceImpl implements Neo4jService {
             return;
         }
         userNeo4jDao.updateUserEmployeeCompanyList(userIds, companyId);
+    }
+
+    @Override
+    public List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
+        return null;
+    }
+
+    @Override
+    public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
+        return null;
     }
 
     private UserNode addUserNode(int userId){
