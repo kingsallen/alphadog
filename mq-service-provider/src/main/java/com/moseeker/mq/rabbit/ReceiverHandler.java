@@ -216,12 +216,15 @@ public class ReceiverHandler {
         long startTime=new Date().getTime();
         LogVO logVo=this.handlerLogVO();
         try{
+            log.info("message:{}", JSON.toJSONString(message));
             msgBody = new String(message.getBody(), "UTF-8");
+            log.info("msgBody:{}", JSON.toJSONString(msgBody));
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int positionId = jsonObject.getIntValue("positionId");
                 String msg = jsonObject.getString("message");
                 int channal = jsonObject.getIntValue("channal");
+                log.info("positionTemplateJson:{}", JSON.toJSONString(jsonObject));
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
