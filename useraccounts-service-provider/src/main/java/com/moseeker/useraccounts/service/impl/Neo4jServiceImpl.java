@@ -169,7 +169,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             }
             rootUserList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
         }
-//        List<>
+        List<Integer> postUserIdList =
         return null;
     }
 
