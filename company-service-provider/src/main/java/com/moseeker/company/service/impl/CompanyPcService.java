@@ -800,6 +800,6 @@ public class CompanyPcService {
 
     public HrCompanyMobotConfDO updateMobotConf(HrCompanyMobotConfDO mobotConf) {
         hrCompanyConfDao.updateMobotConf(mobotConf);
-        return mobotConf;
+        return hrCompanyConfDao.getMobotConf(mobotConf.getCompanyId());
     }
 }
