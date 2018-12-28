@@ -82,6 +82,15 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
     }
 
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserId(int postUserId, List<Integer> positionIdList){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
+                .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
+                .fetchInto(ReferralSeekRecommendRecord.class);
+
+    }
+
     public int updateReferralSeekRecommendRecordForAppId(int referralId, int appId ){
         return using(configuration()).update(REFERRAL_SEEK_RECOMMEND)
                 .set(REFERRAL_SEEK_RECOMMEND.APP_ID, appId)

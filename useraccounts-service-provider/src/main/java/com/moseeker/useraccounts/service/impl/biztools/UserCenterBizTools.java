@@ -7,12 +7,15 @@ import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
@@ -29,12 +32,11 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 /**
  * 个人中心片段业务处理类
@@ -61,6 +63,8 @@ public class UserCenterBizTools {
     @Autowired
     private CandidatePositionDao candidatePositionDao;
 
+    @Autowired
+    private ReferralSeekRecommendDao recommendDao;
 
     @Autowired
     private CandidateRecomRecordDao candidateRecomRecordDao;
@@ -248,6 +252,25 @@ public class UserCenterBizTools {
         int count = 0;
         try {
             count = candidateRecomRecordDao.countInterestedCandidateRecomRecordByUserPosition(userId, positionIdList);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+        }
+        return count;
+    }
+
+    /**
+     * 根据员工user编号查找求推荐候选人数量
+     * @param userId 用户编号
+     * @return
+     */
+    public int countReferralSeekRecommend(int userId, List<Integer> positionIdList) {
+        int count = 0;
+        try {
+            List<ReferralSeekRecommendRecord> result = recommendDao.fetchSeekRecommendByPostUserId(userId, positionIdList);
+            if(StringUtils.isEmptyList(result)){
+                return 0;
+            }
+            return result.size();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }

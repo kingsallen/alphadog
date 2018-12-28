@@ -246,6 +246,9 @@ service UserCenterService {
     //查询推荐记录
     useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNum, 4: i32 pageSize);
     useraccounts_struct.CenterUserInfo getCenterUserInfo(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
+    //查找推荐信息
+    useraccounts_struct.RecommendationScoreVO getRecommendationV2(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
+
 }
 
 //user thirdparty user 服务
