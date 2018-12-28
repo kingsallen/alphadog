@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.service.impl;
+package com.moseeker.useraccounts.service.impl.radar;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -6,15 +6,19 @@ import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
+import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
@@ -22,24 +26,27 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import com.moseeker.thrift.gen.referral.struct.CheckEmployeeInfo;
-import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
+import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
+import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
+import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.service.impl.vo.RadarUserInfo;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
@@ -50,9 +57,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -67,47 +74,41 @@ import java.util.stream.Collectors;
 public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     @Autowired
+    private Environment env;
+    @Autowired
+    private UserUserDao userUserDao;
+    @Autowired
     private HrCompanyDao companyDao;
-
-    @Autowired
-    private EmployeeEntity employeeEntity;
-
-    @Autowired
-    private UserWxUserDao wxUserDao;
-
-    @Autowired
-    private JobPositionDao positionDao;
-
-    @Autowired
-    private CandidateShareChainDao shareChainDao;
-
-    @Autowired
-    private CandidatePositionDao candidatePositionDao;
-
-    @Autowired
-    private UserEmployeeDao userEmployeeDao;
-
-    @Autowired
-    private ReferralTemplateSender templateHelper;
-
-    @Autowired
-    private ReferralConnectionChainDao connectionChainDao;
-
-    @Autowired
-    private ReferralConnectionLogDao connectionLogDao;
-
     @Autowired
     private HrWxWechatDao wechatDao;
-
     @Autowired
     private Neo4jService neo4jService;
-
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
-
     @Autowired
-    private Environment env;
-
+    private EmployeeEntity employeeEntity;
+    @Autowired
+    private UserWxUserDao wxUserDao;
+    @Autowired
+    private JobPositionDao positionDao;
+    @Autowired
+    private JobApplicationDao jobApplicationDao;
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
+    @Autowired
+    private ReferralTemplateSender templateHelper;
+    @Autowired
+    private ReferralTypeFactory referralTypeFactory;
+    @Autowired
+    private CandidateShareChainDao shareChainDao;
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
+    @Autowired
+    private ReferralConnectionChainDao connectionChainDao;
+    @Autowired
+    private ReferralConnectionLogDao connectionLogDao;
+    @Autowired
+    private HrOperationRecordDao hrOperationRecordDao;
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
 
@@ -166,10 +167,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public String inviteApplication(ReferralInviteInfo inviteInfo) {
         logger.info("inviteInfo:{}", inviteInfo);
         JSONObject result = new JSONObject();
-        // 检验是否关注公众号
-//        if(!checkIsSubscribe(inviteInfo.getEndUserId(), inviteInfo.getCompanyId())){
-//            return "";
-//        }
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         // 查询最短路径
@@ -338,6 +335,51 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         templateHelper.sendTenMinuteTemplate(cardInfo);
     }
 
+    @Override
+    public String getProgressByOne(ReferralProgressQueryInfo progressQuery) {
+
+        return null;
+    }
+
+    @Override
+    public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException {
+        String queryName = progressInfo.getUsername();
+        int startIndex = (progressInfo.getPageNum() - 1) * progressInfo.getPageSize();
+        List<JobApplicationDO> jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                startIndex, progressInfo.getPageSize());
+        List<Integer> applyIds = jobApplicationDOS.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
+        List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
+        // todo neo4j 查
+        List<Object> applierDegrees = new ArrayList<>();
+        List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
+        List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
+        List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(applyPids);
+        Map<Integer, List<HrOperationRecordDO>> hrOperationMap = hrOperationRecordDao.getHrOperationMapByApplyIds(applyIds);
+        int progress = progressInfo.getProgress();
+        List<JSONObject> result = new ArrayList<>();
+        if(StringUtils.isEmpty(queryName)){
+            // todo 根据类别查全部的
+            for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
+                ReferralTypeEnum referralTypeEnum = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin());
+                AbstractReferralTypeHandler handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
+                result.add(handler.createApplyCard(jobApplicationDO, jobPositions, userUsers, applierDegrees));
+            }
+        }else {
+            // todo 根据类别查该姓名的申请记录
+            for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
+
+            }
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
     private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> handledRecords) {
         List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
         for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
@@ -370,7 +412,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private void checkParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords, Integer rootUserId) {
-        ReferralConnectionChainRecord currentChain = null;
         if(radarInfo.getParentId() == 0){
             if(radarInfo.getRecomUserId() != rootUserId){
                 logger.info("==========parentId为0时，链路不存在");
@@ -382,14 +423,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 if(radarInfo.getRecomUserId() != chainRecord.getNextUserId()){
                     throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
                 }
-//                currentChain = chainRecord;
                 break;
             }
         }
-//        if(currentChain == null){
-//            logger.info("==========根据parentId检验链路不存在");
-//            throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
-//        }
     }
 
     private List<ReferralConnectionChainRecord> filterNotLinkedChain(List<ReferralConnectionChainRecord> chainRecords, Byte radarState) {
@@ -600,7 +636,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 初始化连连看信息
             userInfo = userInfo.initFromChainsRecord(userDO, chainRecords);
             // 填充连连看排序
-//            userInfo = userInfo.fillOrderFromChainsRecord(userDO, linkedChain);
             userInfo = userInfo.fillNodesFromChainsRecord(userDO, chainRecords);
             userChains.add(userInfo);
         }
@@ -618,20 +653,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private ReferralConnectionChainRecord insertExtraRecord(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
-//        int parentId = 0;
-//        for(ReferralConnectionChainRecord connectionChain : chainRecords){
-//            if(connectionChain.getRecomUserId() == radarInfo.getRecomUserId()){
-//                if(connectionChain.getParentId() != 0){
-//                    parentId = connectionChain.getParentId();
-//                }
-//                break;
-//            }
-//        }
         Timestamp current = new Timestamp(System.currentTimeMillis());
         ReferralConnectionChainRecord newChainRecord = new ReferralConnectionChainRecord();
         newChainRecord.setRecomUserId(radarInfo.getRecomUserId());
         newChainRecord.setNextUserId(radarInfo.getNextUserId());
-//        newChainRecord.setParentId(parentId);
         newChainRecord.setParentId(radarInfo.getParentId());
         newChainRecord.setClickTime(current);
         newChainRecord.setCreateTime(current);
@@ -645,13 +670,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         Set<Integer> userIds = chainRecords.stream().map(ReferralConnectionChainRecord::getRecomUserId).collect(Collectors.toSet());
         userIds.addAll(chainRecords.stream().map(ReferralConnectionChainRecord::getNextUserId).collect(Collectors.toSet()));
         return userIds;
-    }
-
-    private boolean checkIsSubscribe(int userId, int companyId) {
-        HrWxWechatDO hrWxHrChatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
-        UserWxUserRecord endUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(userId, hrWxHrChatDO.getId());
-        // 候选人未关注公众号，返回为空
-        return endUserRecord != null && endUserRecord.getIsSubscribe() != 0;
     }
 
     private List<RadarUserInfo> doInitRadarUsers(List<Integer> shortestChain, Map<Integer, UserWxUserDO> idUserMap) {

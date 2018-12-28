@@ -40,4 +40,8 @@ service ReferralService {
     string checkEmployee(1: referral_struct.CheckEmployeeInfo checkInfo) throws (1: common_struct.BIZException e);
      // 10分钟消息模板-人脉筛选，存储十分钟内的卡片数据
     void saveTenMinuteCandidateShareChain(1:referral_struct.ReferralCardInfo cardInfo) throws (1: common_struct.BIZException e);
+    // 获取某个候选人的推荐进度
+    string getProgressByOne(1:referral_struct.ReferralProgressQueryInfo progressQuery) throws (1: common_struct.BIZException e);
+    // 根据条件批量查询候选人推荐进度
+    string getProgressBatch(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
 }

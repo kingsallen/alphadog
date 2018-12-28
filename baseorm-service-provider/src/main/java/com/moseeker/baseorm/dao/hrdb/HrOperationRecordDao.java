@@ -8,9 +8,8 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -117,4 +116,21 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 		}
 
     }
+
+	public Map<Integer, List<HrOperationRecordDO>> getHrOperationMapByApplyIds(List<Integer> applyIds) {
+		List<HrOperationRecordDO> operationRecordDOS = create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(applyIds))
+				.fetchInto(HrOperationRecordDO.class);
+		Map<Integer, List<HrOperationRecordDO>> map = new HashMap<>();
+		for(HrOperationRecordDO hrOperationRecordDO : operationRecordDOS){
+			if(map.get((int)hrOperationRecordDO.getAppId()) == null){
+				List<HrOperationRecordDO> list = new ArrayList<>();
+				list.add(hrOperationRecordDO);
+				map.put((int)hrOperationRecordDO.getAppId(), list);
+			}else {
+				map.get((int)hrOperationRecordDO.getAppId()).add(hrOperationRecordDO);
+			}
+		}
+		return map;
+	}
 }

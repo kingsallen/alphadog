@@ -112,6 +112,21 @@ struct CheckEmployeeInfo{
     2: optional i32 recomUserId,
     3: optional i32 pid
 }
+struct ReferralProgressInfo{
+    1: optional i32 userId,
+    2: optional i32 companyId,
+    3: optional i32 pageNum,
+    4: optional i32 pageSize,
+    5: optional i32 progress,
+    6: optional string username
+}
 
-
+struct ReferralProgressQueryInfo{
+    1: optional i32 userId,
+    2: optional i32 presenteeUserId,
+    3: optional i32 pid,
+    4: optional i32 companyId,
+    5: optional i32 recomType,
+    6: optional i32 progress
+}
 

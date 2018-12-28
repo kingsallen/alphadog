@@ -405,4 +405,13 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 			return new ArrayList<>();
 		}
 	}
+
+    public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, int startIndex, int pageSize) {
+    	return create.selectFrom(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.orderBy(JobApplication.JOB_APPLICATION.UPDATE_TIME.desc())
+				.limit(startIndex, pageSize)
+				.fetchInto(JobApplicationDO.class);
+    }
 }
