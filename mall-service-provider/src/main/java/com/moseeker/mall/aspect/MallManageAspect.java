@@ -60,7 +60,7 @@ public class MallManageAspect {
         }
         UserHrAccountDO userHrAccountDO = userHrAccountDao.getValidAccount(hrId);
         if (userHrAccountDO == null || userHrAccountDO.getCompanyId() != companyId
-                || userHrAccountDO.getAccountType() != 0 || userHrAccountDO.getAccountType() != 2) {
+                || (userHrAccountDO.getAccountType() != 0 && userHrAccountDO.getAccountType() != 2)) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MALL_LIMIT_SUPER_ACCOUNT);
         }
 
