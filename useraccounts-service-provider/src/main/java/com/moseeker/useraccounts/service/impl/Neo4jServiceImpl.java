@@ -9,8 +9,10 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
 import com.moseeker.useraccounts.pojo.neo4j.Forward;
 import com.moseeker.useraccounts.pojo.neo4j.Relation;
@@ -20,10 +22,7 @@ import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +54,10 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Autowired
     UserEmployeeDao employeeDao;
+
+
+    @Autowired
+    EmployeeEntity employeeEntity;
 
     @Autowired
     CandidateShareChainDao candidateShareChainDao;
@@ -169,13 +172,18 @@ public class Neo4jServiceImpl implements Neo4jService {
             }
             rootUserList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
         }
-        List<Integer> postUserIdList =
-        return null;
+        List<Integer> postUserIdList = userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserList);
+        return postUserIdList;
     }
 
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
-        return null;
+        List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId);
+        if(StringUtils.isEmptyList(peresentUserIdList)){
+            return new ArrayList<>();
+        }
+        List<UserDepthVO> list = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList);
+        return list;
     }
 
     private UserNode addUserNode(int userId){

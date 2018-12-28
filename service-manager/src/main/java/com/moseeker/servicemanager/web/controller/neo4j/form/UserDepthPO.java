@@ -1,13 +1,9 @@
-package com.moseeker.useraccounts.service.impl.pojos;
-
-import org.springframework.data.neo4j.annotation.QueryResult;
+package com.moseeker.servicemanager.web.controller.neo4j.form;
 
 /**
- * Created by moseeker on 2018/12/27.
+ * Created by moseeker on 2018/12/28.
  */
-@QueryResult
-public class UserDepthVO {
-
+public class UserDepthPO {
     private int userId;
     private int depth;
 
