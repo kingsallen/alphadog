@@ -241,6 +241,7 @@ public abstract class EmployeeBinder {
                 if(useremployee.getSource()>0){
                     unActiveEmployee.setSource((byte)useremployee.getSource());
                 }
+                log.info("userEmployee:{}", unActiveEmployee);
                 employeeDao.updateRecord(unActiveEmployee);
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
