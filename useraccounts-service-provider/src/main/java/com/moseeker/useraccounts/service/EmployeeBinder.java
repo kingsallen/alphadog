@@ -238,6 +238,9 @@ public abstract class EmployeeBinder {
                     unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
                 }
                 unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+                if(useremployee.getSource()>0){
+                    unActiveEmployee.setSource((byte)useremployee.getSource());
+                }
                 employeeDao.updateRecord(unActiveEmployee);
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
