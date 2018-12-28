@@ -497,10 +497,6 @@ public class TemplateMsgHttp {
             logger.info("hr账号没有绑定微信");
             return;
         }
-        if(channal != ChannelType.LIEPIN.getValue() && channal != ChannelType.JOB58.getValue()) {
-            message = DecodeUtils.decodeUnicode(message);
-        }
-
         JSONObject colMap = new JSONObject();
 
         JSONObject firstJson = new JSONObject();
