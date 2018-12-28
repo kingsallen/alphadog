@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 756032146;
+    private static final long serialVersionUID = 2117578731;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -436,17 +436,45 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.is_open_gdpr</code>.
+     * Setter for <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是已开启
      */
     public void setIsOpenGdpr(Byte value) {
         set(29, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.is_open_gdpr</code>.
+     * Getter for <code>hrdb.hr_company_conf.is_open_gdpr</code>. 0是未开启 1是已开启
      */
     public Byte getIsOpenGdpr() {
         return (Byte) get(29);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mobot_head_img</code>. Mobot头像，聊天使用
+     */
+    public void setMobotHeadImg(String value) {
+        set(30, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mobot_head_img</code>. Mobot头像，聊天使用
+     */
+    public String getMobotHeadImg() {
+        return (String) get(30);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.mobot_name</code>. Mobot姓名，聊天使用
+     */
+    public void setMobotName(String value) {
+        set(31, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.mobot_name</code>. Mobot姓名，聊天使用
+     */
+    public String getMobotName() {
+        return (String) get(31);
     }
 
     // -------------------------------------------------------------------------
@@ -475,7 +503,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte job51SalaryDiscuss, Byte isOpenGdpr) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte job51SalaryDiscuss, Byte isOpenGdpr, String mobotHeadImg, String mobotName) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -508,5 +536,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(27, mallGoodsMethodState);
         set(28, job51SalaryDiscuss);
         set(29, isOpenGdpr);
+        set(30, mobotHeadImg);
+        set(31, mobotName);
     }
 }
