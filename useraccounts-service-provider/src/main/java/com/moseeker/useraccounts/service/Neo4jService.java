@@ -72,4 +72,14 @@ public interface Neo4jService {
      */
     List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException;
 
+    /**
+     * 获取员工到候选人的最短路径读书
+     * @param userId    员工的user_id
+     * @param companyId 员工认证的公司编号
+     * @param userIdList 候选人编号列表
+     * @return
+     * @throws CommonException
+     */
+    List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException;
+
 }

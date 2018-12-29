@@ -12,7 +12,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.employee.struct.Employee;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
 import com.moseeker.useraccounts.pojo.neo4j.Forward;
 import com.moseeker.useraccounts.pojo.neo4j.Relation;
@@ -22,7 +21,10 @@ import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -184,6 +186,15 @@ public class Neo4jServiceImpl implements Neo4jService {
         }
         List<UserDepthVO> list = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList);
         return list;
+    }
+
+    @Override
+    public List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException {
+        if(userId >0 && companyId >0 && !StringUtils.isEmptyList(userIdList)){
+            List<UserDepthVO> list = userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId);
+            return list;
+        }
+        return new ArrayList<>();
     }
 
     private UserNode addUserNode(int userId){
