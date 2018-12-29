@@ -5,12 +5,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.hrdb.HrChatVoiceDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HrCompanyConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrChatUnreadCountRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatListRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxHrChatRecord;
@@ -24,10 +26,7 @@ import com.moseeker.chat.service.entity.ChatDao;
 import com.moseeker.chat.service.entity.ChatFactory;
 import com.moseeker.chat.utils.*;
 import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.constants.ChatMsgType;
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.ConstantErrorCodeMessage;
-import com.moseeker.common.constants.RespnoseUtil;
+import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
@@ -75,6 +74,9 @@ public class ChatService {
 
     @Autowired
     private HrCompanyAccountDao hrCompanyAccountDao;
+
+    @Autowired
+    private HrCompanyConfDao hrCompanyConfDao;
 
     @Autowired
     private UserHrAccountDao hrAccountDao;
@@ -853,8 +855,19 @@ public class ChatService {
             if (resultOfSaveRoomVO.getHr() != null
                     && StringUtils.isNotNullOrEmpty(resultOfSaveRoomVO.getHr().getHrName())
                     && resultOfSaveRoomVO.getPosition() != null) {
-                content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
-                        .getHrName()).replace("{companyName}", companyName);
+
+                HrCompanyDO companyDO = chaoDao.getCompany(resultOfSaveRoomVO.getHr().getHrId());
+                HrCompanyConf companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
+                if(companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)) {
+                    HrCompanyMobotConfDO mobotConf = hrCompanyConfDao.getMobotConf(companyDO.getId());
+
+                    content = AUTO_CONTENT_WITH_HR_EXIST
+                            .replace("{hrName}", mobotConf.getMobotName())
+                            .replace("{companyName}", companyName);
+                } else {
+                    content = AUTO_CONTENT_WITH_HR_EXIST.replace("{hrName}", resultOfSaveRoomVO.getHr()
+                            .getHrName()).replace("{companyName}", companyName);
+                }
             } else {
                 content = AUTO_CONTENT_WITH_HR_NOTEXIST
                         .replace("{companyName}", companyName);
