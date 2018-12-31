@@ -12,11 +12,18 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
@@ -45,6 +52,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
+import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
@@ -137,7 +145,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         allUsers.add(cardInfo.getUserId());
         // 将过滤后的员工id对应员工信息，用于后续数据组装
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(cardInfo.getCompanyId());
-        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(allUsers, hrWxWechatDO.getId());
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(allUsers, hrWxWechatDO.getId());
         Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
         // 获取十分钟内转发的职位
         List<Integer> positionIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
@@ -181,7 +189,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 组装连连看链路返回数据
         Set<Integer> userIds = new HashSet<>(shortestChain);
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(inviteInfo.getCompanyId());
-        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUserMapByUserIds(userIds, hrWxWechatDO.getId());
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
         Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
         result.put("chain", doInitRadarUsers(shortestChain, idUserMap));
         // 发送消息模板
@@ -337,32 +345,109 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     @Override
     public String getProgressByOne(ReferralProgressQueryInfo progressQuery) {
+        int applyId = 0;
+        int progress = progressQuery.getProgress();
+        JobApplication jobApplication = jobApplicationDao.fetchOneById(applyId);
+        checkApplyExists(jobApplication, progressQuery);
+        List<HrOperationRecordDO> hrOperationRecords = hrOperationRecordDao.getHrOperationDOByAppid(applyId);
+        int factProgress = jobApplication.getAppTplId();
+        JSONObject result = new JSONObject();
+        if(checkIsNormal(factProgress, progress, hrOperationRecords)){
+            result.put("abnormal", 0);
+            return JSON.toJSONString(result);
+        }
+        int queryAppid = jobApplication.getAppTplId();
+
+
+        int companyId = progressQuery.getCompanyId();
+        int positionId = progressQuery.getPid();
+        int presenteeUserId = progressQuery.getPresenteeUserId();
+        int recomType = progressQuery.getRecomType();
+        int userId = progressQuery.getUserId();
 
         return null;
     }
 
+    private boolean checkIsNormal(int factProgress, int progress, List<HrOperationRecordDO> hrOperationRecordDOS) {
+        int lastProgress = factProgress;
+        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
+            for(HrOperationRecordDO hrOperationRecordDO : hrOperationRecordDOS){
+                if(hrOperationRecordDO.getOperateTplId() != 4){
+                    lastProgress = hrOperationRecordDO.getOperateTplId();
+                    break;
+                }
+            }
+        }
+        ReferralProgressEnum last = ReferralProgressEnum.getEnumByProgress(lastProgress);
+        ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
+        return last.getOrder() >= current.getOrder();
+    }
+
+    private void checkApplyExists(JobApplication jobApplication, ReferralProgressQueryInfo progressQuery) {
+        if(jobApplication == null){
+            return;
+        }
+        if(jobApplication.getApplierId() != progressQuery.getUserId()){
+            return;
+        }
+    }
+
     @Override
     public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException {
+        UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
+        if(employeeRecord == null){
+            return "";
+        }
         String queryName = progressInfo.getUsername();
         int startIndex = (progressInfo.getPageNum() - 1) * progressInfo.getPageSize();
         List<JobApplicationDO> jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
                 startIndex, progressInfo.getPageSize());
         List<Integer> applyIds = jobApplicationDOS.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
+        List<Integer> recomUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getRecommenderUserId).distinct().collect(Collectors.toList());
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(progressInfo.getCompanyId());
         // todo neo4j 查
-        List<Object> applierDegrees = new ArrayList<>();
+//        List<Object> applierDegrees = new ArrayList<>();
+        Map<String, Object> applierDegrees = new HashMap<>();
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
-        List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
-        List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(applyPids);
-        Map<Integer, List<HrOperationRecordDO>> hrOperationMap = hrOperationRecordDao.getHrOperationMapByApplyIds(applyIds);
+        Set<Integer> allUserIds = new HashSet<>();
+        allUserIds.addAll(applierUserIds);
+        allUserIds.addAll(recomUserIds);
+        Map<Integer, UserUserRecord> allUserMap = getUserMap(allUserIds);
+        Map<Integer, JobPositionDO> positionMap = getPositionIdMap(applyPids);
+        Map<Integer, List<HrOperationRecordRecord>> hrOperationMap = hrOperationRecordDao.getHrOperationMapByApplyIds(applyIds);
         int progress = progressInfo.getProgress();
         List<JSONObject> result = new ArrayList<>();
+        AbstractReferralTypeHandler handler;
+        Map<Integer, JSONObject> referralTypeMap = new HashMap<>();
+        // todo 根据推荐类型将list分开，查出认领状态，评价状态等
+        for(ReferralTypeEnum referralTypeEnum : ReferralTypeEnum.values()){
+            handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
+            JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS);
+            referralTypeMap.put(referralTypeEnum.getType(), referralSingleTypeMap);
+        }
+
         if(StringUtils.isEmpty(queryName)){
             // todo 根据类别查全部的
             for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
+
                 ReferralTypeEnum referralTypeEnum = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin());
-                AbstractReferralTypeHandler handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
-                result.add(handler.createApplyCard(jobApplicationDO, jobPositions, userUsers, applierDegrees));
+
+                handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
+
+                JobPositionDO jobPositionDO = positionMap.get(jobApplicationDO.getPositionId());
+
+                UserUserRecord applier = allUserMap.get(jobApplicationDO.getApplierId());
+
+                List<HrOperationRecordRecord> hrOperations = hrOperationMap.get(jobApplicationDO.getId());
+
+                JSONObject singleTypeMap = referralTypeMap.get(referralTypeEnum.getType());
+
+                JSONObject card = handler.createApplyCard(jobApplicationDO, jobPositionDO, applier, hrOperations, singleTypeMap);
+
+                handler.postProcessAfterCreateCard(card, applierDegrees);
+
+                result.add(card);
             }
         }else {
             // todo 根据类别查该姓名的申请记录
@@ -370,14 +455,27 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             }
         }
-        return null;
+        return JSON.toJSONString(result);
     }
 
+    private Map<Integer, UserUserRecord> getUserMap(Set<Integer> applierUserIds) {
+        List<Integer> list = new ArrayList<>(applierUserIds);
+        List<UserUserRecord> userUsers = userUserDao.fetchByIdList(list);
+        Map<Integer, UserUserRecord> map = new HashMap<>();
+        for(UserUserRecord userUserRecord : userUsers){
+            map.put(userUserRecord.getId(), userUserRecord);
+        }
+        return map;
+    }
 
-
-
-
-
+    private Map<Integer, JobPositionDO> getPositionIdMap(List<Integer> applyPids) {
+        List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(applyPids);
+        Map<Integer, JobPositionDO> map = new HashMap<>();
+        for(JobPositionDO jobPositionDO : jobPositions){
+            map.put(jobPositionDO.getId(), jobPositionDO);
+        }
+        return map;
+    }
 
 
     private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> handledRecords) {
@@ -627,7 +725,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      */
     private List<RadarUserInfo> getOrderedChains(Set<Integer> userIds, List<ReferralConnectionChainRecord> chainRecords, Integer companyId) {
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
-        List<UserWxUserDO> userDOS = wxUserDao.getWXUserMapByUserIds(userIds, hrWxWechatDO.getId());
+        List<UserWxUserDO> userDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
         List<RadarUserInfo> userChains = new ArrayList<>();
         List<ReferralConnectionChainRecord> linkedChain = getLinkedList(chainRecords);
 

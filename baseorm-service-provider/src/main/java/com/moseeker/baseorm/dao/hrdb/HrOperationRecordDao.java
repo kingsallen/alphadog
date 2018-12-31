@@ -117,20 +117,28 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 
     }
 
-	public Map<Integer, List<HrOperationRecordDO>> getHrOperationMapByApplyIds(List<Integer> applyIds) {
-		List<HrOperationRecordDO> operationRecordDOS = create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+	public Map<Integer, List<HrOperationRecordRecord>> getHrOperationMapByApplyIds(List<Integer> applyIds) {
+		List<HrOperationRecordRecord> operationRecordS = create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
 				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(applyIds))
-				.fetchInto(HrOperationRecordDO.class);
-		Map<Integer, List<HrOperationRecordDO>> map = new HashMap<>();
-		for(HrOperationRecordDO hrOperationRecordDO : operationRecordDOS){
-			if(map.get((int)hrOperationRecordDO.getAppId()) == null){
-				List<HrOperationRecordDO> list = new ArrayList<>();
-				list.add(hrOperationRecordDO);
-				map.put((int)hrOperationRecordDO.getAppId(), list);
+				.fetchInto(HrOperationRecordRecord.class);
+		Map<Integer, List<HrOperationRecordRecord>> map = new HashMap<>();
+		for(HrOperationRecordRecord hrOperationRecord : operationRecordS){
+			if(map.get(hrOperationRecord.getAppId().intValue()) == null){
+				List<HrOperationRecordRecord> list = new ArrayList<>();
+				list.add(hrOperationRecord);
+				map.put(hrOperationRecord.getAppId().intValue(), list);
 			}else {
-				map.get((int)hrOperationRecordDO.getAppId()).add(hrOperationRecordDO);
+				map.get(hrOperationRecord.getAppId().intValue()).add(hrOperationRecord);
 			}
 		}
 		return map;
+	}
+
+	public List<HrOperationRecordDO> getHrOperationDOByAppid(int applyId){
+		return create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.eq((long)applyId))
+				.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
+				.fetchInto(HrOperationRecordDO.class);
+
 	}
 }
