@@ -22,17 +22,19 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateTemplateShareChain implements Serializable {
 
-    private static final long serialVersionUID = 727411888;
+    private static final long serialVersionUID = -695552155;
 
     private Integer id;
     private Integer positionId;
     private Integer rootUserId;
+    private Integer root2UserId;
     private Integer recomUserId;
     private Integer presenteeUserId;
     private Long    sendTime;
     private Integer parentId;
     private Integer depth;
     private Byte    type;
+    private Byte    seekReferral;
 
     public CandidateTemplateShareChain() {}
 
@@ -40,34 +42,40 @@ public class CandidateTemplateShareChain implements Serializable {
         this.id = value.id;
         this.positionId = value.positionId;
         this.rootUserId = value.rootUserId;
+        this.root2UserId = value.root2UserId;
         this.recomUserId = value.recomUserId;
         this.presenteeUserId = value.presenteeUserId;
         this.sendTime = value.sendTime;
         this.parentId = value.parentId;
         this.depth = value.depth;
         this.type = value.type;
+        this.seekReferral = value.seekReferral;
     }
 
     public CandidateTemplateShareChain(
         Integer id,
         Integer positionId,
         Integer rootUserId,
+        Integer root2UserId,
         Integer recomUserId,
         Integer presenteeUserId,
         Long    sendTime,
         Integer parentId,
         Integer depth,
-        Byte    type
+        Byte    type,
+        Byte    seekReferral
     ) {
         this.id = id;
         this.positionId = positionId;
         this.rootUserId = rootUserId;
+        this.root2UserId = root2UserId;
         this.recomUserId = recomUserId;
         this.presenteeUserId = presenteeUserId;
         this.sendTime = sendTime;
         this.parentId = parentId;
         this.depth = depth;
         this.type = type;
+        this.seekReferral = seekReferral;
     }
 
     public Integer getId() {
@@ -92,6 +100,14 @@ public class CandidateTemplateShareChain implements Serializable {
 
     public void setRootUserId(Integer rootUserId) {
         this.rootUserId = rootUserId;
+    }
+
+    public Integer getRoot2UserId() {
+        return this.root2UserId;
+    }
+
+    public void setRoot2UserId(Integer root2UserId) {
+        this.root2UserId = root2UserId;
     }
 
     public Integer getRecomUserId() {
@@ -142,6 +158,14 @@ public class CandidateTemplateShareChain implements Serializable {
         this.type = type;
     }
 
+    public Byte getSeekReferral() {
+        return this.seekReferral;
+    }
+
+    public void setSeekReferral(Byte seekReferral) {
+        this.seekReferral = seekReferral;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidateTemplateShareChain (");
@@ -149,12 +173,14 @@ public class CandidateTemplateShareChain implements Serializable {
         sb.append(id);
         sb.append(", ").append(positionId);
         sb.append(", ").append(rootUserId);
+        sb.append(", ").append(root2UserId);
         sb.append(", ").append(recomUserId);
         sb.append(", ").append(presenteeUserId);
         sb.append(", ").append(sendTime);
         sb.append(", ").append(parentId);
         sb.append(", ").append(depth);
         sb.append(", ").append(type);
+        sb.append(", ").append(seekReferral);
 
         sb.append(")");
         return sb.toString();

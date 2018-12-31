@@ -932,12 +932,24 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         card.put("position", doInitPosition(jobPosition, candidatePositionDO));
         card.put("user", user);
+        card.put("recom_type", getRecomType(candidatePositionDO, shareChainDOS));
         if(user.getDegree() != 1){
             // todo 来自微信群的转发
             card.put("recom_user", idUserMap.get(recomUser).getNickname());
         }
         card.put("chain", chain);
         return card;
+    }
+
+    private int getRecomType(CandidatePositionDO candidatePositionDO, List<CandidateTemplateShareChainDO> shareChainDOS) {
+        for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getPositionId() == candidatePositionDO.getPositionId() &&
+                    shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()
+                    ){
+                return shareChainDO.getSeekReferral();
+            }
+        }
+        return 0;
     }
 
     private List<Integer> getChainIdsByRecurrence(List<CandidateTemplateShareChainDO> shareChainDOS, ReferralCardInfo cardInfo, CandidatePositionDO candidatePositionDO) {
@@ -980,7 +992,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         int userId = 0;
             for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getPresenteeUserId() == candidatePosition.getUserId() && jobPosition.getId() == shareChainDO.getPositionId()){
-                userId = shareChainDO.getRecomUserId();
+                userId = shareChainDO.getRoot2UserId();
             }
         }
         return userId;
