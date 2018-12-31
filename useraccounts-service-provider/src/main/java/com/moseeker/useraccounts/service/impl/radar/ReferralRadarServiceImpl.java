@@ -932,7 +932,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         card.put("position", doInitPosition(jobPosition, candidatePositionDO));
         card.put("user", user);
-        card.put("recom_user", idUserMap.get(recomUser).getNickname());
+        if(user.getDegree() != 1){
+            // todo 来自微信群的转发
+            card.put("recom_user", idUserMap.get(recomUser).getNickname());
+        }
         card.put("chain", chain);
         return card;
     }
