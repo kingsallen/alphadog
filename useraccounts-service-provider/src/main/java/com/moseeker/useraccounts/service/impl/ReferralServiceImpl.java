@@ -342,27 +342,6 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public String getRadarCards(ReferralCardInfo cardInfo) throws TException {
-        return radarService.getRadarCards(cardInfo);
-    }
-
-    @Override
-    public String inviteApplication(ReferralInviteInfo inviteInfo) throws TException, ConnectException {
-        return radarService.inviteApplication(inviteInfo);
-    }
-
-    @Override
-    public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws TException {
-        radarService.ignoreCurrentViewer(ignoreInfo);
-    }
-
-    @Override
-    public String connectRadar(ConnectRadarInfo radarInfo) throws TException {
-        return radarService.connectRadar(radarInfo);
-    }
-
-
-    @Override
     public void addReferralSeekRecommend(int userId, int postUserId, int positionId, int origin) throws CommonException {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("候选人编号", userId, 1, null);
@@ -459,16 +438,6 @@ public class ReferralServiceImpl implements ReferralService {
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
         }
 
-    }
-
-    @Override
-    public String checkEmployee(CheckEmployeeInfo checkInfo) throws TException {
-        return radarService.checkEmployee(checkInfo);
-    }
-
-    @Override
-    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
-        radarService.saveTenMinuteCandidateShareChain(cardInfo);
     }
 
     private int createJobApplication(int userId, int companyId, int positionId, String name, int origin,

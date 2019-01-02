@@ -34,22 +34,13 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
         this.deleteRecord(p);
     }
 
-    /**
-     * 查找最近浏览的职位信息
-     *
-     * @param beRecomUserIds 被推荐人userId
-     * @param userId 转发职位的员工userId
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return list
-     */
-    public List<CandidatePositionShareRecordDO> fetchPositionShareByUserIds(Set<Integer> beRecomUserIds, int userId, Timestamp startTime, Timestamp endTime) {
-        return create.selectFrom(CANDIDATE_POSITION_SHARE_RECORD)
-                .where(CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.between(startTime, endTime))
-                .and(CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_USER_ID.in(beRecomUserIds))
-                .and(CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.eq(userId))
-                .and(CANDIDATE_POSITION_SHARE_RECORD.SOURCE.eq((byte)0))
+    public List<CandidatePositionShareRecordDO> fetchPositionShareByShareChainIds(Set<Integer> shareChainIds) {
+        return create.selectFrom(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
+                .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID.in(shareChainIds))
+                .groupBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID)
+                .orderBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.desc())
                 .fetchInto(CandidatePositionShareRecordDO.class);
+
     }
 
 

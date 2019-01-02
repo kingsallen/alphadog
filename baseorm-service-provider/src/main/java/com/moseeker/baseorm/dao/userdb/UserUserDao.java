@@ -494,4 +494,12 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
                 .where(UserUser.USER_USER.ID.in(userIdList))
                 .fetch();
     }
+
+    public List<UserUserRecord> fetchByName(String queryName) {
+        return create
+                .selectFrom(UserUser.USER_USER)
+                .where(UserUser.USER_USER.NAME.eq(queryName))
+                .and(UserUser.USER_USER.IS_DISABLE.eq((byte) AbleFlag.OLDENABLE.getValue()))
+                .fetch();
+    }
 }
