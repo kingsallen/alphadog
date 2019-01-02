@@ -658,7 +658,7 @@ public class ReferralEntity {
         return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
     }
 
-    public EmployeeRadarData fetchEmployeeRadarData(List<Integer> userIdList, int postUserId, int companyId, List<UserDepth> depthList){
+    public EmployeeRadarData fetchEmployeeRadarData(List<Integer> userIdList, int postUserId, int companyId){
         EmployeeRadarData data = new EmployeeRadarData();
         if(StringUtils.isEmptyList(userIdList)){
             return null;
@@ -742,7 +742,13 @@ public class ReferralEntity {
                 wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));
                 data.setWxUserRecordList(wxUserRecordMap);
             }
-            data.setUserRecordList(userListFuture.get());
+            Map<Integer, UserUserRecord> userMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(userListFuture.get())){
+                userListFuture.get().forEach(fe ->
+                        userMap.put(fe.getId(), fe)
+                );
+            }
+            data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionListFuture.get())){
                 positionListFuture.get().forEach(position ->{
@@ -764,11 +770,11 @@ public class ReferralEntity {
                 });
             }
             Set<Map.Entry<Integer, Integer>> root2Entries = root2Map.entrySet();
-            Map<Integer, UserUserRecord> userMap = new HashMap<>();
+            Map<Integer, UserUserRecord> userRoot2Map = new HashMap<>();
             for(Map.Entry<Integer, Integer> entry : root2Entries){
-                userMap.put(entry.getKey(), root2UserMap.get(entry.getValue()));
+                userRoot2Map.put(entry.getKey(), root2UserMap.get(entry.getValue()));
             }
-            data.setRoot2UserMap(userMap);
+            data.setRoot2UserMap(userRoot2Map);
             Map<Integer, Byte> fromMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionShareRecordListFuture.get())){
                 positionShareRecordListFuture.get().forEach(fe -> {

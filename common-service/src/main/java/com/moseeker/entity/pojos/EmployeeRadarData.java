@@ -3,6 +3,7 @@ package com.moseeker.entity.pojos;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -12,18 +13,19 @@ import java.util.*;
 public class EmployeeRadarData {
 
     private Map<Integer, UserWxUserRecord> wxUserRecordList = new HashMap<>();
-    private List<UserUserRecord> userRecordList = new ArrayList<>();
+    private Map<Integer, UserUserRecord> userRecordList = new HashMap<>();
     private Map<Integer, Integer> positionView = new HashMap<>();
     private Map<Integer, JobPositionDO> positionMap = new HashMap<>();
     private Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
     private Set<Integer> recommendUserSet = new HashSet<>();
     private Map<Integer, Byte> userFromMap = new HashMap<>();
+    private Map<Integer, Timestamp> timeMap = new HashMap<>();
 
-    public List<UserUserRecord> getUserRecordList() {
+    public Map<Integer, UserUserRecord> getUserRecordList() {
         return userRecordList;
     }
 
-    public void setUserRecordList(List<UserUserRecord> userRecordList) {
+    public void setUserRecordList(Map<Integer, UserUserRecord> userRecordList) {
         this.userRecordList = userRecordList;
     }
 
@@ -73,5 +75,13 @@ public class EmployeeRadarData {
 
     public void setUserFromMap(Map<Integer, Byte> userFromMap) {
         this.userFromMap = userFromMap;
+    }
+
+    public Map<Integer, Timestamp> getTimeMap() {
+        return timeMap;
+    }
+
+    public void setTimeMap(Map<Integer, Timestamp> timeMap) {
+        this.timeMap = timeMap;
     }
 }

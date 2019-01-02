@@ -285,4 +285,7 @@ service UserEmployeeService {
     useraccounts_struct.PositionReferralInfo getPositionReferralInfo(1: i32 userId, 2:i32 positionId)  throws (1: common_struct.BIZException e);
 
     useraccounts_struct.RadarInfo fetchRadarIndex(1: i32 userId, 2:i32 companyId, 3:i32 page, 4:i32 size) throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.EmployeeForwardViewPage fetchEmployeeForwardView(1: i32 userId, 2:i32 companyId, 3:string positionTitle, 4:string order, 5:i32 page, 6: i32 size) throws (1: common_struct.BIZException e);
+
 }
