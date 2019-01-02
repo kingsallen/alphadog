@@ -1,9 +1,6 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
 import static com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -104,6 +101,16 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .set(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME, new Timestamp(new Date().getTime()))
                 .where(REFERRAL_SEEK_RECOMMEND.ID.eq(referralId))
                 .execute();
+
+    }
+
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserAndPresentee(int postUserId, List<Integer> presenteeUserId){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.in(presenteeUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
+                .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
+                .fetchInto(ReferralSeekRecommendRecord.class);
 
     }
 }

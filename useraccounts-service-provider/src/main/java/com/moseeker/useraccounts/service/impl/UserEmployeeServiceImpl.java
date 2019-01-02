@@ -2,10 +2,12 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -39,6 +41,7 @@ import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
+import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -96,6 +99,9 @@ public class UserEmployeeServiceImpl {
 
     @Resource(name = "cacheClient")
     private RedisClient client;
+
+    @Autowired
+    ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 
     @Autowired
     private EmployeeBatchHandler employeeBatchHandler;
@@ -487,4 +493,24 @@ public class UserEmployeeServiceImpl {
         }
         throw UserAccountException.USEREMPLOYEES_EMPTY;
     }
+
+    public RadarInfoVO fetchRadarIndex(int userId, int companyId, int page, int size){
+        RadarInfoVO result = new RadarInfoVO();
+        if(page == 0){
+            page=1;
+        }
+        if(size ==0){
+            size = 5;
+        }
+        if(!employeeEntity.isEmployee(userId, companyId)) {
+            throw UserAccountException.PERMISSION_DENIED;
+        }
+        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId, page, size);
+        if(StringUtils.isEmptyList(resourcesRecordList)){
+            return result;
+        }
+        List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+        List<UserWxUserRecord> wxUserList = wxUserDao.getWXUserMapByUserIds(userIdList);
+    }
+
 }

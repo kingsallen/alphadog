@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
@@ -38,6 +39,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralCompanyConfReco
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeBonusRecordRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeRegisterLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusRecord;
@@ -86,6 +88,7 @@ public class Keys {
     public static final Identity<ReferralConnectionChainRecord, Integer> IDENTITY_REFERRAL_CONNECTION_CHAIN = Identities0.IDENTITY_REFERRAL_CONNECTION_CHAIN;
     public static final Identity<ReferralConnectionLogRecord, Integer> IDENTITY_REFERRAL_CONNECTION_LOG = Identities0.IDENTITY_REFERRAL_CONNECTION_LOG;
     public static final Identity<ReferralEmployeeBonusRecordRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_BONUS_RECORD = Identities0.IDENTITY_REFERRAL_EMPLOYEE_BONUS_RECORD;
+    public static final Identity<ReferralEmployeeNetworkResourcesRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_NETWORK_RESOURCES = Identities0.IDENTITY_REFERRAL_EMPLOYEE_NETWORK_RESOURCES;
     public static final Identity<ReferralEmployeeRegisterLogRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_REGISTER_LOG = Identities0.IDENTITY_REFERRAL_EMPLOYEE_REGISTER_LOG;
     public static final Identity<ReferralLogRecord, Integer> IDENTITY_REFERRAL_LOG = Identities0.IDENTITY_REFERRAL_LOG;
     public static final Identity<ReferralPositionBonusRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS = Identities0.IDENTITY_REFERRAL_POSITION_BONUS;
@@ -115,6 +118,7 @@ public class Keys {
     public static final UniqueKey<ReferralConnectionChainRecord> KEY_REFERRAL_CONNECTION_CHAIN_PRIMARY = UniqueKeys0.KEY_REFERRAL_CONNECTION_CHAIN_PRIMARY;
     public static final UniqueKey<ReferralConnectionLogRecord> KEY_REFERRAL_CONNECTION_LOG_PRIMARY = UniqueKeys0.KEY_REFERRAL_CONNECTION_LOG_PRIMARY;
     public static final UniqueKey<ReferralEmployeeBonusRecordRecord> KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY = UniqueKeys0.KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY;
+    public static final UniqueKey<ReferralEmployeeNetworkResourcesRecord> KEY_REFERRAL_EMPLOYEE_NETWORK_RESOURCES_PRIMARY = UniqueKeys0.KEY_REFERRAL_EMPLOYEE_NETWORK_RESOURCES_PRIMARY;
     public static final UniqueKey<ReferralEmployeeRegisterLogRecord> KEY_REFERRAL_EMPLOYEE_REGISTER_LOG_PRIMARY = UniqueKeys0.KEY_REFERRAL_EMPLOYEE_REGISTER_LOG_PRIMARY;
     public static final UniqueKey<ReferralLogRecord> KEY_REFERRAL_LOG_PRIMARY = UniqueKeys0.KEY_REFERRAL_LOG_PRIMARY;
     public static final UniqueKey<ReferralLogRecord> KEY_REFERRAL_LOG_REFERRAL_LOG_UNIQUE = UniqueKeys0.KEY_REFERRAL_LOG_REFERRAL_LOG_UNIQUE;
@@ -152,6 +156,7 @@ public class Keys {
         public static Identity<ReferralConnectionChainRecord, Integer> IDENTITY_REFERRAL_CONNECTION_CHAIN = createIdentity(ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN, ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN.ID);
         public static Identity<ReferralConnectionLogRecord, Integer> IDENTITY_REFERRAL_CONNECTION_LOG = createIdentity(ReferralConnectionLog.REFERRAL_CONNECTION_LOG, ReferralConnectionLog.REFERRAL_CONNECTION_LOG.ID);
         public static Identity<ReferralEmployeeBonusRecordRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_BONUS_RECORD = createIdentity(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD, ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID);
+        public static Identity<ReferralEmployeeNetworkResourcesRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_NETWORK_RESOURCES = createIdentity(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES, ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.ID);
         public static Identity<ReferralEmployeeRegisterLogRecord, Integer> IDENTITY_REFERRAL_EMPLOYEE_REGISTER_LOG = createIdentity(ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG, ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG.ID);
         public static Identity<ReferralLogRecord, Integer> IDENTITY_REFERRAL_LOG = createIdentity(ReferralLog.REFERRAL_LOG, ReferralLog.REFERRAL_LOG.ID);
         public static Identity<ReferralPositionBonusRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS = createIdentity(ReferralPositionBonus.REFERRAL_POSITION_BONUS, ReferralPositionBonus.REFERRAL_POSITION_BONUS.ID);
@@ -179,6 +184,7 @@ public class Keys {
         public static final UniqueKey<ReferralConnectionChainRecord> KEY_REFERRAL_CONNECTION_CHAIN_PRIMARY = createUniqueKey(ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN, "KEY_referral_connection_chain_PRIMARY", ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN.ID);
         public static final UniqueKey<ReferralConnectionLogRecord> KEY_REFERRAL_CONNECTION_LOG_PRIMARY = createUniqueKey(ReferralConnectionLog.REFERRAL_CONNECTION_LOG, "KEY_referral_connection_log_PRIMARY", ReferralConnectionLog.REFERRAL_CONNECTION_LOG.ID);
         public static final UniqueKey<ReferralEmployeeBonusRecordRecord> KEY_REFERRAL_EMPLOYEE_BONUS_RECORD_PRIMARY = createUniqueKey(ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD, "KEY_referral_employee_bonus_record_PRIMARY", ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD.ID);
+        public static final UniqueKey<ReferralEmployeeNetworkResourcesRecord> KEY_REFERRAL_EMPLOYEE_NETWORK_RESOURCES_PRIMARY = createUniqueKey(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES, "KEY_referral_employee_network_resources_PRIMARY", ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.ID);
         public static final UniqueKey<ReferralEmployeeRegisterLogRecord> KEY_REFERRAL_EMPLOYEE_REGISTER_LOG_PRIMARY = createUniqueKey(ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG, "KEY_referral_employee_register_log_PRIMARY", ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG.ID);
         public static final UniqueKey<ReferralLogRecord> KEY_REFERRAL_LOG_PRIMARY = createUniqueKey(ReferralLog.REFERRAL_LOG, "KEY_referral_log_PRIMARY", ReferralLog.REFERRAL_LOG.ID);
         public static final UniqueKey<ReferralLogRecord> KEY_REFERRAL_LOG_REFERRAL_LOG_UNIQUE = createUniqueKey(ReferralLog.REFERRAL_LOG, "KEY_referral_log_referral_log_unique", ReferralLog.REFERRAL_LOG.EMPLOYEE_ID, ReferralLog.REFERRAL_LOG.REFERENCE_ID, ReferralLog.REFERRAL_LOG.POSITION_ID);

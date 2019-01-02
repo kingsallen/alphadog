@@ -5,11 +5,7 @@ package com.moseeker.baseorm.db.candidatedb.tables;
 
 
 import com.moseeker.baseorm.db.candidatedb.Candidatedb;
-import com.moseeker.baseorm.db.candidatedb.Keys;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateTemplateShareChainRecord;
-
-import java.util.Arrays;
-import java.util.List;
 
 import javax.annotation.Generated;
 
@@ -17,7 +13,6 @@ import org.jooq.Field;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
-import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
 
 
@@ -34,7 +29,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShareChainRecord> {
 
-    private static final long serialVersionUID = 957946685;
+    private static final long serialVersionUID = -635907169;
 
     /**
      * The reference instance of <code>candidatedb.candidate_template_share_chain</code>
@@ -65,6 +60,11 @@ public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShar
     public final TableField<CandidateTemplateShareChainRecord, Integer> ROOT_USER_ID = createField("root_user_id", org.jooq.impl.SQLDataType.INTEGER, this, "员工userId");
 
     /**
+     * The column <code>candidatedb.candidate_template_share_chain.root2_user_id</code>.
+     */
+    public final TableField<CandidateTemplateShareChainRecord, Integer> ROOT2_USER_ID = createField("root2_user_id", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>candidatedb.candidate_template_share_chain.recom_user_id</code>. 推荐人userId
      */
     public final TableField<CandidateTemplateShareChainRecord, Integer> RECOM_USER_ID = createField("recom_user_id", org.jooq.impl.SQLDataType.INTEGER, this, "推荐人userId");
@@ -92,7 +92,12 @@ public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShar
     /**
      * The column <code>candidatedb.candidate_template_share_chain.type</code>. 员工对候选人的标记类型 0 未处理 1 已邀请投递 2 员工不熟悉此候选人
      */
-    public final TableField<CandidateTemplateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT, this, "员工对候选人的标记类型 0 未处理 1 已邀请投递 2 员工不熟悉此候选人");
+    public final TableField<CandidateTemplateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "员工对候选人的标记类型 0 未处理 1 已邀请投递 2 员工不熟悉此候选人");
+
+    /**
+     * The column <code>candidatedb.candidate_template_share_chain.seek_referral</code>. 0 默认，候选人未求推荐 1 候选人求推荐
+     */
+    public final TableField<CandidateTemplateShareChainRecord, Byte> SEEK_REFERRAL = createField("seek_referral", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 默认，候选人未求推荐 1 候选人求推荐");
 
     /**
      * Create a <code>candidatedb.candidate_template_share_chain</code> table reference
@@ -122,22 +127,6 @@ public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShar
     @Override
     public Schema getSchema() {
         return Candidatedb.CANDIDATEDB;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UniqueKey<CandidateTemplateShareChainRecord> getPrimaryKey() {
-        return Keys.KEY_CANDIDATE_TEMPLATE_SHARE_CHAIN_PRIMARY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<UniqueKey<CandidateTemplateShareChainRecord>> getKeys() {
-        return Arrays.<UniqueKey<CandidateTemplateShareChainRecord>>asList(Keys.KEY_CANDIDATE_TEMPLATE_SHARE_CHAIN_PRIMARY);
     }
 
     /**

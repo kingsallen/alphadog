@@ -283,4 +283,6 @@ service UserEmployeeService {
     useraccounts_struct.Pagination getContributions(1: i32 companyId, 2: i32 pageNum, 3: i32 pageSize) throws (1:common_struct.BIZException e);
 
     useraccounts_struct.PositionReferralInfo getPositionReferralInfo(1: i32 userId, 2:i32 positionId)  throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.RadarInfo fetchRadarIndex(1: i32 userId, 2:i32 companyId, 3:i32 page, 4:i32 size) throws (1: common_struct.BIZException e);
 }
