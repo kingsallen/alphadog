@@ -9,27 +9,29 @@ import com.moseeker.position.constants.position.liepin.LiepinPositionOperateCons
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.UnsupportedEncodingException;
+import java.util.*;
 
 /**
  * @author cjm
  * @date 2018-05-31 8:39
  **/
 @Component
-public class LiepinHttpClientUtil {
+public class HttpClientUtil {
 
     private static Logger logger = LoggerFactory.getLogger(HttpClient.class);
 
@@ -76,7 +78,7 @@ public class LiepinHttpClientUtil {
         // 构造请求数据
         String t = DateUtils.dateToPattern(new Date(), "yyyyMMdd");
         liePinJsonObject.put("t", t);
-        String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject);
+        String sign = Md5Utils.getMD5SortKey(Md5Utils.mapToList(liePinJsonObject), liePinJsonObject, LiepinPositionOperateConstant.liepinSecretKey);
         liePinJsonObject.put("sign", sign);
         logger.info("=============liePinJsonObject:{}=============", liePinJsonObject);
         //设置请求头
@@ -84,7 +86,7 @@ public class LiepinHttpClientUtil {
         headers.put("channel", LiepinPositionOperateConstant.liepinChannel);
         headers.put("token", liePinToken);
 
-        return LiepinHttpClientUtil.sentHttpPostRequest(url, headers, liePinJsonObject);
+        return sentHttpPostRequest(url, headers, liePinJsonObject);
     }
 
     /**
@@ -120,6 +122,53 @@ public class LiepinHttpClientUtil {
             throw ExceptionUtils.getBizException("{'status':-1,'message':'" + httpResult.getString("message") + "'}");
         }
         return httpResult;
+    }
+
+    public String sendRequest2Job58(String url, JSONObject params) {
+        //构建HttpClient实例
+        HttpClient client = new DefaultHttpClient();
+        //设置请求超时时间
+        BufferedReader in = null;
+        //指定POST请求
+        try {
+            HttpPost request = new HttpPost(url);
+
+            Set<String> keys = params.keySet();
+            List<NameValuePair> formparams = new ArrayList<>();
+            for (String key : keys) {
+                formparams.add(new BasicNameValuePair(key, String.valueOf(params.get(key))));
+            }
+            UrlEncodedFormEntity entity = null;
+            try {
+                entity = new UrlEncodedFormEntity(formparams, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            request.setEntity(entity);
+            //发送请求
+            HttpResponse httpResponse = client.execute(request);
+            in = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+            StringBuffer buffer = new StringBuffer("");
+            String line = "";
+            String NL = System.getProperty("line.separator");
+            while ((line = in.readLine()) != null) {
+                buffer.append(line + NL);
+            }
+            return buffer.toString();
+
+        } catch (Exception e) {
+            logger.error("发送请求异常:{}", e.getMessage());
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                }catch (Exception e){
+                    logger.error("关闭流异常:{}", e.getMessage());
+                }
+
+            }
+        }
+        return null;
     }
 
 

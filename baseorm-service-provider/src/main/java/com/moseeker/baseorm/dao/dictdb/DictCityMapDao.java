@@ -93,7 +93,7 @@ public class DictCityMapDao extends JooqCrudImpl<DictCityMapDO, DictCityMapRecor
                 for (Integer moseekerCode : moseekerCityLevels) {
                     String otherCode = getOtherCode(moseekerCode, dictCityMapDOS);
                     if (otherCode != null) {
-                        if(channelType==ChannelType.LIEPIN) {
+                        if(channelType==ChannelType.LIEPIN || channelType==ChannelType.JOB58) {
                             otherCity.add(otherCode);
                         }else{
                             TypeReference<List<String>> typeRef

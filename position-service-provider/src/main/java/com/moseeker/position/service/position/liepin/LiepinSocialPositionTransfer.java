@@ -16,17 +16,19 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionLiepinMappingDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyFeature;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.constants.ChannelType;
+import static com.moseeker.common.constants.Constant.POSITION_SYNC_FAIL_ROUTINGKEY;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.constants.position.PositionSyncApiConstant;
 import com.moseeker.position.constants.position.liepin.LiePinPositionDegree;
 import com.moseeker.position.constants.position.liepin.LiepinPositionOperateConstant;
 import com.moseeker.position.pojo.LiePinPositionVO;
 import com.moseeker.position.service.position.base.sync.AbstractPositionTransfer;
 import com.moseeker.position.service.schedule.bean.PositionSyncStateRefreshBean;
 import com.moseeker.position.service.schedule.delay.PositionTaskQueueDaemonThread;
-import com.moseeker.position.utils.LiepinHttpClientUtil;
+import com.moseeker.position.utils.HttpClientUtil;
 import com.moseeker.position.utils.PositionEmailNotification;
 import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPosition;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -41,6 +43,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionLiepinMappingDO;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,7 +89,13 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
     private PositionEmailNotification emailNotification;
 
     @Autowired
-    LiepinHttpClientUtil httpClientUtil;
+    private AmqpTemplate amqpTemplate;
+
+    private static final String MESSAGE_TEMPLATE_EXCHANGE = "message_template_exchange";
+
+
+    @Autowired
+    HttpClientUtil httpClientUtil;
 
     @Override
     public JSONObject toThirdPartyPositionForm(HrThirdPartyPositionDO thirdPartyPosition, EmptyExtThirdPartyPosition extPosition) {
@@ -262,8 +272,14 @@ public class LiepinSocialPositionTransfer extends LiepinPositionTransfer<LiePinP
         } catch (BIZException e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.failed.getValue());
             hrThirdPartyPositionDO.setSyncFailReason(e.getMessage());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("positionId", Integer.valueOf(liePinPositionVO.getPositionId()));
+            jsonObject.put("message", e.getMessage());
+            jsonObject.put("channal", channel);
+            amqpTemplate.sendAndReceive(PositionSyncApiConstant.MESSAGE_TEMPLATE_EXCHANGE,
+                    POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                            .build());
             logger.warn(e.getMessage(), e);
-            emailNotification.sendSyncLiepinFailEmail(PositionEmailNotification.liepinDevmails, liePinPositionVO, e, null);
         } catch (Exception e) {
             hrThirdPartyPositionDO.setIsSynchronization(PositionSync.bindingError.getValue());
             hrThirdPartyPositionDO.setSyncFailReason("后台异常");

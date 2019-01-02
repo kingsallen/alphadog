@@ -1,5 +1,14 @@
 package com.moseeker.servicemanager.common;
 
+import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.util.JsonToMap;
+import com.moseeker.servicemanager.web.controller.util.Params;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -11,18 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.alibaba.fastjson.JSON;
-import com.moseeker.common.exception.CommonException;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.moseeker.baseorm.util.BeanUtils;
-import com.moseeker.common.util.JsonToMap;
-import com.moseeker.servicemanager.web.controller.util.Params;
 
 /**
  * 主要用于生成form表单 <p>Company: MoSeeker</P> <p>date: Aug 22, 2016</p> <p>Email: wjf2255@gmail.com</p>
@@ -72,7 +69,7 @@ public class ParamUtils {
      */
     public static Params<String, Object> parseRequestParam(HttpServletRequest request) throws Exception {
         Params<String, Object> data = new Params<>();
-        logger.info("=====resuest========");
+        //logger.info("=====resuest========");
         data.putAll(initParamFromRequestParameter(request));
         data.putAll(initParamFromRequestBody(request));
 
@@ -204,9 +201,9 @@ public class ParamUtils {
         Map<String, Object> param = new HashMap<>();
 
         Map<String, String[]> reqParams = request.getParameterMap();
-        logger.info("=============================");
-        logger.info(JSON.toJSONString(reqParams));
-        logger.info("=============================");
+        //logger.info("=============================");
+        //logger.info(JSON.toJSONString(reqParams));
+        //logger.info("=============================");
         if (reqParams != null) {
             for (Entry<String, String[]> entry : reqParams.entrySet()) {
                 if (entry.getValue() != null && entry.getValue().length > 1) {
@@ -222,7 +219,7 @@ public class ParamUtils {
                 }
             }
         }
-        logger.info(">>>>>>:{}:{}:Parameter:{}", request.getMethod(), request.getRequestURI(), param);
+        //logger.info(">>>>>>:{}:{}:Parameter:{}", request.getMethod(), request.getRequestURI(), param);
         return param;
     }
 
@@ -254,10 +251,10 @@ public class ParamUtils {
             }
         } catch (IOException | IllegalStateException e) {
             e.printStackTrace();
-            logger.error(e.getMessage(), e);
+            ;//logger.error(e.getMessage(), e);
         }
         if (jb.length() > 0) {
-            logger.info(">>>>>>:{}:{}:Body:{}", request.getMethod(), request.getRequestURI(), jb.toString());
+            ;//logger.info(">>>>>>:{}:{}:Body:{}", request.getMethod(), request.getRequestURI(), jb.toString());
         }
         return jb.toString();
     }

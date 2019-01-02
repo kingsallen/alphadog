@@ -4,26 +4,8 @@
 package com.moseeker.baseorm.db.thirdpartydb;
 
 
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCity;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompany;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountCompanyAddress;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountDepartment;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyAccountJob1001Subsite;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyCompanyChannelConf;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJob1001Position;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyJobsdbPosition;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyVeryeastPosition;
-import com.moseeker.baseorm.db.thirdpartydb.tables.ThirdpartyZhilianPositionAddress;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCityRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCompanyAddressRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountCompanyRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountDepartmentRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyAccountJob1001SubsiteRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyCompanyChannelConfRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyJob1001PositionRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyJobsdbPositionRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyVeryeastPositionRecord;
-import com.moseeker.baseorm.db.thirdpartydb.tables.records.ThirdpartyZhilianPositionAddressRecord;
+import com.moseeker.baseorm.db.thirdpartydb.tables.*;
+import com.moseeker.baseorm.db.thirdpartydb.tables.records.*;
 
 import javax.annotation.Generated;
 
@@ -57,6 +39,7 @@ public class Keys {
     public static final Identity<ThirdpartyAccountJob1001SubsiteRecord, Integer> IDENTITY_THIRDPARTY_ACCOUNT_JOB1001_SUBSITE = Identities0.IDENTITY_THIRDPARTY_ACCOUNT_JOB1001_SUBSITE;
     public static final Identity<ThirdpartyCompanyChannelConfRecord, Integer> IDENTITY_THIRDPARTY_COMPANY_CHANNEL_CONF = Identities0.IDENTITY_THIRDPARTY_COMPANY_CHANNEL_CONF;
     public static final Identity<ThirdpartyJob1001PositionRecord, Integer> IDENTITY_THIRDPARTY_JOB1001_POSITION = Identities0.IDENTITY_THIRDPARTY_JOB1001_POSITION;
+    public static final Identity<ThirdpartyJob58PositionRecord, Integer> IDENTITY_THIRDPARTY_JOB58_POSITION = Identities0.IDENTITY_THIRDPARTY_JOB58_POSITION;
     public static final Identity<ThirdpartyJobsdbPositionRecord, Integer> IDENTITY_THIRDPARTY_JOBSDB_POSITION = Identities0.IDENTITY_THIRDPARTY_JOBSDB_POSITION;
     public static final Identity<ThirdpartyVeryeastPositionRecord, Integer> IDENTITY_THIRDPARTY_VERYEAST_POSITION = Identities0.IDENTITY_THIRDPARTY_VERYEAST_POSITION;
     public static final Identity<ThirdpartyZhilianPositionAddressRecord, Integer> IDENTITY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS = Identities0.IDENTITY_THIRDPARTY_ZHILIAN_POSITION_ADDRESS;
@@ -72,6 +55,8 @@ public class Keys {
     public static final UniqueKey<ThirdpartyAccountJob1001SubsiteRecord> KEY_THIRDPARTY_ACCOUNT_JOB1001_SUBSITE_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_ACCOUNT_JOB1001_SUBSITE_PRIMARY;
     public static final UniqueKey<ThirdpartyCompanyChannelConfRecord> KEY_THIRDPARTY_COMPANY_CHANNEL_CONF_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_COMPANY_CHANNEL_CONF_PRIMARY;
     public static final UniqueKey<ThirdpartyCompanyChannelConfRecord> KEY_THIRDPARTY_COMPANY_CHANNEL_CONF_COMPANY_ID_CHANNEL = UniqueKeys0.KEY_THIRDPARTY_COMPANY_CHANNEL_CONF_COMPANY_ID_CHANNEL;
+    public static final UniqueKey<ThirdpartyJob58PositionRecord> KEY_THIRDPARTY_JOB58_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_JOB58_POSITION_PRIMARY;
+    public static final UniqueKey<ThirdpartyJob58PositionRecord> KEY_THIRDPARTY_JOB58_POSITION_PID_INDEX = UniqueKeys0.KEY_THIRDPARTY_JOB58_POSITION_PID_INDEX;
     public static final UniqueKey<ThirdpartyJob1001PositionRecord> KEY_THIRDPARTY_JOB1001_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_JOB1001_POSITION_PRIMARY;
     public static final UniqueKey<ThirdpartyJobsdbPositionRecord> KEY_THIRDPARTY_JOBSDB_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_JOBSDB_POSITION_PRIMARY;
     public static final UniqueKey<ThirdpartyVeryeastPositionRecord> KEY_THIRDPARTY_VERYEAST_POSITION_PRIMARY = UniqueKeys0.KEY_THIRDPARTY_VERYEAST_POSITION_PRIMARY;
@@ -93,6 +78,7 @@ public class Keys {
         public static Identity<ThirdpartyAccountDepartmentRecord, Integer> IDENTITY_THIRDPARTY_ACCOUNT_DEPARTMENT = createIdentity(ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT, ThirdpartyAccountDepartment.THIRDPARTY_ACCOUNT_DEPARTMENT.ID);
         public static Identity<ThirdpartyAccountJob1001SubsiteRecord, Integer> IDENTITY_THIRDPARTY_ACCOUNT_JOB1001_SUBSITE = createIdentity(ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE, ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE.ID);
         public static Identity<ThirdpartyCompanyChannelConfRecord, Integer> IDENTITY_THIRDPARTY_COMPANY_CHANNEL_CONF = createIdentity(ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF, ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF.ID);
+        public static Identity<ThirdpartyJob58PositionRecord, Integer> IDENTITY_THIRDPARTY_JOB58_POSITION = createIdentity(ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION, ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION.ID);
         public static Identity<ThirdpartyJob1001PositionRecord, Integer> IDENTITY_THIRDPARTY_JOB1001_POSITION = createIdentity(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION, ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.ID);
         public static Identity<ThirdpartyJobsdbPositionRecord, Integer> IDENTITY_THIRDPARTY_JOBSDB_POSITION = createIdentity(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION, ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.ID);
         public static Identity<ThirdpartyVeryeastPositionRecord, Integer> IDENTITY_THIRDPARTY_VERYEAST_POSITION = createIdentity(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION, ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.ID);
@@ -107,6 +93,8 @@ public class Keys {
         public static final UniqueKey<ThirdpartyAccountJob1001SubsiteRecord> KEY_THIRDPARTY_ACCOUNT_JOB1001_SUBSITE_PRIMARY = createUniqueKey(ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE, "KEY_thirdparty_account_job1001_subsite_PRIMARY", ThirdpartyAccountJob1001Subsite.THIRDPARTY_ACCOUNT_JOB1001_SUBSITE.ID);
         public static final UniqueKey<ThirdpartyCompanyChannelConfRecord> KEY_THIRDPARTY_COMPANY_CHANNEL_CONF_PRIMARY = createUniqueKey(ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF, "KEY_thirdparty_company_channel_conf_PRIMARY", ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF.ID);
         public static final UniqueKey<ThirdpartyCompanyChannelConfRecord> KEY_THIRDPARTY_COMPANY_CHANNEL_CONF_COMPANY_ID_CHANNEL = createUniqueKey(ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF, "KEY_thirdparty_company_channel_conf_company_id_channel", ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF.COMPANY_ID, ThirdpartyCompanyChannelConf.THIRDPARTY_COMPANY_CHANNEL_CONF.CHANNEL);
+        public static final UniqueKey<ThirdpartyJob58PositionRecord> KEY_THIRDPARTY_JOB58_POSITION_PRIMARY = createUniqueKey(ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION, "KEY_thirdparty_job58_position_PRIMARY", ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION.ID);
+        public static final UniqueKey<ThirdpartyJob58PositionRecord> KEY_THIRDPARTY_JOB58_POSITION_PID_INDEX = createUniqueKey(ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION, "KEY_thirdparty_job58_position_pid_index", ThirdpartyJob58Position.THIRDPARTY_JOB58_POSITION.PID);
         public static final UniqueKey<ThirdpartyJob1001PositionRecord> KEY_THIRDPARTY_JOB1001_POSITION_PRIMARY = createUniqueKey(ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION, "KEY_thirdparty_job1001_position_PRIMARY", ThirdpartyJob1001Position.THIRDPARTY_JOB1001_POSITION.ID);
         public static final UniqueKey<ThirdpartyJobsdbPositionRecord> KEY_THIRDPARTY_JOBSDB_POSITION_PRIMARY = createUniqueKey(ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION, "KEY_thirdparty_jobsdb_position_PRIMARY", ThirdpartyJobsdbPosition.THIRDPARTY_JOBSDB_POSITION.ID);
         public static final UniqueKey<ThirdpartyVeryeastPositionRecord> KEY_THIRDPARTY_VERYEAST_POSITION_PRIMARY = createUniqueKey(ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION, "KEY_thirdparty_veryeast_position_PRIMARY", ThirdpartyVeryeastPosition.THIRDPARTY_VERYEAST_POSITION.ID);
