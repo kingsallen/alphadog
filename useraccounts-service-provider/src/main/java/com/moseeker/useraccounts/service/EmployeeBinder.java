@@ -147,6 +147,7 @@ public abstract class EmployeeBinder {
         userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployee.setActivation((byte)0);
+        userEmployee.setSource(bindingParams.getSource());
         userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDOThreadLocal.set(userEmployee);
@@ -223,6 +224,9 @@ public abstract class EmployeeBinder {
                     unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
                 }
                 unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+                if(useremployee.getSource()>0){
+                    unActiveEmployee.setSource((byte)useremployee.getSource());
+                }
                 employeeDao.updateRecord(unActiveEmployee);
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
