@@ -104,4 +104,11 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
                 .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
                 .fetchInto(CandidatePositionDO.class);
     }
+    public List<CandidatePositionRecord> fetchRecentViewedByCompanyIds(List<Integer> candidateCompanyId) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.CANDIDATE_COMPANY_ID.in(candidateCompanyId))
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER.desc(), CandidatePosition.CANDIDATE_POSITION.UPDATE_TIME.desc())
+                .fetch();
+    }
+
 }

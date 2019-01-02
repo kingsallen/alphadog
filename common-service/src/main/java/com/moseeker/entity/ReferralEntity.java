@@ -1,10 +1,10 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.parser.Feature;
 import com.moseeker.baseorm.constant.HBType;
-import com.moseeker.baseorm.constant.ReferralRelationShipType;
 import com.moseeker.baseorm.constant.ReferralType;
-import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
@@ -15,14 +15,13 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
+import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
@@ -35,9 +34,11 @@ import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusReco
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
@@ -47,19 +48,23 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
-import com.moseeker.entity.pojos.BonusData;
-import com.moseeker.entity.pojos.HBData;
-import com.moseeker.entity.pojos.RecommendHBData;
-import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.entity.pojos.*;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import java.util.concurrent.ExecutionException;
+import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -69,13 +74,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -99,10 +97,22 @@ public class ReferralEntity {
     CandidateShareChainDao shareChainDao;
 
     @Autowired
+    CandidatePositionShareRecordDao positionShareRecordDao;
+
+    @Autowired
     UserEmployeePointsRecordDao pointsRecordDao;
 
     @Autowired
     private ReferralLogDao referralLogDao;
+
+    @Autowired
+    private ReferralSeekRecommendDao recommendDao;
+
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
+
+    @Autowired
+    private CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
     private ReferralRecomEvaluationDao recomEvaluationDao;
@@ -151,6 +161,9 @@ public class ReferralEntity {
 
     @Autowired
     private UserAccountEntity userAccountEntity;
+
+    @Autowired
+    private UserUserDao userDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPool threadPool = ThreadPool.Instance;
@@ -643,6 +656,139 @@ public class ReferralEntity {
 
     public List<ReferralRecomEvaluationRecord> fetchEvaluationListByUserId(int userId, List<Integer> appidList){
         return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
+    }
+
+    public EmployeeRadarData fetchEmployeeRadarData(List<Integer> userIdList, int postUserId, int companyId, List<UserDepth> depthList){
+        EmployeeRadarData data = new EmployeeRadarData();
+        if(StringUtils.isEmptyList(userIdList)){
+            return null;
+        }
+        Future<List<CandidateCompanyDO>> candidateCompanyListFuture = threadPool.startTast(
+                () -> candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, userIdList));
+        Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
+                () -> wxEntity.getUserWxUserData(userIdList));
+        Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
+                () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
+        Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+                () -> userDao.fetchByIdList(userIdList));
+
+        try {
+            List<CandidateCompanyDO> companyList = candidateCompanyListFuture.get();
+            Future<List<CandidatePositionRecord>> candidatePositionListFuture = null;
+
+            if(!StringUtils.isEmptyList(companyList)) {
+                List<Integer> candidateCompanyIds = companyList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                candidatePositionListFuture = threadPool.startTast(
+                        () -> candidatePositionDao.fetchRecentViewedByCompanyIds(candidateCompanyIds));
+            }
+            List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
+            Map<Integer, Integer> positionIdMap = new HashMap<>();
+            Map<Integer, Timestamp> timeMap = new HashMap<>();
+            Set<Integer> recommendUserSet = new HashSet<>();
+            if(!StringUtils.isEmptyList(recommendList)){
+                recommendList.forEach( recommend -> {
+                        positionIdMap.put(recommend.getPresenteeUserId(), recommend.getPositionId());
+                        recommendUserSet.add(recommend.getPresenteeUserId());
+                        timeMap.put(recommend.getPresenteeUserId(), recommend.getRecommendTime());
+                    }
+                );
+            }
+            Map<Integer, Integer> positionView = new HashMap<>();
+            List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
+            if(!StringUtils.isEmptyList(candidatePositionList)) {
+                for(CandidateCompanyDO candidateCompany : companyList) {
+                    for (CandidatePositionRecord candidatePosition : candidatePositionList) {
+                        if (candidatePosition.getCandidateCompanyId() == candidateCompany.getId()){
+                            if(positionIdMap.get(candidateCompany.getSysUserId())== null) {
+                                positionIdMap.put(candidateCompany.getSysUserId(), candidatePosition.getPositionId());
+                                timeMap.put(candidateCompany.getSysUserId(), candidatePosition.getUpdateTime());
+                            }
+                            if(positionIdMap.get(candidateCompany.getSysUserId())!= null && positionView.get(candidateCompany.getSysUserId()) == null
+                                    && positionIdMap.get(candidateCompany.getSysUserId()).intValue() == candidatePosition.getPositionId()) {
+                                positionView.put(candidateCompany.getSysUserId(), candidatePosition.getViewNumber());
+                            }
+                        }
+                    }
+                }
+            }
+            Collection<Integer> valueCollection = positionIdMap.values();
+            List<Integer> positionIdList = new ArrayList<Integer>(valueCollection);
+            Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
+                    () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
+            Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
+                    () -> positionDao.getPositionList(positionIdList));
+            Map<Integer, Integer> root2Map = new HashMap<>();
+            Set<Integer> root2Set = new HashSet<>();
+            List<CandidateShareChainDO> shareChainList = shareChainListFuture.get();
+            List<Integer> shareChainIdList = new ArrayList<>();
+            Map<Integer, Integer> shareChainIdMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(shareChainList)) {
+                shareChainList.forEach(share -> {
+                    if (positionIdMap.get(share.getPresenteeUserId()).intValue() == share.getPositionId()
+                            && root2Map.get(share.getPresenteeUserId()) == null) {
+                        root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
+                        root2Set.add(share.root2RecomUserId);
+                        shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
+                        shareChainIdList.add(share.getId());
+                    }
+                });
+            }
+            Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
+                    () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
+            Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
+            if (!StringUtils.isEmptyList(wxUserListFuture.get())){
+                Map<Integer, UserWxUserRecord> wxUserRecordMap = new HashMap<>();
+                wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));
+                data.setWxUserRecordList(wxUserRecordMap);
+            }
+            data.setUserRecordList(userListFuture.get());
+            Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(positionListFuture.get())){
+                positionListFuture.get().forEach(position ->{
+                    positionMap.put(position.getId(), position);
+                });
+            }
+            Set<Map.Entry<Integer, Integer>> entries = positionIdMap.entrySet();
+            Map<Integer, JobPositionDO> userPositionMap = new HashMap<>();
+            for(Map.Entry<Integer, Integer> entry : entries){
+                userPositionMap.put(entry.getKey(), positionMap.get(entry.getValue()));
+            }
+            data.setPositionMap(userPositionMap);
+            data.setPositionView(positionView);
+            data.setRecommendUserSet(recommendUserSet);
+            Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(root2ListFuture.get())){
+                root2ListFuture.get().forEach(root2 ->{
+                    root2UserMap.put(root2.getId(), root2);
+                });
+            }
+            Set<Map.Entry<Integer, Integer>> root2Entries = root2Map.entrySet();
+            Map<Integer, UserUserRecord> userMap = new HashMap<>();
+            for(Map.Entry<Integer, Integer> entry : root2Entries){
+                userMap.put(entry.getKey(), root2UserMap.get(entry.getValue()));
+            }
+            data.setRoot2UserMap(userMap);
+            Map<Integer, Byte> fromMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(positionShareRecordListFuture.get())){
+                positionShareRecordListFuture.get().forEach(fe -> {
+                        if (fromMap.get(fe.getShareChainId()) == null)
+                            fromMap.put(fe.getShareChainId(), fe.getClickFrom());
+                    }
+                );
+            }
+            Set<Map.Entry<Integer, Byte>> fromMapSet = fromMap.entrySet();
+            Map<Integer, Byte> userFromMap = new HashMap<>();
+            for(Map.Entry<Integer, Byte> entry : fromMapSet){
+                userFromMap.put(shareChainIdMap.get(entry.getValue()), entry.getValue());
+            }
+            data.setUserFromMap(userFromMap);
+
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+
+        return data;
     }
 
 }

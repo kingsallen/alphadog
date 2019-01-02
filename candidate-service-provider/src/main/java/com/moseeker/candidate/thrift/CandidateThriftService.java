@@ -166,4 +166,5 @@ public class CandidateThriftService implements CandidateService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
 }

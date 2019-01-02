@@ -200,4 +200,10 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public RadarInfo fetchRadarIndex(int userId, int companyId, int page, int size) throws BIZException, TException {
+
+        return null;
+    }
 }

@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
@@ -51,7 +52,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1044747474;
+    private static final long serialVersionUID = -1086277806;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -117,6 +118,11 @@ public class Referraldb extends SchemaImpl {
      * The table <code>referraldb.referral_employee_bonus_record</code>.
      */
     public final ReferralEmployeeBonusRecord REFERRAL_EMPLOYEE_BONUS_RECORD = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD;
+
+    /**
+     * 员工的雷达人脉top
+     */
+    public final ReferralEmployeeNetworkResources REFERRAL_EMPLOYEE_NETWORK_RESOURCES = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES;
 
     /**
      * 员工认证取消认证操作记录
@@ -205,6 +211,7 @@ public class Referraldb extends SchemaImpl {
             ReferralConnectionChain.REFERRAL_CONNECTION_CHAIN,
             ReferralConnectionLog.REFERRAL_CONNECTION_LOG,
             ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD,
+            ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES,
             ReferralEmployeeRegisterLog.REFERRAL_EMPLOYEE_REGISTER_LOG,
             ReferralLog.REFERRAL_LOG,
             ReferralPositionBonus.REFERRAL_POSITION_BONUS,

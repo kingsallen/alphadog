@@ -552,3 +552,23 @@ struct PositionReferralInfo {
     6:optional string employeeIcon
 
 }
+
+struct RadarUserInfo {
+    1:optional i32 userId,
+    2:optional string nickname,
+    3:optional i32 viewCount,
+    4:optional i32 seekRecommend,
+    5:optional i32 depth,
+    6:optional string headimgurl,
+    7:optional string positionTitle,
+    8:optional i32 positionId,
+    9:optional string forwardName,
+    10:optional bool forwardSourceWx,
+    11:optional string clickTime
+}
+
+struct RadarInfo{
+    1:optional i32 tatolCount,
+    2:optional i32 page,
+    3:optional list<RadarUserInfo> userList
+}

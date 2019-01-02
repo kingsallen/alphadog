@@ -1,19 +1,23 @@
 package com.moseeker.servicemanager.web.controller.neo4j;
 
+import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.neo4j.form.ForwardInsertForm;
+import com.moseeker.servicemanager.web.controller.neo4j.form.UserDepthPO;
 import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
+import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
 @Controller
@@ -47,6 +51,47 @@ public class Neo4jController {
                 return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
             }
 	}
+
+    @RequestMapping(value = "/v1/user/threedepth/employee", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchUserThreeDepthEmployee(@RequestParam("appid") int appid,
+                                              @RequestParam("user_id") int userId,
+                                              @RequestParam(value = "company_id", required = false) int companyId) throws TException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", appid, 0, null);
+        validateUtil.addIntTypeValidate("员工user编号", userId, 1, null);
+        String message = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(message)) {
+            List<Integer> list = service.fetchUserThreeDepthEmployee(userId, companyId);
+            return Result.success(list).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(message).toJson();
+        }
+    }
+
+    @RequestMapping(value = "/v1/employee/threedepth/user", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchEmployeeThreeDepthUser(@RequestParam("appid") int appid,
+                                              @RequestParam("user_id") int userId) throws TException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("appid", appid, 0, null);
+        validateUtil.addIntTypeValidate("员工user编号", userId, 1, null);
+        String message = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(message)) {
+            List<UserDepth> result = service.fetchEmployeeThreeDepthUser(userId);
+            List<UserDepthPO> depthPOList = new ArrayList<>();
+            if(!StringUtils.isEmptyList(result)){
+                depthPOList = result.stream().map(m ->{
+                    UserDepthPO depth = new UserDepthPO();
+                    org.springframework.beans.BeanUtils.copyProperties(m , depth);
+                    return depth;
+                }).collect(Collectors.toList());
+            }
+            return Result.success(depthPOList).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(message).toJson();
+        }
+    }
 
 
 }

@@ -16,6 +16,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralCompanyConf;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionChain;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralConnectionLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeRegisterLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
@@ -102,6 +103,11 @@ public class Tables {
      * The table <code>referraldb.referral_employee_bonus_record</code>.
      */
     public static final ReferralEmployeeBonusRecord REFERRAL_EMPLOYEE_BONUS_RECORD = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeBonusRecord.REFERRAL_EMPLOYEE_BONUS_RECORD;
+
+    /**
+     * 员工的雷达人脉top
+     */
+    public static final ReferralEmployeeNetworkResources REFERRAL_EMPLOYEE_NETWORK_RESOURCES = com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES;
 
     /**
      * 员工认证取消认证操作记录

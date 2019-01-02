@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
 import java.util.List;
 
 /**
@@ -52,5 +53,33 @@ public interface Neo4jService {
      * @throws CommonException
      */
     void updateUserEmployeeCompany(List<Integer> userIds, int companyId) throws CommonException;
+
+    /**
+     * 获取到候选人三度以内曾经触达到的员工user编号
+     * @param userId    候选人编号
+     * @param companyId 公司编号
+     * @return
+     * @throws CommonException
+     */
+    List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException;
+
+
+    /**
+     * 获取到员工三度以内曾经触达到的候选人编号
+     * @param userId    员工user编号
+     * @return
+     * @throws CommonException
+     */
+    List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException;
+
+    /**
+     * 获取员工到候选人的最短路径读书
+     * @param userId    员工的user_id
+     * @param companyId 员工认证的公司编号
+     * @param userIdList 候选人编号列表
+     * @return
+     * @throws CommonException
+     */
+    List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException;
 
 }

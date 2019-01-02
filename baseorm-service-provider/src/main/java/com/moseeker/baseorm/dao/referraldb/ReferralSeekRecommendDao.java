@@ -1,9 +1,6 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
-import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
 import static com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -82,6 +79,15 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
     }
 
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserId(int postUserId, List<Integer> positionIdList){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
+                .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
+                .fetchInto(ReferralSeekRecommendRecord.class);
+
+    }
+
     public int updateReferralSeekRecommendRecordForAppId(int referralId, int appId ){
         return using(configuration()).update(REFERRAL_SEEK_RECOMMEND)
                 .set(REFERRAL_SEEK_RECOMMEND.APP_ID, appId)
@@ -109,5 +115,15 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(userId))
                 .and(REFERRAL_SEEK_RECOMMEND.CREATE_TIME.between(beforeTenMinite, tenMinite))
                 .fetchInto(ReferralSeekRecommendRecord.class);
+    }
+
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserAndPresentee(int postUserId, List<Integer> presenteeUserId){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.in(presenteeUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
+                .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
+                .fetchInto(ReferralSeekRecommendRecord.class);
+
     }
 }
