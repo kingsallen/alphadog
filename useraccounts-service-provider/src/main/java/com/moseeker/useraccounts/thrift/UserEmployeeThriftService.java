@@ -216,7 +216,8 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     }
 
     @Override
-    public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle, String order, int page, int size) throws BIZException, TException {
+    public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
+                                                            String order, int page, int size) throws BIZException, TException {
 
         return null;
     }

@@ -43,6 +43,7 @@ import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
+import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
@@ -105,6 +106,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     PositionEntity positionEntity;
+
+    @Autowired
+    private UserCenterBizTools bizTools;
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -537,7 +541,7 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
-    public void fetchEmployeeForwardView(int userId, int companyId, int page, int size){
+    public void fetchEmployeeForwardView(int userId, int companyId, String positionTitle, String order, int page, int size){
         RadarInfoVO result = new RadarInfoVO();
         if(page == 0){
             page=1;
@@ -548,8 +552,26 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-
+        List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+        if(StringUtils.isNotNullOrEmpty(positionTitle)){
+            positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
+        }
+        if (StringUtils.isEmptyList(positionIdList)) {
+            return ;
+        }
         return ;
+    }
+
+    public List<Integer> pagePositionById(List<Integer> positionIds, String order, int page, int size){
+        List<Integer> list = new ArrayList<>();
+        switch (order){
+            case "time":
+                break;
+            case "view":
+                break;
+            case "depth":
+                break;
+        }
     }
 
 }
