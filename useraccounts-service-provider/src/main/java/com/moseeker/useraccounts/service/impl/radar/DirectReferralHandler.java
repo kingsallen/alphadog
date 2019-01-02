@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
     protected JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject appIdClaimMap) {
         JSONObject recom = new JSONObject();
         recom.put("type", getReferralType().getType());
-        Object claim = appIdClaimMap.get(jobApplicationDO.getId());
+        Object claim = appIdClaimMap.get(jobApplicationDO.getId()+"");
         recom.put("claim", claim == null ? 0 : claim);
         return recom;
     }

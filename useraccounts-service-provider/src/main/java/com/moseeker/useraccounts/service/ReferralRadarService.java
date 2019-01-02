@@ -77,7 +77,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String getProgressByOne(ReferralProgressQueryInfo progressQuery);
+    String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException;
     /**
      * 批量根据条件获取候选人的推荐进度
      *

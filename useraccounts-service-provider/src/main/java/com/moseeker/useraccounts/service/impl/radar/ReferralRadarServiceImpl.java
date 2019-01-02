@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl.radar;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
@@ -70,8 +71,10 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -123,6 +126,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static final Integer CHAIN_LIMIT = 4;
+
+    private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
 
 
     @Override
@@ -344,118 +349,136 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    public String getProgressByOne(ReferralProgressQueryInfo progressQuery) {
-        int applyId = 0;
-        int progress = progressQuery.getProgress();
-        JobApplication jobApplication = jobApplicationDao.fetchOneById(applyId);
+    public String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException {
+        logger.info("progressQuery:{}", progressQuery);
+        JobApplication jobApplication = jobApplicationDao.fetchOneById(progressQuery.getApplyId());
         checkApplyExists(jobApplication, progressQuery);
-        List<HrOperationRecordDO> hrOperationRecords = hrOperationRecordDao.getHrOperationDOByAppid(applyId);
+        List<HrOperationRecordRecord> hrOperationRecords = hrOperationRecordDao.getHrOperationRecordByAppid(progressQuery.getApplyId());
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(progressQuery.getCompanyId());
+        UserWxUserRecord userWxUserDO = wxUserDao.getWxUserByUserIdAndWechatId(progressQuery.getUserId(), hrWxWechatDO.getId());
+        JobPositionDO jobPositionDO = positionDao.getJobPositionById(jobApplication.getPositionId());
+        UserUserDO userUserDO = userUserDao.getUser(progressQuery.getUserId());
         int factProgress = jobApplication.getAppTplId();
         JSONObject result = new JSONObject();
-        if(checkIsNormal(factProgress, progress, hrOperationRecords)){
+        if(!checkIsNormal(factProgress, progressQuery.getProgress(), hrOperationRecords)){
             result.put("abnormal", 0);
             return JSON.toJSONString(result);
         }
-        int queryAppid = jobApplication.getAppTplId();
-
-
-        int companyId = progressQuery.getCompanyId();
-        int positionId = progressQuery.getPid();
-        int presenteeUserId = progressQuery.getPresenteeUserId();
-        int recomType = progressQuery.getRecomType();
-        int userId = progressQuery.getUserId();
-
-        return null;
-    }
-
-    private boolean checkIsNormal(int factProgress, int progress, List<HrOperationRecordDO> hrOperationRecordDOS) {
-        int lastProgress = factProgress;
-        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
-            for(HrOperationRecordDO hrOperationRecordDO : hrOperationRecordDOS){
-                if(hrOperationRecordDO.getOperateTplId() != 4){
-                    lastProgress = hrOperationRecordDO.getOperateTplId();
-                    break;
-                }
-            }
+        int queryOptId = jobApplication.getAppTplId();
+        ReferralProgressEnum current;
+        boolean refuse = false;
+        if(queryOptId == ReferralProgressEnum.FAILED.getProgress()){
+            refuse = true;
+            queryOptId = getLastProgress(queryOptId, hrOperationRecords);
         }
-        ReferralProgressEnum last = ReferralProgressEnum.getEnumByProgress(lastProgress);
-        ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
-        return last.getOrder() >= current.getOrder();
-    }
-
-    private void checkApplyExists(JobApplication jobApplication, ReferralProgressQueryInfo progressQuery) {
-        if(jobApplication == null){
-            return;
-        }
-        if(jobApplication.getApplierId() != progressQuery.getUserId()){
-            return;
-        }
+        current = ReferralProgressEnum.getEnumByProgress(queryOptId);
+        JSONArray progressJson = doInitProgressJson(current, hrOperationRecords, refuse);
+        result.put("progress", progressJson);
+        result.put("abnormal", 1);
+        result.put("encourage", getEncourageByProgress(factProgress));
+        result.put("avatar", userWxUserDO.getHeadimgurl());
+        result.put("name", handleCandidateName(userUserDO.getName(), progressQuery.getPresenteeUserId(), jobApplication.getRecommenderUserId()));
+        result.put("title", jobPositionDO.getTitle());
+        logger.info("result:{}", result);
+        return JSON.toJSONString(result);
     }
 
     @Override
     public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException {
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
         if(employeeRecord == null){
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo);
+        if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
             return "";
         }
-        String queryName = progressInfo.getUsername();
-        int startIndex = (progressInfo.getPageNum() - 1) * progressInfo.getPageSize();
-        List<JobApplicationDO> jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
-                startIndex, progressInfo.getPageSize());
         List<Integer> applyIds = jobApplicationDOS.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<Integer> recomUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getRecommenderUserId).distinct().collect(Collectors.toList());
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(progressInfo.getCompanyId());
         // todo neo4j 查
-//        List<Object> applierDegrees = new ArrayList<>();
         Map<String, Object> applierDegrees = new HashMap<>();
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         Set<Integer> allUserIds = new HashSet<>();
         allUserIds.addAll(applierUserIds);
         allUserIds.addAll(recomUserIds);
         Map<Integer, UserUserRecord> allUserMap = getUserMap(allUserIds);
+        Map<Integer, UserWxUserDO> allWxUserMap = getWxUserMap(allUserIds, progressInfo.getCompanyId());
         Map<Integer, JobPositionDO> positionMap = getPositionIdMap(applyPids);
         Map<Integer, List<HrOperationRecordRecord>> hrOperationMap = hrOperationRecordDao.getHrOperationMapByApplyIds(applyIds);
-        int progress = progressInfo.getProgress();
+
         List<JSONObject> result = new ArrayList<>();
         AbstractReferralTypeHandler handler;
         Map<Integer, JSONObject> referralTypeMap = new HashMap<>();
-        // todo 根据推荐类型将list分开，查出认领状态，评价状态等
         for(ReferralTypeEnum referralTypeEnum : ReferralTypeEnum.values()){
             handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
             JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS);
             referralTypeMap.put(referralTypeEnum.getType(), referralSingleTypeMap);
         }
+        for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
 
-        if(StringUtils.isEmpty(queryName)){
-            // todo 根据类别查全部的
-            for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
+            ReferralTypeEnum referralTypeEnum = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin());
 
-                ReferralTypeEnum referralTypeEnum = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin());
+            handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
 
-                handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
+            JobPositionDO jobPositionDO = positionMap.get(jobApplicationDO.getPositionId());
 
-                JobPositionDO jobPositionDO = positionMap.get(jobApplicationDO.getPositionId());
+            UserUserRecord applier = allUserMap.get(jobApplicationDO.getApplierId());
 
-                UserUserRecord applier = allUserMap.get(jobApplicationDO.getApplierId());
+            List<HrOperationRecordRecord> hrOperations = hrOperationMap.get(jobApplicationDO.getId());
 
-                List<HrOperationRecordRecord> hrOperations = hrOperationMap.get(jobApplicationDO.getId());
+            JSONObject singleTypeMap = referralTypeMap.get(referralTypeEnum.getType());
 
-                JSONObject singleTypeMap = referralTypeMap.get(referralTypeEnum.getType());
+            JSONObject card = handler.createApplyCard(jobApplicationDO, jobPositionDO, applier, hrOperations, singleTypeMap);
 
-                JSONObject card = handler.createApplyCard(jobApplicationDO, jobPositionDO, applier, hrOperations, singleTypeMap);
+            handler.postProcessAfterCreateCard(card, applierDegrees);
 
-                handler.postProcessAfterCreateCard(card, applierDegrees);
-
-                result.add(card);
-            }
-        }else {
-            // todo 根据类别查该姓名的申请记录
-            for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
-
-            }
+            result.add(card);
         }
         return JSON.toJSONString(result);
+    }
+
+    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo) {
+        List<JobApplicationDO> jobApplicationDOS;
+        String queryName = progressInfo.getUsername();
+        int startIndex = (progressInfo.getPageNum() - 1) * progressInfo.getPageSize();
+        int progress = progressInfo.getProgress();
+        List<Integer> progressList = new ArrayList<>();
+        progressList.add(progress);
+        // 目前有四种操作对应已投递状态 1 被推荐人投递简历 6 hr查看简历 15 员工主动投递简历 16 候选人联系内推投递简历
+        if(progress == 1){
+            progressList.add(6);
+            progressList.add(15);
+            progressList.add(16);
+        }
+        if(StringUtils.isEmpty(queryName)){
+            if(progress == 0){
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                        startIndex, progressInfo.getPageSize());
+            }else {
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                        startIndex, progressInfo.getPageSize(), progressList);
+            }
+        }else {
+            List<UserUserRecord> queryNameRecords = userUserDao.fetchByName(queryName);
+            List<Integer> queryNameIds = queryNameRecords.stream().map(UserUserRecord::getId).collect(Collectors.toList());
+            if(progress == 0){
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                        queryNameIds, startIndex, progressInfo.getPageSize());
+            }else {
+                jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                        queryNameIds, startIndex, progressInfo.getPageSize(), progressList);
+            }
+        }
+        return jobApplicationDOS;
+    }
+
+    private Map<Integer, UserWxUserDO> getWxUserMap(Set<Integer> allUserIds, int companyId) {
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
+        List<UserWxUserDO> userWxUserDOS = wxUserDao.getWXUsersByUserIds(allUserIds, hrWxWechatDO.getId());
+        Map<Integer, UserWxUserDO> userWxUserDOMap = new HashMap<>();
+        userWxUserDOS.forEach(userWxUserDO -> userWxUserDOMap.put(userWxUserDO.getSysuserId(), userWxUserDO));
+        return userWxUserDOMap;
     }
 
     private Map<Integer, UserUserRecord> getUserMap(Set<Integer> applierUserIds) {
@@ -1026,4 +1049,108 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         position.put("pv", candidatePositionDO.getViewNumber());
         return position;
     }
+
+
+    private String handleCandidateName(String name, int presenteeUserId, Integer recommenderUserId) {
+        if(presenteeUserId == recommenderUserId){
+            return name;
+        }else {
+            boolean hasChinese = chinese.matcher(name).find();
+            if(hasChinese){
+                return name.substring(0, 1) + "**";
+            }else {
+                String trim = " ";
+                if(name.replaceAll(trim, "").length() != name.length()){
+                    return name.substring(0, name.indexOf(trim)) + "**";
+                }
+                return name.substring(0, 1) + "**";
+            }
+        }
+    }
+
+    private String getEncourageByProgress(int factProgress) {
+        if(factProgress == ReferralProgressEnum.FILTERED.getProgress()){
+            return "恭喜您通过初筛，好的开始是成功的一半！";
+        }else if(factProgress == ReferralProgressEnum.INTERVIEWED.getProgress()){
+            return "恭喜您通过面试，胜利就在不远处！";
+        }else if(factProgress == ReferralProgressEnum.ENTRY.getProgress()){
+            return "欢迎优秀的你加入我们！";
+        }else if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
+            return "您已进入我司人才库，谢谢您的关注！";
+        }
+        return "";
+    }
+
+    private JSONArray doInitProgressJson(ReferralProgressEnum current, List<HrOperationRecordRecord> hrOperationRecords, boolean refuse) {
+        JSONArray progressJson = new JSONArray();
+        for(ReferralProgressEnum progressEnum : ReferralProgressEnum.getEnumList()){
+            JSONObject oneProgress = new JSONObject();
+            if(current.getOrder() > progressEnum.getOrder()){
+                oneProgress.put("progress_status", progressEnum.getProgress());
+                oneProgress.put("progress_pass", 1);
+                oneProgress.put("datetime", getLastOptTime(progressEnum.getProgress(), hrOperationRecords));
+                progressJson.add(oneProgress);
+            }else if(current.getOrder() == progressEnum.getOrder()) {
+                oneProgress.put("progress_status", progressEnum.getProgress());
+                oneProgress.put("progress_pass", refuse ? 0 : 1);
+                oneProgress.put("datetime", getLastOptTime(current.getProgress(), hrOperationRecords));
+                progressJson.add(oneProgress);
+            }else{
+                break;
+            }
+        }
+        return progressJson;
+    }
+
+    private String getLastOptTime(int progress, List<HrOperationRecordRecord> hrOperationRecords) {
+        long optTime = 0;
+        for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecords){
+            if(progress == hrOperationRecordDO.getOperateTplId()){
+                optTime = hrOperationRecordDO.getOptTime().getTime();
+                break;
+            }
+        }
+        DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        return sdf.format(new Date(optTime));
+    }
+
+    private boolean checkIsNormal(int factProgress, int progress, List<HrOperationRecordRecord> hrOperationRecordDOS) {
+        if(progress == ReferralProgressEnum.FAILED.getProgress()){
+            return false;
+        }
+        int lastProgress = factProgress;
+        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
+            lastProgress = getLastProgress(lastProgress, hrOperationRecordDOS);
+
+        }
+        ReferralProgressEnum last = ReferralProgressEnum.getEnumByProgress(lastProgress);
+        ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
+        return last.getOrder() >= current.getOrder();
+    }
+
+    /**
+     * 当前申请进度为4时，需要获取上一个进度
+     * @param lastProgress 上一个进度值
+     * @param hrOperationRecordDOS hr操作记录s
+     * @return 返回查询到的上个进度
+     */
+    private int getLastProgress(int lastProgress, List<HrOperationRecordRecord> hrOperationRecordDOS) {
+        for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecordDOS){
+            if(hrOperationRecordDO.getOperateTplId() != 4){
+                lastProgress = hrOperationRecordDO.getOperateTplId();
+                break;
+            }
+        }
+        return lastProgress;
+    }
+
+    private void checkApplyExists(JobApplication jobApplication, ReferralProgressQueryInfo progressQuery) throws BIZException {
+        if(jobApplication == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.APPLICATION_NOTEXIST);
+        }
+        if(jobApplication.getApplierId() != progressQuery.getUserId()){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.APPLICATION_STATE_ERROR);
+        }
+    }
+
 }

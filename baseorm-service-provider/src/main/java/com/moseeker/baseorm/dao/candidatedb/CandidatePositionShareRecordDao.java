@@ -33,11 +33,11 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
         this.deleteRecord(p);
     }
 
-    public List<CandidatePositionShareRecordDO> fetchPositionShareByUserIdsAndBeRecomUserIds(List<Integer> recomUserIds, List<Integer> beRecomUserIds, int wechatId) {
+    public List<CandidatePositionShareRecordDO> fetchPositionShareByShareChainIds(Set<Integer> shareChainIds) {
         return create.selectFrom(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-                .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.WECHAT_ID.eq((long)wechatId))
-                .and(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.in(recomUserIds))
-                .and(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_USER_ID.in(beRecomUserIds))
+                .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID.in(shareChainIds))
+                .groupBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID)
+                .orderBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.desc())
                 .fetchInto(CandidatePositionShareRecordDO.class);
 
     }

@@ -43,4 +43,5 @@ public enum ReferralTypeEnum {
             return SHARE_REFERRAL;
         }
     }
+
 }

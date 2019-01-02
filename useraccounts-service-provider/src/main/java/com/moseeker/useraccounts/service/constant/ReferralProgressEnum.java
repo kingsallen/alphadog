@@ -8,13 +8,17 @@ import java.util.Map;
 public enum  ReferralProgressEnum {
 
     /**
-     * 1 提交简历 10 通过初筛 12 通过面试 3 成功入职 4 拒绝
+     * 1 提交简历 10 通过初筛 12 通过面试 3 成功入职 4 拒绝 6 hr查看简历 15 员工上传简历 16 联系内推推荐投递简历
      */
     APPLYED(1, 1),
     FILTERED(10, 2),
     INTERVIEWED(12, 3),
     ENTRY(3, 4),
-    FAILED(4, -1),;
+    FAILED(4, -1),
+    VIEW_APPLY(6, -1),
+    EMPLOYEE_UPLOAD(15, -1),
+    SEEK_APPLY(16, -1),
+    ;
 
     int progress;
     int order;
@@ -46,9 +50,19 @@ public enum  ReferralProgressEnum {
 
     private static final Map<Integer, ReferralProgressEnum> ENUM_MAP = new HashMap<>();
 
+    private static final List<ReferralProgressEnum> ENUM_LIST = new ArrayList<>();
+
     static { // Initialize map from constant name to enum constant
         for (ReferralProgressEnum op : values()){
             ENUM_MAP.put(op.getProgress(), op);
         }
+        ENUM_LIST.add(APPLYED);
+        ENUM_LIST.add(FILTERED);
+        ENUM_LIST.add(INTERVIEWED);
+        ENUM_LIST.add(ENTRY);
+    }
+
+    public static List<ReferralProgressEnum> getEnumList() {
+        return ENUM_LIST;
     }
 }

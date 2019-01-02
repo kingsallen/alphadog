@@ -129,6 +129,8 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_SOURCE_NOTEXIST = "{'status':41007,'message':'申请来源不存在!'}";
     public static final String APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK = "{'status':41008,'message':'本月您申请校招职位已达到投递次数上限!'}";
     public static final String APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK = "{'status':41009,'message':'本月您申请社招已达到投递次数上限!'}";
+    public static final String APPLICATION_NOTEXIST = "{'status':41010,'message':'申请不存在!'}";
+    public static final String APPLICATION_STATE_ERROR = "{'status':41011,'message':'申请状态异常!'}";
 
     //HR帐号
     public static final String HRACCOUNT_ALREADY_BOUND_BYOTHER = "{'status':42001,'message':'该帐号已被其他人绑定！'}";

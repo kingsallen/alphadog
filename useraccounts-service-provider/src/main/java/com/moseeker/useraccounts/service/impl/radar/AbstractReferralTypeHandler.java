@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -40,11 +41,16 @@ public abstract class AbstractReferralTypeHandler {
     abstract ReferralTypeEnum getReferralType();
 
     public JSONObject createApplyCard(JobApplicationDO jobApplicationDO, JobPositionDO jobPosition,
-                                      UserUserRecord applier, List<HrOperationRecordRecord> hrOperations, JSONObject referralTypeSingleMap) {
+                                      UserUserRecord applier, List<HrOperationRecordRecord> hrOperations,
+                                      JSONObject referralTypeSingleMap) {
         JSONObject card = new JSONObject();
+        int progress = jobApplicationDO.getAppTplId();
+        if(progress == 6 || progress == 15){
+            progress = 1;
+        }
         card.put("id", jobApplicationDO.getId());
         card.put("datetime", getLastDateTime(hrOperations));
-        card.put("progress", jobApplicationDO.getAppTplId());
+        card.put("progress", progress);
         card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap));
         card.put("user", doInitUser(jobApplicationDO.getApplierId(), applier.getName()));
         card.put("position", doInitPosition(jobPosition));

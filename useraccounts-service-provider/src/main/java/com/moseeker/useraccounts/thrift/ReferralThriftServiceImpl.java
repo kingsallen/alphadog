@@ -229,12 +229,20 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
 
     @Override
     public String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException, TException {
-        return radarService.getProgressByOne(progressQuery);
+        try {
+            return radarService.getProgressByOne(progressQuery);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException, TException {
-        return radarService.getProgressBatch(progressInfo);
+        try {
+            return radarService.getProgressBatch(progressInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package com.moseeker.servicemanager.web.controller.referral;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
@@ -29,7 +31,7 @@ public class ReferralRadarController {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("员工userId", progressForm.getUserId(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", progressForm.getAppid(), 0, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("progress", progressForm.getProgress(), 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("progress", progressForm.getProgress(), -1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("companyId", progressForm.getCompanyId(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("员工userId", progressForm.getUserId());
         validateUtil.addRequiredValidate("progress", progressForm.getProgress());
@@ -45,48 +47,44 @@ public class ReferralRadarController {
             }
             ReferralProgressInfo progressInfo = new ReferralProgressInfo();
             BeanUtils.copyProperties(progressForm, progressInfo);
-            String json = referralService.getProgressBatch(progressInfo);
-            return Result.success().toJson();
+            String resultJson = referralService.getProgressBatch(progressInfo);
+            JSONArray response = JSONArray.parseArray(resultJson);
+            return Result.success(response).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
 
-    @RequestMapping(value = "v1/referral/progress/{pid}", method = RequestMethod.GET)
-    public String progress(@PathVariable(name = "pid") Integer positionId,
+    @RequestMapping(value = "v1/referral/progress/{applyId}", method = RequestMethod.GET)
+    public String progress(@PathVariable(name = "applyId") Integer applyId,
                            @RequestParam(name = "user_id") Integer userId,
                            @RequestParam(name = "appid") Integer appid,
                            @RequestParam(name = "company_id") Integer companyId,
-                           @RequestParam(name = "recom_type") Integer recomType,
                            @RequestParam(name = "presentee_user_id") Integer presenteeUserId,
                            @RequestParam(name = "progress") Integer progress) throws TException {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("候选人userId", userId, 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("positionId", positionId, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("companyId", companyId, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("点击人userId", presenteeUserId, 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("推荐类型recomType", recomType, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("推荐进度progress", progress, 0, Integer.MAX_VALUE);
 
         validateUtil.addRequiredValidate("候选人userId", userId);
-        validateUtil.addRequiredValidate("positionId", positionId);
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("companyId", companyId);
         validateUtil.addRequiredValidate("点击人userId", presenteeUserId);
-        validateUtil.addRequiredValidate("推荐类型recomType", recomType);
         validateUtil.addRequiredValidate("推荐进度progress", progress);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ReferralProgressQueryInfo queryInfo = new ReferralProgressQueryInfo();
             queryInfo.setCompanyId(companyId);
-            queryInfo.setPid(positionId);
+            queryInfo.setApplyId(applyId);
             queryInfo.setPresenteeUserId(presenteeUserId);
             queryInfo.setProgress(progress);
-            queryInfo.setRecomType(recomType);
             queryInfo.setUserId(userId);
-            String json = referralService.getProgressByOne(queryInfo);
-            return Result.success().toJson();
+            String responseStr = referralService.getProgressByOne(queryInfo);
+            JSONObject response = JSONObject.parseObject(responseStr);
+            return Result.success(response).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }

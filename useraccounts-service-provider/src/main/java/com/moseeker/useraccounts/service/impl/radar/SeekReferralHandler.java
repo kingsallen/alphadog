@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
 
         JSONObject recom = new JSONObject();
         recom.put("type", getReferralType().getType());
-        Object evaluate = applyIdEvaluateMap.get(jobApplicationDO.getId());
+        Object evaluate = applyIdEvaluateMap.get(jobApplicationDO.getId()+"");
         recom.put("evaluate", evaluate == null ? 0 : 1);
         return recom;
     }

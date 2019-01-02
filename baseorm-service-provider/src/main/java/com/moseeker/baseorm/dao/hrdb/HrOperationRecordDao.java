@@ -134,11 +134,11 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 		return map;
 	}
 
-	public List<HrOperationRecordDO> getHrOperationDOByAppid(int applyId){
+	public List<HrOperationRecordRecord> getHrOperationRecordByAppid(int applyId){
 		return create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
 				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.eq((long)applyId))
 				.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
-				.fetchInto(HrOperationRecordDO.class);
+				.fetchInto(HrOperationRecordRecord.class);
 
 	}
 }
