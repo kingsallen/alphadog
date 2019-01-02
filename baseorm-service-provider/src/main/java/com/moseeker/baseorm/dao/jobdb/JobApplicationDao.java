@@ -16,10 +16,8 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.application.struct.ApplicationAts;
 import com.moseeker.thrift.gen.application.struct.ProcessValidationStruct;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import jdk.nashorn.internal.scripts.JO;
 import org.jooq.*;
 import org.jooq.impl.TableImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -173,14 +171,14 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 					.concat(JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
 					.concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
 					.concat(" ) ");
-			logger.info("addIfNotExisits job_application sql: {}", insertSql);
+			//logger.info("addIfNotExisits job_application sql: {}", insertSql);
 			result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
 		}
 
 		ApplicationSaveResultVO resultVO = new ApplicationSaveResultVO();
 
         if (result == 0) {
-            logger.info("用户:{}已申请过职位:{}, 无需重复投递", record.getApplierId(), record.getPositionId());
+            //logger.info("用户:{}已申请过职位:{}, 无需重复投递", record.getApplierId(), record.getPositionId());
 			resultVO.setCreate(false);
         } else {
         	resultVO.setCreate(true);
@@ -197,16 +195,16 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		resultVO.setSubmitTime(application.getSubmitTime().getTime());
 
         //如果不是新增申请，那么合并申请来源
-		logger.info("addIfNotExists applicationDO:{}", application);
-		logger.info("addIfNotExists result:{}", result);
+		//logger.info("addIfNotExists applicationDO:{}", application);
+		//logger.info("addIfNotExists result:{}", result);
 		if (result == 0 && record.getOrigin() != null && record.getOrigin() > 0
 					&& record.getOrigin().intValue() != application.getOrigin()) {
 
-				logger.info("addIfNotExists record.origin:{}", record.getOrigin());
+				//logger.info("addIfNotExists record.origin:{}", record.getOrigin());
 
-				logger.info("addIfNotExists applicationDO.origin:{}", application.getOrigin());
+				//logger.info("addIfNotExists applicationDO.origin:{}", application.getOrigin());
 				int origin = record.getOrigin().intValue() | application.getOrigin();
-				logger.info("addIfNotExists origin:{}", origin);
+				//logger.info("addIfNotExists origin:{}", origin);
 				create.update(JobApplication.JOB_APPLICATION)
 						.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
                         .set(JobApplication.JOB_APPLICATION.UPDATE_TIME, new Timestamp(new Date().getTime()))

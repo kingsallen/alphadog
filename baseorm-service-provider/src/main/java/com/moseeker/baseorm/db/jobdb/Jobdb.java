@@ -4,26 +4,7 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.FeatureMapping;
-import com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
-import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
-import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
-import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
-import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
-import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
-import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
-import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
+import com.moseeker.baseorm.db.jobdb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,6 +113,11 @@ public class Jobdb extends SchemaImpl {
     public final JobPositionHrCompanyFeature JOB_POSITION_HR_COMPANY_FEATURE = com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE;
 
     /**
+     * 58同城职位映射表
+     */
+    public final JobPositionJob58Mapping JOB_POSITION_JOB58_MAPPING = com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING;
+
+    /**
      * 职位发布到猎聘时，由于不同地区、职位名称在猎聘需用不同的id，而在仟寻只有一个id，所以此表用来生成向猎聘发布职位时需要的id
      */
     public final JobPositionLiepinMapping JOB_POSITION_LIEPIN_MAPPING = com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING;
@@ -196,6 +182,7 @@ public class Jobdb extends SchemaImpl {
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
             JobPositionHrCompanyFeature.JOB_POSITION_HR_COMPANY_FEATURE,
+            JobPositionJob58Mapping.JOB_POSITION_JOB58_MAPPING,
             JobPositionLiepinMapping.JOB_POSITION_LIEPIN_MAPPING,
             JobPositionProfileFilter.JOB_POSITION_PROFILE_FILTER,
             JobPositionShareTplConf.JOB_POSITION_SHARE_TPL_CONF,

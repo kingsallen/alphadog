@@ -16,6 +16,7 @@ dependencies {
     compile deps["spring-rabbit"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
+    compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
     testCompile 'junit:junit:4.12'
 }
 tasks.withType(JavaCompile) {

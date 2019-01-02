@@ -1,11 +1,12 @@
 package com.moseeker.position.service.third.base;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountHrDO;
 import com.moseeker.thrift.gen.thirdpart.struct.ThirdPartyAccountInfoParam;
 import org.apache.thrift.TException;
@@ -13,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Iterator;
-import java.util.Map;
 
 public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoProvider {
     Logger logger= LoggerFactory.getLogger(this.getClass());
@@ -22,9 +21,13 @@ public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoPro
     protected final static String COMPANY="company";
     protected final static String ADDRESS="address";
     protected final static String DEPARTMENT="department";
+    protected final static String FEATURE = "features";
 
     @Autowired
-    HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
+    protected HRThirdPartyAccountHrDao hrThirdPartyAccountHrDao;
+
+    @Autowired
+    protected HRThirdPartyAccountDao hrThirdPartyAccountDao;
 
     /**
      * 获取HR账号在某个渠道下的第三方账
@@ -61,4 +64,9 @@ public abstract class AbstractThirdInfoProvider implements JsonThirdPartyInfoPro
     }
 
     public abstract ChannelType getChannel();
+
+    public HrThirdPartyAccountDO getThirdPartyAccountBindResult(int hrId, HrThirdPartyAccountDO account) {
+        return null;
+    }
+
 }
