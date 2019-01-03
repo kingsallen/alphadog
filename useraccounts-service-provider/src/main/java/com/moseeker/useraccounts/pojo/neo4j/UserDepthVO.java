@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.service.impl.pojos;
+package com.moseeker.useraccounts.pojo.neo4j;
 
 import org.springframework.data.neo4j.annotation.QueryResult;
 

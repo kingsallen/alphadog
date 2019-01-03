@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.repository;
 
 import com.moseeker.useraccounts.pojo.neo4j.UserNode;
-import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.List;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;

@@ -20,7 +20,7 @@ import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
-import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;

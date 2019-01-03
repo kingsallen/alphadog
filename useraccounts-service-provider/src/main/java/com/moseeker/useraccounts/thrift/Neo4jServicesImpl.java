@@ -6,7 +6,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
 import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
 import com.moseeker.useraccounts.service.Neo4jService;
-import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.moseeker.common.exception.CommonException;
-import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.List;
 
 /**
