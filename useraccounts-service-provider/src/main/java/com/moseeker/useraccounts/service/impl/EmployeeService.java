@@ -430,6 +430,9 @@ public class EmployeeService {
                     JSONObject value = e.getValue();
                     employeeAward.setEmployeeId(e.getKey());
                     employeeAward.setAwardTotal(value.getInteger("award"));
+                    if(value.getInteger("award")<0){
+                        employeeAward.setAwardTotal(0);
+                    }
                     String name = org.apache.commons.lang.StringUtils.defaultIfBlank(employeeDOMap.get(e.getKey()).getCname(), "");
                     String headImg = "";
                     if (employeeDOMap.get(e.getKey()) != null) {
