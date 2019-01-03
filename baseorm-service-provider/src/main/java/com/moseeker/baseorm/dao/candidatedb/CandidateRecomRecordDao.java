@@ -84,7 +84,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         if (pageNo > 0 && pageSize > 0) {
             selectConditionStep.limit((pageNo - 1) * pageSize, pageSize);
         }
-        Result<CandidateRecomRecordRecord> result = selectConditionStep.orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD).fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
+        Result<CandidateRecomRecordRecord> result = selectConditionStep.orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID).fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
         if (result != null && result.size() > 0) {
             candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
         }
