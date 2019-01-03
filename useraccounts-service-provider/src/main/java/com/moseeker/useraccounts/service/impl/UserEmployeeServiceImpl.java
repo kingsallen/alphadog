@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -575,14 +576,15 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return ;
         }
-        List<CandidateRecomRecordDO> list = pagePositionById(positionIdList, userId, companyId, order,g page, size);
+        List<CandidateRecomRecordDO> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size);
+
         return ;
     }
 
     public List<CandidateRecomRecordDO> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,  String order, int page, int size){
         List<CandidateRecomRecordDO> list = new ArrayList<>();
         switch (order){
-            case "time": list = listCandidateRecomRecords(postUserId, positionIds);
+            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds);
                 break;
             case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds);
                 break;
@@ -603,36 +605,10 @@ public class UserEmployeeServiceImpl {
         return list;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId);
-       if(StringUtils.isEmptyList(recomRecordDOList)){
-            return new ArrayList<>();
-        }
-        List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
-        List<JobApplicationDO> applicationList = applicationEntity.fetchByRecomUserIdAndPosition(positionIdList, presenteeUserIds);
-        List<CandidateRecomRecordDO> list = new ArrayList<>();
-        if(!StringUtils.isEmptyList(applicationList)) {
-            for (CandidateRecomRecordDO record : recomRecordDOList) {
-                boolean status = false;
-                for(JobApplicationDO application: applicationList){
-                    if(application.getApplierId() == record.getPresenteeUserId() && application.getPositionId() == record.getPositionId()){
-                        status = true;
-                        break;
-                    }
-                }
-                if(!status){
-                    list.add(record);
-                }
-            }
-        }else{
-            list.addAll(recomRecordDOList);
-        }
 
-        return recomRecordDOList;
-    }
 
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordDO> recomRecordDOList = listCandidateRecomRecords(userId, positionIdList);
+        List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
@@ -653,7 +629,7 @@ public class UserEmployeeServiceImpl {
     }
 
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
-        List<CandidateRecomRecordDO> recomRecordDOList = listCandidateRecomRecords(userId, positionIdList);
+        List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }

@@ -564,7 +564,8 @@ struct RadarUserInfo {
     8:optional i32 positionId,
     9:optional string forwardName,
     10:optional bool forwardSourceWx,
-    11:optional string clickTime
+    11:optional i32 referralId,
+    12:optional string clickTime
 }
 
 struct RadarInfo{

@@ -35,6 +35,7 @@ public class EmployeeBizTool {
         radar.setSeekRecommend(false);
         if(data.getRecommendUserSet().contains(userId)){
             radar.setSeekRecommend(true);
+            radar.setReferralId(data.getRecommendMap().get(userId));
         }
         for(UserDepthVO depth : depthList){
             if(depth.getUserId() == userId) {
@@ -60,4 +61,6 @@ public class EmployeeBizTool {
         }
         return radar;
     }
+
+
 }

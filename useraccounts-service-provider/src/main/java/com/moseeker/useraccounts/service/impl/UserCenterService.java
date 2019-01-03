@@ -228,9 +228,9 @@ public class UserCenterService {
 
             List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
 
-            Future<Integer> totalCountFuture = tp.startTast(() -> bizTools.countCandidateRecomRecord(userId, positionIdList, presenteeUserIdList));
+            Future<List<CandidateRecomRecordDO>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(userId, positionIdList));
             Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countReferralSeekRecommend(userId, positionIdList));
-            totalCount = totalCountFuture.get();
+            totalCount = totalCountFuture.get().size();
             interestedCount = interestedCountFuture.get();
             scoreVO.setInterested_count(interestedCount);
             scoreVO.setLink_viewed_count(totalCount);
