@@ -154,7 +154,6 @@ public class ReferralTemplateSender {
 
     @Transactional(rollbackFor = Exception.class)
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
-        // todo 求推荐没做，来自谁谁的转发有误，引导语没有返回
         long timestamp = System.currentTimeMillis();
         cardInfo.setTimestamp(timestamp);
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());

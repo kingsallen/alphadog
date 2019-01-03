@@ -31,7 +31,7 @@ public class CandidateTemplateShareChainDao extends JooqCrudImpl<CandidateTempla
                 .fetchInto(CandidateTemplateShareChainDO.class);
     }
 
-    public void updateHandledRadarCardTypeByIds(int rootUserId, int endUserId, int positionId, int type) {
+    public void updateHandledRadarCardType(int rootUserId, int endUserId, int positionId, int type) {
         create.update(CANDIDATE_TEMPLATE_SHARE_CHAIN)
                 .set(CANDIDATE_TEMPLATE_SHARE_CHAIN.TYPE, (byte)type)
                 .where(CANDIDATE_TEMPLATE_SHARE_CHAIN.ROOT_USER_ID.eq(rootUserId))
@@ -48,6 +48,14 @@ public class CandidateTemplateShareChainDao extends JooqCrudImpl<CandidateTempla
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.ROOT_USER_ID.eq(ignoreInfo.getUserId()))
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.POSITION_ID.eq(ignoreInfo.getPid()))
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(ignoreInfo.getEndUserId()))
+                .execute();
+    }
+
+    public void updateRadarCardSeekRecomByChainId(int chainId) {
+        create.update(CANDIDATE_TEMPLATE_SHARE_CHAIN)
+                .set(CANDIDATE_TEMPLATE_SHARE_CHAIN.SEEK_REFERRAL, (byte)1)
+                .where(CANDIDATE_TEMPLATE_SHARE_CHAIN.CHAIN_ID.eq(chainId))
+                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.SEEK_REFERRAL.eq((byte)0))
                 .execute();
     }
 }
