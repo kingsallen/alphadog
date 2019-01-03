@@ -3,6 +3,7 @@ package com.moseeker.baseorm.dao.jobdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import static com.moseeker.baseorm.db.jobdb.tables.JobApplication.JOB_APPLICATION;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -45,7 +46,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	private RedisClient redisClient;
 
     public JobApplicationDao() {
-        super(JobApplication.JOB_APPLICATION, JobApplicationDO.class);
+        super(JOB_APPLICATION, JobApplicationDO.class);
     }
 
 	public JobApplicationDao(TableImpl<JobApplicationRecord> table, Class<JobApplicationDO> jobApplicationDOClass) {
@@ -65,63 +66,63 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
        if(StringUtils.isEmptyList(positionIds) || StringUtils.isEmptyList(userIds)){
            return new ArrayList<>();
        }
-       return create.selectFrom(JobApplication.JOB_APPLICATION)
-               .where(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIds))
-               .and(JobApplication.JOB_APPLICATION.APPLIER_ID.in(userIds))
+       return create.selectFrom(JOB_APPLICATION)
+               .where(JOB_APPLICATION.POSITION_ID.in(positionIds))
+               .and(JOB_APPLICATION.APPLIER_ID.in(userIds))
                .fetchInto(JobApplicationDO.class);
     }
     public List<JobApplicationDO> getApplicationsByPosition(List<Integer> positionIds) {
         if(StringUtils.isEmptyList(positionIds)){
             return new ArrayList<>();
         }
-        return create.selectFrom(JobApplication.JOB_APPLICATION)
-                .where(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIds))
+        return create.selectFrom(JOB_APPLICATION)
+                .where(JOB_APPLICATION.POSITION_ID.in(positionIds))
                 .fetchInto(JobApplicationDO.class);
     }
 
 	public List<ProcessValidationStruct> getAuth(List<Integer> appIds,Integer companyId,Integer progressStatus) throws Exception{
 		List<ProcessValidationStruct> list=new ArrayList<ProcessValidationStruct>();
 		SelectJoinStep<Record11<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String, Integer, Integer>> table=create.select(
-				JobApplication.JOB_APPLICATION.ID,
-				JobApplication.JOB_APPLICATION.COMPANY_ID,
-				JobApplication.JOB_APPLICATION.RECOMMENDER_ID,
-				JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
-				JobApplication.JOB_APPLICATION.APPLIER_ID,
+				JOB_APPLICATION.ID,
+				JOB_APPLICATION.COMPANY_ID,
+				JOB_APPLICATION.RECOMMENDER_ID,
+				JOB_APPLICATION.RECOMMENDER_USER_ID,
+				JOB_APPLICATION.APPLIER_ID,
 				UserUser.USER_USER.NAME,
 				ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID ,
 				ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER,
 				JobPosition.JOB_POSITION.TITLE,
                 JobPosition.JOB_POSITION.PUBLISHER,
-                JobApplication.JOB_APPLICATION.POSITION_ID
-				).from(JobApplication.JOB_APPLICATION);
+                JOB_APPLICATION.POSITION_ID
+				).from(JOB_APPLICATION);
 		table.leftJoin(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL)
 		.on("jobdb.job_application.app_tpl_id=configdb.config_sys_points_conf_tpl.id");
 		table.leftJoin(JobPosition.JOB_POSITION).on("jobdb.job_application.position_id=jobdb.job_position.id");
 //			table.leftJoin(UserWxUser.USER_WX_USER).on("jobdb.job_application.recommender_id=userdb.user_wx_user.id");
 		table.leftJoin(UserUser.USER_USER).on("jobdb.job_application.applier_id=userdb.user_user.id");
-		table.where(JobApplication.JOB_APPLICATION.ID.in(appIds)
-				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq((int)(companyId))));
+		table.where(JOB_APPLICATION.ID.in(appIds)
+				.and(JOB_APPLICATION.COMPANY_ID.eq((int)(companyId))));
 		if(progressStatus==13){
-			table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.notEqual((int)(4)));
+			table.where().and(JOB_APPLICATION.APP_TPL_ID.notEqual((int)(4)));
 		}else if(progressStatus==99){
-			table.where().and(JobApplication.JOB_APPLICATION.APP_TPL_ID.equal((int)(4)));
+			table.where().and(JOB_APPLICATION.APP_TPL_ID.equal((int)(4)));
 		}
 		Result<Record11<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String, Integer, Integer>> result=table.fetch();
 		if(result!=null&&result.size()>0){
 			ProcessValidationStruct data= null;
 			for(Record11<Integer, Integer, Integer, Integer, Integer, String, Integer, Integer, String, Integer, Integer> record:result){
 				data=new ProcessValidationStruct();
-				data.setCompany_id(record.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
-				data.setId(record.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
-				data.setRecommender_id(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_ID).intValue());
-				data.setRecommender_user_id(record.getValue(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).intValue());
+				data.setCompany_id(record.getValue(JOB_APPLICATION.COMPANY_ID).intValue());
+				data.setId(record.getValue(JOB_APPLICATION.ID).intValue());
+				data.setRecommender_id(record.getValue(JOB_APPLICATION.RECOMMENDER_ID).intValue());
+				data.setRecommender_user_id(record.getValue(JOB_APPLICATION.RECOMMENDER_USER_ID).intValue());
 				data.setRecruit_order(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.RECRUIT_ORDER).intValue());
 				data.setTemplate_id(record.getValue(ConfigSysPointsConfTpl.CONFIG_SYS_POINTS_CONF_TPL.ID).intValue());
-				data.setApplier_id(record.getValue(JobApplication.JOB_APPLICATION.APPLIER_ID).intValue());
+				data.setApplier_id(record.getValue(JOB_APPLICATION.APPLIER_ID).intValue());
 				data.setApplier_name(record.getValue(UserUser.USER_USER.NAME));
 				data.setPosition_name(record.getValue(JobPosition.JOB_POSITION.TITLE));
 				data.setPublisher(record.getValue(JobPosition.JOB_POSITION.PUBLISHER));
-				data.setPosition_id(record.getValue(JobApplication.JOB_APPLICATION.POSITION_ID));
+				data.setPosition_id(record.getValue(JOB_APPLICATION.POSITION_ID));
 				list.add(data);
 			}
 		}
@@ -130,21 +131,21 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	public List<ApplicationAts> getApplicationByLApId(List<Integer> lists) throws Exception{
 		List<ApplicationAts> list=new ArrayList<>();
 		SelectConditionStep<Record3<Integer, Integer, Integer>> table =create.select(
-				JobApplication.JOB_APPLICATION.COMPANY_ID,
-				JobApplication.JOB_APPLICATION.ID,
+				JOB_APPLICATION.COMPANY_ID,
+				JOB_APPLICATION.ID,
 				JobPosition.JOB_POSITION.PUBLISHER
-				).from(JobApplication.JOB_APPLICATION)
+				).from(JOB_APPLICATION)
 				.innerJoin(JobPosition.JOB_POSITION)
 				.on("jobdb.job_application.position_id=jobdb.job_position.id")
-				.where(JobApplication.JOB_APPLICATION.L_APPLICATION_ID.in(lists));
+				.where(JOB_APPLICATION.L_APPLICATION_ID.in(lists));
 		Result<Record3<Integer, Integer, Integer>> result=table.fetch();
 		if(result!=null&&result.size()>0){
 			ApplicationAts ats=null;
 			for(Record3<Integer, Integer, Integer> r:result){
 				ats=new ApplicationAts();
 				ats.setAccount_id(r.getValue(JobPosition.JOB_POSITION.PUBLISHER).intValue());
-				ats.setApplication_id(r.getValue(JobApplication.JOB_APPLICATION.ID).intValue());
-				ats.setCompany_id(r.getValue(JobApplication.JOB_APPLICATION.COMPANY_ID).intValue());
+				ats.setApplication_id(r.getValue(JOB_APPLICATION.ID).intValue());
+				ats.setCompany_id(r.getValue(JOB_APPLICATION.COMPANY_ID).intValue());
 				list.add(ats);
 			}
 		}
@@ -167,9 +168,9 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 					.concat(" select ").concat(Stream.generate(() -> "?").limit(changedFieldList.size()).collect(Collectors.joining(",")))
 					.concat(" from dual where not exists ( ")
 					.concat(" select id from jobdb.job_application where ")
-					.concat(JobApplication.JOB_APPLICATION.DISABLE.getName()).concat(" = 0 and ")
-					.concat(JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
-					.concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
+					.concat(JOB_APPLICATION.DISABLE.getName()).concat(" = 0 and ")
+					.concat(JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
+					.concat(JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
 					.concat(" ) ");
 			//logger.info("addIfNotExisits job_application sql: {}", insertSql);
 			result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
@@ -185,9 +186,9 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
-        queryBuilder.where(JobApplication.JOB_APPLICATION.DISABLE.getName(), 0)
-				.and(JobApplication.JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
-        .and(JobApplication.JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
+        queryBuilder.where(JOB_APPLICATION.DISABLE.getName(), 0)
+				.and(JOB_APPLICATION.APPLIER_ID.getName(), record.getApplierId())
+        .and(JOB_APPLICATION.POSITION_ID.getName(), record.getPositionId());
         JobApplicationRecord application = getRecord(queryBuilder.buildQuery());
 		resultVO.setApplicationId(application.getId());
 		resultVO.setPositionId(application.getPositionId());
@@ -205,10 +206,10 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				//logger.info("addIfNotExists applicationDO.origin:{}", application.getOrigin());
 				int origin = record.getOrigin().intValue() | application.getOrigin();
 				//logger.info("addIfNotExists origin:{}", origin);
-				create.update(JobApplication.JOB_APPLICATION)
-						.set(JobApplication.JOB_APPLICATION.ORIGIN, origin)
-                        .set(JobApplication.JOB_APPLICATION.UPDATE_TIME, new Timestamp(new Date().getTime()))
-						.where(JobApplication.JOB_APPLICATION.ID.eq(application.getId()))
+				create.update(JOB_APPLICATION)
+						.set(JOB_APPLICATION.ORIGIN, origin)
+                        .set(JOB_APPLICATION.UPDATE_TIME, new Timestamp(new Date().getTime()))
+						.where(JOB_APPLICATION.ID.eq(application.getId()))
 						.execute();
 		}
 
@@ -244,39 +245,39 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 															   LocalDateTime lastFriday, LocalDateTime currentFriday) {
 
 		System.out.println(create.select(
-				JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
-				count(JobApplication.JOB_APPLICATION.ID).as("count")
+				JOB_APPLICATION.RECOMMENDER_USER_ID,
+				count(JOB_APPLICATION.ID).as("count")
 		)
-				.from(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
-				.and(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIdList))
-				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
+				.from(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JOB_APPLICATION.POSITION_ID.in(positionIdList))
+				.and(JOB_APPLICATION.SUBMIT_TIME.gt(
 						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
 								.toEpochMilli())))
-				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
+				.and(JOB_APPLICATION.SUBMIT_TIME.le(
 						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
-				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID).getSQL());
+				.groupBy(JOB_APPLICATION.RECOMMENDER_USER_ID).getSQL());
 		return create.select(
-					JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID,
-					count(JobApplication.JOB_APPLICATION.ID).as("count")
+					JOB_APPLICATION.RECOMMENDER_USER_ID,
+					count(JOB_APPLICATION.ID).as("count")
 				)
-				.from(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
-				.and(JobApplication.JOB_APPLICATION.POSITION_ID.in(positionIdList))
-				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.gt(
+				.from(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.in(userIdList))
+				.and(JOB_APPLICATION.POSITION_ID.in(positionIdList))
+				.and(JOB_APPLICATION.SUBMIT_TIME.gt(
 						new Timestamp(lastFriday.atZone(ZoneId.systemDefault()).toInstant()
 								.toEpochMilli())))
-				.and(JobApplication.JOB_APPLICATION.SUBMIT_TIME.le(
+				.and(JOB_APPLICATION.SUBMIT_TIME.le(
 						new Timestamp(currentFriday.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())))
-				.groupBy(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID)
+				.groupBy(JOB_APPLICATION.RECOMMENDER_USER_ID)
 				.fetch();
 	}
 
     public com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication getByUserIdAndPositionId(Integer referenceId, Integer positionId) {
-		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(referenceId))
-				.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
-				.orderBy(JobApplication.JOB_APPLICATION.ID.desc())
+		JobApplicationRecord record = create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.APPLIER_ID.eq(referenceId))
+				.and(JOB_APPLICATION.POSITION_ID.eq(positionId))
+				.orderBy(JOB_APPLICATION.ID.desc())
 				.limit(1)
 				.fetchOne();
 		if (record == null) {
@@ -290,30 +291,30 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 
 		Condition condition = null;
 		if (companyId > 0) {
-			condition = JobApplication.JOB_APPLICATION.POSITION_ID
+			condition = JOB_APPLICATION.POSITION_ID
 					.in(select(JobPosition.JOB_POSITION.ID)
 							.from(JobPosition.JOB_POSITION)
 							.where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
 					);
 		}
 		SelectConditionStep<JobApplicationRecord> selectConditionStep = create
-				.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(userId))
-				.and(JobApplication.JOB_APPLICATION.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
-				.and(JobApplication.JOB_APPLICATION.EMAIL_STATUS.eq(AbleFlag.OLDENABLE.getValue()));
+				.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.APPLIER_ID.eq(userId))
+				.and(JOB_APPLICATION.DISABLE.eq(AbleFlag.OLDENABLE.getValue()))
+				.and(JOB_APPLICATION.EMAIL_STATUS.eq(AbleFlag.OLDENABLE.getValue()));
 
 		if (condition!= null) {
 			selectConditionStep = selectConditionStep.and(condition);
 		}
 
 		return selectConditionStep
-				.orderBy(JobApplication.JOB_APPLICATION.SUBMIT_TIME.desc())
+				.orderBy(JOB_APPLICATION.SUBMIT_TIME.desc())
 				.fetch();
 	}
 
     public com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication fetchOneById(int applicationId) {
-		JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.ID.eq(applicationId))
+		JobApplicationRecord record = create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.ID.eq(applicationId))
 				.fetchOne();
 		if (record != null) {
 			return record.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
@@ -324,8 +325,8 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 
 	public void deleteById(Integer id) {
 		if (id != null) {
-			create.deleteFrom(JobApplication.JOB_APPLICATION)
-					.where(JobApplication.JOB_APPLICATION.ID.eq(id))
+			create.deleteFrom(JOB_APPLICATION)
+					.where(JOB_APPLICATION.ID.eq(id))
 					.execute();
 		}
 	}
@@ -342,24 +343,24 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	 */
 	public boolean updateIfNotExist(Integer id, int newApplierId, String applierName, int origin, Timestamp timestamp,
 									Integer positionId) {
-		int execute = create.update(JobApplication.JOB_APPLICATION)
-				.set(JobApplication.JOB_APPLICATION.APPLIER_ID, newApplierId)
-				.set(JobApplication.JOB_APPLICATION.APPLIER_NAME, applierName)
-				.set(JobApplication.JOB_APPLICATION.UPDATE_TIME, timestamp)
-				.where(JobApplication.JOB_APPLICATION.ID.eq(id))
+		int execute = create.update(JOB_APPLICATION)
+				.set(JOB_APPLICATION.APPLIER_ID, newApplierId)
+				.set(JOB_APPLICATION.APPLIER_NAME, applierName)
+				.set(JOB_APPLICATION.UPDATE_TIME, timestamp)
+				.where(JOB_APPLICATION.ID.eq(id))
 				.andNotExists(
 						selectOne()
 						.from(
-								selectFrom(JobApplication.JOB_APPLICATION)
-								.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
-								.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+								selectFrom(JOB_APPLICATION)
+								.where(JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
+								.and(JOB_APPLICATION.POSITION_ID.eq(positionId))
 								.limit(1)
 						)
 				).execute();
 		if (execute == 0) {
-			JobApplicationRecord record = create.selectFrom(JobApplication.JOB_APPLICATION)
-					.where(JobApplication.JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
-					.and(JobApplication.JOB_APPLICATION.POSITION_ID.eq(positionId))
+			JobApplicationRecord record = create.selectFrom(JOB_APPLICATION)
+					.where(JOB_APPLICATION.APPLIER_ID.eq(newApplierId))
+					.and(JOB_APPLICATION.POSITION_ID.eq(positionId))
 					.limit(1)
 					.fetchOne();
 			if (record != null) {
@@ -379,14 +380,14 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	 */
     public List<JobApplicationRecord> fetchByIdList(List<Integer> idList) {
 		return create
-				.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.ID.in(idList))
+				.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.ID.in(idList))
 				.fetch();
 	}
 
 	public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> getAppdataByApplierIdListAndCompanyId(Set<Integer> idList, int companyId) {
-		List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> list=create.select(JobApplication.JOB_APPLICATION.POSITION_ID,JobApplication.JOB_APPLICATION.APPLIER_ID).from(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.in(idList)).and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+		List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> list=create.select(JOB_APPLICATION.POSITION_ID, JOB_APPLICATION.APPLIER_ID).from(JOB_APPLICATION)
+				.where(JOB_APPLICATION.APPLIER_ID.in(idList)).and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
 				.fetchInto(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
 		return list;
 	}
@@ -395,9 +396,9 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 
 	public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> fetchByApplierId(List<Integer> userIds, int companyId) {
 		Result<JobApplicationRecord> result = create
-				.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.APPLIER_ID.in(userIds))
-				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.APPLIER_ID.in(userIds))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
 				.fetch();
 		if (result != null && result.size() > 0) {
 			return result.into(com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication.class);
@@ -407,43 +408,55 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 	}
 
     public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, int startIndex, int pageSize) {
-    	return create.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
-				.orderBy(JobApplication.JOB_APPLICATION.UPDATE_TIME.desc())
+    	return create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.limit(startIndex, pageSize)
 				.fetchInto(JobApplicationDO.class);
     }
 
 	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, int startIndex, int pageSize, List<Integer> progress) {
-		return create.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
-				.and(JobApplication.JOB_APPLICATION.APP_TPL_ID.in(progress))
-				.orderBy(JobApplication.JOB_APPLICATION.UPDATE_TIME.desc())
+		return create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.and(JOB_APPLICATION.APP_TPL_ID.in(progress))
+				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.limit(startIndex, pageSize)
 				.fetchInto(JobApplicationDO.class);
 	}
 
 	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> applierIds, int startIndex, int pageSize) {
-		return create.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
-				.and(JobApplication.JOB_APPLICATION.APPLIER_ID.in(applierIds))
-				.orderBy(JobApplication.JOB_APPLICATION.UPDATE_TIME.desc())
+		return create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.and(JOB_APPLICATION.APPLIER_ID.in(applierIds))
+				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.limit(startIndex, pageSize)
 				.fetchInto(JobApplicationDO.class);
 	}
 
 	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> applierIds, int startIndex, int pageSize, List<Integer> progress) {
-		return create.selectFrom(JobApplication.JOB_APPLICATION)
-				.where(JobApplication.JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-				.and(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
-				.and(JobApplication.JOB_APPLICATION.APP_TPL_ID.in(progress))
-				.and(JobApplication.JOB_APPLICATION.APPLIER_ID.in(applierIds))
-				.orderBy(JobApplication.JOB_APPLICATION.UPDATE_TIME.desc())
+		return create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.and(JOB_APPLICATION.APP_TPL_ID.in(progress))
+				.and(JOB_APPLICATION.APPLIER_ID.in(applierIds))
+				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
 				.limit(startIndex, pageSize)
 				.fetchInto(JobApplicationDO.class);
 	}
+
+    public List<JobApplicationDO> getApplyByRecomUserIdAndPositionIds(int userId, List<Integer> positionIds) {
+        return create.selectFrom(JOB_APPLICATION)
+                .where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+                .and(JOB_APPLICATION.POSITION_ID.in(positionIds))
+                .and(JOB_APPLICATION.APPLY_TYPE.eq(0)
+                        .or(JOB_APPLICATION.APPLY_TYPE.eq(1)
+                        .and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+                .fetchInto(JobApplicationDO.class);
+    }
+
+
 
 }

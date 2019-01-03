@@ -68,7 +68,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(Set<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) {
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(List<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) {
         List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
         SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
@@ -84,7 +84,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         if (pageNo > 0 && pageSize > 0) {
             selectConditionStep.limit((pageNo - 1) * pageSize, pageSize);
         }
-        Result<CandidateRecomRecordRecord> result = selectConditionStep.fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
+        Result<CandidateRecomRecordRecord> result = selectConditionStep.orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD).fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
         if (result != null && result.size() > 0) {
             candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
         }

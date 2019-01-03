@@ -72,7 +72,7 @@ public class Tables {
     public static final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
 
     /**
-     * The table <code>candidatedb.candidate_template_share_chain</code>.
+     * 十分钟消息模板
      */
     public static final CandidateTemplateShareChain CANDIDATE_TEMPLATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN;
 

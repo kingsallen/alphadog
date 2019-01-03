@@ -24,6 +24,8 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.exception.ApplicationException;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import org.apache.commons.lang.StringUtils;
 import org.jooq.Record2;
@@ -133,6 +135,10 @@ public class ApplicationEntity {
         }
 
         return applyIdList;
+    }
+
+    public List<JobApplicationDO> fetchByRecomUserIdAndPosition(int userId, List<Integer> positionIds){
+        return applicationDao.getApplyByRecomUserIdAndPositionIds(userId, positionIds);
     }
 
     @Transactional(rollbackFor = Exception.class)

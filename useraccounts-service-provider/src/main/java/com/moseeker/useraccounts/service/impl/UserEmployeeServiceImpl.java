@@ -35,6 +35,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
@@ -569,6 +570,7 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return ;
         }
+
         return ;
     }
 
@@ -582,26 +584,14 @@ public class UserEmployeeServiceImpl {
             case "depth":
                 break;
         }
+        return list;
     }
 
     public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, List<Integer> positionIdList,
                                                                   List<Integer> referenceIdList, int pageNo,
                                                                   int pageSize){
-        Query.QueryBuilder qu = new Query.QueryBuilder();
-        qu.select("id").select("app_id")
-                .select("click_time").select("recom_time").select("is_recom")
-                .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID.getName())
-                .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.getName())
-                .select("presentee_user_id").select("position_id");
-        qu.where("post_user_id", userId).and(new Condition("position_id", positionIdList, ValueOp.IN));
-        if (referenceIdList != null && referenceIdList.size() > 0) {
-            qu.and(new Condition(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), referenceIdList, ValueOp.NIN));
-        }
-        qu.groupBy("presentee_user_id").groupBy("position_id");
-        qu.orderBy("id", Order.DESC);
-        qu.setPageNum(pageNo);
-        qu.setPageSize(pageSize);
-        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.getDatas(qu.buildQuery(), CandidateRecomRecordDO.class);
+        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId,0,0);
+        List<JobApplicationDO> applicationList = applicationEntity.fetchByRecomUserIdAndPosition(userId, positionIdList);
         return recomRecordDOList;
     }
 
