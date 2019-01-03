@@ -1,11 +1,13 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -22,12 +24,16 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.entity.pojos.EmployeeRadarData;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -51,7 +57,6 @@ import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -85,6 +90,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private ReferralEntity referralEntity;
+
+    @Autowired
+    private CandidateRecomRecordDao candidateRecomRecordDao;
 
     @Autowired
     private ApplicationEntity applicationEntity;
@@ -556,6 +564,8 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
         }
+        List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
+
         if (StringUtils.isEmptyList(positionIdList)) {
             return ;
         }
@@ -572,6 +582,27 @@ public class UserEmployeeServiceImpl {
             case "depth":
                 break;
         }
+    }
+
+    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, List<Integer> positionIdList,
+                                                                  List<Integer> referenceIdList, int pageNo,
+                                                                  int pageSize){
+        Query.QueryBuilder qu = new Query.QueryBuilder();
+        qu.select("id").select("app_id")
+                .select("click_time").select("recom_time").select("is_recom")
+                .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID.getName())
+                .select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.getName())
+                .select("presentee_user_id").select("position_id");
+        qu.where("post_user_id", userId).and(new Condition("position_id", positionIdList, ValueOp.IN));
+        if (referenceIdList != null && referenceIdList.size() > 0) {
+            qu.and(new Condition(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.getName(), referenceIdList, ValueOp.NIN));
+        }
+        qu.groupBy("presentee_user_id").groupBy("position_id");
+        qu.orderBy("id", Order.DESC);
+        qu.setPageNum(pageNo);
+        qu.setPageSize(pageSize);
+        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.getDatas(qu.buildQuery(), CandidateRecomRecordDO.class);
+        return recomRecordDOList;
     }
 
 }
