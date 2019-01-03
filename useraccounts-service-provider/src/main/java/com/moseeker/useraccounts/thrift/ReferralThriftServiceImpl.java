@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -203,7 +204,8 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException {
         try {
-            return radarService.connectRadar(radarInfo);
+            RadarConnectResult result = radarService.connectRadar(radarInfo);
+            return JSON.toJSONString(result);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

@@ -51,7 +51,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                 }
             }
         }
-        recom.put("nickname", wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname());
+        recom.put("nickname", wxUserMap.get(shareChainDO.getRoot2RecomUserId()).getNickname());
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
         recom.put("type", getReferralType().getType());
         return recom;
@@ -81,7 +81,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         JSONObject result = new JSONObject();
 
         for(JobApplicationDO jobApplicationDO : shareReferralList){
-            boolean flag = true;
+             boolean flag = true;
             for(int i=0;i<shareChainDOS.size()&&flag;i++){
                 CandidateShareChainDO shareChainDO = shareChainDOS.get(i);
                 if(shareChainDO.getRecomUserId() == employeeRecord.getSysuserId() && shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()
@@ -93,17 +93,19 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         }
 
         Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>();
+        // 候选人转发链路ID
         Set<Integer> shareChainIds = new HashSet<>();
+        // 一度转发人user.id
         Set<Integer> oneDegreeUserIds = new HashSet<>();
         for(JobApplicationDO jobApplicationDO : shareReferralList){
             boolean flag = true;
             for(int i=0;i<shareChainDOS.size()&&flag;i++){
                 CandidateShareChainDO shareChainDO = shareChainDOS.get(i);
-                if(shareChainDO.getRecomUserId() == employeeRecord.getSysuserId() && shareChainDO.getRoot2RecomUserId() == 0
+                if(shareChainDO.getRoot2RecomUserId() != 0
                         && shareChainDO.getPositionId() == jobApplicationDO.getPositionId()
-                        && shareChainDO.getPresenteeUserId() != jobApplicationDO.getApplierId()){
+                        && shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
                     appIdShareChainMap.put(jobApplicationDO.getId(), shareChainDO);
-                    oneDegreeUserIds.add(shareChainDO.getPresenteeUserId());
+                    oneDegreeUserIds.add(shareChainDO.getRoot2RecomUserId());
                     shareChainIds.add(shareChainDO.getId());
                     flag = false;
                 }
