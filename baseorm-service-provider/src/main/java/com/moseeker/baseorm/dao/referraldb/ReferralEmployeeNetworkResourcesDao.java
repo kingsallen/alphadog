@@ -39,5 +39,11 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
                 .fetch();
     }
 
+    public int fetchByPostUserIdCount(int postUserId){
+        return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
+                .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
+                .fetchCount();
+    }
+
 
 }

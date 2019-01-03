@@ -1,5 +1,7 @@
 package com.moseeker.useraccounts.service.impl.pojos;
 
+import java.sql.Timestamp;
+
 /**
  * Created by moseeker on 2018/12/29.
  */
@@ -8,14 +10,14 @@ public class RadarUserVO {
     public int userId;
     public String nickname;
     public int viewCount;
-    public int seekRecommend;
+    public boolean seekRecommend;
     public int depth;
     public String headimgurl;
     public String positionTitle;
     public int positionId;
     public String forwardName;
     public boolean forwardSourceWx;
-    public String clickTime;
+    public Timestamp clickTime;
 
     public int getUserId() {
         return userId;
@@ -41,11 +43,11 @@ public class RadarUserVO {
         this.viewCount = viewCount;
     }
 
-    public int getSeekRecommend() {
+    public boolean isSeekRecommend() {
         return seekRecommend;
     }
 
-    public void setSeekRecommend(int seekRecommend) {
+    public void setSeekRecommend(boolean seekRecommend) {
         this.seekRecommend = seekRecommend;
     }
 
@@ -97,11 +99,11 @@ public class RadarUserVO {
         this.forwardSourceWx = forwardSourceWx;
     }
 
-    public String getClickTime() {
+    public Timestamp getClickTime() {
         return clickTime;
     }
 
-    public void setClickTime(String clickTime) {
+    public void setClickTime(Timestamp clickTime) {
         this.clickTime = clickTime;
     }
 }

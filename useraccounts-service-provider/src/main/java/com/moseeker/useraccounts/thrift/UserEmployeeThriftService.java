@@ -14,13 +14,15 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
-import com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
 import com.moseeker.useraccounts.exception.UserAccountException;
-import com.moseeker.useraccounts.pojo.*;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
+import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -28,10 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -203,6 +201,23 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public RadarInfo fetchRadarIndex(int userId, int companyId, int page, int size) throws BIZException, TException {
+        RadarInfoVO infoVO = employeeService.fetchRadarIndex(userId, companyId, page, size);
+        RadarInfo radarInfo = new RadarInfo();
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(infoVO.getUserList())){
+            radarInfo.setUserList( infoVO.getUserList().stream().map(m ->{
+                RadarUserInfo userInfo = new RadarUserInfo();
+                BeanUtils.copyProperties(m, userInfo);
+                return userInfo;
+            }).collect(Collectors.toList()));
+            radarInfo.setPage(infoVO.getPage());
+            radarInfo.setTatolCount(infoVO.getTatolCount());
+        }
+        return radarInfo;
+    }
+
+    @Override
+    public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
+                                                            String order, int page, int size) throws BIZException, TException {
 
         return null;
     }
