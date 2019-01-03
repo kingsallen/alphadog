@@ -31,12 +31,12 @@ public class CandidateTemplateShareChainDao extends JooqCrudImpl<CandidateTempla
                 .fetchInto(CandidateTemplateShareChainDO.class);
     }
 
-    public void updateHandledRadarCardTypeByIds(ReferralInviteInfo inviteInfo, int type) {
+    public void updateHandledRadarCardTypeByIds(int rootUserId, int endUserId, int positionId, int type) {
         create.update(CANDIDATE_TEMPLATE_SHARE_CHAIN)
                 .set(CANDIDATE_TEMPLATE_SHARE_CHAIN.TYPE, (byte)type)
-                .where(CANDIDATE_TEMPLATE_SHARE_CHAIN.ROOT_USER_ID.eq(inviteInfo.getUserId()))
-                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(inviteInfo.getEndUserId()))
-                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.POSITION_ID.eq(inviteInfo.getPid()))
+                .where(CANDIDATE_TEMPLATE_SHARE_CHAIN.ROOT_USER_ID.eq(rootUserId))
+                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(endUserId))
+                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.POSITION_ID.eq(positionId))
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.TYPE.eq((byte)0))
                 .execute();
     }

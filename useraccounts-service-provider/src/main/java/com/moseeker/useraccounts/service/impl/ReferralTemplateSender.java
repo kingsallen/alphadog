@@ -197,12 +197,13 @@ public class ReferralTemplateSender {
     private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<ReferralSeekRecommendRecord> seekRecommendRecords) {
         CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
         templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
-        templateShareChainDO.setId(candidateShareChainDO.getId());
+        templateShareChainDO.setChainId(candidateShareChainDO.getId());
         templateShareChainDO.setParentId(candidateShareChainDO.getParentId());
         templateShareChainDO.setPositionId(candidateShareChainDO.getPositionId());
         templateShareChainDO.setPresenteeUserId(candidateShareChainDO.getPresenteeUserId());
         templateShareChainDO.setType(candidateShareChainDO.getType());
         templateShareChainDO.setSendTime(timestamp);
+        templateShareChainDO.setRoot2UserId(candidateShareChainDO.getRoot2RecomUserId());
         templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
         for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendRecords){

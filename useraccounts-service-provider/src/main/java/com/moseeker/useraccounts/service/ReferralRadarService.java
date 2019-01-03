@@ -1,7 +1,9 @@
 package com.moseeker.useraccounts.service;
 
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import org.apache.thrift.TException;
 
 import java.net.ConnectException;
@@ -52,7 +54,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String connectRadar(ConnectRadarInfo radarInfo) throws TException;
+    RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) throws TException;
     /**
      * 候选人打开职位连接判断推荐人是否是员工
      *
@@ -86,4 +88,12 @@ public interface ReferralRadarService {
      * @date 2018/12/7
      */
     String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException;
+    /**
+     * 批量根据条件获取候选人的推荐进度
+     *
+     * @return json
+     * @author cjm
+     * @date 2018/12/7
+     */
+    void updateShareChainHandleType(ReferralSeekRecommendRecord recommendRecord);
 }

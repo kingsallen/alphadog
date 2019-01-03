@@ -48,7 +48,7 @@ public abstract class AbstractReferralTypeHandler {
         if(progress == 6 || progress == 15){
             progress = 1;
         }
-        card.put("id", jobApplicationDO.getId());
+        card.put("apply_id", jobApplicationDO.getId());
         card.put("datetime", getLastDateTime(hrOperations));
         card.put("progress", progress);
         card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap));
