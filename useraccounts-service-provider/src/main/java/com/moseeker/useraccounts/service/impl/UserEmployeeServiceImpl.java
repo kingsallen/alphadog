@@ -575,7 +575,7 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return ;
         }
-
+        List<CandidateRecomRecordDO> list = pagePositionById(positionIdList, userId, companyId, order,g page, size);
         return ;
     }
 
