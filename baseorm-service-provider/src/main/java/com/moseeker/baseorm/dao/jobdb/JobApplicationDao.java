@@ -447,10 +447,10 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.fetchInto(JobApplicationDO.class);
 	}
 
-    public List<JobApplicationDO> getApplyByRecomUserIdAndPositionIds(int userId, List<Integer> positionIds) {
+    public List<JobApplicationDO> getApplyByaApplierAndPositionIds(List<Integer> positionIds, List<Integer> applierIds) {
         return create.selectFrom(JOB_APPLICATION)
-                .where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-                .and(JOB_APPLICATION.POSITION_ID.in(positionIds))
+                .where(JOB_APPLICATION.POSITION_ID.in(positionIds))
+                .and(JOB_APPLICATION.APPLIER_ID.in(applierIds))
                 .and(JOB_APPLICATION.APPLY_TYPE.eq(0)
                         .or(JOB_APPLICATION.APPLY_TYPE.eq(1)
                         .and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
