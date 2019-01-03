@@ -26,6 +26,7 @@ import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,6 +63,16 @@ public class Dictdb extends SchemaImpl {
      * 51的职位表
      */
     public final Dict_51jobOccupation DICT_51JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation.DICT_51JOB_OCCUPATION;
+
+    /**
+     * 58福利特色表
+     */
+    public final Dict_58jobFeature DICT_58JOB_FEATURE = com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature.DICT_58JOB_FEATURE;
+
+    /**
+     * 58职能表
+     */
+    public final Dict_58jobOccupation DICT_58JOB_OCCUPATION = com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation.DICT_58JOB_OCCUPATION;
 
     /**
      * The table <code>dictdb.dict_alipaycampus_city</code>.
@@ -195,6 +206,8 @@ public class Dictdb extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
             DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
+            Dict_58jobFeature.DICT_58JOB_FEATURE,
+            Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,

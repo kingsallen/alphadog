@@ -12,6 +12,7 @@ import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.BindThirdPart;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.constants.PositionSync;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -58,6 +59,7 @@ public class PositionSyncHandler {
         result.setSync_fail_reason(reason);
         result.setSync_status(PositionSyncResultPojo.FAIL);
         result.setChannel(channel);
+        result.setSync_time(DateUtils.dateToShortTime(new Date()));
         return result;
     }
     //创建普通结果
