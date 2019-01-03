@@ -18,6 +18,7 @@ public class EmployeeRadarData {
     private Map<Integer, JobPositionDO> positionMap = new HashMap<>();
     private Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
     private Set<Integer> recommendUserSet = new HashSet<>();
+    private Map<Integer, Integer> recommendMap = new HashMap<>();
     private Map<Integer, Byte> userFromMap = new HashMap<>();
     private Map<Integer, Timestamp> timeMap = new HashMap<>();
 
@@ -83,5 +84,13 @@ public class EmployeeRadarData {
 
     public void setTimeMap(Map<Integer, Timestamp> timeMap) {
         this.timeMap = timeMap;
+    }
+
+    public Map<Integer, Integer> getRecommendMap() {
+        return recommendMap;
+    }
+
+    public void setRecommendMap(Map<Integer, Integer> recommendMap) {
+        this.recommendMap = recommendMap;
     }
 }

@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
@@ -10,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -33,6 +35,7 @@ import com.moseeker.entity.*;
 import com.moseeker.entity.pojos.EmployeeRadarData;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
@@ -109,6 +112,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private UserWxUserDao wxUserDao;
+
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
 
     @Autowired
     private Neo4jService neo4jService;
@@ -570,28 +576,73 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return ;
         }
+        List<CandidateRecomRecordDO> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size);
 
         return ;
     }
 
-    public List<Integer> pagePositionById(List<Integer> positionIds, String order, int page, int size){
-        List<Integer> list = new ArrayList<>();
+    public List<CandidateRecomRecordDO> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,  String order, int page, int size){
+        List<CandidateRecomRecordDO> list = new ArrayList<>();
         switch (order){
-            case "time":
+            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds);
                 break;
-            case "view":
+            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds);
                 break;
-            case "depth":
+            case "depth": list = listCandidateRecomRecordsByDepth(postUserId, companyId, positionIds);
                 break;
+        }
+        if(!StringUtils.isEmptyList(list)){
+            int index = (page-1)*size;
+            int end = page*size;
+            if(end > list.size()){
+                end=list.size();
+            }
+            if(index >= list.size()){
+                return new ArrayList<>();
+            }
+            list = list.subList((page-1)*size, page*size);
         }
         return list;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, List<Integer> positionIdList,
-                                                                  List<Integer> referenceIdList, int pageNo,
-                                                                  int pageSize){
-        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId,0,0);
-        List<JobApplicationDO> applicationList = applicationEntity.fetchByRecomUserIdAndPosition(userId, positionIdList);
+
+
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
+        List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+        if(StringUtils.isEmptyList(recomRecordDOList)){
+            return new ArrayList<>();
+        }
+        List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+        List<CandidatePositionDO> candidatePositionList = candidatePositionDao.fetchViewedByUserIdsAndPids(presenteeUserIds, positionIdList);
+        List<CandidateRecomRecordDO> list = new ArrayList<>();
+
+        for (CandidatePositionDO candidatePosition : candidatePositionList) {
+            for(CandidateRecomRecordDO record: recomRecordDOList){
+                if(candidatePosition.getUserId() == record.getPresenteeUserId() && candidatePosition.getPositionId() == record.getPositionId()){
+                    list.add(record);
+                    break;
+                }
+            }
+
+        }
+        return recomRecordDOList;
+    }
+
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
+        List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+        if(StringUtils.isEmptyList(recomRecordDOList)){
+            return new ArrayList<>();
+        }
+        List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+        List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, presenteeUserIds);
+        List<CandidateRecomRecordDO> list = new ArrayList<>();
+        for (UserDepthVO depth : depthList) {
+            for(CandidateRecomRecordDO record: recomRecordDOList){
+                if(depth.getUserId() == record.getPresenteeUserId()){
+                    list.add(record);
+                }
+            }
+        }
         return recomRecordDOList;
     }
 

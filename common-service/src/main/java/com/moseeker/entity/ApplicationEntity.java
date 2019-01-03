@@ -137,8 +137,8 @@ public class ApplicationEntity {
         return applyIdList;
     }
 
-    public List<JobApplicationDO> fetchByRecomUserIdAndPosition(int userId, List<Integer> positionIds){
-        return applicationDao.getApplyByRecomUserIdAndPositionIds(userId, positionIds);
+    public List<JobApplicationDO> fetchByRecomUserIdAndPosition( List<Integer> positionIds, List<Integer> applierIds){
+        return applicationDao.getApplyByaApplierAndPositionIds( positionIds, applierIds);
     }
 
     @Transactional(rollbackFor = Exception.class)

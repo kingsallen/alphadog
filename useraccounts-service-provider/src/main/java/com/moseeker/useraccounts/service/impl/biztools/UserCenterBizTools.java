@@ -20,7 +20,9 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
+import com.moseeker.entity.ApplicationEntity;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.ReferralEntity;
 import com.moseeker.thrift.gen.company.struct.Hrcompany;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
@@ -33,6 +35,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import java.util.*;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +77,12 @@ public class UserCenterBizTools {
 
     @Autowired
     private HrCompanyDao companyDao;
+
+    @Autowired
+    private ApplicationEntity applicationEntity;
+
+    @Autowired
+    private ReferralEntity referralEntity;
 
     @Autowired
     private UserCollectPositionDao collectPositionDao;
@@ -520,5 +529,43 @@ public class UserCenterBizTools {
             logger.error(e.getMessage(), e);
             return null;
         }
+    }
+
+    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, List<Integer> positionIdList){
+        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId);
+        if(StringUtils.isEmptyList(recomRecordDOList)){
+            return new ArrayList<>();
+        }
+        List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+        List<JobApplicationDO> applicationList = applicationEntity.fetchByRecomUserIdAndPosition(positionIdList, presenteeUserIds);
+        List<ReferralSeekRecommendRecord> seekRecommendRecordList = referralEntity.fetchSeekRecommendByPostUserId(userId, positionIdList, presenteeUserIds);
+
+        List<CandidateRecomRecordDO> list = new ArrayList<>();
+
+        for (CandidateRecomRecordDO record : recomRecordDOList) {
+            boolean status = false;
+            if(!StringUtils.isEmptyList(applicationList)) {
+                for (JobApplicationDO application : applicationList) {
+                    if (application.getApplierId() == record.getPresenteeUserId() && application.getPositionId() == record.getPositionId()) {
+                        status = true;
+                        break;
+                    }
+                }
+            }
+            if(!StringUtils.isEmptyList(seekRecommendRecordList)){
+                for(ReferralSeekRecommendRecord recommend : seekRecommendRecordList){
+                    if(recommend.getPresenteeUserId() == record.getPresenteeUserId() &&
+                            recommend.getPostUserId() == record.getPresenteeUserId()){
+                        status = true;
+                        break;
+                    }
+                }
+            }
+            if(!status){
+                list.add(record);
+            }
+        }
+
+        return recomRecordDOList;
     }
 }

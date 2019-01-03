@@ -68,9 +68,8 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(List<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) {
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
-        SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
+    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(List<Integer> positionIdSet, int presenteeId) {
+        List<CandidateRecomRecordDO> candidateRecomRecordDOList = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
@@ -80,14 +79,11 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
                 CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                 .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int) (presenteeId))
-                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet)));
-        if (pageNo > 0 && pageSize > 0) {
-            selectConditionStep.limit((pageNo - 1) * pageSize, pageSize);
-        }
-        Result<CandidateRecomRecordRecord> result = selectConditionStep.orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID).fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
-        if (result != null && result.size() > 0) {
-            candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
-        }
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet)))
+                .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                        CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
+                .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc())
+                .fetchInto(CandidateRecomRecordDO.class);
         return candidateRecomRecordDOList;
     }
 
