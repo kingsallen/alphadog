@@ -41,7 +41,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String TITLE_NOT_EMPTY = "标题不为空!";
     private static final String TITLE_LENGTH_LIMIT = "职位标题长度范围为2~12!";
     private static final String TITLE_NEED_CONTAINS_CHINESE = "职位标题需要包含中文!";
-    private static final String TITLE_LIMIT = "特殊符号支持中英文括号，短横线，下划线，星号!";
+    private static final String TITLE_LIMIT = "职位标题中特殊符号支持中英文括号，短横线，下划线，星号!";
     private static final String CONTENT_RULE_LIMIT = "工作内容和职位要求不能填写电话、QQ等联系方式!";
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
     private static final String SALARY_NOT_EMPTY = "薪资不能为空!";

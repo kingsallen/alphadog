@@ -443,7 +443,10 @@ public class EmployeeService {
                     if (employeeDOMap.get(e.getKey()) != null) {
                         name = employeeDOMap.get(e.getKey()).getCname();
                     }
-                    String headImg = "";
+                    if(value.getInteger("award")<0){
+                        employeeAward.setAwardTotal(0);
+                    }
+                   String headImg = "";
                     if (employeeDOMap.get(e.getKey()) != null) {
                         if (userHeadimg.get(employeeDOMap.get(e.getKey()).getSysuserId()) != null) {
                             if (org.apache.commons.lang.StringUtils.isBlank(name)) {
