@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.service.impl.vo;
+package com.moseeker.entity.pojos;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;

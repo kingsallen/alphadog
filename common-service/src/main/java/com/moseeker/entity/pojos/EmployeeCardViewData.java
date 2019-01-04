@@ -23,6 +23,7 @@ public class EmployeeCardViewData {
     private Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
     private Map<Integer, Byte> userFromMap = new HashMap<>();
     private List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
+    private Map<Integer, List<RadarUserInfo>> connectionMap= new HashMap<>();
 
     public Map<Integer, UserWxUserRecord> getWxUserRecordList() {
         return wxUserRecordList;
@@ -78,5 +79,13 @@ public class EmployeeCardViewData {
 
     public void setConnectionLogList(List<ReferralConnectionLogRecord> connectionLogList) {
         this.connectionLogList = connectionLogList;
+    }
+
+    public Map<Integer, List<RadarUserInfo>> getConnectionMap() {
+        return connectionMap;
+    }
+
+    public void setConnectionMap(Map<Integer, List<RadarUserInfo>> connectionMap) {
+        this.connectionMap = connectionMap;
     }
 }

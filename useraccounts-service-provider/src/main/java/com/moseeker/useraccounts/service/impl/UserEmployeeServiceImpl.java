@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
@@ -36,6 +37,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
@@ -51,12 +53,16 @@ import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
+import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
+import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
+import com.moseeker.entity.pojos.RadarUserInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -555,14 +561,15 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
-    public void fetchEmployeeForwardView(int userId, int companyId, String positionTitle, String order, int page, int size){
-        RadarInfoVO result = new RadarInfoVO();
+    public EmployeeForwardViewVO fetchEmployeeForwardView(int userId, int companyId, String positionTitle, String order, int page, int size){
+        EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
             page=1;
         }
         if(size ==0){
             size = 10;
         }
+        result.setPage(page);
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
@@ -573,17 +580,47 @@ public class UserEmployeeServiceImpl {
         List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
 
         if (StringUtils.isEmptyList(positionIdList)) {
-            return ;
+            return result;
         }
-        List<CandidateRecomRecordDO> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size);
+        List<CandidateRecomRecordDO> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size, result);
+        if(StringUtils.isEmptyList(list)){
+            return result;
+        }
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
+        this.fetchEmployeePostConnection(data);
+        for(CandidateRecomRecordDO record: list){
 
-        return ;
+        }
+        return result;
+    }
+
+    private void fetchEmployeePostConnection(EmployeeCardViewData data){
+        List<ReferralConnectionLogRecord> connectionLogList = data.getConnectionLogList();
+        if(StringUtils.isEmptyList(connectionLogList)){
+            return;
+        }
+        Map<Integer, List<RadarUserInfo>> connectionMap = new HashMap<>();
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(connectionLogList.size());
+        for(ReferralConnectionLogRecord logRecord:connectionLogList){
+            threadPool.startTast(()->{
+                ConnectRadarInfo info = new ConnectRadarInfo();
+                info.setChainId(logRecord.getRootChainId());
+                info.setParentId(-1);
+                info.setRecomUserId(logRecord.getRootUserId());
+                info.setNextUserId(logRecord.getRootUserId());
+                RadarConnectResult result = radarService.connectRadar(info);
+                connectionMap.put(logRecord.getRootChainId(), result.getChain());
+                cyclicBarrier.await();
+                return 0;
+            });
+        }
+        data.setConnectionMap(connectionMap);
+
     }
 
 
-
-    public List<CandidateRecomRecordDO> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,  String order, int page, int size){
+    public List<CandidateRecomRecordDO> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,
+                                                         String order, int page, int size, EmployeeForwardViewVO result){
         List<CandidateRecomRecordDO> list = new ArrayList<>();
         switch (order){
             case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds);
@@ -599,6 +636,7 @@ public class UserEmployeeServiceImpl {
             if(end > list.size()){
                 end=list.size();
             }
+            result.setTatolCount(list.size());
             if(index >= list.size()){
                 return new ArrayList<>();
             }

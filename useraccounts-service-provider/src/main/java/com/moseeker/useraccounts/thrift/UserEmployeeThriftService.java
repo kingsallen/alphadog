@@ -19,6 +19,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
+import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
 import java.util.List;
 import java.util.Map;
@@ -218,6 +219,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     @Override
     public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
                                                             String order, int page, int size) throws BIZException, TException {
+        EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
 
         return null;
     }
