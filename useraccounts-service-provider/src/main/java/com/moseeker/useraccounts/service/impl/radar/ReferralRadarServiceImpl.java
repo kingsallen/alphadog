@@ -462,6 +462,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
                 record.getPostUserId(), record.getPresenteeUserId(), record.getPositionId());
+        logger.info("candidateShareChainDO:{}", candidateShareChainDO);
         templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId());
     }
 

@@ -388,9 +388,13 @@ public class ReferralServiceImpl implements ReferralService {
         if(recommendRecord.getId()<=0){
             throw UserAccountException.REFERRAL_SEEK_RECOMMEND_FAIL;
         }
+        logger.info("recommendRecord:{}", recommendRecord);
         if(recommendRecord.getAppId()<=0) {
+            logger.info("==========updateReferralSeekRecommendRecordForRecommendTime");
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
+            logger.info("==========publishSeekReferralEvent");
             templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            logger.info("==========updateCandidateShareChainTemlate");
             radarService.updateCandidateShareChainTemlate(recommendRecord);
         }
     }
