@@ -1,6 +1,7 @@
 package com.moseeker.baseorm.dao.referraldb;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
+import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -36,6 +37,13 @@ public class ReferralConnectionLogDao {
                 .where(REFERRAL_CONNECTION_LOG.POSITION_ID.eq(positionId))
                 .and(REFERRAL_CONNECTION_LOG.ROOT_USER_ID.eq(userId))
                 .and(REFERRAL_CONNECTION_LOG.END_USER_ID.eq(endUserId))
+                .fetchOne();
+    }
+    public List<ReferralConnectionLogRecord> fetchChainLogRecordByList(int userId, List<Integer> endUserIds, List<Integer> positionIds) {
+        return create.selectFrom(REFERRAL_CONNECTION_LOG)
+                .where(REFERRAL_CONNECTION_LOG.POSITION_ID.in(positionIds))
+                .and(REFERRAL_CONNECTION_LOG.ROOT_USER_ID.eq(userId))
+                .and(REFERRAL_CONNECTION_LOG.END_USER_ID.in(endUserIds))
                 .fetchOne();
     }
 

@@ -8,10 +8,8 @@ import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -26,19 +24,16 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
-import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
+import com.moseeker.entity.pojos.EmployeeCardViewData;
 import com.moseeker.entity.pojos.EmployeeRadarData;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
@@ -49,6 +44,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
 import com.moseeker.useraccounts.pojo.PositionReferralInfo;
 import com.moseeker.useraccounts.service.Neo4jService;
+import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
@@ -124,6 +120,9 @@ public class UserEmployeeServiceImpl {
 
     @Autowired
     private UserCenterBizTools bizTools;
+
+    @Autowired
+    private ReferralRadarService radarService;
 
     @Resource(name = "cacheClient")
     private RedisClient client;
@@ -577,9 +576,12 @@ public class UserEmployeeServiceImpl {
             return ;
         }
         List<CandidateRecomRecordDO> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size);
+        EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
 
         return ;
     }
+
+
 
     public List<CandidateRecomRecordDO> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,  String order, int page, int size){
         List<CandidateRecomRecordDO> list = new ArrayList<>();
