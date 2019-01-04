@@ -1675,7 +1675,9 @@ public class PositionService {
                     query.getDepartment(),
                     true,
                     query.getCustom());
-
+            logger.info("============================================");
+            logger.info(JSON.toJSONString(ret));
+            logger.info("============================================");
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
                 JSONObject jobj = JSON.parseObject(ret.getData());
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
