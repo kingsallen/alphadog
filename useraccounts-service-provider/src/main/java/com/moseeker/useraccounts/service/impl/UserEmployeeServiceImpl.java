@@ -574,8 +574,6 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
         }
-        List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
-
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
@@ -639,7 +637,7 @@ public class UserEmployeeServiceImpl {
             if(index >= list.size()){
                 return new ArrayList<>();
             }
-            list = list.subList((page-1)*size, page*size);
+            list = list.subList((page-1)*size, end);
         }
         return list;
     }

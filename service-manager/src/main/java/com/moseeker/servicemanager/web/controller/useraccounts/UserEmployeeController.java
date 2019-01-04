@@ -11,6 +11,7 @@ import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.PaginationUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
@@ -18,9 +19,7 @@ import com.moseeker.servicemanager.web.controller.useraccounts.form.ApplyTypeAwa
 import com.moseeker.servicemanager.web.controller.useraccounts.form.CustomFieldValuesForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.EmployeeExtInfo;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
-import com.moseeker.servicemanager.web.controller.useraccounts.vo.ContributionDetail;
-import com.moseeker.servicemanager.web.controller.useraccounts.vo.LeaderBoardInfo;
-import com.moseeker.servicemanager.web.controller.useraccounts.vo.LeaderBoardType;
+import com.moseeker.servicemanager.web.controller.useraccounts.vo.*;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -31,20 +30,21 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
-import com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo;
+import com.moseeker.thrift.gen.useraccounts.struct.EmployeeForwardViewPage;
+import com.moseeker.thrift.gen.useraccounts.struct.RadarInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by eddie on 2017/3/7.
@@ -545,5 +545,82 @@ public class UserEmployeeController {
         BeanUtils.copyProperties(info, result);
         return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
 
+    }
+
+    @RequestMapping(value="/v1/radar/data", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchRadarIndexData(@RequestParam("appid") int appid, @RequestParam("company_id") int companyId,
+                                      @RequestParam("user_id") int userId, @RequestParam(value = "page", defaultValue = "1")int page,
+                                      @RequestParam(value = "size", defaultValue = "5") int size
+                                      ) throws Exception {
+
+        if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("员工user编号", userId);
+        validateUtil.addRequiredValidate("公司编号", companyId);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            RadarInfo radarInfo = service.fetchRadarIndex(userId, companyId, page, size);
+            RadarInfoVO infoVO = new RadarInfoVO();
+            if(!com.moseeker.common.util.StringUtils.isEmptyList(radarInfo.getUserList())){
+                infoVO.setUserList( radarInfo.getUserList().stream().map(m ->{
+                    RadarUserVO userInfo = new RadarUserVO();
+                    BeanUtils.copyProperties(m, userInfo);
+                    return userInfo;
+                }).collect(Collectors.toList()));
+                infoVO.setPage(radarInfo.getPage());
+                infoVO.setTatolCount(radarInfo.getTatolCount());
+            }
+            return com.moseeker.servicemanager.web.controller.Result.success(infoVO).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
+    }
+
+    @RequestMapping(value="/v1/employee/position/view", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchRadarIndexData(@RequestParam("appid") int appid, @RequestParam("company_id") int companyId,
+                                      @RequestParam("user_id") int userId, @RequestParam(value = "page", defaultValue = "1")int page,
+                                      @RequestParam(value = "size", defaultValue = "10") int size,
+                                      @RequestParam(value = "position_title", defaultValue = "") String positionTitle,
+                                      @RequestParam(value = "order", defaultValue = "time") String order
+    ) throws Exception {
+
+        if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("员工user编号", userId);
+        validateUtil.addRequiredValidate("公司编号", companyId);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            EmployeeForwardViewPage viewPage = service.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
+            EmployeeForwardViewVO viewVO = new EmployeeForwardViewVO();
+            viewVO.setPage(viewPage.getPage());
+            viewVO.setTatolCount(viewPage.getTatolCount());
+            if(!com.moseeker.common.util.StringUtils.isEmptyList(viewPage.getUserList())){
+                List<EmployeeForwardViewPageVO> forwardViews = new ArrayList<>();
+                viewPage.getUserList().forEach(view -> {
+                    EmployeeForwardViewPageVO forwardView = new EmployeeForwardViewPageVO();
+                    BeanUtils.copyProperties(view, forwardView);
+                    if(!com.moseeker.common.util.StringUtils.isEmptyList(view.getChain())){
+                        List<RadarUserInfo> connectionList = new ArrayList<>();
+                        view.getChain().forEach(chain -> {
+                            RadarUserInfo connection = new RadarUserInfo();
+                            BeanUtils.copyProperties(chain, connection);
+                            connectionList.add(connection);
+                        });
+                        forwardView.setChain(connectionList);
+                    }
+                    forwardViews.add(forwardView);
+                });
+                viewVO.setUserList(forwardViews);
+            }
+            return com.moseeker.servicemanager.web.controller.Result.success(viewVO).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
     }
 }

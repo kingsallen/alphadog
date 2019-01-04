@@ -21,6 +21,7 @@ import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -220,7 +221,27 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
                                                             String order, int page, int size) throws BIZException, TException {
         EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
-
-        return null;
+        EmployeeForwardViewPage result = new EmployeeForwardViewPage();
+        result.setPage(viewVO.getPage());
+        result.setTatolCount(viewVO.getTatolCount());
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(viewVO.getUserList())){
+            List<EmployeeForwardView> forwardViews = new ArrayList<>();
+            viewVO.getUserList().forEach(view -> {
+                EmployeeForwardView forwardView = new EmployeeForwardView();
+                BeanUtils.copyProperties(view, forwardView);
+                if(!com.moseeker.common.util.StringUtils.isEmptyList(view.getChain())){
+                    List<Connection> connectionList = new ArrayList<>();
+                    view.getChain().forEach(chain -> {
+                        Connection connection = new Connection();
+                        BeanUtils.copyProperties(chain, connection);
+                        connectionList.add(connection);
+                    });
+                    forwardView.setChain(connectionList);
+                }
+                forwardViews.add(forwardView);
+            });
+            result.setUserList(forwardViews);
+        }
+        return result;
     }
 }
