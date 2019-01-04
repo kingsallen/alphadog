@@ -708,7 +708,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(sex)&&Integer.parseInt(sex)!=0){
             this.queryByGender(sex,query);
         }
-        if(Integer.parseInt(isRecommend)>0){
+        if(StringUtils.isNotNullOrEmpty(isRecommend)&&Integer.parseInt(isRecommend)>0){
             this.queryByRecom(query);
         }
         if(StringUtils.isNotNullOrEmpty(companyName)){
