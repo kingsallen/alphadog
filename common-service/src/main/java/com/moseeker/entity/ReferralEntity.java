@@ -32,6 +32,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
@@ -115,6 +116,9 @@ public class ReferralEntity {
 
     @Autowired
     private ReferralLogDao referralLogDao;
+
+    @Autowired
+    private ReferralConnectionLogDao connectionLogDao;
 
     @Autowired
     private ReferralSeekRecommendDao recommendDao;
@@ -831,14 +835,16 @@ public class ReferralEntity {
         });
 
         try {
+            Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
+                    () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
+            Future<List<ReferralConnectionLogRecord>> connectionLogListFuture = threadPool.startTast(
+                    () -> connectionLogDao.fetchChainLogRecordByList(postUserId, userIdList, positionIdList));
             Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
                     () -> wxEntity.getUserWxUserData(userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(userIdList));
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
-            Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
-                    () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
                     () -> positionDao.getPositionList(positionIdList));
             Set<Integer> root2Set = new HashSet<>();
@@ -848,13 +854,24 @@ public class ReferralEntity {
                 shareChainList.forEach(share -> {
                     root2Set.add(share.root2RecomUserId);
                     shareChainIdList.add(share.getId());
-
                 });
             }
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
                     () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
+            List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
+            if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
+                for(CandidateRecomRecordDO record :recomRecordList){
+                    for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
+                        if(record.getPositionId() == logRecord.getPositionId() && record.getPresenteeUserId() == logRecord.getEndUserId()){
+                            connectionLogList.add(logRecord);
+                            break;
+                        }
+                    }
+                }
+                data.setConnectionLogList(connectionLogList);
+            }
             if (!StringUtils.isEmptyList(wxUserListFuture.get())){
                 Map<Integer, UserWxUserRecord> wxUserRecordMap = new HashMap<>();
                 wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));

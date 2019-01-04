@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl.vo;
 
+import com.moseeker.entity.pojos.RadarUserInfo;
 import java.util.List;
 
 public class RadarConnectResult {

@@ -54,7 +54,7 @@ import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
-import com.moseeker.useraccounts.service.impl.vo.RadarUserInfo;
+import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
