@@ -451,4 +451,9 @@ public class UserEmployeeServiceImpl {
         UserEmployee result= userEmployeeDao.getSingleEmployeeByUserId(userId);
         return result;
     }
+
+    public List<UserEmployee> getEmployeeByUserIdListAndCompanyList(List<Integer> userIdList,List<Integer> companyIdList){
+        List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
+        return list;
+    }
 }

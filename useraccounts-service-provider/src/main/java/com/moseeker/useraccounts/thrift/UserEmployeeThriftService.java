@@ -218,4 +218,14 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response getUserEmployeeByUserIdListAndCompanyList(List<Integer> userIdList, List<Integer> companyIdList) throws TException {
+        try{
+            List<UserEmployee> result=employeeService.getEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 }

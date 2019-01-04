@@ -572,5 +572,20 @@ public class UserEmployeeController {
             return ResponseLogNotification.fail(request,e.getMessage());
         }
     }
+    @RequestMapping(value="/employee/user/company", method = RequestMethod.POST)
+    @ResponseBody
+    public String getUserEmployeeByCidListAndUserIdList(HttpServletRequest request,  HttpServletResponse response)throws Exception{
+        try{
+            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            List<Integer> userIdList= (List<Integer>) params.get("userId");
+            List<Integer> companyIdList= (List<Integer>) params.get("companyId");
+            Response res=service.getUserEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
+            return ResponseLogNotification.successJson(request, res);
+        }catch(Exception e){
+            logger.error(e.getMessage(),e);
+            return ResponseLogNotification.fail(request,e.getMessage());
+        }
+    }
+
 
 }

@@ -285,4 +285,6 @@ service UserEmployeeService {
     common_struct.Response getUserEmployeeList(1:i32 companyId,2:list<i32> userIdList);
 
     common_struct.Response getUserEmployeeByuserId(1:i32 userId);
+
+    common_struct.Response getUserEmployeeByUserIdListAndCompanyList(1:list<i32> userIdList,2:list<i32> companyIdList);
 }
