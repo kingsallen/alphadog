@@ -247,6 +247,9 @@ service UserCenterService {
     //查询推荐记录
     useraccounts_struct.RecommendationVO getRecommendation(1: i32 userId, 2:i8 type, 3: i32 pageNum, 4: i32 pageSize);
     useraccounts_struct.CenterUserInfo getCenterUserInfo(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
+    //查找推荐信息
+    useraccounts_struct.RecommendationScoreVO getRecommendationV2(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
+
 }
 
 //user thirdparty user 服务
@@ -287,5 +290,9 @@ service UserEmployeeService {
     common_struct.Response getUserEmployeeByuserId(1:i32 userId);
 
     useraccounts_struct.PositionReferralInfo getPositionReferralInfo(1: i32 userId, 2:i32 positionId)  throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.RadarInfo fetchRadarIndex(1: i32 userId, 2:i32 companyId, 3:i32 page, 4:i32 size) throws (1: common_struct.BIZException e);
+
+    useraccounts_struct.EmployeeForwardViewPage fetchEmployeeForwardView(1: i32 userId, 2:i32 companyId, 3:string positionTitle, 4:string order, 5:i32 page, 6: i32 size) throws (1: common_struct.BIZException e);
 
 }

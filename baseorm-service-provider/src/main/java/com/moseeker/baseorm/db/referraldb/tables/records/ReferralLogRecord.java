@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> implements Record12<Integer, Integer, Integer, Integer, Integer, Timestamp, Byte, Timestamp, Timestamp, Timestamp, Integer, Integer> {
 
-    private static final long serialVersionUID = 1724725962;
+    private static final long serialVersionUID = -87305580;
 
     /**
      * Setter for <code>referraldb.referral_log.id</code>. 主key
@@ -173,30 +173,30 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
     }
 
     /**
+     * Setter for <code>referraldb.referral_log.old_reference_id</code>. 认领之前被推荐人编号
+     */
+    public void setOldReferenceId(Integer value) {
+        set(10, value);
+    }
+
+    /**
+     * Getter for <code>referraldb.referral_log.old_reference_id</code>. 认领之前被推荐人编号
+     */
+    public Integer getOldReferenceId() {
+        return (Integer) get(10);
+    }
+
+    /**
      * Setter for <code>referraldb.referral_log.attement_id</code>. 简历附件编号
      */
     public void setAttementId(Integer value) {
-        set(10, value);
+        set(11, value);
     }
 
     /**
      * Getter for <code>referraldb.referral_log.attement_id</code>. 简历附件编号
      */
     public Integer getAttementId() {
-        return (Integer) get(10);
-    }
-
-    /**
-     * Setter for <code>referraldb.referral_log.old_reference_id</code>. 简历附件编号
-     */
-    public void setOldReferenceId(Integer value) {
-        set(11, value);
-    }
-
-    /**
-     * Getter for <code>referraldb.referral_log.old_reference_id</code>. 简历附件编号
-     */
-    public Integer getOldReferenceId() {
         return (Integer) get(11);
     }
 
@@ -317,7 +317,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
      */
     @Override
     public Field<Integer> field11() {
-        return ReferralLog.REFERRAL_LOG.ATTEMENT_ID;
+        return ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID;
     }
 
     /**
@@ -325,7 +325,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
      */
     @Override
     public Field<Integer> field12() {
-        return ReferralLog.REFERRAL_LOG.OLD_REFERENCE_ID;
+        return ReferralLog.REFERRAL_LOG.ATTEMENT_ID;
     }
 
     /**
@@ -413,7 +413,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
      */
     @Override
     public Integer value11() {
-        return getAttementId();
+        return getOldReferenceId();
     }
 
     /**
@@ -421,7 +421,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
      */
     @Override
     public Integer value12() {
-        return getOldReferenceId();
+        return getAttementId();
     }
 
     /**
@@ -519,7 +519,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
      */
     @Override
     public ReferralLogRecord value11(Integer value) {
-        setAttementId(value);
+        setOldReferenceId(value);
         return this;
     }
 
@@ -528,7 +528,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
      */
     @Override
     public ReferralLogRecord value12(Integer value) {
-        setOldReferenceId(value);
+        setAttementId(value);
         return this;
     }
 
@@ -566,7 +566,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
     /**
      * Create a detached, initialised ReferralLogRecord
      */
-    public ReferralLogRecord(Integer id, Integer employeeId, Integer referenceId, Integer positionId, Integer type, Timestamp referralTime, Byte claim, Timestamp claimTime, Timestamp createTime, Timestamp updateTime, Integer attementId, Integer oldReferenceId) {
+    public ReferralLogRecord(Integer id, Integer employeeId, Integer referenceId, Integer positionId, Integer type, Timestamp referralTime, Byte claim, Timestamp claimTime, Timestamp createTime, Timestamp updateTime, Integer oldReferenceId, Integer attementId) {
         super(ReferralLog.REFERRAL_LOG);
 
         set(0, id);
@@ -579,7 +579,7 @@ public class ReferralLogRecord extends UpdatableRecordImpl<ReferralLogRecord> im
         set(7, claimTime);
         set(8, createTime);
         set(9, updateTime);
-        set(10, attementId);
-        set(11, oldReferenceId);
+        set(10, oldReferenceId);
+        set(11, attementId);
     }
 }

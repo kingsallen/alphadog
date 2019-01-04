@@ -6,6 +6,10 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRec
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
@@ -129,13 +133,11 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         }
     }
 
-
-    public List<CandidateShareChainDO> getShareChainDOByRootUserAndTime(int rootUserId, long timestamp) {
-        Timestamp current = new Timestamp(timestamp);
-        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.le(current))
-                .fetchInto(CandidateShareChainDO.class);
+    public void updateTypeById(int updateId) {
+        create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)1)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(updateId))
+                .execute();
     }
 
     public void updateTypeByIds(List<Integer> updateIds) {
@@ -145,4 +147,59 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .execute();
     }
 
+    public List<Integer> fetchRootIdByPresentee(int presentee_user_id){
+        Result<Record1<Integer>>  result = create.selectDistinct(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID)
+                .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(presentee_user_id))
+                .fetch();
+        if(!result.isEmpty()){
+            Set<Integer> idSet = result.stream().map(m -> m.value1()).collect(Collectors.toSet());
+            return new ArrayList<>(idSet);
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Integer> fetchRootIdByRootUserId(int rootUserId){
+        Result<Record1<Integer>>  result = create.selectDistinct(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID)
+                .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
+                .fetch();
+        if(!result.isEmpty()){
+            Set<Integer> idSet = result.stream().map(m -> m.value1()).collect(Collectors.toSet());
+            return new ArrayList<>(idSet);
+        }
+        return new ArrayList<>();
+    }
+
+    public List<CandidateShareChainDO> getShareChainByPositionAndPresentee(List<Integer> positionId, List<Integer> presenteeUserId, int postUserId) {
+        List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.in(positionId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(postUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.in(presenteeUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(1))
+                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH)
+                .fetchInto(CandidateShareChainDO.class);
+        if(list == null){
+            return new ArrayList<>();
+        }else {
+            return list;
+        }
+    }
+    public List<CandidateShareChainDO> getShareChainsByUserIdAndPresenteeAndPosition(Integer sysuserId, List<Integer> shareUserIds, List<Integer> sharePids) {
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(sysuserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.in(shareUserIds))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.in(sharePids))
+                .fetchInto(CandidateShareChainDO.class);
+    }
+
+    public CandidateShareChainDO getLastOneByRootAndPresenteeAndPid(int rootUserId, int presenteeUserId, int positionId) {
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.eq(positionId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(presenteeUserId))
+                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.desc())
+                .limit(1)
+                .fetchOneInto(CandidateShareChainDO.class);
+    }
 }

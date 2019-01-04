@@ -711,6 +711,24 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     }
 
     /**
+     * 根据搜索职位名称获取对应的职位编号
+     * @param idList
+     * @param title
+     * @return
+     */
+    public Result<Record1<Integer>> getPositionIdListByIdListAndTitle(List<Integer> idList, String title) {
+        if (idList != null && idList.size() > 0) {
+            return create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.ID.in(idList))
+                    .and(JobPosition.JOB_POSITION.TITLE.like(title))
+                    .fetch();
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * 计算合法再招并且是给定公司下的职位的数量
      * @param companyId 公司编号
      * @param positionIdList 职位编号集合

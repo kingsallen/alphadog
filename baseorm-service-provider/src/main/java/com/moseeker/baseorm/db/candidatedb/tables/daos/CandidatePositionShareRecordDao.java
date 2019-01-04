@@ -148,4 +148,11 @@ public class CandidatePositionShareRecordDao extends DAOImpl<CandidatePositionSh
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePositionShareRecord> fetchByPresenteeUserId(Integer... values) {
         return fetch(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_USER_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>share_chain_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePositionShareRecord> fetchByShareChainId(Integer... values) {
+        return fetch(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID, values);
+    }
 }

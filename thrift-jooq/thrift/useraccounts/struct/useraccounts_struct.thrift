@@ -552,3 +552,53 @@ struct PositionReferralInfo {
     6:optional string employeeIcon
 
 }
+
+struct RadarUserInfo {
+    1:optional i32 userId,
+    2:optional string nickname,
+    3:optional i32 viewCount,
+    4:optional i32 seekRecommend,
+    5:optional i32 depth,
+    6:optional string headimgurl,
+    7:optional string positionTitle,
+    8:optional i32 positionId,
+    9:optional string forwardName,
+    10:optional bool forwardSourceWx,
+    11:optional i32 referralId,
+    12:optional string clickTime
+}
+
+struct RadarInfo{
+    1:optional i32 tatolCount,
+    2:optional i32 page,
+    3:optional list<RadarUserInfo> userList
+}
+
+struct EmployeeForwardView {
+    1:optional i32 userId,
+    2:optional string nickname,
+    3:optional i32 viewCount,
+    4:optional i32 connection,
+    5:optional i32 depth,
+    6:optional string headimgurl,
+    7:optional string positionTitle,
+    8:optional i32 positionId,
+    9:optional string forwardName,
+    10:optional bool forwardSourceWx,
+    11:optional string clickTime,
+    12:optional i32 invitationStatus,
+    13:optional list<Connection> chain
+}
+
+struct Connection{
+    1:optional list<i32> pnodes,
+    2:optional i32 uid,
+    3:optional i32 degree,
+    4:optional string avatar
+}
+
+struct EmployeeForwardViewPage{
+    1:optional i32 tatolCount,
+    2:optional i32 page,
+    3:optional list<EmployeeForwardView> userList
+}

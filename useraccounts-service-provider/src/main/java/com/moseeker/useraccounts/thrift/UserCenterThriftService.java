@@ -81,4 +81,9 @@ public class UserCenterThriftService implements Iface {
 		BeanUtils.copyProperties(infoVO, info);
 		return info;
 	}
+
+    @Override
+    public RecommendationScoreVO getRecommendationV2(int userId, int companyId) throws BIZException, TException {
+        return userCenterService.getRecommendationsV2(userId, companyId);
+    }
 }

@@ -9,7 +9,9 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_REFERRAL_EVALUATE;
@@ -90,6 +92,9 @@ public class ReferralTemplateSender {
     @Autowired
     private EmployeeEntity employeeEntity;
 
+    @Autowired
+    private ReferralSeekRecommendDao seekRecommendDao;
+
     ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId){
@@ -155,8 +160,9 @@ public class ReferralTemplateSender {
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+        List<ReferralSeekRecommendRecord> seekRecommendRecords = seekRecommendDao.getTenMinuteSeekRecords(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
+        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, seekRecommendRecords)));
         templateShareChainDao.addAllData(templateShareChainDOS);
         templateShareChainDOS.removeIf(record -> record.getType() != 0);
         Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
@@ -188,17 +194,26 @@ public class ReferralTemplateSender {
     }
 
 
-    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
+    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<ReferralSeekRecommendRecord> seekRecommendRecords) {
         CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
         templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
-        templateShareChainDO.setId(candidateShareChainDO.getId());
+        templateShareChainDO.setChainId(candidateShareChainDO.getId());
         templateShareChainDO.setParentId(candidateShareChainDO.getParentId());
         templateShareChainDO.setPositionId(candidateShareChainDO.getPositionId());
         templateShareChainDO.setPresenteeUserId(candidateShareChainDO.getPresenteeUserId());
         templateShareChainDO.setType(candidateShareChainDO.getType());
         templateShareChainDO.setSendTime(timestamp);
+        templateShareChainDO.setRoot2UserId(candidateShareChainDO.getRoot2RecomUserId());
         templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
+        for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendRecords){
+            if(seekRecommendRecord.getPostUserId() == candidateShareChainDO.getRootRecomUserId()
+                    && seekRecommendRecord.getPresenteeUserId() == candidateShareChainDO.getPresenteeUserId()
+                    && seekRecommendRecord.getPositionId() == candidateShareChainDO.getPositionId()){
+                templateShareChainDO.setSeekReferral(1);
+                break;
+            }
+        }
         return templateShareChainDO;
     }
 

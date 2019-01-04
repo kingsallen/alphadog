@@ -60,7 +60,9 @@ import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
 import java.net.ConnectException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
@@ -359,27 +361,6 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Override
-    public String getRadarCards(ReferralCardInfo cardInfo) throws TException {
-        return radarService.getRadarCards(cardInfo);
-    }
-
-    @Override
-    public String inviteApplication(ReferralInviteInfo inviteInfo) throws TException, ConnectException {
-        return radarService.inviteApplication(inviteInfo);
-    }
-
-    @Override
-    public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws TException {
-        radarService.ignoreCurrentViewer(ignoreInfo);
-    }
-
-    @Override
-    public String connectRadar(ConnectRadarInfo radarInfo) throws TException {
-        return radarService.connectRadar(radarInfo);
-    }
-
-
-    @Override
     public void addReferralSeekRecommend(int userId, int postUserId, int positionId, int origin) throws CommonException {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("候选人编号", userId, 1, null);
@@ -398,16 +379,20 @@ public class ReferralServiceImpl implements ReferralService {
         record.setPresenteeUserId(userId);
         record.setPositionId(positionId);
         record.setOrigin(origin);
+        ReferralSeekRecommendRecord recommendRecord = new ReferralSeekRecommendRecord();
         int i =0;
-        int id = 0;
-        while (i<3 && id ==0){
-            id = recommendDao.insertIfNotExist(record);
+        while (i<3 && recommendRecord.getId() ==0){
+            recommendRecord = recommendDao.insertIfNotExist(record);
             i++;
         }
-        if(id<=0){
+        if(recommendRecord.getId()<=0){
             throw UserAccountException.REFERRAL_SEEK_RECOMMEND_FAIL;
         }
-        templateSender.publishSeekReferralEvent(postUserId, id, userId, positionId);
+        if(recommendRecord.getAppId()<=0) {
+            recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
+            templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            radarService.updateCandidateShareChainTemlate(recommendRecord);
+        }
     }
 
     @Override
@@ -434,6 +419,7 @@ public class ReferralServiceImpl implements ReferralService {
             info.setPositionName(position.getTitle());
         }
         info.setPositionId(record.getPositionId());
+        info.setApplicationId(record.getAppId());
         return info;
     }
 
@@ -470,18 +456,8 @@ public class ReferralServiceImpl implements ReferralService {
             referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
             sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
+            radarService.updateShareChainHandleType(recommendRecord, 3);
         }
-
-    }
-
-    @Override
-    public String checkEmployee(CheckEmployeeInfo checkInfo) throws TException {
-        return radarService.checkEmployee(checkInfo);
-    }
-
-    @Override
-    public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException {
-        radarService.saveTenMinuteCandidateShareChain(cardInfo);
     }
 
     private int createJobApplication(int userId, int companyId, int positionId, String name, int origin,

@@ -39,7 +39,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-    private static final long serialVersionUID = -154583655;
+    private static final long serialVersionUID = -1090821097;
 
     /**
      * The reference instance of <code>candidatedb</code>
@@ -87,7 +87,7 @@ public class Candidatedb extends SchemaImpl {
     public final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
 
     /**
-     * The table <code>candidatedb.candidate_template_share_chain</code>.
+     * 十分钟消息模板
      */
     public final CandidateTemplateShareChain CANDIDATE_TEMPLATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN;
 

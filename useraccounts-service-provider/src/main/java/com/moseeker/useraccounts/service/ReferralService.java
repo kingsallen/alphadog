@@ -88,46 +88,6 @@ public interface ReferralService {
     int fetchKeyInformationStatus(int companyId) throws UserAccountException;
 
     /**
-     * 10分钟消息模板-人脉筛选，获取卡片数据
-     *
-     * @param cardInfo 查找员工10分钟内转发职位的浏览记录所需信息
-     * @return json
-     * @author cjm
-     * @date 2018/12/7
-     */
-    String getRadarCards(ReferralCardInfo cardInfo) throws TException;
-
-    /**
-     * 10分钟消息模板-邀请投递
-     *
-     * @param inviteInfo 邀请浏览职位的员工投递
-     * @return json
-     * @author cjm
-     * @date 2018/12/7
-     */
-    String inviteApplication(ReferralInviteInfo inviteInfo) throws TException, ConnectException;
-
-    /**
-     * 10分钟消息模板-我不熟悉
-     *
-     * @param ignoreInfo 跳过当前不熟悉的浏览人
-     * @return json
-     * @author cjm
-     * @date 2018/12/7
-     */
-    void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws TException;
-
-    /**
-     * 点击人脉连连看按钮/点击分享的人脉连连看页面
-     *
-     * @param radarInfo 连接人脉雷达的参数
-     * @return json
-     * @author cjm
-     * @date 2018/12/7
-     */
-    String connectRadar(ConnectRadarInfo radarInfo) throws TException;
-
-    /**
      * 增加候选人求内推记录信息，并通知员工
      *
      * @param userId     候选人编号
@@ -160,17 +120,7 @@ public interface ReferralService {
      */
     void employeeReferralReason(int postUserId, int positionId,  int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
 
-    /**
-     * 候选人打开职位连接判断推荐人是否是员工
-     *
-     * @param checkInfo 连接人脉雷达的参数
-     * @return json
-     * @author cjm
-     * @date 2018/12/7
-     */
-    String checkEmployee(CheckEmployeeInfo checkInfo) throws TException;
 
-    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException;
 }
 
 

@@ -145,7 +145,7 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
                 .fetch();
     }
 
-    public List<UserWxUserDO> getWXUserMapByUserIds(Set<Integer> idSet, Integer wechatId) {
+    public List<UserWxUserDO> getWXUsersByUserIds(Set<Integer> idSet, Integer wechatId) {
         return create.selectFrom(USER_WX_USER)
                 .where(USER_WX_USER.SYSUSER_ID.in(idSet))
                 .and(USER_WX_USER.WECHAT_ID.eq(wechatId))

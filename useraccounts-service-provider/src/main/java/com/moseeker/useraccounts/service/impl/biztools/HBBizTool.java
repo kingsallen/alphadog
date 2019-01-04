@@ -15,11 +15,9 @@ import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
 import com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab;
-import org.apache.commons.lang.StringUtils;
+import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
 
 /**
  * @Author: jack
@@ -158,4 +156,6 @@ public class HBBizTool {
         logger.info("ReferralProfileTab tab:{}", JSON.toJSONString(tab));
         return tab;
     }
+
+
 }

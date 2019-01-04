@@ -14,6 +14,8 @@ import com.moseeker.thrift.gen.referral.struct.RedPacket;
 import com.moseeker.thrift.gen.referral.struct.RedPackets;
 import com.moseeker.thrift.gen.referral.struct.ReferralProfileTab;
 import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
+import com.moseeker.useraccounts.service.ReferralRadarService;
+import com.moseeker.useraccounts.service.impl.vo.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,6 +37,9 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
 
     @Autowired
     private com.moseeker.useraccounts.service.ReferralService referralService;
+
+    @Autowired
+    private ReferralRadarService radarService;
 
     @Override
     public RedPackets getRedPackets(int userId, int companyId, int pageNum, int pageSize)
@@ -179,7 +184,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String getRadarCards(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
-            return referralService.getRadarCards(cardInfo);
+            return radarService.getRadarCards(cardInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -188,7 +193,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException, TException {
         try {
-            return referralService.inviteApplication(inviteInfo);
+            return radarService.inviteApplication(inviteInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -197,7 +202,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException, TException {
         try {
-            referralService.ignoreCurrentViewer(ignoreInfo);
+            radarService.ignoreCurrentViewer(ignoreInfo);
             return "success";
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -207,7 +212,8 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException {
         try {
-            return referralService.connectRadar(radarInfo);
+            RadarConnectResult result = radarService.connectRadar(radarInfo);
+            return JSON.toJSONString(result);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -216,7 +222,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException {
         try {
-            return referralService.checkEmployee(checkInfo);
+            return radarService.checkEmployee(checkInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -225,7 +231,25 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
-            referralService.saveTenMinuteCandidateShareChain(cardInfo);
+            radarService.saveTenMinuteCandidateShareChain(cardInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException, TException {
+        try {
+            return radarService.getProgressByOne(progressQuery);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException, TException {
+        try {
+            return radarService.getProgressBatch(progressInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

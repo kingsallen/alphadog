@@ -1,6 +1,5 @@
 package com.moseeker.candidate.service;
 
-import com.moseeker.candidate.service.vo.*;
 import com.moseeker.candidate.service.vo.PositionLayerInfo;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.thrift.gen.candidate.struct.*;
@@ -131,6 +130,7 @@ public interface Candidate {
      * @return
      */
     void closeElasticLayer(int userId, int companyId, int type);
+
 
     Response getCandidateRecoms(List<Integer> appIds);
 }

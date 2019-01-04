@@ -303,6 +303,15 @@ public class PositionEntity {
         }
     }
 
+    public List<Integer> getPositionIdListByTitle(List<Integer> idList, String title) {
+        Result<Record1<Integer>> result = positionDao.getPositionIdListByIdListAndTitle(idList, title);
+        if (result != null) {
+            return result.stream().map(Record1::value1).collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     /**
      * 校验这些职位是否有效，并且是否属于这家公司
      * @param companyId 公司编号

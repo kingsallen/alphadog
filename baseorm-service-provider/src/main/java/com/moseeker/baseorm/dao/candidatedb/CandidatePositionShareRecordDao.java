@@ -2,6 +2,7 @@ package com.moseeker.baseorm.dao.candidatedb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
+import static com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
@@ -20,7 +21,7 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
 
 
     public CandidatePositionShareRecordDao() {
-        super(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecordDO.class);
+        super(CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecordDO.class);
     }
 
     public CandidatePositionShareRecordDao(TableImpl<CandidatePositionShareRecordRecord> table, Class<CandidatePositionShareRecordDO> candidatePositionShareRecordDOClass) {
@@ -33,21 +34,20 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
         this.deleteRecord(p);
     }
 
-    /**
-     * 查找最近浏览的职位信息
-     *
-     * @param beRecomUserIds 被推荐人userId
-     * @param userId 转发职位的员工userId
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @return list
-     */
-    public List<CandidatePositionShareRecordDO> fetchPositionShareByUserIds(Set<Integer> beRecomUserIds, int userId, Timestamp startTime, Timestamp endTime) {
+    public List<CandidatePositionShareRecordDO> fetchPositionShareByShareChainIds(Set<Integer> shareChainIds) {
         return create.selectFrom(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-                .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.between(startTime, endTime))
-                .and(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_USER_ID.in(beRecomUserIds))
-                .and(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.RECOM_USER_ID.eq(userId))
-                .and(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SOURCE.eq((byte)0))
+                .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID.in(shareChainIds))
+                .groupBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID)
+                .orderBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.desc())
                 .fetchInto(CandidatePositionShareRecordDO.class);
+
+    }
+
+
+    public List<CandidatePositionShareRecordRecord> fetchPositionShareByShareChainIds(List<Integer> shareChainIds) {
+        return create.selectFrom(CANDIDATE_POSITION_SHARE_RECORD)
+                .where(CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID.in(shareChainIds))
+                .orderBy(CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.desc())
+                .fetch();
     }
 }

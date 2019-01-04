@@ -104,4 +104,32 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
                 .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
                 .fetchInto(CandidatePositionDO.class);
     }
+
+    /**
+     * 查找最近浏览的职位信息
+     * @param beRecomUserIds 被推荐人ids
+     * @param positionIds 职位ids
+     * @return list
+     */
+    public List<CandidatePositionDO> fetchViewedByUserIdsAndPids(List<Integer> beRecomUserIds, List<Integer> positionIds) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
+                .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(beRecomUserIds))
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER.desc())
+                .fetchInto(CandidatePositionDO.class);
+    }
+    public List<CandidatePositionRecord> fetchRecentViewedByCompanyIds(List<Integer> candidateCompanyId) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.CANDIDATE_COMPANY_ID.in(candidateCompanyId))
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER.desc(), CandidatePosition.CANDIDATE_POSITION.UPDATE_TIME.desc())
+                .fetch();
+    }
+
+    public List<CandidatePositionRecord> fetchRecentViewedByUserIdAndPosition(List<Integer> userIds, List<Integer> positionIds) {
+        return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
+                .where(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(userIds))
+                .and(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
+                .fetch();
+    }
+
 }
