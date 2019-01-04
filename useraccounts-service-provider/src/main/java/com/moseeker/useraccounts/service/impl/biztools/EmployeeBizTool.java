@@ -6,7 +6,7 @@ import com.moseeker.entity.pojos.EmployeeRadarData;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.useraccounts.constant.ForwardSourceType;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
-import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

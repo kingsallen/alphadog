@@ -53,7 +53,7 @@ import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
 import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
-import com.moseeker.useraccounts.service.impl.pojos.UserDepthVO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;

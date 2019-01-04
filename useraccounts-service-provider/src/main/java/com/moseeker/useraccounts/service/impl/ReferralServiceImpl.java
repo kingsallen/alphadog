@@ -372,6 +372,7 @@ public class ReferralServiceImpl implements ReferralService {
         if(recommendRecord.getAppId()<=0) {
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
             templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            radarService.updateCandidateShareChainTemlate(recommendRecord);
         }
     }
 
@@ -436,7 +437,7 @@ public class ReferralServiceImpl implements ReferralService {
             referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
             sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
-            radarService.updateShareChainHandleType(recommendRecord);
+            radarService.updateShareChainHandleType(recommendRecord, 3);
         }
     }
 

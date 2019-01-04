@@ -89,11 +89,17 @@ public interface ReferralRadarService {
      */
     String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException;
     /**
-     * 批量根据条件获取候选人的推荐进度
+     * 更改share_chain中的候选人处理状态
      *
-     * @return json
      * @author cjm
      * @date 2018/12/7
      */
-    void updateShareChainHandleType(ReferralSeekRecommendRecord recommendRecord);
+    void updateShareChainHandleType(ReferralSeekRecommendRecord recommendRecord, int type);
+    /**
+     * 更改template_share_chain中的候选人求推荐状态
+     *
+     * @author cjm
+     * @date 2018/12/7
+     */
+    void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord recommendRecord);
 }
