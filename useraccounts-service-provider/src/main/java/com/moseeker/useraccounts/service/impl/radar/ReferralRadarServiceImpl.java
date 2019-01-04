@@ -202,7 +202,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 只有两度和三度的情况下才会产生连连看链路
         boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
         int chainId = 0;
-        if(isChainLimit && (connectionLogRecord == null || connectionLogRecord.getState() == 1)){
+        if(isChainLimit && (connectionLogRecord == null)){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
             chainId = doInsertConnection(connectionLogRecord, shortestChain, inviteInfo);
         }
@@ -215,7 +215,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
         // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
-        shareChainDao.updateTypeByIds(getUpdateCandidateIds(inviteInfo));
+        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
+                inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
+        shareChainDao.updateTypeById(candidateShareChainDO.getId());
+        // type = 3 推荐ta
         templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),1);
         result.put("notified", isSent ? 1 : 0);
         int degree = shortestChain.size()-1;
@@ -451,7 +454,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         int positionId = record.getPositionId();
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
-        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, 2);
+        // type = 3 推荐ta
+        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, 3);
     }
 
     @Override
