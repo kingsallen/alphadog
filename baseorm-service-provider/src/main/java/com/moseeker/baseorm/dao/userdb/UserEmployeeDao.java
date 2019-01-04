@@ -443,5 +443,11 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
     }
 
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> getDataListByCidListAndUserIdList(List<Integer> userIdList,List<Integer> companyIdList) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(userIdList))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIdList)).orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc(),UserEmployee.USER_EMPLOYEE.DISABLE.asc())
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
+    }
+
 
 }

@@ -706,4 +706,9 @@ public class UserEmployeeServiceImpl {
         return recomRecordDOList;
     }
 
+
+    public List<UserEmployee> getEmployeeByUserIdListAndCompanyList(List<Integer> userIdList,List<Integer> companyIdList){
+        List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
+        return list;
+    }
 }
