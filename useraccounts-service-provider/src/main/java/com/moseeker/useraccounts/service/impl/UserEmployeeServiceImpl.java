@@ -53,10 +53,7 @@ import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
-import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
-import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
-import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
-import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
+import com.moseeker.useraccounts.service.impl.pojos.*;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.entity.pojos.RadarUserInfo;
@@ -610,9 +607,11 @@ public class UserEmployeeServiceImpl {
         }
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
+        List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
         for(CandidateRecomRecordDO record: list){
-
+            viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record));
         }
+        result.setUserList(viewPages);
         return result;
     }
 

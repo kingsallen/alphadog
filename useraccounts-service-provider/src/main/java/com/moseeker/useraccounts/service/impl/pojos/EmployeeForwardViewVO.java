@@ -9,7 +9,7 @@ public class EmployeeForwardViewVO {
 
     public int tatolCount; // optional
     public int page; // optional
-    public List<EmployeeForwardViewVO> userList; // optional
+    public List<EmployeeForwardViewPageVO> userList; // optional
 
     public int getTatolCount() {
         return tatolCount;
@@ -27,11 +27,11 @@ public class EmployeeForwardViewVO {
         this.page = page;
     }
 
-    public List<EmployeeForwardViewVO> getUserList() {
+    public List<EmployeeForwardViewPageVO> getUserList() {
         return userList;
     }
 
-    public void setUserList(List<EmployeeForwardViewVO> userList) {
+    public void setUserList(List<EmployeeForwardViewPageVO> userList) {
         this.userList = userList;
     }
 }

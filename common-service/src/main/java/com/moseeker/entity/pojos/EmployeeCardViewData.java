@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecor
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class EmployeeCardViewData {
     private Map<Integer, Byte> userFromMap = new HashMap<>();
     private List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
     private Map<Integer, List<RadarUserInfo>> connectionMap= new HashMap<>();
+    private List<CandidateShareChainDO> shareChainList = new ArrayList<>();
 
     public Map<Integer, UserWxUserRecord> getWxUserRecordList() {
         return wxUserRecordList;
@@ -87,5 +89,13 @@ public class EmployeeCardViewData {
 
     public void setConnectionMap(Map<Integer, List<RadarUserInfo>> connectionMap) {
         this.connectionMap = connectionMap;
+    }
+
+    public List<CandidateShareChainDO> getShareChainList() {
+        return shareChainList;
+    }
+
+    public void setShareChainList(List<CandidateShareChainDO> shareChainList) {
+        this.shareChainList = shareChainList;
     }
 }

@@ -836,7 +836,7 @@ public class ReferralEntity {
 
         try {
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
-                    () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
+                    () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
             Future<List<ReferralConnectionLogRecord>> connectionLogListFuture = threadPool.startTast(
                     () -> connectionLogDao.fetchChainLogRecordByList(postUserId, userIdList, positionIdList));
             Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
@@ -848,18 +848,25 @@ public class ReferralEntity {
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
                     () -> positionDao.getPositionList(positionIdList));
             Set<Integer> root2Set = new HashSet<>();
-            List<CandidateShareChainDO> shareChainList = shareChainListFuture.get();
+            List<CandidateShareChainDO> shareChainList = new ArrayList<>();
             List<Integer> shareChainIdList = new ArrayList<>();
-            if(!StringUtils.isEmptyList(shareChainList)) {
-                shareChainList.forEach(share -> {
-                    root2Set.add(share.root2RecomUserId);
-                    shareChainIdList.add(share.getId());
+            if(!StringUtils.isEmptyList(shareChainListFuture.get())) {
+                shareChainListFuture.get().forEach(share -> {
+                    recomRecordList.forEach( recom ->{
+                        if(recom.getPresenteeUserId() == share.getPresenteeUserId() && recom.getPositionId() == share.getPositionId()){
+                            root2Set.add(share.root2RecomUserId);
+                            shareChainIdList.add(share.getId());
+                            shareChainList.add(share);
+                        }
+                    });
+
                 });
             }
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
                     () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
+            data.setShareChainList(shareChainList);
             List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
                 for(CandidateRecomRecordDO record :recomRecordList){

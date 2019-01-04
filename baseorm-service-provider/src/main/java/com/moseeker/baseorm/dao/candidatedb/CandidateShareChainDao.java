@@ -185,6 +185,21 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
             return list;
         }
     }
+
+    public List<CandidateShareChainDO> getShareChainByPositionAndPresenteeOrderTime(List<Integer> positionId, List<Integer> presenteeUserId, int postUserId) {
+        List<CandidateShareChainDO> list = create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.in(positionId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(postUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.in(presenteeUserId))
+                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.desc())
+                .fetchInto(CandidateShareChainDO.class);
+        if(list == null){
+            return new ArrayList<>();
+        }else {
+            return list;
+        }
+    }
+
     public List<CandidateShareChainDO> getShareChainsByUserIdAndPresenteeAndPosition(Integer sysuserId, List<Integer> shareUserIds, List<Integer> sharePids) {
         return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(sysuserId))
