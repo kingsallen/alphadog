@@ -104,7 +104,7 @@ public class MessageTemplateEntity {
             //校验推送职位是否下架,以及将数据加入推送的表中
             personaRecomEntity.handlePersonaRecomData(params.getUserId(),params.getPositionIds(),params.getCompanyId(),1);
             int recomId=this.addCampaignRecomPositionlist(params.getCompanyId(),params.getPositionIds());
-            url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
+//            url=url.replace("{recomPushId}",recomId+"").replace("recom_code",MDString);
         }
         url = url+"&from_template_message="+params.getTemplateId()+"&send_time=" + new Date().getTime();
         if(url.contains("{hr_id}")){
