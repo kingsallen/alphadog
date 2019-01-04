@@ -608,7 +608,6 @@ public class UserEmployeeServiceImpl {
     }
 
 
-
     public List<CandidateRecomRecordDO> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
         List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
         if(StringUtils.isEmptyList(recomRecordDOList)){
