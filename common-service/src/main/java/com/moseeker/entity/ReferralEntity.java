@@ -692,10 +692,10 @@ public class ReferralEntity {
             Map<Integer, Integer> recommendMap = new HashMap<>();
             if(!StringUtils.isEmptyList(recommendList)){
                 recommendList.forEach( recommend -> {
-                        positionIdMap.put(recommend.getPresenteeUserId(), recommend.getPositionId());
-                        recommendUserSet.add(recommend.getPresenteeUserId());
-                        recommendMap.put(recommend.getPresenteeUserId(), recommend.getId());
-                        timeMap.put(recommend.getPresenteeUserId(), recommend.getRecommendTime());
+                        positionIdMap.put(recommend.getPresenteeId(), recommend.getPositionId());
+                        recommendUserSet.add(recommend.getPresenteeId());
+                        recommendMap.put(recommend.getPresenteeId(), recommend.getId());
+                        timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
                     }
                 );
             }
