@@ -1,24 +1,26 @@
-package com.moseeker.useraccounts.service.impl.pojos;
+package com.moseeker.servicemanager.web.controller.useraccounts.vo;
 
-import java.sql.Timestamp;
+import com.moseeker.entity.pojos.RadarUserInfo;
+import java.util.List;
 
 /**
- * Created by moseeker on 2018/12/29.
+ * Created by moseeker on 2019/1/4.
  */
-public class RadarUserVO {
+public class EmployeeForwardViewPageVO {
 
     public int userId;
     public String nickname;
     public int viewCount;
-    public boolean seekRecommend;
+    public int connection;
     public int depth;
     public String headimgurl;
     public String positionTitle;
     public int positionId;
     public String forwardName;
-    public int referralId;
     public boolean forwardSourceWx;
     public String clickTime;
+    public int invitationStatus;
+    public List<RadarUserInfo> chain;
 
     public int getUserId() {
         return userId;
@@ -44,12 +46,12 @@ public class RadarUserVO {
         this.viewCount = viewCount;
     }
 
-    public boolean isSeekRecommend() {
-        return seekRecommend;
+    public int getConnection() {
+        return connection;
     }
 
-    public void setSeekRecommend(boolean seekRecommend) {
-        this.seekRecommend = seekRecommend;
+    public void setConnection(int connection) {
+        this.connection = connection;
     }
 
     public int getDepth() {
@@ -84,14 +86,6 @@ public class RadarUserVO {
         this.positionId = positionId;
     }
 
-    public int getReferralId() {
-        return referralId;
-    }
-
-    public void setReferralId(int referralId) {
-        this.referralId = referralId;
-    }
-
     public String getForwardName() {
         return forwardName;
     }
@@ -114,5 +108,21 @@ public class RadarUserVO {
 
     public void setClickTime(String clickTime) {
         this.clickTime = clickTime;
+    }
+
+    public int getInvitationStatus() {
+        return invitationStatus;
+    }
+
+    public void setInvitationStatus(int invitationStatus) {
+        this.invitationStatus = invitationStatus;
+    }
+
+    public List<RadarUserInfo> getChain() {
+        return chain;
+    }
+
+    public void setChain(List<RadarUserInfo> chain) {
+        this.chain = chain;
     }
 }

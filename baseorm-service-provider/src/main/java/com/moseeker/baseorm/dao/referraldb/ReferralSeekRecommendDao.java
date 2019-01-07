@@ -94,10 +94,22 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
                 .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.in(presenteeIds))
                 .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
-                .fetchInto(ReferralSeekRecommendRecord.class);
+                .fetch();
 
     }
 
+
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPost(int postUserId, List<Integer> positionIdList,  int page, int size){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
+                .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
+                .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
+                .offset((page-1)*size)
+                .limit(size)
+                .fetch();
+
+    }
     public int updateReferralSeekRecommendRecordForAppId(int referralId, int appId ){
         return using(configuration()).update(REFERRAL_SEEK_RECOMMEND)
                 .set(REFERRAL_SEEK_RECOMMEND.APP_ID, appId)
@@ -136,4 +148,6 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .fetchInto(ReferralSeekRecommendRecord.class);
 
     }
+
+
 }

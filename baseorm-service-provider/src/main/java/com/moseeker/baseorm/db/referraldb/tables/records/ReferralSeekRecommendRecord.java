@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSeekRecommendRecord> implements Record9<Integer, Integer, Integer, Integer, Integer, Timestamp, Timestamp, Integer, Timestamp> {
 
-    private static final long serialVersionUID = -386616641;
+    private static final long serialVersionUID = -2128526553;
 
     /**
      * Setter for <code>referraldb.referral_seek_recommend.id</code>.
@@ -61,16 +61,16 @@ public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSee
     }
 
     /**
-     * Setter for <code>referraldb.referral_seek_recommend.presentee_user_id</code>. user_user.id 求推荐候选人C端账号
+     * Setter for <code>referraldb.referral_seek_recommend.presentee_id</code>. user_user.id 求推荐候选人C端账号
      */
-    public void setPresenteeUserId(Integer value) {
+    public void setPresenteeId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_seek_recommend.presentee_user_id</code>. user_user.id 求推荐候选人C端账号
+     * Getter for <code>referraldb.referral_seek_recommend.presentee_id</code>. user_user.id 求推荐候选人C端账号
      */
-    public Integer getPresenteeUserId() {
+    public Integer getPresenteeId() {
         return (Integer) get(2);
     }
 
@@ -211,7 +211,7 @@ public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSee
      */
     @Override
     public Field<Integer> field3() {
-        return ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID;
+        return ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID;
     }
 
     /**
@@ -283,7 +283,7 @@ public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSee
      */
     @Override
     public Integer value3() {
-        return getPresenteeUserId();
+        return getPresenteeId();
     }
 
     /**
@@ -357,7 +357,7 @@ public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSee
      */
     @Override
     public ReferralSeekRecommendRecord value3(Integer value) {
-        setPresenteeUserId(value);
+        setPresenteeId(value);
         return this;
     }
 
@@ -446,12 +446,12 @@ public class ReferralSeekRecommendRecord extends UpdatableRecordImpl<ReferralSee
     /**
      * Create a detached, initialised ReferralSeekRecommendRecord
      */
-    public ReferralSeekRecommendRecord(Integer id, Integer postUserId, Integer presenteeUserId, Integer positionId, Integer appId, Timestamp createTime, Timestamp updateTime, Integer origin, Timestamp recommendTime) {
+    public ReferralSeekRecommendRecord(Integer id, Integer postUserId, Integer presenteeId, Integer positionId, Integer appId, Timestamp createTime, Timestamp updateTime, Integer origin, Timestamp recommendTime) {
         super(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND);
 
         set(0, id);
         set(1, postUserId);
-        set(2, presenteeUserId);
+        set(2, presenteeId);
         set(3, positionId);
         set(4, appId);
         set(5, createTime);

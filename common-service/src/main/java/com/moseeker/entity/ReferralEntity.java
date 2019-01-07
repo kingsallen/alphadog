@@ -22,6 +22,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
@@ -668,23 +669,21 @@ public class ReferralEntity {
         if(StringUtils.isEmptyList(userIdList)){
             return data;
         }
-        Future<List<CandidateCompanyDO>> candidateCompanyListFuture = threadPool.startTast(
-                () -> candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, userIdList));
-        Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
-                () -> wxEntity.getUserWxUserData(userIdList));
-        Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
-                () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
-        Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
-                () -> userDao.fetchByIdList(userIdList));
-
         try {
+            Future<List<CandidateCompanyDO>> candidateCompanyListFuture = threadPool.startTast(
+                    () -> candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, userIdList));
+            Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
+                    () -> wxEntity.getUserWxUserData(userIdList));
+            Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
+                    () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
+            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(userIdList));
             List<CandidateCompanyDO> companyList = candidateCompanyListFuture.get();
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = null;
 
             if(!StringUtils.isEmptyList(companyList)) {
                 List<Integer> candidateCompanyIds = companyList.stream().map(m -> m.getId()).collect(Collectors.toList());
-                candidatePositionListFuture = threadPool.startTast(
-                        () -> candidatePositionDao.fetchRecentViewedByCompanyIds(candidateCompanyIds));
+                candidatePositionListFuture = threadPool.startTast(() -> candidatePositionDao.fetchRecentViewedByCompanyIds(candidateCompanyIds));
             }
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
             Map<Integer, Integer> positionIdMap = new HashMap<>();
@@ -693,10 +692,10 @@ public class ReferralEntity {
             Map<Integer, Integer> recommendMap = new HashMap<>();
             if(!StringUtils.isEmptyList(recommendList)){
                 recommendList.forEach( recommend -> {
-                        positionIdMap.put(recommend.getPresenteeUserId(), recommend.getPositionId());
-                        recommendUserSet.add(recommend.getPresenteeUserId());
-                        recommendMap.put(recommend.getPresenteeUserId(), recommend.getId());
-                        timeMap.put(recommend.getPresenteeUserId(), recommend.getRecommendTime());
+                        positionIdMap.put(recommend.getPresenteeId(), recommend.getPositionId());
+                        recommendUserSet.add(recommend.getPresenteeId());
+                        recommendMap.put(recommend.getPresenteeId(), recommend.getId());
+                        timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
                     }
                 );
             }
@@ -751,16 +750,12 @@ public class ReferralEntity {
             }
             Map<Integer, UserUserRecord> userMap = new HashMap<>();
             if(!StringUtils.isEmptyList(userListFuture.get())){
-                userListFuture.get().forEach(fe ->
-                        userMap.put(fe.getId(), fe)
-                );
+                userListFuture.get().forEach(fe -> userMap.put(fe.getId(), fe));
             }
             data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionListFuture.get())){
-                positionListFuture.get().forEach(position ->{
-                    positionMap.put(position.getId(), position);
-                });
+                positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
             }
             Set<Map.Entry<Integer, Integer>> entries = positionIdMap.entrySet();
             Map<Integer, JobPositionDO> userPositionMap = new HashMap<>();
@@ -772,9 +767,7 @@ public class ReferralEntity {
             data.setRecommendUserSet(recommendUserSet);
             Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
             if(!StringUtils.isEmptyList(root2ListFuture.get())){
-                root2ListFuture.get().forEach(root2 ->{
-                    root2UserMap.put(root2.getId(), root2);
-                });
+                root2ListFuture.get().forEach(root2 ->root2UserMap.put(root2.getId(), root2));
             }
             Set<Map.Entry<Integer, Integer>> root2Entries = root2Map.entrySet();
             Map<Integer, UserUserRecord> userRoot2Map = new HashMap<>();
@@ -785,8 +778,8 @@ public class ReferralEntity {
             Map<Integer, Byte> fromMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionShareRecordListFuture.get())){
                 positionShareRecordListFuture.get().forEach(fe -> {
-                        if (fromMap.get(fe.getShareChainId()) == null)
-                            fromMap.put(fe.getShareChainId(), fe.getClickFrom());
+                    if (fromMap.get(fe.getShareChainId()) == null)
+                        fromMap.put(fe.getShareChainId(), fe.getClickFrom());
                     }
                 );
             }
@@ -807,7 +800,9 @@ public class ReferralEntity {
     public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserId(int postUserId, List<Integer> positionIds, List<Integer> presenteeUserIds){
         return recommendDao.fetchSeekRecommendByPostAndPressentee(postUserId, positionIds, presenteeUserIds);
     }
-    public EmployeeCardViewData fetchEmployeeViewCardData(List<CandidateRecomRecordDO> recomRecordList, int postUserId, int companyId){
+
+
+    public EmployeeCardViewData fetchEmployeeViewCardData(List<CandidateRecomRecordRecord> recomRecordList, int postUserId, int companyId){
         EmployeeCardViewData data = new EmployeeCardViewData();
         if(StringUtils.isEmptyList(recomRecordList)){
             return data;
@@ -818,7 +813,6 @@ public class ReferralEntity {
             userIdList.add(record.getPresenteeUserId());
             positionIdList.add(record.getPositionId());
         });
-
         try {
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
                     () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
@@ -854,7 +848,7 @@ public class ReferralEntity {
             data.setShareChainList(shareChainList);
             List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
-                for(CandidateRecomRecordDO record :recomRecordList){
+                for(CandidateRecomRecordRecord record :recomRecordList){
                     for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
                         if(record.getPositionId() == logRecord.getPositionId() && record.getPresenteeUserId() == logRecord.getEndUserId()){
                             connectionLogList.add(logRecord);
@@ -871,32 +865,26 @@ public class ReferralEntity {
             }
             Map<Integer, UserUserRecord> userMap = new HashMap<>();
             if(!StringUtils.isEmptyList(userListFuture.get())){
-                userListFuture.get().forEach(fe ->
-                        userMap.put(fe.getId(), fe)
-                );
+                userListFuture.get().forEach(fe ->userMap.put(fe.getId(), fe) );
             }
             data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionListFuture.get())){
-                positionListFuture.get().forEach(position ->{
-                    positionMap.put(position.getId(), position);
-                });
+                positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
             }
             data.setPositionMap(positionMap);
             data.setCandidatePositionRecords(candidatePositionListFuture.get());
             Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
             if(!StringUtils.isEmptyList(root2ListFuture.get())){
-                root2ListFuture.get().forEach(root2 ->{
-                    root2UserMap.put(root2.getId(), root2);
-                });
+                root2ListFuture.get().forEach(root2 ->root2UserMap.put(root2.getId(), root2));
             }
             data.setRoot2UserMap(root2UserMap);
             Map<Integer, Byte> fromMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionShareRecordListFuture.get())){
                 positionShareRecordListFuture.get().forEach(fe -> {
-                            if (fromMap.get(fe.getShareChainId()) == null)
-                                fromMap.put(fe.getShareChainId(), fe.getClickFrom());
-                        }
+                    if (fromMap.get(fe.getShareChainId()) == null)
+                        fromMap.put(fe.getShareChainId(), fe.getClickFrom());
+                    }
                 );
             }
             data.setUserFromMap(fromMap);
@@ -904,5 +892,11 @@ public class ReferralEntity {
             logger.error(e.getMessage(), e);
         }
         return data;
+    }
+
+
+
+    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, int page, int size){
+        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, page, size);
     }
 }

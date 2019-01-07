@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserCollectPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.common.constants.AbleFlag;
@@ -531,8 +532,8 @@ public class UserCenterBizTools {
         }
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecords(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordDO> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecords(int userId, List<Integer> positionIdList){
+        List<CandidateRecomRecordRecord> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
@@ -540,9 +541,9 @@ public class UserCenterBizTools {
         List<JobApplicationDO> applicationList = applicationEntity.fetchByRecomUserIdAndPosition(positionIdList, presenteeUserIds);
         List<ReferralSeekRecommendRecord> seekRecommendRecordList = referralEntity.fetchSeekRecommendByPostUserId(userId, positionIdList, presenteeUserIds);
 
-        List<CandidateRecomRecordDO> list = new ArrayList<>();
+        List<CandidateRecomRecordRecord> list = new ArrayList<>();
 
-        for (CandidateRecomRecordDO record : recomRecordDOList) {
+        for (CandidateRecomRecordRecord record : recomRecordDOList) {
             boolean status = false;
             if(!StringUtils.isEmptyList(applicationList)) {
                 for (JobApplicationDO application : applicationList) {

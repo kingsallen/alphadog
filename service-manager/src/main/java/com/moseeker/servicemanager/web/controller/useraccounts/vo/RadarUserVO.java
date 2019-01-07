@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.service.impl.pojos;
+package com.moseeker.servicemanager.web.controller.useraccounts.vo;
 
 import java.sql.Timestamp;
 
@@ -18,7 +18,7 @@ public class RadarUserVO {
     public String forwardName;
     public int referralId;
     public boolean forwardSourceWx;
-    public String clickTime;
+    public Timestamp clickTime;
 
     public int getUserId() {
         return userId;
@@ -108,11 +108,11 @@ public class RadarUserVO {
         this.forwardSourceWx = forwardSourceWx;
     }
 
-    public String getClickTime() {
+    public Timestamp getClickTime() {
         return clickTime;
     }
 
-    public void setClickTime(String clickTime) {
+    public void setClickTime(Timestamp clickTime) {
         this.clickTime = clickTime;
     }
 }

@@ -8,9 +8,11 @@ import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -558,6 +560,29 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
+    public RadarInfoVO fetchEmployeeSeekRecommend(int userId, int companyId, int page, int size){
+        RadarInfoVO result = new RadarInfoVO();
+        if(page == 0){
+            page=1;
+        }
+        if(size ==0){
+            size = 10;
+        }
+        result.setPage(page);
+        if(!employeeEntity.isEmployee(userId, companyId)) {
+            throw UserAccountException.PERMISSION_DENIED;
+        }
+        List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+        if (StringUtils.isEmptyList(positionIdList)) {
+            return result;
+        }
+        List<ReferralSeekRecommendRecord> list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, page, size);
+        if(StringUtils.isEmptyList(list)){
+            return result;
+        }
+        return result;
+    }
+
     public EmployeeForwardViewVO fetchEmployeeForwardView(int userId, int companyId, String positionTitle, String order, int page, int size){
         EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
@@ -574,19 +599,17 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
         }
-        List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
-
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        List<CandidateRecomRecordDO> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size, result);
+        List<CandidateRecomRecordRecord> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size, result);
         if(StringUtils.isEmptyList(list)){
             return result;
         }
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
-        for(CandidateRecomRecordDO record: list){
+        for(CandidateRecomRecordRecord record: list){
             viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record));
         }
         result.setUserList(viewPages);
@@ -618,9 +641,9 @@ public class UserEmployeeServiceImpl {
     }
 
 
-    public List<CandidateRecomRecordDO> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,
+    public List<CandidateRecomRecordRecord> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,
                                                          String order, int page, int size, EmployeeForwardViewVO result){
-        List<CandidateRecomRecordDO> list = new ArrayList<>();
+        List<CandidateRecomRecordRecord> list = new ArrayList<>();
         switch (order){
             case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds);
                 break;
@@ -639,23 +662,23 @@ public class UserEmployeeServiceImpl {
             if(index >= list.size()){
                 return new ArrayList<>();
             }
-            list = list.subList((page-1)*size, page*size);
+            list = list.subList((page-1)*size, end);
         }
         return list;
     }
 
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         List<CandidatePositionDO> candidatePositionList = candidatePositionDao.fetchViewedByUserIdsAndPids(presenteeUserIds, positionIdList);
-        List<CandidateRecomRecordDO> list = new ArrayList<>();
+        List<CandidateRecomRecordRecord> list = new ArrayList<>();
 
         for (CandidatePositionDO candidatePosition : candidatePositionList) {
-            for(CandidateRecomRecordDO record: recomRecordDOList){
+            for(CandidateRecomRecordRecord record: recomRecordDOList){
                 if(candidatePosition.getUserId() == record.getPresenteeUserId() && candidatePosition.getPositionId() == record.getPositionId()){
                     list.add(record);
                     break;
@@ -666,16 +689,16 @@ public class UserEmployeeServiceImpl {
         return recomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
-        List<CandidateRecomRecordDO> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, presenteeUserIds);
-        List<CandidateRecomRecordDO> list = new ArrayList<>();
+        List<CandidateRecomRecordRecord> list = new ArrayList<>();
         for (UserDepthVO depth : depthList) {
-            for(CandidateRecomRecordDO record: recomRecordDOList){
+            for(CandidateRecomRecordRecord record: recomRecordDOList){
                 if(depth.getUserId() == record.getPresenteeUserId()){
                     list.add(record);
                 }
