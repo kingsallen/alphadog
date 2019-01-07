@@ -101,8 +101,8 @@ public class RadarUserInfo {
      * @return 返回人脉雷达该用户数据
      */
     public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        List<ReferralConnectionChainRecord> newChainRecords = getOriginChainRecords(chainRecords);
         // 获取连连看最长路径，用于定位度数，这里会对记录排序
-        List<ReferralConnectionChainRecord> newChainRecords = getNewChainRecords(chainRecords);
         this.setUid(userDO.getSysuserId());
         this.setNickname(userDO.getNickname());
         this.setAvatar(userDO.getHeadimgurl());
@@ -124,7 +124,7 @@ public class RadarUserInfo {
         return this;
     }
 
-    private List<ReferralConnectionChainRecord> getNewChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
+    private List<ReferralConnectionChainRecord> getOriginChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
         List<ReferralConnectionChainRecord> newChainRecords = new ArrayList<>();
         int rootParentId = chainRecords.get(0).getRootParentId();
         Timestamp createTime = null;
