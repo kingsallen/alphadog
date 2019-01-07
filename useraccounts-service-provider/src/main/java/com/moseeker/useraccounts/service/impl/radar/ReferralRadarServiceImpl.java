@@ -297,7 +297,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setPid(connectionLogRecord.getPositionId());
         result.setState(connectionLogRecord.getState().intValue());
         result.setChain(userChains);
-        logger.info("connectRadar:{}", result);
+        logger.info("connectRadar:{}", JSON.toJSONString(result));
         return result;
     }
 
