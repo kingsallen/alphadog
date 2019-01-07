@@ -284,6 +284,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         // 修改连连看是否连接完成的状态
         chainRecords = updateConnectionInfo(radarInfo, isViewer, connectionLogRecord, chainRecords);
+        // 如果连接完成，过滤掉链路中不存在的用户
+        chainRecords = filterUnexistChain(connectionLogRecord, chainRecords);
         // 获取排好序并包括连接状态的人脉连连看链路
         List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
         // 填充员工姓名
@@ -299,6 +301,19 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setChain(userChains);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
         return result;
+    }
+
+    private List<ReferralConnectionChainRecord> filterUnexistChain(ReferralConnectionLogRecord connectionLogRecord, List<ReferralConnectionChainRecord> chainRecords) {
+        if(connectionLogRecord.getState() != 1){
+            return chainRecords;
+        }
+        List<ReferralConnectionChainRecord> connectionChainRecords = new ArrayList<>();
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(chainRecord.getState() == 1){
+                connectionChainRecords.add(chainRecord);
+            }
+        }
+        return connectionChainRecords;
     }
 
     @Override
