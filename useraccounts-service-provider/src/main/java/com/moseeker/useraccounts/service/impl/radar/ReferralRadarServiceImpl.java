@@ -446,7 +446,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     @Override
     public void updateShareChainHandleType(ReferralSeekRecommendRecord record, int type) {
-        int presenteeUserId = record.getPresenteeUserId();
+        int presenteeUserId = record.getPresenteeId();
         int rootUserId = record.getPostUserId();
         int positionId = record.getPositionId();
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
@@ -458,7 +458,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
-                record.getPostUserId(), record.getPresenteeUserId(), record.getPositionId());
+                record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
         templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
     }
 

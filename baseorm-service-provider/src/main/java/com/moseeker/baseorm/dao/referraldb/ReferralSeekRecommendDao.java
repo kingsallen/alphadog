@@ -31,11 +31,11 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Param<Integer> positionIdParam = param(REFERRAL_SEEK_RECOMMEND.POSITION_ID.getName(), recomRecordRecord.getPositionId());
-        Param<Integer> presenteeUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPresenteeUserId());
-        Param<Integer> postUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.getName(), recomRecordRecord.getPostUserId());
+        Param<Integer> presenteeUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.getName(), recomRecordRecord.getPresenteeId());
+        Param<Integer> postUserIdParam = param(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.getName(), recomRecordRecord.getPostUserId());
         using(configuration()).insertInto(REFERRAL_SEEK_RECOMMEND,
                 REFERRAL_SEEK_RECOMMEND.POSITION_ID,
-                REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID,
+                REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID,
                 REFERRAL_SEEK_RECOMMEND.POST_USER_ID
         ).select(
                 select(
@@ -47,14 +47,14 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                                 selectOne()
                                         .from(REFERRAL_SEEK_RECOMMEND)
                                         .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
-                                        .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                                        .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.eq(recomRecordRecord.getPresenteeId()))
                                         .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
                         )
         ).execute();
 
         ReferralSeekRecommendRecord recommendRecord = using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(recomRecordRecord.getPostUserId()))
-                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.eq(recomRecordRecord.getPresenteeUserId()))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.eq(recomRecordRecord.getPresenteeId()))
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(recomRecordRecord.getPositionId()))
                 .orderBy(REFERRAL_SEEK_RECOMMEND.ID.desc())
                 .limit(1)
@@ -92,7 +92,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
-                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.in(presenteeIds))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.in(presenteeIds))
                 .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
                 .fetch();
 
@@ -142,7 +142,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
     public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserAndPresentee(int postUserId, List<Integer> presenteeUserId){
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
-                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID.in(presenteeUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.in(presenteeUserId))
                 .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
                 .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
                 .fetchInto(ReferralSeekRecommendRecord.class);

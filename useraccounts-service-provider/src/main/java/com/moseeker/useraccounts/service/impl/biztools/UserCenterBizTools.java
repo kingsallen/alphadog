@@ -555,8 +555,8 @@ public class UserCenterBizTools {
             }
             if(!StringUtils.isEmptyList(seekRecommendRecordList)){
                 for(ReferralSeekRecommendRecord recommend : seekRecommendRecordList){
-                    if(recommend.getPresenteeUserId() == record.getPresenteeUserId() &&
-                            recommend.getPostUserId() == record.getPresenteeUserId()){
+                    if(recommend.getPresenteeId().intValue() == record.getPresenteeUserId().intValue() &&
+                            recommend.getPostUserId().intValue() == record.getPresenteeUserId().intValue()){
                         status = true;
                         break;
                     }
