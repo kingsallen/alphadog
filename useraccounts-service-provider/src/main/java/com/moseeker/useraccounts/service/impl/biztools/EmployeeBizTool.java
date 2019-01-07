@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl.biztools;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.DateUtils;
@@ -37,7 +38,6 @@ public class EmployeeBizTool {
             return radar;
         }
         radar.setUserId(userUserRecord.getId());
-
         UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
         if(wxUserRecord != null){
             radar.setNickname(wxUserRecord.getNickname());
@@ -74,7 +74,7 @@ public class EmployeeBizTool {
         return radar;
     }
 
-    public static EmployeeForwardViewPageVO packageEmployeeForwardViewVO(EmployeeCardViewData data, CandidateRecomRecordRecord record){
+    public static EmployeeForwardViewPageVO packageEmployeeForwardViewVO(EmployeeCardViewData data, CandidateRecomRecordRecord record, List<UserDepthVO> depthList){
         EmployeeForwardViewPageVO result = new EmployeeForwardViewPageVO();
         int userId= record.getPresenteeUserId();
         result.setUserId(userId);
@@ -83,17 +83,16 @@ public class EmployeeBizTool {
             result.setNickname(wxUserRecord.getNickname());
             result.setHeadimgurl(wxUserRecord.getHeadimgurl());
         }
-        int positionId = record.getPositionId();
-        JobPositionDO position = data.getPositionMap().get(positionId);
+        JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
         if(position!=null){
-            result.setPositionId(positionId);
+            result.setPositionId(record.getPositionId().intValue());
             result.setPositionTitle(position.getTitle());
         }
         String time = DateUtils.dateToMinuteCN2Date(record.getClickTime());
         result.setClickTime(time);
         if(!StringUtils.isEmptyList(data.getShareChainList())){
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
-                if(shareChain.getPositionId() == positionId && shareChain.getPresenteeUserId() == userId){
+                if(shareChain.getPositionId() == record.getPositionId().intValue() && shareChain.getPresenteeUserId() == userId){
                     UserUserRecord root2User = data.getRoot2UserMap().get(shareChain.getRoot2RecomUserId());
                     result.setForwardName(root2User!=null?root2User.getName():"");
                     result.setForwardSourceWx(false);
@@ -108,22 +107,75 @@ public class EmployeeBizTool {
         }
         if(!StringUtils.isEmptyList(data.getConnectionLogList())){
             for(ReferralConnectionLogRecord logRecord : data.getConnectionLogList()){
-                if(logRecord.getEndUserId() == userId && logRecord.getPositionId() == positionId){
+                if(logRecord.getEndUserId().intValue() == userId && logRecord.getPositionId().intValue() == record.getPositionId().intValue()){
                     result.setConnection(logRecord.getState());
                     result.setChain(data.getConnectionMap().get(logRecord.getRootChainId()));
                     break;
                 }
             }
         }
+        for(UserDepthVO depth : depthList){
+            if(depth.getUserId() == userId) {
+                result.setDepth(depth.getDepth());
+                break;
+            }
+        }
         if(!StringUtils.isEmptyList(data.getCandidatePositionRecords())){
             for(CandidatePositionRecord positionRecord : data.getCandidatePositionRecords()){
-                if(positionRecord.getUserId() == userId && positionRecord.getPositionId() == positionId){
+                if(positionRecord.getUserId().intValue() == userId && positionRecord.getPositionId().intValue() == record.getPositionId().intValue()){
                     result.setViewCount(positionRecord.getViewNumber());
                     break;
                 }
             }
         }
+        return result;
+    }
 
+    public static RadarUserVO packageEmployeeSeekRecommendVO(EmployeeCardViewData data, ReferralSeekRecommendRecord record, List<UserDepthVO> depthList){
+        RadarUserVO result = new RadarUserVO();
+        int userId= record.getPresenteeId();
+        result.setUserId(userId);
+        result.setReferralId(record.getId());
+        UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
+        if(wxUserRecord!=null){
+            result.setNickname(wxUserRecord.getNickname());
+            result.setHeadimgurl(wxUserRecord.getHeadimgurl());
+        }
+        JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
+        if(position!=null){
+            result.setPositionId(record.getPositionId());
+            result.setPositionTitle(position.getTitle());
+        }
+        String time = DateUtils.dateToMinuteCN2Date(record.getRecommendTime());
+        result.setClickTime(time);
+        if(!StringUtils.isEmptyList(data.getShareChainList())){
+            for(CandidateShareChainDO shareChain : data.getShareChainList()){
+                if(shareChain.getPositionId() == record.getPositionId().intValue() && shareChain.getPresenteeUserId() == userId){
+                    UserUserRecord root2User = data.getRoot2UserMap().get(shareChain.getRoot2RecomUserId());
+                    result.setForwardName(root2User!=null?root2User.getName():"");
+                    result.setForwardSourceWx(false);
+                    if(data.getUserFromMap().get(shareChain.getId()) != null
+                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Groupmessage.getValue()){
+                        result.setForwardSourceWx(true);
+                    }
+                    break;
+                }
+            }
+        }
+        for(UserDepthVO depth : depthList){
+            if(depth.getUserId() == userId) {
+                result.setDepth(depth.getDepth());
+                break;
+            }
+        }
+        if(!StringUtils.isEmptyList(data.getCandidatePositionRecords())){
+            for(CandidatePositionRecord positionRecord : data.getCandidatePositionRecords()){
+                if(positionRecord.getUserId().intValue() == userId && positionRecord.getPositionId().intValue() == record.getPositionId().intValue()){
+                    result.setViewCount(positionRecord.getViewNumber());
+                    break;
+                }
+            }
+        }
         return result;
     }
 
