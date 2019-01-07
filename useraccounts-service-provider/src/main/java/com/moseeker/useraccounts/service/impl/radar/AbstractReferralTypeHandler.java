@@ -12,7 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +20,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractReferralTypeHandler {
 
@@ -95,5 +94,5 @@ public abstract class AbstractReferralTypeHandler {
         return user;
     }
 
-    public void postProcessAfterCreateCard(JSONObject card, Map<String, Object> applierDegrees) {}
+    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {}
 }

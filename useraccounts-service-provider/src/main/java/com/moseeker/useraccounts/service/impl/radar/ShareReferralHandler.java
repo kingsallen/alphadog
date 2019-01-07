@@ -1,7 +1,6 @@
 package com.moseeker.useraccounts.service.impl.radar;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -10,6 +9,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.stereotype.Component;
 
@@ -125,8 +125,15 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     }
 
     @Override
-    public void postProcessAfterCreateCard(JSONObject card, Map<String, Object> applierDegrees) {
-        card.put("degree", 0);
+    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {
+        int degree = 0;
+        for(UserDepthVO userDepthVO : applierDegrees){
+            if(userDepthVO.getUserId() == jobApplicationDO.getApplierId()){
+                degree = userDepthVO.getDepth();
+                break;
+            }
+        }
+        card.put("degree", degree);
     }
 
 }

@@ -403,8 +403,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> applyIds = jobApplicationDOS.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<Integer> recomUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getRecommenderUserId).distinct().collect(Collectors.toList());
-        // todo neo4j 查
-        Map<String, Object> applierDegrees = new HashMap<>(1 >> 5);
+        // neo4j 查
+        List<UserDepthVO> applierDegrees = neo4jService.fetchDepthUserList(progressInfo.getUserId(), progressInfo.getCompanyId(), applierUserIds);
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         Set<Integer> allUserIds = new HashSet<>();
         allUserIds.addAll(applierUserIds);
@@ -437,7 +437,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             JSONObject card = handler.createApplyCard(jobApplicationDO, jobPositionDO, applier, hrOperations, singleTypeMap);
 
-            handler.postProcessAfterCreateCard(card, applierDegrees);
+            handler.postProcessAfterCreateCard(card, jobApplicationDO, applierDegrees);
 
             result.add(card);
         }

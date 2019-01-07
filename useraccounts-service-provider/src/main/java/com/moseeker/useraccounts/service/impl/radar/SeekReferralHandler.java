@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -56,8 +55,15 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
     }
 
     @Override
-    public void postProcessAfterCreateCard(JSONObject card, Map<String, Object> applierDegrees) {
-        card.put("degree", 0);
+    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {
+        int degree = 0;
+        for(UserDepthVO userDepthVO : applierDegrees){
+            if(userDepthVO.getUserId() == jobApplicationDO.getApplierId()){
+                degree = userDepthVO.getDepth();
+                break;
+            }
+        }
+        card.put("degree", degree);
     }
 
 }
