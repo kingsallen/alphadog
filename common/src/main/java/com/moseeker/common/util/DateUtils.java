@@ -19,6 +19,7 @@ public class DateUtils {
     public static final String NORMAL_DATE = "yyyy-MM-dd";
     public static final String MINUTE_TIME = "yyyy-MM-dd HH:mm";
     public static final String MINUTE_TIME_CN = "yyyy年MM月dd日 HH:mm";
+    public static final String MINUTE_TIME_CN2 = "yyyy年MM月dd日 HH时mm分";
     public static final String SHOT_TIME = "yyyy-MM-dd HH:mm:ss";
     public static final String LONG_TIME = "yyyy-MM-dd HH:mm:ss sss";
 
@@ -26,6 +27,7 @@ public class DateUtils {
     private static final SimpleDateFormat normalDateSDF = new SimpleDateFormat(NORMAL_DATE);
     private static final SimpleDateFormat minuteTimeSDF = new SimpleDateFormat(MINUTE_TIME);
     private static final SimpleDateFormat minuteTimeCNSDF = new SimpleDateFormat(MINUTE_TIME_CN);
+    private static final SimpleDateFormat minuteTimeCN2SDF = new SimpleDateFormat(MINUTE_TIME_CN2);
     private static final SimpleDateFormat shotTimeSDF = new SimpleDateFormat(SHOT_TIME);
     private static final SimpleDateFormat longTimeSDF = new SimpleDateFormat(LONG_TIME);
 
@@ -51,6 +53,12 @@ public class DateUtils {
     public static String dateToMinuteDate(Date date) {
         synchronized(minuteTimeSDF) {
             return minuteTimeSDF.format(date);
+        }
+    }
+
+    public static String dateToMinuteCN2Date(Date date) {
+        synchronized(minuteTimeCN2SDF) {
+            return minuteTimeCN2SDF.format(date);
         }
     }
 

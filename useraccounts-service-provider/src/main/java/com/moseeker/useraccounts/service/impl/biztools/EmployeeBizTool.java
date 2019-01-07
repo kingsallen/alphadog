@@ -1,9 +1,11 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.pojos.EmployeeCardViewData;
 import com.moseeker.entity.pojos.EmployeeRadarData;
@@ -15,6 +17,7 @@ import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewPageVO;
 import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
 import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
+import java.sql.Timestamp;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +64,8 @@ public class EmployeeBizTool {
         if(root2User != null){
             radar.setForwardName(root2User.getName());
         }
-        radar.setClickTime(data.getTimeMap().get(userId));
+        String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
+        radar.setClickTime(time);
         Byte forward = data.getUserFromMap().get(userId);
         radar.setForwardSourceWx(false);
         if(forward== ForwardSourceType.Groupmessage.getValue()){
@@ -70,7 +74,7 @@ public class EmployeeBizTool {
         return radar;
     }
 
-    public static EmployeeForwardViewPageVO packageEmployeeForwardViewVO(EmployeeCardViewData data, CandidateRecomRecordDO record){
+    public static EmployeeForwardViewPageVO packageEmployeeForwardViewVO(EmployeeCardViewData data, CandidateRecomRecordRecord record){
         EmployeeForwardViewPageVO result = new EmployeeForwardViewPageVO();
         int userId= record.getPresenteeUserId();
         result.setUserId(userId);
@@ -85,7 +89,8 @@ public class EmployeeBizTool {
             result.setPositionId(positionId);
             result.setPositionTitle(position.getTitle());
         }
-        result.setClickTime(record.getClickTime());
+        String time = DateUtils.dateToMinuteCN2Date(record.getClickTime());
+        result.setClickTime(time);
         if(!StringUtils.isEmptyList(data.getShareChainList())){
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
                 if(shareChain.getPositionId() == positionId && shareChain.getPresenteeUserId() == userId){

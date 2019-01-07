@@ -22,6 +22,7 @@ import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
@@ -801,7 +802,7 @@ public class ReferralEntity {
     }
 
 
-    public EmployeeCardViewData fetchEmployeeViewCardData(List<CandidateRecomRecordDO> recomRecordList, int postUserId, int companyId){
+    public EmployeeCardViewData fetchEmployeeViewCardData(List<CandidateRecomRecordRecord> recomRecordList, int postUserId, int companyId){
         EmployeeCardViewData data = new EmployeeCardViewData();
         if(StringUtils.isEmptyList(recomRecordList)){
             return data;
@@ -847,7 +848,7 @@ public class ReferralEntity {
             data.setShareChainList(shareChainList);
             List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
-                for(CandidateRecomRecordDO record :recomRecordList){
+                for(CandidateRecomRecordRecord record :recomRecordList){
                     for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
                         if(record.getPositionId() == logRecord.getPositionId() && record.getPresenteeUserId() == logRecord.getEndUserId()){
                             connectionLogList.add(logRecord);
@@ -891,5 +892,11 @@ public class ReferralEntity {
             logger.error(e.getMessage(), e);
         }
         return data;
+    }
+
+
+
+    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, int page, int size){
+        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, page, size);
     }
 }

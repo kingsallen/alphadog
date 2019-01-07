@@ -68,22 +68,14 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(List<Integer> positionIdSet, int presenteeId) {
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
-                .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByPositionSetAndPresenteeId(List<Integer> positionIdSet, int presenteeId) {
+        List<CandidateRecomRecordRecord> candidateRecomRecordDOList = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                 .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int) (presenteeId))
                         .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet)))
                 .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
                         CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
                 .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc())
-                .fetchInto(CandidateRecomRecordDO.class);
+                .fetch();
         return candidateRecomRecordDOList;
     }
 

@@ -244,4 +244,9 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }
         return result;
     }
+
+    @Override
+    public RadarInfo fetchEmployeeSeekRecommendPage(int userId, int companyId, int page, int size) throws BIZException, TException {
+        return null;
+    }
 }

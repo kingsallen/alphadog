@@ -18,7 +18,7 @@ public class RadarUserVO {
     public String forwardName;
     public int referralId;
     public boolean forwardSourceWx;
-    public Timestamp clickTime;
+    public String clickTime;
 
     public int getUserId() {
         return userId;
@@ -108,11 +108,11 @@ public class RadarUserVO {
         this.forwardSourceWx = forwardSourceWx;
     }
 
-    public Timestamp getClickTime() {
+    public String getClickTime() {
         return clickTime;
     }
 
-    public void setClickTime(Timestamp clickTime) {
+    public void setClickTime(String clickTime) {
         this.clickTime = clickTime;
     }
 }

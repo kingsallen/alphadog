@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommend extends TableImpl<ReferralSeekRecommendRecord> {
 
-    private static final long serialVersionUID = 1295643260;
+    private static final long serialVersionUID = 446881580;
 
     /**
      * The reference instance of <code>referraldb.referral_seek_recommend</code>
@@ -62,9 +62,9 @@ public class ReferralSeekRecommend extends TableImpl<ReferralSeekRecommendRecord
     public final TableField<ReferralSeekRecommendRecord, Integer> POST_USER_ID = createField("post_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id 员工的C端账号");
 
     /**
-     * The column <code>referraldb.referral_seek_recommend.presentee_user_id</code>. user_user.id 求推荐候选人C端账号
+     * The column <code>referraldb.referral_seek_recommend.presentee_id</code>. user_user.id 求推荐候选人C端账号
      */
-    public final TableField<ReferralSeekRecommendRecord, Integer> PRESENTEE_USER_ID = createField("presentee_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id 求推荐候选人C端账号");
+    public final TableField<ReferralSeekRecommendRecord, Integer> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "user_user.id 求推荐候选人C端账号");
 
     /**
      * The column <code>referraldb.referral_seek_recommend.position_id</code>. 求推荐职位编号
