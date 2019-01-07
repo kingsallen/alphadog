@@ -4,6 +4,7 @@ import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
@@ -228,7 +229,7 @@ public class UserCenterService {
 
             List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
 
-            Future<List<CandidateRecomRecordDO>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(userId, positionIdList));
+            Future<List<CandidateRecomRecordRecord>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(userId, positionIdList));
             Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countReferralSeekRecommend(userId, positionIdList));
             totalCount = totalCountFuture.get().size();
             interestedCount = interestedCountFuture.get();

@@ -29,7 +29,7 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
     UserNode updateUserEmployeeCompany(@Param("userId") Integer userId, @Param("employeeCompany") int employeeCompany);
 
     @Query("match (c1:UserUser),(c2:UserUser) where c1.user_id={userId} and c2.employee_company <>0 and c2.user_id in {userIdList}" +
-                   "   match p=(c1)-[*1..3]-(c2) return c2.user_id")
+                   "   match p=shortestpath((c1)-[*1..3]-(c2)) return c2.user_id")
     List<Integer> fetchUserThreeDepthEmployee(@Param("userId") int userId, @Param("userIdList") List<Integer> userIdList);
 
     @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} " +

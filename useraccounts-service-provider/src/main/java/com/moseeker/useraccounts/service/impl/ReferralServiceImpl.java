@@ -376,7 +376,7 @@ public class ReferralServiceImpl implements ReferralService {
         }
         ReferralSeekRecommendRecord record = new ReferralSeekRecommendRecord();
         record.setPostUserId(postUserId);
-        record.setPresenteeUserId(userId);
+        record.setPresenteeId(userId);
         record.setPositionId(positionId);
         record.setOrigin(origin);
         ReferralSeekRecommendRecord recommendRecord = new ReferralSeekRecommendRecord();
@@ -406,7 +406,7 @@ public class ReferralServiceImpl implements ReferralService {
         if(record == null){
             throw UserAccountException.REFERRAL_SEEK_RECOMMEND_NULL;
         }
-        UserUserRecord user = userDao.getUserById(record.getPresenteeUserId());
+        UserUserRecord user = userDao.getUserById(record.getPresenteeId());
         if(user == null){
             throw UserAccountException.NODATA_EXCEPTION;
         }
@@ -447,7 +447,7 @@ public class ReferralServiceImpl implements ReferralService {
         UserEmployeeDO employee = employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId());
         int origin = recommendRecord.getOrigin()==1 ? ApplicationSource.SEEK_REFERRAL.getValue():
                 ApplicationSource.INVITE_REFERRAL.getValue();
-        UserUserDO user = userDao.getUser(recommendRecord.getPresenteeUserId());
+        UserUserDO user = userDao.getUser(recommendRecord.getPresenteeId());
         int applicationId = 0;
         try {
             applicationId = createJobApplication(user.getId(), positionDO.getCompanyId(), positionId, user.getName(), origin, recommendRecord.getPostUserId());

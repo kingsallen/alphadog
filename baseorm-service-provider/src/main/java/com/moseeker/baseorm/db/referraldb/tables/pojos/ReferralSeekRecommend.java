@@ -23,11 +23,11 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralSeekRecommend implements Serializable {
 
-    private static final long serialVersionUID = -1225260865;
+    private static final long serialVersionUID = 1320420544;
 
     private Integer   id;
     private Integer   postUserId;
-    private Integer   presenteeUserId;
+    private Integer   presenteeId;
     private Integer   positionId;
     private Integer   appId;
     private Timestamp createTime;
@@ -40,7 +40,7 @@ public class ReferralSeekRecommend implements Serializable {
     public ReferralSeekRecommend(ReferralSeekRecommend value) {
         this.id = value.id;
         this.postUserId = value.postUserId;
-        this.presenteeUserId = value.presenteeUserId;
+        this.presenteeId = value.presenteeId;
         this.positionId = value.positionId;
         this.appId = value.appId;
         this.createTime = value.createTime;
@@ -52,7 +52,7 @@ public class ReferralSeekRecommend implements Serializable {
     public ReferralSeekRecommend(
         Integer   id,
         Integer   postUserId,
-        Integer   presenteeUserId,
+        Integer   presenteeId,
         Integer   positionId,
         Integer   appId,
         Timestamp createTime,
@@ -62,7 +62,7 @@ public class ReferralSeekRecommend implements Serializable {
     ) {
         this.id = id;
         this.postUserId = postUserId;
-        this.presenteeUserId = presenteeUserId;
+        this.presenteeId = presenteeId;
         this.positionId = positionId;
         this.appId = appId;
         this.createTime = createTime;
@@ -87,12 +87,12 @@ public class ReferralSeekRecommend implements Serializable {
         this.postUserId = postUserId;
     }
 
-    public Integer getPresenteeUserId() {
-        return this.presenteeUserId;
+    public Integer getPresenteeId() {
+        return this.presenteeId;
     }
 
-    public void setPresenteeUserId(Integer presenteeUserId) {
-        this.presenteeUserId = presenteeUserId;
+    public void setPresenteeId(Integer presenteeId) {
+        this.presenteeId = presenteeId;
     }
 
     public Integer getPositionId() {
@@ -149,7 +149,7 @@ public class ReferralSeekRecommend implements Serializable {
 
         sb.append(id);
         sb.append(", ").append(postUserId);
-        sb.append(", ").append(presenteeUserId);
+        sb.append(", ").append(presenteeId);
         sb.append(", ").append(positionId);
         sb.append(", ").append(appId);
         sb.append(", ").append(createTime);

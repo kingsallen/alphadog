@@ -202,7 +202,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 只有两度和三度的情况下才会产生连连看链路
         boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
         int chainId = 0;
-        if(isChainLimit && (connectionLogRecord == null)){
+        if(isChainLimit){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
             chainId = doInsertConnection(connectionLogRecord, shortestChain, inviteInfo);
         }
@@ -260,7 +260,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) {
-        long start = System.currentTimeMillis();
         RadarConnectResult result = new RadarConnectResult();
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(radarInfo.getChainId());
         if(connectionLogRecord == null){
@@ -299,8 +298,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setState(connectionLogRecord.getState().intValue());
         result.setChain(userChains);
         logger.info("connectRadar:{}", result);
-        long end = System.currentTimeMillis();
-        logger.info("计时:{}", end - start);
         return result;
     }
 
@@ -449,7 +446,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     @Override
     public void updateShareChainHandleType(ReferralSeekRecommendRecord record, int type) {
-        int presenteeUserId = record.getPresenteeUserId();
+        int presenteeUserId = record.getPresenteeId();
         int rootUserId = record.getPostUserId();
         int positionId = record.getPositionId();
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
@@ -461,7 +458,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
-                record.getPostUserId(), record.getPresenteeUserId(), record.getPositionId());
+                record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
         logger.info("candidateShareChainDO:{}", candidateShareChainDO);
         templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
     }
@@ -469,6 +466,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private int getParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
         if(radarInfo.getParentId() == -1){
             return -1;
+        }
+        if(radarInfo.getNextUserId() == radarInfo.getRecomUserId()){
+            return radarInfo.getParentId();
         }
         for(ReferralConnectionChainRecord chainRecord : chainRecords){
             if(chainRecord.getRecomUserId() == radarInfo.getRecomUserId() && radarInfo.getNextUserId() == chainRecord.getNextUserId()){

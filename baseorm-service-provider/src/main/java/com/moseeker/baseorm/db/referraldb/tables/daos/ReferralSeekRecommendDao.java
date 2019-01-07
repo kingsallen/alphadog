@@ -73,10 +73,10 @@ public class ReferralSeekRecommendDao extends DAOImpl<ReferralSeekRecommendRecor
     }
 
     /**
-     * Fetch records that have <code>presentee_user_id IN (values)</code>
+     * Fetch records that have <code>presentee_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralSeekRecommend> fetchByPresenteeUserId(Integer... values) {
-        return fetch(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_USER_ID, values);
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralSeekRecommend> fetchByPresenteeId(Integer... values) {
+        return fetch(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID, values);
     }
 
     /**

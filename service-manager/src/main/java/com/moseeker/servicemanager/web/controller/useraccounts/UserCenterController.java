@@ -13,15 +13,13 @@ import com.moseeker.thrift.gen.useraccounts.service.UserCenterService;
 import com.moseeker.thrift.gen.useraccounts.struct.ApplicationRecordsForm;
 import com.moseeker.thrift.gen.useraccounts.struct.CenterUserInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.FavPositionForm;
+import com.moseeker.thrift.gen.useraccounts.struct.RecommendationScoreVO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -85,4 +83,24 @@ public class UserCenterController {
 			return Result.validateFailed(validateResult).toJson();
 		}
 	}
+
+    @RequestMapping(value = "/v1/radar/index/top", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchRadarIndexTop(@RequestParam("appid") int appid,
+                                     @RequestParam("user_id") int userId,
+                                     @RequestParam("company_id") int companyId) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("用户编号", userId);
+        validateUtil.addIntTypeValidate("用户编号", userId, 1, null);
+        validateUtil.addRequiredValidate("公司编号", companyId);
+        validateUtil.addIntTypeValidate("公司编号", companyId, 1, null);
+        String validateResult = validateUtil.validate();
+        if (StringUtils.isBlank(validateResult)) {
+            RecommendationScoreVO userInfo = userCenterService.getRecommendationV2(userId, companyId);
+            return Result.success(userInfo).toJson();
+        } else {
+            return Result.validateFailed(validateResult).toJson();
+        }
+    }
 }
