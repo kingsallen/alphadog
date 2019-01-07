@@ -141,7 +141,6 @@ public class ReferralTemplateSender {
             logger.info("addRecommandReward applicaition:{}",application);
             operationRecordDao.addRecord(applicationId, new Date().getTime(),
                     Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND, employeeDO.getCompanyId(), 0);
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
