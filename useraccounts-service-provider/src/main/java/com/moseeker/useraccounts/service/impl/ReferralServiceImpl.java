@@ -362,7 +362,7 @@ public class ReferralServiceImpl implements ReferralService {
         record.setOrigin(origin);
         ReferralSeekRecommendRecord recommendRecord = new ReferralSeekRecommendRecord();
         int i =0;
-        while (i<3 && recommendRecord.getId() ==0){
+        while (i<3 && (recommendRecord.getId() == null || recommendRecord.getId() ==0)){
             recommendRecord = recommendDao.insertIfNotExist(record);
             i++;
         }

@@ -19,7 +19,6 @@ public class RadarUserInfo {
     private String nickname;
     private String avatar;
     private Integer degree;
-    private Integer order;
     private List<Integer> pnodes;
 
     public String getName() {
@@ -52,14 +51,6 @@ public class RadarUserInfo {
 
     public void setDegree(Integer degree) {
         this.degree = degree;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
     }
 
     public Integer getUid() {
@@ -174,57 +165,6 @@ public class RadarUserInfo {
             }
         }
         return orderedChainRecords;
-    }
-
-    /**
-     * 填充order字段
-     * @param   userDO  用户微信信息
-     * @param   chainRecords 连连看已连接记录
-     * @author  cjm
-     * @date  2018/12/16
-     * @return   当前链路用户信息
-     */
-    public RadarUserInfo fillOrderFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
-        Integer order = null;
-        int parentId = 0;
-        for(ReferralConnectionChainRecord chainRecord : chainRecords){
-            if(chainRecord.getRecomUserId() == userDO.getSysuserId() && chainRecord.getParentId() == 0){
-                order = 1;
-                break;
-            }
-            if(chainRecord.getNextUserId() == userDO.getSysuserId()){
-                parentId = chainRecord.getParentId();
-                order = 2;
-                break;
-            }
-        }
-        order = getOrderByRecurrence(order, parentId, chainRecords);
-        setOrder(order);
-        return this;
-    }
-
-    /**
-     * 递归排序 从0开始
-     * @param order 当前顺序
-     * @param parentId 当前parentId
-     * @param chainRecords 已连接链路
-     * @author  cjm
-     * @date  2018/12/16
-     * @return 排序后的序号
-     */
-    private Integer getOrderByRecurrence(Integer order, int parentId, List<ReferralConnectionChainRecord> chainRecords) {
-        if(order == null){
-            return null;
-        }
-        if(parentId == 0){
-            return order;
-        }
-        for(ReferralConnectionChainRecord chainRecord : chainRecords) {
-            if(chainRecord.getId() == parentId){
-                return getOrderByRecurrence(++order, chainRecord.getParentId(), chainRecords);
-            }
-        }
-        return order;
     }
 
     public RadarUserInfo fillNodesFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
