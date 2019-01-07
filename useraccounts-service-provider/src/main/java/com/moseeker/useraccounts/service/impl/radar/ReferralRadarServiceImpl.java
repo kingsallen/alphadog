@@ -286,8 +286,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         chainRecords = updateConnectionInfo(radarInfo, isViewer, connectionLogRecord, chainRecords);
         // 如果连接完成，过滤掉链路中不存在的用户
         chainRecords = filterUnexistChain(connectionLogRecord, chainRecords);
+        userIds = getChainRecordsUserIds(chainRecords);
         // 获取排好序并包括连接状态的人脉连连看链路
-        List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
+        List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId(), connectionLogRecord.getState());
         // 填充员工姓名
         UserEmployeeRecord userEmployee = userEmployeeDao.getActiveEmployee(connectionLogRecord.getRootUserId(), connectionLogRecord.getCompanyId());
         if(connectionLogRecord.getState() == 1){
@@ -858,16 +859,17 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @param userIds 用户id
      * @param chainRecords 连连看链路记录
      * @param companyId 公司id
+     * @param state
      * @return 组装前端需要展示的数据
      */
-    private List<RadarUserInfo> getOrderedChains(Set<Integer> userIds, List<ReferralConnectionChainRecord> chainRecords, Integer companyId) {
+    private List<RadarUserInfo> getOrderedChains(Set<Integer> userIds, List<ReferralConnectionChainRecord> chainRecords, Integer companyId, byte state) {
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
         List<UserWxUserDO> userDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
         List<RadarUserInfo> userChains = new ArrayList<>();
         for(UserWxUserDO userDO : userDOS){
             RadarUserInfo userInfo = new RadarUserInfo();
             // 初始化连连看信息
-            userInfo = userInfo.initFromChainsRecord(userDO, chainRecords);
+            userInfo = userInfo.initFromChainsRecord(userDO, chainRecords, state);
             // 填充连连看排序
             userInfo = userInfo.fillNodesFromChainsRecord(userDO, chainRecords);
             userChains.add(userInfo);
