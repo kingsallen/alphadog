@@ -55,6 +55,7 @@ public class Keys {
     public static final Identity<CandidateRemarkRecord, Integer> IDENTITY_CANDIDATE_REMARK = Identities0.IDENTITY_CANDIDATE_REMARK;
     public static final Identity<CandidateShareChainRecord, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN = Identities0.IDENTITY_CANDIDATE_SHARE_CHAIN;
     public static final Identity<CandidateSuggestPositionRecord, Integer> IDENTITY_CANDIDATE_SUGGEST_POSITION = Identities0.IDENTITY_CANDIDATE_SUGGEST_POSITION;
+    public static final Identity<CandidateTemplateShareChainRecord, Integer> IDENTITY_CANDIDATE_TEMPLATE_SHARE_CHAIN = Identities0.IDENTITY_CANDIDATE_TEMPLATE_SHARE_CHAIN;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -88,6 +89,7 @@ public class Keys {
         public static Identity<CandidateRemarkRecord, Integer> IDENTITY_CANDIDATE_REMARK = createIdentity(CandidateRemark.CANDIDATE_REMARK, CandidateRemark.CANDIDATE_REMARK.ID);
         public static Identity<CandidateShareChainRecord, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN = createIdentity(CandidateShareChain.CANDIDATE_SHARE_CHAIN, CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID);
         public static Identity<CandidateSuggestPositionRecord, Integer> IDENTITY_CANDIDATE_SUGGEST_POSITION = createIdentity(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
+        public static Identity<CandidateTemplateShareChainRecord, Integer> IDENTITY_CANDIDATE_TEMPLATE_SHARE_CHAIN = createIdentity(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN, CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {

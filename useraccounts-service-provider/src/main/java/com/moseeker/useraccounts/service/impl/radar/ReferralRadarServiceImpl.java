@@ -462,7 +462,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
                 record.getPostUserId(), record.getPresenteeUserId(), record.getPositionId());
-        templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId());
+        templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
     }
 
     private int getParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
@@ -1038,12 +1038,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         // 查找卡片推荐类型是 邀请投递 还是 推荐TA
         int type = 0;
+        int seekReferralId = 0;
         for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getPositionId() == positionId && shareChainDO.getPresenteeUserId() == endUserId){
-                type = shareChainDO.getSeekReferral();
+                if(shareChainDO.getSeekReferralId() != 0){
+                    type = 1;
+                    seekReferralId = shareChainDO.getSeekReferralId();
+                    break;
+                }
             }
         }
         recomInfo.put("type", type);
+        recomInfo.put("referral_id", seekReferralId);
         return recomInfo;
     }
 
