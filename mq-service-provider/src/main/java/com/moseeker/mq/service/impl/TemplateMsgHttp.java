@@ -291,6 +291,7 @@ public class TemplateMsgHttp {
             logger.info("公众号没有配置此消息模板");
             return;
         }
+        logger.info("==========================="+employee.getCname());
         String first = String.format(ReferralEvaluateFirst,employee.getCname());
         String firstColor = "#2CD6B1";
         String keyword1Color = "#66A4F9";
