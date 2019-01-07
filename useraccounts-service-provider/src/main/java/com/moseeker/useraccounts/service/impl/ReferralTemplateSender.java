@@ -210,7 +210,7 @@ public class ReferralTemplateSender {
             if(seekRecommendRecord.getPostUserId() == candidateShareChainDO.getRootRecomUserId()
                     && seekRecommendRecord.getPresenteeUserId() == candidateShareChainDO.getPresenteeUserId()
                     && seekRecommendRecord.getPositionId() == candidateShareChainDO.getPositionId()){
-                templateShareChainDO.setSeekReferral(1);
+                templateShareChainDO.setSeekReferralId(seekRecommendRecord.getId());
                 break;
             }
         }
