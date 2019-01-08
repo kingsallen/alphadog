@@ -925,12 +925,12 @@ public class TemplateMsgHttp {
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
         String current = dateFormat.format(dateTime.toDate());
-        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~</br>" +
-                "\t\toooO      \n" +
-                "\t\t (      )      Oooo\n" +
-                "\t\t   \\   (         (     )\n" +
-                "\t\t　 \\_)         )   /\n" +
-                "\t\t                  (_/";
+        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~\n" +
+                "\t\t\t\t\t\toooO      \n" +
+                "\t\t\t\t\t\t (      )      Oooo\n" +
+                "\t\t\t\t\t\t   \\   (         (     )\n" +
+                "\t\t\t\t\t\t　 \\_)         )   /\n" +
+                "\t\t\t\t\t\t                  (_/\n";
         String templateTile = String.format(title, String.valueOf(visitNum));
         List<String> positionNameList = positionDOS.stream().map(JobPositionDO::getTitle).collect(Collectors.toList());
         String positionsName = String.join(",", positionNameList) + "等";
