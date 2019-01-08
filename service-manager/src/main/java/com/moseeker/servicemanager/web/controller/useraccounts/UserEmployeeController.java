@@ -539,7 +539,7 @@ public class UserEmployeeController {
         if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
             throw CommonException.PROGRAM_APPID_LOST;
         }
-        PositionReferralInfo info = service.getPositionReferralInfo(userId, positionId);
+        com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo info = service.getPositionReferralInfo(userId, positionId);
         com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo result =
                 new com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo();
         BeanUtils.copyProperties(info, result);
