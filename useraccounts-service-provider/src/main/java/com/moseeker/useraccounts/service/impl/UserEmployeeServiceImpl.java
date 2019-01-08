@@ -602,6 +602,15 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isEmptyList(list)){
             return result;
         }
+        EmployeeCardViewData data = referralEntity.fetchEmployeeSeekRecommendCardData(list, userId, companyId);
+        this.fetchEmployeePostConnection(data);
+        List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
+        List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
+        List<RadarUserVO> viewPages = new ArrayList<>();
+        for(ReferralSeekRecommendRecord record: list){
+            viewPages.add(EmployeeBizTool.packageEmployeeSeekRecommendVO(data, record, depthList));
+        }
+        result.setUserList(viewPages);
         return result;
     }
 
@@ -630,9 +639,11 @@ public class UserEmployeeServiceImpl {
         }
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
+        List<Integer> userIdList = list.stream().map(m ->m.getPresenteeUserId()).collect(Collectors.toList());
+        List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
         for(CandidateRecomRecordRecord record: list){
-            viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record));
+            viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList));
         }
         result.setUserList(viewPages);
         return result;

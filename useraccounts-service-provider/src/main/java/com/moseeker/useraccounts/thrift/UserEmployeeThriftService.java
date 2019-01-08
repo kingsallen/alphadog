@@ -239,17 +239,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     @Override
     public RadarInfo fetchRadarIndex(int userId, int companyId, int page, int size) throws BIZException, TException {
         RadarInfoVO infoVO = employeeService.fetchRadarIndex(userId, companyId, page, size);
-        RadarInfo radarInfo = new RadarInfo();
-        if(!com.moseeker.common.util.StringUtils.isEmptyList(infoVO.getUserList())){
-            radarInfo.setUserList( infoVO.getUserList().stream().map(m ->{
-                RadarUserInfo userInfo = new RadarUserInfo();
-                BeanUtils.copyProperties(m, userInfo);
-                return userInfo;
-            }).collect(Collectors.toList()));
-            radarInfo.setPage(infoVO.getPage());
-            radarInfo.setTatolCount(infoVO.getTatolCount());
-        }
-        return radarInfo;
+        return copyRadarInfoVO(infoVO);
     }
 
     @Override
@@ -282,7 +272,22 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public RadarInfo fetchEmployeeSeekRecommendPage(int userId, int companyId, int page, int size) throws BIZException, TException {
-        return null;
+        RadarInfoVO infoVO = employeeService.fetchEmployeeSeekRecommend(userId, companyId, page, size);
+        return copyRadarInfoVO(infoVO);
+    }
+
+    private RadarInfo copyRadarInfoVO(RadarInfoVO infoVO){
+        RadarInfo radarInfo = new RadarInfo();
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(infoVO.getUserList())){
+            radarInfo.setUserList( infoVO.getUserList().stream().map(m ->{
+                RadarUserInfo userInfo = new RadarUserInfo();
+                BeanUtils.copyProperties(m, userInfo);
+                return userInfo;
+            }).collect(Collectors.toList()));
+            radarInfo.setPage(infoVO.getPage());
+            radarInfo.setTatolCount(infoVO.getTatolCount());
+        }
+        return radarInfo;
     }
 
     @Override
