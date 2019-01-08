@@ -322,7 +322,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JSONObject result = new JSONObject();
         int recomUserId = checkInfo.getRecomUserId();
         // 获取rootUserId
-        if(checkInfo.getParentChainId() != 0){
+        if(checkInfo.getParentChainId() != 0 && checkInfo.getParentChainId() != -1){
             CandidateShareChainDO shareChainDO = shareChainDao.getRecordById(checkInfo.getParentChainId());
             if(shareChainDO == null){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
@@ -633,19 +633,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         return filteredCandidateDOs;
-    }
-
-    private List<Integer> getUpdateCandidateIds(ReferralInviteInfo inviteInfo) {
-        List<Integer> updateIds = new ArrayList<>();
-        // 分两步，将share_chain中状态改掉，将template_share_chain状态改掉
-        List<CandidateTemplateShareChainDO> templateShareChainDOS = templateShareChainDao.getRadarCards(inviteInfo.getTimestamp());
-        for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
-            if(shareChainDO.getPresenteeUserId() == inviteInfo.getEndUserId() && shareChainDO.getPositionId() == inviteInfo.getPid()){
-                updateIds.add(shareChainDO.getChainId());
-            }
-        }
-        return updateIds;
-
     }
 
     private void checkParentId(ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords, Integer rootUserId) {
