@@ -320,11 +320,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException {
         JSONObject result = new JSONObject();
-        int parentChainId = checkInfo.getParentChainId();
-        int pid = checkInfo.getPid();
         int recomUserId = checkInfo.getRecomUserId();
-        if(parentChainId != 0){
-            CandidateShareChainDO shareChainDO = shareChainDao.getRecordById(parentChainId);
+        // 获取rootUserId
+        if(checkInfo.getParentChainId() != 0){
+            CandidateShareChainDO shareChainDO = shareChainDao.getRecordById(checkInfo.getParentChainId());
             if(shareChainDO == null){
                 throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
             }
@@ -333,30 +332,30 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
             recomUserId = shareChainDO.getRootRecomUserId();
         }
-        UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
-        if(employeeRecord == null){
-            result.put("employee", 0);
-            logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
-            logger.info("checkEmployee:{}", JSON.toJSONString(result));
-            return JSON.toJSONString(result);
-        }
-        int companyId = employeeRecord.getCompanyId();
-        JobPositionDO jobPositionDO = positionDao.getJobPositionById(pid);
+        JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
-        if(companyId != jobPositionDO.getCompanyId()){
-            throw UserAccountException.COMPANY_DATA_EMPTY;
+        if(!employeeEntity.isEmployee(recomUserId, jobPositionDO.getCompanyId())){
+            result.put("employee", 0);
+            logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
+            return JSON.toJSONString(result);
         }
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
+        if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
+            result.put("employee", 0);
+            logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
+            return JSON.toJSONString(result);
+        }
+        UserEmployeeRecord recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(recomUser.getCompanyId());
         UserWxUserRecord wxUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(recomUserId, hrWxWechatDO.getId());
         result.put("employee", 1);
         RadarUserInfo userInfo = new RadarUserInfo();
         userInfo.setUid(recomUserId);
-        userInfo.setName(employeeRecord.getCname());
+        userInfo.setName(recomUser.getCname());
         userInfo.setAvatar(wxUserRecord.getHeadimgurl());
         result.put("user", userInfo);
-        logger.info("connectRadar:{}", JSON.toJSONString(result));
+        logger.info("checkEmployee:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
