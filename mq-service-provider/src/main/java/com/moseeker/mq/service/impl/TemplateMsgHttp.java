@@ -939,7 +939,7 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("keyWord2", positionsName);
         inviteTemplateVO.put("keyWord3", "薪资面议");
         inviteTemplateVO.put("keyWord4", current);
-        inviteTemplateVO.put("templateId", Constant.POSITION_SHARE_NOTICE_TPL);
+        inviteTemplateVO.put("templateId", Constant.POSITION_VIEW_TPL);
         String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
                 timestamp + "&page_size=10&page_number=1&wechat_signature=" + hrWxWechatDO.getSignature();
         String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
