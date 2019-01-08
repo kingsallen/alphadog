@@ -933,7 +933,10 @@ public class TemplateMsgHttp {
                 "\t\t\t\t\t\t                  (_/\n";
         String templateTile = String.format(title, String.valueOf(visitNum));
         List<String> positionNameList = positionDOS.stream().map(JobPositionDO::getTitle).collect(Collectors.toList());
-        String positionsName = String.join(",", positionNameList) + "等";
+        String positionsName = String.join(",", positionNameList);
+        if(positionsName.length() > 18){
+            positionsName = positionsName.substring(0, 18) + "...";
+        }
         inviteTemplateVO.put("first", templateTile);
         inviteTemplateVO.put("keyWord1", String.format("已有%s人浏览该职位", visitNum));
         inviteTemplateVO.put("keyWord2", positionsName);
