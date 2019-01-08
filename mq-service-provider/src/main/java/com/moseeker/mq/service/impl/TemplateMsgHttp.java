@@ -811,15 +811,18 @@ public class TemplateMsgHttp {
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
         String current = dateFormat.format(dateTime.toDate());
-        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~\n\r\n" +
-                "\t\t\t\t\t\toooO      \n" +
-                "\t\t\t\t\t\t (      )      Oooo\n" +
-                "\t\t\t\t\t\t   \\   (         (     )\n" +
-                "\t\t\t\t\t\t　 \\_)         )   /\n" +
-                "\t\t\t\t\t\t                  (_/\n";
+        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~\n\n" +
+                "\t\t\t\toooO      \n" +
+                "\t\t\t\t (      )      Oooo\n" +
+                "\t\t\t\t   \\   (         (     )\n" +
+                "\t\t\t\t　 \\_)         )   /\n" +
+                "\t\t\t\t                  (_/\n";
         String templateTile = String.format(title, String.valueOf(visitNum));
         List<String> positionNameList = positionDOS.stream().map(JobPositionDO::getTitle).collect(Collectors.toList());
-        String positionsName = String.join(",", positionNameList) + "等";
+        String positionsName = String.join(",", positionNameList);
+        if(positionsName.length() > 18){
+            positionsName = positionsName.substring(0, 18) + "...";
+        }
         inviteTemplateVO.put("first", templateTile);
         inviteTemplateVO.put("keyWord1", String.format("已有%s人浏览该职位", visitNum));
         inviteTemplateVO.put("keyWord2", positionsName);
