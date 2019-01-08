@@ -332,7 +332,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
             recomUserId = shareChainDO.getRootRecomUserId();
         }
+        logger.info("checkEmployee checkInfo:{}",checkInfo);
+        logger.info("checkEmployee pid:{}",checkInfo.getPid());
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
+        logger.info("checkEmployee jobPositionDO:{}",jobPositionDO);
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
