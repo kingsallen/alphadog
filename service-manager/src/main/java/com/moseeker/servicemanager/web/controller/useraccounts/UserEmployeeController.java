@@ -20,6 +20,7 @@ import com.moseeker.servicemanager.web.controller.useraccounts.form.CustomFieldV
 import com.moseeker.servicemanager.web.controller.useraccounts.form.EmployeeExtInfo;
 import com.moseeker.servicemanager.web.controller.useraccounts.form.LeaderBoardTypeForm;
 import com.moseeker.servicemanager.web.controller.useraccounts.vo.*;
+import com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
@@ -30,10 +31,7 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.EmployeeResponse;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
-import com.moseeker.thrift.gen.useraccounts.struct.EmployeeForwardViewPage;
-import com.moseeker.thrift.gen.useraccounts.struct.RadarInfo;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
-import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
+import com.moseeker.thrift.gen.useraccounts.struct.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -540,8 +538,7 @@ public class UserEmployeeController {
             throw CommonException.PROGRAM_APPID_LOST;
         }
         com.moseeker.thrift.gen.useraccounts.struct.PositionReferralInfo info = service.getPositionReferralInfo(userId, positionId);
-        com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo result =
-                new com.moseeker.servicemanager.web.controller.useraccounts.vo.PositionReferralInfo();
+        PositionReferralInfo result = new PositionReferralInfo();
         BeanUtils.copyProperties(info, result);
         return com.moseeker.servicemanager.web.controller.Result.success(result).toJson();
 
@@ -563,20 +560,46 @@ public class UserEmployeeController {
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             RadarInfo radarInfo = service.fetchRadarIndex(userId, companyId, page, size);
-            RadarInfoVO infoVO = new RadarInfoVO();
-            if(!com.moseeker.common.util.StringUtils.isEmptyList(radarInfo.getUserList())){
-                infoVO.setUserList( radarInfo.getUserList().stream().map(m ->{
-                    RadarUserVO userInfo = new RadarUserVO();
-                    BeanUtils.copyProperties(m, userInfo);
-                    return userInfo;
-                }).collect(Collectors.toList()));
-                infoVO.setPage(radarInfo.getPage());
-                infoVO.setTatolCount(radarInfo.getTatolCount());
-            }
-            return com.moseeker.servicemanager.web.controller.Result.success(infoVO).toJson();
+            return com.moseeker.servicemanager.web.controller.Result.success(copyRadarInfoVO(radarInfo)).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
         }
+    }
+
+    @RequestMapping(value="/v1/employee/seek/recommend", method = RequestMethod.GET)
+    @ResponseBody
+    public String fetchSeekRecommendData(@RequestParam("appid") int appid, @RequestParam("company_id") int companyId,
+                                      @RequestParam("user_id") int userId, @RequestParam(value = "page", defaultValue = "1")int page,
+                                      @RequestParam(value = "size", defaultValue = "5") int size
+    ) throws Exception {
+
+        if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
+            throw CommonException.PROGRAM_APPID_LOST;
+        }
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("员工user编号", userId);
+        validateUtil.addRequiredValidate("公司编号", companyId);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            RadarInfo radarInfo = service.fetchEmployeeSeekRecommendPage(userId, companyId, page, size);
+            return com.moseeker.servicemanager.web.controller.Result.success(copyRadarInfoVO(radarInfo)).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.validateFailed(result).toJson();
+        }
+    }
+
+    private RadarInfoVO copyRadarInfoVO(RadarInfo radarInfo){
+        RadarInfoVO infoVO = new RadarInfoVO();
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(radarInfo.getUserList())){
+            infoVO.setUserList( radarInfo.getUserList().stream().map(m ->{
+                RadarUserVO userInfo = new RadarUserVO();
+                BeanUtils.copyProperties(m, userInfo);
+                return userInfo;
+            }).collect(Collectors.toList()));
+            infoVO.setPage(radarInfo.getPage());
+            infoVO.setTatolCount(radarInfo.getTatolCount());
+        }
+        return infoVO;
     }
 
     @RequestMapping(value="/v1/employee/position/view", method = RequestMethod.GET)
