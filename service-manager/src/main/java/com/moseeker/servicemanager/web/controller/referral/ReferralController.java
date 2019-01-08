@@ -856,7 +856,7 @@ public class ReferralController {
     public String checkEmployee(@RequestBody CheckEmployeeForm checkForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("转发人", checkForm.getRecomUserId(), 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("转发链路parentChainId", checkForm.getParentChainId(), 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("转发链路parentChainId", checkForm.getParentChainId(), -1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", checkForm.getAppid(), 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("职位id", checkForm.getPid(), 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("转发人id", checkForm.getPresenteeUserId(), 1, Integer.MAX_VALUE);
