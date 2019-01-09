@@ -1,6 +1,7 @@
 package com.moseeker.useraccounts.service;
 
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.useraccounts.pojo.neo4j.EmployeeCompanyVO;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public interface Neo4jService {
      * @return
      * @throws CommonException
      */
-    List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException;
+    List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException;
 
 
     /**

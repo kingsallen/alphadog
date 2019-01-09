@@ -5,5 +5,10 @@ struct UserDepth {
     2 : optional i32 depth
 }
 
+struct EmployeeCompany {
+    1 : optional i32 userId,
+    2 : optional i32 companyId
+}
+
 
 
