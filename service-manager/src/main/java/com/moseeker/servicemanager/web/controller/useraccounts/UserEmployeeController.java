@@ -566,7 +566,7 @@ public class UserEmployeeController {
         }
     }
 
-    @RequestMapping(value="/v1/employee/seek/recommend", method = RequestMethod.GET)
+    @RequestMapping(value="/v1/employee/seek/recommend/card", method = RequestMethod.GET)
     @ResponseBody
     public String fetchSeekRecommendData(@RequestParam("appid") int appid, @RequestParam("company_id") int companyId,
                                       @RequestParam("user_id") int userId, @RequestParam(value = "page", defaultValue = "1")int page,
