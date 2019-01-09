@@ -446,6 +446,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             result.add(card);
         }
+        logger.info("getProgressBatch:{}", result);
         return JSON.toJSONString(result);
     }
 
