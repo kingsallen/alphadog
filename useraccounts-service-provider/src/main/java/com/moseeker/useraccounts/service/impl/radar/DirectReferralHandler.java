@@ -25,7 +25,13 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
         JSONObject recom = new JSONObject();
         recom.put("type", getReferralType().getType());
         Object claim = appIdClaimMap.get(jobApplicationDO.getId()+"");
-        recom.put("claim", claim == null ? 0 : claim);
+        if(claim == null){
+            recom.put("claim", 0);
+        }else {
+            ReferralLog referralLog = (ReferralLog)claim;
+            recom.put("claim", referralLog.getClaim());
+            recom.put("rkey", referralLog.getId());
+        }
         return recom;
     }
 
@@ -53,7 +59,7 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
             for(int i=0;i<referralLogs.size()&&flag;i++){
                 ReferralLog referralLog = referralLogs.get(i);
                 if(jobApplicationDO.getApplierId() == referralLog.getReferenceId() && jobApplicationDO.getPositionId() == referralLog.getPositionId()){
-                    claimApplyMap.put(jobApplicationDO.getId() + "", (int)referralLog.getClaim());
+                    claimApplyMap.put(jobApplicationDO.getId() + "", referralLog);
                     flag = false;
                 }
             }

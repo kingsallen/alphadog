@@ -45,7 +45,7 @@ public abstract class AbstractReferralTypeHandler {
                                       JSONObject referralTypeSingleMap) {
         JSONObject card = new JSONObject();
         int progress = jobApplicationDO.getAppTplId();
-        if(progress == 6 || progress == 15){
+        if(progress == 6 || progress == 15 || progress == 16){
             progress = 1;
         }
         card.put("apply_id", jobApplicationDO.getId());
