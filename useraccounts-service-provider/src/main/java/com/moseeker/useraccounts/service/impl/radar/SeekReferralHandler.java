@@ -43,7 +43,7 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
     }
 
     @Override
-    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS) {
+    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> seekReferralList = getApplicationsByReferralType(jobApplicationDOS);
         JSONObject seekApplyMap = new JSONObject();
         List<Integer> seekAppids = seekReferralList.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());

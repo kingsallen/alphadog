@@ -64,7 +64,7 @@ public abstract class AbstractReferralTypeHandler {
 
     protected abstract List<JobApplicationDO> getApplicationsByReferralType(List<JobApplicationDO> jobApplicationDOS);
 
-    protected abstract JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS);
+    protected abstract JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees);
 
     private String getLastDateTime(List<HrOperationRecordRecord> hrOperations) {
         if(hrOperations.size() == 0){
