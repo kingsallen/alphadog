@@ -1,11 +1,8 @@
 package com.moseeker.servicemanager.web.controller.neo4j.form;
 
-import org.springframework.data.neo4j.annotation.QueryResult;
-
 /**
  * Created by moseeker on 2018/12/27.
  */
-@QueryResult
 public class EmployeeCompanyPO {
 
     private int userId;
