@@ -27,6 +27,10 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
         recom.put("type", getReferralType().getType());
         Object evaluate = applyIdEvaluateMap.get(jobApplicationDO.getId()+"");
         recom.put("evaluate", evaluate == null ? 0 : 1);
+        if(evaluate != null){
+            ReferralSeekRecommendRecord recommendRecord = (ReferralSeekRecommendRecord)evaluate;
+            recom.put("referral_id", recommendRecord.getId());
+        }
         return recom;
     }
 
@@ -49,7 +53,7 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
         List<Integer> seekAppids = seekReferralList.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
         List<ReferralSeekRecommendRecord> seekRecommendReords = seekRecommendDao.fetchByIds(seekAppids);
         for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendReords){
-            seekApplyMap.put(seekRecommendRecord.getAppId() + "", 1);
+            seekApplyMap.put(seekRecommendRecord.getAppId() + "", seekRecommendRecord);
         }
         return seekApplyMap;
     }
