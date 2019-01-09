@@ -4,7 +4,9 @@ import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
+import com.moseeker.thrift.gen.neo4j.struct.EmployeeCompany;
 import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
+import com.moseeker.useraccounts.pojo.neo4j.EmployeeCompanyVO;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.ArrayList;
@@ -34,8 +36,17 @@ public class Neo4jServicesImpl implements Neo4jServices.Iface {
     }
 
     @Override
-    public List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws BIZException, TException {
-        return service.fetchUserThreeDepthEmployee(userId, companyId);
+    public List<EmployeeCompany> fetchUserThreeDepthEmployee(int userId, int companyId) throws BIZException, TException {
+        List<EmployeeCompanyVO> employeeCompanyVOS = service.fetchUserThreeDepthEmployee(userId, companyId);
+        List<EmployeeCompany> list = new ArrayList<>();
+        if(!StringUtils.isEmptyList(employeeCompanyVOS)){
+            list = employeeCompanyVOS.stream().map(m -> {
+                EmployeeCompany depth = new EmployeeCompany();
+                BeanUtils.copyProperties(m, depth);
+                return depth;
+            }).collect(Collectors.toList());
+        }
+        return list;
     }
 
     @Override
