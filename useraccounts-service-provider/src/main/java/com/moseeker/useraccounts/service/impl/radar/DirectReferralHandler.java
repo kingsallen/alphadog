@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -43,7 +42,7 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
     }
 
     @Override
-    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS) {
+    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> directReferralList = getApplicationsByReferralType(jobApplicationDOS);
         List<Integer> referenceIds = directReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<Integer> referencePids = directReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());

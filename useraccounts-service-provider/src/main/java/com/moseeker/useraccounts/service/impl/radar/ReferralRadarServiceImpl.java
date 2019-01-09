@@ -436,7 +436,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         Map<Integer, JSONObject> referralTypeMap = new HashMap<>(1 >> 4);
         for(ReferralTypeEnum referralTypeEnum : ReferralTypeEnum.values()){
             handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
-            JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS);
+            JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
             referralTypeMap.put(referralTypeEnum.getType(), referralSingleTypeMap);
         }
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){

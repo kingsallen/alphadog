@@ -70,7 +70,8 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     }
 
     @Override
-    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS) {
+    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS,
+                                            List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> shareReferralList = getApplicationsByReferralType(jobApplicationDOS);
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> shareUserIds = shareReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
@@ -79,20 +80,18 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         List<JobApplicationDO> oneDegreeJobApplication = new ArrayList<>();
         // 两度及以上链路对应申请
         JSONObject result = new JSONObject();
-
         for(JobApplicationDO jobApplicationDO : shareReferralList){
-             boolean flag = true;
-            for(int i=0;i<shareChainDOS.size()&&flag;i++){
-                CandidateShareChainDO shareChainDO = shareChainDOS.get(i);
-                if(shareChainDO.getRecomUserId() == employeeRecord.getSysuserId() && shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()
-                && shareChainDO.getPositionId() == jobApplicationDO.getPositionId()){
+            boolean flag = true;
+            for(int i=0;i<applierDegrees.size()&&flag;i++){
+                UserDepthVO userDepthVO = applierDegrees.get(i);
+                if(userDepthVO.getUserId() == jobApplicationDO.getApplierId() && userDepthVO.getDepth() == 1){
                     oneDegreeJobApplication.add(jobApplicationDO);
                     flag = false;
                 }
             }
         }
 
-        Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>();
+        Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>(1 >> 5);
         // 候选人转发链路ID
         Set<Integer> shareChainIds = new HashSet<>();
         // 一度转发人user.id
