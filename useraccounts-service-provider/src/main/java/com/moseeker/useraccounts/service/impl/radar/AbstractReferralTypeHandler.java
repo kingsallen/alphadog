@@ -17,6 +17,7 @@ import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +49,7 @@ public abstract class AbstractReferralTypeHandler {
             progress = 1;
         }
         card.put("apply_id", jobApplicationDO.getId());
-        card.put("datetime", getLastDateTime(hrOperations));
+        card.put("datetime", getLastDateTime(jobApplicationDO.getCreateTime(), hrOperations));
         card.put("progress", progress);
         card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap));
         card.put("user", doInitUser(jobApplicationDO.getApplierId(), applier.getName()));
@@ -66,9 +67,18 @@ public abstract class AbstractReferralTypeHandler {
 
     protected abstract JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees);
 
-    private String getLastDateTime(List<HrOperationRecordRecord> hrOperations) {
-        if(hrOperations.size() == 0){
-            return "";
+    private String getLastDateTime(String applyTimeStr, List<HrOperationRecordRecord> hrOperations) {
+        DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        if(hrOperations == null || hrOperations.size() == 0){
+            DateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date applyTime = null;
+            try {
+                applyTime = sdf1.parse(applyTimeStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return "";
+            }
+            return sdf.format(applyTime);
         }
         long lastTime = hrOperations.get(0).getOptTime().getTime();
         for(HrOperationRecordRecord hrOperationRecord : hrOperations){
@@ -76,7 +86,6 @@ public abstract class AbstractReferralTypeHandler {
                 lastTime = hrOperationRecord.getOptTime().getTime();
             }
         }
-        DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
         return sdf.format(new Date(lastTime));
     }
 

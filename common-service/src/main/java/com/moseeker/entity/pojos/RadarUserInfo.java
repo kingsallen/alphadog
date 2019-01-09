@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChain
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * 人脉连连看用户信息vo
  */
-public class RadarUserInfo {
+public class RadarUserInfo implements Comparable<RadarUserInfo>{
 
     private Integer uid;
     private String name;
@@ -180,5 +181,15 @@ public class RadarUserInfo {
         }
         this.setPnodes(pnodes);
         return this;
+    }
+
+
+    @Override
+    public int compareTo(@NotNull RadarUserInfo compare) {
+        if (this.degree.intValue() != compare.getDegree().intValue()) {
+            return this.degree > compare.getDegree() ? 1 : -1;
+        } else {
+           return -1;
+        }
     }
 }
