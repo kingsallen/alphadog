@@ -33,12 +33,12 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
                    "   match p=shortestpath((c1)-[*1..3]-(c2)) return c2.user_id as userId,c2.employee_company as companyId")
     List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(@Param("userId") int userId, @Param("userIdList") List<Integer> userIdList);
 
-    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} " +
-                   " match p =shortestpath((u1)-[*1..3]-(u2)) where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return u2.user_id as userId,length(p) as depth order by depth limit 300")
+    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} match p =shortestpath((u1)-[*1..3]-(u2)) " +
+                   "where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return u2.user_id as userId,length(p) as depth order by depth limit 300")
     List<UserDepthVO> fetchEmployeeThreeDepthUser(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
 
-    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} " +
-                   " match p =shortestpath((u1)-[*]-(u2)) where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return distinct u2.user_id as userId,length(p) as depth order by depth  ")
+    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds}  match p =shortestpath((u1)-[*]-(u2)) " +
+                   " where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return distinct u2.user_id as userId,length(p) as depth order by depth  ")
     List<UserDepthVO> fetchDepthUserList(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
 
 }
