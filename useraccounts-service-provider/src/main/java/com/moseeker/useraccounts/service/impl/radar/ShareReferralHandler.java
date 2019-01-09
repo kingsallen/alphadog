@@ -41,17 +41,21 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                 return recom;
             }
         }
-        boolean clickFromWxGroup = false;
+        String nickname = "";
         CandidateShareChainDO shareChainDO = moreDegreeMap.get(jobApplicationDO.getId());
-        for(CandidatePositionShareRecordDO shareRecordDO : shareRecordDOS){
-            if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
-                if(shareRecordDO.getClickFrom() == 1){
-                    clickFromWxGroup = true;
-                    break;
+        boolean clickFromWxGroup = false;
+        if(shareChainDO != null){
+            for(CandidatePositionShareRecordDO shareRecordDO : shareRecordDOS){
+                if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
+                    if(shareRecordDO.getClickFrom() == 1){
+                        clickFromWxGroup = true;
+                        break;
+                    }
                 }
             }
+            nickname = wxUserMap.get(shareChainDO.getRoot2RecomUserId()).getNickname();
         }
-        recom.put("nickname", wxUserMap.get(shareChainDO.getRoot2RecomUserId()).getNickname());
+        recom.put("nickname", nickname);
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
         recom.put("type", getReferralType().getType());
         return recom;

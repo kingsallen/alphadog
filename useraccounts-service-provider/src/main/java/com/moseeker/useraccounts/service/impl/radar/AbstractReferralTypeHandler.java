@@ -49,7 +49,7 @@ public abstract class AbstractReferralTypeHandler {
             progress = 1;
         }
         card.put("apply_id", jobApplicationDO.getId());
-        card.put("datetime", getLastDateTime(jobApplicationDO.getCreateTime(), hrOperations));
+        card.put("datetime", getLastDateTime(jobApplicationDO.getSubmitTime(), hrOperations));
         card.put("progress", progress);
         card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap));
         card.put("user", doInitUser(jobApplicationDO.getApplierId(), applier.getName()));
@@ -70,8 +70,8 @@ public abstract class AbstractReferralTypeHandler {
     private String getLastDateTime(String applyTimeStr, List<HrOperationRecordRecord> hrOperations) {
         DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
         if(hrOperations == null || hrOperations.size() == 0){
-            DateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date applyTime = null;
+            DateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+            Date applyTime;
             try {
                 applyTime = sdf1.parse(applyTimeStr);
             } catch (ParseException e) {
