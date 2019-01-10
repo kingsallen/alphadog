@@ -370,7 +370,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         int factProgress = jobApplication.getAppTplId();
         JSONObject result = new JSONObject();
         if(!checkIsNormal(factProgress, progressQuery.getProgress(), hrOperationRecords)){
-            result.put("abnormal", 0);
+            result.put("abnormal", 1);
             return JSON.toJSONString(result);
         }
         int queryOptId = jobApplication.getAppTplId();
@@ -383,7 +383,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         current = ReferralProgressEnum.getEnumByProgress(queryOptId);
         JSONArray progressJson = doInitProgressJson(current, hrOperationRecords, refuse);
         result.put("progress", progressJson);
-        result.put("abnormal", 1);
+        result.put("abnormal", 0);
         result.put("encourage", getEncourageByProgress(factProgress));
         result.put("avatar", userWxUserDO.getHeadimgurl());
         result.put("name", handleCandidateName(userUserDO.getName(), progressQuery.getPresenteeUserId(),
@@ -717,7 +717,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         for(ReferralConnectionChainRecord chainRecord : chainRecords){
             if(chainRecord.getRecomUserId() == radarInfo.getNextUserId() && chainRecord.getNextUserId() == radarInfo.getRecomUserId()){
                 //如果是反向连接，不插入新记录，认为是查看连连看的，不做数据库增删改操作
-                isViewer = checkCorrectReverse(chainRecord, radarInfo, chainRecords);
+//                isViewer = checkCorrectReverse(chainRecord, radarInfo, chainRecords);
+                isViewer = true;
                 break;
             }else if(radarInfo.getNextUserId() == connectionLogRecord.getRootUserId()){
                 // 如果点击人是rootuser，认为是查看连连看的，不做数据库增删改操作
