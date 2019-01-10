@@ -43,7 +43,7 @@ public class ThirdPartyPositionParamRefresh {
         refresh();
     }
 
-    @Scheduled(cron = "0 0 1 * * SAT")
+//    @Scheduled(cron = "0 0 1 * * SAT")
     public void refresh() throws BIZException {
         refresh(0);
     }
@@ -77,8 +77,8 @@ public class ThirdPartyPositionParamRefresh {
         redisClient.del(AppId.APPID_ALPHADOG.getValue(),KeyIdentifier.REFRESH_THIRD_PARTY_PARAM.toString(),"");
     }
 
-    @RabbitListener(queues = {RefreshConstant.PARAM_GET_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = {RefreshConstant.PARAM_GET_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handle(Message message) {
         String json="";
         AbstractRabbitMQParamRefresher refresher=null;
