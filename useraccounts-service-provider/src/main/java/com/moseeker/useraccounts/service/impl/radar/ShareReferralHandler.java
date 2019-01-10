@@ -47,13 +47,13 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         if(shareChainDO != null){
             for(CandidatePositionShareRecordDO shareRecordDO : shareRecordDOS){
                 if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
-                    if(shareRecordDO.getClickFrom() == 1){
+                    if(shareRecordDO.getClickFrom() == 2){
                         clickFromWxGroup = true;
                         break;
                     }
                 }
             }
-            nickname = wxUserMap.get(shareChainDO.getRoot2RecomUserId()).getNickname();
+            nickname = wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname();
         }
         recom.put("nickname", nickname);
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
@@ -106,8 +106,6 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                 CandidateShareChainDO shareChainDO = shareChainDOS.get(i);
                 if(shareChainDO.getRoot2RecomUserId() != 0 && shareChainDO.getPositionId() == jobApplicationDO.getPositionId()
                         && shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
-                    appIdShareChainMap.put(jobApplicationDO.getId(), shareChainDO);
-                    oneDegreeUserIds.add(shareChainDO.getRoot2RecomUserId());
                     flag = false;
                     // 找出一度的sharechainId
                     boolean flag1 = true;
@@ -117,7 +115,9 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                                 && shareChainDO1.getPresenteeUserId() == shareChainDO.getRoot2RecomUserId()
                                 && shareChainDO1.getRecomUserId() == shareChainDO1.getRootRecomUserId()){
                             flag1 = false;
-                            shareChainIds.add(shareChainDO.getId());
+                            shareChainIds.add(shareChainDO1.getId());
+                            appIdShareChainMap.put(jobApplicationDO.getId(), shareChainDO1);
+                            oneDegreeUserIds.add(shareChainDO1.getPresenteeUserId());
                         }
                     }
                 }
