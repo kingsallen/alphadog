@@ -43,8 +43,8 @@ public class ScheduledTask {
      * @param message
      * @param channel
      */
-    @RabbitListener(queues = {BindThirdPart.BIND_GET_QUEUE_NAME, BindThirdPart.BIND_CONFIRM_GET_QUEUE_NAME, BindThirdPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = {BindThirdPart.BIND_GET_QUEUE_NAME, BindThirdPart.BIND_CONFIRM_GET_QUEUE_NAME, BindThirdPart.BIND_CODE_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void bindThirdPartyAccountListener(Message message, Channel channel) throws Exception {
         try{
             String data=new String(message.getBody(), "UTF-8");
@@ -67,8 +67,8 @@ public class ScheduledTask {
      * @param channel
      * @throws UnsupportedEncodingException
      */
-    @RabbitListener(queues = {BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = {BindThirdPart.SYNC_POSITION_GET_QUEUE_NAME}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void positionSyncListener(Message message, Channel channel) throws UnsupportedEncodingException, BIZException {
         String data="";
         try{
