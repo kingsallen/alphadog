@@ -78,9 +78,9 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                                             List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> shareReferralList = getApplicationsByReferralType(jobApplicationDOS);
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
-        List<Integer> shareUserIds = shareReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
+//        List<Integer> shareUserIds = shareReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByUserIdAndPresenteeAndPosition(employeeRecord.getSysuserId(), shareUserIds, sharePids);
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByUserIdAndPresenteeAndPosition(employeeRecord.getSysuserId(), sharePids);
         List<JobApplicationDO> oneDegreeJobApplication = new ArrayList<>();
         // 两度及以上链路对应申请
         JSONObject result = new JSONObject();
@@ -104,13 +104,22 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
             boolean flag = true;
             for(int i=0;i<shareChainDOS.size()&&flag;i++){
                 CandidateShareChainDO shareChainDO = shareChainDOS.get(i);
-                if(shareChainDO.getRoot2RecomUserId() != 0
-                        && shareChainDO.getPositionId() == jobApplicationDO.getPositionId()
+                if(shareChainDO.getRoot2RecomUserId() != 0 && shareChainDO.getPositionId() == jobApplicationDO.getPositionId()
                         && shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
                     appIdShareChainMap.put(jobApplicationDO.getId(), shareChainDO);
                     oneDegreeUserIds.add(shareChainDO.getRoot2RecomUserId());
-                    shareChainIds.add(shareChainDO.getId());
                     flag = false;
+                    // 找出一度的sharechainId
+                    boolean flag1 = true;
+                    for(int j=0;j<shareChainDOS.size()&&flag1;j++){
+                        CandidateShareChainDO shareChainDO1 = shareChainDOS.get(j);
+                        if(shareChainDO.getPositionId() == shareChainDO1.getPositionId()
+                                && shareChainDO1.getPresenteeUserId() == shareChainDO.getRoot2RecomUserId()
+                                && shareChainDO1.getRecomUserId() == shareChainDO1.getRootRecomUserId()){
+                            flag1 = false;
+                            shareChainIds.add(shareChainDO.getId());
+                        }
+                    }
                 }
             }
         }
