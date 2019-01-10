@@ -1186,13 +1186,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private String getEncourageByProgress(int factProgress) {
-        if(factProgress == ReferralProgressEnum.FILTERED.getProgress()){
+        ReferralProgressEnum fact = ReferralProgressEnum.getEnumByProgress(factProgress);
+        if(fact.getProgress() == ReferralProgressEnum.FILTERED.getProgress()){
             return "恭喜您通过初筛，好的开始是成功的一半！";
-        }else if(factProgress == ReferralProgressEnum.INTERVIEWED.getProgress()){
+        }else if(fact.getProgress() == ReferralProgressEnum.INTERVIEWED.getProgress()){
             return "恭喜您通过面试，胜利就在不远处！";
-        }else if(factProgress == ReferralProgressEnum.ENTRY.getProgress()){
+        }else if(fact.getProgress() == ReferralProgressEnum.ENTRY.getProgress()){
             return "欢迎优秀的你加入我们！";
-        }else if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
+        }else if(fact.getProgress() == ReferralProgressEnum.FAILED.getProgress()){
             return "您已进入我司人才库，谢谢您的关注！";
         }
         return "";
@@ -1216,15 +1217,31 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 break;
             }
         }
-        return progressJson;
+        JSONArray result = new JSONArray();
+        for(int i=progressJson.size()-1;i>=0;i--){
+            result.add(progressJson.get(i));
+        }
+        return result;
     }
 
     private String getLastOptTime(int progress, List<HrOperationRecordRecord> hrOperationRecords) {
         long optTime = 0;
-        for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecords){
-            if(progress == hrOperationRecordDO.getOperateTplId()){
-                optTime = hrOperationRecordDO.getOptTime().getTime();
-                break;
+        if(progress == 1){
+            List<Integer> progressList = new ArrayList<>();
+            progressList.add(1);
+            initApplyProgressList(progressList);
+            for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecords){
+                if(progressList.contains(hrOperationRecordDO.getOperateTplId())){
+                    optTime = hrOperationRecordDO.getOptTime().getTime();
+                    break;
+                }
+            }
+        }else {
+            for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecords){
+                if(progress == hrOperationRecordDO.getOperateTplId()){
+                    optTime = hrOperationRecordDO.getOptTime().getTime();
+                    break;
+                }
             }
         }
         DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
