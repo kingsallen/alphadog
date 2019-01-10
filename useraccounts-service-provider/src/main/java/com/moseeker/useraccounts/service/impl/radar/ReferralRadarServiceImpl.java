@@ -469,6 +469,45 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
     }
 
+    @Override
+    public String progressQueryKeyword(ReferralProgressInfo progressInfo) {
+        UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
+        if(employeeRecord == null){
+            throw UserAccountException.USEREMPLOYEES_EMPTY;
+        }
+        int progress = progressInfo.getProgress();
+        List<JobApplicationDO> jobApplicationDOS;
+        List<Integer> progressList = new ArrayList<>();
+        progressList.add(progress);
+        // 目前有四种操作对应已投递状态 1 被推荐人投递简历 6 hr查看简历 15 员工主动投递简历 16 候选人联系内推投递简历
+        if(progress == 1){
+            initApplyProgressList(progressList);
+        }
+        if(progress == 0){
+            jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                    0, 0, false);
+        }else {
+            jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
+                    0, 0, progressList, false);
+        }
+        List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
+        List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
+        Set<String> names = userUsers.stream().map(UserUserRecord::getName).collect(Collectors.toSet());
+        Set<String> result = new HashSet<>();
+        for(String name : names){
+            if(name.contains(progressInfo.getKeyword())){
+                result.add(name);
+            }
+        }
+        return JSON.toJSONString(result);
+    }
+
+    private void initApplyProgressList(List<Integer> progressList) {
+        progressList.add(6);
+        progressList.add(15);
+        progressList.add(16);
+    }
+
     private List<ReferralConnectionChainRecord> filterSpecificChain(ReferralConnectionLogRecord connectionLogRecord, List<ReferralConnectionChainRecord> chainRecords) {
         if(connectionLogRecord.getState() != 1){
             return chainRecords;
@@ -504,24 +543,22 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo) {
         List<JobApplicationDO> jobApplicationDOS;
-        String queryName = progressInfo.getUsername();
+        String queryName = progressInfo.getKeyword();
         int startIndex = (progressInfo.getPageNum() - 1) * progressInfo.getPageSize();
         int progress = progressInfo.getProgress();
         List<Integer> progressList = new ArrayList<>();
         progressList.add(progress);
         // 目前有四种操作对应已投递状态 1 被推荐人投递简历 6 hr查看简历 15 员工主动投递简历 16 候选人联系内推投递简历
         if(progress == 1){
-            progressList.add(6);
-            progressList.add(15);
-            progressList.add(16);
+            initApplyProgressList(progressList);
         }
         if(StringUtils.isEmpty(queryName)){
             if(progress == 0){
                 jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
-                        startIndex, progressInfo.getPageSize());
+                        startIndex, progressInfo.getPageSize(), true);
             }else {
                 jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(),
-                        startIndex, progressInfo.getPageSize(), progressList);
+                        startIndex, progressInfo.getPageSize(), progressList, true);
             }
         }else {
             List<UserUserRecord> queryNameRecords = userUserDao.fetchByName(queryName);
