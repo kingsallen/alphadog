@@ -99,11 +99,10 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
      *
      * @param userDO 需要初始化的用户
      * @param chainRecords 人脉连连看记录
-     * @param state
      * @return 返回人脉雷达该用户数据
      */
-    public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords, byte state) {
-        List<ReferralConnectionChainRecord> newChainRecords = getOriginChainRecords(chainRecords, state);
+    public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        List<ReferralConnectionChainRecord> newChainRecords = getOrderedChainRecords(chainRecords);
         // 获取连连看最长路径，用于定位度数，这里会对记录排序
         this.setUid(userDO.getSysuserId());
         this.setNickname(userDO.getNickname());
