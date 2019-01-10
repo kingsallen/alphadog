@@ -45,6 +45,9 @@ public enum  ReferralProgressEnum {
     }
 
     public static ReferralProgressEnum getEnumByProgress(int progress){
+        if(progress == 6 || progress == 15 || progress == 16){
+            progress = 1;
+        }
         return ENUM_MAP.get(progress);
     }
 
