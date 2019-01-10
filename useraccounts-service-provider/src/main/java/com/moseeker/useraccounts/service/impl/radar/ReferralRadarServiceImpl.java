@@ -389,7 +389,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.put("abnormal", 1);
         result.put("encourage", getEncourageByProgress(factProgress));
         result.put("avatar", userWxUserDO.getHeadimgurl());
-        result.put("name", handleCandidateName(userUserDO.getName(), progressQuery.getPresenteeUserId(), jobApplication.getRecommenderUserId()));
+        result.put("name", handleCandidateName(userUserDO.getName(), progressQuery.getPresenteeUserId(),
+                jobApplication.getRecommenderUserId(), jobApplication.getApplierId()));
         result.put("title", jobPositionDO.getTitle());
         logger.info("result:{}", result);
         return JSON.toJSONString(result);
@@ -1171,8 +1172,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
 
-    private String handleCandidateName(String name, int presenteeUserId, Integer recommenderUserId) {
-        if(presenteeUserId == recommenderUserId){
+    private String handleCandidateName(String name, int presenteeUserId, int recommenderUserId, int applierId) {
+        if(presenteeUserId == recommenderUserId || applierId == presenteeUserId){
             return name;
         }else {
             boolean hasChinese = chinese.matcher(name).find();
@@ -1245,6 +1246,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         ReferralProgressEnum last = ReferralProgressEnum.getEnumByProgress(lastProgress);
         ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
+        if(current == null){
+            throw UserAccountException.REFERRAL_PROGRESS_ERROR;
+        }
         return last.getOrder() >= current.getOrder();
     }
 
