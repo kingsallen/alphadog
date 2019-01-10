@@ -247,4 +247,13 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         }
     }
 
+    @Override
+    public String progressQueryKeyword(ReferralProgressInfo progressInfo) throws BIZException, TException {
+        try {
+            return radarService.progressQueryKeyword(progressInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

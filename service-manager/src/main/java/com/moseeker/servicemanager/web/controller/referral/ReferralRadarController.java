@@ -89,4 +89,36 @@ public class ReferralRadarController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
+    @RequestMapping(value = "v1/referral/progress/keyword", method = RequestMethod.GET)
+    public String progressQueryKeyword(@RequestParam(name = "user_id") Integer userId,
+                                       @RequestParam(name = "appid") Integer appid,
+                                       @RequestParam(name = "company_id") Integer companyId,
+                                       @RequestParam(name = "keyword") String keyword,
+                                       @RequestParam(name = "progress") Integer progress) throws TException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工userId", userId, 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("progress", progress, 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("companyId", companyId, 1, Integer.MAX_VALUE);
+        validateUtil.addStringLengthValidate("keyword", keyword.trim(), 1, 50);
+        validateUtil.addRequiredValidate("员工userId", userId);
+        validateUtil.addRequiredValidate("progress", progress);
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("companyId", companyId);
+        validateUtil.addRequiredValidate("keyword", keyword);
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            ReferralProgressInfo progressInfo = new ReferralProgressInfo();
+            progressInfo.setCompanyId(companyId);
+            progressInfo.setKeyword(keyword);
+            progressInfo.setProgress(progress);
+            progressInfo.setUserId(userId);
+            String resultJson = referralService.progressQueryKeyword(progressInfo);
+            JSONArray response = JSONArray.parseArray(resultJson);
+            return Result.success(response).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
 }

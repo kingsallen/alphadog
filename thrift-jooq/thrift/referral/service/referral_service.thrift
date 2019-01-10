@@ -44,4 +44,6 @@ service ReferralService {
     string getProgressByOne(1:referral_struct.ReferralProgressQueryInfo progressQuery) throws (1: common_struct.BIZException e);
     // 根据条件批量查询候选人推荐进度
     string getProgressBatch(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
+    // 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
+    string progressQueryKeyword(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
 }

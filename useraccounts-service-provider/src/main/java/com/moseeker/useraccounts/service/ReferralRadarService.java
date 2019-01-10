@@ -102,4 +102,11 @@ public interface ReferralRadarService {
      * @date 2018/12/7
      */
     void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord recommendRecord);
+    /**
+     * 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
+     *
+     * @author cjm
+     * @date 2018/12/7
+     */
+    String progressQueryKeyword(ReferralProgressInfo progressInfo);
 }

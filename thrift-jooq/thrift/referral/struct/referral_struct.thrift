@@ -119,7 +119,7 @@ struct ReferralProgressInfo{
     3: optional i32 pageNum,
     4: optional i32 pageSize,
     5: optional i32 progress,
-    6: optional string username
+    6: optional string keyword
 }
 
 struct ReferralProgressQueryInfo{
