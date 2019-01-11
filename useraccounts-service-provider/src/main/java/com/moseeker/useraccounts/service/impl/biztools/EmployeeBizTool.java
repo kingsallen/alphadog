@@ -67,8 +67,10 @@ public class EmployeeBizTool {
         if(root2User != null){
             radar.setForwardName(root2User.getName());
         }
-        String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
-        radar.setClickTime(time);
+        if(data.getTimeMap().get(userId) != null) {
+            String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
+            radar.setClickTime(time);
+        }
         Byte forward = data.getUserFromMap().get(userId);
         radar.setForwardSourceWx(false);
         if(forward != null && forward== ForwardSourceType.Groupmessage.getValue()){

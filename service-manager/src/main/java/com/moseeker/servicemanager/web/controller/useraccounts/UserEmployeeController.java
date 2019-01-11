@@ -547,8 +547,8 @@ public class UserEmployeeController {
     @RequestMapping(value="/v1/radar/data", method = RequestMethod.GET)
     @ResponseBody
     public String fetchRadarIndexData(@RequestParam("appid") int appid, @RequestParam("company_id") int companyId,
-                                      @RequestParam("user_id") int userId, @RequestParam(value = "page", defaultValue = "1")int page,
-                                      @RequestParam(value = "size", defaultValue = "5") int size
+                                      @RequestParam("user_id") int userId, @RequestParam( "page")int page,
+                                      @RequestParam("size") int size
                                       ) throws Exception {
 
         if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
