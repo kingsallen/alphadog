@@ -191,8 +191,13 @@ public class Neo4jServiceImpl implements Neo4jService {
     @Override
     public List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException {
         if(userId >0 && companyId >0 && !StringUtils.isEmptyList(userIdList)){
-            List<UserDepthVO> list = userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId);
-            return list;
+            try {
+                List<UserDepthVO> list = userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId);
+                return list;
+            }catch (Exception e){
+                logger.error(e.getMessage()+"userid:{}, userIdList:{}, companyId:{}", userId, userIdList, companyId);
+
+            }
         }
         return new ArrayList<>();
     }

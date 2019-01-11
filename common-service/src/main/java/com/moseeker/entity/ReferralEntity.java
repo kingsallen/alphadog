@@ -767,6 +767,7 @@ public class ReferralEntity {
             if(!StringUtils.isEmptyList(userListFuture.get())){
                 userListFuture.get().forEach(fe -> userMap.put(fe.getId(), fe));
             }
+            data.setTimeMap(timeMap);
             data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionListFuture.get())){
