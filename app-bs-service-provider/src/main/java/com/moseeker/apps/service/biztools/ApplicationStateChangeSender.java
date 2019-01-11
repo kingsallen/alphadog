@@ -58,6 +58,8 @@ public class ApplicationStateChangeSender {
             amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                     APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                             .build());
+
+
         }
     }
 }
