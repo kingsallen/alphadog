@@ -638,7 +638,7 @@ public class UserEmployeeServiceImpl {
             threadPool.startTast(()->{
                 ConnectRadarInfo info = new ConnectRadarInfo();
                 info.setChainId(logRecord.getRootChainId());
-                info.setParentId(-1);
+                info.setParentId(0);
                 info.setRecomUserId(logRecord.getRootUserId());
                 info.setNextUserId(logRecord.getRootUserId());
                 RadarConnectResult result = radarService.connectRadar(info);
