@@ -56,7 +56,7 @@ public class ProfileBS {
     private UserUserDao userUserDao;
 
     @SuppressWarnings("unchecked")
-    @CounterIface
+//    @CounterIface
     public Response retrieveProfile(int positionId, String profile, int channel) throws TException {
 
         logger.info("ProfileBS retrieveProfile positionId:{}, channel:{}", positionId, channel);
