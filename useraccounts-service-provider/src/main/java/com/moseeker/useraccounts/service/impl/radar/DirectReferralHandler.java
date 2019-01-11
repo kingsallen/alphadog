@@ -4,13 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,7 +25,13 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
         JSONObject recom = new JSONObject();
         recom.put("type", getReferralType().getType());
         Object claim = appIdClaimMap.get(jobApplicationDO.getId()+"");
-        recom.put("claim", claim == null ? 0 : claim);
+        if(claim == null){
+            recom.put("claim", 0);
+        }else {
+            ReferralLog referralLog = (ReferralLog)claim;
+            recom.put("claim", referralLog.getClaim());
+            recom.put("rkey", referralLog.getId());
+        }
         return recom;
     }
 
@@ -43,7 +48,7 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
     }
 
     @Override
-    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS) {
+    protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> directReferralList = getApplicationsByReferralType(jobApplicationDOS);
         List<Integer> referenceIds = directReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<Integer> referencePids = directReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
@@ -54,7 +59,7 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
             for(int i=0;i<referralLogs.size()&&flag;i++){
                 ReferralLog referralLog = referralLogs.get(i);
                 if(jobApplicationDO.getApplierId() == referralLog.getReferenceId() && jobApplicationDO.getPositionId() == referralLog.getPositionId()){
-                    claimApplyMap.put(jobApplicationDO.getId() + "", (int)referralLog.getClaim());
+                    claimApplyMap.put(jobApplicationDO.getId() + "", referralLog);
                     flag = false;
                 }
             }

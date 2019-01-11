@@ -7,7 +7,7 @@ public class ProgressForm {
     private Integer pageNum;
     private Integer pageSize;
     private Integer progress;
-    private String username;
+    private String keyword;
 
     public Integer getAppid() {
         return appid;
@@ -57,11 +57,11 @@ public class ProgressForm {
         this.progress = progress;
     }
 
-    public String getUsername() {
-        return username;
+    public String getKeyword() {
+        return keyword;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }

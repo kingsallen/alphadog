@@ -207,9 +207,9 @@ public class ReferralTemplateSender {
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
         for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendRecords){
             if(seekRecommendRecord.getPostUserId() == candidateShareChainDO.getRootRecomUserId()
-                    && seekRecommendRecord.getPresenteeUserId() == candidateShareChainDO.getPresenteeUserId()
+                    && seekRecommendRecord.getPresenteeId() == candidateShareChainDO.getPresenteeUserId()
                     && seekRecommendRecord.getPositionId() == candidateShareChainDO.getPositionId()){
-                templateShareChainDO.setSeekReferral(1);
+                templateShareChainDO.setSeekReferralId(seekRecommendRecord.getId());
                 break;
             }
         }

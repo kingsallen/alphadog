@@ -110,7 +110,8 @@ struct ConnectRadarInfo{
 struct CheckEmployeeInfo{
     1: optional i32 parentChainId,
     2: optional i32 recomUserId,
-    3: optional i32 pid
+    3: optional i32 presenteeUserId,
+    4: optional i32 pid
 }
 struct ReferralProgressInfo{
     1: optional i32 userId,
@@ -118,7 +119,7 @@ struct ReferralProgressInfo{
     3: optional i32 pageNum,
     4: optional i32 pageSize,
     5: optional i32 progress,
-    6: optional string username
+    6: optional string keyword
 }
 
 struct ReferralProgressQueryInfo{

@@ -2,17 +2,17 @@ package com.moseeker.entity.pojos;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
+import org.jetbrains.annotations.NotNull;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 人脉连连看用户信息vo
  */
-public class RadarUserInfo {
+public class RadarUserInfo implements Comparable<RadarUserInfo>{
 
     private Integer uid;
     private String name;
@@ -70,27 +70,25 @@ public class RadarUserInfo {
     }
 
     public RadarUserInfo initFromUserWxUser(Object userWxUser){
+        String avatar;
+        String nickname;
+        int uid;
         if(userWxUser instanceof UserWxUserRecord){
             UserWxUserRecord userWxUserRecord = (UserWxUserRecord)userWxUser;
-            if(StringUtils.isNullOrEmpty(userWxUserRecord.getHeadimgurl())){
-                this.avatar = "";
-            }else {
-                this.avatar = userWxUserRecord.getHeadimgurl();
-            }
-            this.nickname = userWxUserRecord.getNickname();
-            this.uid = userWxUserRecord.getSysuserId();
+            avatar = Optional.ofNullable(userWxUserRecord.getHeadimgurl()).orElse("");
+            nickname = userWxUserRecord.getNickname();
+            uid = userWxUserRecord.getSysuserId();
         }else if(userWxUser instanceof UserWxUserDO){
             UserWxUserDO userWxUserDO = (UserWxUserDO)userWxUser;
-            if(StringUtils.isNullOrEmpty(userWxUserDO.getHeadimgurl())){
-                this.avatar = "";
-            }else {
-                this.avatar = userWxUserDO.getHeadimgurl();
-            }
-            this.nickname = userWxUserDO.getNickname();
-            this.uid = userWxUserDO.getSysuserId();
+            avatar = Optional.ofNullable(userWxUserDO.getHeadimgurl()).orElse("");
+            nickname = userWxUserDO.getNickname();
+            uid = userWxUserDO.getSysuserId();
         }else {
             return null;
         }
+        this.avatar = avatar;
+        this.nickname = nickname;
+        this.uid = uid;
         return this;
     }
 
@@ -101,8 +99,8 @@ public class RadarUserInfo {
      * @return 返回人脉雷达该用户数据
      */
     public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
+        List<ReferralConnectionChainRecord> newChainRecords = getOrderedChainRecords(chainRecords);
         // 获取连连看最长路径，用于定位度数，这里会对记录排序
-        List<ReferralConnectionChainRecord> newChainRecords = getNewChainRecords(chainRecords);
         this.setUid(userDO.getSysuserId());
         this.setNickname(userDO.getNickname());
         this.setAvatar(userDO.getHeadimgurl());
@@ -122,25 +120,6 @@ public class RadarUserInfo {
             }
         }
         return this;
-    }
-
-    private List<ReferralConnectionChainRecord> getNewChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
-        List<ReferralConnectionChainRecord> newChainRecords = new ArrayList<>();
-        int rootParentId = chainRecords.get(0).getRootParentId();
-        Timestamp createTime = null;
-        for(ReferralConnectionChainRecord connectionChainRecord : chainRecords){
-            if(rootParentId == connectionChainRecord.getId()){
-                createTime = connectionChainRecord.getCreateTime();
-                break;
-            }
-        }
-        for(ReferralConnectionChainRecord connectionChainRecord : chainRecords){
-            if(connectionChainRecord.getCreateTime().equals(createTime)){
-                newChainRecords.add(connectionChainRecord);
-            }
-        }
-        // 这里保证链路按度数排序
-        return getOrderedChainRecords(newChainRecords);
     }
 
     private List<ReferralConnectionChainRecord> getOrderedChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
@@ -176,5 +155,15 @@ public class RadarUserInfo {
         }
         this.setPnodes(pnodes);
         return this;
+    }
+
+
+    @Override
+    public int compareTo(@NotNull RadarUserInfo compare) {
+        if (this.degree.intValue() != compare.getDegree().intValue()) {
+            return this.degree > compare.getDegree() ? 1 : -1;
+        } else {
+           return -1;
+        }
     }
 }

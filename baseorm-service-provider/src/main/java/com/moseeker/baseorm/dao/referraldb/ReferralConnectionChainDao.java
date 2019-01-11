@@ -43,6 +43,7 @@ public class ReferralConnectionChainDao {
     public List<ReferralConnectionChainRecord> fetchChainsByRootChainId(int parentChainId) {
         return create.selectFrom(REFERRAL_CONNECTION_CHAIN)
                 .where(REFERRAL_CONNECTION_CHAIN.ROOT_PARENT_ID.eq(parentChainId))
+                .and(REFERRAL_CONNECTION_CHAIN.STATE.ne((byte)2))
                 .fetchInto(ReferralConnectionChainRecord.class);
     }
 
