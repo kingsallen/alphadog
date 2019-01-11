@@ -20,22 +20,12 @@ public class UserProviderServiceImpl {
     @Autowired
     UserAccountEntity userAccountEntity;
 
-    @Autowired
-    ProfileEntity profileEntity;
-
     public UserUserDO getCompanyUser(int appid, String phone, int companyId) throws BIZException, TException {
         UserUserRecord companyUser = userAccountEntity.getCompanyUser(phone, companyId);
         if (companyUser == null) {
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USER_USER_NOTEXIST);
         }
         return companyUser.into(UserUserDO.class);
-    }
-
-    public UserUserDO storeChatBotUser(String profilePojo, int reference, int companyId, int source, int appid) throws BIZException, TException {
-        return profileEntity.storeChatBotUser(
-                JSON.parseObject(profilePojo, ProfilePojo.class),
-                reference, companyId, UserSource.instaceFromInteger(source), appid)
-                .into(UserUserDO.class);
     }
 
 }
