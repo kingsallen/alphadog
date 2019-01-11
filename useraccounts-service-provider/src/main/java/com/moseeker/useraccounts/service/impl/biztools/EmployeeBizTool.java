@@ -10,15 +10,12 @@ import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.pojos.EmployeeCardViewData;
 import com.moseeker.entity.pojos.EmployeeRadarData;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.useraccounts.constant.ForwardSourceType;
-import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewPageVO;
-import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
-import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
-import java.sql.Timestamp;
+import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewPageVO;
+import com.moseeker.useraccounts.service.impl.pojos.RadarUserVO;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,8 +64,10 @@ public class EmployeeBizTool {
         if(root2User != null){
             radar.setForwardName(root2User.getName());
         }
-        String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
-        radar.setClickTime(time);
+        if(data.getTimeMap().get(userId)!=null) {
+            String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
+            radar.setClickTime(time);
+        }
         Byte forward = data.getUserFromMap().get(userId);
         radar.setForwardSourceWx(false);
         if(forward != null && forward== ForwardSourceType.Groupmessage.getValue()){
