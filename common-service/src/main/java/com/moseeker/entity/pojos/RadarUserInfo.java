@@ -2,13 +2,13 @@ package com.moseeker.entity.pojos;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.common.util.StringUtils;
+import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 人脉连连看用户信息vo
@@ -71,27 +71,25 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
     }
 
     public RadarUserInfo initFromUserWxUser(Object userWxUser){
+        String avatar;
+        String nickname;
+        int uid;
         if(userWxUser instanceof UserWxUserRecord){
             UserWxUserRecord userWxUserRecord = (UserWxUserRecord)userWxUser;
-            if(StringUtils.isNullOrEmpty(userWxUserRecord.getHeadimgurl())){
-                this.avatar = "";
-            }else {
-                this.avatar = userWxUserRecord.getHeadimgurl();
-            }
-            this.nickname = userWxUserRecord.getNickname();
-            this.uid = userWxUserRecord.getSysuserId();
+            avatar = Optional.ofNullable(userWxUserRecord.getHeadimgurl()).orElse("");
+            nickname = userWxUserRecord.getNickname();
+            uid = userWxUserRecord.getSysuserId();
         }else if(userWxUser instanceof UserWxUserDO){
             UserWxUserDO userWxUserDO = (UserWxUserDO)userWxUser;
-            if(StringUtils.isNullOrEmpty(userWxUserDO.getHeadimgurl())){
-                this.avatar = "";
-            }else {
-                this.avatar = userWxUserDO.getHeadimgurl();
-            }
-            this.nickname = userWxUserDO.getNickname();
-            this.uid = userWxUserDO.getSysuserId();
+            avatar = Optional.ofNullable(userWxUserDO.getHeadimgurl()).orElse("");
+            nickname = userWxUserDO.getNickname();
+            uid = userWxUserDO.getSysuserId();
         }else {
             return null;
         }
+        this.avatar = avatar;
+        this.nickname = nickname;
+        this.uid = uid;
         return this;
     }
 
@@ -102,7 +100,7 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
      * @return 返回人脉雷达该用户数据
      */
     public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
-        List<ReferralConnectionChainRecord> newChainRecords = getOrderedChainRecords(chainRecords);
+        List<ReferralConnectionChainRecord> newChainRecords = RadarUtils.getOrderedChainRecords(chainRecords);
         // 获取连连看最长路径，用于定位度数，这里会对记录排序
         this.setUid(userDO.getSysuserId());
         this.setNickname(userDO.getNickname());
@@ -123,52 +121,6 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
             }
         }
         return this;
-    }
-
-    private List<ReferralConnectionChainRecord> getOriginChainRecords(List<ReferralConnectionChainRecord> chainRecords, byte state) {
-        if(state == 1){
-            return getOrderedChainRecords(chainRecords);
-        }
-        List<ReferralConnectionChainRecord> newChainRecords = new ArrayList<>();
-        int rootParentId = chainRecords.get(0).getRootParentId();
-        Timestamp createTime = null;
-        for(ReferralConnectionChainRecord connectionChainRecord : chainRecords){
-            if(rootParentId == connectionChainRecord.getId()){
-                createTime = connectionChainRecord.getCreateTime();
-                break;
-            }
-        }
-        for(ReferralConnectionChainRecord connectionChainRecord : chainRecords){
-            if(connectionChainRecord.getCreateTime().equals(createTime)){
-                newChainRecords.add(connectionChainRecord);
-            }
-        }
-        // 这里保证链路按度数排序
-        return getOrderedChainRecords(newChainRecords);
-    }
-
-    private List<ReferralConnectionChainRecord> getOrderedChainRecords(List<ReferralConnectionChainRecord> chainRecords) {
-        List<ReferralConnectionChainRecord> orderedChainRecords = new ArrayList<>();
-        int parentId = 0;
-        for(ReferralConnectionChainRecord chainRecord : chainRecords){
-            if(chainRecord.getParentId() == 0){
-                parentId = chainRecord.getId();
-                orderedChainRecords.add(chainRecord);
-                break;
-            }
-        }
-        // 递归排序
-        return findByParentId(parentId, orderedChainRecords, chainRecords);
-    }
-
-    private List<ReferralConnectionChainRecord> findByParentId(int parentId, List<ReferralConnectionChainRecord> orderedChainRecords, List<ReferralConnectionChainRecord> chainRecords) {
-        for(ReferralConnectionChainRecord chainRecord : chainRecords){
-            if(chainRecord.getParentId() == parentId){
-                orderedChainRecords.add(chainRecord);
-                return findByParentId(chainRecord.getId(), orderedChainRecords, chainRecords);
-            }
-        }
-        return orderedChainRecords;
     }
 
     public RadarUserInfo fillNodesFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
