@@ -261,6 +261,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) {
+        long start = System.currentTimeMillis();
         RadarConnectResult result = new RadarConnectResult();
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(radarInfo.getChainId());
         if(connectionLogRecord == null){
@@ -295,6 +296,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setChain(userChains);
         result.setEnable_viewer(enableViewer);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
+        long end = System.currentTimeMillis();
+        logger.info("连连看时长:{}", end - start);
         return result;
     }
 
