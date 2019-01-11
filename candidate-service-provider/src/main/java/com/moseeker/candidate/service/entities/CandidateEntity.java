@@ -1,5 +1,6 @@
 package com.moseeker.candidate.service.entities;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
@@ -18,8 +19,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrGroupCompanyRelRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCompletenessRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -35,7 +34,6 @@ import com.moseeker.candidate.service.dao.CandidateDBDao;
 import com.moseeker.candidate.service.exception.CandidateCategory;
 import com.moseeker.candidate.service.exception.CandidateException;
 import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
-import com.moseeker.candidate.service.vo.*;
 import com.moseeker.common.annotation.iface.CounterIface;
 
 import static com.moseeker.common.biztools.RecruitmentScheduleEnum.IMPROVE_CANDIDATE;
@@ -55,15 +53,12 @@ import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
-import com.moseeker.thrift.gen.candidate.struct.PositionLayerInfo;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCompletenessDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -81,6 +76,8 @@ import org.joda.time.DateTime;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,6 +129,11 @@ public class CandidateEntity implements Candidate {
     @Autowired
     UserWxUserDao wxUserDao;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    private static final String REFINE_CANDIDATE_EXCHANGE = "refine_candidate_exchange";
+    private static final String REFINE_CANDIDATE_ROUTING_KEY = "refine_candidate_exchange.redpacket";
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -429,12 +431,12 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 添加员工积分 */
+        Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId())
+                .and(new Condition("company_id", employeeEntity.getCompanyIds(param.getCompanyId()), ValueOp.IN))
+                .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
+        UserEmployeeDO employeeDO = employeeDao.getData(query);
         if (candidateRecomRecordDO.getPostUserId() > 0) {
             try {
-                Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId())
-                        .and(new Condition("company_id", employeeEntity.getCompanyIds(param.getCompanyId()), ValueOp.IN))
-                        .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
-                UserEmployeeDO employeeDO = employeeDao.getData(query);
                 if (employeeDO != null) {
                     employeeEntity.addReward(employeeDO.getId(), param.getCompanyId(), "", candidateRecomRecordDO.getAppId(), candidateRecomRecordDO.getPositionId(), IMPROVE_CANDIDATE.getId(), candidateRecomRecordDO.getPresenteeUserId());
                 }
@@ -443,7 +445,29 @@ public class CandidateEntity implements Candidate {
             }
         }
 
+        if (employeeDO != null) {
+            publishRecommendEvent(employeeDO.getId(), param.getPostUserId(),
+                    candidateRecomRecordDO.getPresenteeUserId(), param.getCompanyId(),
+                    candidateRecomRecordDO.getPositionId());
+        }
+
         return assembleRecommendResult(param.getId(), param.getPostUserId(), param.getClickTime(), param.getCompanyId());
+    }
+
+    private void publishRecommendEvent(int employeeId, int userId, int candidateId, int companyId, int positionId) {
+        JSONObject eventMessage = new JSONObject();
+        eventMessage.put("name", "refine candidate");
+        eventMessage.put("ID", UUID.randomUUID().toString());
+        eventMessage.put("employee_id", employeeId);
+        eventMessage.put("user_id", userId);
+        eventMessage.put("candidate_id", candidateId);
+        eventMessage.put("company_id", companyId);
+        eventMessage.put("refine_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+        eventMessage.put("position_id", positionId);
+
+        amqpTemplate.sendAndReceive(REFINE_CANDIDATE_EXCHANGE,
+                REFINE_CANDIDATE_ROUTING_KEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
+                        .build());
     }
 
     /**
