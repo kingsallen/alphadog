@@ -660,7 +660,7 @@ public class UserEmployeeController {
                 return userInfo;
             }).collect(Collectors.toList()));
             infoVO.setPage(radarInfo.getPage());
-            infoVO.setTatolCount(radarInfo.getTatolCount());
+            infoVO.setTotalCount(radarInfo.getTotalCount());
         }
         return infoVO;
     }
@@ -685,7 +685,7 @@ public class UserEmployeeController {
             EmployeeForwardViewPage viewPage = service.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
             EmployeeForwardViewVO viewVO = new EmployeeForwardViewVO();
             viewVO.setPage(viewPage.getPage());
-            viewVO.setTatolCount(viewPage.getTatolCount());
+            viewVO.setTotalCount(viewPage.getTotalCount());
             if(!com.moseeker.common.util.StringUtils.isEmptyList(viewPage.getUserList())){
                 List<EmployeeForwardViewPageVO> forwardViews = new ArrayList<>();
                 viewPage.getUserList().forEach(view -> {

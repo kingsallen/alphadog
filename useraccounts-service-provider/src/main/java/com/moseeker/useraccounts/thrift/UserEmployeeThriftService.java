@@ -248,7 +248,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
         EmployeeForwardViewPage result = new EmployeeForwardViewPage();
         result.setPage(viewVO.getPage());
-        result.setTatolCount(viewVO.getTatolCount());
+        result.setTotalCount(viewVO.getTotalCount());
         if(!com.moseeker.common.util.StringUtils.isEmptyList(viewVO.getUserList())){
             List<EmployeeForwardView> forwardViews = new ArrayList<>();
             viewVO.getUserList().forEach(view -> {
@@ -285,7 +285,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
                 return userInfo;
             }).collect(Collectors.toList()));
             radarInfo.setPage(infoVO.getPage());
-            radarInfo.setTatolCount(infoVO.getTatolCount());
+            radarInfo.setTotalCount(infoVO.getTotalCount());
         }
         return radarInfo;
     }
