@@ -569,7 +569,7 @@ struct RadarUserInfo {
 }
 
 struct RadarInfo{
-    1:optional i32 tatolCount,
+    1:optional i32 totalCount,
     2:optional i32 page,
     3:optional list<RadarUserInfo> userList
 }
@@ -598,7 +598,7 @@ struct Connection{
 }
 
 struct EmployeeForwardViewPage{
-    1:optional i32 tatolCount,
+    1:optional i32 totalCount,
     2:optional i32 page,
     3:optional list<EmployeeForwardView> userList
 }

@@ -7,16 +7,16 @@ import java.util.List;
  */
 public class EmployeeForwardViewVO {
 
-    public int tatolCount; // optional
+    public int totalCount; // optional
     public int page; // optional
     public List<EmployeeForwardViewPageVO> userList; // optional
 
-    public int getTatolCount() {
-        return tatolCount;
+    public int getTotalCount() {
+        return totalCount;
     }
 
-    public void setTatolCount(int tatolCount) {
-        this.tatolCount = tatolCount;
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     public int getPage() {

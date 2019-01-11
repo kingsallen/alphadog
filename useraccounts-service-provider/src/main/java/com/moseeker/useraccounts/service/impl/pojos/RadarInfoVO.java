@@ -7,16 +7,16 @@ import java.util.List;
  */
 public class RadarInfoVO {
 
-    public int tatolCount;
+    public int totalCount;
     public int page;
     public List<RadarUserVO> userList;
 
-    public int getTatolCount() {
-        return tatolCount;
+    public int getTotalCount() {
+        return totalCount;
     }
 
-    public void setTatolCount(int tatolCount) {
-        this.tatolCount = tatolCount;
+    public void setTotalCount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
     public int getPage() {
