@@ -5,7 +5,9 @@ package com.moseeker.baseorm.dao.redpacketdb;/**
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacket;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketRedpacketRecord;
+import org.jooq.Configuration;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

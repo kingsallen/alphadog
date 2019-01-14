@@ -6,6 +6,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketActivityRecord;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
