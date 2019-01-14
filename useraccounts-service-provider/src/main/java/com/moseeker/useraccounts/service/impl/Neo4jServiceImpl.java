@@ -12,15 +12,11 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.useraccounts.pojo.neo4j.Connection;
-import com.moseeker.useraccounts.pojo.neo4j.Forward;
-import com.moseeker.useraccounts.pojo.neo4j.Relation;
-import com.moseeker.useraccounts.pojo.neo4j.UserNode;
+import com.moseeker.useraccounts.pojo.neo4j.*;
 import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
-import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -161,7 +157,7 @@ public class Neo4jServiceImpl implements Neo4jService {
     }
 
     @Override
-    public List<Integer> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
+    public List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
         List<Integer> rootUserList = candidateShareChainDao.fetchRootIdByPresentee(userId);
         if(StringUtils.isEmptyList(rootUserList)){
             return new ArrayList<>();
@@ -174,7 +170,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             }
             rootUserList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
         }
-        List<Integer> postUserIdList = userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserList);
+        List<EmployeeCompanyVO> postUserIdList = userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserList);
         return postUserIdList;
     }
 
@@ -184,15 +180,24 @@ public class Neo4jServiceImpl implements Neo4jService {
         if(StringUtils.isEmptyList(peresentUserIdList)){
             return new ArrayList<>();
         }
-        List<UserDepthVO> list = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList);
+        UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if(employee == null ){
+            return new ArrayList<>();
+        }
+        List<UserDepthVO> list = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
         return list;
     }
 
     @Override
     public List<UserDepthVO> fetchDepthUserList(int userId, int companyId, List<Integer> userIdList) throws CommonException {
         if(userId >0 && companyId >0 && !StringUtils.isEmptyList(userIdList)){
-            List<UserDepthVO> list = userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId);
-            return list;
+            try {
+                List<UserDepthVO> list = userNeo4jDao.fetchDepthUserList(userId, userIdList, companyId);
+                return list;
+            }catch (Exception e){
+                logger.error(e.getMessage()+"userid:{}, userIdList:{}, companyId:{}", userId, userIdList, companyId);
+
+            }
         }
         return new ArrayList<>();
     }

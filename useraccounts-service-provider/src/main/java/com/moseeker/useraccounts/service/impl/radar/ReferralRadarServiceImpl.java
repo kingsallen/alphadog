@@ -261,6 +261,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) {
+        long start = System.currentTimeMillis();
         RadarConnectResult result = new RadarConnectResult();
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(radarInfo.getChainId());
         if(connectionLogRecord == null){
@@ -295,6 +296,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setChain(userChains);
         result.setEnable_viewer(enableViewer);
         logger.info("connectRadar:{}", JSON.toJSONString(result));
+        long end = System.currentTimeMillis();
+        logger.info("连连看时长:{}", end - start);
         return result;
     }
 
@@ -322,7 +325,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
             recomUserId = shareChainDO.getRootRecomUserId();
         }
+        logger.info("checkEmployee checkInfo:{}",checkInfo);
+        logger.info("checkEmployee pid:{}",checkInfo.getPid());
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
+        logger.info("checkEmployee jobPositionDO:{}",jobPositionDO);
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
@@ -337,7 +343,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             return JSON.toJSONString(result);
         }
         UserEmployeeRecord recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(recomUser.getCompanyId());
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(jobPositionDO.getCompanyId());
         UserWxUserRecord wxUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(recomUserId, hrWxWechatDO.getId());
         result.put("employee", 1);
         RadarUserInfo userInfo = new RadarUserInfo();
@@ -447,6 +453,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             result.add(card);
         }
+        logger.info("getProgressBatch:{}", result);
         return JSON.toJSONString(result);
     }
 
@@ -465,6 +472,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
                 record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
+        logger.info("candidateShareChainDO:{}", candidateShareChainDO);
         templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
     }
 
@@ -1003,7 +1011,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         String current = dateFormat.format(dateTime.toDate());
-        String title = "内推大使【%s】邀请您投递简历，不要错过这个内推机会哦~";
+        String title = "内推大使【%s】邀请您投递简历，不要错过这个内推机会哦~\n";
         String templateTile = String.format(title, employee.getCname());
         inviteTemplateVO.put("first", templateTile);
         inviteTemplateVO.put("keyWord1", jobPosition.getTitle());

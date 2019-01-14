@@ -59,16 +59,21 @@ public class EmployeeBizTool {
             radar.setPositionId(positionDO.getId());
             radar.setPositionTitle(positionDO.getTitle());
         }
-        radar.setViewCount(data.getPositionView().get(userId));
+        radar.setViewCount(0);
+        if(data.getPositionView().get(userId) != null){
+            radar.setViewCount(data.getPositionView().get(userId));
+        }
         UserUserRecord root2User = data.getRoot2UserMap().get(userId);
         if(root2User != null){
             radar.setForwardName(root2User.getName());
         }
-        String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
-        radar.setClickTime(time);
+        if(data.getTimeMap().get(userId) != null) {
+            String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
+            radar.setClickTime(time);
+        }
         Byte forward = data.getUserFromMap().get(userId);
         radar.setForwardSourceWx(false);
-        if(forward== ForwardSourceType.Groupmessage.getValue()){
+        if(forward != null && forward== ForwardSourceType.Groupmessage.getValue()){
             radar.setForwardSourceWx(true);
         }
         return radar;

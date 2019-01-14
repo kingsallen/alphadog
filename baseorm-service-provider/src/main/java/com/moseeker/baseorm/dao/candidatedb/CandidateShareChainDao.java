@@ -207,6 +207,13 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .fetchInto(CandidateShareChainDO.class);
     }
 
+    public List<CandidateShareChainDO> getShareChainsByUserIdAndPresenteeAndPresentee(Integer sysuserId, List<Integer> sharePids) {
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(sysuserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.in(sharePids))
+                .fetchInto(CandidateShareChainDO.class);
+    }
+
     public CandidateShareChainDO getLastOneByRootAndPresenteeAndPid(int rootUserId, int presenteeUserId, int positionId) {
         return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))

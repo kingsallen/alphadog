@@ -548,7 +548,7 @@ public class UserEmployeeServiceImpl {
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         result.setPage(page);
         try {
-            result.setTatolCount(countFuture.get());
+            result.setTotalCount(countFuture.get());
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
@@ -638,7 +638,7 @@ public class UserEmployeeServiceImpl {
             threadPool.startTast(()->{
                 ConnectRadarInfo info = new ConnectRadarInfo();
                 info.setChainId(logRecord.getRootChainId());
-                info.setParentId(-1);
+                info.setParentId(0);
                 info.setRecomUserId(logRecord.getRootUserId());
                 info.setNextUserId(logRecord.getRootUserId());
                 RadarConnectResult result = radarService.connectRadar(info);
@@ -669,7 +669,7 @@ public class UserEmployeeServiceImpl {
             if(end > list.size()){
                 end=list.size();
             }
-            result.setTatolCount(list.size());
+            result.setTotalCount(list.size());
             if(index >= list.size()){
                 return new ArrayList<>();
             }

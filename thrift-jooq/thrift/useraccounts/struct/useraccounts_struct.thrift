@@ -557,7 +557,7 @@ struct RadarUserInfo {
     1:optional i32 userId,
     2:optional string nickname,
     3:optional i32 viewCount,
-    4:optional i32 seekRecommend,
+    4:optional bool seekRecommend,
     5:optional i32 depth,
     6:optional string headimgurl,
     7:optional string positionTitle,
@@ -569,7 +569,7 @@ struct RadarUserInfo {
 }
 
 struct RadarInfo{
-    1:optional i32 tatolCount,
+    1:optional i32 totalCount,
     2:optional i32 page,
     3:optional list<RadarUserInfo> userList
 }
@@ -598,7 +598,7 @@ struct Connection{
 }
 
 struct EmployeeForwardViewPage{
-    1:optional i32 tatolCount,
+    1:optional i32 totalCount,
     2:optional i32 page,
     3:optional list<EmployeeForwardView> userList
 }

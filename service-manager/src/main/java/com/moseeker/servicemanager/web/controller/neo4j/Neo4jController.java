@@ -6,9 +6,11 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.servicemanager.web.controller.Result;
+import com.moseeker.servicemanager.web.controller.neo4j.form.EmployeeCompanyPO;
 import com.moseeker.servicemanager.web.controller.neo4j.form.ForwardInsertForm;
 import com.moseeker.servicemanager.web.controller.neo4j.form.UserDepthPO;
 import com.moseeker.thrift.gen.neo4j.service.Neo4jServices;
+import com.moseeker.thrift.gen.neo4j.struct.EmployeeCompany;
 import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,8 +64,16 @@ public class Neo4jController {
         validateUtil.addIntTypeValidate("员工user编号", userId, 1, null);
         String message = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(message)) {
-            List<Integer> list = service.fetchUserThreeDepthEmployee(userId, companyId);
-            return Result.success(list).toJson();
+            List<EmployeeCompany> list = service.fetchUserThreeDepthEmployee(userId, companyId);
+            List<EmployeeCompanyPO> depthPOList = new ArrayList<>();
+            if(!StringUtils.isEmptyList(list)){
+                depthPOList = list.stream().map(m ->{
+                    EmployeeCompanyPO depth = new EmployeeCompanyPO();
+                    org.springframework.beans.BeanUtils.copyProperties(m , depth);
+                    return depth;
+                }).collect(Collectors.toList());
+            }
+            return Result.success(depthPOList).toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(message).toJson();
         }

@@ -547,8 +547,8 @@ public class UserEmployeeController {
     @RequestMapping(value="/v1/radar/data", method = RequestMethod.GET)
     @ResponseBody
     public String fetchRadarIndexData(@RequestParam("appid") int appid, @RequestParam("company_id") int companyId,
-                                      @RequestParam("user_id") int userId, @RequestParam(value = "page", defaultValue = "1")int page,
-                                      @RequestParam(value = "size", defaultValue = "5") int size
+                                      @RequestParam("user_id") int userId, @RequestParam( "page")int page,
+                                      @RequestParam("size") int size
                                       ) throws Exception {
 
         if (org.apache.commons.lang.StringUtils.isBlank(String.valueOf(appid))) {
@@ -597,7 +597,7 @@ public class UserEmployeeController {
                 return userInfo;
             }).collect(Collectors.toList()));
             infoVO.setPage(radarInfo.getPage());
-            infoVO.setTatolCount(radarInfo.getTatolCount());
+            infoVO.setTotalCount(radarInfo.getTotalCount());
         }
         return infoVO;
     }
@@ -622,7 +622,7 @@ public class UserEmployeeController {
             EmployeeForwardViewPage viewPage = service.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
             EmployeeForwardViewVO viewVO = new EmployeeForwardViewVO();
             viewVO.setPage(viewPage.getPage());
-            viewVO.setTatolCount(viewPage.getTatolCount());
+            viewVO.setTotalCount(viewPage.getTotalCount());
             if(!com.moseeker.common.util.StringUtils.isEmptyList(viewPage.getUserList())){
                 List<EmployeeForwardViewPageVO> forwardViews = new ArrayList<>();
                 viewPage.getUserList().forEach(view -> {
