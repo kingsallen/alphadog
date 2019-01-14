@@ -31,8 +31,10 @@ public class RedpacketActivityPositionDao extends DAOImpl<RedpacketActivityPosit
 
     /**
      * Create a new RedpacketActivityPositionDao without any configuration
+     * @param redpacketActivityPosition
+     * @param redpacketActivityPositionClass
      */
-    public RedpacketActivityPositionDao() {
+    public RedpacketActivityPositionDao(RedpacketActivityPosition redpacketActivityPosition, Class<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> redpacketActivityPositionClass) {
         super(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION, com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition.class);
     }
 

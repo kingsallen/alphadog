@@ -806,4 +806,10 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
 
     }
+
+    public int getPositionCountByIdList(List<Integer> pidList,int status){
+       int result= create.selectCount().from(JobPosition.JOB_POSITION).where(JobPosition.JOB_POSITION.ID.in(pidList)).and(JobPosition.JOB_POSITION.STATUS.eq((byte)status))
+                .fetchOne().value1();
+       return result;
+    }
 }
