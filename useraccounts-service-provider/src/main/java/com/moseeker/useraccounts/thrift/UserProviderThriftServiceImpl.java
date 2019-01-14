@@ -22,13 +22,4 @@ public class UserProviderThriftServiceImpl implements UserProviderService.Iface 
             throw ExceptionUtils.convertException(e);
         }
     }
-
-    @Override
-    public UserUserDO storeChatBotUser(String profilePojo, int reference, int companyId, int source, int appid) throws TException {
-        try {
-            return userProviderService.storeChatBotUser(profilePojo, reference, companyId, source, appid);
-        } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
-        }
-    }
 }

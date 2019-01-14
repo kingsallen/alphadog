@@ -49,23 +49,4 @@ public class UserProviderController {
         }
     }
 
-    @RequestMapping(value = "/v4/user/storeChatBotUser", method = RequestMethod.POST)
-    @ResponseBody
-    public CleanJsonResponse4Alphacloud storeChatBotUser(HttpServletRequest request) {
-        try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            String profilePojo = params.getString("profilePojo");
-            int reference = params.getInt("reference");
-            int companyId = params.getInt("companyId");
-            int source = params.getInt("source");
-            int appid = params.getInt("appid");
-            UserUserDO result = userProviderService.storeChatBotUser(profilePojo,reference,companyId,source,appid);
-
-            return ResponseLogNotification.success4Alphacloud(result);
-        } catch (Exception e) {
-            logger.info(e.getMessage(), e);
-            return ResponseLogNotification.fail4Alphacloud(e.getMessage());
-        }
-    }
-
 }
