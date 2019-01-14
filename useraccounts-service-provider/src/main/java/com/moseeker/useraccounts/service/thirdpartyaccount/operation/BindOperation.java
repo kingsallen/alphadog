@@ -70,6 +70,7 @@ public class BindOperation {
     public HrThirdPartyAccountDO reuseOldThirdPartyAccount(HrThirdPartyAccountDO thirdPartyAccount,HrThirdPartyAccountDO oldAccount) throws BIZException {
         thirdPartyAccount.setId(oldAccount.getId());
         thirdPartyAccount.setBinding(oldAccount.getBinding());
+        thirdPartyAccountDao.updateData(thirdPartyAccount);
         return thirdPartyAccount;
     }
 
