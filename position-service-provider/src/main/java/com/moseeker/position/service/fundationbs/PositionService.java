@@ -355,6 +355,7 @@ public class PositionService {
             jobPositionPojo.position_feature = positionFeature;
         }
         jobPositionPojo.feature = this.getFeatureString(positionFeature);
+
         return ResponseUtils.success(jobPositionPojo);
     }
 
@@ -1884,6 +1885,11 @@ public class PositionService {
         List<WechatPositionListData> dataList = new ArrayList<>();
         Set<Integer> teamIdList = new HashSet<Integer>();
         List<RedpacketActivityPosition> hbPositionList=redpacketActivityPositionJOOQDao.getHbPositionList(jdIdList);
+        List<Integer> activeIdList=this.getRedpacketActivityIdList(hbPositionList);
+        List<RedpacketActivity> activeList=new ArrayList<>();
+        if(!StringUtils.isEmptyList(activeList)){
+            activeList=redpacketActivityJOOQDao.getRedpacketActivityList(activeIdList);
+        }
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
             for (JobPositionRecordWithCityName jr : jobRecords) {
@@ -1925,8 +1931,20 @@ public class PositionService {
                     if(!StringUtils.isEmptyList(hbPositionList)){
                         for(RedpacketActivityPosition redpacketActivityPosition:hbPositionList){
                             int pid=redpacketActivityPosition.getPositionId();
+                            int activeId=redpacketActivityPosition.getActivityId();
                             if(pid==positionId){
-                                e.setHb_status(redpacketActivityPosition.getActivityId());
+                                if(!StringUtils.isEmptyList(activeList)){
+                                    for(RedpacketActivity redpacketActivity:activeList){
+                                        int id=redpacketActivity.getId();
+                                        if(id==activeId){
+                                            int originHbStatus=e.getHb_status();
+                                            originHbStatus=originHbStatus+redpacketActivity.getType();
+                                            e.setHb_status(originHbStatus);
+                                            break;
+                                        }
+                                    }
+                                }
+
                             }
                         }
                     }
@@ -2021,6 +2039,23 @@ public class PositionService {
 
         return dataList;
 
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  获取active_id的列表
+     * @Date 下午5:38 19/1/14
+     * @Param [list]
+     * @return java.util.List<java.lang.Integer>
+     **/
+    private List<Integer> getRedpacketActivityIdList(List<RedpacketActivityPosition> list){
+        if(StringUtils.isEmptyList(list)){
+            return null;
+        }
+        List<Integer> idList=new ArrayList<>();
+        for(RedpacketActivityPosition redpacketActivityPosition:list){
+            idList.add(redpacketActivityPosition.getActivityId());
+        }
+        return idList;
     }
 
     /**
