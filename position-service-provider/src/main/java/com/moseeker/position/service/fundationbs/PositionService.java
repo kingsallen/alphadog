@@ -646,7 +646,7 @@ public class PositionService {
      * @throws BIZException
      */
 
-    public JobPostionResponse batchHandlemrJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
+    public JobPostionResponse batchHandlerJobPostionAdapter(BatchHandlerJobPostion batchHandlerJobPosition) throws TException {
         CountDownLatch batchHandlerCountDown = new CountDownLatch(1);
         JobPostionResponse response = batchHandlerJobPostion(batchHandlerJobPosition, batchHandlerCountDown);
         batchHandlerCountDown.countDown();

@@ -260,12 +260,8 @@ public abstract class EmployeeBinder {
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
                 employeeId = executeResult.getId();
                 if (executeResult.getExecute() > 0) {
-<<<<<<< HEAD
                     log.info("employee add award");
-                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
-=======
                     employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
->>>>>>> feature/alphacloud
                 }
             }
         }
