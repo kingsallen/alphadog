@@ -11,6 +11,8 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityJOOQDao;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityPositionJOOQDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
@@ -29,6 +31,8 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -170,13 +174,12 @@ public class PositionService {
 
     @Autowired
     ReferralPositionBonusDao referralPositionBonusDao;
-
-
+    @Autowired
+    private RedpacketActivityPositionJOOQDao redpacketActivityPositionJOOQDao;
+    @Autowired
+    private RedpacketActivityJOOQDao redpacketActivityJOOQDao;
     private ThreadPool pool = ThreadPool.Instance;
-
     private static List<DictAlipaycampusJobcategoryRecord> alipaycampusJobcategory;
-
-
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
     PositionServices.Iface positionServices = ServiceManager.SERVICEMANAGER.getService(PositionServices.Iface.class);
 
@@ -1748,11 +1751,7 @@ public class PositionService {
         int count=pids.size();
         logger.info("=================================="+count);
         List<WechatPositionListData> result=this.getRecomWxPosition(pids,count);
-//        if(!StringUtils.isEmptyList(result)){
-//            for(WechatPositionListData position:result){
-//                position.setTotalNum(count);
-//            }
-//        }
+
         return result;
     }
 
@@ -1863,6 +1862,7 @@ public class PositionService {
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
+
         List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
         return dataList;
     }
@@ -1883,7 +1883,7 @@ public class PositionService {
     private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList,List<JobPositionRecordWithCityName> jobRecords,int count){
         List<WechatPositionListData> dataList = new ArrayList<>();
         Set<Integer> teamIdList = new HashSet<Integer>();
-
+        List<RedpacketActivityPosition> hbPositionList=redpacketActivityPositionJOOQDao.getHbPositionList(jdIdList);
         for (int i = 0; i < jdIdList.size(); i++) {
             int positionId = jdIdList.get(i);
             for (JobPositionRecordWithCityName jr : jobRecords) {
@@ -1921,7 +1921,15 @@ public class PositionService {
                     e.setCandidate_source(jr.getCandidateSource());
                     e.setRequirement(jr.getRequirement());
                     e.setTotal_num(count);
-                    e.setHb_status(jr.getHbStatus());
+                    e.setHb_status(0);
+                    if(!StringUtils.isEmptyList(hbPositionList)){
+                        for(RedpacketActivityPosition redpacketActivityPosition:hbPositionList){
+                            int pid=redpacketActivityPosition.getPositionId();
+                            if(pid==positionId){
+                                e.setHb_status(redpacketActivityPosition.getActivityId());
+                            }
+                        }
+                    }
                     e.setIs_referral(jr.getIsReferral());
                     e.setEmployment_type(jr.getEmploymentType());
                     e.setEmployment_type_name(jr.getEmploymentType()!=null?WorkType.instanceFromInt(jr.getEmploymentType()).getName():"");
@@ -2014,6 +2022,7 @@ public class PositionService {
         return dataList;
 
     }
+
     /**
      * 获得红包活动的分享信息
      *
@@ -2306,22 +2315,15 @@ public class PositionService {
      */
     public List<WechatRpPositionListData> getRpPositionList(int hbConfigId, int pageNum, int pageSize) {
         List<WechatRpPositionListData> result = new ArrayList<>();
-        Query qu = new Query.QueryBuilder()
-                .where("hb_config_id", hbConfigId)
-                .setPageNum(pageNum)
-                .setPageSize(pageSize)
-                .buildQuery();
-        List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
-        List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
-        String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
+        List<Integer> pids =redpacketActivityPositionJOOQDao.getPositionIdListByConfigId(hbConfigId);
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
-        Query q = new Query.QueryBuilder().where(condition).orderBy("priority").buildQuery();
-
+        Query q = new Query.QueryBuilder().where(condition).and("status",0).orderBy("priority")
+                .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-
         // filter 出已经发完红包的职位
         jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
-        int totalNum = this.getRpPositionCount(hbConfigId);
+        int totalNum =jobPositionDao.getPositionCountByIdList(pids,0);
+        //totalNum=. this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
         for (JobPositionRecordWithCityName jr : jobRecords) {
             WechatRpPositionListData e = new WechatRpPositionListData();
@@ -2344,9 +2346,12 @@ public class PositionService {
         }
 
         // 拼装公司信息
-        qu = new Query.QueryBuilder().where("id", hbConfigId).buildQuery();
-        Integer companyId = hrHbConfigDao.getData(qu, HrHbConfigDO.class).getCompanyId();
-        qu = new Query.QueryBuilder().where("id", companyId).buildQuery();
+        RedpacketActivity data=redpacketActivityJOOQDao.getRedpacketActivity(hbConfigId);
+        if(data==null){
+           return null;
+        }
+        int companyId=data.getCompanyId();
+        Query qu = new Query.QueryBuilder().where("id", companyId).buildQuery();
         HrCompanyDO company = hrCompanyDao.getData(qu, HrCompanyDO.class);
         result.forEach(s -> {
             s.setCompany_abbr(company == null ? "" : company.getAbbreviation());
