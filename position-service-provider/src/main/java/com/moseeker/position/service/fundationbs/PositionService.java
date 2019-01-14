@@ -2366,8 +2366,12 @@ public class PositionService {
             WechatRpPositionListData e = new WechatRpPositionListData();
             e.setTitle(jr.getTitle());
             e.setId(jr.getId());
-            e.setSalary_top(jr.getSalaryTop());
-            e.setSalary_bottom(jr.getSalaryBottom());
+            if(jr.getSalaryTop()!=null){
+                e.setSalary_top(jr.getSalaryTop());
+            }
+            if(jr.getSalaryBottom()!=null){
+                e.setSalary_bottom(jr.getSalaryBottom());
+            }
             e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
             e.setDepartment(jr.getDepartment());
             e.setVisitnum(jr.getVisitnum());
