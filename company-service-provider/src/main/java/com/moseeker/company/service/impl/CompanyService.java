@@ -74,6 +74,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
+@CounterIface
 @Service
 public class CompanyService {
 
