@@ -21,6 +21,9 @@ import static com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket.REDP
  **/
 @Repository
 public class RedpacketRedpacketJOOQDao extends JooqCrudImpl<RedpacketRedpacket,RedpacketRedpacketRecord> {
+    public RedpacketRedpacketJOOQDao(){
+        super(REDPACKET_REDPACKET,RedpacketRedpacket.class);
+    }
     public RedpacketRedpacketJOOQDao(TableImpl<RedpacketRedpacketRecord> table, Class<RedpacketRedpacket> redpacketRedpacketClass) {
         super(table, redpacketRedpacketClass);
     }
