@@ -672,18 +672,22 @@ public class ReferralEntity {
         try {
             Future<List<CandidateCompanyDO>> candidateCompanyListFuture = threadPool.startTast(
                     () -> candidateCompanyDao.getCandidateCompanyByCompanyIDAndUserID(companyId, userIdList));
+            Future<List<CandidateShareChainDO>> shareFuture = threadPool.startTast(
+                    () -> shareChainDao.getShareChainsByUserIdAndPresenteeAndPresentee(postUserId, userIdList));
             Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
                     () -> wxEntity.getUserWxUserData(userIdList));
             Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
                     () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(userIdList));
-            List<CandidateCompanyDO> companyList = candidateCompanyListFuture.get();
-            Future<List<CandidatePositionRecord>> candidatePositionListFuture = null;
 
-            if(!StringUtils.isEmptyList(companyList)) {
+            List<CandidateCompanyDO> companyList = candidateCompanyListFuture.get();
+            List<CandidateShareChainDO> shareChainDOS = shareFuture.get();
+            Future<List<CandidatePositionRecord>> candidatePositionListFuture = null;
+            if(!StringUtils.isEmptyList(companyList) && !StringUtils.isEmptyList(shareChainDOS)) {
                 List<Integer> candidateCompanyIds = companyList.stream().map(m -> m.getId()).collect(Collectors.toList());
-                candidatePositionListFuture = threadPool.startTast(() -> candidatePositionDao.fetchRecentViewedByCompanyIds(candidateCompanyIds));
+                List<Integer> sharePositionIdstemp = shareChainDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+                candidatePositionListFuture = threadPool.startTast(() -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(candidateCompanyIds, sharePositionIdstemp));
             }
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
             Map<Integer, Integer> positionIdMap = new HashMap<>();
