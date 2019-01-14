@@ -713,12 +713,12 @@ public class UserEmployeeServiceImpl {
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
         for (UserDepthVO depth : depthList) {
             for(CandidateRecomRecordRecord record: recomRecordDOList){
-                if(depth.getUserId() == record.getPresenteeUserId()){
+                if(depth.getUserId() == record.getPresenteeUserId().intValue()){
                     list.add(record);
                 }
             }
         }
-        return recomRecordDOList;
+        return list;
     }
 
 }
