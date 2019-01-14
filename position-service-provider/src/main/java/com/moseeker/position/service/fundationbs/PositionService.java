@@ -2319,8 +2319,11 @@ public class PositionService {
         Query q = new Query.QueryBuilder().where(condition).and("status",0).orderBy("priority")
                 .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
+        if(StringUtils.isEmptyList(jobRecords)){
+            return null;
+        }
         // filter 出已经发完红包的职位
-        jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
+//        jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
         int totalNum =jobPositionDao.getPositionCountByIdList(pids,0);
         //totalNum=. this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
@@ -2361,14 +2364,16 @@ public class PositionService {
         // 拼装红包信息
 //        List<RpExtInfo> rpExtInfoList = getPositionListRpExt(pids);
         List<RpExtInfo> rpExtInfoList = getNewPositionListRpExt(pids);
-        result.forEach(s -> {
-            RpExtInfo rpInfo = rpExtInfoList.stream().filter(e -> e.getPid() == s.getId()).findFirst().orElse(
-                    null);
-            if (rpInfo != null) {
-                s.setRemain(rpInfo.getRemain());
-                s.setEmployee_only(rpInfo.isEmployee_only());
-            }
-        });
+        if(!StringUtils.isEmptyList(rpExtInfoList)){
+            result.forEach(s -> {
+                RpExtInfo rpInfo = rpExtInfoList.stream().filter(e -> e.getPid() == s.getId()).findFirst().orElse(
+                        null);
+                if (rpInfo != null) {
+                    s.setRemain(rpInfo.getRemain());
+                    s.setEmployee_only(rpInfo.isEmployee_only());
+                }
+            });
+        }
         return result;
     }
 
