@@ -1011,7 +1011,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         DateTime dateTime = DateTime.now();
         DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         String current = dateFormat.format(dateTime.toDate());
-        String title = "内推大使【%s】邀请您投递简历，不要错过这个内推机会哦~";
+        String title = "内推大使【%s】邀请您投递简历，不要错过这个内推机会哦~\n";
         String templateTile = String.format(title, employee.getCname());
         inviteTemplateVO.put("first", templateTile);
         inviteTemplateVO.put("keyWord1", jobPosition.getTitle());
