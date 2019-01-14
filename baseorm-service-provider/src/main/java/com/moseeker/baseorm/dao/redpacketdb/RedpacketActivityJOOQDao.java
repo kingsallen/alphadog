@@ -6,6 +6,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketActivityRecord;
 import org.jooq.impl.TableImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,8 +22,10 @@ import static com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivity.REDPA
  **/
 @Repository
 public class RedpacketActivityJOOQDao extends JooqCrudImpl<RedpacketActivity,RedpacketActivityRecord> {
-    public RedpacketActivityJOOQDao(TableImpl<RedpacketActivityRecord> table, Class<RedpacketActivity> redpacketActivityClass) {
-        super(table, redpacketActivityClass);
+
+    @Autowired
+    public RedpacketActivityJOOQDao() {
+        super(REDPACKET_ACTIVITY, RedpacketActivity.class);
     }
 
     public List<RedpacketActivity> getRedpacketActivityList(List<Integer> idList){
