@@ -705,7 +705,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             return create.select(JobPosition.JOB_POSITION.ID)
                     .from(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.ID.in(idList))
-                    .and(JobPosition.JOB_POSITION.TITLE.like(title))
+                    .and(JobPosition.JOB_POSITION.TITLE.like("%"+title+"%"))
                     .fetch();
         } else {
             return null;

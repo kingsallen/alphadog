@@ -684,20 +684,22 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
+        List<Integer>  positionIds= recomRecordDOList.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
-        List<CandidatePositionDO> candidatePositionList = candidatePositionDao.fetchViewedByUserIdsAndPids(presenteeUserIds, positionIdList);
+        List<CandidatePositionDO> candidatePositionList = candidatePositionDao.fetchViewedByUserIdsAndPids(presenteeUserIds, positionIds);
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
 
         for (CandidatePositionDO candidatePosition : candidatePositionList) {
             for(CandidateRecomRecordRecord record: recomRecordDOList){
-                if(candidatePosition.getUserId() == record.getPresenteeUserId() && candidatePosition.getPositionId() == record.getPositionId()){
+                if(candidatePosition.getUserId() == record.getPresenteeUserId().intValue()
+                        && candidatePosition.getPositionId() == record.getPositionId().intValue()){
                     list.add(record);
                     break;
                 }
             }
 
         }
-        return recomRecordDOList;
+        return list;
     }
 
     public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
@@ -705,6 +707,7 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
+
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, presenteeUserIds);
         List<CandidateRecomRecordRecord> list = new ArrayList<>();

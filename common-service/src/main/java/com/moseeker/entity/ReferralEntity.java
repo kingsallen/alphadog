@@ -834,7 +834,8 @@ public class ReferralEntity {
             if(!StringUtils.isEmptyList(shareChainListFuture.get())) {
                 shareChainListFuture.get().forEach(share -> {
                     recomRecordList.forEach( recom ->{
-                        if(recom.getPresenteeUserId() == share.getPresenteeUserId() && recom.getPositionId() == share.getPositionId()){
+                        if(recom.getPresenteeUserId().intValue() == share.getPresenteeUserId()
+                                && recom.getPositionId().intValue() == share.getPositionId()){
                             root2Set.add(share.root2RecomUserId);
                             shareChainIdList.add(share.getId());
                             shareChainList.add(share);
@@ -852,7 +853,8 @@ public class ReferralEntity {
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
                 for(CandidateRecomRecordRecord record :recomRecordList){
                     for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
-                        if(record.getPositionId() == logRecord.getPositionId() && record.getPresenteeUserId() == logRecord.getEndUserId()){
+                        if(record.getPositionId().intValue() == logRecord.getPositionId().intValue()
+                                && record.getPresenteeUserId().intValue() == logRecord.getEndUserId().intValue()){
                             connectionLogList.add(logRecord);
                             break;
                         }
