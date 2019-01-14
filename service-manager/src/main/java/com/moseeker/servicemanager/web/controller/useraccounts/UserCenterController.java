@@ -98,7 +98,7 @@ public class UserCenterController {
         String validateResult = validateUtil.validate();
         if (StringUtils.isBlank(validateResult)) {
             RecommendationScoreVO userInfo = userCenterService.getRecommendationV2(userId, companyId);
-
+            logger.info("fetchRadarIndexTop userInfo:{}", userInfo);
             return Result.success(userInfo).toJson();
         } else {
             return Result.validateFailed(validateResult).toJson();
