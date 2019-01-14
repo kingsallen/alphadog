@@ -37,7 +37,8 @@ public class RedpacketActivityPositionJOOQDao extends JooqCrudImpl<RedpacketActi
         * @return java.util.List<java.lang.Integer>
         **/
     public List<Integer> getPositionIdListByConfigId(int configId){
-        List<Integer>  result=create.select(REDPACKET_ACTIVITY_POSITION.POSITION_ID).from(REDPACKET_ACTIVITY_POSITION).where(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.eq(configId)).and(REDPACKET_ACTIVITY_POSITION.ENABLE.eq((byte)1)).fetchInto(Integer.class);
+        List<Integer>  result=create.select(REDPACKET_ACTIVITY_POSITION.POSITION_ID).from(REDPACKET_ACTIVITY_POSITION).where(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.eq(configId))
+                .and(REDPACKET_ACTIVITY_POSITION.LEFT_AMOUNT.gt(0)).and(REDPACKET_ACTIVITY_POSITION.ENABLE.eq((byte)1)).fetchInto(Integer.class);
         return result;
     }
     /*
@@ -50,5 +51,12 @@ public class RedpacketActivityPositionJOOQDao extends JooqCrudImpl<RedpacketActi
     public List<RedpacketActivityPosition> getHbPositionList(List<Integer> pidList){
        List<RedpacketActivityPosition> result=create.select(REDPACKET_ACTIVITY_POSITION.POSITION_ID).from(REDPACKET_ACTIVITY_POSITION).where(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.in(pidList)).fetchInto(RedpacketActivityPosition.class);
        return result;
+    }
+
+    public List<RedpacketActivityPosition> getDataList(List<Integer> pidList,List<Integer> activeIdList){
+        List<RedpacketActivityPosition> result=create.select(REDPACKET_ACTIVITY_POSITION.POSITION_ID).from(REDPACKET_ACTIVITY_POSITION)
+                .where(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.in(pidList))
+                .and(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.in(activeIdList)).fetchInto(RedpacketActivityPosition.class);
+        return result;
     }
 }
