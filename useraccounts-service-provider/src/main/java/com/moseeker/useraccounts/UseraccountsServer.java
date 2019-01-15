@@ -29,6 +29,7 @@ public class UseraccountsServer {
     public static void main(String[] args) {
 
         try {
+
             AnnotationConfigApplicationContext acac = initSpring();
             MoServer server = new MoServer(acac, "",
                     acac.getBean(UserHrAccountServiceImpl.class),
