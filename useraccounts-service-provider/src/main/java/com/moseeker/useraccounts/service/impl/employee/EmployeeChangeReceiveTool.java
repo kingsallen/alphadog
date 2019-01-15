@@ -35,9 +35,16 @@ public class EmployeeChangeReceiveTool {
             msgBody = new String(message.getBody(), "UTF-8");
             logger.info("employeeActivationChange  msgBody : {}", msgBody);
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            Integer companyId = jsonObject.getIntValue("companyId");
-            List<Integer> userIds = (List<Integer>)jsonObject.getOrDefault("userIds", new ArrayList<>());
-            neo4jService.updateUserEmployeeCompany(userIds, companyId);
+            if(message.getMessageProperties().getReceivedRoutingKey().equals("user_neo4j.employee_company_update")) {
+                Integer companyId = jsonObject.getIntValue("companyId");
+                List<Integer> userIds = (List<Integer>) jsonObject.getOrDefault("userIds", new ArrayList<>());
+                neo4jService.updateUserEmployeeCompany(userIds, companyId);
+            }else if(message.getMessageProperties().getReceivedRoutingKey().equals("user_neo4j.friend_update")){
+                Integer startUserid = jsonObject.getIntValue("start_user_id");
+                Integer endUserId = jsonObject.getIntValue("end_user_id");
+                Integer shareChainId = jsonObject.getIntValue("share_chain_id");
+                neo4jService.addFriendRelation(startUserid,endUserId,shareChainId);
+            }
         } catch (CommonException e) {
             logger.info(e.getMessage(), e);
         } catch (Exception e) {
