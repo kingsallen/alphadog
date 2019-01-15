@@ -978,7 +978,10 @@ public class ReferralEntity {
 
 
 
-    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, int page, int size){
-        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, page, size);
+    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, List<Integer> presenteeUserIdList,  int page, int size){
+        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, presenteeUserIdList, page, size);
+    }
+    public int fetchEmployeeSeekRecommendCount(int postUserId, List<Integer> positionIds, List<Integer> presenteeUserIdList){
+        return recommendDao.fetchSeekRecommendByPostCount(postUserId, positionIds, presenteeUserIdList);
     }
 }

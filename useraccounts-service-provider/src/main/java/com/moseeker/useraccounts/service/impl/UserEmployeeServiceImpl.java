@@ -537,12 +537,14 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId, page, size);
+        List<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
+        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId,
+                presenteeUserIdList, page, size);
         if(StringUtils.isEmptyList(resourcesRecordList)){
             return result;
         }
         Future<Integer> countFuture = threadPool.startTast(
-                () -> networkResourcesDao.fetchByPostUserIdCount(userId));
+                () -> networkResourcesDao.fetchByPostUserIdCount(userId, presenteeUserIdList));
         List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(userIdList, userId,companyId);
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
@@ -576,10 +578,12 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        List<ReferralSeekRecommendRecord> list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, page, size);
+        List<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
+        List<ReferralSeekRecommendRecord> list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, presenteeUserIdList, page, size);
         if(StringUtils.isEmptyList(list)){
             return result;
         }
+        result.setTotalCount(referralEntity.fetchEmployeeSeekRecommendCount(userId, positionIdList, presenteeUserIdList));
         EmployeeCardViewData data = referralEntity.fetchEmployeeSeekRecommendCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
         List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
@@ -656,9 +660,9 @@ public class UserEmployeeServiceImpl {
                                                          String order, int page, int size, EmployeeForwardViewVO result){
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
         switch (order){
-            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds);
+            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds, companyId);
                 break;
-            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds);
+            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds, companyId);
                 break;
             case "depth": list = listCandidateRecomRecordsByDepth(postUserId, companyId, positionIds);
                 break;
@@ -679,8 +683,8 @@ public class UserEmployeeServiceImpl {
     }
 
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList, int companyId){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, companyId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
@@ -703,7 +707,7 @@ public class UserEmployeeServiceImpl {
     }
 
     public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
-        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, companyId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }

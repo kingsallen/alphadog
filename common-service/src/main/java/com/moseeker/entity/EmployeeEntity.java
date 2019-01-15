@@ -951,6 +951,21 @@ public class EmployeeEntity {
         return userEmployeeDOS;
     }
 
+
+    /**
+     * 通过公司ID查集团下所有的员工列表
+     *
+     * @param companyId
+     * @return
+     */
+    public List<Integer> getActiveEmployeeUserIdList(Integer companyId) {
+        List<UserEmployeeDO> employeeDOList = this.getActiveEmployeeDOList(companyId);
+        if(StringUtils.isEmptyList(employeeDOList)){
+            return new  ArrayList();
+        }
+        return employeeDOList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+    }
+
     /**
      * 分页获取有效员工数据
      *

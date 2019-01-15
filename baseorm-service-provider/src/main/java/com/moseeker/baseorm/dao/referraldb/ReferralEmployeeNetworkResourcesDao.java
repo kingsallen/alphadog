@@ -30,18 +30,20 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
     }
 
 
-    public List<ReferralEmployeeNetworkResourcesRecord> fetchByPostUserIdPage(int postUserId, int page, int size){
+    public List<ReferralEmployeeNetworkResourcesRecord> fetchByPostUserIdPage(int postUserId, List<Integer> presenteeUserId, int page, int size){
         return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .orderBy(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.ID.asc())
                 .offset((page-1)*size)
                 .limit(size)
                 .fetch();
     }
 
-    public int fetchByPostUserIdCount(int postUserId){
+    public int fetchByPostUserIdCount(int postUserId, List<Integer> presenteeUserId){
         return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .fetchCount();
     }
 
