@@ -885,7 +885,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             userInfo = userInfo.initFromChainsRecord(userDO, chainRecords);
             // 填充连连看排序
             userInfo = userInfo.fillNodesFromChainsRecord(userDO, chainRecords);
-            userChains.add(userInfo.getDegree(), userInfo);
+            userChains.add(userInfo);
         }
         Collections.sort(userChains);
         return userChains;
