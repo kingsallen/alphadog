@@ -355,6 +355,8 @@ public class SearchengineServiceImpl implements Iface {
 		}
 	}
 
+
+
 	@Override
 	public Response userQueryById(List<Integer> userIdlist) throws BIZException,TException {
 		try{

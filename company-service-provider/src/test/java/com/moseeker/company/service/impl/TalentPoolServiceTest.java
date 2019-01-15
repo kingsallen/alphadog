@@ -19,8 +19,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
 
-import org.springframework.transaction.annotation.Transactional;
-
 /**
  * Created by zztaiwll on 17/12/6.
  */
@@ -48,7 +46,8 @@ public class TalentPoolServiceTest {
         userIdList.add(2191525);
         userIdList.add(2191558);
         userIdList.add(1234);
-        Response res=talentPoolService.batchAddTalent(hrId,userIdList,companyId);
+        int isGDPR = 1;
+        Response res=talentPoolService.batchAddTalent(hrId,userIdList,companyId,isGDPR);
         System.out.println(res);
     }
     @Test
@@ -61,7 +60,8 @@ public class TalentPoolServiceTest {
         userIdList.add(2191525);
         userIdList.add(2191558);
         userIdList.add(1234);
-        Response res=talentPoolService.batchCancelTalent(hrId,userIdList,companyId);
+        int isGDPR = 1;
+        Response res=talentPoolService.batchCancelTalent(hrId,userIdList,companyId,isGDPR);
         System.out.println(res);
     }
     @Test
@@ -172,7 +172,8 @@ public class TalentPoolServiceTest {
         int companyId=39978;
         Set<Integer> userIdList=new HashSet<>();
         userIdList.add(2191558);
-        Response res=talentPoolService.AddbatchPublicTalent(hrId,companyId,userIdList);
+        int isGDPR = 1;
+        Response res=talentPoolService.AddbatchPublicTalent(hrId,companyId,userIdList,isGDPR);
         System.out.println(res);
     }
 

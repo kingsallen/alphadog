@@ -14,7 +14,9 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateApplicationReferralDO;
+
 import java.util.List;
+
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,5 +167,10 @@ public class CandidateThriftService implements CandidateService.Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public Response getCandidateRecoms(List<Integer> appIds) throws BIZException, TException {
+        return candidate.getCandidateRecoms(appIds);
     }
 }

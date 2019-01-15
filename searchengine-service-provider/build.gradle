@@ -5,14 +5,17 @@ dependencies {
 
     compile project(":thrift-jooq")
     compile project(":common")
+    compile project(":common-service")
     compile project(":rpc-center")
     compile project(":baseorm-service-provider")
 
     testCompile deps["junit"]
     compile deps["spring-core"]
     compile deps["spring-context"]
+    compile deps["spring-rabbit"]
     testCompile deps["spring-test"]
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
+    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: '2.9.6'
 
 }
 tasks.withType(JavaCompile) {

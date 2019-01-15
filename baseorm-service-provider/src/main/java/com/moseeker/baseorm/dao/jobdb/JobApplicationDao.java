@@ -151,8 +151,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		return list;
 	}
 
-    /**
-     * insertIfNotExist 判断是否已存在
+    /** insertIfNotExist 判断是否已存在
      * @param record
      * @return
      */
@@ -161,6 +160,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		// 为防止高并发下的重复申请，先在redis中检验是否申请过，如果没有再去执行sql语句
 		long redisFlag = checkRedisApplication(record);
 		int result = 0;
+		logger.info("addIfNotExisits redisFlag {}", redisFlag);
 		if(redisFlag == 1){
 			List<Field<?>> changedFieldList = Arrays.stream(record.fields()).filter(f -> record.changed(f)).collect(Collectors.toList());
 			String insertSql = " insert into jobdb.job_application ".concat(changedFieldList.stream().map(m -> m.getName()).collect(Collectors.joining(",", " (", ") ")))
@@ -171,7 +171,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 					.concat(JobApplication.JOB_APPLICATION.APPLIER_ID.getName()).concat(" = ").concat(record.getApplierId().toString()).concat(" and ")
 					.concat(JobApplication.JOB_APPLICATION.POSITION_ID.getName()).concat(" = ").concat(record.getPositionId().toString())
 					.concat(" ) ");
-			//logger.info("addIfNotExisits job_application sql: {}", insertSql);
+			logger.info("addIfNotExisits job_application sql: {}", insertSql);
 			result = create.execute(insertSql, changedFieldList.stream().map(m -> record.getValue(m)).collect(Collectors.toList()).toArray());
 		}
 
@@ -226,9 +226,11 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		// 去库里查下，没有的话存入redis
 		com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication jobApplication = getByUserIdAndPositionId(record.getApplierId(), record.getPositionId());
 		if(jobApplication == null){
-			redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+
+			 redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
 					record.getApplierId()+"", record.getPositionId()+"", "1");
-			return 1;
+			 return 1;
+
 		}
 		return 0;
 	}
@@ -280,6 +282,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.orderBy(JobApplication.JOB_APPLICATION.ID.desc())
 				.limit(1)
 				.fetchOne();
+		logger.info("JobApplicationDAO 283 {}",record);
 		if (record == null) {
 			return null;
 		} else {
