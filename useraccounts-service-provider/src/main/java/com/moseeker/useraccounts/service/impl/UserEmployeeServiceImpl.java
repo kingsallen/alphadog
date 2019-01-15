@@ -63,6 +63,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -630,6 +631,7 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
+        Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
@@ -637,7 +639,12 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        List<CandidateRecomRecordRecord> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size, result);
+        List<CandidateRecomRecordRecord> list = null;
+        try {
+            list = this.pagePositionById(positionIdList, employeeUserFuture.get(), userId, companyId, order, page, size, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
         if(StringUtils.isEmptyList(list)){
             return result;
         }
@@ -678,15 +685,16 @@ public class UserEmployeeServiceImpl {
     }
 
 
-    public List<CandidateRecomRecordRecord> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,
+    public List<CandidateRecomRecordRecord> pagePositionById(List<Integer> positionIds, Set<Integer> employeeUsers, int postUserId, int companyId,
                                                          String order, int page, int size, EmployeeForwardViewVO result){
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
+
         switch (order){
-            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds, companyId);
+            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds, employeeUsers, companyId);
                 break;
-            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds, companyId);
+            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds, companyId, employeeUsers);
                 break;
-            case "depth": list = listCandidateRecomRecordsByDepth(postUserId, companyId, positionIds);
+            case "depth": list = listCandidateRecomRecordsByDepth(postUserId, companyId, positionIds, employeeUsers);
                 break;
         }
         if(!StringUtils.isEmptyList(list)){
@@ -705,8 +713,8 @@ public class UserEmployeeServiceImpl {
     }
 
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList, int companyId){
-        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, companyId);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList, int companyId, Set<Integer> employeeUsers){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, employeeUsers, companyId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
@@ -728,8 +736,8 @@ public class UserEmployeeServiceImpl {
         return list;
     }
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
-        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, companyId);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList, Set<Integer> employeeUsers){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, employeeUsers, companyId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
