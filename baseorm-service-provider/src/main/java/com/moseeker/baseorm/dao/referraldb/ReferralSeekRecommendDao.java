@@ -5,6 +5,8 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRe
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import org.jooq.Configuration;
 import org.jooq.Param;
 import static org.jooq.impl.DSL.*;
@@ -99,7 +101,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
     }
 
 
-    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPost(int postUserId, List<Integer> positionIdList, List<Integer> presenteeUserIdList, int page, int size){
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPost(int postUserId, List<Integer> positionIdList, Set<Integer> presenteeUserIdList, int page, int size){
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
@@ -112,7 +114,7 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
     }
 
-    public int fetchSeekRecommendByPostCount(int postUserId, List<Integer> positionIdList, List<Integer> presenteeUserIdList){
+    public int fetchSeekRecommendByPostCount(int postUserId, List<Integer> positionIdList, Set<Integer> presenteeUserIdList){
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))

@@ -68,7 +68,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByPositionSetAndPostAndPresenteeId(List<Integer> positionIdSet, int postUserId, List<Integer> presentUserIds) {
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByPositionSetAndPostAndPresenteeId(List<Integer> positionIdSet, int postUserId,Set<Integer> presentUserIds) {
         List<CandidateRecomRecordRecord> candidateRecomRecordDOList = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                 .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
                         .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet))
