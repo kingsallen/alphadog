@@ -193,8 +193,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String inviteApplication(ReferralInviteInfo inviteInfo) {
+    public String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException {
         logger.info("inviteInfo:{}", inviteInfo);
+        JobPositionDO jobPositionDO = checkCorrectEmployee(inviteInfo);
         JSONObject result = new JSONObject();
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
@@ -209,7 +210,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         // 组装连连看链路返回数据
         Set<Integer> userIds = new HashSet<>(shortestChain);
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(inviteInfo.getCompanyId());
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(jobPositionDO.getCompanyId());
         List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
         Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
         result.put("chain", doInitRadarUsers(shortestChain, idUserMap));
@@ -233,6 +234,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Transactional(rollbackFor = Exception.class)
     public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
+        checkCorrectEmployee(ignoreInfo);
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(ignoreInfo.getTimestamp());
         if(shareChainDOS.size() == 0){
             return;
@@ -301,15 +303,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return result;
     }
 
-    private int getParentId(int parentId, ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
-        for(ReferralConnectionChainRecord chainRecord : chainRecords){
-            if(radarInfo.getRecomUserId() == chainRecord.getRecomUserId() && radarInfo.getNextUserId() == chainRecord.getNextUserId()){
-                return chainRecord.getId();
-            }
-        }
-        return parentId;
-    }
-
     @Override
     public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException {
         JSONObject result = new JSONObject();
@@ -325,10 +318,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
             recomUserId = shareChainDO.getRootRecomUserId();
         }
-        logger.info("checkEmployee checkInfo:{}",checkInfo);
-        logger.info("checkEmployee pid:{}",checkInfo.getPid());
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
-        logger.info("checkEmployee jobPositionDO:{}",jobPositionDO);
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
@@ -507,6 +497,26 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         return JSON.toJSONString(result);
+    }
+
+    private int getParentId(int parentId, ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {
+        for(ReferralConnectionChainRecord chainRecord : chainRecords){
+            if(radarInfo.getRecomUserId() == chainRecord.getRecomUserId() && radarInfo.getNextUserId() == chainRecord.getNextUserId()){
+                return chainRecord.getId();
+            }
+        }
+        return parentId;
+    }
+
+    private JobPositionDO checkCorrectEmployee(ReferralInviteInfo inviteInfo) throws BIZException {
+        JobPositionDO jobPositionDO = positionDao.getJobPositionById(inviteInfo.getPid());
+        if(jobPositionDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+        }
+        if(!employeeEntity.isEmployee(inviteInfo.getUserId(), jobPositionDO.getCompanyId())){
+            throw UserAccountException.EMPLOYEE_COMPANY_UNMATCH;
+        }
+        return jobPositionDO;
     }
 
     private void initApplyProgressList(List<Integer> progressList) {
@@ -770,7 +780,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> allUserIds = new ArrayList<>();
         List<Integer> newUserIds = new ArrayList<>();
         allUserIds.add(rootUserId);
-        chainRecords = RadarUtils.getOrderedChainRecords(chainRecords);;
+        chainRecords = RadarUtils.getOrderedChainRecords(chainRecords);
         for (ReferralConnectionChainRecord chainRecord : chainRecords) {
             addIfNotExist(allUserIds, chainRecord.getNextUserId());
         }
