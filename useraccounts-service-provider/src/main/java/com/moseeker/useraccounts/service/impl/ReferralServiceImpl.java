@@ -407,7 +407,7 @@ public class ReferralServiceImpl implements ReferralService {
     @Transactional
     @Override
     public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons,
-                                       byte relationship, String recomReasonText) throws CommonException {
+                                       byte relationship, String recomReasonText) {
 
         JobPositionRecord positionDO = positionDao.getPositionById(positionId);
 
@@ -435,7 +435,11 @@ public class ReferralServiceImpl implements ReferralService {
         if(applicationId > 0) {
             recommendDao.updateReferralSeekRecommendRecordForAppId(referralId, applicationId);
             referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
-            sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
+            try {
+                sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
+            }catch (CommonException e){
+                logger.error(e.getMessage());
+            }
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
             radarService.updateShareChainHandleType(recommendRecord, 3);
         }
