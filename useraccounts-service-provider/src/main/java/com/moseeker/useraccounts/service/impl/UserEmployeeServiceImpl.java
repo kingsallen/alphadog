@@ -550,6 +550,7 @@ public class UserEmployeeServiceImpl {
     }
 
     public RadarInfoVO fetchRadarIndex(int userId, int companyId, int page, int size){
+        Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         RadarInfoVO result = new RadarInfoVO();
         if(page == 0){
             page=1;
@@ -560,14 +561,18 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        Set<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
-        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId,
-                presenteeUserIdList, page, size);
+        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = null;
+        try {
+            resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId,
+                    employeeUserFuture.get(), page, size);
+        } catch (Exception e) {
+           logger.error(e.getMessage());
+        }
         if(StringUtils.isEmptyList(resourcesRecordList)){
             return result;
         }
         Future<Integer> countFuture = threadPool.startTast(
-                () -> networkResourcesDao.fetchByPostUserIdCount(userId, presenteeUserIdList));
+                () -> networkResourcesDao.fetchByPostUserIdCount(userId, employeeUserFuture.get()));
         List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(userIdList, userId,companyId);
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
@@ -594,6 +599,7 @@ public class UserEmployeeServiceImpl {
             size = 10;
         }
         result.setPage(page);
+        Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
@@ -601,12 +607,16 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        Set<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
-        List<ReferralSeekRecommendRecord> list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, presenteeUserIdList, page, size);
-        if(StringUtils.isEmptyList(list)){
-            return result;
+        List<ReferralSeekRecommendRecord> list = null;
+        try {
+            list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, employeeUserFuture.get(), page, size);
+            if(StringUtils.isEmptyList(list)){
+                return result;
+            }
+            result.setTotalCount(referralEntity.fetchEmployeeSeekRecommendCount(userId, positionIdList,  employeeUserFuture.get()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
-        result.setTotalCount(referralEntity.fetchEmployeeSeekRecommendCount(userId, positionIdList, presenteeUserIdList));
         EmployeeCardViewData data = referralEntity.fetchEmployeeSeekRecommendCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
         List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
