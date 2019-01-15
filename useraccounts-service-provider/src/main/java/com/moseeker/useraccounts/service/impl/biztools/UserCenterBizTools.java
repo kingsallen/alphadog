@@ -532,8 +532,9 @@ public class UserCenterBizTools {
         }
     }
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecords(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordRecord> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPresenteeId(positionIdList, userId);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecords(int userId, List<Integer> positionIdList, int companyId){
+        List<CandidateRecomRecordRecord> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPostAndPresenteeId(
+                positionIdList, userId, employeeEntity.getActiveEmployeeUserIdList(companyId));
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }

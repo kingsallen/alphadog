@@ -99,15 +99,26 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
     }
 
 
-    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPost(int postUserId, List<Integer> positionIdList,  int page, int size){
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPost(int postUserId, List<Integer> positionIdList, List<Integer> presenteeUserIdList, int page, int size){
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.notIn(presenteeUserIdList))
                 .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
                 .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
                 .offset((page-1)*size)
                 .limit(size)
                 .fetch();
+
+    }
+
+    public int fetchSeekRecommendByPostCount(int postUserId, List<Integer> positionIdList, List<Integer> presenteeUserIdList){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.in(positionIdList))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.notIn(presenteeUserIdList))
+                .and(REFERRAL_SEEK_RECOMMEND.APP_ID.eq(0))
+                .fetchCount();
 
     }
     public int updateReferralSeekRecommendRecordForAppId(int referralId, int appId ){
