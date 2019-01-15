@@ -38,7 +38,11 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
     List<UserDepthVO> fetchEmployeeThreeDepthUser(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
 
     @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds}  match p =shortestpath((u1)-[*]-(u2)) " +
-                   " where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return distinct u2.user_id as userId,length(p) as depth order by depth  ")
+                   "  return distinct u2.user_id as userId,length(p) as depth order by depth  ")
     List<UserDepthVO> fetchDepthUserList(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
+
+    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds}  match p =shortestpath((u1)-[*]-(u2)) " +
+                   " where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return distinct u2.user_id as userId,length(p) as depth order by depth  ")
+    List<UserDepthVO> fetchDepthUserListV2(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
 
 }
