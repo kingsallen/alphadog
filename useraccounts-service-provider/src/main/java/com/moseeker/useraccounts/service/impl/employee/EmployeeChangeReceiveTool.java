@@ -38,6 +38,7 @@ public class EmployeeChangeReceiveTool {
             if(message.getMessageProperties().getReceivedRoutingKey().equals("user_neo4j.employee_company_update")) {
                 Integer companyId = jsonObject.getIntValue("companyId");
                 List<Integer> userIds = (List<Integer>) jsonObject.getOrDefault("userIds", new ArrayList<>());
+                logger.info("employeeActivationChange userIds:{}",userIds);
                 neo4jService.updateUserEmployeeCompany(userIds, companyId);
             }else if(message.getMessageProperties().getReceivedRoutingKey().equals("user_neo4j.friend_update")){
                 Integer startUserid = jsonObject.getIntValue("start_user_id");
