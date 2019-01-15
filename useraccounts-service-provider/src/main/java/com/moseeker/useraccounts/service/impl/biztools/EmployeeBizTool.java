@@ -64,8 +64,9 @@ public class EmployeeBizTool {
         if(root2User != null){
             radar.setForwardName(root2User.getName());
         }
-        if(data.getTimeMap().get(userId)!=null) {
-            String time = DateUtils.dateToMinuteCN2Date(data.getTimeMap().get(userId));
+
+        if(data.getTimeMap().get(userId) != null) {
+            String time = DateUtils.dateToMinuteDate(data.getTimeMap().get(userId));
             radar.setClickTime(time);
         }
         Byte forward = data.getUserFromMap().get(userId);
@@ -90,7 +91,7 @@ public class EmployeeBizTool {
             result.setPositionId(record.getPositionId().intValue());
             result.setPositionTitle(position.getTitle());
         }
-        String time = DateUtils.dateToMinuteCN2Date(record.getClickTime());
+        String time = DateUtils.dateToMinuteDate(record.getClickTime());
         result.setClickTime(time);
         if(!StringUtils.isEmptyList(data.getShareChainList())){
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
@@ -148,7 +149,7 @@ public class EmployeeBizTool {
             result.setPositionId(record.getPositionId());
             result.setPositionTitle(position.getTitle());
         }
-        String time = DateUtils.dateToMinuteCN2Date(record.getRecommendTime());
+        String time = DateUtils.dateToMinuteDate(record.getRecommendTime());
         result.setClickTime(time);
         if(!StringUtils.isEmptyList(data.getShareChainList())){
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
