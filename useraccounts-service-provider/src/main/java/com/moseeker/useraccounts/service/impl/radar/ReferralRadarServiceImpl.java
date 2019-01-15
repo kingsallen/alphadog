@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl.radar;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
@@ -188,7 +189,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
-        return JSON.toJSONString(cards);
+        return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
     }
 
     @Override
