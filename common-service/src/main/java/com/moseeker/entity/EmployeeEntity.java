@@ -959,7 +959,7 @@ public class EmployeeEntity {
      * @return
      */
     public Set<Integer> getActiveEmployeeUserIdList(Integer companyId) {
-        List<UserEmployeeDO> employeeDOList = this.getActiveEmployeeDOList(companyId);
+        List<UserEmployeeDO> employeeDOList = employeeDao.getEmployeeBycompanyId(companyId);
         if(StringUtils.isEmptyList(employeeDOList)){
             return new HashSet<>();
         }
