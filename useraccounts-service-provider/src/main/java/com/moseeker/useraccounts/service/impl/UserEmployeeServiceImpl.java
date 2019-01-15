@@ -537,7 +537,7 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        List<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
+        Set<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
         List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId,
                 presenteeUserIdList, page, size);
         if(StringUtils.isEmptyList(resourcesRecordList)){
@@ -578,7 +578,7 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        List<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
+        Set<Integer> presenteeUserIdList = employeeEntity.getActiveEmployeeUserIdList(companyId);
         List<ReferralSeekRecommendRecord> list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, presenteeUserIdList, page, size);
         if(StringUtils.isEmptyList(list)){
             return result;

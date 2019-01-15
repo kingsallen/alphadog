@@ -958,12 +958,12 @@ public class EmployeeEntity {
      * @param companyId
      * @return
      */
-    public List<Integer> getActiveEmployeeUserIdList(Integer companyId) {
+    public Set<Integer> getActiveEmployeeUserIdList(Integer companyId) {
         List<UserEmployeeDO> employeeDOList = this.getActiveEmployeeDOList(companyId);
         if(StringUtils.isEmptyList(employeeDOList)){
-            return new  ArrayList();
+            return new HashSet<>();
         }
-        return employeeDOList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+        return employeeDOList.stream().map(m -> m.getSysuserId()).collect(Collectors.toSet());
     }
 
     /**
