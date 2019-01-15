@@ -78,6 +78,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -200,6 +201,8 @@ public class JobApplicataionService {
                     jobApplication.getApply_type(), jobApplication.getEmail_status(),
                     (int) jobApplication.getRecommender_user_id(), (int) jobApplication.getApplier_id(),
                     jobApplication.getOrigin());
+            // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
+            handleReferralState(jobApplicationId);
             // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
@@ -298,6 +301,12 @@ public class JobApplicataionService {
             }
         });
     }
+
+    private void handleReferralState(int jobApplicationId) {
+        // todo 2019-01-15 需要迁到新服务
+        amqpTemplate.send("referral_apply_exchange", "share", MessageBuilder.withBody(String.valueOf(jobApplicationId).getBytes()).build());
+    }
+
     /**
      * 合并申请来源
      * @param jobApplication
