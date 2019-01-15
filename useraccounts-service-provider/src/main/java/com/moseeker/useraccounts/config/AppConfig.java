@@ -141,6 +141,7 @@ public class AppConfig {
         return topicExchange;
     }
 
+
     @Bean
     public TopicExchange employeeActivationChangeExchange() {
         TopicExchange topicExchange = new TopicExchange("employee_neo4j_exchange", true, false);
@@ -150,6 +151,12 @@ public class AppConfig {
     @Bean
     public Queue employeeChangeQueue() {
         Queue queue = new Queue("employee_change_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public Queue neo4jFriend() {
+        Queue queue = new Queue("neo4j_friend", true, false, false);
         return queue;
     }
 
