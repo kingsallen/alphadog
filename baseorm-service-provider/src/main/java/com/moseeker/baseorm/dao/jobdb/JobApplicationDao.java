@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.jobdb;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
@@ -279,6 +280,7 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 				.orderBy(JobApplication.JOB_APPLICATION.ID.desc())
 				.limit(1)
 				.fetchOne();
+		logger.info("JobApplicationDAO 283"+ JSON.toJSONString(record));
 		if (record == null) {
 			return null;
 		} else {
