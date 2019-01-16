@@ -66,6 +66,13 @@ public class RedpacketRedpacketDao extends DAOImpl<RedpacketRedpacketRecord, com
     }
 
     /**
+     * Fetch records that have <code>company_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacket> fetchByCompanyId(Integer... values) {
+        return fetch(RedpacketRedpacket.REDPACKET_REDPACKET.COMPANY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>activity_id IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacket> fetchByActivityId(Integer... values) {
@@ -119,13 +126,6 @@ public class RedpacketRedpacketDao extends DAOImpl<RedpacketRedpacketRecord, com
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacket> fetchByUpdateTime(Timestamp... values) {
         return fetch(RedpacketRedpacket.REDPACKET_REDPACKET.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>company_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacket> fetchByCompanyId(Integer... values) {
-        return fetch(RedpacketRedpacket.REDPACKET_REDPACKET.COMPANY_ID, values);
     }
 
     /**

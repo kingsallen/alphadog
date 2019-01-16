@@ -23,9 +23,10 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketRedpacket implements Serializable {
 
-    private static final long serialVersionUID = 1179698974;
+    private static final long serialVersionUID = -1606687394;
 
     private Integer   id;
+    private Integer   companyId;
     private Integer   activityId;
     private String    billNo;
     private Byte      open;
@@ -34,13 +35,13 @@ public class RedpacketRedpacket implements Serializable {
     private Integer   userId;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   companyId;
     private String    cardno;
 
     public RedpacketRedpacket() {}
 
     public RedpacketRedpacket(RedpacketRedpacket value) {
         this.id = value.id;
+        this.companyId = value.companyId;
         this.activityId = value.activityId;
         this.billNo = value.billNo;
         this.open = value.open;
@@ -49,12 +50,12 @@ public class RedpacketRedpacket implements Serializable {
         this.userId = value.userId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.companyId = value.companyId;
         this.cardno = value.cardno;
     }
 
     public RedpacketRedpacket(
         Integer   id,
+        Integer   companyId,
         Integer   activityId,
         String    billNo,
         Byte      open,
@@ -63,10 +64,10 @@ public class RedpacketRedpacket implements Serializable {
         Integer   userId,
         Timestamp createTime,
         Timestamp updateTime,
-        Integer   companyId,
         String    cardno
     ) {
         this.id = id;
+        this.companyId = companyId;
         this.activityId = activityId;
         this.billNo = billNo;
         this.open = open;
@@ -75,7 +76,6 @@ public class RedpacketRedpacket implements Serializable {
         this.userId = userId;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.companyId = companyId;
         this.cardno = cardno;
     }
 
@@ -85,6 +85,14 @@ public class RedpacketRedpacket implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public Integer getActivityId() {
@@ -151,14 +159,6 @@ public class RedpacketRedpacket implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getCompanyId() {
-        return this.companyId;
-    }
-
-    public void setCompanyId(Integer companyId) {
-        this.companyId = companyId;
-    }
-
     public String getCardno() {
         return this.cardno;
     }
@@ -172,6 +172,7 @@ public class RedpacketRedpacket implements Serializable {
         StringBuilder sb = new StringBuilder("RedpacketRedpacket (");
 
         sb.append(id);
+        sb.append(", ").append(companyId);
         sb.append(", ").append(activityId);
         sb.append(", ").append(billNo);
         sb.append(", ").append(open);
@@ -180,7 +181,6 @@ public class RedpacketRedpacket implements Serializable {
         sb.append(", ").append(userId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(companyId);
         sb.append(", ").append(cardno);
 
         sb.append(")");

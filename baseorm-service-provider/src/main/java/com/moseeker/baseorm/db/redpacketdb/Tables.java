@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityOperationLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketTrigger;
@@ -58,6 +59,11 @@ public class Tables {
     public static final RedpacketEmployeeVerifyRedpacket REDPACKET_EMPLOYEE_VERIFY_REDPACKET = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket.REDPACKET_EMPLOYEE_VERIFY_REDPACKET;
 
     /**
+     * 消息消费记录
+     */
+    public static final RedpacketMessageHandlerLog REDPACKET_MESSAGE_HANDLER_LOG = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog.REDPACKET_MESSAGE_HANDLER_LOG;
+
+    /**
      * 红包记录
      */
     public static final RedpacketRedpacket REDPACKET_REDPACKET = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket.REDPACKET_REDPACKET;
@@ -68,7 +74,7 @@ public class Tables {
     public static final RedpacketRedpacketPosition REDPACKET_REDPACKET_POSITION = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION;
 
     /**
-     * 红包触发人记录
+     * 红包触发记录
      */
     public static final RedpacketRedpacketTrigger REDPACKET_REDPACKET_TRIGGER = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER;
 

@@ -39,10 +39,10 @@ def xml = new groovy.xml.MarkupBuilder(writer)
     }
     generator() {
         database() {
-            inputSchema("hrdb")
+            inputSchema("redpacketdb")
             name("org.jooq.util.mysql.MySQLDatabase")
             unsignedTypes(false)
-            includes("hr_company_conf")
+            //includes("hr_company_conf")
         }
 
         // Watch out for this caveat when using MarkupBuilder with "reserved names"
@@ -54,7 +54,7 @@ def xml = new groovy.xml.MarkupBuilder(writer)
             daos true
         }
         target() {
-            packageName('com.moseeker.baseorm.db.hrdb')
+            packageName('com.moseeker.baseorm.db.redpacketdb')
             directory('src/main/java')
         }
     }
