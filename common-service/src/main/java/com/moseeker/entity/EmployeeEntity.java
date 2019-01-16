@@ -1232,6 +1232,7 @@ public class EmployeeEntity {
 
     public void publishInitalScreenHbEvent(JobApplication jobApplication, JobPositionRecord jobPositionRecord,
                                            Integer userId, Integer nextStage){
+        logger.info("EmployeeEntity publishInitalScreenHbEvent");
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
             if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
@@ -1294,10 +1295,12 @@ public class EmployeeEntity {
     @Transactional
     public void addReferralBonus(Integer applicationId, Integer nowStage, Integer nextStage, Integer move,Integer positionId,Integer applierId) throws Exception {
 
+        logger.info("EmployeeEntity addReferralBonus");
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
         Integer userId = jobApplication.getRecommenderUserId();
+        logger.info("EmployeeEntity addReferralBonus nextStage:{}", nextStage);
         if(nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
             tp.startTast(() -> {
                 this.publishInitalScreenHbEvent(jobApplication, jobPositionRecord, userId, nextStage);
