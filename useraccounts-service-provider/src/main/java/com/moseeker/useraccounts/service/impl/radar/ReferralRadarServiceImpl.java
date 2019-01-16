@@ -136,6 +136,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         logger.info("ReferralCardInfo:{}", cardInfo);
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getTimestamp());
+        shareChainDOS = templateHelper.filterAppliedShareChain(shareChainDOS);
         if(shareChainDOS.size() == 0){
             throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
         }
@@ -449,7 +450,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    public void updateShareChainHandleType(int presenteeUserId, int rootUserId, int positionId, int type) {
+    public void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
         // type = 3 推荐ta
