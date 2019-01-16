@@ -528,31 +528,29 @@ public class UserEmployeeServiceImpl {
         PositionReferralInfo info = new PositionReferralInfo();
         info.setPositionId(position.getId());
         info.setPositionName(position.getTitle());
-        if(employeeEntity.isEmployee(userId, position.getCompanyId())){
-            UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
-            UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
-            logger.info("getPositionReferralInfo wxUserRecord:{}",wxUserRecord);
-            UserUserDO user = userDao.getUser(userId);
-            info.setUserId(userId);
-            info.setEmployeeId(employeeDO.getId());
 
-            if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
+        UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
+        UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
+        logger.info("getPositionReferralInfo wxUserRecord:{}",wxUserRecord);
+        UserUserDO user = userDao.getUser(userId);
+        info.setUserId(userId);
+        info.setEmployeeName(user.getName());
+        if(employeeDO != null) {
+            info.setEmployeeId(employeeDO.getId());
+            if (StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
                 info.setEmployeeName(employeeDO.getCname());
-            }else{
-                info.setEmployeeName(user.getName());
             }
-            if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
-                info.setNickname(user.getNickname());
-            }else{
-                info.setNickname(wxUserRecord.getNickname());
-            }
-            if(wxUserRecord != null){
-                info.setEmployeeIcon(wxUserRecord.getHeadimgurl());
-            }
-            logger.info("getPositionReferralInfo info:{}",JSON.toJSONString(info));
-            return info;
         }
-        throw UserAccountException.USEREMPLOYEES_EMPTY;
+        if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
+            info.setNickname(user.getNickname());
+        }else{
+            info.setNickname(wxUserRecord.getNickname());
+        }
+        if(wxUserRecord != null){
+            info.setEmployeeIcon(wxUserRecord.getHeadimgurl());
+        }
+        logger.info("getPositionReferralInfo info:{}",JSON.toJSONString(info));
+        return info;
     }
 
     public RadarInfoVO fetchRadarIndex(int userId, int companyId, int page, int size){
