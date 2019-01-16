@@ -1256,7 +1256,8 @@ public class EmployeeEntity {
                         eventMessage.put("applier_id", jobApplication.getApplierId());
                         eventMessage.put("cvpass_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
                         eventMessage.put("company_id", jobApplication.getCompanyId());
-
+                        logger.info("EmployeeEntity publishInitalScreenHbEvent param:{}, exchange:{}, routing:{}",
+                                eventMessage.toJSONString(), APLICATION_STATE_CHANGE_EXCHNAGE, APLICATION_STATE_CHANGE_ROUTINGKEY);
                         amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
                                         .build());

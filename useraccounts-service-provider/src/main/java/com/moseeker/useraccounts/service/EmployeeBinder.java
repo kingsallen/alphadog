@@ -334,6 +334,8 @@ public abstract class EmployeeBinder {
         jsonObject.put("company_id", companyId);
         jsonObject.put("verify_time", new DateTime(bindingTime).toString("yyyy-MM-dd HH:mm:ss"));
         jsonObject.put("user_id", userId);
+        log.info("EmployeeBinder employeeFirstRegister param:{}, exchange:{}, routing:{}",
+                jsonObject.toJSONString(), EMPLOYEE_REGISTER_EXCHNAGE, EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY);
         amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
                 EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
