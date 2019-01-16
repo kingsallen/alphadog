@@ -265,7 +265,9 @@ public abstract class EmployeeBinder {
                 }
             }
         }
-        //}
+
+        publishEmployeeRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
+
         referralEmployeeRegisterLogDao.addRegisterLog(employeeId, currentTime);
         if (useremployee.getSysuserId() > 0
                 && org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getCname())) {
@@ -342,13 +344,13 @@ public abstract class EmployeeBinder {
     }
 
     /**
-     * 初次注册成为员工，添加积分与红包
+     * 发布员工认证消息
      * @param employeeId 员工编号
      * @param companyId 公司编号
-     * @param bindingTime 员工注册时间
+     * @param bindingTime 注册时间
+     * @param userId 用户编号
      */
-    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime, int userId) {
-        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+    private void publishEmployeeRegister(int employeeId, int companyId, long bindingTime, int userId) {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "employee verification");
         jsonObject.put("ID", UUID.randomUUID().toString());
@@ -356,9 +358,21 @@ public abstract class EmployeeBinder {
         jsonObject.put("company_id", companyId);
         jsonObject.put("verify_time", new DateTime(bindingTime).toString("yyyy-MM-dd HH:mm:ss"));
         jsonObject.put("user_id", userId);
+        log.info("EmployeeBinder employeeFirstRegister param:{}, exchange:{}, routing:{}",
+                jsonObject.toJSONString(), EMPLOYEE_REGISTER_EXCHNAGE, EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY);
         amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
                 EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
+    }
+
+    /**
+     * 初次注册成为员工，添加积分与红包
+     * @param employeeId 员工编号
+     * @param companyId 公司编号
+     * @param bindingTime 员工注册时间
+     */
+    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime, int userId) {
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
     }
     /*
         员工认证成功时，需要将潜在候选人置为无效

@@ -1292,6 +1292,7 @@ public class EmployeeEntity {
                                            Integer userId, Integer nextStage){
         logger.info("publishInitalScreenHbEvent  jobApplication {}",jobApplication);
         logger.info("publishInitalScreenHbEvent  jobPositionRecord {}",jobPositionRecord);
+        logger.info("EmployeeEntity publishInitalScreenHbEvent");
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
             logger.info("publishInitalScreenHbEvent  nextStage {}",nextStage);
@@ -1319,7 +1320,8 @@ public class EmployeeEntity {
                         eventMessage.put("applier_id", jobApplication.getApplierId());
                         eventMessage.put("cvpass_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
                         eventMessage.put("company_id", jobApplication.getCompanyId());
-
+                        logger.info("EmployeeEntity publishInitalScreenHbEvent param:{}, exchange:{}, routing:{}",
+                                eventMessage.toJSONString(), APLICATION_STATE_CHANGE_EXCHNAGE, APLICATION_STATE_CHANGE_ROUTINGKEY);
                         amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
                                         .build());
@@ -1357,10 +1359,12 @@ public class EmployeeEntity {
     @Transactional
     public void addReferralBonus(Integer applicationId, Integer nowStage, Integer nextStage, Integer move,Integer positionId,Integer applierId) throws Exception {
 
+        logger.info("EmployeeEntity addReferralBonus");
         JobApplication jobApplication = applicationDao.fetchOneById(applicationId);
 
         JobPositionRecord jobPositionRecord = jobPositionDao.getPositionById(positionId);
         Integer userId = jobApplication.getRecommenderUserId();
+        logger.info("EmployeeEntity addReferralBonus nextStage:{}", nextStage);
         if(nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
             tp.startTast(() -> {
                 this.publishInitalScreenHbEvent(jobApplication, jobPositionRecord, userId, nextStage);
