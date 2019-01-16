@@ -304,7 +304,7 @@ public class JobApplicataionService {
 
     private void handleReferralState(int jobApplicationId) {
         // todo 2019-01-15 需要迁到新服务
-        amqpTemplate.send("referral_apply_exchange", "share", MessageBuilder.withBody(String.valueOf(jobApplicationId).getBytes()).build());
+        amqpTemplate.send("referral_apply_exchange", "referral_apply_handle.*", MessageBuilder.withBody(String.valueOf(jobApplicationId).getBytes()).build());
     }
 
     /**

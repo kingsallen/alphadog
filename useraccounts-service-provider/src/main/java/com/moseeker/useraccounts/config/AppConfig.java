@@ -259,4 +259,30 @@ public class AppConfig {
                     .with(EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY));
         }};
     }
+
+    /**
+     * 申请投递时，需要处理是否存在推荐人，如果存在，需要将candidate_share_chain和十分钟消息模板candidate_template_share_chain中的数据状态改为已投递状态
+     */
+    @Bean
+    public TopicExchange referralApplyExchange() {
+        return new TopicExchange("referral_apply_exchange", true, false);
+    }
+
+    /**
+     * exchange : referral_apply_exchange
+     * routinue_key : handle.*
+     */
+    @Bean
+    public Queue handleApplyQueue() {
+        return new Queue("handle_share_chain", true, false, false);
+    }
+
+
+    @Bean
+    public List<Binding> bindApplyHandleQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(handleApplyQueue()).to(referralApplyExchange())
+                    .with("referral_apply_handle.*"));
+        }};
+    }
 }

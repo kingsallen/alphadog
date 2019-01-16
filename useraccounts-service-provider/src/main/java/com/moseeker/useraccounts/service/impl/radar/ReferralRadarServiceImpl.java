@@ -449,10 +449,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    public void updateShareChainHandleType(ReferralSeekRecommendRecord record, int type) {
-        int presenteeUserId = record.getPresenteeId();
-        int rootUserId = record.getPostUserId();
-        int positionId = record.getPositionId();
+    public void updateShareChainHandleType(int presenteeUserId, int rootUserId, int positionId, int type) {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
         // type = 3 推荐ta

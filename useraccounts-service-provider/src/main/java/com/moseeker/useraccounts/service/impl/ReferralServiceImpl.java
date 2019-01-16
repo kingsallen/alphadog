@@ -437,7 +437,7 @@ public class ReferralServiceImpl implements ReferralService {
             referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
             sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
-            radarService.updateShareChainHandleType(recommendRecord, 3);
+            radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(), recommendRecord.getPositionId(), 3);
         }
     }
 
