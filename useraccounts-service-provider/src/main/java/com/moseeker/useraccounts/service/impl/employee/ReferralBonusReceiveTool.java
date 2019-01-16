@@ -25,7 +25,7 @@ public class ReferralBonusReceiveTool {
     @Autowired
     private EmployeeEntity employeeEntity;
 
-//    @RabbitListener(queues = "#{addBonusQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitListener(queues = "#{addBonusQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void  referralBonusReceive(Message message){
         String msgBody = "{}";
