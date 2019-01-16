@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.receiver;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.useraccounts.service.ReferralRadarService;
+import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -38,6 +39,7 @@ public class RabbitReceivers {
         if(jobApplication.getRecommenderUserId() == null || jobApplication.getRecommenderUserId() == 0){
             return;
         }
-        radarService.updateShareChainHandleType(jobApplication.getRecommenderUserId(), jobApplication.getApplierId(), jobApplication.getPositionId(), 4);
+        radarService.updateShareChainHandleType(jobApplication.getRecommenderUserId(), jobApplication.getApplierId(),
+                jobApplication.getPositionId(), ReferralApplyHandleEnum.selfApply.getType());
     }
 }

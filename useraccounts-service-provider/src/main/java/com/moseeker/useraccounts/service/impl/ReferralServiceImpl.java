@@ -53,6 +53,7 @@ import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.ReferralService;
+import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.activity.Activity;
 import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
@@ -404,7 +405,7 @@ public class ReferralServiceImpl implements ReferralService {
         return info;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     @Override
     public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) throws CommonException {
@@ -437,7 +438,8 @@ public class ReferralServiceImpl implements ReferralService {
             referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
             sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
-            radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(), recommendRecord.getPositionId(), 3);
+            radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(),
+                    recommendRecord.getPositionId(), ReferralApplyHandleEnum.recommend.getType());
         }
     }
 

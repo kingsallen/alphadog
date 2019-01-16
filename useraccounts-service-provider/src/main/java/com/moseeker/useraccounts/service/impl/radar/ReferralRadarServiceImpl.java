@@ -51,6 +51,7 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
+import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
@@ -222,7 +223,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
         // type = 3 推荐ta
-        templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),1);
+        templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
         result.put("notified", isSent ? 1 : 0);
         int degree = shortestChain.size()-1;
         result.put("degree", degree >= 0 ? degree : 0);
@@ -249,7 +250,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(!beRecomUserIds.contains(ignoreInfo.getEndUserId())){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
         }
-        templateShareChainDao.updateTypeBySendTime(ignoreInfo, 2);
+        templateShareChainDao.updateTypeBySendTime(ignoreInfo, ReferralApplyHandleEnum.unFamiliar.getType());
     }
 
     /**
@@ -452,7 +453,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
         // type = 3 推荐ta
-        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, 3);
+        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
     }
 
     @Override
