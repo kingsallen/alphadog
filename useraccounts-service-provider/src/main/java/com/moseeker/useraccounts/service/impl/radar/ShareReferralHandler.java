@@ -128,18 +128,11 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                         && shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
                     flag = false;
                     // 找出一度的sharechainId
-                    boolean flag1 = true;
-                    for(int j=0;j<shareChainDOS.size()&&flag1;j++){
-                        CandidateShareChainDO shareChainDO1 = shareChainDOS.get(j);
-                        if(shareChainDO.getPositionId() == shareChainDO1.getPositionId()
-                                && shareChainDO1.getPresenteeUserId() == shareChainDO.getRoot2RecomUserId()
-                                && shareChainDO1.getRecomUserId() == shareChainDO1.getRootRecomUserId()){
-                            flag1 = false;
-                            shareChainIds.add(shareChainDO1.getId());
-                            appIdShareChainMap.put(jobApplicationDO.getId(), shareChainDO1);
-                            oneDegreeUserIds.add(shareChainDO1.getPresenteeUserId());
-                        }
-                    }
+                    int parentId = shareChainDO.getParentId();
+                    CandidateShareChainDO oneDegreeShareChainDO = getShareChainDOByRecurrence(parentId, shareChainDOS);
+                    shareChainIds.add(oneDegreeShareChainDO.getId());
+                    appIdShareChainMap.put(jobApplicationDO.getId(), oneDegreeShareChainDO);
+                    oneDegreeUserIds.add(oneDegreeShareChainDO.getPresenteeUserId());
                 }
             }
         }
@@ -155,6 +148,20 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         result.put("evaluate", JSON.toJSONString(seekApplyMap));
         result.put("wxUserMap", JSON.toJSONString(userWxUserDOMap));
         return result;
+    }
+
+    private CandidateShareChainDO getShareChainDOByRecurrence(int parentId, List<CandidateShareChainDO> shareChainDOS) {
+        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getId() == parentId){
+                if(shareChainDO.getParentId() == 0){
+                    return shareChainDO;
+                }else {
+                    return getShareChainDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);
+                }
+            }
+        }
+        // 理论上不会到这
+        return shareChainDOS.get(0);
     }
 
     @Override

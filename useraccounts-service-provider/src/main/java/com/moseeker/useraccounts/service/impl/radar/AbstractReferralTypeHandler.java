@@ -68,7 +68,7 @@ public abstract class AbstractReferralTypeHandler {
     protected abstract JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees);
 
     private String getLastDateTime(String applyTimeStr, List<HrOperationRecordRecord> hrOperations) {
-        DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if(hrOperations == null || hrOperations.size() == 0){
             DateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
             Date applyTime;
