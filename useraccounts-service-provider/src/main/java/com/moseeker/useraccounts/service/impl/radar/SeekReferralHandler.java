@@ -51,7 +51,7 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
         List<JobApplicationDO> seekReferralList = getApplicationsByReferralType(jobApplicationDOS);
         JSONObject seekApplyMap = new JSONObject();
         List<Integer> seekAppids = seekReferralList.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
-        List<ReferralSeekRecommendRecord> seekRecommendReords = seekRecommendDao.fetchByIds(seekAppids);
+        List<ReferralSeekRecommendRecord> seekRecommendReords = seekRecommendDao.fetchSeekRecommendByAppids(seekAppids);
         for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendReords){
             seekApplyMap.put(seekRecommendRecord.getAppId() + "", seekRecommendRecord);
         }
