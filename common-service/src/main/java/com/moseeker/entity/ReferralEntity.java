@@ -231,7 +231,7 @@ public class ReferralEntity {
     }
 
     public void logReferralOperation(int positionId, int applicationId,  List<String> referralReasons,String mobile,
-                                     UserEmployeeDO employeeDO, int presenteeUserId, byte shipType, String referralText) {
+                                     int postUserId, int presenteeUserId, byte shipType, String referralText) {
         ReferralRecomEvaluationRecord evaluationRecord = new ReferralRecomEvaluationRecord();
         evaluationRecord.setAppId(applicationId);
         evaluationRecord.setRecomReasonTag(referralReasons.stream().collect(Collectors.joining(",")));
@@ -239,7 +239,7 @@ public class ReferralEntity {
         evaluationRecord.setRecomReasonText(referralText);
         evaluationRecord.setMobile(mobile);
         evaluationRecord.setPresenteeUserId(presenteeUserId);
-        evaluationRecord.setPostUserId(employeeDO.getSysuserId());
+        evaluationRecord.setPostUserId(postUserId);
         evaluationRecord.setPositionId(positionId);
         recomEvaluationDao.insertIfNotExist(evaluationRecord);
     }

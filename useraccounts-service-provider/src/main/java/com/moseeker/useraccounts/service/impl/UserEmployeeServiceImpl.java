@@ -495,7 +495,7 @@ public class UserEmployeeServiceImpl {
 
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("员工用户编号", userId, 1,null);
+        vu.addIntTypeValidate("用户编号", userId, 1,null);
         vu.addIntTypeValidate("职位编号", positionId, 1, null);
         String message = vu.validate();
         if(StringUtils.isNotNullOrEmpty(message)){
@@ -511,13 +511,19 @@ public class UserEmployeeServiceImpl {
         if(employeeEntity.isEmployee(userId, position.getCompanyId())){
             UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
             UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
+            UserUserDO user = userDao.getUser(userId);
             info.setUserId(userId);
             info.setEmployeeId(employeeDO.getId());
+
             if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
                 info.setEmployeeName(employeeDO.getCname());
             }else{
-                UserUserDO user = userDao.getUser(userId);
                 info.setEmployeeName(user.getName());
+            }
+            if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
+                info.setNickname(user.getNickname());
+            }else{
+                info.setNickname(wxUserRecord.getNickname());
             }
             if(wxUserRecord != null){
                 info.setEmployeeIcon(wxUserRecord.getHeadimgurl());

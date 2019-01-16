@@ -1,19 +1,10 @@
 package com.moseeker.baseorm.dao.dictdb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
-import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
 import static com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate.DICT_REFERRAL_EVALUATE;
-import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
-import com.moseeker.thrift.gen.dao.struct.dictdb.DictConstantPojo;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictReferralEvaluateDO;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import org.jooq.*;
-import static org.jooq.impl.DSL.using;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -39,5 +30,7 @@ public class DictReferralEvaluateDao extends JooqCrudImpl<DictReferralEvaluateDO
                 .fetch();
         return records;
     }
+
+
 
 }

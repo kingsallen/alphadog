@@ -256,4 +256,9 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         }
     }
 
+    @Override
+    public void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
+
+    }
+
 }

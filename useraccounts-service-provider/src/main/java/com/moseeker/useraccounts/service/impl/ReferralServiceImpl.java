@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -40,16 +41,12 @@ import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.referral.struct.CheckEmployeeInfo;
-import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.ReferralService;
@@ -58,10 +55,7 @@ import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
-import java.net.ConnectException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
@@ -124,6 +118,8 @@ public class ReferralServiceImpl implements ReferralService {
     @Autowired
     private ReferralSeekRecommendDao recommendDao;
 
+    @Autowired
+    private ReferralRecomEvaluationDao recomEvaluationDao;
     @Autowired
     private JobPositionDao positionDao;
 
@@ -434,7 +430,7 @@ public class ReferralServiceImpl implements ReferralService {
         }
         if(applicationId > 0) {
             recommendDao.updateReferralSeekRecommendRecordForAppId(referralId, applicationId);
-            referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
+            referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), postUserId, user.getId(), relationship, recomReasonText);
             try {
                 sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
             }catch (CommonException e){
@@ -443,6 +439,27 @@ public class ReferralServiceImpl implements ReferralService {
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
             radarService.updateShareChainHandleType(recommendRecord, 3);
         }
+    }
+
+    @Override
+    public void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException {
+        ReferralRecomEvaluationRecord record = recomEvaluationDao.fetchByPostPresenteePosition(postUserId, presenteeId, positionId);
+        if (record == null) {
+            com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.getByUserIdAndPositionId(presenteeId, positionId);
+            UserUserDO user = userDao.getUser(presenteeId);
+            if( user != null ) {
+                if(application!= null) {
+                    record = new ReferralRecomEvaluationRecord();
+                    referralEntity.logReferralOperation(positionId, application != null ? application.getId() : 0,
+                            referralReasons, String.valueOf(user.getMobile()), postUserId, user.getId(), relationship, recomReasonText);
+                    return;
+                }
+                throw UserAccountException.NODATA_EXCEPTION;
+            }
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+        }
+        throw UserAccountException.REFERRAL_RECOM_EVALUATION_EXISTS;
+
     }
 
     private int createJobApplication(int userId, int companyId, int positionId, String name, int origin,

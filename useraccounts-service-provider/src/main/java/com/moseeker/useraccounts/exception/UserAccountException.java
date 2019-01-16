@@ -67,7 +67,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException REFERRAL_PROGRESS_ERROR = new UserAccountException(42056, "推进进度异常！");
     public static final UserAccountException REFERRAL_CONNECTION_NONEXISTS = new UserAccountException(42057, "人脉连连看链路不存在！");
     public static final UserAccountException REFERRAL_CHAIN_ERROR = new UserAccountException(42057, "人脉连连看链路异常！");
-
+    public static final UserAccountException REFERRAL_RECOM_EVALUATION_EXISTS = new UserAccountException(42058, "推荐评价已存在！");
 
     private final int code;
 

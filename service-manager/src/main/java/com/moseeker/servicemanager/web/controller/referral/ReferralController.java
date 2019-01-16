@@ -785,6 +785,36 @@ public class ReferralController {
         }
     }
 
+
+    @RequestMapping(value = "/v1/employee/application/evaluate", method = RequestMethod.POST)
+    @ResponseBody
+    public String employeeReferralApplicationEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", form
+                .getAppid());
+        validateUtil.addRequiredValidate("职位编号", form.getPositionId());
+        validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
+        validateUtil.addRequiredValidate("候选人编号", form.getPresenteeUserId());
+        validateUtil.addRequiredValidate("推荐人与被推荐人关系", form.getRelationship());
+        validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
+                "推荐理由文本长度过长",null, 201);
+        validateUtil.addSensitiveValidate("推荐理由文本", form.getRecomReasonText(), null, null);
+        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
+        if (form.getReferralReasons() != null) {
+            String reasons = form.getReferralReasons().stream().collect(Collectors.joining(","));
+            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+        }
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            referralService.employeeReferralRecomEvaluation(form.getPostUserId(),form.getPositionId(), form.getPresenteeUserId(), form.getReferralReasons(),
+                    form.getRelationship(), form.getRecomReasonText());
+            return Result.success().toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
     /**
      * 点击人脉连连看按钮/点击分享的人脉连连看页面
      * @param radarForm 连接人脉雷达的参数
