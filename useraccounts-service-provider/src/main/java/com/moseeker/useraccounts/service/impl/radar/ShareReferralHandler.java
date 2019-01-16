@@ -40,13 +40,13 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         TypeReference<Map<Integer, UserWxUserDO>> wxUserMapType = new TypeReference<Map<Integer, UserWxUserDO>>(){};
         Map<Integer, UserWxUserDO> wxUserMap = JSON.parseObject(referralTypeSingleMap.getString("wxUserMap"), wxUserMapType);
         // 转发推荐类型（2）中的用户求推荐信息
-        TypeReference<Map<String, ReferralSeekRecommendRecord>> evaluateType = new TypeReference<Map<String, ReferralSeekRecommendRecord>>(){};
-        Map<String, ReferralSeekRecommendRecord> evaluateMap = JSON.parseObject(referralTypeSingleMap.getString("evaluate"), evaluateType);
+        TypeReference<Map<String, Integer>> evaluateType = new TypeReference<Map<String, Integer>>(){};
+        Map<String, Integer> evaluateMap = JSON.parseObject(referralTypeSingleMap.getString("evaluate"), evaluateType);
 
-        ReferralSeekRecommendRecord evaluate = evaluateMap.get(jobApplicationDO.getId()+"");
+        Object evaluate = evaluateMap.get(jobApplicationDO.getId()+"");
         JSONObject recom = new JSONObject();
         if(evaluate != null){
-            recom.put("evaluate", evaluate.getAppId() == 0 ? 0 : 1);
+            recom.put("evaluate", Integer.parseInt(String.valueOf(evaluate)) == 0 ? 0 : 1);
         }else {
             recom.put("evaluate", 0);
         }
@@ -92,11 +92,11 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS,
                                             List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> shareReferralList = getApplicationsByReferralType(jobApplicationDOS);
-        Map<String, ReferralSeekRecommendRecord> seekApplyMap = new HashMap<>(1 >> 4);
+        Map<String, Integer> seekApplyMap = new HashMap<>(1 >> 4);
         List<Integer> seekAppids = shareReferralList.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
-        List<ReferralSeekRecommendRecord> seekRecommendReords = seekRecommendDao.fetchByIds(seekAppids);
+        List<ReferralSeekRecommendRecord> seekRecommendReords = seekRecommendDao.fetchSeekRecommendByAppids(seekAppids);
         for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendReords){
-            seekApplyMap.put(seekRecommendRecord.getAppId() + "", seekRecommendRecord);
+            seekApplyMap.put(seekRecommendRecord.getAppId() + "", seekRecommendRecord.getAppId());
         }
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
