@@ -137,7 +137,7 @@ public abstract class EmployeeReferralProfile {
             int applicationId = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(),
                     profileNotice.getName(), origin, employeeDO.getSysuserId(), referralResultVO);
             referralEntity.logReferralOperation(jobPositionDO.getId(), applicationId,  profileNotice.getReferralReasons(),
-                    profileNotice.getMobile(), employeeDO, userId, profileNotice.getRelationship(), profileNotice.getReferralText());
+                    profileNotice.getMobile(), employeeDO.getSysuserId(), userId, profileNotice.getRelationship(), profileNotice.getReferralText());
             addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), profileNotice.getReferralType());
             referralResultVO.setId(referralId);
             resultVOS.add(referralResultVO);

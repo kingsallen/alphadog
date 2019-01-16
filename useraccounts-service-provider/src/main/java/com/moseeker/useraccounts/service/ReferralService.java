@@ -109,8 +109,6 @@ public interface ReferralService {
 
     /**
      * 推荐评价页面保存
-     *
-     * @param userId
      * @param positionId
      * @param referralId
      * @param referralReasons
@@ -119,6 +117,18 @@ public interface ReferralService {
      * @throws CommonException
      */
     void employeeReferralReason(int postUserId, int positionId,  int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
+
+    /**
+     * 推荐评价页面保存
+     *
+     * @param positionId
+     * @param presenteeId
+     * @param referralReasons
+     * @param relationship
+     * @param recomReasonText
+     * @throws CommonException
+     */
+    void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
 
 
 }

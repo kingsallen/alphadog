@@ -14,6 +14,7 @@ public class ReferralEvaluateForm {
     private List<String> referralReasons;
     private byte relationship;
     private String recomReasonText;
+    private int presenteeUserId;
 
     public int getAppid() {
         return appid;
@@ -69,5 +70,13 @@ public class ReferralEvaluateForm {
 
     public void setRecomReasonText(String recomReasonText) {
         this.recomReasonText = recomReasonText;
+    }
+
+    public int getPresenteeUserId() {
+        return presenteeUserId;
+    }
+
+    public void setPresenteeUserId(int presenteeUserId) {
+        this.presenteeUserId = presenteeUserId;
     }
 }
