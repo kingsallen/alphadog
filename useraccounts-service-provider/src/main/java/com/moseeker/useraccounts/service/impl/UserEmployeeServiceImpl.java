@@ -513,12 +513,12 @@ public class UserEmployeeServiceImpl {
         logger.info("getPositionReferralInfo wxUserRecord:{}",wxUserRecord);
         UserUserDO user = userDao.getUser(userId);
         info.setUserId(userId);
-        info.setEmployeeId(employeeDO.getId());
-
-        if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
-            info.setEmployeeName(employeeDO.getCname());
-        }else{
-            info.setEmployeeName(user.getName());
+        info.setEmployeeName(user.getName());
+        if(employeeDO != null) {
+            info.setEmployeeId(employeeDO.getId());
+            if (StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
+                info.setEmployeeName(employeeDO.getCname());
+            }
         }
         if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
             info.setNickname(user.getNickname());
