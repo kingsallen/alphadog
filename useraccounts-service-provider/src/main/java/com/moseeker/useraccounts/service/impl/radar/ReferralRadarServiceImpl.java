@@ -290,8 +290,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 获取排好序并包括连接状态的人脉连连看链路
         List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
         // 填充员工姓名
-        UserEmployeeRecord userEmployee = userEmployeeDao.getActiveEmployee(connectionLogRecord.getRootUserId(), connectionLogRecord.getCompanyId());
-        fillEmployeeName(userEmployee, userChains);
+        fillEmployeeName(connectionLogRecord.getRootUserId(), userChains);
         result.setParent_id(parentId);
         result.setDegree(userChains.size()-1);
         result.setPid(connectionLogRecord.getPositionId());
@@ -852,13 +851,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return needUpdate;
     }
 
-    private void fillEmployeeName(UserEmployeeRecord employee, List<RadarUserInfo> userChains) {
+    private void fillEmployeeName(int userId, List<RadarUserInfo> userChains) {
+        UserUserDO employee = userUserDao.getUser(userId);
         if(employee == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         for(RadarUserInfo userInfo : userChains){
-            if(userInfo.getUid().equals(employee.getSysuserId())){
-                userInfo.setName(employee.getCname());
+            if(userInfo.getUid().equals(employee.getId())){
+                userInfo.setName(employee.getName());
                 break;
             }
         }

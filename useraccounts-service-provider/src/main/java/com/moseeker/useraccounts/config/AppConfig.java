@@ -282,7 +282,7 @@ public class AppConfig {
     public List<Binding> bindApplyHandleQueue() {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(handleApplyQueue()).to(referralApplyExchange())
-                    .with("referral_apply_handle.*"));
+                    .with("referral_*_handle"));
         }};
     }
 }
