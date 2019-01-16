@@ -370,6 +370,7 @@ public class TemplateMsgHttp {
         String first;
         String firstColor = "#2CD6B1";
         String keyword1Color = "#66A4F9";
+        String keyword2Color = "#66A4F9";
         ConfigSysTemplateMessageLibraryRecord record =
                 templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(REFERRAL_SEEK_REFERRAL);
         if (record != null) {
@@ -381,6 +382,9 @@ public class TemplateMsgHttp {
                 }
                 if(color.get("keyword1") != null) {
                     keyword1Color = (String) color.get("keyword1");
+                }
+                if(color.get("keyword2") != null) {
+                    keyword2Color = (String) color.get("keyword2");
                 }
             }
         } else {
@@ -399,7 +403,7 @@ public class TemplateMsgHttp {
         colMap.put("keyword1", keywords1);
 
         JSONObject keywords2 = new JSONObject();
-        keywords2.put("color", "#173177");
+        keywords2.put("color", keyword2Color);
         keywords2.put("value", username);
         colMap.put("keyword2", keywords2);
 
