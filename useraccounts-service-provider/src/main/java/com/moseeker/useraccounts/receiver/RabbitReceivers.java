@@ -44,9 +44,17 @@ public class RabbitReceivers {
             return;
         }
         JobApplication jobApplication = jobApplicationDao.fetchOneById(applyId);
+        // 获取申请来源对应的shareChain处理类型
+        int type = ReferralApplyHandleEnum.getByApplicationSource(jobApplication.getOrigin());
+        if(type == 0){
+            return;
+        }
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByPresenteeAndPosition(jobApplication.getApplierId(), jobApplication.getPositionId());
         List<Integer> shareChainIds = shareChainDOS.stream().map(CandidateShareChainDO::getId).collect(Collectors.toList());
-        shareChainDao.updateTypeByIds(shareChainIds, ReferralApplyHandleEnum.selfApply.getType());
-        templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, ReferralApplyHandleEnum.selfApply.getType());
+        if(shareChainIds.size() == 0){
+            return;
+        }
+        shareChainDao.updateTypeByIds(shareChainIds, type);
+        templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, type);
     }
 }

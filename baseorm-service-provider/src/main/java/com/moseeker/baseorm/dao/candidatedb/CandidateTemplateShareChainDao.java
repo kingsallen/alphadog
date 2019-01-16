@@ -48,6 +48,7 @@ public class CandidateTemplateShareChainDao extends JooqCrudImpl<CandidateTempla
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.ROOT_USER_ID.eq(ignoreInfo.getUserId()))
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.POSITION_ID.eq(ignoreInfo.getPid()))
                 .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(ignoreInfo.getEndUserId()))
+                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.TYPE.eq((byte)0))
                 .execute();
     }
 

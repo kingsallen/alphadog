@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
@@ -35,6 +36,8 @@ public abstract class AbstractReferralTypeHandler {
     protected CandidateShareChainDao shareChainDao;
     @Autowired
     protected ReferralSeekRecommendDao seekRecommendDao;
+    @Autowired
+    protected ReferralRecomEvaluationDao evaluationDao;
     @Autowired
     protected CandidatePositionShareRecordDao positionShareRecordDao;
 
