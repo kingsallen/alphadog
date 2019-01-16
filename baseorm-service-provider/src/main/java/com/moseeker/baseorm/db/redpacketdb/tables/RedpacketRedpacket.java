@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketRedpacket extends TableImpl<RedpacketRedpacketRecord> {
 
-    private static final long serialVersionUID = -2041897150;
+    private static final long serialVersionUID = 1106882370;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_redpacket</code>
@@ -55,6 +55,11 @@ public class RedpacketRedpacket extends TableImpl<RedpacketRedpacketRecord> {
      * The column <code>redpacketdb.redpacket_redpacket.id</code>.
      */
     public final TableField<RedpacketRedpacketRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>redpacketdb.redpacket_redpacket.company_id</code>. 公司编号
+     */
+    public final TableField<RedpacketRedpacketRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司编号");
 
     /**
      * The column <code>redpacketdb.redpacket_redpacket.activity_id</code>. 所属红包活动
@@ -95,11 +100,6 @@ public class RedpacketRedpacket extends TableImpl<RedpacketRedpacketRecord> {
      * The column <code>redpacketdb.redpacket_redpacket.update_time</code>. 更新时间
      */
     public final TableField<RedpacketRedpacketRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>redpacketdb.redpacket_redpacket.company_id</code>. 公司编号
-     */
-    public final TableField<RedpacketRedpacketRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司编号");
 
     /**
      * The column <code>redpacketdb.redpacket_redpacket.cardno</code>. 随机字符串

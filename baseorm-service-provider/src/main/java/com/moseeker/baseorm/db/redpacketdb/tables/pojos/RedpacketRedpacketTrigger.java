@@ -11,7 +11,7 @@ import javax.annotation.Generated;
 
 
 /**
- * 红包触发人记录
+ * 红包触发记录
  */
 @Generated(
     value = {
@@ -23,14 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketRedpacketTrigger implements Serializable {
 
-    private static final long serialVersionUID = 740816201;
+    private static final long serialVersionUID = 1624320119;
 
     private Integer   id;
     private Integer   redpacketLogId;
     private Integer   triggerUserId;
+    private Integer   activityId;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   activityId;
 
     public RedpacketRedpacketTrigger() {}
 
@@ -38,25 +38,25 @@ public class RedpacketRedpacketTrigger implements Serializable {
         this.id = value.id;
         this.redpacketLogId = value.redpacketLogId;
         this.triggerUserId = value.triggerUserId;
+        this.activityId = value.activityId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.activityId = value.activityId;
     }
 
     public RedpacketRedpacketTrigger(
         Integer   id,
         Integer   redpacketLogId,
         Integer   triggerUserId,
+        Integer   activityId,
         Timestamp createTime,
-        Timestamp updateTime,
-        Integer   activityId
+        Timestamp updateTime
     ) {
         this.id = id;
         this.redpacketLogId = redpacketLogId;
         this.triggerUserId = triggerUserId;
+        this.activityId = activityId;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.activityId = activityId;
     }
 
     public Integer getId() {
@@ -83,6 +83,14 @@ public class RedpacketRedpacketTrigger implements Serializable {
         this.triggerUserId = triggerUserId;
     }
 
+    public Integer getActivityId() {
+        return this.activityId;
+    }
+
+    public void setActivityId(Integer activityId) {
+        this.activityId = activityId;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -99,14 +107,6 @@ public class RedpacketRedpacketTrigger implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getActivityId() {
-        return this.activityId;
-    }
-
-    public void setActivityId(Integer activityId) {
-        this.activityId = activityId;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RedpacketRedpacketTrigger (");
@@ -114,9 +114,9 @@ public class RedpacketRedpacketTrigger implements Serializable {
         sb.append(id);
         sb.append(", ").append(redpacketLogId);
         sb.append(", ").append(triggerUserId);
+        sb.append(", ").append(activityId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(activityId);
 
         sb.append(")");
         return sb.toString();

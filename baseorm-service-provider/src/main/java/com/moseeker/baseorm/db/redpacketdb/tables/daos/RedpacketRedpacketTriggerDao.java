@@ -17,7 +17,7 @@ import org.jooq.impl.DAOImpl;
 
 
 /**
- * 红包触发人记录
+ * 红包触发记录
  */
 @Generated(
     value = {
@@ -80,6 +80,13 @@ public class RedpacketRedpacketTriggerDao extends DAOImpl<RedpacketRedpacketTrig
     }
 
     /**
+     * Fetch records that have <code>activity_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacketTrigger> fetchByActivityId(Integer... values) {
+        return fetch(RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER.ACTIVITY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacketTrigger> fetchByCreateTime(Timestamp... values) {
@@ -91,12 +98,5 @@ public class RedpacketRedpacketTriggerDao extends DAOImpl<RedpacketRedpacketTrig
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacketTrigger> fetchByUpdateTime(Timestamp... values) {
         return fetch(RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>activity_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacketTrigger> fetchByActivityId(Integer... values) {
-        return fetch(RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER.ACTIVITY_ID, values);
     }
 }

@@ -66,6 +66,13 @@ public class RedpacketActivityOperationLogDao extends DAOImpl<RedpacketActivityO
     }
 
     /**
+     * Fetch records that have <code>activity_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityOperationLog> fetchByActivityId(Integer... values) {
+        return fetch(RedpacketActivityOperationLog.REDPACKET_ACTIVITY_OPERATION_LOG.ACTIVITY_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>type IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityOperationLog> fetchByType(Byte... values) {
@@ -77,13 +84,6 @@ public class RedpacketActivityOperationLogDao extends DAOImpl<RedpacketActivityO
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityOperationLog> fetchByUserId(Integer... values) {
         return fetch(RedpacketActivityOperationLog.REDPACKET_ACTIVITY_OPERATION_LOG.USER_ID, values);
-    }
-
-    /**
-     * Fetch records that have <code>activity_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityOperationLog> fetchByActivityId(Integer... values) {
-        return fetch(RedpacketActivityOperationLog.REDPACKET_ACTIVITY_OPERATION_LOG.ACTIVITY_ID, values);
     }
 
     /**

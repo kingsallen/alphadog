@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivity implements Serializable {
 
-    private static final long serialVersionUID = -382092978;
+    private static final long serialVersionUID = -1460821120;
 
     private Integer   id;
     private Byte      type;
@@ -32,6 +32,7 @@ public class RedpacketActivity implements Serializable {
     private Timestamp startTime;
     private Timestamp endTime;
     private Integer   totalAmount;
+    private Integer   leftAmount;
     private Integer   rangeMin;
     private Integer   rangeMax;
     private Byte      probability;
@@ -43,10 +44,9 @@ public class RedpacketActivity implements Serializable {
     private Byte      status;
     private Byte      checked;
     private Integer   estimatedTotal;
+    private Byte      dType;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Integer   leftAmount;
-    private Byte      dType;
 
     public RedpacketActivity() {}
 
@@ -58,6 +58,7 @@ public class RedpacketActivity implements Serializable {
         this.startTime = value.startTime;
         this.endTime = value.endTime;
         this.totalAmount = value.totalAmount;
+        this.leftAmount = value.leftAmount;
         this.rangeMin = value.rangeMin;
         this.rangeMax = value.rangeMax;
         this.probability = value.probability;
@@ -69,10 +70,9 @@ public class RedpacketActivity implements Serializable {
         this.status = value.status;
         this.checked = value.checked;
         this.estimatedTotal = value.estimatedTotal;
+        this.dType = value.dType;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.leftAmount = value.leftAmount;
-        this.dType = value.dType;
     }
 
     public RedpacketActivity(
@@ -83,6 +83,7 @@ public class RedpacketActivity implements Serializable {
         Timestamp startTime,
         Timestamp endTime,
         Integer   totalAmount,
+        Integer   leftAmount,
         Integer   rangeMin,
         Integer   rangeMax,
         Byte      probability,
@@ -94,10 +95,9 @@ public class RedpacketActivity implements Serializable {
         Byte      status,
         Byte      checked,
         Integer   estimatedTotal,
+        Byte      dType,
         Timestamp createTime,
-        Timestamp updateTime,
-        Integer   leftAmount,
-        Byte      dType
+        Timestamp updateTime
     ) {
         this.id = id;
         this.type = type;
@@ -106,6 +106,7 @@ public class RedpacketActivity implements Serializable {
         this.startTime = startTime;
         this.endTime = endTime;
         this.totalAmount = totalAmount;
+        this.leftAmount = leftAmount;
         this.rangeMin = rangeMin;
         this.rangeMax = rangeMax;
         this.probability = probability;
@@ -117,10 +118,9 @@ public class RedpacketActivity implements Serializable {
         this.status = status;
         this.checked = checked;
         this.estimatedTotal = estimatedTotal;
+        this.dType = dType;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.leftAmount = leftAmount;
-        this.dType = dType;
     }
 
     public Integer getId() {
@@ -177,6 +177,14 @@ public class RedpacketActivity implements Serializable {
 
     public void setTotalAmount(Integer totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public Integer getLeftAmount() {
+        return this.leftAmount;
+    }
+
+    public void setLeftAmount(Integer leftAmount) {
+        this.leftAmount = leftAmount;
     }
 
     public Integer getRangeMin() {
@@ -267,6 +275,14 @@ public class RedpacketActivity implements Serializable {
         this.estimatedTotal = estimatedTotal;
     }
 
+    public Byte getDType() {
+        return this.dType;
+    }
+
+    public void setDType(Byte dType) {
+        this.dType = dType;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -283,22 +299,6 @@ public class RedpacketActivity implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Integer getLeftAmount() {
-        return this.leftAmount;
-    }
-
-    public void setLeftAmount(Integer leftAmount) {
-        this.leftAmount = leftAmount;
-    }
-
-    public Byte getDType() {
-        return this.dType;
-    }
-
-    public void setDType(Byte dType) {
-        this.dType = dType;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RedpacketActivity (");
@@ -310,6 +310,7 @@ public class RedpacketActivity implements Serializable {
         sb.append(", ").append(startTime);
         sb.append(", ").append(endTime);
         sb.append(", ").append(totalAmount);
+        sb.append(", ").append(leftAmount);
         sb.append(", ").append(rangeMin);
         sb.append(", ").append(rangeMax);
         sb.append(", ").append(probability);
@@ -321,10 +322,9 @@ public class RedpacketActivity implements Serializable {
         sb.append(", ").append(status);
         sb.append(", ").append(checked);
         sb.append(", ").append(estimatedTotal);
+        sb.append(", ").append(dType);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(leftAmount);
-        sb.append(", ").append(dType);
 
         sb.append(")");
         return sb.toString();

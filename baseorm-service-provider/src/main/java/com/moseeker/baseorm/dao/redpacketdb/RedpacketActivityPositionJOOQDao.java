@@ -3,16 +3,16 @@ package com.moseeker.baseorm.dao.redpacketdb;/**
  */
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
-import com.moseeker.baseorm.db.redpacketdb.tables.daos.RedpacketActivityPositionDao;
 import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketActivityPositionRecord;
+import org.jooq.Record1;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivity.REDPACKET_ACTIVITY;
 import static com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION;
-import static org.jooq.impl.DSL.using;
 
 /**
  * @version 1.0
@@ -58,5 +58,18 @@ public class RedpacketActivityPositionJOOQDao extends JooqCrudImpl<RedpacketActi
                 .where(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.in(pidList))
                 .and(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.in(activeIdList)).fetchInto(RedpacketActivityPosition.class);
         return result;
+    }
+
+    public boolean isInActivity(int positionId) {
+        Record1<Integer> record1 = create.selectOne()
+                .from(REDPACKET_ACTIVITY_POSITION)
+                .innerJoin(REDPACKET_ACTIVITY)
+                .on(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.eq(REDPACKET_ACTIVITY.ID))
+                .where(REDPACKET_ACTIVITY_POSITION.POSITION_ID.eq(positionId))
+                .and(REDPACKET_ACTIVITY_POSITION.ENABLE.eq((byte) 1))
+                .and(REDPACKET_ACTIVITY.STATUS.eq((byte) 3))
+                .limit(1)
+                .fetchOne();
+        return record1 != null && record1.value1() != null;
     }
 }

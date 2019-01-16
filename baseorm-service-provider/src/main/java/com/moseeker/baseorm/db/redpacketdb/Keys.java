@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityOperationLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketTrigger;
@@ -20,6 +21,7 @@ import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketActivityPosit
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketActivityRecord;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketAmountsLogRecord;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketEmployeeVerifyRedpacketRecord;
+import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketMessageHandlerLogRecord;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketRedpacketPositionRecord;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketRedpacketRecord;
 import com.moseeker.baseorm.db.redpacketdb.tables.records.RedpacketRedpacketTriggerRecord;
@@ -73,8 +75,10 @@ public class Keys {
     public static final UniqueKey<RedpacketActivityPositionRecord> KEY_REDPACKET_ACTIVITY_POSITION_PRIMARY = UniqueKeys0.KEY_REDPACKET_ACTIVITY_POSITION_PRIMARY;
     public static final UniqueKey<RedpacketAmountsLogRecord> KEY_REDPACKET_AMOUNTS_LOG_PRIMARY = UniqueKeys0.KEY_REDPACKET_AMOUNTS_LOG_PRIMARY;
     public static final UniqueKey<RedpacketEmployeeVerifyRedpacketRecord> KEY_REDPACKET_EMPLOYEE_VERIFY_REDPACKET_PRIMARY = UniqueKeys0.KEY_REDPACKET_EMPLOYEE_VERIFY_REDPACKET_PRIMARY;
+    public static final UniqueKey<RedpacketMessageHandlerLogRecord> KEY_REDPACKET_MESSAGE_HANDLER_LOG_PRIMARY = UniqueKeys0.KEY_REDPACKET_MESSAGE_HANDLER_LOG_PRIMARY;
     public static final UniqueKey<RedpacketRedpacketRecord> KEY_REDPACKET_REDPACKET_PRIMARY = UniqueKeys0.KEY_REDPACKET_REDPACKET_PRIMARY;
     public static final UniqueKey<RedpacketRedpacketPositionRecord> KEY_REDPACKET_REDPACKET_POSITION_PRIMARY = UniqueKeys0.KEY_REDPACKET_REDPACKET_POSITION_PRIMARY;
+    public static final UniqueKey<RedpacketRedpacketPositionRecord> KEY_REDPACKET_REDPACKET_POSITION_REDPACKET_LOG_ID = UniqueKeys0.KEY_REDPACKET_REDPACKET_POSITION_REDPACKET_LOG_ID;
     public static final UniqueKey<RedpacketRedpacketTriggerRecord> KEY_REDPACKET_REDPACKET_TRIGGER_PRIMARY = UniqueKeys0.KEY_REDPACKET_REDPACKET_TRIGGER_PRIMARY;
     public static final UniqueKey<RedpacketWxRetryLogRecord> KEY_REDPACKET_WX_RETRY_LOG_PRIMARY = UniqueKeys0.KEY_REDPACKET_WX_RETRY_LOG_PRIMARY;
     public static final UniqueKey<RedpacketWxStatusRecord> KEY_REDPACKET_WX_STATUS_PRIMARY = UniqueKeys0.KEY_REDPACKET_WX_STATUS_PRIMARY;
@@ -109,8 +113,10 @@ public class Keys {
         public static final UniqueKey<RedpacketActivityPositionRecord> KEY_REDPACKET_ACTIVITY_POSITION_PRIMARY = createUniqueKey(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION, "KEY_redpacket_activity_position_PRIMARY", RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.ID);
         public static final UniqueKey<RedpacketAmountsLogRecord> KEY_REDPACKET_AMOUNTS_LOG_PRIMARY = createUniqueKey(RedpacketAmountsLog.REDPACKET_AMOUNTS_LOG, "KEY_redpacket_amounts_log_PRIMARY", RedpacketAmountsLog.REDPACKET_AMOUNTS_LOG.ID);
         public static final UniqueKey<RedpacketEmployeeVerifyRedpacketRecord> KEY_REDPACKET_EMPLOYEE_VERIFY_REDPACKET_PRIMARY = createUniqueKey(RedpacketEmployeeVerifyRedpacket.REDPACKET_EMPLOYEE_VERIFY_REDPACKET, "KEY_redpacket_employee_verify_redpacket_PRIMARY", RedpacketEmployeeVerifyRedpacket.REDPACKET_EMPLOYEE_VERIFY_REDPACKET.ID);
+        public static final UniqueKey<RedpacketMessageHandlerLogRecord> KEY_REDPACKET_MESSAGE_HANDLER_LOG_PRIMARY = createUniqueKey(RedpacketMessageHandlerLog.REDPACKET_MESSAGE_HANDLER_LOG, "KEY_redpacket_message_handler_log_PRIMARY", RedpacketMessageHandlerLog.REDPACKET_MESSAGE_HANDLER_LOG.MESSAGE_ID);
         public static final UniqueKey<RedpacketRedpacketRecord> KEY_REDPACKET_REDPACKET_PRIMARY = createUniqueKey(RedpacketRedpacket.REDPACKET_REDPACKET, "KEY_redpacket_redpacket_PRIMARY", RedpacketRedpacket.REDPACKET_REDPACKET.ID);
         public static final UniqueKey<RedpacketRedpacketPositionRecord> KEY_REDPACKET_REDPACKET_POSITION_PRIMARY = createUniqueKey(RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION, "KEY_redpacket_redpacket_position_PRIMARY", RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION.ID);
+        public static final UniqueKey<RedpacketRedpacketPositionRecord> KEY_REDPACKET_REDPACKET_POSITION_REDPACKET_LOG_ID = createUniqueKey(RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION, "KEY_redpacket_redpacket_position_redpacket_log_id", RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION.REDPACKET_LOG_ID, RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION.POSITION_ID);
         public static final UniqueKey<RedpacketRedpacketTriggerRecord> KEY_REDPACKET_REDPACKET_TRIGGER_PRIMARY = createUniqueKey(RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER, "KEY_redpacket_redpacket_trigger_PRIMARY", RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER.ID);
         public static final UniqueKey<RedpacketWxRetryLogRecord> KEY_REDPACKET_WX_RETRY_LOG_PRIMARY = createUniqueKey(RedpacketWxRetryLog.REDPACKET_WX_RETRY_LOG, "KEY_redpacket_wx_retry_log_PRIMARY", RedpacketWxRetryLog.REDPACKET_WX_RETRY_LOG.ID);
         public static final UniqueKey<RedpacketWxStatusRecord> KEY_REDPACKET_WX_STATUS_PRIMARY = createUniqueKey(RedpacketWxStatus.REDPACKET_WX_STATUS, "KEY_redpacket_wx_status_PRIMARY", RedpacketWxStatus.REDPACKET_WX_STATUS.ID);

@@ -31,10 +31,8 @@ public class RedpacketActivityPositionDao extends DAOImpl<RedpacketActivityPosit
 
     /**
      * Create a new RedpacketActivityPositionDao without any configuration
-     * @param redpacketActivityPosition
-     * @param redpacketActivityPositionClass
      */
-    public RedpacketActivityPositionDao(RedpacketActivityPosition redpacketActivityPosition, Class<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> redpacketActivityPositionClass) {
+    public RedpacketActivityPositionDao() {
         super(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION, com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition.class);
     }
 
@@ -96,6 +94,13 @@ public class RedpacketActivityPositionDao extends DAOImpl<RedpacketActivityPosit
     }
 
     /**
+     * Fetch records that have <code>enable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByEnable(Byte... values) {
+        return fetch(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.ENABLE, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByCreateTime(Timestamp... values) {
@@ -107,12 +112,5 @@ public class RedpacketActivityPositionDao extends DAOImpl<RedpacketActivityPosit
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByUpdateTime(Timestamp... values) {
         return fetch(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>enable IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByEnable(Byte... values) {
-        return fetch(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.ENABLE, values);
     }
 }

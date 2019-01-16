@@ -14,6 +14,7 @@ import com.moseeker.baseorm.dao.hrdb.HrPointsConfDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityPositionJOOQDao;
 import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysPointsConfTplRecord;
@@ -172,6 +173,9 @@ public class EmployeeEntity {
 
     @Autowired
     JobPositionDao jobPositionDao;
+
+    @Autowired
+    RedpacketActivityPositionJOOQDao activityPositionJOOQDao;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -1296,12 +1300,13 @@ public class EmployeeEntity {
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
             logger.info("publishInitalScreenHbEvent  nextStage {}",nextStage);
+            boolean inActivity = activityPositionJOOQDao.isInActivity(jobPositionRecord.getId());
             logger.info("publishInitalScreenHbEvent  bool {}",((hbStatus >> 2) & 1) == 1);
-            if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
+            if (inActivity && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
                 ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplById(nextStage);
                 ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
-                logger.info("publishInitalScreenHbEvent  statusCount {}",statusCount);
+                logger.info("EmployeeEntity publishInitalScreenHbEvent statusCount:{}",statusCount);
                 if(statusCount == null){
                     statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());

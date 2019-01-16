@@ -9,6 +9,7 @@ import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityOperationLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketTrigger;
@@ -40,7 +41,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Redpacketdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1390084896;
+    private static final long serialVersionUID = 545939167;
 
     /**
      * The reference instance of <code>redpacketdb</code>
@@ -73,6 +74,11 @@ public class Redpacketdb extends SchemaImpl {
     public final RedpacketEmployeeVerifyRedpacket REDPACKET_EMPLOYEE_VERIFY_REDPACKET = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket.REDPACKET_EMPLOYEE_VERIFY_REDPACKET;
 
     /**
+     * 消息消费记录
+     */
+    public final RedpacketMessageHandlerLog REDPACKET_MESSAGE_HANDLER_LOG = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog.REDPACKET_MESSAGE_HANDLER_LOG;
+
+    /**
      * 红包记录
      */
     public final RedpacketRedpacket REDPACKET_REDPACKET = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket.REDPACKET_REDPACKET;
@@ -83,7 +89,7 @@ public class Redpacketdb extends SchemaImpl {
     public final RedpacketRedpacketPosition REDPACKET_REDPACKET_POSITION = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION;
 
     /**
-     * 红包触发人记录
+     * 红包触发记录
      */
     public final RedpacketRedpacketTrigger REDPACKET_REDPACKET_TRIGGER = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER;
 
@@ -132,6 +138,7 @@ public class Redpacketdb extends SchemaImpl {
             RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION,
             RedpacketAmountsLog.REDPACKET_AMOUNTS_LOG,
             RedpacketEmployeeVerifyRedpacket.REDPACKET_EMPLOYEE_VERIFY_REDPACKET,
+            RedpacketMessageHandlerLog.REDPACKET_MESSAGE_HANDLER_LOG,
             RedpacketRedpacket.REDPACKET_REDPACKET,
             RedpacketRedpacketPosition.REDPACKET_REDPACKET_POSITION,
             RedpacketRedpacketTrigger.REDPACKET_REDPACKET_TRIGGER,
