@@ -101,7 +101,7 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
         return evaluationRecords;
     }
 
-    public  ReferralRecomEvaluationRecord fetchByPostPresenteePosition(Integer postUserId, Integer presenteeUserId, Integer positionId){
+    public  ReferralRecomEvaluationRecord fetchByPostPresenteePosition(Integer postUserId, Integer presenteeUserId, Integer positionId) {
         ReferralRecomEvaluationRecord evaluationRecord = using(configuration()).selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
                 .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
                 .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(presenteeUserId))
@@ -110,5 +110,12 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
                 .limit(1)
                 .fetchOne();
         return evaluationRecord;
+    }
+
+    public List<ReferralRecomEvaluationRecord> fetchEvaluationRecordsByAppids(List<Integer> seekAppids) {
+        return using(configuration())
+                .selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
+                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.APP_ID.in(seekAppids))
+                .fetch();
     }
 }

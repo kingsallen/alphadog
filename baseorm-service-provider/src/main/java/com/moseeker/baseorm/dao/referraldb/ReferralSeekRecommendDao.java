@@ -139,12 +139,6 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
     }
 
-    public List<ReferralSeekRecommendRecord> fetchByIds(List<Integer> seekAppids) {
-        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
-                .where(REFERRAL_SEEK_RECOMMEND.ID.in(seekAppids))
-                .fetchInto(ReferralSeekRecommendRecord.class);
-    }
-
     public List<ReferralSeekRecommendRecord> getTenMinuteSeekRecords(int userId, Timestamp beforeTenMinite, Timestamp tenMinite) {
         return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
                 .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(userId))
