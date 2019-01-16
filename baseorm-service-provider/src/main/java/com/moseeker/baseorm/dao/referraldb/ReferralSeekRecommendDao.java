@@ -163,4 +163,6 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
     }
 
 
+
+
 }
