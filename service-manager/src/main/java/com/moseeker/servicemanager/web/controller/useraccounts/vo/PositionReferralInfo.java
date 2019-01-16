@@ -11,14 +11,14 @@ public class PositionReferralInfo {
     public String positionName; // optional
     public int positionId; // optional
     private String employeeIcon;
-    private String nickName;
+    private String nickname;
 
-    public String getNickName() {
-        return nickName;
+    public String getNickname() {
+        return nickname;
     }
 
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public int getUserId() {
