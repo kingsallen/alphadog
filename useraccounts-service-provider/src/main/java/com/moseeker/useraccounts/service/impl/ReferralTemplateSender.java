@@ -33,6 +33,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChai
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
@@ -165,7 +166,7 @@ public class ReferralTemplateSender {
         shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, seekRecommendRecords)));
         templateShareChainDao.addAllData(templateShareChainDOS);
         templateShareChainDOS.removeIf(record -> record.getType() != 0);
-        Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        Set<Integer> userIds = filterAppliedShareChain(templateShareChainDOS).stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         int visitNum = userIds.size();
         logger.info("visitNum:{}", visitNum);
         List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
@@ -191,6 +192,27 @@ public class ReferralTemplateSender {
                     REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
                             .build());
         }
+    }
+
+    public List<CandidateTemplateShareChainDO> filterAppliedShareChain(List<CandidateTemplateShareChainDO> templateShareChainDOS) {
+        List<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).distinct().collect(Collectors.toList());
+        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
+        List<CandidateTemplateShareChainDO> filterAppliedShareChain = new ArrayList<>();
+        Set<Integer> userIdset = new HashSet<>();
+        for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
+            boolean flag = true;
+            for(int i=0;i<jobApplicationDOS.size() && flag;i++){
+                JobApplicationDO jobApplicationDO = jobApplicationDOS.get(i);
+                if(shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId() && jobApplicationDO.getPositionId() == shareChainDO.getPositionId()){
+                    flag = false;
+                }
+            }
+            if(flag){
+                filterAppliedShareChain.add(shareChainDO);
+            }
+        }
+        return filterAppliedShareChain;
     }
 
 

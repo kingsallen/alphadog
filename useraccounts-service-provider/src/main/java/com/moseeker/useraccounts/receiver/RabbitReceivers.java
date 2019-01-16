@@ -44,9 +44,6 @@ public class RabbitReceivers {
             return;
         }
         JobApplication jobApplication = jobApplicationDao.fetchOneById(applyId);
-        if(jobApplication.getRecommenderUserId() == null){
-            return;
-        }
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByPresenteeAndPosition(jobApplication.getApplierId(), jobApplication.getPositionId());
         List<Integer> shareChainIds = shareChainDOS.stream().map(CandidateShareChainDO::getId).collect(Collectors.toList());
         shareChainDao.updateTypeByIds(shareChainIds, ReferralApplyHandleEnum.selfApply.getType());
