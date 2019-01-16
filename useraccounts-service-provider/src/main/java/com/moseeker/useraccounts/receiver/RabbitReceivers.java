@@ -23,8 +23,8 @@ public class RabbitReceivers {
     @Autowired
     private ReferralRadarService radarService;
 
-    @RabbitListener(queues = "handle_share_chain", containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = "handle_share_chain", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handleReferralApply(Message message){
         String msgBody = new String(message.getBody());
         logger.info("msgBody:{}", msgBody);
