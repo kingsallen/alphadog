@@ -162,7 +162,11 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
 
     }
 
-
-
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByAppids(List<Integer> appids){
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.APP_ID.in(appids))
+                .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
+                .fetchInto(ReferralSeekRecommendRecord.class);
+    }
 
 }
