@@ -46,4 +46,7 @@ service ReferralService {
     string getProgressBatch(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
     // 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
     string progressQueryKeyword(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
+    //员工推荐评价
+    void employeeReferralRecomEvaluation(1: i32 postUserId, 2:i32 positionId, 3:i32 presenteeId, 4: list<string> referralReasons, 5: i8 relationship, 6: string recomReasonText) throws (1: common_struct.BIZException e);
+
 }

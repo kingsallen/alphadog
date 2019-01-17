@@ -7,6 +7,8 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRe
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
 import org.jooq.Configuration;
 import org.jooq.Param;
 import static org.jooq.impl.DSL.*;
@@ -30,18 +32,20 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
     }
 
 
-    public List<ReferralEmployeeNetworkResourcesRecord> fetchByPostUserIdPage(int postUserId, int page, int size){
+    public List<ReferralEmployeeNetworkResourcesRecord> fetchByPostUserIdPage(int postUserId, Set<Integer> presenteeUserId, int page, int size){
         return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .orderBy(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.ID.asc())
                 .offset((page-1)*size)
                 .limit(size)
                 .fetch();
     }
 
-    public int fetchByPostUserIdCount(int postUserId){
+    public int fetchByPostUserIdCount(int postUserId, Set<Integer> presenteeUserId){
         return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
+                .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .fetchCount();
     }
 

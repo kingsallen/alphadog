@@ -48,6 +48,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.RadarStateEnum;
@@ -56,6 +57,7 @@ import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
@@ -64,6 +66,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -100,6 +103,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private UserWxUserDao wxUserDao;
     @Autowired
+    private KafkaSender kafkaSender;
+    @Autowired
     private JobPositionDao positionDao;
     @Autowired
     private JobApplicationDao jobApplicationDao;
@@ -113,6 +118,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private CandidateShareChainDao shareChainDao;
     @Autowired
     private CandidatePositionDao candidatePositionDao;
+    @Autowired
+    private KafkaTemplate<String, String> kafkaTemplate;
     @Autowired
     private ReferralConnectionChainDao connectionChainDao;
     @Autowired
@@ -225,12 +232,26 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
         // type = 3 推荐ta
         templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
+        sendInviteLogToKafka(inviteInfo);
         result.put("notified", isSent ? 1 : 0);
         int degree = shortestChain.size()-1;
         result.put("degree", degree >= 0 ? degree : 0);
         result.put("chain_id", chainId);
         logger.info("inviteApplication:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
+    }
+
+    private void sendInviteLogToKafka(ReferralInviteInfo inviteInfo) {
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        KafkaInviteApplyPojo inviteApplyPojo = new KafkaInviteApplyPojo();
+        inviteApplyPojo.setInvited(1);
+        inviteApplyPojo.setCompany_id(inviteInfo.getCompanyId());
+        inviteApplyPojo.setUser_id(inviteInfo.getEndUserId());
+        inviteApplyPojo.setEvent_time(sdf.format(new Date(current)));
+        inviteApplyPojo.setEvent("invite_to_apply");
+        inviteApplyPojo.setPosition_id(inviteInfo.getPid());
+        kafkaSender.sendMessage(Constant.KAFKA_TOPIC_INVITE_APPLY, JSON.toJSONString(inviteApplyPojo));
     }
 
     @Override
@@ -391,6 +412,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 jobApplication.getRecommenderUserId(), jobApplication.getApplierId()));
         result.put("title", jobPositionDO.getTitle());
         logger.info("result:{}", result);
+        kafkaTemplate.send("test1", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 

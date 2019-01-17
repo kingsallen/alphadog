@@ -139,7 +139,7 @@ public class ReferralTemplateSender {
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
             com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
+            operationRecordDao.addRecord(applicationId, new Date().getTime(),
                     Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND, employeeDO.getCompanyId(), 0);
 
         } catch (Exception e) {

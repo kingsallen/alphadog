@@ -62,6 +62,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -494,7 +495,7 @@ public class UserEmployeeServiceImpl {
 
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
         ValidateUtil vu = new ValidateUtil();
-        vu.addIntTypeValidate("员工用户编号", userId, 1,null);
+        vu.addIntTypeValidate("用户编号", userId, 1,null);
         vu.addIntTypeValidate("职位编号", positionId, 1, null);
         String message = vu.validate();
         if(StringUtils.isNotNullOrEmpty(message)){
@@ -507,26 +508,32 @@ public class UserEmployeeServiceImpl {
         PositionReferralInfo info = new PositionReferralInfo();
         info.setPositionId(position.getId());
         info.setPositionName(position.getTitle());
-        if(employeeEntity.isEmployee(userId, position.getCompanyId())){
-            UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
-            UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
-            info.setUserId(userId);
+        UserEmployeeDO employeeDO = employeeEntity.getCompanyEmployee(userId, position.getCompanyId());
+        UserWxUserRecord wxUserRecord = wxUserDao.getWXUserByUserId(userId);
+        logger.info("getPositionReferralInfo wxUserRecord:{}",wxUserRecord);
+        UserUserDO user = userDao.getUser(userId);
+        info.setUserId(userId);
+        info.setEmployeeName(user.getName());
+        if(employeeDO != null) {
             info.setEmployeeId(employeeDO.getId());
-            if(StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
+            if (StringUtils.isNotNullOrEmpty(employeeDO.getCname())) {
                 info.setEmployeeName(employeeDO.getCname());
-            }else{
-                UserUserDO user = userDao.getUser(userId);
-                info.setEmployeeName(user.getName());
             }
-            if(wxUserRecord != null){
-                info.setEmployeeIcon(wxUserRecord.getHeadimgurl());
-            }
-            return info;
         }
-        throw UserAccountException.USEREMPLOYEES_EMPTY;
+        if(StringUtils.isNotNullOrEmpty(user.getNickname())) {
+            info.setNickname(user.getNickname());
+        }else{
+            info.setNickname(wxUserRecord.getNickname());
+        }
+        if(wxUserRecord != null){
+            info.setEmployeeIcon(wxUserRecord.getHeadimgurl());
+        }
+        logger.info("getPositionReferralInfo info:{}",JSON.toJSONString(info));
+        return info;
     }
 
     public RadarInfoVO fetchRadarIndex(int userId, int companyId, int page, int size){
+        Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         RadarInfoVO result = new RadarInfoVO();
         if(page == 0){
             page=1;
@@ -537,12 +544,18 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId, page, size);
+        List<ReferralEmployeeNetworkResourcesRecord> resourcesRecordList = null;
+        try {
+            resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId,
+                    employeeUserFuture.get(), page, size);
+        } catch (Exception e) {
+           logger.error(e.getMessage());
+        }
         if(StringUtils.isEmptyList(resourcesRecordList)){
             return result;
         }
         Future<Integer> countFuture = threadPool.startTast(
-                () -> networkResourcesDao.fetchByPostUserIdCount(userId));
+                () -> networkResourcesDao.fetchByPostUserIdCount(userId, employeeUserFuture.get()));
         List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(userIdList, userId,companyId);
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
@@ -569,6 +582,7 @@ public class UserEmployeeServiceImpl {
             size = 10;
         }
         result.setPage(page);
+        Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
@@ -576,9 +590,15 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        List<ReferralSeekRecommendRecord> list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, page, size);
-        if(StringUtils.isEmptyList(list)){
-            return result;
+        List<ReferralSeekRecommendRecord> list = null;
+        try {
+            list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, employeeUserFuture.get(), page, size);
+            if(StringUtils.isEmptyList(list)){
+                return result;
+            }
+            result.setTotalCount(referralEntity.fetchEmployeeSeekRecommendCount(userId, positionIdList,  employeeUserFuture.get()));
+        } catch (Exception e) {
+            logger.error(e.getMessage());
         }
         EmployeeCardViewData data = referralEntity.fetchEmployeeSeekRecommendCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
@@ -604,6 +624,7 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
+        Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
@@ -611,7 +632,12 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
-        List<CandidateRecomRecordRecord> list = this.pagePositionById(positionIdList, userId, companyId, order, page, size, result);
+        List<CandidateRecomRecordRecord> list = null;
+        try {
+            list = this.pagePositionById(positionIdList, employeeUserFuture.get(), userId, companyId, order, page, size, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
         if(StringUtils.isEmptyList(list)){
             return result;
         }
@@ -652,15 +678,16 @@ public class UserEmployeeServiceImpl {
     }
 
 
-    public List<CandidateRecomRecordRecord> pagePositionById(List<Integer> positionIds, int postUserId, int companyId,
+    public List<CandidateRecomRecordRecord> pagePositionById(List<Integer> positionIds, Set<Integer> employeeUsers, int postUserId, int companyId,
                                                          String order, int page, int size, EmployeeForwardViewVO result){
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
+
         switch (order){
-            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds);
+            case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds, employeeUsers, companyId);
                 break;
-            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds);
+            case "view": list = listCandidateRecomRecordsByViewCount(postUserId, positionIds, companyId, employeeUsers);
                 break;
-            case "depth": list = listCandidateRecomRecordsByDepth(postUserId, companyId, positionIds);
+            case "depth": list = listCandidateRecomRecordsByDepth(postUserId, companyId, positionIds, employeeUsers);
                 break;
         }
         if(!StringUtils.isEmptyList(list)){
@@ -679,43 +706,46 @@ public class UserEmployeeServiceImpl {
     }
 
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList){
-        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByViewCount(int userId, List<Integer> positionIdList, int companyId, Set<Integer> employeeUsers){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, employeeUsers, companyId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
+        List<Integer>  positionIds= recomRecordDOList.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
-        List<CandidatePositionDO> candidatePositionList = candidatePositionDao.fetchViewedByUserIdsAndPids(presenteeUserIds, positionIdList);
+        List<CandidatePositionDO> candidatePositionList = candidatePositionDao.fetchViewedByUserIdsAndPids(presenteeUserIds, positionIds);
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
 
         for (CandidatePositionDO candidatePosition : candidatePositionList) {
             for(CandidateRecomRecordRecord record: recomRecordDOList){
-                if(candidatePosition.getUserId() == record.getPresenteeUserId() && candidatePosition.getPositionId() == record.getPositionId()){
+                if(candidatePosition.getUserId() == record.getPresenteeUserId().intValue()
+                        && candidatePosition.getPositionId() == record.getPositionId().intValue()){
                     list.add(record);
                     break;
                 }
             }
 
         }
-        return recomRecordDOList;
+        return list;
     }
 
-    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList){
-        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList);
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByDepth(int userId, int companyId, List<Integer> positionIdList, Set<Integer> employeeUsers){
+        List<CandidateRecomRecordRecord> recomRecordDOList = bizTools.listCandidateRecomRecords(userId, positionIdList, employeeUsers, companyId);
         if(StringUtils.isEmptyList(recomRecordDOList)){
             return new ArrayList<>();
         }
+
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, presenteeUserIds);
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
         for (UserDepthVO depth : depthList) {
             for(CandidateRecomRecordRecord record: recomRecordDOList){
-                if(depth.getUserId() == record.getPresenteeUserId()){
+                if(depth.getUserId() == record.getPresenteeUserId().intValue()){
                     list.add(record);
                 }
             }
         }
-        return recomRecordDOList;
+        return list;
     }
 
 }

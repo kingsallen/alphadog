@@ -425,4 +425,12 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .fetchInto(UserEmployeeDO.class);
     }
 
+    public List<UserEmployeeDO> getEmployeeBycompanyId(Integer companyId) {
+
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                .fetchInto(UserEmployeeDO.class);
+    }
+
 }

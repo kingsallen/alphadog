@@ -231,7 +231,7 @@ public class ReferralEntity {
     }
 
     public void logReferralOperation(int positionId, int applicationId,  List<String> referralReasons,String mobile,
-                                     UserEmployeeDO employeeDO, int presenteeUserId, byte shipType, String referralText) {
+                                     int postUserId, int presenteeUserId, byte shipType, String referralText) {
         ReferralRecomEvaluationRecord evaluationRecord = new ReferralRecomEvaluationRecord();
         evaluationRecord.setAppId(applicationId);
         evaluationRecord.setRecomReasonTag(referralReasons.stream().collect(Collectors.joining(",")));
@@ -239,7 +239,7 @@ public class ReferralEntity {
         evaluationRecord.setRecomReasonText(referralText);
         evaluationRecord.setMobile(mobile);
         evaluationRecord.setPresenteeUserId(presenteeUserId);
-        evaluationRecord.setPostUserId(employeeDO.getSysuserId());
+        evaluationRecord.setPostUserId(postUserId);
         evaluationRecord.setPositionId(positionId);
         recomEvaluationDao.insertIfNotExist(evaluationRecord);
     }
@@ -834,7 +834,8 @@ public class ReferralEntity {
             if(!StringUtils.isEmptyList(shareChainListFuture.get())) {
                 shareChainListFuture.get().forEach(share -> {
                     recomRecordList.forEach( recom ->{
-                        if(recom.getPresenteeUserId() == share.getPresenteeUserId() && recom.getPositionId() == share.getPositionId()){
+                        if(recom.getPresenteeUserId().intValue() == share.getPresenteeUserId()
+                                && recom.getPositionId().intValue() == share.getPositionId()){
                             root2Set.add(share.root2RecomUserId);
                             shareChainIdList.add(share.getId());
                             shareChainList.add(share);
@@ -852,7 +853,8 @@ public class ReferralEntity {
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
                 for(CandidateRecomRecordRecord record :recomRecordList){
                     for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
-                        if(record.getPositionId() == logRecord.getPositionId() && record.getPresenteeUserId() == logRecord.getEndUserId()){
+                        if(record.getPositionId().intValue() == logRecord.getPositionId().intValue()
+                                && record.getPresenteeUserId().intValue() == logRecord.getEndUserId().intValue()){
                             connectionLogList.add(logRecord);
                             break;
                         }
@@ -976,7 +978,10 @@ public class ReferralEntity {
 
 
 
-    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, int page, int size){
-        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, page, size);
+    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, Set<Integer> presenteeUserIdList,  int page, int size){
+        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, presenteeUserIdList, page, size);
+    }
+    public int fetchEmployeeSeekRecommendCount(int postUserId, List<Integer> positionIds, Set<Integer> presenteeUserIdList){
+        return recommendDao.fetchSeekRecommendByPostCount(postUserId, positionIds, presenteeUserIdList);
     }
 }

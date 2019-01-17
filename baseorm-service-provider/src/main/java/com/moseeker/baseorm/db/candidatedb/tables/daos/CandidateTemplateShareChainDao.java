@@ -10,6 +10,7 @@ import org.jooq.Configuration;
 import org.jooq.impl.DAOImpl;
 
 import javax.annotation.Generated;
+import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -137,5 +138,19 @@ public class CandidateTemplateShareChainDao extends DAOImpl<CandidateTemplateSha
      */
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateTemplateShareChain> fetchBySeekReferralId(Integer... values) {
         return fetch(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.SEEK_REFERRAL_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>create_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateTemplateShareChain> fetchByCreateTime(Timestamp... values) {
+        return fetch(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.CREATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateTemplateShareChain> fetchByUpdateTime(Timestamp... values) {
+        return fetch(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.UPDATE_TIME, values);
     }
 }

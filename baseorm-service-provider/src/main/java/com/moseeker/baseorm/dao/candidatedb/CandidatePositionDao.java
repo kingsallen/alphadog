@@ -140,9 +140,9 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
                 .fetch();
     }
 
-    public List<CandidatePositionRecord> fetchRecentViewedByUserIdAndPosition(List<Integer> candidateCompanyId, List<Integer> positionIds) {
+    public List<CandidatePositionRecord> fetchRecentViewedByUserIdAndPosition(List<Integer> userIds, List<Integer> positionIds) {
         return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
-                .where(CandidatePosition.CANDIDATE_POSITION.CANDIDATE_COMPANY_ID.in(candidateCompanyId))
+                .where(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(userIds))
                 .and(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
                 .fetch();
     }

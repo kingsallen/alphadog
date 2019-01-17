@@ -6,6 +6,7 @@ package com.moseeker.baseorm.db.candidatedb.tables.pojos;
 
 import javax.annotation.Generated;
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 
 /**
@@ -21,20 +22,22 @@ import java.io.Serializable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateTemplateShareChain implements Serializable {
 
-    private static final long serialVersionUID = -1575646115;
+    private static final long serialVersionUID = -2045209426;
 
-    private Integer id;
-    private Integer chainId;
-    private Integer positionId;
-    private Integer rootUserId;
-    private Integer root2UserId;
-    private Integer recomUserId;
-    private Integer presenteeUserId;
-    private Long    sendTime;
-    private Integer parentId;
-    private Integer depth;
-    private Byte    type;
-    private Integer seekReferralId;
+    private Integer   id;
+    private Integer   chainId;
+    private Integer   positionId;
+    private Integer   rootUserId;
+    private Integer   root2UserId;
+    private Integer   recomUserId;
+    private Integer   presenteeUserId;
+    private Long      sendTime;
+    private Integer   parentId;
+    private Integer   depth;
+    private Byte      type;
+    private Integer   seekReferralId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public CandidateTemplateShareChain() {}
 
@@ -51,21 +54,25 @@ public class CandidateTemplateShareChain implements Serializable {
         this.depth = value.depth;
         this.type = value.type;
         this.seekReferralId = value.seekReferralId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public CandidateTemplateShareChain(
-        Integer id,
-        Integer chainId,
-        Integer positionId,
-        Integer rootUserId,
-        Integer root2UserId,
-        Integer recomUserId,
-        Integer presenteeUserId,
-        Long    sendTime,
-        Integer parentId,
-        Integer depth,
-        Byte    type,
-        Integer seekReferralId
+        Integer   id,
+        Integer   chainId,
+        Integer   positionId,
+        Integer   rootUserId,
+        Integer   root2UserId,
+        Integer   recomUserId,
+        Integer   presenteeUserId,
+        Long      sendTime,
+        Integer   parentId,
+        Integer   depth,
+        Byte      type,
+        Integer   seekReferralId,
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.chainId = chainId;
@@ -79,6 +86,8 @@ public class CandidateTemplateShareChain implements Serializable {
         this.depth = depth;
         this.type = type;
         this.seekReferralId = seekReferralId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -177,6 +186,22 @@ public class CandidateTemplateShareChain implements Serializable {
         this.seekReferralId = seekReferralId;
     }
 
+    public Timestamp getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidateTemplateShareChain (");
@@ -193,6 +218,8 @@ public class CandidateTemplateShareChain implements Serializable {
         sb.append(", ").append(depth);
         sb.append(", ").append(type);
         sb.append(", ").append(seekReferralId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
@@ -11,6 +12,7 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -40,27 +42,24 @@ import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.service.JobApplicationServices;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
-import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.referral.struct.CheckEmployeeInfo;
-import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
-import com.moseeker.thrift.gen.referral.struct.ReferralInviteInfo;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.ReferralService;
 import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.activity.Activity;
 import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaAskReferralPojo;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
-import java.net.ConnectException;
-import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -126,6 +125,8 @@ public class ReferralServiceImpl implements ReferralService {
     private ReferralSeekRecommendDao recommendDao;
 
     @Autowired
+    private ReferralRecomEvaluationDao recomEvaluationDao;
+    @Autowired
     private JobPositionDao positionDao;
 
     @Autowired
@@ -133,6 +134,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private ReferralRadarService radarService;
+
+    @Autowired
+    private KafkaSender kafkaSender;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -374,7 +378,22 @@ public class ReferralServiceImpl implements ReferralService {
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
             templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
             radarService.updateCandidateShareChainTemlate(recommendRecord);
+            KafkaAskReferralPojo kafkaAskReferralPojo = initKafkaAskReferralPojo(position.getCompanyId(), userId, positionId);
+            kafkaSender.sendMessage(Constant.KAFKA_TOPIC_ASK_REFERRAL, JSON.toJSONString(kafkaAskReferralPojo));
         }
+    }
+
+    private KafkaAskReferralPojo initKafkaAskReferralPojo(int companyId, int userId, int positionId) {
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        KafkaAskReferralPojo kafkaAskReferralPojo = new KafkaAskReferralPojo();
+        kafkaAskReferralPojo.setAsked(1);
+        kafkaAskReferralPojo.setCompany_id(companyId);
+        kafkaAskReferralPojo.setEvent("ask_for_referral");
+        kafkaAskReferralPojo.setEvent_time(sdf.format(new Date(current)));
+        kafkaAskReferralPojo.setPosition_id(positionId);
+        kafkaAskReferralPojo.setUser_id(userId);
+        return kafkaAskReferralPojo;
     }
 
     @Override
@@ -408,7 +427,7 @@ public class ReferralServiceImpl implements ReferralService {
     @Transactional(rollbackFor = RuntimeException.class)
     @Override
     public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons,
-                                       byte relationship, String recomReasonText) throws CommonException {
+                                       byte relationship, String recomReasonText) {
 
         JobPositionRecord positionDO = positionDao.getPositionById(positionId);
 
@@ -435,12 +454,37 @@ public class ReferralServiceImpl implements ReferralService {
         }
         if(applicationId > 0) {
             recommendDao.updateReferralSeekRecommendRecordForAppId(referralId, applicationId);
-            referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), employee, user.getId(), relationship, recomReasonText);
-            sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
+            referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), postUserId, user.getId(), relationship, recomReasonText);
+            try {
+                sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
+            }catch (CommonException e){
+                logger.error(e.getMessage());
+            }
             sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
             radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(),
                     recommendRecord.getPositionId(), ReferralApplyHandleEnum.recommend.getType());
         }
+    }
+
+    @Override
+    public void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException {
+        ReferralRecomEvaluationRecord record = recomEvaluationDao.fetchByPostPresenteePosition(postUserId, presenteeId, positionId);
+        if (record == null) {
+            com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.getByUserIdAndPositionId(presenteeId, positionId);
+            UserUserDO user = userDao.getUser(presenteeId);
+            if( user != null ) {
+                if(application!= null) {
+                    record = new ReferralRecomEvaluationRecord();
+                    referralEntity.logReferralOperation(positionId, application != null ? application.getId() : 0,
+                            referralReasons, String.valueOf(user.getMobile()), postUserId, user.getId(), relationship, recomReasonText);
+                    return;
+                }
+                throw UserAccountException.NODATA_EXCEPTION;
+            }
+            throw UserAccountException.ERMPLOYEE_REFERRAL_USER_NOT_EXIST;
+        }
+        throw UserAccountException.REFERRAL_RECOM_EVALUATION_EXISTS;
+
     }
 
     private int createJobApplication(int userId, int companyId, int positionId, String name, int origin,

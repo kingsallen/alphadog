@@ -221,16 +221,15 @@ public class UserCenterService {
             int totalCount = 0;             //转发记录总数
             int interestedCount = 0;         //被推荐的转发记录数
             /** 并行查找统计信息 */
-
+            Future<Set<Integer>> employeeUserFuture =  tp.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
             List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
             if (positionIdList == null) {
                 return scoreVO;
             }
-
-            List<Integer> presenteeUserIdList = referralEntity.fetchReferenceIdList(userId);
-
-            Future<List<CandidateRecomRecordRecord>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(userId, positionIdList));
-            Future<Integer> interestedCountFuture = tp.startTast(() -> bizTools.countReferralSeekRecommend(userId, positionIdList));
+            Future<List<CandidateRecomRecordRecord>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(
+                    userId, positionIdList, employeeUserFuture.get(), companyId));
+            Future<Integer> interestedCountFuture = tp.startTast(() -> referralEntity.fetchEmployeeSeekRecommendCount(
+                    userId, positionIdList, employeeUserFuture.get() ));
             totalCount = totalCountFuture.get().size();
             interestedCount = interestedCountFuture.get();
             scoreVO.setInterested_count(interestedCount);

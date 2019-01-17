@@ -1,7 +1,14 @@
 package com.moseeker.useraccounts.config;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.query.Query;
+import com.moseeker.useraccounts.kafka.KafkaConsumerPlugin;
+import com.moseeker.useraccounts.kafka.KafkaProducerPlugin;
 import com.rabbitmq.client.ConnectionFactory;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +24,9 @@ import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.*;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -34,6 +44,7 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXC
 @ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface"})
 @PropertySource("classpath:common.properties")
 @EnableNeo4jRepositories("com.moseeker.useraccounts.repository")
+@EnableKafka
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
 
@@ -116,6 +127,48 @@ public class AppConfig {
         return listenerContainerFactory;
     }
 
+    /*
+    监听器
+     */
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory2());
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_ID));
+    }
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory2() {
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_ID));
+    }
+
+    @Bean
+    public KafkaProducerPlugin kafkaProducerPlugin(){
+        return new KafkaProducerPlugin();
+    }
+
+    @Bean
+    public KafkaConsumerPlugin kafkaConsumerPlugin(){
+        return new KafkaConsumerPlugin();
+    }
+
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(kafkaProducerPlugin().buildProps().getProducerProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
     @Bean
     public Queue bindAccountQueue() {
         Queue queue = new Queue("chaos.bind.response", true, false, false);
@@ -141,6 +194,7 @@ public class AppConfig {
         return topicExchange;
     }
 
+
     @Bean
     public TopicExchange employeeActivationChangeExchange() {
         TopicExchange topicExchange = new TopicExchange("employee_neo4j_exchange", true, false);
@@ -150,6 +204,12 @@ public class AppConfig {
     @Bean
     public Queue employeeChangeQueue() {
         Queue queue = new Queue("employee_change_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public Queue neo4jFriend() {
+        Queue queue = new Queue("neo4j_friend", true, false, false);
         return queue;
     }
 

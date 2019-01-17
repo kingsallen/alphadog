@@ -150,7 +150,7 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public void updateUserEmployeeCompany(List<Integer> userIds, int companyId) throws CommonException {
-        if(StringUtils.isEmptyList(userIds) || companyId<=0){
+        if(StringUtils.isEmptyList(userIds) || companyId<0){
             return;
         }
         userNeo4jDao.updateUserEmployeeCompanyList(userIds, companyId);

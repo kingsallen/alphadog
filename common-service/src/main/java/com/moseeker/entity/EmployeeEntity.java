@@ -187,7 +187,7 @@ public class EmployeeEntity {
     private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
 
     private static final String EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE = "employee_neo4j_exchange";
-    private static final String EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY = "user_neo4j.employee_company";
+    private static final String EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY = "user_neo4j.employee_company_update";
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeEntity.class);
 
@@ -687,6 +687,7 @@ public class EmployeeEntity {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("companyId", 0);
                 jsonObject.put("userIds", idList);
+                logger.info("employeeActivationChange :jsonObject{}", jsonObject);
                 amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                         EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                 .build());
@@ -736,6 +737,7 @@ public class EmployeeEntity {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("companyId", 0);
                     jsonObject.put("userIds", idList);
+                    logger.info("employeeActivationChange :jsonObject{}", jsonObject);
                     amqpTemplate.sendAndReceive(EMPLOYEE_ACTIVATION_CHANGE_NEO4J_EXCHNAGE,
                             EMPLOYEE_ACTIVATION_CHANGE_NEO4J_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                     .build());
@@ -949,6 +951,21 @@ public class EmployeeEntity {
             userEmployeeDOS = employeeDao.getDatas(queryBuilder.buildQuery());
         }
         return userEmployeeDOS;
+    }
+
+
+    /**
+     * 通过公司ID查集团下所有的员工列表
+     *
+     * @param companyId
+     * @return
+     */
+    public Set<Integer> getActiveEmployeeUserIdList(Integer companyId) {
+        List<UserEmployeeDO> employeeDOList = employeeDao.getEmployeeBycompanyId(companyId);
+        if(StringUtils.isEmptyList(employeeDOList)){
+            return new HashSet<>();
+        }
+        return employeeDOList.stream().map(m -> m.getSysuserId()).collect(Collectors.toSet());
     }
 
     /**
