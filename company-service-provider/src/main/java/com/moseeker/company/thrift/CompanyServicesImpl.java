@@ -11,17 +11,20 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.company.exception.CompanyException;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.service.impl.CompanyPcService;
+import com.moseeker.company.service.impl.CompanyService;
 import com.moseeker.company.service.impl.vo.GDPRProtectedInfoVO;
 import com.moseeker.entity.CompanyConfigEntity;
-import com.moseeker.entity.TalentPoolEmailEntity;
-import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.common.struct.CommonQuery;
+import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyMobotConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.employee.struct.RewardConfig;
 import org.apache.thrift.TException;
@@ -30,11 +33,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.moseeker.company.service.impl.CompanyService;
-import com.moseeker.thrift.gen.common.struct.CommonQuery;
-import com.moseeker.thrift.gen.common.struct.Response;
-import com.moseeker.thrift.gen.company.service.CompanyServices.Iface;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -588,6 +587,24 @@ public class CompanyServicesImpl implements Iface {
     public boolean fetchGDPRSwitchByHR(int hrId) throws BIZException, TException {
         try {
             return service.fetchGDPRSwitchByHR(hrId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HrCompanyMobotConfDO getMobotConf(int companyId) throws BIZException, TException {
+        try {
+            return companyPcService.getMobotConf(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HrCompanyMobotConfDO updateMobotConf(HrCompanyMobotConfDO mobotConf) throws BIZException, TException {
+        try {
+            return companyPcService.updateMobotConf(mobotConf);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
