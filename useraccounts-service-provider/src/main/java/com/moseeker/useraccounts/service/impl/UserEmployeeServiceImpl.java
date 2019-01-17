@@ -592,11 +592,21 @@ public class UserEmployeeServiceImpl {
         }
         List<ReferralSeekRecommendRecord> list = null;
         try {
-            list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, employeeUserFuture.get(), page, size);
+            list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, employeeUserFuture.get());
             if(StringUtils.isEmptyList(list)){
                 return result;
             }
-            result.setTotalCount(referralEntity.fetchEmployeeSeekRecommendCount(userId, positionIdList,  employeeUserFuture.get()));
+            result.setTotalCount(list.size());
+            int index = (page-1)*size;
+            int end = page*size;
+            if(end > list.size()){
+                end=list.size();
+            }
+            result.setTotalCount(list.size());
+            if(index >= list.size()){
+                return result;
+            }
+            list = list.subList((page-1)*size, end);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

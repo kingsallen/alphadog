@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
@@ -228,10 +229,10 @@ public class UserCenterService {
             }
             Future<List<CandidateRecomRecordRecord>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(
                     userId, positionIdList, employeeUserFuture.get(), companyId));
-            Future<Integer> interestedCountFuture = tp.startTast(() -> referralEntity.fetchEmployeeSeekRecommendCount(
+            Future<List<ReferralSeekRecommendRecord>> interestedCountFuture = tp.startTast(() -> referralEntity.fetchEmployeeSeekRecommend(
                     userId, positionIdList, employeeUserFuture.get() ));
             totalCount = totalCountFuture.get().size();
-            interestedCount = interestedCountFuture.get();
+            interestedCount = interestedCountFuture.get().size();
             scoreVO.setInterested_count(interestedCount);
             scoreVO.setLink_viewed_count(totalCount);
         } catch (CommonException e) {
