@@ -250,6 +250,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         inviteApplyPojo.setUser_id(inviteInfo.getEndUserId());
         inviteApplyPojo.setEvent_time(sdf.format(new Date(current)));
         inviteApplyPojo.setEvent("invite_to_apply");
+        inviteApplyPojo.setEmployee_id(inviteInfo.getUserId());
         inviteApplyPojo.setPosition_id(inviteInfo.getPid());
         kafkaSender.sendMessage(Constant.KAFKA_TOPIC_INVITE_APPLY, JSON.toJSONString(inviteApplyPojo));
     }
