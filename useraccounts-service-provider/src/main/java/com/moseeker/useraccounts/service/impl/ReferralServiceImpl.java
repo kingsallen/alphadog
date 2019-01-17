@@ -471,7 +471,6 @@ public class ReferralServiceImpl implements ReferralService {
         Future<UserEmployeeDO> employee = tp.startTast(()->employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId()));
         int origin = recommendRecord.getOrigin()==1 ? ApplicationSource.SEEK_REFERRAL.getValue():
                 ApplicationSource.INVITE_REFERRAL.getValue();
-
         int applicationId = 0;
         try {
             applicationId = createJobApplication(user.get().getId(), positionDO.getCompanyId(), positionId, user.get().getName(), origin, recommendRecord.getPostUserId());
@@ -482,7 +481,8 @@ public class ReferralServiceImpl implements ReferralService {
         if(applicationId > 0) {
             recommendDao.updateReferralSeekRecommendRecordForAppId(referralId, applicationId);
             try {
-                referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.get().getMobile()), postUserId, user.get().getId(), relationship, recomReasonText);
+                referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.get().getMobile()),
+                        postUserId, user.get().getId(), relationship, recomReasonText);
                 sender.addRecommandReward(employee.get(), user.get().getId(), applicationId, positionId);
                 sender.publishReferralEvaluateEvent(referralId, user.get().getId(), positionId, applicationId, employee.get().getId());
             }catch (Exception e){
