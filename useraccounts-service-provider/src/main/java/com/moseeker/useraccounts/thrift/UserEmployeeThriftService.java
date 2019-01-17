@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.Category;
 import com.moseeker.common.exception.CommonException;
@@ -12,6 +13,7 @@ import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.common.struct.SysBIZException;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeePointsRecordDO;
 import com.moseeker.thrift.gen.useraccounts.service.UserEmployeeService;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
 import com.moseeker.useraccounts.exception.ExceptionFactory;
@@ -183,6 +185,46 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             }
             return pagination;
         } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response addUserEmployeePointRecord(int employeeId, int companyId, UserEmployeePointsRecordDO record) throws TException {
+        try {
+            employeeEntity.addReward(employeeId, companyId, record);
+            return ResponseUtils.success(true);
+        }catch (Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getUserEmployeeList(int companyId, List<Integer> userIdList) throws TException {
+        try {
+            List<UserEmployee> result=employeeService.getuserEmployeeList(companyId,userIdList);
+            return ResponseUtils.success(result);
+        }catch (Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getUserEmployeeByuserId(int userId) throws TException {
+        try{
+            UserEmployee result=employeeService.getSingleUserEmployee(userId);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getUserEmployeeByUserIdListAndCompanyList(List<Integer> userIdList, List<Integer> companyIdList) throws TException {
+        try{
+            List<UserEmployee> result=employeeService.getEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
             throw ExceptionUtils.convertException(e);
         }
     }

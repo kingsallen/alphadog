@@ -46,6 +46,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
@@ -147,6 +148,7 @@ public abstract class EmployeeBinder {
         userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployee.setActivation((byte)0);
+        userEmployee.setSource(bindingParams.getSource());
         userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDOThreadLocal.set(userEmployee);
@@ -212,7 +214,7 @@ public abstract class EmployeeBinder {
                 unActiveEmployee.setActivation(EmployeeActiveState.Actived.getState());
                 log.info("doneBind unActiveEmployee update record");
                 if (useremployee.getAuthMethod() == 1 && unActiveEmployee.getBindingTime() == null) {
-                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
                 }
                 if (org.apache.commons.lang.StringUtils.isNotBlank(useremployee.getBindingTime())) {
                     unActiveEmployee.setBindingTime(new Timestamp(LocalDateTime.parse(useremployee.getBindingTime(),
@@ -223,6 +225,9 @@ public abstract class EmployeeBinder {
                     unActiveEmployee.setBindingTime(new Timestamp(currentTime.getMillis()));
                 }
                 unActiveEmployee.setAuthMethod(useremployee.getAuthMethod());
+                if(useremployee.getSource()>0){
+                    unActiveEmployee.setSource((byte)useremployee.getSource());
+                }
                 employeeDao.updateRecord(unActiveEmployee);
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
@@ -234,12 +239,12 @@ public abstract class EmployeeBinder {
             if (useremployee.getId() > 0) {
                 employeeDao.updateData(useremployee);
                 employeeId = useremployee.getId();
-                employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
             } else {
                 ExecuteResult executeResult = employeeDao.registerEmployee(useremployee);
                 employeeId = executeResult.getId();
                 if (executeResult.getExecute() > 0) {
-                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis());
+                    employeeFirstRegister(employeeId, useremployee.getCompanyId(), currentTime.getMillis(), useremployee.getSysuserId());
                 }
             }
         }
@@ -324,7 +329,18 @@ public abstract class EmployeeBinder {
      * @param companyId 公司编号
      * @param bindingTime 员工注册时间
      */
-    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime) {
+    private void employeeFirstRegister(int employeeId, int companyId, long bindingTime, int userId) {
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+        /*JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", "employee verification");
+        jsonObject.put("ID", UUID.randomUUID().toString());
+        jsonObject.put("employee_id", employeeId);
+        jsonObject.put("company_id", companyId);
+        jsonObject.put("verify_time", new DateTime(bindingTime).toString("yyyy-MM-dd HH:mm:ss"));
+        jsonObject.put("user_id", userId);
+        amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
+                EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                        .build());*/
         employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", employeeId);

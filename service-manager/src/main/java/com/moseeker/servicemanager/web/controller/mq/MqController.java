@@ -68,6 +68,29 @@ public class MqController {
         }
     }
 
+    @RequestMapping(value = "/v4/email/sendAuthEMail", method = RequestMethod.POST)
+    public String sendAuthEMail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+
+            Map<String, String> params = (Map<String, String>) param.get("params");
+            int eventType = param.getInt("eventType");
+            String email = param.getString("email");
+            String subject = param.getString("subject");
+            String senderName = param.getString("senderName");
+            String senderDisplay = param.getString("senderDisplay");
+
+            logger.info("send auth email params:{},eventType:{},email:{},subject:{},senderName:{},senderDisplay:{}",
+                    param,eventType,email,subject,senderName,senderDisplay);
+
+            Response result = mqService.sendAuthEMail(params, eventType, email, subject, senderName, senderDisplay);
+            return ResponseLogNotification.success(request, result);
+        }catch (Exception e){
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+
     @RequestMapping(value = "/email/sendMandrillEmail", method = RequestMethod.POST)
     @ResponseBody
     public String sendMandrillEmail(HttpServletRequest request, HttpServletResponse response) {
@@ -193,6 +216,27 @@ public class MqController {
         }
         return null;
     }
+    /*
+     * @Author zztaiwll
+     * @Description  申请职位发送邮件
+     * @Date 下午5:58 18/12/11
+     * @Param
+     * @return
+     **/
+    @RequestMapping(value = "/email/app", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendEMailApp(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+            MessageEmailStruct emailStruct = ParamUtils.initModelForm(request, MessageEmailStruct.class);
+
+            Response result = mqService.sendMessageAndEmailToDelivery(emailStruct);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
     /**
      * 转换消息模板通知的thrift MessageTplDataCol struct 对象

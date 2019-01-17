@@ -62,11 +62,15 @@ public final class Constant {
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
+    /*public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_verification_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_verification_exchange.redpacket";*/
+
     public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_register_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_register_routingkey.first_register";
 
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
+    public static final String POSITION_SYNC_FAIL_ROUTINGKEY = "messagetemplate.position_sync_fail";
 
     public static final String TIPS_SUCCESS = "success";
 
@@ -237,6 +241,8 @@ public final class Constant {
     public static final int TEMPLATES_REFERRAL_BONUS_NOTICE_TPL = 81; // 内推入职奖金
     public static final int TEMPLATES_AWARD_CONSUME_NOTICE_TPL = 83; // 积分商城积分消费模板消息ID
     public static final int TEMPLATES_AWARD_RETURN_NOTICE_TPL = 84; // 积分商城积分返还模板消息ID
+
+    public static final int POSITION_SYNC_FAIL_NOTICE_TPL = 88; // 新简历通知的消息通知ID
 
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID

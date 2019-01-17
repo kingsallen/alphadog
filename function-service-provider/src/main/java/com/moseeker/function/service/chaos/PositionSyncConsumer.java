@@ -1,22 +1,31 @@
 package com.moseeker.function.service.chaos;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.base.EmptyExtThirdPartyPosition;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountDao;
+import com.moseeker.baseorm.dao.hrdb.HRThirdPartyAccountHrDao;
 import com.moseeker.baseorm.dao.hrdb.HRThirdPartyPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrThirdPartyAccountHrRecord;
 import com.moseeker.baseorm.pojo.TwoParam;
 import com.moseeker.common.annotation.iface.CounterIface;
+import static com.moseeker.common.constants.Constant.POSITION_SYNC_FAIL_ROUTINGKEY;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.PositionSync;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyAccountDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrThirdPartyPositionDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +51,13 @@ public class PositionSyncConsumer  {
     HRThirdPartyAccountDao thirdPartyAccountDao;
 
     @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    @Autowired
     PositionSyncFailedNotification syncFailedNotification;
+
+    private static final String MESSAGE_TEMPLATE_EXCHANGE = "message_template_exchange";
+
 
 
 
@@ -68,6 +83,20 @@ public class PositionSyncConsumer  {
             data.setIsSynchronization((byte) PositionSync.bindingError.getValue());
         } else {
             data.setIsSynchronization((byte) PositionSync.failed.getValue());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("positionId", Integer.valueOf(pojo.getData().getPositionId()));
+            if(!StringUtils.isEmptyList(pojo.getMessage())) {
+                String str = StringEscapeUtils.unescapeJava(pojo.getMessage().get(0));
+                JSONArray array = JSONArray.parseArray(str);
+                if (array!= null && array.size()>0) {
+                    Object[] strs = array.stream().map(m -> m.toString()).toArray();
+                    jsonObject.put("message", strs[0]);
+                }
+            }
+            jsonObject.put("channal", pojo.getData().getChannel());
+            amqpTemplate.sendAndReceive(MESSAGE_TEMPLATE_EXCHANGE,
+                    POSITION_SYNC_FAIL_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                            .build());
         }
 
         data.setSyncFailReason(JSON.toJSONString(pojo.getMessage()));

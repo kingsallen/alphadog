@@ -519,57 +519,18 @@ public class ChatService {
         return chatsVO;
     }
 
-    private HrWxHrChatListDO requiredNotNullChatRoom(int roomId) throws BIZException {
-        HrWxHrChatListDO chatRoom = chaoDao.getChatRoomById(roomId);
-        if (chatRoom == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.CHAT_ROOM_NOT_EXIST);
-        }
-        return chatRoom;
-    }
-
-    private UserHrAccountDO requiredNotNullHr(int hraccountId) throws BIZException {
-        UserHrAccountDO hrAccountDO = hrAccountDao.getValidAccount(hraccountId);
-        if (hrAccountDO == null) {
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.USERACCOUNT_NOTEXIST);
-        }
-        return hrAccountDO;
-    }
-
-    private ChatVO requiredValidChat(ChatVO obj) throws BIZException {
-        if (obj == null) {
-            logger.error("null ChatVO");
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-        }
-
-        ChatMsgType msgType = ChatMsgType.toChatMsgType(obj.getMsgType());
-        if (msgType == null) {
-            logger.error("empty msgType ChatVO:{}", obj);
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
-        }
-
-        if (!msgType.vaildChat(obj)) {
-            logger.error("unvalid chat ChatVO:{}", obj);
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST);
-        }
-
-        return obj;
-    }
-
     /**
      * 添加聊天内容，并修改未读消息数量
+     *
+     * 应Mobot需求，去除聊天保存限制
+     *
+     * 如以后有数据问题，可以先查询是否为Mobot入库数据
      *
      * @param chat 聊天信息
      */
 
     public int saveChat(ChatVO chat) throws BIZException {
         try {
-
-            requiredValidChat(chat);
-
-            HrWxHrChatListDO chatRoom = requiredNotNullChatRoom(chat.getRoomId());
-
-            requiredNotNullHr(chatRoom.getHraccountId());
-
             logger.info("saveChat chat:{}", JSON.toJSONString(chat));
             HrWxHrChatDO chatDO = new HrWxHrChatDO();
             String date = new DateTime().toString("yyyy-MM-dd HH:mm:ss");
@@ -595,9 +556,6 @@ public class ChatService {
             chatDO = chatFactory.beforeSaveHandle(chatDO);
             chatDO = chaoDao.saveChat(chatDO);
 
-            if (chatDO == null) {
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_POST_FAILED);
-            }
             // 新增聊天记录的id
             int chatId = chatDO.getId();
             if (ChatMsgType.VOICE.value().equals(chatDO.getMsgType())) {
@@ -611,7 +569,6 @@ public class ChatService {
                 hrChatVoiceDao.addData(hrWxHrChatVoiceDO);
                 //下载语音文件并更新数据库信息
                 pool.startTast(() -> downloadVoiceFile(chat, chatId));
-//                downloadVoiceFile(chat, chatId);
             }
 
             logger.info("saveChat after saveChat chatDO:{}", chatDO);
@@ -620,8 +577,6 @@ public class ChatService {
             // 修改未读消息数量
             chaoDao.addUnreadCount(chat.getRoomId(), chat.getSpeaker(), date);
             return chatId;
-        } catch (BIZException e){
-            throw e;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new BIZException(VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getCode(), VoiceErrorEnum.CHAT_INFO_ADD_FAILED.getMsg());
