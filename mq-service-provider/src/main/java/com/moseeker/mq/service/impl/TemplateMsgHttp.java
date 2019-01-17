@@ -836,7 +836,8 @@ public class TemplateMsgHttp {
         inviteTemplateVO.put("keyWord4", current);
         inviteTemplateVO.put("templateId", Constant.POSITION_VIEW_TPL);
         String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
-                timestamp + "&page_size=10&page_number=1&wechat_signature=" + hrWxWechatDO.getSignature();
+                timestamp + "&page_size=10&page_number=1&wechat_signature=" + hrWxWechatDO.getSignature()
+                + "&from_template_message="+Constant.POSITION_VIEW_TPL+"&send_time=" + System.currentTimeMillis();
         String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
         // 发送十分钟消息模板
         HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
