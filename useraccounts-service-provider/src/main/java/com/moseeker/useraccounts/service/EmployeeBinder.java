@@ -331,13 +331,20 @@ public abstract class EmployeeBinder {
      */
     private void employeeFirstRegister(int employeeId, int companyId, long bindingTime, int userId) {
         employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
-        JSONObject jsonObject = new JSONObject();
+        /*JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "employee verification");
         jsonObject.put("ID", UUID.randomUUID().toString());
         jsonObject.put("employee_id", employeeId);
         jsonObject.put("company_id", companyId);
         jsonObject.put("verify_time", new DateTime(bindingTime).toString("yyyy-MM-dd HH:mm:ss"));
         jsonObject.put("user_id", userId);
+        amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
+                EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                        .build());*/
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", employeeId);
+        jsonObject.put("binding_time", bindingTime);
         amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
                 EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
