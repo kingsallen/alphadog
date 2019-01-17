@@ -5,6 +5,7 @@ package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -23,7 +24,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany implements Serializable {
 
-    private static final long serialVersionUID = 1239321078;
+    private static final long serialVersionUID = -223300201;
 
     private Integer   id;
     private Byte      type;
@@ -47,6 +48,8 @@ public class HrCompany implements Serializable {
     private String    slogan;
     private String    feature;
     private Byte      fortune;
+    private Byte      fortuneScale;
+    private Date      fortuneYear;
 
     public HrCompany() {}
 
@@ -73,6 +76,8 @@ public class HrCompany implements Serializable {
         this.slogan = value.slogan;
         this.feature = value.feature;
         this.fortune = value.fortune;
+        this.fortuneScale = value.fortuneScale;
+        this.fortuneYear = value.fortuneYear;
     }
 
     public HrCompany(
@@ -97,7 +102,9 @@ public class HrCompany implements Serializable {
         Byte      source,
         String    slogan,
         String    feature,
-        Byte      fortune
+        Byte      fortune,
+        Byte      fortuneScale,
+        Date      fortuneYear
     ) {
         this.id = id;
         this.type = type;
@@ -121,6 +128,8 @@ public class HrCompany implements Serializable {
         this.slogan = slogan;
         this.feature = feature;
         this.fortune = fortune;
+        this.fortuneScale = fortuneScale;
+        this.fortuneYear = fortuneYear;
     }
 
     public Integer getId() {
@@ -299,6 +308,22 @@ public class HrCompany implements Serializable {
         this.fortune = fortune;
     }
 
+    public Byte getFortuneScale() {
+        return this.fortuneScale;
+    }
+
+    public void setFortuneScale(Byte fortuneScale) {
+        this.fortuneScale = fortuneScale;
+    }
+
+    public Date getFortuneYear() {
+        return this.fortuneYear;
+    }
+
+    public void setFortuneYear(Date fortuneYear) {
+        this.fortuneYear = fortuneYear;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompany (");
@@ -325,6 +350,8 @@ public class HrCompany implements Serializable {
         sb.append(", ").append(slogan);
         sb.append(", ").append(feature);
         sb.append(", ").append(fortune);
+        sb.append(", ").append(fortuneScale);
+        sb.append(", ").append(fortuneYear);
 
         sb.append(")");
         return sb.toString();
