@@ -311,30 +311,30 @@ public class TemplateMsgHttp {
             }
         }
         String time =  DateUtils.dateToMinuteCNDate(new Date());
-        JSONObject colMap = new JSONObject();
-        JSONObject firstJson = new JSONObject();
-        firstJson.put("color", firstColor);
-        firstJson.put("value", first);
+        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        MessageTplDataCol firstJson = new MessageTplDataCol();
+        firstJson.setColor(firstColor);
+        firstJson.setValue(first);
         colMap.put("first", firstJson);
 
-        JSONObject keywords1 = new JSONObject();
-        keywords1.put("color", keyword1Color);
-        keywords1.put("value", position.getTitle());
+        MessageTplDataCol keywords1 = new MessageTplDataCol();
+        keywords1.setColor(keyword1Color);
+        keywords1.setValue(position.getTitle());
         colMap.put("keyword1", keywords1);
 
-        JSONObject keywords2 = new JSONObject();
-        keywords2.put("color", "#173177");
-        keywords2.put("value", companyDO.getAbbreviation());
+        MessageTplDataCol keywords2 = new MessageTplDataCol();
+        keywords2.setColor("#173177");
+        keywords2.setValue(companyDO.getAbbreviation());
         colMap.put("keyword2", keywords2);
 
-        JSONObject keywords3 = new JSONObject();
-        keywords3.put("color", "#173177");
-        keywords3.put("value", time);
+        MessageTplDataCol keywords3 = new MessageTplDataCol();
+        keywords3.setColor("#173177");
+        keywords3.setValue(time);
         colMap.put("keyword3", keywords3);
 
-        JSONObject remarkJson = new JSONObject();
-        remarkJson.put("color", "#173177");
-        remarkJson.put("value", ReferralEvaluateRemark);
+        MessageTplDataCol remarkJson = new MessageTplDataCol();
+        remarkJson.setColor("#173177");
+        remarkJson.setValue(ReferralEvaluateRemark);
         colMap.put("remark", remarkJson);
 
         Map<String, Object> applierTemplate = new HashMap<>();
@@ -342,16 +342,18 @@ public class TemplateMsgHttp {
         applierTemplate.put("touser", postWxUser.getOpenid());
         applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
         applierTemplate.put("topcolor", "#FF0000");
-        applierTemplate.put("url", env.getProperty("message.template.delivery.applier.link")
+        String link = env.getProperty("message.template.delivery.applier.link")
                 .replace("{}", String.valueOf(applicationId))+"?wechat_signature="+wxWechatDO.getSignature()
-                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + new Date().getTime()
-        );
+                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + new Date().getTime();
+        applierTemplate.put("url",link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
         String url=env.getProperty("message.template.delivery.url").replace("{}", wxWechatDO.getAccessToken());
         logger.info("noticeEmployeeVerify url : {}", url);
         try {
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            Map<String, Object> params = JSON.parseObject(result);
+            insertLogWxMessageRecord(wxWechatDO, templateMessageDO,  postWxUser.getOpenid(), link, colMap ,params);
             logger.info("noticeEmployeeVerify result:{}", result);
         } catch (ConnectException e) {
             logger.error(e.getMessage(), e);
@@ -416,30 +418,32 @@ public class TemplateMsgHttp {
             first = SeekReferralFirst;
         }
         String time =  DateUtils.dateToMinuteCNDate(new Date());
-        JSONObject colMap = new JSONObject();
-        JSONObject firstJson = new JSONObject();
-        firstJson.put("color", firstColor);
-        firstJson.put("value", first);
+
+
+        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        MessageTplDataCol firstJson = new MessageTplDataCol();
+        firstJson.setColor(firstColor);
+        firstJson.setValue(first);
         colMap.put("first", firstJson);
 
-        JSONObject keywords1 = new JSONObject();
-        keywords1.put("color", keyword1Color);
-        keywords1.put("value", position.getTitle());
+        MessageTplDataCol keywords1 = new MessageTplDataCol();
+        keywords1.setColor(keyword1Color);
+        keywords1.setValue(position.getTitle());
         colMap.put("keyword1", keywords1);
 
-        JSONObject keywords2 = new JSONObject();
-        keywords2.put("color", keyword2Color);
-        keywords2.put("value", username);
+        MessageTplDataCol keywords2 = new MessageTplDataCol();
+        keywords2.setColor(keyword2Color);
+        keywords2.setValue(username);
         colMap.put("keyword2", keywords2);
 
-        JSONObject keywords3 = new JSONObject();
-        keywords3.put("color", "#173177");
-        keywords3.put("value", user.getMobile());
+        MessageTplDataCol keywords3 = new MessageTplDataCol();
+        keywords3.setColor("#173177");
+        keywords3.setValue(String.valueOf(user.getMobile()));
         colMap.put("keyword3", keywords3);
 
-        JSONObject remarkJson = new JSONObject();
-        remarkJson.put("color", "#173177");
-        remarkJson.put("value", "求推荐时间："+time);
+        MessageTplDataCol remarkJson = new MessageTplDataCol();
+        remarkJson.setColor("#173177");
+        remarkJson.setValue("求推荐时间："+time);
         colMap.put("remark", remarkJson);
 
         Map<String, Object> applierTemplate = new HashMap<>();
@@ -447,17 +451,19 @@ public class TemplateMsgHttp {
         applierTemplate.put("touser", postWxUser.getOpenid());
         applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
         applierTemplate.put("topcolor", "#FF0000");
-        applierTemplate.put("url", env.getProperty("message.template.employee.recommend")
+        String link = env.getProperty("message.template.employee.recommend")
                 .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
-                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime()
-        );
-
+                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+        applierTemplate.put("url", link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
         String url=env.getProperty("message.template.delivery.url").replace("{}", wxWechatDO.getAccessToken());
         logger.info("noticeEmployeeVerify url : {}", url);
         try {
             String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            Map<String, Object> params = JSON.parseObject(result);
+            insertLogWxMessageRecord(wxWechatDO, templateMessageDO,  postWxUser.getOpenid(), link, colMap ,params);
+
             logger.info("noticeEmployeeVerify result:{}", result);
         } catch (ConnectException e) {
             logger.error(e.getMessage(), e);
@@ -603,31 +609,30 @@ public class TemplateMsgHttp {
                         handlerTime = new DateTime(hrOperationRecord.getOptTime().getTime());
                     }
 
-                    JSONObject colMap = new JSONObject();
-
-                    JSONObject firstJson = new JSONObject();
-                    firstJson.put("color", "#173177");
-                    firstJson.put("value", first);
+                    Map<String,MessageTplDataCol> colMap =new HashMap<>();
+                    MessageTplDataCol firstJson = new MessageTplDataCol();
+                    firstJson.setColor("#173177");
+                    firstJson.setValue(first);
                     colMap.put("first", firstJson);
 
-                    JSONObject keywords1 = new JSONObject();
-                    keywords1.put("color", "#173177");
-                    keywords1.put("value", name);
+                    MessageTplDataCol keywords1 = new MessageTplDataCol();
+                    keywords1.setColor("#173177");
+                    keywords1.setValue(name);
                     colMap.put("keyword1", keywords1);
 
-                    JSONObject keywords2 = new JSONObject();
-                    keywords2.put("color", "#173177");
-                    keywords2.put("value", title);
+                    MessageTplDataCol keywords2 = new MessageTplDataCol();
+                    keywords2.setColor("#173177");
+                    keywords2.setValue(title);
                     colMap.put("keyword2", keywords2);
 
-                    JSONObject keywords3 = new JSONObject();
-                    keywords3.put("color", "#173177");
-                    keywords3.put("value", handlerTime.toString("yyyy-MM-dd HH:mm:ss"));
+                    MessageTplDataCol keywords3 = new MessageTplDataCol();
+                    keywords3.setColor("#173177");
+                    keywords3.setValue(handlerTime.toString("yyyy-MM-dd HH:mm:ss"));
                     colMap.put("keyword3", keywords3);
 
-                    JSONObject remarkJson = new JSONObject();
-                    remarkJson.put("color", "#173177");
-                    remarkJson.put("value", remark);
+                    MessageTplDataCol remarkJson = new MessageTplDataCol();
+                    remarkJson.setColor("#173177");
+                    remarkJson.setValue(remark);
                     colMap.put("remark", remarkJson);
 
                     Map<String, Object> applierTemplate = new HashMap<>();
@@ -635,7 +640,9 @@ public class TemplateMsgHttp {
                     applierTemplate.put("touser", userWxUserDO.getOpenid());
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
-                    applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature()));
+                    String link = env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature());
+                    link = link+"&from_template_message="+TEMPLATES_REFERRAL_BONUS_NOTICE_TPL+"&send_time=" + new Date().getTime();
+                    applierTemplate.put("url", link);
 
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
@@ -644,7 +651,10 @@ public class TemplateMsgHttp {
 
                     try {
                         String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
-                        logger.info("TemlateMsgHttp noticeEmployeeVerify result:{}", result);
+                        Map<String, Object> params = JSON.parseObject(result);
+                        insertLogWxMessageRecord(hrChatDO, hrWxTemplateMessage, userWxUserDO.getOpenid(), link, colMap ,params);
+                        logger.info("noticeEmployeeVerify result:{}", result);
+
                     } catch (ConnectException e) {
                         logger.error(e.getMessage(), e);
                     }
