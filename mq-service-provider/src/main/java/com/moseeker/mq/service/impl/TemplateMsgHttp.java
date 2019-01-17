@@ -368,7 +368,7 @@ public class TemplateMsgHttp {
             logger.info("求内推候选人数据为空");
             return;
         }
-        String username = user.getNickname();
+        String username = user.getName();
         if(StringUtils.isNullOrEmpty(username)) {
             UserWxUserRecord userWxUser = userWxUserDao.getWXUserByUserId(userId);
             if(userWxUser != null) {
