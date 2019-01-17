@@ -610,13 +610,17 @@ public class UserEmployeeServiceImpl {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+        List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
+        Future<List<UserDepthVO>> depthListFuture = threadPool.startTast(()->neo4jService.fetchDepthUserList(userId, companyId, userIdList));
         EmployeeCardViewData data = referralEntity.fetchEmployeeSeekRecommendCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
-        List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
-        List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         List<RadarUserVO> viewPages = new ArrayList<>();
-        for(ReferralSeekRecommendRecord record: list){
-            viewPages.add(EmployeeBizTool.packageEmployeeSeekRecommendVO(data, record, depthList));
+        try {
+            for(ReferralSeekRecommendRecord record: list){
+                viewPages.add(EmployeeBizTool.packageEmployeeSeekRecommendVO(data, record, depthListFuture.get()));
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
         }
         result.setUserList(viewPages);
         return result;
