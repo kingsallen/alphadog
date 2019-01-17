@@ -70,7 +70,6 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException REFERRAL_CHAIN_ERROR = new UserAccountException(42057, "人脉连连看链路异常！");
     public static final UserAccountException REFERRAL_RECOM_EVALUATION_EXISTS = new UserAccountException(42059, "推荐评价已存在！");
 
-
     private final int code;
 
     protected UserAccountException(int code, String message) {
