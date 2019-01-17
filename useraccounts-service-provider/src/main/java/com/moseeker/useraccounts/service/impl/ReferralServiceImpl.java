@@ -31,6 +31,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.Constant.ApplicationSource;
@@ -63,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -137,6 +139,8 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private KafkaSender kafkaSender;
+
+    ThreadPool tp = ThreadPool.Instance;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -457,32 +461,33 @@ public class ReferralServiceImpl implements ReferralService {
         if(positionDO == null || positionDO.getStatus() != 0 || recommendRecord ==null ){
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
+        Future<UserUserDO> user = tp.startTast(()->userDao.getUser(recommendRecord.getPresenteeId()));
         if(recommendRecord.getPostUserId()!= postUserId){
             throw UserAccountException.REFERRAL_SEEK_RECOMMEND_NULL;
         }
         if(!employeeEntity.isEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId())){
             throw UserAccountException.PERMISSION_DENIED;
         }
-        UserEmployeeDO employee = employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId());
+        Future<UserEmployeeDO> employee = tp.startTast(()->employeeEntity.getCompanyEmployee(recommendRecord.getPostUserId(), positionDO.getCompanyId()));
         int origin = recommendRecord.getOrigin()==1 ? ApplicationSource.SEEK_REFERRAL.getValue():
                 ApplicationSource.INVITE_REFERRAL.getValue();
-        UserUserDO user = userDao.getUser(recommendRecord.getPresenteeId());
+
         int applicationId = 0;
         try {
-            applicationId = createJobApplication(user.getId(), positionDO.getCompanyId(), positionId, user.getName(), origin, recommendRecord.getPostUserId());
+            applicationId = createJobApplication(user.get().getId(), positionDO.getCompanyId(), positionId, user.get().getName(), origin, recommendRecord.getPostUserId());
         } catch (Exception e) {
             logger.error(e.getMessage());
             throw CommonException.PROGRAM_EXCEPTION;
         }
         if(applicationId > 0) {
             recommendDao.updateReferralSeekRecommendRecordForAppId(referralId, applicationId);
-            referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.getMobile()), postUserId, user.getId(), relationship, recomReasonText);
             try {
-                sender.addRecommandReward(employee, user.getId(), applicationId, positionId);
-            }catch (CommonException e){
+                referralEntity.logReferralOperation(positionId, applicationId, referralReasons, String.valueOf(user.get().getMobile()), postUserId, user.get().getId(), relationship, recomReasonText);
+                sender.addRecommandReward(employee.get(), user.get().getId(), applicationId, positionId);
+                sender.publishReferralEvaluateEvent(referralId, user.get().getId(), positionId, applicationId, employee.get().getId());
+            }catch (Exception e){
                 logger.error(e.getMessage());
             }
-            sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
             radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(),
                     recommendRecord.getPositionId(), ReferralApplyHandleEnum.recommend.getType());
         }
