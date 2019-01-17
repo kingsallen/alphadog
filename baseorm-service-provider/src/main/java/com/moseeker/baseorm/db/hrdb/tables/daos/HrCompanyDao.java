@@ -7,6 +7,7 @@ package com.moseeker.baseorm.db.hrdb.tables.daos;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -210,5 +211,19 @@ public class HrCompanyDao extends DAOImpl<HrCompanyRecord, com.moseeker.baseorm.
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortune(Byte... values) {
         return fetch(HrCompany.HR_COMPANY.FORTUNE, values);
+    }
+
+    /**
+     * Fetch records that have <code>fortune_scale IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortuneScale(Byte... values) {
+        return fetch(HrCompany.HR_COMPANY.FORTUNE_SCALE, values);
+    }
+
+    /**
+     * Fetch records that have <code>fortune_year IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortuneYear(Date... values) {
+        return fetch(HrCompany.HR_COMPANY.FORTUNE_YEAR, values);
     }
 }

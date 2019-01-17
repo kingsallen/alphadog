@@ -15,7 +15,7 @@ public class HrAwardConfigTemplate implements org.apache.thrift.TBase<HrAwardCon
     private static final org.apache.thrift.protocol.TField STATUS_FIELD_DESC = new org.apache.thrift.protocol.TField("status", org.apache.thrift.protocol.TType.STRING, (short)2);
     private static final org.apache.thrift.protocol.TField AWARD_FIELD_DESC = new org.apache.thrift.protocol.TField("award", org.apache.thrift.protocol.TType.I32, (short)3);
     private static final org.apache.thrift.protocol.TField DISABLE_FIELD_DESC = new org.apache.thrift.protocol.TField("disable", org.apache.thrift.protocol.TType.I32, (short)4);
-    private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.TField("priority", org.apache.thrift.protocol.TType.I32, (short)5);
+    private static final org.apache.thrift.protocol.TField PRIORITY_FIELD_DESC = new org.apache.thrift.protocol.  TField("priority", org.apache.thrift.protocol.TType.I32, (short)5);
     private static final org.apache.thrift.protocol.TField TYPE_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("type_id", org.apache.thrift.protocol.TType.I32, (short)6);
     private static final org.apache.thrift.protocol.TField RECRUIT_ORDER_FIELD_DESC = new org.apache.thrift.protocol.TField("recruit_order", org.apache.thrift.protocol.TType.I32, (short)7);
     private static final org.apache.thrift.protocol.TField REWARD_FIELD_DESC = new org.apache.thrift.protocol.TField("reward", org.apache.thrift.protocol.TType.I64, (short)8);
