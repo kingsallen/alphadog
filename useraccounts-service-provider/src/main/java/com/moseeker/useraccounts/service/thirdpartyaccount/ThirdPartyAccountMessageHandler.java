@@ -30,8 +30,8 @@ public class ThirdPartyAccountMessageHandler {
     @Autowired
     private LogDeadLetterDao logDeadLetterDao;
 
-    @RabbitListener(queues = "#{bindAccountQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = "#{bindAccountQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void bindAccountQueue(Message message, Channel channel) {
         String msgBody = "{}";
         try {
@@ -47,8 +47,8 @@ public class ThirdPartyAccountMessageHandler {
         }
     }
 
-    @RabbitListener(queues = "#{presetQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = "#{presetQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void presetHandler(Message message, Channel channel) {
         logger.info("处理第三方相关信息队列开始");
         String msgBody = "{}";

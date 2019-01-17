@@ -33,7 +33,8 @@ service CandidateService {
     candidate_struct.PositionLayerInfo getPositionLayerInfo(1: i32 userId, 2: i32 companyId, 3: i32 positionId) throws (1: common_struct.BIZException e);
     //候选人进入职位详情弹层数据
     common_struct.Response handerElasticLayer(1: i32 userId, 2: i32 companyId, 3: i32 type ) throws (1: common_struct.BIZException e);
-
+    //根据appIds获取CandidateRecom
+    common_struct.Response getCandidateRecoms(1: list<i32> appIds) throws (1: common_struct.BIZException e);
 
 }
 

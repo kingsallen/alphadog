@@ -152,8 +152,8 @@ public class LiePinReceiverHandler {
     }
 
 
-    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_EDIT, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_EDIT, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handlerPositionLiepinEditOperation(Message message, Channel channel) {
         String msgBody = "{}";
         LiePinPositionVO liePinPositionVO = null;
@@ -421,8 +421,8 @@ public class LiePinReceiverHandler {
      * @date 2018/7/6
      */
     @Deprecated
-    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_RESYNC, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_RESYNC, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handlerPositionLiepinReSyncOperation(Message message, Channel channel) {
         String msgBody = "{}";
         List<Integer> ids;
@@ -515,14 +515,14 @@ public class LiePinReceiverHandler {
 
     }
 
-    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_DELETE, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_DELETE, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handlerPositionLiepinDeleteOperation(Message message, Channel channel) {
         handlerPositionLiepinDownShelfOperation(message, channel);
     }
 
-    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_DOWNSHELF, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = PositionSyncVerify.POSITION_QUEUE_DOWNSHELF, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handlerPositionLiepinDownShelfOperation(Message message, Channel channel) {
         String msgBody = "{}";
         List<Integer> ids = null;

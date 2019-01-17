@@ -795,4 +795,17 @@ public class ProfileController {
         }
     }
 
+    @RequestMapping(value = "/v4/profile/reCalculateUserCompleteness", method = RequestMethod.POST)
+    @ResponseBody
+    public String reCalculateUserCompleteness(@RequestBody int id) throws Exception {
+        service.reCalculateUserCompleteness(id, null);
+        return Result.SUCCESS;
+    }
+
+    @RequestMapping(value = "/v4/profile/moveProfile", method = RequestMethod.POST)
+    @ResponseBody
+    public String moveProfile(@RequestParam int destId,@RequestParam int originId) throws Exception {
+        profileService.moveProfile(destId, originId);
+        return Result.SUCCESS;
+    }
 }

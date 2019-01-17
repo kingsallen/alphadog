@@ -1,5 +1,6 @@
 package com.moseeker.candidate.service.entities;
 
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
@@ -9,10 +10,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateCompany;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateRemark;
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
+import com.moseeker.baseorm.db.candidatedb.tables.*;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRemarkRecord;
@@ -21,8 +19,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrGroupCompanyRelRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileCompletenessRecord;
-import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserUser;
@@ -38,9 +34,10 @@ import com.moseeker.candidate.service.dao.CandidateDBDao;
 import com.moseeker.candidate.service.exception.CandidateCategory;
 import com.moseeker.candidate.service.exception.CandidateException;
 import com.moseeker.candidate.service.exception.CandidateExceptionFactory;
-import com.moseeker.candidate.service.vo.*;
 import com.moseeker.common.annotation.iface.CounterIface;
+
 import static com.moseeker.common.biztools.RecruitmentScheduleEnum.IMPROVE_CANDIDATE;
+
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
@@ -56,30 +53,31 @@ import com.moseeker.entity.Constant.GenderType;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.thrift.gen.candidate.struct.*;
-import com.moseeker.thrift.gen.candidate.struct.PositionLayerInfo;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.*;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileCompletenessDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.jooq.impl.DefaultDSLContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -131,6 +129,11 @@ public class CandidateEntity implements Candidate {
     @Autowired
     UserWxUserDao wxUserDao;
 
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
+    private static final String REFINE_CANDIDATE_EXCHANGE = "refine_candidate_exchange";
+    private static final String REFINE_CANDIDATE_ROUTING_KEY = "refine_candidate_exchange.redpacket";
 
     /**
      * C端用户查看职位，判断是否生成候选人数据
@@ -428,12 +431,12 @@ public class CandidateEntity implements Candidate {
         }
 
         /** 添加员工积分 */
+        Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId())
+                .and(new Condition("company_id", employeeEntity.getCompanyIds(param.getCompanyId()), ValueOp.IN))
+                .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
+        UserEmployeeDO employeeDO = employeeDao.getData(query);
         if (candidateRecomRecordDO.getPostUserId() > 0) {
             try {
-                Query query = new Query.QueryBuilder().where("sysuser_id", candidateRecomRecordDO.getPostUserId())
-                        .and(new Condition("company_id", employeeEntity.getCompanyIds(param.getCompanyId()), ValueOp.IN))
-                        .and("disable", Constant.ENABLE_OLD).and("activation", EmployeeType.AUTH_SUCCESS.getValue()).buildQuery();
-                UserEmployeeDO employeeDO = employeeDao.getData(query);
                 if (employeeDO != null) {
                     employeeEntity.addReward(employeeDO.getId(), param.getCompanyId(), "", candidateRecomRecordDO.getAppId(), candidateRecomRecordDO.getPositionId(), IMPROVE_CANDIDATE.getId(), candidateRecomRecordDO.getPresenteeUserId());
                 }
@@ -442,7 +445,29 @@ public class CandidateEntity implements Candidate {
             }
         }
 
+        /*if (employeeDO != null) {
+            publishRecommendEvent(employeeDO.getId(), param.getPostUserId(),
+                    candidateRecomRecordDO.getPresenteeUserId(), param.getCompanyId(),
+                    candidateRecomRecordDO.getPositionId());
+        }*/
+
         return assembleRecommendResult(param.getId(), param.getPostUserId(), param.getClickTime(), param.getCompanyId());
+    }
+
+    private void publishRecommendEvent(int employeeId, int userId, int candidateId, int companyId, int positionId) {
+        JSONObject eventMessage = new JSONObject();
+        eventMessage.put("name", "refine candidate");
+        eventMessage.put("ID", UUID.randomUUID().toString());
+        eventMessage.put("employee_id", employeeId);
+        eventMessage.put("user_id", userId);
+        eventMessage.put("candidate_id", candidateId);
+        eventMessage.put("company_id", companyId);
+        eventMessage.put("refine_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+        eventMessage.put("position_id", positionId);
+
+        amqpTemplate.sendAndReceive(REFINE_CANDIDATE_EXCHANGE,
+                REFINE_CANDIDATE_ROUTING_KEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
+                        .build());
     }
 
     /**
@@ -759,7 +784,7 @@ public class CandidateEntity implements Candidate {
                 candidate.setIsRecom((byte) 0);
                 candidate.setUpdateTime(nowStr);
                 candidate.setEmail(param.getEmail());
-                candidate.setGender((byte)genderType.getValue());
+                candidate.setGender((byte) genderType.getValue());
             });
             candidateDBDao.updateCandidateRecomRecords(candidateRecomRecordList);
         }
@@ -1137,7 +1162,7 @@ public class CandidateEntity implements Candidate {
             candidateRemarkRecord.setHraccountId(hrId);
             candidateRemarkRecord.setUserId(userId);
             candidateRemarkRecord.setStatus(1);
-            if(userHrAccountRecord.getAccountType().intValue() == Constant.ACCOUNT_TYPE_SUPERACCOUNT){
+            if (userHrAccountRecord.getAccountType().intValue() == Constant.ACCOUNT_TYPE_SUPERACCOUNT) {
                 handlerCandidateRemark(candidateRemarkRecord, userHrAccountRecord.getCompanyId(), userId);
             }
             create.attach(candidateRemarkRecord);
@@ -1167,7 +1192,7 @@ public class CandidateEntity implements Candidate {
         List<Map<String, Object>> chain = new LinkedList<>();
 
         CandidatePosition CP = CandidatePosition.CANDIDATE_POSITION;
-            /* 查找相关职位 */
+        /* 查找相关职位 */
         List<CandidatePositionRecord> listA = create.select().from(CP)
                 .where(CP.CANDIDATE_COMPANY_ID.eq(candidateCompanyRecord.getId()))
                 .groupBy(CP.CANDIDATE_COMPANY_ID)
@@ -1205,7 +1230,7 @@ public class CandidateEntity implements Candidate {
                         .and(CandidateRemark.CANDIDATE_REMARK.HRACCOUNT_ID.eq(hrId))
                         .fetchInto(CandidateRemarkRecord.class);
 
-					/* 将查询到的微信信息加入到链路中 */
+                /* 将查询到的微信信息加入到链路中 */
                 for (Map<String, Object> map : chain) {
                     for (UserUserRecord userInfo : userInfos) {
                         if (((Integer) map.get("user_id")).intValue() == userInfo.getId()) {
@@ -1230,7 +1255,7 @@ public class CandidateEntity implements Candidate {
         return result;
     }
 
-    public void handlerCandidateRemark(CandidateRemarkRecord remark, int companyId, int userId){
+    public void handlerCandidateRemark(CandidateRemarkRecord remark, int companyId, int userId) {
         List<UserHrAccountRecord> accountRecordList = create.select().from(UserHrAccount.USER_HR_ACCOUNT)
                 .where(UserHrAccount.USER_HR_ACCOUNT.COMPANY_ID.eq(companyId))
                 .and(UserHrAccount.USER_HR_ACCOUNT.ACCOUNT_TYPE.ne(Constant.ACCOUNT_TYPE_SUPERACCOUNT))
@@ -1242,7 +1267,7 @@ public class CandidateEntity implements Candidate {
                 .orderBy(CandidateRemark.CANDIDATE_REMARK.CREATE_TIME.desc())
                 .limit(1)
                 .fetchOneInto(CandidateRemarkRecord.class);
-        if(remarkRecord != null){
+        if (remarkRecord != null) {
             remark.setCurrentCompany(remarkRecord.getCurrentCompany());
             remark.setCurrentPosition(remarkRecord.getCurrentPosition());
         }
@@ -1257,7 +1282,9 @@ public class CandidateEntity implements Candidate {
             int companyId = hrAccountDO.getCompanyId();
             List<Integer> positionIdList;
             if (hrAccountDO.getAccountType() == HRAccountType.SupperAccount.getType()) {
-                positionIdList = positionDao.getPositionIds(new ArrayList<Integer>(){{add(companyId);}});
+                positionIdList = positionDao.getPositionIds(new ArrayList<Integer>() {{
+                    add(companyId);
+                }});
             } else {
                 positionIdList = positionDao.getPositionIdByPublisher(hrId);
             }
@@ -1296,24 +1323,24 @@ public class CandidateEntity implements Candidate {
     public com.moseeker.candidate.service.vo.PositionLayerInfo getPositionLayerInfo(int userId, int companyId, int positionId) throws TException {
         com.moseeker.candidate.service.vo.PositionLayerInfo layer = new com.moseeker.candidate.service.vo.PositionLayerInfo();
         JobPositionRecord position = positionDao.getPositionById(positionId);
-        if(position == null || position.getCompanyId().intValue() != companyId){
+        if (position == null || position.getCompanyId().intValue() != companyId) {
             throw CommonException.PROGRAM_PARAM_NOTEXIST;
         }
         Optional<CandidateCompanyDO> ccd = candidateDBDao.getCandidateCompanyByUserIDCompanyID(userId, companyId);
         HrWxWechatDO wechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
-        if(wechatDO == null  || !ccd.isPresent()){
+        if (wechatDO == null || !ccd.isPresent()) {
             throw CommonException.NODATA_EXCEPTION;
         }
-        layer.setProfileCompleteness(profileEntity.getCompleteness(userId,"", 0));
+        layer.setProfileCompleteness(profileEntity.getCompleteness(userId, "", 0));
         UserWxUserRecord wxUser = wxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(userId, wechatDO.getId());
         Optional<CandidatePositionDO> candidatePositionDOS = candidateDBDao.getCandidatePosition(positionId, userId);
         int positionNum = candidateDBDao.getCandidateCompanyByCandidateCompanyID(ccd.get().getId());
-        if(candidatePositionDOS.isPresent()) {
+        if (candidatePositionDOS.isPresent()) {
             layer.setCurrentPositionCount(candidatePositionDOS.get().getViewNumber());
         }
         layer.setPositionViewCount(positionNum);
         layer.setIsSubscribe(0);
-        if(wxUser != null){
+        if (wxUser != null) {
             layer.setIsSubscribe(1);
         }
         layer.setQrcode(wechatDO.getQrcode());
@@ -1329,20 +1356,28 @@ public class CandidateEntity implements Candidate {
     public void closeElasticLayer(int userId, int companyId, int type) {
         try {
             Optional<CandidateCompanyDO> candidateCompanyDOOptional = candidateDBDao.getCandidateCompanyByUserIDCompanyID(userId, companyId);
-            if(candidateCompanyDOOptional.isPresent()){
+            if (candidateCompanyDOOptional.isPresent()) {
                 CandidateCompanyDO candidateCompanyDO = candidateCompanyDOOptional.get();
-                if(type == Constant.ELASTIC_LAYER_QRCODE){
-                    candidateCompanyDO.setPositionWxLayerQrcode((byte)1);
-                }else if(type == Constant.ELASTIC_LAYER_PROFILE){
-                    candidateCompanyDO.setPositionWxLayerProfile((byte)1);
+                if (type == Constant.ELASTIC_LAYER_QRCODE) {
+                    candidateCompanyDO.setPositionWxLayerQrcode((byte) 1);
+                } else if (type == Constant.ELASTIC_LAYER_PROFILE) {
+                    candidateCompanyDO.setPositionWxLayerProfile((byte) 1);
                 }
                 candidateDBDao.updateCandidateCompany(candidateCompanyDO);
-            }else{
+            } else {
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }
         } catch (TException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    @Override
+    public Response getCandidateRecoms(List<Integer> appIds) {
+        List<CandidateRecomRecordDO> tempRecomRecords = create.select().from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID.in(appIds))
+                .fetchInto(CandidateRecomRecordDO.class);
+        return ResponseUtils.success(tempRecomRecords);
     }
 
     /**

@@ -131,4 +131,6 @@ public interface Candidate {
      * @return
      */
     void closeElasticLayer(int userId, int companyId, int type);
+
+    Response getCandidateRecoms(List<Integer> appIds);
 }

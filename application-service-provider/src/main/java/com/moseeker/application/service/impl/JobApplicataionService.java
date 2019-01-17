@@ -45,6 +45,7 @@ import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
@@ -73,6 +74,7 @@ import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 import org.apache.thrift.TException;
+import org.jboss.netty.util.internal.StringUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,6 +219,14 @@ public class JobApplicataionService {
     @Transactional
     public int postApplication(JobApplication jobApplication, JobPositionRecord jobPositionRecord) throws TException {
         try {
+            String result=redisClient.get(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
+            if(StringUtils.isNotNullOrEmpty(result)){
+                throw ApplicationException.APPLICATION_POSITION_DUPLICATE;
+
+            }
+            redisClient.set(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "","1");
             // 初始化参数
             initJobApplication(jobApplication, jobPositionRecord);
             // 添加申请
@@ -240,6 +250,8 @@ public class JobApplicataionService {
             return jobApplicationVO.getApplicationId();
         }  catch (Exception e) {
             logger.error("postResources JobApplication error: ", e);
+            redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
             throw new TException();
         } finally {
             //do nothing

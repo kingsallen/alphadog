@@ -35,3 +35,9 @@ struct HrCompanyConfDO {
     29: optional i8 mallGoodsMethodState         //商城是否保存默认领取规则 0 取消默认规则 1 使用默认规则
     30: optional i8 isOpenGdpr
 }
+
+struct HrCompanyMobotConfDO {
+    1: optional i32 companyId,	//null
+	2: optional string mobotHeadImg,	//Mobot头像，聊天使用
+	3: optional string mobotName	//Mobot姓名，聊天使用
+}
