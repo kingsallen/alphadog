@@ -928,7 +928,7 @@ public class TalentpoolSearchengine {
         String hrId=params.get("hr_account_id");
         String companyId=params.get("company_id");
         if(!this.isUseFieldorder(params)){
-            builder.addSort(this.handlerScoreOrderScript(publisherIds));
+            builder.addSort("_score", SortOrder.DESC);
             if(this.isOrderTalent(params)){
                 this.orderByTalent(publisherIdList,hrId,companyId,builder);
             }else {
@@ -1681,6 +1681,9 @@ public class TalentpoolSearchengine {
         searchUtil.handleTerm(companyId,query,"user.applications.company_id");
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         builder.setSize(0);
+        logger.info("==========查询是否属于公司============");
+        logger.info(builder.toString());
+        logger.info("====================================");
         SearchResponse response = builder.execute().actionGet();
         SearchHits hit=response.getHits();
         long totalNum=hit.getTotalHits();
@@ -1717,6 +1720,9 @@ public class TalentpoolSearchengine {
         searchUtil.handleTerm(companyId,query,"user.applications.company_id");
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         builder.setSize(0);
+        logger.info("==========查询是否属于职位============");
+        logger.info(builder.toString());
+        logger.info("====================================");
         SearchResponse response = builder.execute().actionGet();
         SearchHits hit=response.getHits();
         long totalNum=hit.getTotalHits();
@@ -1765,6 +1771,9 @@ public class TalentpoolSearchengine {
         searchUtil.handleTerm(companyId,query,"user.applications.company_id");
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         builder.setSize(0);
+        logger.info("==========查询是否属于人名============");
+        logger.info(builder.toString());
+        logger.info("====================================");
         SearchResponse response = builder.execute().actionGet();
         SearchHits hit=response.getHits();
         long totalNum=hit.getTotalHits();
@@ -1787,6 +1796,9 @@ public class TalentpoolSearchengine {
         searchUtil.handleTerm(companyId,query,"user.applications.company_id");
         SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
         builder.setSize(0);
+        logger.info("==========查询是否属于城市============");
+        logger.info(builder.toString());
+        logger.info("====================================");
         SearchResponse response = builder.execute().actionGet();
         SearchHits hit=response.getHits();
         long totalNum=hit.getTotalHits();
