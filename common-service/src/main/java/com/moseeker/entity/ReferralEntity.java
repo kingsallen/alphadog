@@ -1,5 +1,7 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
@@ -33,10 +35,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -171,6 +170,9 @@ public class ReferralEntity {
 
     @Autowired
     private UserUserDao userDao;
+
+    @Autowired
+    private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPool threadPool = ThreadPool.Instance;
@@ -1007,4 +1009,38 @@ public class ReferralEntity {
         }
         return list;
     }
+
+    @Transactional
+    public void fetchEmployeeNetworkResource(Object message){
+        if(message != null) {
+            KafkaNetworkResource resource = (KafkaNetworkResource)message;
+            if (resource != null && !StringUtils.isEmptyList(resource.getUser_id())){
+                List<ReferralEmployeeNetworkResourcesRecord> list = networkResourcesDao.fetchByPostUserId(resource.getEmployee_id());
+                List<ReferralEmployeeNetworkResourcesRecord> updateRecordList = new ArrayList<>();
+                List<ReferralEmployeeNetworkResourcesRecord> insertRecordList = new ArrayList<>();
+                if(!StringUtils.isEmptyList(list)){
+                    int num = list.size()>resource.getUser_id().size()?list.size():resource.getUser_id().size();
+                    for(int i =0; i<num;i++){
+                        if(i < list.size()-1) {
+                            ReferralEmployeeNetworkResourcesRecord record = list.get(i);
+                            if (resource.getUser_id().size() > i) {
+                                record.setDisable((byte) Constant.DISABLE);
+                                record.setPresenteeUserId(resource.getUser_id().get(i));
+                            } else {
+                                record.setDisable((byte) Constant.ENABLE);
+                            }
+                            updateRecordList.add(record);
+                        }else {
+                            ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
+                            record.setPostUserId(resource.getEmployee_id());
+                            record.setPresenteeUserId(resource.getUser_id().get(i));
+                        }
+                    }
+                    networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
+                    networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
+                }
+            }
+        }
+    }
+
 }

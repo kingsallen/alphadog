@@ -330,9 +330,9 @@ public final class Constant {
 
     public static final int POSITION_STATUS_START = 0;
 
-    public static final String KAFKA_GROUP_ID = "test_group";
+    public static final String KAFKA_GROUP_RADAR_TOPN = "radar_new_topn_result";
     public static final String KAFKA_TOPIC_ASK_REFERRAL = "radar_ask_for_referral";
     public static final String KAFKA_TOPIC_APPLICATION = "radar_application";
     public static final String KAFKA_TOPIC_INVITE_APPLY = "radar_invite_to_apply";
-
+    public static final String KAFKA_TOPIC_FORWARD_VIEW = "radar_social_graph_change";
 }
