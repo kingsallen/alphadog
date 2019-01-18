@@ -1356,7 +1356,7 @@ public class EmployeeEntity {
                         amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
                                 APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                                         .build());
-                        logger.info("publishInitalScreenHbEvent message:{}", eventMessage);
+                        logger.info("publishInitalScreenHbEvent message:{}", jsonObject);
                     }
                 }else{
                     int i =0;
