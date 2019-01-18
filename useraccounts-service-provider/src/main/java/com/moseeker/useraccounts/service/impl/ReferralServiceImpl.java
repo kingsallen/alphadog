@@ -466,7 +466,6 @@ public class ReferralServiceImpl implements ReferralService {
             }catch (Exception e){
                 logger.error(e.getMessage());
             }
-            sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
             radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(),
                     recommendRecord.getPositionId(), ReferralApplyHandleEnum.recommend.getType());
         }
