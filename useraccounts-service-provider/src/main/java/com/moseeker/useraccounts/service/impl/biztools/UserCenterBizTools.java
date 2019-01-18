@@ -568,6 +568,6 @@ public class UserCenterBizTools {
             }
         }
 
-        return recomRecordDOList;
+        return list;
     }
 }
