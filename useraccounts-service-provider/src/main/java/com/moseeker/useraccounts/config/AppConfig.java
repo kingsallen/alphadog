@@ -135,17 +135,12 @@ public class AppConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConsumerFactory(consumerFactory2());
         return factory;
     }
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_ID));
-    }
-    @Bean
-    public ConsumerFactory<String, String> consumerFactory2() {
-        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_ID));
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_RADAR_TOPN));
     }
 
     @Bean

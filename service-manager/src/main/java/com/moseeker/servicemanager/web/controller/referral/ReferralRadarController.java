@@ -123,7 +123,7 @@ public class ReferralRadarController {
     }
 
     @RequestMapping(value = "v1/referral/seek/check", method = RequestMethod.GET)
-    public String checkSeekReferral(@RequestParam(name = "user_id") Integer userId,
+    public String checkSeekReferral(@RequestParam(name = "recom_user_id") Integer userId,
                                        @RequestParam(name = "appid") Integer appid,
                                        @RequestParam(name = "company_id") Integer companyId,
                                        @RequestParam(name = "presentee_user_id") Integer presenteeId,

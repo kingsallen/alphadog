@@ -23,13 +23,14 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeNetworkResources implements Serializable {
 
-    private static final long serialVersionUID = -648915451;
+    private static final long serialVersionUID = -146032775;
 
     private Integer   id;
     private Integer   postUserId;
     private Integer   presenteeUserId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Byte      disable;
 
     public ReferralEmployeeNetworkResources() {}
 
@@ -39,6 +40,7 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.presenteeUserId = value.presenteeUserId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.disable = value.disable;
     }
 
     public ReferralEmployeeNetworkResources(
@@ -46,13 +48,15 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         Integer   postUserId,
         Integer   presenteeUserId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Byte      disable
     ) {
         this.id = id;
         this.postUserId = postUserId;
         this.presenteeUserId = presenteeUserId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.disable = disable;
     }
 
     public Integer getId() {
@@ -95,6 +99,14 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Byte getDisable() {
+        return this.disable;
+    }
+
+    public void setDisable(Byte disable) {
+        this.disable = disable;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralEmployeeNetworkResources (");
@@ -104,6 +116,7 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         sb.append(", ").append(presenteeUserId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(disable);
 
         sb.append(")");
         return sb.toString();
