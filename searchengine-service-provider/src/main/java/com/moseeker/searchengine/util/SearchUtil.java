@@ -1004,7 +1004,6 @@ public class SearchUtil {
         recentJobMatchParse.boost(20);
         ((BoolQueryBuilder) keyand).should(recentJobMatchParse);
 
-
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
     }
