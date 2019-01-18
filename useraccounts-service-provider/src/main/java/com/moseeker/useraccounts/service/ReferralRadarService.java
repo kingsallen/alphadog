@@ -109,4 +109,15 @@ public interface ReferralRadarService {
      * @date 2018/12/7
      */
     String progressQueryKeyword(ReferralProgressInfo progressInfo);
+
+    /**
+     *
+     * @param userId   员工userId
+     * @param presenteeId  职位详情页点击人userId
+     * @param positionId  职位id
+     * @param companyId   员工公司id
+     * @param psc   share_chain.id
+     * @return 求推荐id 查不到返回0
+     */
+    int checkSeekReferral(int userId, int presenteeId, int positionId, int companyId, int psc);
 }

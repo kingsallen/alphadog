@@ -161,4 +161,13 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .fetchInto(ReferralSeekRecommendRecord.class);
     }
 
+
+    public ReferralSeekRecommendRecord fetchByUidAndPresenteeIdAndPid(int employeeId, int presenteeId, int positionId) {
+        return using(configuration()).selectFrom(REFERRAL_SEEK_RECOMMEND)
+                .where(REFERRAL_SEEK_RECOMMEND.POST_USER_ID.eq(employeeId))
+                .and(REFERRAL_SEEK_RECOMMEND.PRESENTEE_ID.eq(presenteeId))
+                .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(positionId))
+                .fetchOneInto(ReferralSeekRecommendRecord.class);
+    }
+
 }
