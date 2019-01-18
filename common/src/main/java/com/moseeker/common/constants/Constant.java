@@ -62,11 +62,16 @@ public final class Constant {
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
+    /*public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_verification_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_verification_exchange.redpacket";*/
+
     public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_register_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_register_routingkey.first_register";
 
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";
+    public static final String POSITION_SYNC_FAIL_ROUTINGKEY = "messagetemplate.position_sync_fail";
+
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
     public static final String REFERRAL_RADAR_TEMPLATE = "referral_radar.referral_radar_template";
@@ -100,7 +105,7 @@ public final class Constant {
     public static final int RECRUIT_STATUS_EMPLOYEE_REGISTER  = 14;    // 完成员工员工认证
     public static final int RECRUIT_STATUS_UPLOAD_PROFILE   = 15;      // 员工上传人才简历
     public static final int RECRUIT_STATUS_EMPLOYEE_RECOMMEND   = 16;      // 员工完成联系内推推荐评价
-    
+
     // profile来源
     public static final int PROFILE_SOURCE_UNKNOW           				= 0 ;      // 未知,
     public static final int PROFILE_SOURCE_WEIXIN_COMPANY_NOMAL            	= 1 ;      // 微信企业端(正常),
@@ -246,6 +251,8 @@ public final class Constant {
     public static final int REFERRA_RECOMMEND_EVALUATE = 86; // 员工完成推荐评价进行内推之后发送给候选人
     public static final int REFERRAL_SEEK_REFERRAL = 87; // 联系内推发送给员工的模板消息ID
 
+    public static final int POSITION_SYNC_FAIL_NOTICE_TPL = 88; // 新简历通知的消息通知ID
+
     public static final int TEMPLATES_SWITCH_APPLY_NOTICE_TPL = 29; //申请成功时 的消息通知ID
     public static final int TEMPLATES_SWITCH_NEW_RESUME_TPL = 41; //认证员工转发之后后有人投递简历 的消息通知ID
 
@@ -323,9 +330,9 @@ public final class Constant {
 
     public static final int POSITION_STATUS_START = 0;
 
-    public static final String KAFKA_GROUP_ID = "test_group";
+    public static final String KAFKA_GROUP_RADAR_TOPN = "radar_new_topn_result";
     public static final String KAFKA_TOPIC_ASK_REFERRAL = "radar_ask_for_referral";
     public static final String KAFKA_TOPIC_APPLICATION = "radar_application";
     public static final String KAFKA_TOPIC_INVITE_APPLY = "radar_invite_to_apply";
-
+    public static final String KAFKA_TOPIC_FORWARD_VIEW = "radar_social_graph_change";
 }

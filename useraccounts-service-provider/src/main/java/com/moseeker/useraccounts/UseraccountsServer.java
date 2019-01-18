@@ -41,7 +41,8 @@ public class UseraccountsServer {
                     acac.getBean(UserEmployeeThriftService.class),
                     acac.getBean(EmployeeServiceImpl.class),
                     acac.getBean(ReferralThriftServiceImpl.class),
-                    acac.getBean(UserQxServiceImpl.class));
+                    acac.getBean(UserQxServiceImpl.class),
+                    acac.getBean(UserProviderThriftServiceImpl.class));
 //                    acac.getBean(RefreshLiepinTokenSchedule.class));
             server.startServer();
             server.shutDownHook();

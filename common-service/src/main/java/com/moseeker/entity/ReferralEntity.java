@@ -1,5 +1,7 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.constant.ReferralType;
 import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
@@ -33,10 +35,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -56,6 +55,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -170,6 +170,9 @@ public class ReferralEntity {
 
     @Autowired
     private UserUserDao userDao;
+
+    @Autowired
+    private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPool threadPool = ThreadPool.Instance;
@@ -978,10 +981,66 @@ public class ReferralEntity {
 
 
 
-    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, Set<Integer> presenteeUserIdList,  int page, int size){
-        return recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, presenteeUserIdList, page, size);
+    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, Set<Integer> presenteeUserIdList){
+        List<ReferralSeekRecommendRecord> list =  recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, presenteeUserIdList);
+        if(!StringUtils.isEmptyList(list)) {
+            List<Integer> positionIdList = new ArrayList<>();
+            List<Integer> presenteeIdList = new ArrayList<>();
+            list.forEach(m -> {
+                positionIdList.add(m.getPositionId());
+                presenteeIdList.add(m.getPresenteeId());
+            });
+            List<JobApplicationDO> applications = applicationDao.getApplyByaApplierAndPositionIds(positionIds, presenteeIdList);
+            List<ReferralSeekRecommendRecord> records = new ArrayList<>();
+            if(!StringUtils.isEmptyList(applications)){
+                for(ReferralSeekRecommendRecord recommendRecord : list){
+                    boolean status = true;
+                    for(JobApplicationDO application :applications){
+                        if(application.getPositionId()==recommendRecord.getPositionId().intValue() &&
+                                application.getApplierId() == recommendRecord.getPresenteeId().intValue()){
+                            status=false;
+                            break;
+                        }
+                    }
+                    if(status)records.add(recommendRecord);
+                }
+                return records;
+            }
+        }
+        return list;
     }
-    public int fetchEmployeeSeekRecommendCount(int postUserId, List<Integer> positionIds, Set<Integer> presenteeUserIdList){
-        return recommendDao.fetchSeekRecommendByPostCount(postUserId, positionIds, presenteeUserIdList);
+
+    @Transactional
+    public void fetchEmployeeNetworkResource(Object message){
+        if(message != null) {
+            KafkaNetworkResource resource = (KafkaNetworkResource)message;
+            if (resource != null && !StringUtils.isEmptyList(resource.getUser_id())){
+                List<ReferralEmployeeNetworkResourcesRecord> list = networkResourcesDao.fetchByPostUserId(resource.getEmployee_id());
+                List<ReferralEmployeeNetworkResourcesRecord> updateRecordList = new ArrayList<>();
+                List<ReferralEmployeeNetworkResourcesRecord> insertRecordList = new ArrayList<>();
+                if(!StringUtils.isEmptyList(list)){
+                    int num = list.size()>resource.getUser_id().size()?list.size():resource.getUser_id().size();
+                    for(int i =0; i<num;i++){
+                        if(i < list.size()-1) {
+                            ReferralEmployeeNetworkResourcesRecord record = list.get(i);
+                            if (resource.getUser_id().size() > i) {
+                                record.setDisable((byte) Constant.DISABLE);
+                                record.setPresenteeUserId(resource.getUser_id().get(i));
+                            } else {
+                                record.setDisable((byte) Constant.ENABLE);
+                            }
+                            updateRecordList.add(record);
+                        }else {
+                            ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
+                            record.setPostUserId(resource.getEmployee_id());
+                            record.setPresenteeUserId(resource.getUser_id().get(i));
+                        }
+                    }
+                    networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
+                    networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
+                }
+            }
+        }
     }
+
 }

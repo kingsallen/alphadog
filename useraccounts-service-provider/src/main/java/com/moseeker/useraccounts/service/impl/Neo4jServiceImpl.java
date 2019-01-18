@@ -12,6 +12,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.neo4j.*;
 import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
@@ -53,12 +54,16 @@ public class Neo4jServiceImpl implements Neo4jService {
     @Autowired
     UserEmployeeDao employeeDao;
 
+    @Autowired
+    KafkaSender kafkaSender;
 
     @Autowired
     EmployeeEntity employeeEntity;
 
     @Autowired
     CandidateShareChainDao candidateShareChainDao;
+
+
 
     @Override
     public void addFriendRelation(int startUserId, int endUserId, int shareChainId) throws CommonException {
@@ -72,9 +77,12 @@ public class Neo4jServiceImpl implements Neo4jService {
             forward.setEndNode(secordUserStatus);
             forward.setPosition_id(chain.getPositionId());
             forward.setParent_id(chain.getParentId());
+            forward.setRoot_user_id(chain.getRootRecomUserId());
+            forward.setCreate_time(chain.getClickTime());
             List<Forward> forwards = forwardNeo4jDao.getTwoUserFriend(startUserId, endUserId, chain.getPositionId());
             if (StringUtils.isEmptyList(forwards)) {
                 Forward forwar = forwardNeo4jDao.save(forward);
+                kafkaSender.sendForwardView(chain);
                 logger.info("proceed friend:" + JSON.toJSONString(forwar));
             }
         }
@@ -93,6 +101,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             List<Connection> conns = connNeo4jDao.getTwoUserConn(startUserId, endUserId, positionId);
             if (StringUtils.isEmptyList(conns)) {
                 Connection connection = connNeo4jDao.save(conn);
+                kafkaSender.sendConnectionLink(conn, endUserId);
                 logger.info("proceed forward:" + JSON.toJSONString(connection));
             }
         }

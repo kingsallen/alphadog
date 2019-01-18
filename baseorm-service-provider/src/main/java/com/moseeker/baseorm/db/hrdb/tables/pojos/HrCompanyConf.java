@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -989785865;
+    private static final long serialVersionUID = 328085411;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -55,6 +55,8 @@ public class HrCompanyConf implements Serializable {
     private Byte      mallGoodsMethodState;
     private Byte      job51SalaryDiscuss;
     private Byte      isOpenGdpr;
+    private String    mobotHeadImg;
+    private String    mobotName;
 
     public HrCompanyConf() {}
 
@@ -89,6 +91,8 @@ public class HrCompanyConf implements Serializable {
         this.mallGoodsMethodState = value.mallGoodsMethodState;
         this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.isOpenGdpr = value.isOpenGdpr;
+        this.mobotHeadImg = value.mobotHeadImg;
+        this.mobotName = value.mobotName;
     }
 
     public HrCompanyConf(
@@ -121,7 +125,9 @@ public class HrCompanyConf implements Serializable {
         String    mallGoodsMethod,
         Byte      mallGoodsMethodState,
         Byte      job51SalaryDiscuss,
-        Byte      isOpenGdpr
+        Byte      isOpenGdpr,
+        String    mobotHeadImg,
+        String    mobotName
     ) {
         this.companyId = companyId;
         this.themeId = themeId;
@@ -153,6 +159,8 @@ public class HrCompanyConf implements Serializable {
         this.mallGoodsMethodState = mallGoodsMethodState;
         this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.isOpenGdpr = isOpenGdpr;
+        this.mobotHeadImg = mobotHeadImg;
+        this.mobotName = mobotName;
     }
 
     public Integer getCompanyId() {
@@ -395,6 +403,22 @@ public class HrCompanyConf implements Serializable {
         this.isOpenGdpr = isOpenGdpr;
     }
 
+    public String getMobotHeadImg() {
+        return this.mobotHeadImg;
+    }
+
+    public void setMobotHeadImg(String mobotHeadImg) {
+        this.mobotHeadImg = mobotHeadImg;
+    }
+
+    public String getMobotName() {
+        return this.mobotName;
+    }
+
+    public void setMobotName(String mobotName) {
+        this.mobotName = mobotName;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompanyConf (");
@@ -429,6 +453,8 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(mallGoodsMethodState);
         sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(isOpenGdpr);
+        sb.append(", ").append(mobotHeadImg);
+        sb.append(", ").append(mobotName);
 
         sb.append(")");
         return sb.toString();

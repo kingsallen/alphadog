@@ -26,13 +26,11 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
     private Pattern email = Pattern.compile(REGEX_EMAIL);
     private Pattern mobile = Pattern.compile(REGEX_MOBILE);
-    private Pattern titleTypeLimit = Pattern.compile(TITLE_TYPE);
+    private Pattern titleLimit = Pattern.compile(REGEX_TITLE);
 
-    private static final String ENGLISH = ".*[a-zA-z].*";
-    private static final String NUMBER = ".*[0-9].*";
     private static final String REGEX_EMAIL = "([a-z0-9_.-]+)@([\\da-z.-]+)\\.([a-z]{2,6})";
     private static final String REGEX_MOBILE = "1[3|4|5|6|7|8|9][0-9]{9}";
-    private static final String TITLE_TYPE = "[^\\u4e00-\\u9fa5a-zA-Z\\d]+";
+    private static final String REGEX_TITLE = "[^\u4e00-\u9fa5_a-zA-Z0-9()（）\\-—*]";
 
     private static final int TITLE_MIN_LENGTH = 2;
     private static final int TITLE_MAX_LENGTH = 12;
@@ -43,7 +41,7 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
     private static final String TITLE_NOT_EMPTY = "标题不为空!";
     private static final String TITLE_LENGTH_LIMIT = "职位标题长度范围为2~12!";
     private static final String TITLE_NEED_CONTAINS_CHINESE = "职位标题需要包含中文!";
-    private static final String TITLE_TYPE_LIMIT = "只支持汉字字母和数字!";
+    private static final String TITLE_LIMIT = "职位标题中特殊符号支持中英文括号，短横线，下划线，星号!";
     private static final String CONTENT_RULE_LIMIT = "工作内容和职位要求不能填写电话、QQ等联系方式!";
     private static final String RECRUIT_NUMBER_LIMIT = "招聘人数为1～3位整数!";
     private static final String SALARY_NOT_EMPTY = "薪资不能为空!";
@@ -68,20 +66,15 @@ public class Job58TransferCheck extends AbstractTransferCheck<Job58PositionForm>
             if (title.length() < TITLE_MIN_LENGTH || title.length() > TITLE_MAX_LENGTH) {
                 errorMsg.add(TITLE_LENGTH_LIMIT);
             }
-            // 是否包含英语，数字，中文
-            boolean containEnglish = title.matches(ENGLISH);
-            boolean containNumber = title.matches(NUMBER);
+            // 是否包含中文
             boolean containChinese = chinese.matcher(title).find();
-            boolean contailOthers = titleTypeLimit.matcher(title).find();
             if (!containChinese) {
                 errorMsg.add(TITLE_NEED_CONTAINS_CHINESE);
             }
-            if (!containEnglish && !containChinese && !containNumber) {
-                errorMsg.add(TITLE_TYPE_LIMIT);
-            }
-            // 如果标题包含除汉字字母数字外的其他字符，不符合规则
-            if(contailOthers){
-                errorMsg.add(TITLE_TYPE_LIMIT);
+            // 是否包含除了中英文，数字，括号，短横线，下划线，星号之外的特殊字符
+            boolean containSpecialChar = titleLimit.matcher(title).find();
+            if(containSpecialChar){
+                errorMsg.add(TITLE_LIMIT);
             }
             // 职位描述长度限制
             String content = "工作内容：" + moseekerPosition.getAccountabilities() + "</br>职位要求：" + moseekerPosition.getRequirement();

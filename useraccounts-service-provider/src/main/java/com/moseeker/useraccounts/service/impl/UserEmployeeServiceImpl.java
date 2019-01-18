@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -592,21 +593,35 @@ public class UserEmployeeServiceImpl {
         }
         List<ReferralSeekRecommendRecord> list = null;
         try {
-            list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, employeeUserFuture.get(), page, size);
+            list = referralEntity.fetchEmployeeSeekRecommend(userId, positionIdList, employeeUserFuture.get());
             if(StringUtils.isEmptyList(list)){
                 return result;
             }
-            result.setTotalCount(referralEntity.fetchEmployeeSeekRecommendCount(userId, positionIdList,  employeeUserFuture.get()));
+            result.setTotalCount(list.size());
+            int index = (page-1)*size;
+            int end = page*size;
+            if(end > list.size()){
+                end=list.size();
+            }
+            result.setTotalCount(list.size());
+            if(index >= list.size()){
+                return result;
+            }
+            list = list.subList((page-1)*size, end);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+        List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
+        Future<List<UserDepthVO>> depthListFuture = threadPool.startTast(()->neo4jService.fetchDepthUserList(userId, companyId, userIdList));
         EmployeeCardViewData data = referralEntity.fetchEmployeeSeekRecommendCardData(list, userId, companyId);
         this.fetchEmployeePostConnection(data);
-        List<Integer> userIdList = list.stream().map(m ->m.getPresenteeId()).collect(Collectors.toList());
-        List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         List<RadarUserVO> viewPages = new ArrayList<>();
-        for(ReferralSeekRecommendRecord record: list){
-            viewPages.add(EmployeeBizTool.packageEmployeeSeekRecommendVO(data, record, depthList));
+        try {
+            for(ReferralSeekRecommendRecord record: list){
+                viewPages.add(EmployeeBizTool.packageEmployeeSeekRecommendVO(data, record, depthListFuture.get()));
+            }
+        }catch (Exception e){
+            logger.error(e.getMessage());
         }
         result.setUserList(viewPages);
         return result;
@@ -748,4 +763,19 @@ public class UserEmployeeServiceImpl {
         return list;
     }
 
+
+    public List<UserEmployee> getuserEmployeeList(int companyId,List<Integer> userIdList){
+        List<UserEmployee> result= userEmployeeDao.getEmployeeList(userIdList,companyId);
+        return result;
+    }
+
+    public UserEmployee getSingleUserEmployee(int userId){
+        UserEmployee result= userEmployeeDao.getSingleEmployeeByUserId(userId);
+        return result;
+    }
+
+    public List<UserEmployee> getEmployeeByUserIdListAndCompanyList(List<Integer> userIdList,List<Integer> companyIdList){
+        List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
+        return list;
+    }
 }

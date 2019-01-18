@@ -267,4 +267,18 @@ public class HrCompanyConfDao extends DAOImpl<HrCompanyConfRecord, com.moseeker.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByIsOpenGdpr(Byte... values) {
         return fetch(HrCompanyConf.HR_COMPANY_CONF.IS_OPEN_GDPR, values);
     }
+
+    /**
+     * Fetch records that have <code>mobot_head_img IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMobotHeadImg(String... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.MOBOT_HEAD_IMG, values);
+    }
+
+    /**
+     * Fetch records that have <code>mobot_name IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf> fetchByMobotName(String... values) {
+        return fetch(HrCompanyConf.HR_COMPANY_CONF.MOBOT_NAME, values);
+    }
 }
