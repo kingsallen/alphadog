@@ -52,6 +52,9 @@ public class LeaderBoardEntity {
 
         if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
             info.setAward(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getInteger("award"));
+            if(info.getAward()<0){
+                info.setAward(0);
+            }
             info.setLastUpdateTime(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
         }
         if (info.getAward() > 0) {
@@ -85,6 +88,8 @@ public class LeaderBoardEntity {
             }
             if (info.getAward() > 0) {
                 info.setSort(searchengineEntity.getSort(info.getId(), info.getAward(), info.getLastUpdateTime(), timeSpan, companyIdList));
+            }else{
+                info.setAward(0);
             }
         }
         return info;

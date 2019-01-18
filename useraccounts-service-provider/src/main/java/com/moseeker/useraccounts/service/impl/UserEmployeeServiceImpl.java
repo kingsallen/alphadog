@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -762,4 +763,19 @@ public class UserEmployeeServiceImpl {
         return list;
     }
 
+
+    public List<UserEmployee> getuserEmployeeList(int companyId,List<Integer> userIdList){
+        List<UserEmployee> result= userEmployeeDao.getEmployeeList(userIdList,companyId);
+        return result;
+    }
+
+    public UserEmployee getSingleUserEmployee(int userId){
+        UserEmployee result= userEmployeeDao.getSingleEmployeeByUserId(userId);
+        return result;
+    }
+
+    public List<UserEmployee> getEmployeeByUserIdListAndCompanyList(List<Integer> userIdList,List<Integer> companyIdList){
+        List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
+        return list;
+    }
 }
