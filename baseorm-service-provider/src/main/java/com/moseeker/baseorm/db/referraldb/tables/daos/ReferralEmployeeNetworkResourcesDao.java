@@ -92,4 +92,11 @@ public class ReferralEmployeeNetworkResourcesDao extends DAOImpl<ReferralEmploye
     public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByUpdateTime(Timestamp... values) {
         return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>disable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByDisable(Byte... values) {
+        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.DISABLE, values);
+    }
 }
