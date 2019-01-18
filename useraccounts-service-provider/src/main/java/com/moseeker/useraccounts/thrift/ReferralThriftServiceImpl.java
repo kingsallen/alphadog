@@ -273,4 +273,13 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         }
     }
 
+    @Override
+    public int checkSeekReferral(int userId, int presenteeId, int positionId, int companyId, int psc) throws BIZException, TException {
+        try {
+            return radarService.checkSeekReferral(userId, presenteeId, positionId, companyId, psc);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

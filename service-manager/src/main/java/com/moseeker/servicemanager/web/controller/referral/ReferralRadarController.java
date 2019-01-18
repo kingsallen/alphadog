@@ -121,4 +121,35 @@ public class ReferralRadarController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
+    @RequestMapping(value = "v1/referral/seek/check", method = RequestMethod.GET)
+    public String checkSeekReferral(@RequestParam(name = "user_id") Integer userId,
+                                       @RequestParam(name = "appid") Integer appid,
+                                       @RequestParam(name = "company_id") Integer companyId,
+                                       @RequestParam(name = "presentee_user_id") Integer presenteeId,
+                                       @RequestParam(name = "position_id") Integer positionId,
+                                       @RequestParam(name = "psc") Integer parentChainId) throws TException {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addIntTypeValidate("员工userId", userId, 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("companyId", companyId, 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("presentee_user_id", presenteeId, 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("position_id", positionId, 1, Integer.MAX_VALUE);
+        validateUtil.addIntTypeValidate("psc", parentChainId, -1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", userId);
+        validateUtil.addRequiredValidate("presentee_user_id", presenteeId);
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("companyId", companyId);
+        validateUtil.addRequiredValidate("position_id", positionId);
+        validateUtil.addRequiredValidate("psc", parentChainId);
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            int referralId = referralService.checkSeekReferral(userId, presenteeId, positionId, companyId, parentChainId);
+            JSONObject response = new JSONObject();
+            response.put("referral_id", referralId);
+            return Result.success(response).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
 }

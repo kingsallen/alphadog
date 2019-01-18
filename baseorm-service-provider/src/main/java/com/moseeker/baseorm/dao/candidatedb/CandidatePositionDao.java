@@ -101,7 +101,8 @@ public class CandidatePositionDao extends JooqCrudImpl<CandidatePositionDO, Cand
         return create.selectFrom(CandidatePosition.CANDIDATE_POSITION)
                 .where(CandidatePosition.CANDIDATE_POSITION.POSITION_ID.in(positionIds))
                 .and(CandidatePosition.CANDIDATE_POSITION.USER_ID.in(beRecomUserIds))
-                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER)
+                .orderBy(CandidatePosition.CANDIDATE_POSITION.VIEW_NUMBER.desc(),
+                        CandidatePosition.CANDIDATE_POSITION.UPDATE_TIME.desc())
                 .fetchInto(CandidatePositionDO.class);
     }
 

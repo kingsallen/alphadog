@@ -25,9 +25,10 @@ public class CandidateTemplateShareChainDao extends JooqCrudImpl<CandidateTempla
     }
 
 
-    public List<CandidateTemplateShareChainDO> getRadarCards(long timestamp) {
+    public List<CandidateTemplateShareChainDO> getRadarCards(int userId, long timestamp) {
         return create.selectFrom(CANDIDATE_TEMPLATE_SHARE_CHAIN)
                 .where(CANDIDATE_TEMPLATE_SHARE_CHAIN.SEND_TIME.eq(timestamp))
+                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.ROOT_USER_ID.eq(userId))
                 .fetchInto(CandidateTemplateShareChainDO.class);
     }
 
