@@ -17,37 +17,37 @@ public class KafkaProducerPlugin {
     /**
      * 即所有副本都同步到数据时send方法才返回, 以此来完全判断数据是否发送成功, 理论上来讲数据不会丢失.
      */
-    @Value(value = "${bootstrap.servers}")
+    @Value(value = "${kafka.bootstrap.servers}")
     private List<String> servers;
 
     /**
      * 即所有副本都同步到数据时send方法才返回, 以此来完全判断数据是否发送成功, 理论上来讲数据不会丢失
      */
-    @Value(value = "${acks}")
+    @Value(value = "${kafka.acks}")
     private String acks;
 
     /**
      * 发送失败重试次数
      */
-    @Value(value = "${retries}")
+    @Value(value = "${kafka.retries}")
     private Integer retries;
 
     /**
      * 批处理条数：当多个记录被发送到同一个分区时，生产者会尝试将记录合并到更少的请求中。这有助于客户端和服务器的性能.
      */
-    @Value(value = "${batch.size}")
+    @Value(value = "${kafka.batch.size}")
     private Integer batchSize;
 
     /**
      * 批处理延迟时间上限：即1ms过后，不管是否达到批处理数，都直接发送一次请求
      */
-    @Value(value = "${linger.ms}")
+    @Value(value = "${kafka.linger.ms}")
     private Integer lingerMs;
 
     /**
      * 批处理缓冲区
      */
-    @Value(value = "${buffer.memory}")
+    @Value(value = "${kafka.buffer.memory}")
     private Long bufferMemory;
 
     private Map<String, Object> props = new HashMap<>();

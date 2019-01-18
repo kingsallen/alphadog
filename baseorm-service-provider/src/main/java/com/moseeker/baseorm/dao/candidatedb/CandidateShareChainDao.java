@@ -136,12 +136,13 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)1)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(updateId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE.eq((byte)0))
                 .execute();
     }
 
-    public void updateTypeByIds(List<Integer> updateIds) {
+    public void updateTypeByIds(List<Integer> updateIds, int type) {
         create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)1)
+                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)type)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.in(updateIds))
                 .execute();
     }
@@ -222,5 +223,13 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.desc())
                 .limit(1)
                 .fetchOneInto(CandidateShareChainDO.class);
+    }
+
+    public List<CandidateShareChainDO> getShareChainsByPresenteeAndPosition(Integer applierId, Integer positionId) {
+        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
+                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(applierId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.eq(positionId))
+                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.desc())
+                .fetchInto(CandidateShareChainDO.class);
     }
 }

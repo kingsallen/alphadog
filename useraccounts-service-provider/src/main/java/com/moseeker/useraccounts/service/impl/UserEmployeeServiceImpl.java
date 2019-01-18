@@ -678,7 +678,7 @@ public class UserEmployeeServiceImpl {
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
             threadPool.startTast(()->{
                 ConnectRadarInfo info = new ConnectRadarInfo();
-                info.setChainId(logRecord.getRootChainId());
+                info.setChainId(logRecord.getId());
                 info.setParentId(0);
                 info.setRecomUserId(logRecord.getRootUserId());
                 info.setNextUserId(logRecord.getRootUserId());

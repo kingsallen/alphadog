@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
@@ -49,14 +50,19 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.ReferralService;
+import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.activity.Activity;
 import com.moseeker.useraccounts.service.impl.activity.ActivityType;
 import com.moseeker.useraccounts.service.impl.biztools.HBBizTool;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaAskReferralPojo;
 import com.moseeker.useraccounts.service.impl.vo.*;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -132,6 +138,9 @@ public class ReferralServiceImpl implements ReferralService {
     private ReferralRadarService radarService;
 
     ThreadPool tp = ThreadPool.Instance;
+
+    @Autowired
+    private KafkaSender kafkaSender;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -373,7 +382,22 @@ public class ReferralServiceImpl implements ReferralService {
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
             templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
             radarService.updateCandidateShareChainTemlate(recommendRecord);
+            KafkaAskReferralPojo kafkaAskReferralPojo = initKafkaAskReferralPojo(position.getCompanyId(), userId, positionId);
+            kafkaSender.sendMessage(Constant.KAFKA_TOPIC_ASK_REFERRAL, JSON.toJSONString(kafkaAskReferralPojo));
         }
+    }
+
+    private KafkaAskReferralPojo initKafkaAskReferralPojo(int companyId, int userId, int positionId) {
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        KafkaAskReferralPojo kafkaAskReferralPojo = new KafkaAskReferralPojo();
+        kafkaAskReferralPojo.setAsked(1);
+        kafkaAskReferralPojo.setCompany_id(companyId);
+        kafkaAskReferralPojo.setEvent("ask_for_referral");
+        kafkaAskReferralPojo.setEvent_time(sdf.format(new Date(current)));
+        kafkaAskReferralPojo.setPosition_id(positionId);
+        kafkaAskReferralPojo.setUser_id(userId);
+        return kafkaAskReferralPojo;
     }
 
     @Override
@@ -404,7 +428,7 @@ public class ReferralServiceImpl implements ReferralService {
         return info;
     }
 
-    @Transactional
+    @Transactional(rollbackFor = RuntimeException.class)
     @Override
     public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) {
@@ -442,7 +466,9 @@ public class ReferralServiceImpl implements ReferralService {
             }catch (Exception e){
                 logger.error(e.getMessage());
             }
-            radarService.updateShareChainHandleType(recommendRecord, 3);
+            sender.publishReferralEvaluateEvent(referralId, user.getId(), positionId, applicationId, employee.getId());
+            radarService.updateShareChainHandleType(recommendRecord.getPostUserId(), recommendRecord.getPresenteeId(),
+                    recommendRecord.getPositionId(), ReferralApplyHandleEnum.recommend.getType());
         }
     }
 

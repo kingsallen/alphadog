@@ -5,6 +5,7 @@ import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
@@ -35,6 +36,8 @@ public abstract class AbstractReferralTypeHandler {
     protected CandidateShareChainDao shareChainDao;
     @Autowired
     protected ReferralSeekRecommendDao seekRecommendDao;
+    @Autowired
+    protected ReferralRecomEvaluationDao evaluationDao;
     @Autowired
     protected CandidatePositionShareRecordDao positionShareRecordDao;
 
@@ -68,7 +71,7 @@ public abstract class AbstractReferralTypeHandler {
     protected abstract JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees);
 
     private String getLastDateTime(String applyTimeStr, List<HrOperationRecordRecord> hrOperations) {
-        DateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         if(hrOperations == null || hrOperations.size() == 0){
             DateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
             Date applyTime;

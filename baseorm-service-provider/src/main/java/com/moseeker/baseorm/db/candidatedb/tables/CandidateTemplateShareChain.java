@@ -11,6 +11,7 @@ import org.jooq.*;
 import org.jooq.impl.TableImpl;
 
 import javax.annotation.Generated;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShareChainRecord> {
 
-    private static final long serialVersionUID = 2052023429;
+    private static final long serialVersionUID = -914116090;
 
     /**
      * The reference instance of <code>candidatedb.candidate_template_share_chain</code>
@@ -102,6 +103,16 @@ public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShar
      * The column <code>candidatedb.candidate_template_share_chain.seek_referral_id</code>. 0 默认，未求推荐 ，如果有求推荐记录，则为求推荐id
      */
     public final TableField<CandidateTemplateShareChainRecord, Integer> SEEK_REFERRAL_ID = createField("seek_referral_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0 默认，未求推荐 ，如果有求推荐记录，则为求推荐id");
+
+    /**
+     * The column <code>candidatedb.candidate_template_share_chain.create_time</code>.
+     */
+    public final TableField<CandidateTemplateShareChainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>candidatedb.candidate_template_share_chain.update_time</code>.
+     */
+    public final TableField<CandidateTemplateShareChainRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>candidatedb.candidate_template_share_chain</code> table reference

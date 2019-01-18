@@ -94,7 +94,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    void updateShareChainHandleType(ReferralSeekRecommendRecord recommendRecord, int type);
+    void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type);
     /**
      * 更改template_share_chain中的候选人求推荐状态
      *

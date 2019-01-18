@@ -15,6 +15,7 @@
  	9: optional i32 parentId,	//candidatedb.candidate_share_chain.id,上一条 share_chain.id
  	10: optional i32 seekReferralId,	// 是否求推荐
  	11: optional i32 type,	// 标记是否已经处理（ 0 未处理 1 邀请投递或推荐TA ）
-    12: optional i64 sendTime       // 十分钟消息模板发送时间
-
+    12: optional i64 sendTime,       // 十分钟消息模板发送时间
+    13: optional string createTime,
+    14: optional string updateTime
  }

@@ -18,26 +18,29 @@ public class KafkaConsumerPlugin {
     /**
      * 即所有副本都同步到数据时send方法才返回, 以此来完全判断数据是否发送成功, 理论上来讲数据不会丢失.
      */
-    @Value(value = "${bootstrap.servers}")
+    @Value(value = "${kafka.bootstrap.servers}")
     private String servers;
 
     /**
      * 如果为true，消费者的偏移量将在后台定期提交
      */
-    @Value(value = "${enable.auto.commit}")
+    @Value(value = "${kafka.enable.auto.commit}")
     private Boolean enableAutoCommit;
 
     /**
      * 自动提交周期
      */
-    @Value(value = "${auto.commit.interval.ms}")
+    @Value(value = "${kafka.auto.commit.interval.ms}")
     private Integer automitIntervalMs;
 
     /**
      * 在使用Kafka的组管理时，用于检测消费者故障的超时
      */
-    @Value(value = "${session.timeout.ms}")
+    @Value(value = "${kafka.session.timeout.ms}")
     private Integer sessionTimeoutMs;
+
+    @Value(value = "${kafka.auto.offset.reset}")
+    private String autoOffSet;
 
     private Map<String, Object> props = new HashMap<>();
 
@@ -46,6 +49,7 @@ public class KafkaConsumerPlugin {
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, enableAutoCommit);
         props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, automitIntervalMs);
         props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, sessionTimeoutMs);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffSet);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         return this;

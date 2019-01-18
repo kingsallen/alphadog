@@ -111,4 +111,11 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
                 .fetchOne();
         return evaluationRecord;
     }
+
+    public List<ReferralRecomEvaluationRecord> fetchEvaluationRecordsByAppids(List<Integer> seekAppids) {
+        return using(configuration())
+                .selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
+                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.APP_ID.in(seekAppids))
+                .fetch();
+    }
 }

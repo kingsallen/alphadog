@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.config;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.useraccounts.kafka.KafkaConsumerPlugin;
 import com.moseeker.useraccounts.kafka.KafkaProducerPlugin;
@@ -134,12 +135,17 @@ public class AppConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(consumerFactory2());
         return factory;
     }
 
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().getConsumerProps());
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_ID));
+    }
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory2() {
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_ID));
     }
 
     @Bean
@@ -160,7 +166,7 @@ public class AppConfig {
 
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
-        return new KafkaTemplate<String, String>(producerFactory());
+        return new KafkaTemplate<>(producerFactory());
     }
 
     @Bean
@@ -311,6 +317,32 @@ public class AppConfig {
                     .with("user_neo4j.*"));
             add(BindingBuilder.bind(employeeRegisterQueue()).to(employeeRegisterExchange())
                     .with(EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY));
+        }};
+    }
+
+    /**
+     * 申请投递时，需要处理是否存在推荐人，如果存在，需要将candidate_share_chain和十分钟消息模板candidate_template_share_chain中的数据状态改为已投递状态
+     */
+    @Bean
+    public TopicExchange referralApplyExchange() {
+        return new TopicExchange("referral_apply_exchange", true, false);
+    }
+
+    /**
+     * exchange : referral_apply_exchange
+     * routinue_key : handle.*
+     */
+    @Bean
+    public Queue handleApplyQueue() {
+        return new Queue("handle_share_chain", true, false, false);
+    }
+
+
+    @Bean
+    public List<Binding> bindApplyHandleQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(handleApplyQueue()).to(referralApplyExchange())
+                    .with("referral_*_handle"));
         }};
     }
 }
