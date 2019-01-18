@@ -142,7 +142,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public String getRadarCards(ReferralCardInfo cardInfo) {
         logger.info("ReferralCardInfo:{}", cardInfo);
         // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getTimestamp());
+        List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getUserId(), cardInfo.getTimestamp());
         shareChainDOS = templateHelper.filterAppliedShareChain(shareChainDOS);
         if(shareChainDOS.size() == 0){
             throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
@@ -260,7 +260,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
         checkCorrectEmployee(ignoreInfo);
-        List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(ignoreInfo.getTimestamp());
+        List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(ignoreInfo.getUserId(), ignoreInfo.getTimestamp());
         if(shareChainDOS.size() == 0){
             return;
         }
