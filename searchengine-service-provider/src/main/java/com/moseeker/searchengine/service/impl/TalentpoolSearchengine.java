@@ -928,7 +928,7 @@ public class TalentpoolSearchengine {
         String hrId=params.get("hr_account_id");
         String companyId=params.get("company_id");
         if(!this.isUseFieldorder(params)){
-            builder.addSort(this.handlerScoreOrderScript(publisherIds));
+            builder.addSort("_score", SortOrder.DESC);
             if(this.isOrderTalent(params)){
                 this.orderByTalent(publisherIdList,hrId,companyId,builder);
             }else {
