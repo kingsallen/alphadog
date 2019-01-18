@@ -192,15 +192,6 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }
     }
 
-    @Override
-    public Response addUserEmployeePointRecord(int employeeId, int companyId, UserEmployeePointsRecordDO record) throws TException {
-        try {
-            employeeEntity.addReward(employeeId, companyId, record);
-            return ResponseUtils.success(true);
-        }catch (Exception e){
-            throw ExceptionUtils.convertException(e);
-        }
-    }
 
     @Override
     public Response getUserEmployeeList(int companyId, List<Integer> userIdList) throws TException {
@@ -212,15 +203,6 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }
     }
 
-    @Override
-    public Response getUserEmployeeByuserId(int userId) throws TException {
-        try{
-            UserEmployee result=employeeService.getSingleUserEmployee(userId);
-            return ResponseUtils.success(result);
-        }catch(Exception e){
-            throw ExceptionUtils.convertException(e);
-        }
-    }
 
     @Override
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId) throws BIZException, TException {
@@ -299,4 +281,25 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+    @Override
+    public Response addUserEmployeePointRecord(int employeeId, int companyId, UserEmployeePointsRecordDO record) throws TException {
+        try {
+            employeeEntity.addReward(employeeId, companyId, record);
+            return ResponseUtils.success(true);
+        }catch (Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public Response getUserEmployeeByuserId(int userId) throws TException {
+        try{
+            UserEmployee result=employeeService.getSingleUserEmployee(userId);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

@@ -56,8 +56,11 @@ public final class Constant {
     // 消息模板通知 KEY_IDENTIFIER
     public static final String REDIS_KEY_IDENTIFIER_MQ_MESSAGE_NOTICE_TEMPLATE = "MQ_MESSAGE_NOTICE_TEMPLATE";
 
-    public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_verification_exchange";
-    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_verification_exchange.redpacket";
+    /*public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_verification_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_verification_exchange.redpacket";*/
+
+    public static final String EMPLOYEE_REGISTER_EXCHNAGE = "employee_register_exchange";
+    public static final String EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY = "employee_register_routingkey.first_register";
 
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_EXCHANGE = "redpacket_exchange";
     public static final String EMPLOYEE_FIRST_REGISTER_ADD_REDPACKET_ROUTINGKEY = "employee_bind.red_packet";

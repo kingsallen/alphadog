@@ -6,7 +6,6 @@ import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
@@ -14,6 +13,7 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.redis.RedisClient;
@@ -33,10 +33,10 @@ import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.*;
 import com.moseeker.entity.pojos.EmployeeCardViewData;
 import com.moseeker.entity.pojos.EmployeeRadarData;
+import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
@@ -48,6 +48,7 @@ import com.moseeker.useraccounts.domain.AwardEntity;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
 import com.moseeker.useraccounts.pojo.PositionReferralInfo;
+import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.Neo4jService;
 import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.aggregate.ApplicationsAggregateId;
@@ -56,14 +57,11 @@ import com.moseeker.useraccounts.service.impl.ats.employee.EmployeeBatchHandler;
 import com.moseeker.useraccounts.service.impl.biztools.EmployeeBizTool;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.pojos.*;
-import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
-import com.moseeker.entity.pojos.RadarUserInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
@@ -503,15 +501,6 @@ public class UserEmployeeServiceImpl {
         return paginationUtil;
     }
 
-    public List<UserEmployee> getuserEmployeeList(int companyId,List<Integer> userIdList){
-        List<UserEmployee> result= userEmployeeDao.getEmployeeList(userIdList,companyId);
-        return result;
-    }
-
-    public UserEmployee getSingleUserEmployee(int userId) {
-        UserEmployee result = userEmployeeDao.getSingleEmployeeByUserId(userId);
-        return result;
-    }
 
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId){
         ValidateUtil vu = new ValidateUtil();
@@ -788,4 +777,15 @@ public class UserEmployeeServiceImpl {
         List<UserEmployee> list=userEmployeeDao.getDataListByCidListAndUserIdList(userIdList,companyIdList);
         return list;
     }
+
+    public List<UserEmployee> getuserEmployeeList(int companyId,List<Integer> userIdList){
+        List<UserEmployee> result= userEmployeeDao.getEmployeeList(userIdList,companyId);
+        return result;
+    }
+
+    public UserEmployee getSingleUserEmployee(int userId){
+        UserEmployee result= userEmployeeDao.getSingleEmployeeByUserId(userId);
+        return result;
+    }
+
 }

@@ -589,6 +589,7 @@ public class UserEmployeeController {
     }
 
 
+
     @RequestMapping(value="/v1/contact/referral/info", method = RequestMethod.GET)
     @ResponseBody
     public String getPositionReferralInfo(@RequestParam("appid") int appid,
