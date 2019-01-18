@@ -19,7 +19,27 @@ public class Forward extends Relation{
     @Property
     private int position_id;
 
+    @Property
+    private int root_user_id;
 
+    @Property
+    private String create_time;
+
+    public int getRoot_user_id() {
+        return root_user_id;
+    }
+
+    public void setRoot_user_id(int root_user_id) {
+        this.root_user_id = root_user_id;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
 
     public int getShare_chain_id() {
         return share_chain_id;
