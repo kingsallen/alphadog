@@ -961,14 +961,14 @@ public class SearchUtil {
 
 
     public void queryMatchPrefixSingle(String fieldName,String condition,QueryBuilder query){
-        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, condition);
+        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, "*"+condition+"*");
         search.maxExpansions(0);
         ((BoolQueryBuilder) query).must(search);
     }
 
     public void convertSearchNameScript(String condition,QueryBuilder query){
         StringBuffer sb=new StringBuffer();
-        sb.append("_source.user.profiles.basic.name =='+condition+'");
+        sb.append("_source.user.profiles.basic.name=='"+condition+"'");
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         ((BoolQueryBuilder) query).filter(script);
     }
