@@ -961,7 +961,7 @@ public class SearchUtil {
 
 
     public void queryMatchPrefixSingle(String fieldName,String condition,QueryBuilder query){
-        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, "*"+condition+"*");
+        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, condition);
         search.maxExpansions(0);
         ((BoolQueryBuilder) query).must(search);
     }
