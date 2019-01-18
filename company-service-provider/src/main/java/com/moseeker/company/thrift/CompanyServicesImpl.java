@@ -609,6 +609,52 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+    /*
+     *
+     *获取当前公司的开关权限
+     *@Param  moduleNames 模块名
+     *@Param  companyId 公司Id
+     * */
+    @Override
+    public List<CompanySwitchVO> switchCheck(int companyId, List<String> moduleNames) throws BIZException, TException {
+        try {
+            return service.switchCheck(companyId,moduleNames);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+    /*
+     *
+     *添加新的公司开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     *
+     * */
+    @Override
+    public CompanySwitchVO switchPost(CompanySwitchVO companySwitchVO) throws BIZException, TException {
+        try {
+            return service.switchPost(companySwitchVO);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    /*
+     *
+     *更新当前公司的开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     * */
+    @Override
+    public CompanySwitchVO switchPatch(CompanySwitchVO companySwitchVO) throws BIZException, TException {
+        try {
+            return service.switchPatch(companySwitchVO);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
 
     /**
      * 获取公司员工认证后补填字段配置信息列表
