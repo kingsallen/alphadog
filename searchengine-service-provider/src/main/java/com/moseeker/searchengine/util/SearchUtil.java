@@ -961,7 +961,7 @@ public class SearchUtil {
 
 
     public void queryMatchPrefixSingle(String fieldName,String condition,QueryBuilder query){
-        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, "*"+condition+"*");
+        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, condition);
         search.maxExpansions(0);
         ((BoolQueryBuilder) query).must(search);
     }
@@ -977,7 +977,7 @@ public class SearchUtil {
         if (fieldNameList!=null&&fieldNameList.size()>0) {
             QueryBuilder keyand = QueryBuilders.boolQuery();
             for (String fields : fieldNameList) {
-                QueryBuilder fullf = QueryBuilders.wildcardQuery(fields, condition);
+                QueryBuilder fullf = QueryBuilders.wildcardQuery(fields, "*"+condition+"*");
                 ((BoolQueryBuilder) keyand).should(fullf);
             }
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
@@ -989,38 +989,21 @@ public class SearchUtil {
         QueryBuilder keyand = QueryBuilders.boolQuery();
 
         MatchQueryBuilder otherWorkexpJobMatch=QueryBuilders.matchQuery("user.profiles.other_workexps.job_name_data",condition);
-        otherWorkexpJobMatch.boost(5);
+        otherWorkexpJobMatch.boost(1);
         ((BoolQueryBuilder) keyand).should(otherWorkexpJobMatch);
 
         MatchQueryBuilder otherWorkexpJobMatchparse=QueryBuilders.matchPhraseQuery("user.profiles.other_workexps.job_name_data",condition);
-        otherWorkexpJobMatchparse.boost(50);
+        otherWorkexpJobMatchparse.boost(10);
         ((BoolQueryBuilder) keyand).should(otherWorkexpJobMatchparse);
 
-        MatchQueryBuilder otherWorkexpDesMatchparse=QueryBuilders.matchPhraseQuery("user.profiles.other_workexps.description",condition);
-        otherWorkexpDesMatchparse.boost(25);
-        ((BoolQueryBuilder) keyand).should(otherWorkexpDesMatchparse);
-
-        MatchQueryBuilder otherWorkexpDesMatch=QueryBuilders.matchQuery("user.profiles.other_workexps.description",condition);
-        otherWorkexpDesMatch.boost(1);
-        ((BoolQueryBuilder) keyand).should(otherWorkexpDesMatch);
-
-
-
         MatchQueryBuilder recentJobMatch=QueryBuilders.matchQuery("user.profiles.recent_job.job_name_data",condition);
-        recentJobMatch.boost(5);
+        recentJobMatch.boost(2);
         ((BoolQueryBuilder) keyand).should(recentJobMatch);
 
         MatchQueryBuilder recentJobMatchParse=QueryBuilders.matchPhraseQuery("user.profiles.recent_job.job_name_data",condition);
-        recentJobMatchParse.boost(50);
+        recentJobMatchParse.boost(20);
         ((BoolQueryBuilder) keyand).should(recentJobMatchParse);
 
-        MatchQueryBuilder recentJobExpMatchParse=QueryBuilders.matchPhraseQuery("user.profiles.recent_job.description",condition);
-        recentJobExpMatchParse.boost(25);
-        ((BoolQueryBuilder) keyand).should(recentJobExpMatchParse);
-
-        MatchQueryBuilder recentJobExpMatch=QueryBuilders.matchQuery("user.profiles.recent_job.description",condition);
-        recentJobExpMatch.boost(1);
-        ((BoolQueryBuilder) keyand).should(recentJobExpMatch);
 
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
