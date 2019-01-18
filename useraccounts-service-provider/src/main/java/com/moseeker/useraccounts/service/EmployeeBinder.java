@@ -351,7 +351,8 @@ public abstract class EmployeeBinder {
      * @param userId 用户编号
      */
     private void publishEmployeeRegister(int employeeId, int companyId, long bindingTime, int userId) {
-        JSONObject jsonObject = new JSONObject();
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+        /*JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", "employee verification");
         jsonObject.put("ID", UUID.randomUUID().toString());
         jsonObject.put("employee_id", employeeId);
@@ -360,6 +361,13 @@ public abstract class EmployeeBinder {
         jsonObject.put("user_id", userId);
         log.info("EmployeeBinder employeeFirstRegister param:{}, exchange:{}, routing:{}",
                 jsonObject.toJSONString(), EMPLOYEE_REGISTER_EXCHNAGE, EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY);
+        amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
+                EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                        .build());*/
+        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", employeeId);
+        jsonObject.put("binding_time", bindingTime);
         amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
                 EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());

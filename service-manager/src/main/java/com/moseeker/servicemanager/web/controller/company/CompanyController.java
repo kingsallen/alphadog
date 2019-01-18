@@ -920,4 +920,72 @@ public class CompanyController {
             return Result.success(companyServices.fetchGDPRSwitchByHR(hrId)).toJson();
         }
     }
+
+
+    /*
+    *
+    *获取当前公司的开关权限
+    *@Param appid
+    *@Param companyId 公司id
+    *@Param moduleNames 各产品定义标识
+    *
+    * */
+    @RequestMapping(value = "/api/company/switchCheck", method = RequestMethod.GET)
+    @ResponseBody
+    public String switchCheck(@RequestParam Integer appid,@RequestParam(name = "companyId" , required = false) Integer companyId, @RequestParam(name = "moduleName" , required = false) List<String> moduleNames) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.switchCheck(companyId,moduleNames)).toJson();
+        }
+    }
+
+    /*
+     *
+     *添加新的公司开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     *
+     * */
+    @RequestMapping(value = "/api/company/switchPost", method = RequestMethod.POST)
+    @ResponseBody
+    public String switchPost(@RequestParam Integer appid,@RequestBody CompanySwitchVO companySwitchVO ) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("公司ID", companySwitchVO.getCompanyId());
+        validateUtil.addRequiredValidate("产品定义标识", companySwitchVO.getKeyword());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.switchPost(companySwitchVO)).toJson();
+        }
+    }
+
+    /*
+     *
+     *更新当前公司的开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     * */
+    @RequestMapping(value = "/api/company/switchPatch", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String switchPatch(@RequestParam Integer appid,@RequestBody CompanySwitchVO companySwitchVO ) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("开关ID", companySwitchVO.getId());
+        validateUtil.addRequiredValidate("公司ID", companySwitchVO.getCompanyId());
+        validateUtil.addRequiredValidate("品定义标识", companySwitchVO.getKeyword());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.switchPatch(companySwitchVO)).toJson();
+        }
+    }
 }

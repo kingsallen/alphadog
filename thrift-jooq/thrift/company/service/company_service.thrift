@@ -67,8 +67,13 @@ service CompanyServices {
     //查看指定的HR 所在的公司是否开启GDPR隐私保护条款
     bool fetchGDPRSwitchByHR(1: i32 hrId) throws (1: common_struct.BIZException e)
 
-    hr_company_conf_struct.HrCompanyMobotConfDO getMobotConf(1: i32 companyId) throws (1: common_struct.BIZException e)
+   hr_company_conf_struct.HrCompanyMobotConfDO getMobotConf(1: i32 companyId) throws (1: common_struct.BIZException e)
     hr_company_conf_struct.HrCompanyMobotConfDO updateMobotConf(1: hr_company_conf_struct.HrCompanyMobotConfDO mobotConf) throws (1: common_struct.BIZException e)
+
+    //获取当前公司的开关权限
+     list<company_struct.CompanySwitchVO> switchCheck(1: i32 companyId, 2: list<string> moduleNames) throws (1: common_struct.BIZException e)
+     company_struct.CompanySwitchVO switchPost(1:company_struct.CompanySwitchVO data) throws (1: common_struct.BIZException e)
+     company_struct.CompanySwitchVO switchPatch(1:company_struct.CompanySwitchVO data) throws (1: common_struct.BIZException e)
 }
 
 service HrTeamServices {
@@ -181,17 +186,6 @@ service TalentpoolServices {
 }
 
 service TalentpoolNewServices {
-    common_struct.Response addProfileContent(1:i32 userId,2:i32 accountId, 3:string content)throws (1: common_struct.BIZException e)
-
-    common_struct.Response deleteHrAutoMaticTagByIds(1:i32 hr_id,2:i32 company_id,3:list<i32> tag_ids) throws (1: common_struct.BIZException e)
-
-    common_struct.Response addHrAutoMaticTag(1:talentpool_struct.TalentpoolHrAutomaticTagDO hrAutoTagDO, 2:i32 company_id) throws (1: common_struct.BIZException e)
-
-    common_struct.Response updateHrAutoMaticTag(1:talentpool_struct.TalentpoolHrAutomaticTagDO hrAutoTagDO, 2:i32 company_id) throws (1: common_struct.BIZException e)
-
-    common_struct.Response getHrAutoMaticTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
-
-    common_struct.Response getHrAutoMaticTagSingle(1:i32 hr_id,2:i32 company_id,3:i32 id) throws (1: common_struct.BIZException e)
 
     common_struct.Response getCompanyTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
 
@@ -203,4 +197,15 @@ service TalentpoolNewServices {
 
     common_struct.Response updateCompanyTag(1:talentpool_struct.TalentpoolCompanyTagDO companyTagDO, 2:i32 hr_id) throws (1: common_struct.BIZException e)
 
+    common_struct.Response addProfileContent(1:i32 userId,2:i32 accountId, 3:string content)throws (1: common_struct.BIZException e)
+
+    common_struct.Response deleteHrAutoMaticTagByIds(1:i32 hr_id,2:i32 company_id,3:list<i32> tag_ids) throws (1: common_struct.BIZException e)
+
+    common_struct.Response addHrAutoMaticTag(1:talentpool_struct.TalentpoolHrAutomaticTagDO hrAutoTagDO, 2:i32 company_id) throws (1: common_struct.BIZException e)
+
+    common_struct.Response updateHrAutoMaticTag(1:talentpool_struct.TalentpoolHrAutomaticTagDO hrAutoTagDO, 2:i32 company_id) throws (1: common_struct.BIZException e)
+
+    common_struct.Response getHrAutoMaticTagList(1:i32 hr_id,2:i32 company_id,3:i32 page_number, 4:i32 page_size) throws (1: common_struct.BIZException e)
+
+    common_struct.Response getHrAutoMaticTagSingle(1:i32 hr_id,2:i32 company_id,3:i32 id) throws (1: common_struct.BIZException e)
 }

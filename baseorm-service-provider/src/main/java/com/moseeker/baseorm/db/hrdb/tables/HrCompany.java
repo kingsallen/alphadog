@@ -8,6 +8,7 @@ import com.moseeker.baseorm.db.hrdb.Hrdb;
 import com.moseeker.baseorm.db.hrdb.Keys;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = 1018849277;
+    private static final long serialVersionUID = -1129288587;
 
     /**
      * The reference instance of <code>hrdb.hr_company</code>
@@ -157,9 +158,19 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, String> FEATURE = createField("feature", org.jooq.impl.SQLDataType.VARCHAR.length(1000), this, "公司福利特色， 由公司下的职位的福利特色每天跑脚本合并而来，目前供支付宝使用");
 
     /**
-     * The column <code>hrdb.hr_company.fortune</code>. 是否世界500强，0：不是 1：是
+     * The column <code>hrdb.hr_company.fortune</code>. 是否500强，0：不是 1：是
      */
-    public final TableField<HrCompanyRecord, Byte> FORTUNE = createField("fortune", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否世界500强，0：不是 1：是");
+    public final TableField<HrCompanyRecord, Byte> FORTUNE = createField("fortune", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否500强，0：不是 1：是");
+
+    /**
+     * The column <code>hrdb.hr_company.fortune_scale</code>. 五百强范围，1：世界 2：中国
+     */
+    public final TableField<HrCompanyRecord, Byte> FORTUNE_SCALE = createField("fortune_scale", org.jooq.impl.SQLDataType.TINYINT, this, "五百强范围，1：世界 2：中国");
+
+    /**
+     * The column <code>hrdb.hr_company.fortune_year</code>. 五百强评定年份
+     */
+    public final TableField<HrCompanyRecord, Date> FORTUNE_YEAR = createField("fortune_year", org.jooq.impl.SQLDataType.DATE, this, "五百强评定年份");
 
     /**
      * Create a <code>hrdb.hr_company</code> table reference
