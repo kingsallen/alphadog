@@ -151,6 +151,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         Result<Record1<Integer>>  result = create.selectDistinct(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID)
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(presentee_user_id))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.ne(presentee_user_id))
                 .fetch();
         if(!result.isEmpty()){
             Set<Integer> idSet = result.stream().map(m -> m.value1()).collect(Collectors.toSet());
@@ -163,6 +164,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         Result<Record1<Integer>>  result = create.selectDistinct(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID)
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.ne(rootUserId))
                 .fetch();
         if(!result.isEmpty()){
             Set<Integer> idSet = result.stream().map(m -> m.value1()).collect(Collectors.toSet());
