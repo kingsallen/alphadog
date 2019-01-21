@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.entity.ProfileEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
+import com.moseeker.profile.domain.ProfileAttementVO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -31,11 +32,11 @@ public class EmployeeReferralProfileMobot extends EmployeeReferralProfile {
 
     @Override
     protected void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
-                                     UserEmployeeDO employeeDO, Integer userId, Integer attachmentId) {
-        userId = userRecord.getId();
+                                     UserEmployeeDO employeeDO, ProfileAttementVO attementVO) {
+        int userId = userRecord.getId();
         ProfileProfileDO profileDO = profileEntity.getProfileByUserId(userId);
-        ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
-        attachmentId = attachmentRecord.getId();
+        attementVO.setAttachmentId(profileEntity.getProfileAttachmentByProfileId(profileDO.getId()).getId());
+        attementVO.setUserId(userId);
     }
 
 

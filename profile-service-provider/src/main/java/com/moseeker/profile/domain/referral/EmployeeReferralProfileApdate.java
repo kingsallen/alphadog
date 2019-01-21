@@ -7,6 +7,7 @@ import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
+import com.moseeker.profile.domain.ProfileAttementVO;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -39,8 +40,10 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
-    public void storeReferralUser(UserUserRecord userRecord,EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
-             UserEmployeeDO employeeDO, Integer userId,Integer attachementId){
+    public void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
+                                  UserEmployeeDO employeeDO, ProfileAttementVO attementVO){
+        int userId = 0;
+        int attachementId = 0;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
             UserUserRecord userUserRecord = new UserUserRecord();
@@ -92,6 +95,8 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                 return true;
             });
         }
+        attementVO.setUserId(userId);
+        attementVO.setAttachmentId(attachementId);
     }
 
 }
