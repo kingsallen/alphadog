@@ -2,6 +2,8 @@ package com.moseeker.baseorm.dao.referraldb;
 
 import static com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
+import com.moseeker.common.util.StringUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.jooq.Configuration;
@@ -47,18 +49,26 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
 
 
     public List<ReferralEmployeeNetworkResourcesRecord> fetchByPostUserId(int postUserId){
-        return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
+        List<ReferralEmployeeNetworkResourcesRecord> list =  using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
                 .orderBy(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.ID.asc())
                 .fetch();
+        if(StringUtils.isEmptyList(list)){
+            return new ArrayList<>();
+        }
+        return list;
     }
 
     public void updateReferralEmployeeNetworkResourcesRecord(List<ReferralEmployeeNetworkResourcesRecord>  records){
-        using(configuration()).batchUpdate(records).execute();
+        if(!StringUtils.isEmptyList(records)) {
+            using(configuration()).batchUpdate(records).execute();
+        }
     }
 
     public void insertReferralEmployeeNetworkResourcesRecord(List<ReferralEmployeeNetworkResourcesRecord>  records){
-        using(configuration()).batchInsert(records).execute();
+        if(!StringUtils.isEmptyList(records)) {
+            using(configuration()).batchInsert(records).execute();
+        }
     }
 
 
