@@ -76,16 +76,17 @@ public abstract class EmployeeReferralProfile {
 
     ThreadPool tp = ThreadPool.Instance;
 
-    static int userId;
-    static int attachmentId = 0;
+
     protected abstract void validateReferralInfo(EmployeeReferralProfileNotice profileNotice);
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
     protected abstract void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
-                                              ProfilePojo profilePojo, UserEmployeeDO employeeDO);
+                                              ProfilePojo profilePojo, UserEmployeeDO employeeDO, Integer userId,Integer attachementId);
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
+        Integer userId = 0;
+        Integer attachmentId = 0;
         validateReferralInfo(profileNotice);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(profileNotice.getEmployeeId());
         if (employeeDO == null || employeeDO.getId() <= 0) {
@@ -95,7 +96,7 @@ public abstract class EmployeeReferralProfile {
         ProfilePojo profilePojo = getProfilePojo(profileNotice);
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
-        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO);
+        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, userId, attachmentId);
         int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
                 ApplicationSource.EMPLOYEE_CHATBOT.getValue();
         List<Integer> positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());

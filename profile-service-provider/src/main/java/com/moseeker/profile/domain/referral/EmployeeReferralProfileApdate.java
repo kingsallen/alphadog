@@ -40,7 +40,7 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
     public void storeReferralUser(UserUserRecord userRecord,EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
-             UserEmployeeDO employeeDO){
+             UserEmployeeDO employeeDO, Integer userId,Integer attachementId){
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
             UserUserRecord userUserRecord = new UserUserRecord();
@@ -70,9 +70,10 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                 if(logRecord != null){
                     id = logRecord.getAttementId();
                 }
-                attachmentId = profileEntity.mergeProfileReferral(profilePojo, userId, id);
+                attachementId = profileEntity.mergeProfileReferral(profilePojo, userId, id);
+                int temp= userId;
                 tp.startTast(() -> {
-                    companyTagService.handlerCompanyTagByUserId(userId);
+                    companyTagService.handlerCompanyTagByUserId(temp);
                     return true;
                 });
             }
@@ -83,10 +84,11 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
             ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
             if(attachmentRecord!=null) {
-                attachmentId = attachmentRecord.getId();
+                attachementId = attachmentRecord.getId();
             }
+            int temp= userId;
             tp.startTast(() -> {
-                companyTagService.handlerCompanyTagByUserId(userId);
+                companyTagService.handlerCompanyTagByUserId(temp);
                 return true;
             });
         }
