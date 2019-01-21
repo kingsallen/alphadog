@@ -443,7 +443,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 jobApplication.getRecommenderUserId(), jobApplication.getApplierId()));
         result.put("title", jobPositionDO.getTitle());
         logger.info("result:{}", result);
-        kafkaTemplate.send("test1", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
 
@@ -529,7 +528,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> progressList = new ArrayList<>();
         progressList.add(progress);
         // 目前有四种操作对应已投递状态 1 被推荐人投递简历 6 hr查看简历 15 员工主动投递简历 16 候选人联系内推投递简历
-        if(progress == 1){
+        if(progress == ReferralProgressEnum.APPLYED.getProgress()){
             initApplyProgressList(progressList);
         }
         if(progress == 0){
@@ -586,9 +585,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private void initApplyProgressList(List<Integer> progressList) {
-        progressList.add(6);
-        progressList.add(15);
-        progressList.add(16);
+        progressList.add(ReferralProgressEnum.VIEW_APPLY.getProgress());
+        progressList.add(ReferralProgressEnum.EMPLOYEE_UPLOAD.getProgress());
+        progressList.add(ReferralProgressEnum.SEEK_APPLY.getProgress());
     }
 
     private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo) {
@@ -599,7 +598,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> progressList = new ArrayList<>();
         progressList.add(progress);
         // 目前有四种操作对应已投递状态 1 被推荐人投递简历 6 hr查看简历 15 员工主动投递简历 16 候选人联系内推投递简历
-        if(progress == 1){
+        if(progress == ReferralProgressEnum.APPLYED.getProgress()){
             initApplyProgressList(progressList);
         }
         if(StringUtils.isEmpty(queryName)){
@@ -1274,9 +1273,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private String getLastOptTime(int progress, List<HrOperationRecordRecord> hrOperationRecords) {
         long optTime = 0;
-        if(progress == 1){
+        if(progress == ReferralProgressEnum.APPLYED.getProgress()){
             List<Integer> progressList = new ArrayList<>();
-            progressList.add(1);
+            progressList.add(ReferralProgressEnum.APPLYED.getProgress());
             initApplyProgressList(progressList);
             for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecords){
                 if(progressList.contains(hrOperationRecordDO.getOperateTplId())){
@@ -1321,7 +1320,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      */
     private int getLastProgress(int lastProgress, List<HrOperationRecordRecord> hrOperationRecordDOS) {
         for(HrOperationRecordRecord hrOperationRecordDO : hrOperationRecordDOS){
-            if(hrOperationRecordDO.getOperateTplId() != 4){
+            if(hrOperationRecordDO.getOperateTplId() != ReferralProgressEnum.FAILED.getProgress()){
                 lastProgress = hrOperationRecordDO.getOperateTplId();
                 break;
             }
