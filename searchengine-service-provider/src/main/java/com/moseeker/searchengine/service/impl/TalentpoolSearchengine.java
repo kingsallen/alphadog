@@ -1289,7 +1289,6 @@ public class TalentpoolSearchengine {
             Map<String,String> suggetParams=this.convertParams(params);
             Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
             List<Integer> positionIdList=this.getSuggestPositionId(result);
-
             String positionIds=searchUtil.listConvertString(positionIdList);
             return positionIds;
         }
