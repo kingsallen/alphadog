@@ -17,7 +17,7 @@ public class KafkaListeners {
     @Autowired
     ReferralEntity referralEntity;
 
-    @KafkaListener(id = Constant.KAFKA_GROUP_RADAR_TOPN, containerFactory = "kafkaListenerContainerFactory", topics  =  {"test1"})
+    @KafkaListener(groupId = Constant.KAFKA_GROUP_RADAR_TOPN, containerFactory = "kafkaListenerContainerFactory", topics  =  {Constant.KAFKA_TOPIC_RADAR_TOPN})
     public void kafkaGroupRadar(ConsumerRecord<?,  ?> record)  {
         Object  message  =  record.value();
         logger.info( Constant.KAFKA_GROUP_RADAR_TOPN+":" + message);
