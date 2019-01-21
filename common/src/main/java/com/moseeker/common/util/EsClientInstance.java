@@ -136,13 +136,16 @@ public class EsClientInstance {
         }else{
             recipients=list;
         }
-        mailContent.setRecipients(recipients);
-        mailContent.setSenderDisplay(org.apache.commons.lang.StringUtils.defaultIfEmpty("", ""));
-        mailContent.setSubject("es错误");
-        mailContent.setContent("es服务器停止服务，请相关人员查看并处理");
-        message.setEmailContent(mailContent);
-        Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
-        mail.send();
+        if(!StringUtils.isEmptyList(recipients)){
+            mailContent.setRecipients(recipients);
+            mailContent.setSenderDisplay(org.apache.commons.lang.StringUtils.defaultIfEmpty("", ""));
+            mailContent.setSubject("es错误");
+            mailContent.setContent("es服务器停止服务，请相关人员查看并处理");
+            message.setEmailContent(mailContent);
+            Mail mail = mailBuilder.buildSessionConfig(sessionConfig).build(message.getEmailContent());
+            mail.send();
+        }
+
     }
     private static List<String> StringConvertList(String params,String separate){
         if(StringUtils.isNullOrEmpty(params)){
