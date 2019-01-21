@@ -1019,27 +1019,25 @@ public class ReferralEntity {
                 List<ReferralEmployeeNetworkResourcesRecord> list = networkResourcesDao.fetchByPostUserId(resource.getEmployee_id());
                 List<ReferralEmployeeNetworkResourcesRecord> updateRecordList = new ArrayList<>();
                 List<ReferralEmployeeNetworkResourcesRecord> insertRecordList = new ArrayList<>();
-                if(!StringUtils.isEmptyList(list)){
-                    int num = list.size()>resource.getUser_id().size()?list.size():resource.getUser_id().size();
-                    for(int i =0; i<num;i++){
-                        if(i < list.size()-1) {
-                            ReferralEmployeeNetworkResourcesRecord record = list.get(i);
-                            if (resource.getUser_id().size() > i) {
-                                record.setDisable((byte) Constant.DISABLE);
-                                record.setPresenteeUserId(resource.getUser_id().get(i));
-                            } else {
-                                record.setDisable((byte) Constant.ENABLE);
-                            }
-                            updateRecordList.add(record);
-                        }else {
-                            ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
-                            record.setPostUserId(resource.getEmployee_id());
+                int num = list.size()>resource.getUser_id().size()?list.size():resource.getUser_id().size();
+                for(int i =0; i<num;i++){
+                    if(i < list.size()-1) {
+                        ReferralEmployeeNetworkResourcesRecord record = list.get(i);
+                        if (resource.getUser_id().size() > i) {
+                            record.setDisable((byte) Constant.DISABLE);
                             record.setPresenteeUserId(resource.getUser_id().get(i));
+                        } else {
+                            record.setDisable((byte) Constant.ENABLE);
                         }
+                        updateRecordList.add(record);
+                    }else {
+                        ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
+                        record.setPostUserId(resource.getEmployee_id());
+                        record.setPresenteeUserId(resource.getUser_id().get(i));
                     }
-                    networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
-                    networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
                 }
+                networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
+                networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
             }
         }
     }
