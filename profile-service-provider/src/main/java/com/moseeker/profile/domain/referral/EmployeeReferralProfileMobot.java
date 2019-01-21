@@ -30,7 +30,8 @@ public class EmployeeReferralProfileMobot extends EmployeeReferralProfile {
     }
 
     @Override
-    protected void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo, UserEmployeeDO employeeDO) {
+    protected void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
+                                     UserEmployeeDO employeeDO, Integer userId, Integer attachmentId) {
         userId = userRecord.getId();
         ProfileProfileDO profileDO = profileEntity.getProfileByUserId(userId);
         ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
