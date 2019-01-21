@@ -1013,7 +1013,8 @@ public class ReferralEntity {
     @Transactional
     public void fetchEmployeeNetworkResource(Object message){
         if(message != null) {
-            KafkaNetworkResource resource = (KafkaNetworkResource)message;
+            String messageStr = (String)message;
+            KafkaNetworkResource resource = (KafkaNetworkResource)JSON.parse(messageStr);
             if (resource != null && !StringUtils.isEmptyList(resource.getUser_id())){
                 List<ReferralEmployeeNetworkResourcesRecord> list = networkResourcesDao.fetchByPostUserId(resource.getEmployee_id());
                 List<ReferralEmployeeNetworkResourcesRecord> updateRecordList = new ArrayList<>();
