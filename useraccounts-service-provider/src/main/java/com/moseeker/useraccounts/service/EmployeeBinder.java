@@ -341,7 +341,6 @@ public abstract class EmployeeBinder {
         amqpTemplate.send(EMPLOYEE_REGISTER_EXCHNAGE,
                 EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());*/
-        employeeEntity.addRewardByEmployeeVerified(employeeId, companyId);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", employeeId);
         jsonObject.put("binding_time", bindingTime);
