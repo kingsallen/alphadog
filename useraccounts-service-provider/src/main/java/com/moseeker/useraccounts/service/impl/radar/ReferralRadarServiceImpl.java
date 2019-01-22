@@ -48,6 +48,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.referral.struct.*;
+import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.Neo4jService;
@@ -120,8 +121,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private CandidatePositionDao candidatePositionDao;
     @Autowired
-    private KafkaTemplate<String, String> kafkaTemplate;
-    @Autowired
     private ReferralConnectionChainDao connectionChainDao;
     @Autowired
     private ReferralConnectionLogDao connectionLogDao;
@@ -140,8 +139,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
 
-
     @Override
+    @RadarSwitchLimit
     public String getRadarCards(ReferralCardInfo cardInfo) {
         logger.info("ReferralCardInfo:{}", cardInfo);
         // 获取指定时间前十分钟内的职位浏览人
@@ -206,32 +205,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
     }
 
-    private List<CandidatePositionDO> sortByDegree(List<CandidatePositionDO> currentPageCandidatePositions, List<UserDepthVO> userDepthVOS) {
-        List<CandidatePositionDO> tempList = new ArrayList<>();
-        for(UserDepthVO userDepthVO : userDepthVOS){
-            for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
-                if(userDepthVO.getUserId() == candidatePositionDO.getUserId()){
-                    tempList.add(candidatePositionDO);
-                }
-            }
-        }
-        return tempList;
-    }
-
-    private List<CandidatePositionDO> getCurrentPageCandidatePositions(List<CandidatePositionDO> candidatePositionDOS, ReferralCardInfo cardInfo) {
-        List<CandidatePositionDO> list = new ArrayList<>();
-        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
-        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
-            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
-            if(candidatePositionDO != null){
-                // 构造单个职位浏览人的卡片
-                list.add(candidatePositionDO);
-            }
-        }
-        return list;
-    }
-
     @Override
+    @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
     public String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException {
         logger.info("inviteInfo:{}", inviteInfo);
@@ -271,21 +246,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return JSON.toJSONString(result);
     }
 
-    private void sendInviteLogToKafka(ReferralInviteInfo inviteInfo) {
-        long current = System.currentTimeMillis();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        KafkaInviteApplyPojo inviteApplyPojo = new KafkaInviteApplyPojo();
-        inviteApplyPojo.setInvited(1);
-        inviteApplyPojo.setCompany_id(inviteInfo.getCompanyId());
-        inviteApplyPojo.setUser_id(inviteInfo.getEndUserId());
-        inviteApplyPojo.setEvent_time(sdf.format(new Date(current)));
-        inviteApplyPojo.setEvent("invite_to_apply");
-        inviteApplyPojo.setEmployee_id(inviteInfo.getUserId());
-        inviteApplyPojo.setPosition_id(inviteInfo.getPid());
-        kafkaSender.sendMessage(Constant.KAFKA_TOPIC_INVITE_APPLY, JSON.toJSONString(inviteApplyPojo));
-    }
-
     @Override
+    @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
     public void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
@@ -316,6 +278,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @return RadarConnectResult 连连看结果
      */
     @Override
+    @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
     public RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) {
         long start = System.currentTimeMillis();
@@ -358,6 +321,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
+    @RadarSwitchLimit
     public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException {
         JSONObject result = new JSONObject();
         int recomUserId = checkInfo.getRecomUserId();
@@ -400,6 +364,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
+    @RadarSwitchLimit
     public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) {
         long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
@@ -411,6 +376,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
+    @RadarSwitchLimit
     public String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException {
         logger.info("progressQuery:{}", progressQuery);
         JobApplication jobApplication = jobApplicationDao.fetchOneById(progressQuery.getApplyId());
@@ -447,6 +413,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
+    @RadarSwitchLimit
     public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException {
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
         if(employeeRecord == null){
@@ -502,22 +469,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    public void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type) {
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
-        shareChainDao.updateTypeById(candidateShareChainDO.getId());
-        // type = 3 推荐ta
-        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
-    }
-
-    @Override
-    public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
-                record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
-        logger.info("candidateShareChainDO:{}", candidateShareChainDO);
-        templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
-    }
-
-    @Override
+    @RadarSwitchLimit
     public String progressQueryKeyword(ReferralProgressInfo progressInfo) {
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
         if(employeeRecord == null){
@@ -551,6 +503,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
+    @RadarSwitchLimit
     public int checkSeekReferral(int userId, int presenteeId, int positionId, int companyId, int shareChainId) {
         int employeeUserId = userId;
         if(shareChainId > 0){
@@ -562,6 +515,61 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         ReferralSeekRecommendRecord recommendRecord = seekRecommendDao.fetchByUidAndPresenteeIdAndPid(employeeUserId, presenteeId, positionId);
         return recommendRecord == null ? 0 : recommendRecord.getId();
+    }
+
+    @Override
+    public void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type) {
+        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
+        shareChainDao.updateTypeById(candidateShareChainDO.getId());
+        // type = 3 推荐ta
+        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
+    }
+
+    @Override
+    public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
+        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
+                record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
+        logger.info("candidateShareChainDO:{}", candidateShareChainDO);
+        templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
+    }
+
+    private List<CandidatePositionDO> sortByDegree(List<CandidatePositionDO> currentPageCandidatePositions, List<UserDepthVO> userDepthVOS) {
+        List<CandidatePositionDO> tempList = new ArrayList<>();
+        for(UserDepthVO userDepthVO : userDepthVOS){
+            for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
+                if(userDepthVO.getUserId() == candidatePositionDO.getUserId()){
+                    tempList.add(candidatePositionDO);
+                }
+            }
+        }
+        return tempList;
+    }
+
+    private List<CandidatePositionDO> getCurrentPageCandidatePositions(List<CandidatePositionDO> candidatePositionDOS, ReferralCardInfo cardInfo) {
+        List<CandidatePositionDO> list = new ArrayList<>();
+        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
+        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
+            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
+            if(candidatePositionDO != null){
+                // 构造单个职位浏览人的卡片
+                list.add(candidatePositionDO);
+            }
+        }
+        return list;
+    }
+
+    private void sendInviteLogToKafka(ReferralInviteInfo inviteInfo) {
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        KafkaInviteApplyPojo inviteApplyPojo = new KafkaInviteApplyPojo();
+        inviteApplyPojo.setInvited(1);
+        inviteApplyPojo.setCompany_id(inviteInfo.getCompanyId());
+        inviteApplyPojo.setUser_id(inviteInfo.getEndUserId());
+        inviteApplyPojo.setEvent_time(sdf.format(new Date(current)));
+        inviteApplyPojo.setEvent("invite_to_apply");
+        inviteApplyPojo.setEmployee_id(inviteInfo.getUserId());
+        inviteApplyPojo.setPosition_id(inviteInfo.getPid());
+        kafkaSender.sendMessage(Constant.KAFKA_TOPIC_INVITE_APPLY, JSON.toJSONString(inviteApplyPojo));
     }
 
     private int getParentId(int parentId, ConnectRadarInfo radarInfo, List<ReferralConnectionChainRecord> chainRecords) {

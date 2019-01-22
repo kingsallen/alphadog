@@ -45,6 +45,7 @@ import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXC
 @PropertySource("classpath:common.properties")
 @EnableNeo4jRepositories("com.moseeker.useraccounts.repository")
 @EnableKafka
+@EnableAspectJAutoProxy
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
 
