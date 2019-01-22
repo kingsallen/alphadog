@@ -21,7 +21,7 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
     }
 
     @Override
-    protected JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject appIdClaimMap) {
+    protected JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject appIdClaimMap, boolean radarSwitchOpen) {
         JSONObject recom = new JSONObject();
         recom.put("type", getReferralType().getType());
         Object claim = appIdClaimMap.get(jobApplicationDO.getId()+"");

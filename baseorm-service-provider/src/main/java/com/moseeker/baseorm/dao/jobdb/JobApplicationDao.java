@@ -411,56 +411,30 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 	}
 
-    public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, int startIndex, int pageSize, boolean pagination) {
-    	if(pagination){
-			return create.selectFrom(JOB_APPLICATION)
-					.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-					.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
-					.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
-							.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-									.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
-					.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
-					.limit(startIndex, pageSize)
-					.fetchInto(JobApplicationDO.class);
-		}else {
-			return create.selectFrom(JOB_APPLICATION)
-					.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-					.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
-					.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
-							.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-									.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
-					.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
-					.fetchInto(JobApplicationDO.class);
-		}
-
+    public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId) {
+    	return create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
+						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
+								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
+				.fetchInto(JobApplicationDO.class);
     }
 
-	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, int startIndex, int pageSize, List<Integer> progress, boolean pagination) {
-		if(pagination){
-			return create.selectFrom(JOB_APPLICATION)
-					.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-					.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
-					.and(JOB_APPLICATION.APP_TPL_ID.in(progress))
-					.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
-							.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-									.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
-					.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
-					.limit(startIndex, pageSize)
-					.fetchInto(JobApplicationDO.class);
-		}else {
-			return create.selectFrom(JOB_APPLICATION)
-					.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
-					.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
-					.and(JOB_APPLICATION.APP_TPL_ID.in(progress))
-					.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
-							.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
-									.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
-					.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
-					.fetchInto(JobApplicationDO.class);
-		}
+	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> progress) {
+    	return create.selectFrom(JOB_APPLICATION)
+				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
+				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.and(JOB_APPLICATION.APP_TPL_ID.in(progress))
+				.and(JOB_APPLICATION.APPLY_TYPE.eq(0)
+						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
+								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
+				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
+				.fetchInto(JobApplicationDO.class);
 	}
 
-	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> applierIds, int startIndex, int pageSize) {
+	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyIdAndAppliers(int userId, int companyId, List<Integer> applierIds) {
 		return create.selectFrom(JOB_APPLICATION)
 				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
 				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
@@ -469,11 +443,10 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
 								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
-				.limit(startIndex, pageSize)
 				.fetchInto(JobApplicationDO.class);
 	}
 
-	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> applierIds, int startIndex, int pageSize, List<Integer> progress) {
+	public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId, List<Integer> applierIds, List<Integer> progress) {
 		return create.selectFrom(JOB_APPLICATION)
 				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
 				.and(JOB_APPLICATION.COMPANY_ID.eq(companyId))
@@ -483,7 +456,6 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 						.or(JOB_APPLICATION.APPLY_TYPE.eq(1)
 								.and(JOB_APPLICATION.EMAIL_STATUS.eq(1))))
 				.orderBy(JOB_APPLICATION.UPDATE_TIME.desc())
-				.limit(startIndex, pageSize)
 				.fetchInto(JobApplicationDO.class);
 	}
 

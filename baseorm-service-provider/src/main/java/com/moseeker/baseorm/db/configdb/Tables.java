@@ -13,6 +13,7 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
+import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
@@ -84,6 +85,11 @@ public class Tables {
      * 手动录入微信账户余额
      */
     public static final ConfigHbBalance CONFIG_HB_BALANCE = com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance.CONFIG_HB_BALANCE;
+
+    /**
+     * The table <code>configdb.config_oms_switch_management</code>.
+     */
+    public static final ConfigOmsSwitchManagement CONFIG_OMS_SWITCH_MANAGEMENT = com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT;
 
     /**
      * kenexa职位字段映射表

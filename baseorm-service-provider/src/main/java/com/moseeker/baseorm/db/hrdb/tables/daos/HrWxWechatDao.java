@@ -253,4 +253,11 @@ public class HrWxWechatDao extends DAOImpl<HrWxWechatRecord, com.moseeker.baseor
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat> fetchByShowCustomTheme(Integer... values) {
         return fetch(HrWxWechat.HR_WX_WECHAT.SHOW_CUSTOM_THEME, values);
     }
+
+    /**
+     * Fetch records that have <code>defaultMessage IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrWxWechat> fetchByDefaultmessage(Integer... values) {
+        return fetch(HrWxWechat.HR_WX_WECHAT.DEFAULTMESSAGE, values);
+    }
 }

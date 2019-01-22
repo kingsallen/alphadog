@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 314887525;
+    private static final long serialVersionUID = 1982178643;
 
     /**
      * The reference instance of <code>hrdb.hr_company_conf</code>
@@ -203,7 +203,7 @@ public class HrCompanyConf extends TableImpl<HrCompanyConfRecord> {
     /**
      * The column <code>hrdb.hr_company_conf.mobot_head_img</code>. Mobot头像，聊天使用
      */
-    public final TableField<HrCompanyConfRecord, String> MOBOT_HEAD_IMG = createField("mobot_head_img", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "Mobot头像，聊天使用");
+    public final TableField<HrCompanyConfRecord, String> MOBOT_HEAD_IMG = createField("mobot_head_img", org.jooq.impl.SQLDataType.VARCHAR.length(1024), this, "Mobot头像，聊天使用");
 
     /**
      * The column <code>hrdb.hr_company_conf.mobot_name</code>. Mobot姓名，聊天使用

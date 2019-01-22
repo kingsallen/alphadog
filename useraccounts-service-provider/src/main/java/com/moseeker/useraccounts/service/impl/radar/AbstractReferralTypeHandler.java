@@ -45,7 +45,7 @@ public abstract class AbstractReferralTypeHandler {
 
     public JSONObject createApplyCard(JobApplicationDO jobApplicationDO, JobPositionDO jobPosition,
                                       UserUserRecord applier, List<HrOperationRecordRecord> hrOperations,
-                                      JSONObject referralTypeSingleMap) {
+                                      JSONObject referralTypeSingleMap, boolean radarSwitchOpen) {
         JSONObject card = new JSONObject();
         int progress = jobApplicationDO.getAppTplId();
         if(progress == 6 || progress == 15 || progress == 16){
@@ -54,7 +54,7 @@ public abstract class AbstractReferralTypeHandler {
         card.put("apply_id", jobApplicationDO.getId());
         card.put("datetime", getLastDateTime(jobApplicationDO.getSubmitTime(), hrOperations));
         card.put("progress", progress);
-        card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap));
+        card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap, radarSwitchOpen));
         card.put("user", doInitUser(jobApplicationDO.getApplierId(), applier.getName()));
         card.put("position", doInitPosition(jobPosition));
         return card;
@@ -64,7 +64,7 @@ public abstract class AbstractReferralTypeHandler {
      * 组装推荐人数据
      * @return jsonObject
      */
-    protected abstract JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject referralTypeSingleMap);
+    protected abstract JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject referralTypeSingleMap, boolean radarSwitchOpen);
 
     protected abstract List<JobApplicationDO> getApplicationsByReferralType(List<JobApplicationDO> jobApplicationDOS);
 

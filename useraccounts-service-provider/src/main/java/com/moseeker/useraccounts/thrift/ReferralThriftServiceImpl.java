@@ -176,7 +176,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String getRadarCards(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
-            return radarService.getRadarCards(cardInfo);
+            return radarService.getRadarCards(cardInfo.getCompanyId(), cardInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -185,7 +185,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String inviteApplication(ReferralInviteInfo inviteInfo) throws BIZException, TException {
         try {
-            return radarService.inviteApplication(inviteInfo);
+            return radarService.inviteApplication(inviteInfo.getCompanyId(), inviteInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -194,7 +194,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws BIZException, TException {
         try {
-            radarService.ignoreCurrentViewer(ignoreInfo);
+            radarService.ignoreCurrentViewer(ignoreInfo.getCompanyId(), ignoreInfo);
             return "success";
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -204,7 +204,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String connectRadar(ConnectRadarInfo radarInfo) throws BIZException, TException {
         try {
-            RadarConnectResult result = radarService.connectRadar(radarInfo);
+            RadarConnectResult result = radarService.connectRadar(radarInfo.getCompanyId(), radarInfo);
             return JSON.toJSONString(result);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -214,7 +214,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException {
         try {
-            return radarService.checkEmployee(checkInfo);
+            return radarService.checkEmployee(checkInfo.getCompanyId(), checkInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -223,7 +223,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, TException {
         try {
-            radarService.saveTenMinuteCandidateShareChain(cardInfo);
+            radarService.saveTenMinuteCandidateShareChain(cardInfo.getCompanyId(), cardInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -232,7 +232,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException, TException {
         try {
-            return radarService.getProgressByOne(progressQuery);
+            return radarService.getProgressByOne(progressQuery.getCompanyId(), progressQuery);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -241,7 +241,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException, TException {
         try {
-            return radarService.getProgressBatch(progressInfo);
+            return radarService.getProgressBatch(progressInfo.getCompanyId(), progressInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -250,7 +250,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public String progressQueryKeyword(ReferralProgressInfo progressInfo) throws BIZException, TException {
         try {
-            return radarService.progressQueryKeyword(progressInfo);
+            return radarService.progressQueryKeyword(progressInfo.getCompanyId(), progressInfo);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
@@ -268,7 +268,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     @Override
     public int checkSeekReferral(int userId, int presenteeId, int positionId, int companyId, int psc) throws BIZException, TException {
         try {
-            return radarService.checkSeekReferral(userId, presenteeId, positionId, companyId, psc);
+            return radarService.checkSeekReferral(companyId, userId, presenteeId, positionId, psc);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

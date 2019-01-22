@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent;
+import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -93,12 +95,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 290729342;
+    private static final long serialVersionUID = 322338050;
 
     /**
      * The reference instance of <code>hrdb</code>
      */
     public static final Hrdb HRDB = new Hrdb();
+
+    /**
+     * The table <code>hrdb.crm_customer_operation_event</code>.
+     */
+    public final CrmCustomerOperationEvent CRM_CUSTOMER_OPERATION_EVENT = com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT;
+
+    /**
+     * The table <code>hrdb.crm_customer_operation_record</code>.
+     */
+    public final CrmCustomerOperationRecord CRM_CUSTOMER_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD;
 
     /**
      * The table <code>hrdb.hr_account_application_notify</code>.
@@ -445,6 +457,8 @@ public class Hrdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT,
+            CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD,
             HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY,
             HrAiConf.HR_AI_CONF,
             HrAppCvConf.HR_APP_CV_CONF,
