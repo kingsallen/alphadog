@@ -61,14 +61,14 @@ public class HistoryUserEmployeeUpvoteRecord extends UpdatableRecordImpl<History
     }
 
     /**
-     * Setter for <code>historydb.history_user_employee_upvote.receiver</code>. 被点赞的人的仟寻员工编号
+     * Setter for <code>historydb.history_user_employee_upvote.rabbitmq</code>. 被点赞的人的仟寻员工编号
      */
     public void setReceiver(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>historydb.history_user_employee_upvote.receiver</code>. 被点赞的人的仟寻员工编号
+     * Getter for <code>historydb.history_user_employee_upvote.rabbitmq</code>. 被点赞的人的仟寻员工编号
      */
     public Integer getReceiver() {
         return (Integer) get(2);

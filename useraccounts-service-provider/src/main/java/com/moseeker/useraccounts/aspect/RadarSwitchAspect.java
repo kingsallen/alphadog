@@ -4,6 +4,7 @@ import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -47,6 +48,11 @@ public class RadarSwitchAspect {
         }
         Map<String, String> map = new HashMap<>();
         local.set(map);
+    }
+
+    @After(POINCUT)
+    public void afterCall(JoinPoint joinPoint) {
+        local.remove();
     }
 
     public static Map getRadarLimit(){

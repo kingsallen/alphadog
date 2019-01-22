@@ -73,7 +73,7 @@ public class UserEmployeeUpvoteDao extends DAOImpl<UserEmployeeUpvoteRecord, com
     }
 
     /**
-     * Fetch records that have <code>receiver IN (values)</code>
+     * Fetch records that have <code>rabbitmq IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployeeUpvote> fetchByReceiver(Integer... values) {
         return fetch(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, values);

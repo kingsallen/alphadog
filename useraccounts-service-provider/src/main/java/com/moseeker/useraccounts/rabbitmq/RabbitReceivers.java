@@ -1,4 +1,4 @@
-package com.moseeker.useraccounts.receiver;
+package com.moseeker.useraccounts.rabbitmq;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
@@ -10,7 +10,6 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.useraccounts.kafka.KafkaSender;
-import com.moseeker.useraccounts.service.ReferralRadarService;
 import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
 import org.slf4j.Logger;
@@ -19,7 +18,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -73,6 +71,17 @@ public class RabbitReceivers {
         }
         shareChainDao.updateTypeByIds(shareChainIds, type);
         templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, type);
+    }
+
+    @RabbitListener(queues = "handle_switch_radar", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void handleRadarSwitch(Message message){
+        String msgBody = new String(message.getBody());
+        logger.info("msgBody:{}", msgBody);
+        if(StringUtils.isEmpty(msgBody)){
+            return;
+        }
+
     }
 
     private void sendToKafka(JobApplication jobApplication) {
