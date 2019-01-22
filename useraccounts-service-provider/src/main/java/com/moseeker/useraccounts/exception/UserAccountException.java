@@ -68,6 +68,7 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException REFERRAL_CONNECTION_NONEXISTS = new UserAccountException(42057, "人脉连连看链路不存在！");
     public static final UserAccountException REFERRAL_RECOM_EVALUATION_EXISTS = new UserAccountException(42058, "推荐评价已存在！");
     public static final UserAccountException EMPLOYEE_COMPANY_UNMATCH = new UserAccountException(42059, "员工与公司不匹配！");
+    public static final UserAccountException RADAR_STATUS_CLOSE = new UserAccountException(42060, "雷达开关关闭！");
 
     private final int code;
 
