@@ -44,6 +44,7 @@ import com.moseeker.thrift.gen.referral.struct.ConnectRadarInfo;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeBatchForm;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeStruct;
 import com.moseeker.thrift.gen.useraccounts.struct.UserEmployeeVOPageVO;
+import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.domain.AwardEntity;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.infrastructure.AwardRepository;
@@ -533,7 +534,8 @@ public class UserEmployeeServiceImpl {
         return info;
     }
 
-    public RadarInfoVO fetchRadarIndex(int userId, int companyId, int page, int size){
+    @RadarSwitchLimit
+    public RadarInfoVO fetchRadarIndex(int companyId, int userId,  int page, int size){
         Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         RadarInfoVO result = new RadarInfoVO();
         if(page == 0){
@@ -574,7 +576,8 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
-    public RadarInfoVO fetchEmployeeSeekRecommend(int userId, int companyId, int page, int size){
+    @RadarSwitchLimit
+    public RadarInfoVO fetchEmployeeSeekRecommend(int companyId,int userId, int page, int size){
         RadarInfoVO result = new RadarInfoVO();
         if(page == 0){
             page=1;
@@ -627,7 +630,8 @@ public class UserEmployeeServiceImpl {
         return result;
     }
 
-    public EmployeeForwardViewVO fetchEmployeeForwardView(int userId, int companyId, String positionTitle, String order, int page, int size){
+    @RadarSwitchLimit
+    public EmployeeForwardViewVO fetchEmployeeForwardView(int companyId, int userId, String positionTitle, String order, int page, int size){
         EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
             page=1;

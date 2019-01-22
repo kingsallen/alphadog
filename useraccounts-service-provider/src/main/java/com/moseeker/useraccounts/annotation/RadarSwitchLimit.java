@@ -7,5 +7,5 @@ import java.lang.annotation.*;
 @Documented
 public @interface RadarSwitchLimit {
 
-    boolean status() default false;
+    boolean status() default true;
 }

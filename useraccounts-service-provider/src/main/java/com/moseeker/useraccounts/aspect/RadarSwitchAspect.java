@@ -7,8 +7,11 @@ import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.thrift.TException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.Signature;
@@ -17,10 +20,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 @Aspect
 @Component
@@ -94,7 +93,7 @@ public class RadarSwitchAspect {
     }
 
     public static boolean checkSoftAuthorityLimit(){
-        return "0".equals(local.get().get("radar_status"));
+        return "1".equals(local.get().get("radar_status"));
     }
 
 

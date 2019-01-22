@@ -49,6 +49,7 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.ReferralRadarService;
@@ -350,8 +351,8 @@ public class ReferralServiceImpl implements ReferralService {
        return 1;
     }
 
-    @Override
-    public void addReferralSeekRecommend(int userId, int postUserId, int positionId, int origin) throws CommonException {
+    @RadarSwitchLimit
+    public void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("候选人编号", userId, 1, null);
         vu.addIntTypeValidate("员工C端编号", postUserId, 1, null);
@@ -400,8 +401,8 @@ public class ReferralServiceImpl implements ReferralService {
         return kafkaAskReferralPojo;
     }
 
-    @Override
-    public ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws CommonException {
+    @RadarSwitchLimit
+    public ContactPushInfo fetchSeekRecommend(int companyId, int referralId, int postUserId) throws CommonException {
         ContactPushInfo info = new ContactPushInfo();
         ReferralSeekRecommendRecord record = recommendDao.fetchByIdAndPostUserId(referralId, postUserId);
         if(record == null){
@@ -429,8 +430,8 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
-    @Override
-    public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons,
+    @RadarSwitchLimit
+    public void employeeReferralReason(int companyId, int postUserId, int positionId, int referralId, List<String> referralReasons,
                                        byte relationship, String recomReasonText) {
 
         JobPositionRecord positionDO = positionDao.getPositionById(positionId);
@@ -471,8 +472,8 @@ public class ReferralServiceImpl implements ReferralService {
         }
     }
 
-    @Override
-    public void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException {
+    @RadarSwitchLimit
+    public void employeeReferralRecomEvaluation(int companyId, int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException {
         ReferralRecomEvaluationRecord record = recomEvaluationDao.fetchByPostPresenteePosition(postUserId, presenteeId, positionId);
         if (record == null) {
             com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.getByUserIdAndPositionId(presenteeId, positionId);

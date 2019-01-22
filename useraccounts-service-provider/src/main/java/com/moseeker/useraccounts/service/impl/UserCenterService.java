@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.vo.UserCenterInfoVO;
@@ -212,7 +213,8 @@ public class UserCenterService {
         return favPositions;
     }
 
-    public RecommendationScoreVO getRecommendationsV2(int userId, int companyId) throws CommonException{
+    @RadarSwitchLimit
+    public RecommendationScoreVO getRecommendationsV2(int companyId, int userId) throws CommonException{
         RecommendationScoreVO scoreVO = new RecommendationScoreVO();
         if(!employeeEntity.isEmployee(userId, companyId)){
             throw UserAccountException.PERMISSION_DENIED;
