@@ -92,7 +92,7 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
 
     @Override
     public List<ReferralPositionMatchDO> getMatchPositionInfo(int userId, int companyId) throws BIZException, TException {
-        List<ReferralPositionMatchInfo> matchList = referralPositionService.fetchPositionMatchByUserId(userId, companyId);
+        List<ReferralPositionMatchInfo> matchList = referralPositionService.fetchPositionMatchByUserId(companyId, userId);
         List<ReferralPositionMatchDO> result = new ArrayList<>();
         if(!StringUtils.isEmptyList(matchList)){
             result = matchList.stream().map(m -> {

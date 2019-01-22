@@ -144,27 +144,27 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public void addUserSeekRecommend(int userId, int postUserId, int positionId, int origin) throws BIZException, TException {
+    public void addUserSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws BIZException, TException {
         try{
-            referralService.addReferralSeekRecommend(userId, postUserId, positionId, origin);
+            referralService.addReferralSeekRecommend(companyId, userId, postUserId, positionId, origin);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public void employeeReferralReason(int postUserId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
+    public void employeeReferralReason(int companyId, int postUserId, int positionId, int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
         try{
-            referralService.employeeReferralReason(postUserId, positionId,  referralId, referralReasons, relationship, recomReasonText);
+            referralService.employeeReferralReason(companyId, postUserId, positionId,  referralId, referralReasons, relationship, recomReasonText);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws BIZException, TException {
+    public ContactPushInfo fetchSeekRecommend(int companyId, int referralId, int postUserId) throws BIZException, TException {
         try{
-            com.moseeker.useraccounts.service.impl.vo.ContactPushInfo result = referralService.fetchSeekRecommend(referralId, postUserId);
+            com.moseeker.useraccounts.service.impl.vo.ContactPushInfo result = referralService.fetchSeekRecommend(companyId, referralId, postUserId);
             ContactPushInfo info = new ContactPushInfo();
             BeanUtils.copyProperties(result, info);
             return info;
@@ -257,9 +257,9 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     }
 
     @Override
-    public void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
+    public void employeeReferralRecomEvaluation(int companyId, int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws BIZException, TException {
         try {
-            referralService.employeeReferralRecomEvaluation(postUserId, positionId, presenteeId, referralReasons, relationship, recomReasonText);
+            referralService.employeeReferralRecomEvaluation(companyId, postUserId, positionId, presenteeId, referralReasons, relationship, recomReasonText);
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }

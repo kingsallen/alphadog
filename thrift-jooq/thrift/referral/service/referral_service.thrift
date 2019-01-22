@@ -31,11 +31,11 @@ service ReferralService {
     // 点击人脉连连看按钮/点击分享的人脉连连看页面
     string connectRadar(1:referral_struct.ConnectRadarInfo radarInfo) throws (1: common_struct.BIZException e);
     //候选人求推荐记录保存
-    void addUserSeekRecommend(1:i32 userId, 2:i32 postUserId, 3:i32 positionId, 4: i32 origin)throws (1: common_struct.BIZException e);
+    void addUserSeekRecommend(1:i32 companyId,2:i32 userId, 3:i32 postUserId, 4:i32 positionId, 5: i32 origin)throws (1: common_struct.BIZException e);
     //员工推荐评价
-    void employeeReferralReason(1: i32 postUserId, 2:i32 positionId, 3:i32 referralId, 4: list<string> referralReasons, 5: i8 relationship, 6: string recomReasonText) throws (1: common_struct.BIZException e);
+    void employeeReferralReason(1: i32 companyId, 2: i32 postUserId, 3:i32 positionId, 4:i32 referralId, 5: list<string> referralReasons, 6: i8 relationship, 7: string recomReasonText) throws (1: common_struct.BIZException e);
     //候选人联系内推模板消息发送之后员工点击之后展示内容
-    referral_struct.ContactPushInfo fetchSeekRecommend(1: i32 referralId, 2:i32 postUserId) throws (1: common_struct.BIZException e);
+    referral_struct.ContactPushInfo fetchSeekRecommend(1:i32 companyId, 2: i32 referralId, 3:i32 postUserId) throws (1: common_struct.BIZException e);
     // 候选人打开职位连接判断推荐人是否是员工
     string checkEmployee(1: referral_struct.CheckEmployeeInfo checkInfo) throws (1: common_struct.BIZException e);
      // 10分钟消息模板-人脉筛选，存储十分钟内的卡片数据
@@ -47,7 +47,7 @@ service ReferralService {
     // 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
     string progressQueryKeyword(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
     //员工推荐评价
-    void employeeReferralRecomEvaluation(1: i32 postUserId, 2:i32 positionId, 3:i32 presenteeId, 4: list<string> referralReasons, 5: i8 relationship, 6: string recomReasonText) throws (1: common_struct.BIZException e);
+    void employeeReferralRecomEvaluation(1:i32 companyId, 2: i32 postUserId, 3:i32 positionId, 4:i32 presenteeId, 5: list<string> referralReasons, 6: i8 relationship, 7: string recomReasonText) throws (1: common_struct.BIZException e);
     // 检查职位详情页点击人是否对该职位发起过帮我内推
     i32 checkSeekReferral(1: i32 userId, 2:i32 presenteeId, 3:i32 positionId, 4: i32 companyId, 5: i32 parentChainId) throws (1: common_struct.BIZException e);
 }

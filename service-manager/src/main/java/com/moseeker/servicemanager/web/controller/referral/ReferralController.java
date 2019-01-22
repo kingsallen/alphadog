@@ -707,9 +707,11 @@ public class ReferralController {
         validateUtil.addRequiredValidate("职位编号", form.getPositionId());
         validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
         validateUtil.addRequiredValidate("来源", form.getOrigin());
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            referralService.addUserSeekRecommend(form.getUserId(), form.getPostUserId(), form.getPositionId(), form.getOrigin());
+            referralService.addUserSeekRecommend(form.getCompanyId(), form.getUserId(), form.getPostUserId(),
+                    form.getPositionId(), form.getOrigin());
             return Result.success().toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
@@ -766,6 +768,7 @@ public class ReferralController {
         validateUtil.addRequiredValidate("职位编号", form.getPositionId());
         validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
         validateUtil.addRequiredValidate("内推编号", form.getReferralId());
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
         validateUtil.addRequiredValidate("推荐人与被推荐人关系", form.getRelationship());
         validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
                 "推荐理由文本长度过长",null, 201);
@@ -777,7 +780,7 @@ public class ReferralController {
         }
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            referralService.employeeReferralReason(form.getPostUserId(),form.getPositionId(), form.getReferralId(), form.getReferralReasons(),
+            referralService.employeeReferralReason(form.getCompanyId(), form.getPostUserId(),form.getPositionId(), form.getReferralId(), form.getReferralReasons(),
                     form.getRelationship(), form.getRecomReasonText());
             return Result.success().toJson();
         } else {
@@ -796,6 +799,7 @@ public class ReferralController {
         validateUtil.addRequiredValidate("职位编号", form.getPositionId());
         validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
         validateUtil.addRequiredValidate("候选人编号", form.getPresenteeUserId());
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
         validateUtil.addRequiredValidate("推荐人与被推荐人关系", form.getRelationship());
         validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
                 "推荐理由文本长度过长",null, 201);
@@ -807,7 +811,7 @@ public class ReferralController {
         }
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
-            referralService.employeeReferralRecomEvaluation(form.getPostUserId(),form.getPositionId(), form.getPresenteeUserId(), form.getReferralReasons(),
+            referralService.employeeReferralRecomEvaluation(form.getCompanyId(),form.getPostUserId(),form.getPositionId(), form.getPresenteeUserId(), form.getReferralReasons(),
                     form.getRelationship(), form.getRecomReasonText());
             return Result.success().toJson();
         } else {
@@ -857,15 +861,17 @@ public class ReferralController {
     @ResponseBody
     public String employeeReferralEvaluate(@RequestParam(value = "appid") int appid,
                                            @RequestParam(value = "referral_id") int referralId,
+                                           @RequestParam(value = "company_id") int companyId,
                                            @RequestParam(value = "post_user_id") int postUserId) throws Exception {
 
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("员工user编号", postUserId);
         validateUtil.addRequiredValidate("内推编号", referralId);
+        validateUtil.addRequiredValidate("公司编号", companyId);
         String message = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isBlank(message)) {
-            com.moseeker.thrift.gen.referral.struct.ContactPushInfo redult = referralService.fetchSeekRecommend(referralId, postUserId);
+            com.moseeker.thrift.gen.referral.struct.ContactPushInfo redult = referralService.fetchSeekRecommend(companyId, referralId, postUserId);
             com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo info =
                     new com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo();
             BeanUtils.copyProperties(redult, info);

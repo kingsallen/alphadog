@@ -95,7 +95,7 @@ public interface ReferralService {
      * @param positionId 职位编号
      * @throws UserAccountException
      */
-    void addReferralSeekRecommend(int userId, int postUserId, int positionId, int origin) throws CommonException;
+    void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException;
 
     /**
      * 获取联系内退候选人和职位信息
@@ -105,7 +105,7 @@ public interface ReferralService {
      * @return
      * @throws CommonException
      */
-    ContactPushInfo fetchSeekRecommend(int referralId, int postUserId) throws CommonException;
+    ContactPushInfo fetchSeekRecommend(int companyId, int referralId, int postUserId) throws CommonException;
 
     /**
      * 推荐评价页面保存
@@ -116,7 +116,7 @@ public interface ReferralService {
      * @param recomReasonText
      * @throws CommonException
      */
-    void employeeReferralReason(int postUserId, int positionId,  int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
+    void employeeReferralReason(int companyId, int postUserId, int positionId,  int referralId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
 
     /**
      * 推荐评价页面保存
@@ -128,7 +128,7 @@ public interface ReferralService {
      * @param recomReasonText
      * @throws CommonException
      */
-    void employeeReferralRecomEvaluation(int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
+    void employeeReferralRecomEvaluation(int companyId, int postUserId, int positionId, int presenteeId, List<String> referralReasons, byte relationship, String recomReasonText) throws CommonException, TException;
 
 
 }
