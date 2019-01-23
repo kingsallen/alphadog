@@ -64,7 +64,7 @@ public class UserEmployeeUpvote extends TableImpl<UserEmployeeUpvoteRecord> {
     /**
      * The column <code>userdb.user_employee_upvote.rabbitmq</code>. 被点赞的人的仟寻员工编号
      */
-    public final TableField<UserEmployeeUpvoteRecord, Integer> RECEIVER = createField("rabbitmq", org.jooq.impl.SQLDataType.INTEGER, this, "被点赞的人的仟寻员工编号");
+    public final TableField<UserEmployeeUpvoteRecord, Integer> RECEIVER = createField("receiver", org.jooq.impl.SQLDataType.INTEGER, this, "被点赞的人的仟寻员工编号");
 
     /**
      * The column <code>userdb.user_employee_upvote.company_id</code>. 公司编号，用于标识哪家员工的点赞
