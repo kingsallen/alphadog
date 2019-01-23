@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeUpvote extends TableImpl<UserEmployeeUpvoteRecord> {
 
-    private static final long serialVersionUID = 2137528754;
+    private static final long serialVersionUID = 784844959;
 
     /**
      * The reference instance of <code>userdb.user_employee_upvote</code>
@@ -62,7 +62,7 @@ public class UserEmployeeUpvote extends TableImpl<UserEmployeeUpvoteRecord> {
     public final TableField<UserEmployeeUpvoteRecord, Integer> SENDER = createField("sender", org.jooq.impl.SQLDataType.INTEGER, this, "点赞的人的仟寻员工编号");
 
     /**
-     * The column <code>userdb.user_employee_upvote.rabbitmq</code>. 被点赞的人的仟寻员工编号
+     * The column <code>userdb.user_employee_upvote.receiver</code>. 被点赞的人的仟寻员工编号
      */
     public final TableField<UserEmployeeUpvoteRecord, Integer> RECEIVER = createField("receiver", org.jooq.impl.SQLDataType.INTEGER, this, "被点赞的人的仟寻员工编号");
 
@@ -147,7 +147,7 @@ public class UserEmployeeUpvote extends TableImpl<UserEmployeeUpvoteRecord> {
      */
     @Override
     public List<UniqueKey<UserEmployeeUpvoteRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserEmployeeUpvoteRecord>>asList(Keys.KEY_USER_EMPLOYEE_UPVOTE_PRIMARY);
+        return Arrays.<UniqueKey<UserEmployeeUpvoteRecord>>asList(Keys.KEY_USER_EMPLOYEE_UPVOTE_PRIMARY, Keys.KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER);
     }
 
     /**
