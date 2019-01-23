@@ -35,6 +35,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
@@ -95,7 +96,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 322338050;
+    private static final long serialVersionUID = -931382181;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -256,6 +257,11 @@ public class Hrdb extends SchemaImpl {
      * 红包发送记录
      */
     public final HrHbSendRecord HR_HB_SEND_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord.HR_HB_SEND_RECORD;
+
+    /**
+     * 红包活动与主题的关系表
+     */
+    public final HrHbTheme HR_HB_THEME = com.moseeker.baseorm.db.hrdb.tables.HrHbTheme.HR_HB_THEME;
 
     /**
      * 专题传播统计次数表
@@ -488,6 +494,7 @@ public class Hrdb extends SchemaImpl {
             HrHbPositionBinding.HR_HB_POSITION_BINDING,
             HrHbScratchCard.HR_HB_SCRATCH_CARD,
             HrHbSendRecord.HR_HB_SEND_RECORD,
+            HrHbTheme.HR_HB_THEME,
             HrHtml5Statistics.HR_HTML5_STATISTICS,
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
