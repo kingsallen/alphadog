@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserUser extends TableImpl<UserUserRecord> {
 
-    private static final long serialVersionUID = -1598882514;
+    private static final long serialVersionUID = -390017817;
 
     /**
      * The reference instance of <code>userdb.user_user</code>
@@ -134,7 +134,7 @@ public class UserUser extends TableImpl<UserUserRecord> {
     /**
      * The column <code>userdb.user_user.name</code>. 真实姓名
      */
-    public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "真实姓名");
+    public final TableField<UserUserRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "真实姓名");
 
     /**
      * The column <code>userdb.user_user.headimg</code>. 头像
