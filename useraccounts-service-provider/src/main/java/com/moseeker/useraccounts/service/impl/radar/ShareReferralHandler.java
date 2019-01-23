@@ -29,6 +29,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     @Override
     protected JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject referralTypeSingleMap, boolean radarSwitchOpen) {
         JSONObject recom = new JSONObject();
+        recom.put("type", getReferralType().getType());
         if(radarSwitchOpen){
             return recom;
         }
@@ -63,14 +64,12 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         }
         for(JobApplicationDO one : oneDegree){
             if(one.getId() == jobApplicationDO.getId()){
-                recom.put("type", getReferralType().getType());
                 recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
                 return recom;
             }
         }
         recom.put("nickname", nickname);
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
-        recom.put("type", getReferralType().getType());
         return recom;
     }
 

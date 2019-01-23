@@ -106,9 +106,6 @@ public class TemplateMsgHttp {
     private JobPositionDao positionDao;
 
     @Autowired
-    private ReferralLogDao referralLogDao;
-
-    @Autowired
     private UserUserDao userDao;
 
     @Autowired
@@ -937,6 +934,13 @@ public class TemplateMsgHttp {
         }
         List<JobPositionDO> positionDOS = positionDao.getPositionList(positionIds);
         HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(companyId);
+        if(hrWxWechatDO == null){
+            return;
+        }
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(hrWxWechatDO.getId(), Constant.POSITION_VIEW_TPL);
+        if(messageDO == null || messageDO.getStatus() == 1){
+            return;
+        }
         UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(employee.getSysuserId(), hrWxWechatDO.getId());
         JSONObject inviteTemplateVO = new JSONObject();
         DateTime dateTime = DateTime.now();

@@ -27,7 +27,7 @@ public class RadarSwitchAspect {
 
     private static ThreadLocal<Map> local = new ThreadLocal<>();
 
-    private static final String RADAR_LANAGUE="人脉雷达";
+    public static final String RADAR_LANAGUE="人脉雷达";
 
     CompanyServices.Iface service = ServiceManager.SERVICEMANAGER.getService(CompanyServices.Iface.class);
 
@@ -55,8 +55,6 @@ public class RadarSwitchAspect {
                 checkStrictAuthorityLimit();
             }
         }
-        Map<String, String> map = new HashMap<>();
-        local.set(map);
     }
 
     @After(POINCUT)
@@ -93,7 +91,7 @@ public class RadarSwitchAspect {
     }
 
     public static boolean checkSoftAuthorityLimit(){
-        return "1".equals(local.get().get("radar_status"));
+        return "1".equals(String.valueOf(local.get().get("radar_status")));
     }
 
 
