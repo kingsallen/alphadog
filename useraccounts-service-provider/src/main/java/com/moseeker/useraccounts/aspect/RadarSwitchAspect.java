@@ -85,7 +85,7 @@ public class RadarSwitchAspect {
     }
 
     public static void checkStrictAuthorityLimit(){
-        if("0".equals(local.get().get("radar_status"))){
+        if("0".equals(String.valueOf(local.get().get("radar_status")))){
             throw UserAccountException.RADAR_STATUS_CLOSE;
         }
     }
