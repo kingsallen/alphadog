@@ -438,7 +438,7 @@ public class ReferralPositionService {
         }
     }
 
-    public List<ReferralPositionMatchInfo> fetchPositionMatchByUserId(int userId, int companyId){
+    public List<ReferralPositionMatchInfo> fetchPositionMatchByUserId(int companyId, int userId){
 
         List<ReferralPositionMatchInfo> list = new ArrayList<>();
         Map<String, Object> params = new HashMap<>();

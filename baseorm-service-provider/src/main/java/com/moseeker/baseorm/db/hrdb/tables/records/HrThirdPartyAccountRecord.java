@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record16<Integer, Short, String, String, Short, Integer, Integer, Timestamp, Timestamp, Timestamp, Integer, String, String, String, Byte, Byte> {
 
-    private static final long serialVersionUID = -1451884719;
+    private static final long serialVersionUID = 823311497;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -47,14 +47,14 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
+     * Setter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
      */
     public void setChannel(Short value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
+     * Getter for <code>hrdb.hr_third_party_account.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
      */
     public Short getChannel() {
         return (Short) get(1);

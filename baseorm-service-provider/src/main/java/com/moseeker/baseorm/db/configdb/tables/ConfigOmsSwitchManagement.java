@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigOmsSwitchManagement extends TableImpl<ConfigOmsSwitchManagementRecord> {
 
-    private static final long serialVersionUID = -712171060;
+    private static final long serialVersionUID = 1221220731;
 
     /**
      * The reference instance of <code>configdb.config_oms_switch_management</code>
@@ -142,7 +142,7 @@ public class ConfigOmsSwitchManagement extends TableImpl<ConfigOmsSwitchManageme
      */
     @Override
     public List<UniqueKey<ConfigOmsSwitchManagementRecord>> getKeys() {
-        return Arrays.<UniqueKey<ConfigOmsSwitchManagementRecord>>asList(Keys.KEY_CONFIG_OMS_SWITCH_MANAGEMENT_PRIMARY, Keys.KEY_CONFIG_OMS_SWITCH_MANAGEMENT_MODULE_NAME);
+        return Arrays.<UniqueKey<ConfigOmsSwitchManagementRecord>>asList(Keys.KEY_CONFIG_OMS_SWITCH_MANAGEMENT_PRIMARY, Keys.KEY_CONFIG_OMS_SWITCH_MANAGEMENT_MODULE_NAME和COMPANY_ID);
     }
 
     /**

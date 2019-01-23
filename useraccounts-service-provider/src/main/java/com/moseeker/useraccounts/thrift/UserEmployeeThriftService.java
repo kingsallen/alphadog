@@ -220,14 +220,14 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public RadarInfo fetchRadarIndex(int userId, int companyId, int page, int size) throws BIZException, TException {
-        RadarInfoVO infoVO = employeeService.fetchRadarIndex(userId, companyId, page, size);
+        RadarInfoVO infoVO = employeeService.fetchRadarIndex(companyId, userId, page, size);
         return copyRadarInfoVO(infoVO);
     }
 
     @Override
     public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
                                                             String order, int page, int size) throws BIZException, TException {
-        EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(userId, companyId, positionTitle, order, page, size);
+        EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(companyId,userId, positionTitle, order, page, size);
         EmployeeForwardViewPage result = new EmployeeForwardViewPage();
         result.setPage(viewVO.getPage());
         result.setTotalCount(viewVO.getTotalCount());
@@ -254,7 +254,7 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public RadarInfo fetchEmployeeSeekRecommendPage(int userId, int companyId, int page, int size) throws BIZException, TException {
-        RadarInfoVO infoVO = employeeService.fetchEmployeeSeekRecommend(userId, companyId, page, size);
+        RadarInfoVO infoVO = employeeService.fetchEmployeeSeekRecommend(companyId, userId, page, size);
         return copyRadarInfoVO(infoVO);
     }
 

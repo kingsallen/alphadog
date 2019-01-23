@@ -12,6 +12,15 @@ public class ReferralContactForm {
     private Integer postUserId;
     private Integer positionId;
     private Integer origin;
+    private Integer companyId;
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
 
     public Integer getAppid() {
         return appid;

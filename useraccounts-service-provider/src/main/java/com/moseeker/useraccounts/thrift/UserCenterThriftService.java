@@ -84,6 +84,6 @@ public class UserCenterThriftService implements Iface {
 
     @Override
     public RecommendationScoreVO getRecommendationV2(int userId, int companyId) throws BIZException, TException {
-        return userCenterService.getRecommendationsV2(userId, companyId);
+        return userCenterService.getRecommendationsV2(companyId, userId);
     }
 }

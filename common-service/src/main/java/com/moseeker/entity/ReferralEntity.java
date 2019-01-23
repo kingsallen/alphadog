@@ -1037,7 +1037,7 @@ public class ReferralEntity {
                 List<ReferralEmployeeNetworkResourcesRecord> insertRecordList = new ArrayList<>();
                 int num = list.size()>resource.getUser_id().size()?list.size():resource.getUser_id().size();
                 for(int i =0; i<num;i++){
-                    if(i < list.size()-1) {
+                    if(i < (list.size()-1)) {
                         ReferralEmployeeNetworkResourcesRecord record = list.get(i);
                         if (resource.getUser_id().size() > i) {
                             record.setDisable((byte) Constant.DISABLE);

@@ -11,6 +11,7 @@ public class CheckEmployeeForm {
     private Integer presenteeUserId;
     private Integer appid;
     private Integer pid;
+    private Integer companyId;
 
     public Integer getParentChainId() {
         return parentChainId;
@@ -50,5 +51,13 @@ public class CheckEmployeeForm {
 
     public void setPresenteeUserId(Integer presenteeUserId) {
         this.presenteeUserId = presenteeUserId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 }

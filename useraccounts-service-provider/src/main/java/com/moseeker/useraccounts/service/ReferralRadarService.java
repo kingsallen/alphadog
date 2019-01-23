@@ -24,7 +24,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String getRadarCards(ReferralCardInfo cardInfo) throws TException;
+    String getRadarCards(int companyId, ReferralCardInfo cardInfo) throws TException;
 
     /**
      * 10分钟消息模板-邀请投递
@@ -34,7 +34,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String inviteApplication(ReferralInviteInfo inviteInfo) throws TException, ConnectException;
+    String inviteApplication(int companyId, ReferralInviteInfo inviteInfo) throws TException, ConnectException;
 
     /**
      * 10分钟消息模板-我不熟悉
@@ -44,7 +44,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    void ignoreCurrentViewer(ReferralInviteInfo ignoreInfo) throws TException;
+    void ignoreCurrentViewer(int companyId, ReferralInviteInfo ignoreInfo) throws TException;
 
     /**
      * 点击人脉连连看按钮/点击分享的人脉连连看页面
@@ -54,7 +54,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) throws TException;
+    RadarConnectResult connectRadar(int companyId, ConnectRadarInfo radarInfo) throws TException;
     /**
      * 候选人打开职位连接判断推荐人是否是员工
      *
@@ -63,7 +63,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String checkEmployee(CheckEmployeeInfo checkInfo) throws BIZException, TException;
+    String checkEmployee(int companyId, CheckEmployeeInfo checkInfo) throws BIZException, TException;
     /**
      * 保存发送十分钟消息模板时的转发链路
      *
@@ -71,7 +71,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    void saveTenMinuteCandidateShareChain(ReferralCardInfo cardInfo) throws BIZException, ConnectException;
+    void saveTenMinuteCandidateShareChain(int companyId, ReferralCardInfo cardInfo) throws BIZException, ConnectException;
     /**
      * 获取某个候选人的推荐进度
      *
@@ -79,7 +79,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String getProgressByOne(ReferralProgressQueryInfo progressQuery) throws BIZException;
+    String getProgressByOne(int companyId, ReferralProgressQueryInfo progressQuery) throws BIZException;
     /**
      * 批量根据条件获取候选人的推荐进度
      *
@@ -87,7 +87,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String getProgressBatch(ReferralProgressInfo progressInfo) throws BIZException;
+    String getProgressBatch(int companyId, ReferralProgressInfo progressInfo) throws BIZException;
     /**
      * 更改share_chain中的候选人处理状态
      *
@@ -108,7 +108,7 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    String progressQueryKeyword(ReferralProgressInfo progressInfo);
+    String progressQueryKeyword(int companyId, ReferralProgressInfo progressInfo);
 
     /**
      *
@@ -119,5 +119,5 @@ public interface ReferralRadarService {
      * @param psc   share_chain.id
      * @return 求推荐id 查不到返回0
      */
-    int checkSeekReferral(int userId, int presenteeId, int positionId, int companyId, int psc);
+    int checkSeekReferral(int companyId, int userId, int presenteeId, int positionId, int psc);
 }

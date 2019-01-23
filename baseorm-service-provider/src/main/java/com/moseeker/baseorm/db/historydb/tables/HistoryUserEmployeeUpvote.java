@@ -61,9 +61,9 @@ public class HistoryUserEmployeeUpvote extends TableImpl<HistoryUserEmployeeUpvo
     public final TableField<HistoryUserEmployeeUpvoteRecord, Integer> SENDER = createField("sender", org.jooq.impl.SQLDataType.INTEGER, this, "点赞的人的仟寻员工编号");
 
     /**
-     * The column <code>historydb.history_user_employee_upvote.receiver</code>. 被点赞的人的仟寻员工编号
+     * The column <code>historydb.history_user_employee_upvote.rabbitmq</code>. 被点赞的人的仟寻员工编号
      */
-    public final TableField<HistoryUserEmployeeUpvoteRecord, Integer> RECEIVER = createField("receiver", org.jooq.impl.SQLDataType.INTEGER, this, "被点赞的人的仟寻员工编号");
+    public final TableField<HistoryUserEmployeeUpvoteRecord, Integer> RECEIVER = createField("rabbitmq", org.jooq.impl.SQLDataType.INTEGER, this, "被点赞的人的仟寻员工编号");
 
     /**
      * The column <code>historydb.history_user_employee_upvote.company_id</code>. 公司编号，用于标识哪家员工的点赞

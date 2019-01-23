@@ -4,6 +4,8 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
+import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent;
+import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -14,6 +16,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrCmsModule;
 import com.moseeker.baseorm.db.hrdb.tables.HrCmsPages;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
+import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyEmailInfo;
@@ -28,6 +31,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
@@ -84,6 +88,16 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
+     * The table <code>hrdb.crm_customer_operation_event</code>.
+     */
+    public static final CrmCustomerOperationEvent CRM_CUSTOMER_OPERATION_EVENT = com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT;
+
+    /**
+     * The table <code>hrdb.crm_customer_operation_record</code>.
+     */
+    public static final CrmCustomerOperationRecord CRM_CUSTOMER_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD;
+
+    /**
      * The table <code>hrdb.hr_account_application_notify</code>.
      */
     public static final HrAccountApplicationNotify HR_ACCOUNT_APPLICATION_NOTIFY = com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY;
@@ -132,6 +146,11 @@ public class Tables {
      * 账号公司关联记录
      */
     public static final HrCompanyAccount HR_COMPANY_ACCOUNT = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount.HR_COMPANY_ACCOUNT;
+
+    /**
+     * 账号公司关联记录
+     */
+    public static final HrCompanyAccountCopy HR_COMPANY_ACCOUNT_COPY = com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccountCopy.HR_COMPANY_ACCOUNT_COPY;
 
     /**
      * 公司级别的配置信息表
@@ -202,6 +221,11 @@ public class Tables {
      * 红包记录表
      */
     public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
+
+    /**
+     * The table <code>hrdb.hr_hb_items_backup</code>.
+     */
+    public static final HrHbItemsBackup HR_HB_ITEMS_BACKUP = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup.HR_HB_ITEMS_BACKUP;
 
     /**
      * 红包配置和职位绑定表
@@ -359,7 +383,7 @@ public class Tables {
     public static final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * The table <code>hrdb.hr_wx_module</code>.
+     * 微信模块表
      */
     public static final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 

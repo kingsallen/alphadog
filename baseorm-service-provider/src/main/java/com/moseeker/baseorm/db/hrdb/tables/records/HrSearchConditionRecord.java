@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 348564085;
+    private static final long serialVersionUID = 86319449;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.
@@ -450,59 +450,59 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     * Setter for <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
-    public void setPositionKeyWord(String value) {
+    public void setPositionStatus(Integer value) {
         set(30, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.position_key_word</code>. 职位搜索关键字
+     * Getter for <code>hrdb.hr_search_condition.position_status</code>. 职位状态 0;有效，1下架 2删除
      */
-    public String getPositionKeyWord() {
-        return (String) get(30);
+    public Integer getPositionStatus() {
+        return (Integer) get(30);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     * Setter for <code>hrdb.hr_search_condition.position_key_word</code>.
      */
-    public void setPastPositionKeyWord(String value) {
+    public void setPositionKeyWord(String value) {
         set(31, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.past_position_key_word</code>. 曾任职位的关键字
+     * Getter for <code>hrdb.hr_search_condition.position_key_word</code>.
      */
-    public String getPastPositionKeyWord() {
+    public String getPositionKeyWord() {
         return (String) get(31);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     * Setter for <code>hrdb.hr_search_condition.past_position_key_word</code>.
      */
-    public void setPastCompanyKeyWord(String value) {
+    public void setPastPositionKeyWord(String value) {
         set(32, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.past_company_key_word</code>. 曾任公司的关键字
+     * Getter for <code>hrdb.hr_search_condition.past_position_key_word</code>.
      */
-    public String getPastCompanyKeyWord() {
+    public String getPastPositionKeyWord() {
         return (String) get(32);
     }
 
     /**
-     * Setter for <code>hrdb.hr_search_condition.position_status</code>.
+     * Setter for <code>hrdb.hr_search_condition.past_company_key_word</code>.
      */
-    public void setPositionStatus(Integer value) {
+    public void setPastCompanyKeyWord(String value) {
         set(33, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_search_condition.position_status</code>.
+     * Getter for <code>hrdb.hr_search_condition.past_company_key_word</code>.
      */
-    public Integer getPositionStatus() {
-        return (Integer) get(33);
+    public String getPastCompanyKeyWord() {
+        return (String) get(33);
     }
 
     // -------------------------------------------------------------------------
@@ -531,7 +531,7 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
     /**
      * Create a detached, initialised HrSearchConditionRecord
      */
-    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord, Integer positionStatus) {
+    public HrSearchConditionRecord(Integer id, String name, String publisher, String positionId, String keyword, String submitTime, String workYears, String cityName, String degree, String pastPosition, Integer inLastJobSearchPosition, Integer minAge, Integer maxAge, String intentionCityName, Integer sex, String intentionSalaryCode, String companyName, Integer inLastJobSearchCompany, Integer hrAccountId, Timestamp createTime, Integer updateTime, Integer type, String candidateSource, Byte isPublic, String origins, Byte isRecommend, String tagIds, String favoriteHrs, String cityCode, String intentionCityCode, Integer positionStatus, String positionKeyWord, String pastPositionKeyWord, String pastCompanyKeyWord) {
         super(HrSearchCondition.HR_SEARCH_CONDITION);
 
         set(0, id);
@@ -564,9 +564,9 @@ public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditi
         set(27, favoriteHrs);
         set(28, cityCode);
         set(29, intentionCityCode);
-        set(30, positionKeyWord);
-        set(31, pastPositionKeyWord);
-        set(32, pastCompanyKeyWord);
-        set(33, positionStatus);
+        set(30, positionStatus);
+        set(31, positionKeyWord);
+        set(32, pastPositionKeyWord);
+        set(33, pastCompanyKeyWord);
     }
 }

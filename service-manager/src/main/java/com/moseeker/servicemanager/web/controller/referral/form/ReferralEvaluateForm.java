@@ -15,6 +15,16 @@ public class ReferralEvaluateForm {
     private byte relationship;
     private String recomReasonText;
     private int presenteeUserId;
+    private int companyId;
+
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
 
     public int getAppid() {
         return appid;

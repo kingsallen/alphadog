@@ -150,7 +150,7 @@ public class ReferralTemplateSender {
     }
 
     public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
-        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo),2*60*1000);
+        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo),10*60*1000);
     }
 
     @Transactional(rollbackFor = Exception.class)
