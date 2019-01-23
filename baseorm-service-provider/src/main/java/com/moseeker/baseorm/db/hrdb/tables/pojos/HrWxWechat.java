@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat implements Serializable {
 
-    private static final long serialVersionUID = -989262342;
+    private static final long serialVersionUID = -1325594590;
 
     private Integer   id;
     private Integer   companyId;
@@ -53,6 +53,7 @@ public class HrWxWechat implements Serializable {
     private Timestamp updateTime;
     private Integer   showQxQrcode;
     private Integer   showCustomTheme;
+    private Integer   defaultmessage;
 
     public HrWxWechat() {}
 
@@ -85,6 +86,7 @@ public class HrWxWechat implements Serializable {
         this.updateTime = value.updateTime;
         this.showQxQrcode = value.showQxQrcode;
         this.showCustomTheme = value.showCustomTheme;
+        this.defaultmessage = value.defaultmessage;
     }
 
     public HrWxWechat(
@@ -115,7 +117,8 @@ public class HrWxWechat implements Serializable {
         Timestamp createTime,
         Timestamp updateTime,
         Integer   showQxQrcode,
-        Integer   showCustomTheme
+        Integer   showCustomTheme,
+        Integer   defaultmessage
     ) {
         this.id = id;
         this.companyId = companyId;
@@ -145,6 +148,7 @@ public class HrWxWechat implements Serializable {
         this.updateTime = updateTime;
         this.showQxQrcode = showQxQrcode;
         this.showCustomTheme = showCustomTheme;
+        this.defaultmessage = defaultmessage;
     }
 
     public Integer getId() {
@@ -371,6 +375,14 @@ public class HrWxWechat implements Serializable {
         this.showCustomTheme = showCustomTheme;
     }
 
+    public Integer getDefaultmessage() {
+        return this.defaultmessage;
+    }
+
+    public void setDefaultmessage(Integer defaultmessage) {
+        this.defaultmessage = defaultmessage;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrWxWechat (");
@@ -403,6 +415,7 @@ public class HrWxWechat implements Serializable {
         sb.append(", ").append(updateTime);
         sb.append(", ").append(showQxQrcode);
         sb.append(", ").append(showCustomTheme);
+        sb.append(", ").append(defaultmessage);
 
         sb.append(")");
         return sb.toString();

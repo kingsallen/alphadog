@@ -5,6 +5,7 @@ import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.ThemeDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.common.validation.ValidateUtil;
@@ -26,13 +27,15 @@ import java.sql.Timestamp;
  */
 public abstract class Activity {
 
-    public Activity(int id, HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao, HrHbItemsDao itemsDao)
+    public Activity(int id, HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao, HrHbItemsDao itemsDao,
+                    ThemeDao themeDao)
             throws UserAccountException {
         this.id = id;
 
         this.configDao = configDao;
         this.positionBindingDao = positionBindingDao;
         this.itemsDao = itemsDao;
+        this.themeDao = themeDao;
 
         HrHbConfigRecord record = configDao.fetchById(this.id);
         if (record == null) {
@@ -176,6 +179,9 @@ public abstract class Activity {
                 }
             }
             configDao.update(hrHbConfig);
+            if (activityVO.getTheme() != null) {
+                themeDao.upsert(id, activityVO.getTheme());
+            }
         }
     }
 
@@ -200,6 +206,7 @@ public abstract class Activity {
     protected HrHbConfigDao configDao;
     protected HrHbPositionBindingDao positionBindingDao;
     protected HrHbItemsDao itemsDao;
+    protected ThemeDao themeDao;
 
     protected Integer id;
     protected Integer totalAmount;

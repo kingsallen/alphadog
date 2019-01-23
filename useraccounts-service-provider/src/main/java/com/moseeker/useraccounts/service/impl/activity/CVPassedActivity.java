@@ -3,6 +3,7 @@ package com.moseeker.useraccounts.service.impl.activity;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.ThemeDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.useraccounts.exception.UserAccountException;
 
@@ -17,8 +18,8 @@ public class CVPassedActivity extends PositionActivity {
 
     public CVPassedActivity(int id,
                             HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
-                            HrHbItemsDao itemsDao, JobPositionDao positionDao) {
-        super(id, configDao, positionBindingDao, itemsDao, positionDao);
+                            HrHbItemsDao itemsDao, ThemeDao themeDao, JobPositionDao positionDao) {
+        super(id, configDao, positionBindingDao, itemsDao, themeDao, positionDao);
         positionHBStatus = PositionHBStatus.CVPassed;
     }
 

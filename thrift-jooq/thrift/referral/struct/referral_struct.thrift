@@ -69,6 +69,7 @@ struct ActivityDTO {
     18: optional i32 estimatedTotal,
     19: optional i32 actualTotal,
     20: optional list<i32> positionIds,
+    21: optional i32 redpacket_theme,
 }
 
 struct ReferralReasonInfo{

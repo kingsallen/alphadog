@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyAccountRecord> implements Record16<Integer, Short, String, String, Short, Integer, Integer, Timestamp, Timestamp, Timestamp, Integer, String, String, String, Byte, Byte> {
 
-    private static final long serialVersionUID = -1451884719;
+    private static final long serialVersionUID = 823311497;
 
     /**
      * Setter for <code>hrdb.hr_third_party_account.id</code>. 编号
@@ -201,28 +201,32 @@ public class HrThirdPartyAccountRecord extends UpdatableRecordImpl<HrThirdPartyA
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称
+     * Setter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、
+51job：
+会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串
      */
     public void setExt(String value) {
         set(12, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、51job：会员名称
+     * Getter for <code>hrdb.hr_third_party_account.ext</code>. 扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、
+51job：
+会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串
      */
     public String getExt() {
         return (String) get(12);
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段，目前是由于猎聘登录时会返回token和usereid（用户在猎聘的id）两个字段，分别使用ext存储usereid和ext2存储token
+     * Setter for <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息
      */
     public void setExt2(String value) {
         set(13, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段，目前是由于猎聘登录时会返回token和usereid（用户在猎聘的id）两个字段，分别使用ext存储usereid和ext2存储token
+     * Getter for <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息
      */
     public String getExt2() {
         return (String) get(13);

@@ -28,6 +28,7 @@ public class ActivityVO {
     private Integer estimatedTotal;
     private Integer actualTotal;
     private List<Integer> positionIds;
+    private Integer theme;
 
     public List<Double> getAmounts() {
         return amounts;
@@ -187,5 +188,13 @@ public class ActivityVO {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getTheme() {
+        return theme;
+    }
+
+    public void setTheme(Integer theme) {
+        this.theme = theme;
     }
 }
