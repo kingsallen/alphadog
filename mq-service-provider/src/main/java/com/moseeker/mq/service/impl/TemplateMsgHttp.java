@@ -938,7 +938,7 @@ public class TemplateMsgHttp {
             return;
         }
         HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(hrWxWechatDO.getId(), Constant.POSITION_VIEW_TPL);
-        if(messageDO == null || messageDO.getStatus() == 1){
+        if(messageDO == null || messageDO.getStatus() == 0){
             return;
         }
         UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(employee.getSysuserId(), hrWxWechatDO.getId());
