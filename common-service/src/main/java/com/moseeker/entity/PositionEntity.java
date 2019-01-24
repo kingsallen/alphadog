@@ -303,6 +303,10 @@ public class PositionEntity {
         }
     }
 
+    public List<Integer> getPositionIdListByCompanyIdListAndStatus(List<Integer> companyIdList) {
+        return  positionDao.getPositionIdListByCompanyIdListAndStatus(companyIdList);
+    }
+
     public List<Integer> getPositionIdListByTitle(List<Integer> idList, String title) {
         Result<Record1<Integer>> result = positionDao.getPositionIdListByIdListAndTitle(idList, title);
         if (result != null) {

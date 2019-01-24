@@ -196,7 +196,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         List<Integer> list = new ArrayList<>();
         list.add(employee.getCompanyId());
         List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
-        List<Integer> positionIds = positionEntity.getPositionIdList(companyIds);
+        List<Integer> positionIds = positionEntity.getPositionIdListByCompanyIdListAndStatus(companyIds);
         List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId, positionIds);
         if(StringUtils.isEmptyList(peresentUserIdList)){
             return new ArrayList<>();
