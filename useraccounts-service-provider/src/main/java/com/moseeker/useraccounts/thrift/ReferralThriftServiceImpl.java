@@ -87,6 +87,7 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
     public void updateActivity(ActivityDTO activityDTO) throws BIZException, TException {
         try {
             ActivityVO activityVO = com.moseeker.baseorm.util.BeanUtils.structToDB(activityDTO, ActivityVO.class);
+            activityVO.setTheme(activityDTO.getRedpacket_theme());
             logger.info("ReferralThriftServiceImpl updateActivity activityDTO:{}", activityDTO);
             logger.info("ReferralThriftServiceImpl updateActivity activityVO:{}", JSON.toJSONString(activityVO));
             referralService.updateActivity(activityVO);

@@ -4,6 +4,7 @@ import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.ThemeDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
@@ -27,8 +28,8 @@ public abstract class PositionActivity extends Activity {
 
     public PositionActivity(int id,
                             HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
-                            HrHbItemsDao itemsDao, JobPositionDao positionDao) {
-        super(id, configDao, positionBindingDao, itemsDao);
+                            HrHbItemsDao itemsDao, ThemeDao themeDao, JobPositionDao positionDao) {
+        super(id, configDao, positionBindingDao, itemsDao, themeDao);
         this.positionDao = positionDao;
     }
 
@@ -76,6 +77,9 @@ public abstract class PositionActivity extends Activity {
         }
         updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
+        if (activityVO.getTheme() != null) {
+            themeDao.upsert(id, activityVO.getTheme());
+        }
     }
 
     /**

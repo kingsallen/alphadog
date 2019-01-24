@@ -4,6 +4,7 @@ import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.ThemeDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.common.validation.ValidateUtil;
@@ -29,8 +30,8 @@ public abstract class NonePositionActivity extends Activity {
 
     public NonePositionActivity(int id,
                                 HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
-                                HrHbItemsDao itemsDao) {
-        super(id, configDao, positionBindingDao, itemsDao);
+                                HrHbItemsDao itemsDao, ThemeDao themeDao) {
+        super(id, configDao, positionBindingDao, itemsDao, themeDao);
     }
 
     /**
@@ -69,6 +70,9 @@ public abstract class NonePositionActivity extends Activity {
         }
         updateInfo(activityVO, false);
         configDao.updateStatus(id, ActivityStatus.Running.getValue());
+        if (activityVO.getTheme() != null) {
+            themeDao.upsert(id, activityVO.getTheme());
+        }
     }
 
     @Override
