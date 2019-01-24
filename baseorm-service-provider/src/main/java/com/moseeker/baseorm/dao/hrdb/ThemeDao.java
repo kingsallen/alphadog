@@ -4,6 +4,7 @@ import com.moseeker.baseorm.db.hrdb.tables.daos.HrHbThemeDao;
 import org.jooq.Configuration;
 import org.jooq.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import static com.moseeker.baseorm.db.hrdb.tables.HrHbTheme.HR_HB_THEME;
 import static org.jooq.impl.DSL.*;
@@ -15,6 +16,7 @@ import static org.jooq.impl.DSL.*;
  * @Date 2019/1/23 2:11 PM
  * @Version 1.0
  */
+@Repository
 public class ThemeDao extends HrHbThemeDao {
 
     @Autowired
