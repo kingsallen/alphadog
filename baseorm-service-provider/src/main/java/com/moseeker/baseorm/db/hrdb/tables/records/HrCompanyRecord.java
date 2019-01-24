@@ -6,7 +6,6 @@ package com.moseeker.baseorm.db.hrdb.tables.records;
 
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -28,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = 517058056;
+    private static final long serialVersionUID = 173791167;
 
     /**
      * Setter for <code>hrdb.hr_company.id</code>.
@@ -355,15 +354,29 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> {
     /**
      * Setter for <code>hrdb.hr_company.fortune_year</code>. 五百强评定年份
      */
-    public void setFortuneYear(Date value) {
+    public void setFortuneYear(Timestamp value) {
         set(23, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company.fortune_year</code>. 五百强评定年份
      */
-    public Date getFortuneYear() {
-        return (Date) get(23);
+    public Timestamp getFortuneYear() {
+        return (Timestamp) get(23);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company.employee_number</code>. 公司员工总数
+     */
+    public void setEmployeeNumber(Integer value) {
+        set(24, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company.employee_number</code>. 公司员工总数
+     */
+    public Integer getEmployeeNumber() {
+        return (Integer) get(24);
     }
 
     // -------------------------------------------------------------------------
@@ -392,7 +405,7 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> {
     /**
      * Create a detached, initialised HrCompanyRecord
      */
-    public HrCompanyRecord(Integer id, Byte type, String name, String introduction, Byte scale, String address, Byte property, String industry, String homepage, String logo, String abbreviation, String impression, String banner, Integer parentId, Integer hraccountId, Byte disable, Timestamp createTime, Timestamp updateTime, Byte source, String slogan, String feature, Byte fortune, Byte fortuneScale, Date fortuneYear) {
+    public HrCompanyRecord(Integer id, Byte type, String name, String introduction, Byte scale, String address, Byte property, String industry, String homepage, String logo, String abbreviation, String impression, String banner, Integer parentId, Integer hraccountId, Byte disable, Timestamp createTime, Timestamp updateTime, Byte source, String slogan, String feature, Byte fortune, Byte fortuneScale, Timestamp fortuneYear, Integer employeeNumber) {
         super(HrCompany.HR_COMPANY);
 
         set(0, id);
@@ -419,5 +432,6 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> {
         set(21, fortune);
         set(22, fortuneScale);
         set(23, fortuneYear);
+        set(24, employeeNumber);
     }
 }
