@@ -426,7 +426,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
-        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, radarSwitchOpen);
+        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, radarSwitchOpen, true);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
             return "";
         }
@@ -485,20 +485,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
-        int progress = progressInfo.getProgress();
-        List<JobApplicationDO> jobApplicationDOS;
-        List<Integer> progressList = new ArrayList<>();
-        progressList.add(progress);
-        // 目前有四种操作对应已投递状态 1 被推荐人投递简历 6 hr查看简历 15 员工主动投递简历 16 候选人联系内推投递简历
-        if(progress == ReferralProgressEnum.APPLYED.getProgress()){
-            initApplyProgressList(progressList);
-        }
-        if(progress == 0){
-            jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId());
-        }else {
-            jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
-        }
-//        jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, false);
+        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true, false);
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
         Set<String> names = userUsers.stream().map(UserUserRecord::getName).collect(Collectors.toSet());
@@ -509,6 +496,29 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         return JSON.toJSONString(result);
+    }
+
+    @Override
+    @RadarSwitchLimit
+    public int checkSeekReferral(int companyId, int userId, int presenteeId, int positionId, int shareChainId) {
+        int employeeUserId = userId;
+        if(shareChainId > 0){
+            CandidateShareChainDO candidateShareChainDO = shareChainDao.getCandidateShareChainById(shareChainId);
+            if(candidateShareChainDO == null){
+                throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
+            }
+            employeeUserId = candidateShareChainDO.getRootRecomUserId();
+        }
+        ReferralSeekRecommendRecord recommendRecord = seekRecommendDao.fetchByUidAndPresenteeIdAndPid(employeeUserId, presenteeId, positionId);
+        return recommendRecord == null ? 0 : recommendRecord.getId();
+    }
+
+    @Override
+    public void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type) {
+        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
+        shareChainDao.updateTypeById(candidateShareChainDO.getId());
+        // type = 3 推荐ta
+        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
     }
 
     private List<JobApplicationDO> paginationJobApplication(ReferralProgressInfo progressInfo, List<JobApplicationDO> jobApplicationDOS, boolean pagination) {
@@ -534,28 +544,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return list;
     }
 
-    @Override
-    @RadarSwitchLimit
-    public int checkSeekReferral(int companyId, int userId, int presenteeId, int positionId, int shareChainId) {
-        int employeeUserId = userId;
-        if(shareChainId > 0){
-            CandidateShareChainDO candidateShareChainDO = shareChainDao.getCandidateShareChainById(shareChainId);
-            if(candidateShareChainDO == null){
-                throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
-            }
-            employeeUserId = candidateShareChainDO.getRootRecomUserId();
-        }
-        ReferralSeekRecommendRecord recommendRecord = seekRecommendDao.fetchByUidAndPresenteeIdAndPid(employeeUserId, presenteeId, positionId);
-        return recommendRecord == null ? 0 : recommendRecord.getId();
-    }
-
-    @Override
-    public void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type) {
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
-        shareChainDao.updateTypeById(candidateShareChainDO.getId());
-        // type = 3 推荐ta
-        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
-    }
 
     @Override
     public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
@@ -630,7 +618,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         progressList.add(ReferralProgressEnum.SEEK_APPLY.getProgress());
     }
 
-    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo, boolean radarSwitchOpen) {
+    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo, boolean radarSwitchOpen, boolean pagination) {
         List<JobApplicationDO> jobApplicationDOS;
         String queryName = progressInfo.getKeyword();
         int progress = progressInfo.getProgress();
@@ -658,7 +646,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(!radarSwitchOpen){
             jobApplicationDOS = filterRadarReferralApplication(jobApplicationDOS);
         }
-        jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, true);
+        // 分页
+        jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, pagination);
         return jobApplicationDOS;
     }
 
@@ -1357,6 +1346,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
         if(current == null){
             throw UserAccountException.REFERRAL_PROGRESS_ERROR;
+        }
+        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
+            return last.getOrder() > current.getOrder();
         }
         return last.getOrder() >= current.getOrder();
     }

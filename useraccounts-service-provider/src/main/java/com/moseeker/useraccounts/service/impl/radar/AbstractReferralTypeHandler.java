@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
+import com.moseeker.useraccounts.service.constant.ReferralProgressEnum;
 import com.moseeker.useraccounts.service.constant.ReferralTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -48,8 +49,10 @@ public abstract class AbstractReferralTypeHandler {
                                       JSONObject referralTypeSingleMap, boolean radarSwitchOpen) {
         JSONObject card = new JSONObject();
         int progress = jobApplicationDO.getAppTplId();
-        if(progress == 6 || progress == 15 || progress == 16){
-            progress = 1;
+        if(progress == ReferralProgressEnum.VIEW_APPLY.getProgress()
+                || progress == ReferralProgressEnum.EMPLOYEE_UPLOAD.getProgress()
+                || progress == ReferralProgressEnum.SEEK_APPLY.getProgress()){
+            progress = ReferralProgressEnum.APPLYED.getProgress();
         }
         card.put("apply_id", jobApplicationDO.getId());
         card.put("datetime", getLastDateTime(jobApplicationDO.getSubmitTime(), hrOperations));
