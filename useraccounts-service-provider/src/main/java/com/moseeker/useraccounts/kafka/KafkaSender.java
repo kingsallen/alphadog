@@ -9,7 +9,11 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -60,12 +64,14 @@ public class KafkaSender {
     }
 
     public void sendEmployeeCertification(UserEmployeeDO employeeDO){
+        List<KafkaBaseDto> list = new ArrayList<>();
         KafkaBaseDto dto = new KafkaBaseDto();
         dto.setEvent_time(employeeDO.getBindingTime());
         dto.setEvent(EMPLOYEE_CERTIFICATION);
         dto.setCompany_id(employeeDO.getCompanyId());
         dto.setUser_id(employeeDO.getSysuserId());
-        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(dto));
+        list.add(dto);
+        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(list));
     }
 
 

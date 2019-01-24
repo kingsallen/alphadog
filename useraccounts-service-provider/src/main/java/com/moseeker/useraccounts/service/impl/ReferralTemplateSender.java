@@ -66,6 +66,8 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
+    private static final Integer TEN_MINUTE = 3*60*1000;
+
     @Autowired
     private AmqpTemplate amqpTemplate;
 
@@ -150,7 +152,7 @@ public class ReferralTemplateSender {
     }
 
     public void sendTenMinuteTemplate(ReferralCardInfo cardInfo) {
-        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo),10*60*1000);
+        scheduledThread.startTast(() -> sendTenMinuteTemplateIfNecessary(cardInfo), TEN_MINUTE);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -158,7 +160,7 @@ public class ReferralTemplateSender {
         long timestamp = System.currentTimeMillis();
         cardInfo.setTimestamp(timestamp);
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
-        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
+        Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         List<ReferralSeekRecommendRecord> seekRecommendRecords = seekRecommendDao.getTenMinuteSeekRecords(cardInfo.getUserId(), beforeTenMinite, tenMinite);

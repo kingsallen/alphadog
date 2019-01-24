@@ -43,6 +43,7 @@ public class RadarSwitchAspect {
             }
             Map<String, Object> params = new HashMap<>();
             params.put("radar_status", switchCheck(companyId));
+//            params.put("radar_status", 1);
             local.set(params);
         }
         Signature signature = joinPoint.getSignature();
@@ -85,7 +86,7 @@ public class RadarSwitchAspect {
     }
 
     public static void checkStrictAuthorityLimit(){
-        if("0".equals(local.get().get("radar_status"))){
+        if("0".equals(String.valueOf(local.get().get("radar_status")))){
             throw UserAccountException.RADAR_STATUS_CLOSE;
         }
     }

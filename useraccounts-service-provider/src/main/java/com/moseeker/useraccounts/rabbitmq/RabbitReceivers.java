@@ -69,7 +69,7 @@ public class RabbitReceivers {
         if(jobApplication == null){
             return;
         }
-        sendToKafka(jobApplication);
+        sendApplyToKafka(jobApplication);
         // 获取申请来源对应的shareChain处理类型
         int type = ReferralApplyHandleEnum.getByApplicationSource(jobApplication.getOrigin());
         if(type == 0){
@@ -94,6 +94,7 @@ public class RabbitReceivers {
             return;
         }
         CompanySwitchVO switchVO = JSONObject.parseObject(msgBody, CompanySwitchVO.class);
+        // 仅处理雷达开关
         if(!(switchVO.getKeyword().equals(RadarSwitchAspect.RADAR_LANAGUE))){
             return;
         }
@@ -102,28 +103,42 @@ public class RabbitReceivers {
             return;
         }
         if(switchVO.getValid()==1){
-            // 将开关打开
-            HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(hrWxWechatDO.getId(), templateId);
-            if(messageDO == null){
-                messageDO = new HrWxNoticeMessageDO();
-                messageDO.setNoticeId(templateId);
-                messageDO.setStatus(1);
-                messageDO.setWechatId(hrWxWechatDO.getId());
-            }else if(messageDO.getStatus() == 0){
-                messageDO.setStatus(1);
-                wxNoticeMessageDao.updateData(messageDO);
-            }
+            // 将消息模板开关打开
+            openTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
+            sendEmployeeToKafka(switchVO.getCompanyId(), 1);
         }else if(switchVO.getValid() == 0){
             // 将开关关闭
-            HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(hrWxWechatDO.getId(), templateId);
-            if(messageDO != null && messageDO.getStatus() == 1){
-                messageDO.setStatus(0);
-                wxNoticeMessageDao.updateData(messageDO);
-            }
+            closeTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
+            sendEmployeeToKafka(switchVO.getCompanyId(), 0);
         }
     }
 
-    private void sendToKafka(JobApplication jobApplication) {
+    private void sendEmployeeToKafka(int companyId, int switchState) {
+
+    }
+
+    private void closeTemMiniteTemplateSwitch(int wechatId, int templateId) {
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatId, templateId);
+        if(messageDO != null && messageDO.getStatus() == 1){
+            messageDO.setStatus(0);
+            wxNoticeMessageDao.updateData(messageDO);
+        }
+    }
+
+    private void openTemMiniteTemplateSwitch(int wechatId, int templateId) {
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatId, templateId);
+        if(messageDO == null){
+            messageDO = new HrWxNoticeMessageDO();
+            messageDO.setNoticeId(templateId);
+            messageDO.setStatus(1);
+            messageDO.setWechatId(wechatId);
+        }else if(messageDO.getStatus() == 0){
+            messageDO.setStatus(1);
+            wxNoticeMessageDao.updateData(messageDO);
+        }
+    }
+
+    private void sendApplyToKafka(JobApplication jobApplication) {
         long current = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         int positionId = jobApplication.getPositionId();
