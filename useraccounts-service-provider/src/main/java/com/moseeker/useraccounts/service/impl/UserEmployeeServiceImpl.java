@@ -590,7 +590,7 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
-        List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+        List<Integer> positionIdList = bizTools.listPositionIdByUserIdAndStatus(userId);
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
@@ -644,7 +644,7 @@ public class UserEmployeeServiceImpl {
             throw UserAccountException.PERMISSION_DENIED;
         }
         Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
-        List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+        List<Integer> positionIdList = bizTools.listPositionIdByUserIdAndStatus(userId);
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
         }
@@ -700,7 +700,6 @@ public class UserEmployeeServiceImpl {
     public List<CandidateRecomRecordRecord> pagePositionById(List<Integer> positionIds, Set<Integer> employeeUsers, int postUserId, int companyId,
                                                          String order, int page, int size, EmployeeForwardViewVO result){
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
-
         switch (order){
             case "time": list = bizTools.listCandidateRecomRecords(postUserId, positionIds, employeeUsers, companyId);
                 break;
