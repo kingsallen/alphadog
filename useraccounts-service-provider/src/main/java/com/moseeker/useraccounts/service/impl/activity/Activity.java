@@ -177,6 +177,9 @@ public abstract class Activity {
                 hrHbConfig.setActualTotal(activityVO.getActualTotal());
             }
             logger.info("Activity updateInfo checked:{} activityStatus:{}", checked, activityStatus);
+            if (activityVO.getTheme() != null) {
+                themeDao.upsert(id, activityVO.getTheme());
+            }
             if (checked) {
                 if (!hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
                         && (activityStatus.equals(ActivityStatus.Checked)
