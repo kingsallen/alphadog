@@ -10,6 +10,7 @@ public class KafkaNetworkResource {
     private String event;
     private String event_time;
     private int employee_id;
+    private int company_id;
     private List<Integer> user_id;
 
     public String getEvent() {
@@ -42,5 +43,13 @@ public class KafkaNetworkResource {
 
     public void setUser_id(List<Integer> user_id) {
         this.user_id = user_id;
+    }
+
+    public int getCompany_id() {
+        return company_id;
+    }
+
+    public void setCompany_id(int company_id) {
+        this.company_id = company_id;
     }
 }

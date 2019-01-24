@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
+import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
@@ -10,6 +11,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.kafka.KafkaSender;
@@ -63,6 +65,11 @@ public class Neo4jServiceImpl implements Neo4jService {
     @Autowired
     CandidateShareChainDao candidateShareChainDao;
 
+    @Autowired
+    HrGroupCompanyRelDao companyRelDao;
+
+    @Autowired
+    PositionEntity positionEntity;
 
 
     @Override
@@ -185,16 +192,20 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
-        List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId);
+        UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        List<Integer> list = new ArrayList<>();
+        list.add(employee.getCompanyId());
+        List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
+        List<Integer> positionIds = positionEntity.getPositionIdListByCompanyIdListAndStatus(companyIds);
+        List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId, positionIds);
         if(StringUtils.isEmptyList(peresentUserIdList)){
             return new ArrayList<>();
         }
-        UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId);
         if(employee == null ){
             return new ArrayList<>();
         }
-        List<UserDepthVO> list = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
-        return list;
+        List<UserDepthVO> depthUser = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
+        return depthUser;
     }
 
     @Override

@@ -65,6 +65,15 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
         }
     }
 
+    public void updateNetworkResourcesRecordByPosyUserIds(List<Integer>  postUserIds, byte disable){
+        if(!StringUtils.isEmptyList(postUserIds)) {
+            using(configuration()).update(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
+                    .set(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.DISABLE, disable)
+                    .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.in(postUserIds))
+                    .execute();
+        }
+    }
+
     public void insertReferralEmployeeNetworkResourcesRecord(List<ReferralEmployeeNetworkResourcesRecord>  records){
         if(!StringUtils.isEmptyList(records)) {
             using(configuration()).batchInsert(records).execute();

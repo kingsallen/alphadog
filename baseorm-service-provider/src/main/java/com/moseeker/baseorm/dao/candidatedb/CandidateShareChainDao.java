@@ -161,10 +161,11 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
         return new ArrayList<>();
     }
 
-    public List<Integer> fetchRootIdByRootUserId(int rootUserId){
+    public List<Integer> fetchRootIdByRootUserId(int rootUserId, List<Integer> positionIds){
         Result<Record1<Integer>>  result = create.selectDistinct(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID)
                 .from(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
+                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.in(positionIds))
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.ne(rootUserId))
                 .fetch();
         if(!result.isEmpty()){

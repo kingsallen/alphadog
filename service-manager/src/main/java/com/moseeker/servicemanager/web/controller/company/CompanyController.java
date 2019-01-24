@@ -958,6 +958,8 @@ public class CompanyController {
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("公司ID", companySwitchVO.getCompanyId());
         validateUtil.addRequiredValidate("产品定义标识", companySwitchVO.getKeyword());
+        logger.info("params:"+companySwitchVO);
+        logger.info("params:"+companySwitchVO.getKeyword());
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return Result.validateFailed(result).toJson();
@@ -981,6 +983,8 @@ public class CompanyController {
         validateUtil.addRequiredValidate("开关ID", companySwitchVO.getId());
         validateUtil.addRequiredValidate("公司ID", companySwitchVO.getCompanyId());
         validateUtil.addRequiredValidate("品定义标识", companySwitchVO.getKeyword());
+        logger.info("params:"+companySwitchVO);
+        logger.info("params:"+companySwitchVO.getKeyword());
         String result = validateUtil.validate();
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return Result.validateFailed(result).toJson();

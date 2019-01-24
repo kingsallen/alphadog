@@ -157,6 +157,7 @@ public class ReferralTemplateSender {
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
         long timestamp = System.currentTimeMillis();
         cardInfo.setTimestamp(timestamp);
+        logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - 1000 * 60 * 10);
         // 获取指定时间前十分钟内的职位浏览人
@@ -196,6 +197,7 @@ public class ReferralTemplateSender {
 
     public List<CandidateTemplateShareChainDO> filterAppliedShareChain(List<CandidateTemplateShareChainDO> templateShareChainDOS) {
         List<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).distinct().collect(Collectors.toList());
+        logger.info("========过滤前员工userIds:{}", userIds);
         List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
         List<CandidateTemplateShareChainDO> filterAppliedShareChain = new ArrayList<>();

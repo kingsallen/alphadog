@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeNetworkResources implements Serializable {
 
-    private static final long serialVersionUID = -146032775;
+    private static final long serialVersionUID = -589763055;
 
     private Integer   id;
     private Integer   postUserId;
@@ -31,6 +31,7 @@ public class ReferralEmployeeNetworkResources implements Serializable {
     private Timestamp createTime;
     private Timestamp updateTime;
     private Byte      disable;
+    private Integer   companyId;
 
     public ReferralEmployeeNetworkResources() {}
 
@@ -41,6 +42,7 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
         this.disable = value.disable;
+        this.companyId = value.companyId;
     }
 
     public ReferralEmployeeNetworkResources(
@@ -49,7 +51,8 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         Integer   presenteeUserId,
         Timestamp createTime,
         Timestamp updateTime,
-        Byte      disable
+        Byte      disable,
+        Integer   companyId
     ) {
         this.id = id;
         this.postUserId = postUserId;
@@ -57,6 +60,7 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.createTime = createTime;
         this.updateTime = updateTime;
         this.disable = disable;
+        this.companyId = companyId;
     }
 
     public Integer getId() {
@@ -107,6 +111,14 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.disable = disable;
     }
 
+    public Integer getCompanyId() {
+        return this.companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ReferralEmployeeNetworkResources (");
@@ -117,6 +129,7 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
         sb.append(", ").append(disable);
+        sb.append(", ").append(companyId);
 
         sb.append(")");
         return sb.toString();

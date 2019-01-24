@@ -18,6 +18,7 @@ import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
@@ -708,6 +709,26 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
                 .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
                 .fetchInto(JobPositionRecord.class);
+    }
+    /**
+     * 根据公司编号查找公司下所有的再咋职位编号
+     * @param companyIdList 公司编号集合
+     * @return 职位编号集合
+     */
+    public List<Integer> getPositionIdListByCompanyIdListAndStatus(List<Integer> companyIdList) {
+        List<Integer> list = new ArrayList<>();
+        if (companyIdList != null && companyIdList.size() > 0) {
+            Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
+                    .fetch();
+            if (result != null && result.size() > 0) {
+                result.forEach(record -> {
+                    list.add(record.value1());
+                });
+            }
+        }
+        return list;
     }
 
     /**
