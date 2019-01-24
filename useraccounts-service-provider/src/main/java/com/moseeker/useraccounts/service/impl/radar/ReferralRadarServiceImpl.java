@@ -369,6 +369,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
         if(flag == 0){
+            logger.info("十分钟内转发，消息模板不发送");
             return;
         }
         logger.info("ReferralCardInfo:{}", cardInfo);
