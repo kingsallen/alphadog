@@ -170,6 +170,9 @@ public abstract class Activity {
             if (activityVO.getActualTotal() != null) {
                 hrHbConfig.setActualTotal(activityVO.getActualTotal());
             }
+            if (activityVO.getTheme() != null) {
+                themeDao.upsert(id, activityVO.getTheme());
+            }
             if (checked) {
                 if (!hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
                         && (activityStatus.equals(ActivityStatus.Checked)
