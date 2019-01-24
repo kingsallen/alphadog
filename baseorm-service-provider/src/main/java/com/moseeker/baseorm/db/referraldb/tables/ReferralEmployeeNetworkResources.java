@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeNetworkResources extends TableImpl<ReferralEmployeeNetworkResourcesRecord> {
 
-    private static final long serialVersionUID = 1714529539;
+    private static final long serialVersionUID = -1361543121;
 
     /**
      * The reference instance of <code>referraldb.referral_employee_network_resources</code>
@@ -80,6 +80,11 @@ public class ReferralEmployeeNetworkResources extends TableImpl<ReferralEmployee
      * The column <code>referraldb.referral_employee_network_resources.disable</code>. 是否有效 0有效 1 无效
      */
     public final TableField<ReferralEmployeeNetworkResourcesRecord, Byte> DISABLE = createField("disable", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否有效 0有效 1 无效");
+
+    /**
+     * The column <code>referraldb.referral_employee_network_resources.company_id</code>.
+     */
+    public final TableField<ReferralEmployeeNetworkResourcesRecord, Integer> COMPANY_ID = createField("company_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * Create a <code>referraldb.referral_employee_network_resources</code> table reference

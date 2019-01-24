@@ -1026,6 +1026,7 @@ public class ReferralEntity {
                         if (resource.getUser_id().size() > i) {
                             record.setDisable((byte) Constant.DISABLE);
                             record.setPresenteeUserId(resource.getUser_id().get(i));
+                            record.setCompanyId(resource.getCompany_id());
                         } else {
                             record.setDisable((byte) Constant.ENABLE);
                         }
@@ -1034,6 +1035,7 @@ public class ReferralEntity {
                         ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
                         record.setPostUserId(resource.getEmployee_id());
                         record.setPresenteeUserId(resource.getUser_id().get(i));
+                        record.setCompanyId(resource.getCompany_id());
                     }
                 }
                 networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);

@@ -336,4 +336,5 @@ public final class Constant {
     public static final String KAFKA_TOPIC_APPLICATION = "radar_application";
     public static final String KAFKA_TOPIC_INVITE_APPLY = "radar_invite_to_apply";
     public static final String KAFKA_TOPIC_FORWARD_VIEW = "radar_social_graph_change";
+    public static final String KAFKA_TOPIC_EMPLOYEE_CERTIFICATION = "radar_employee_certification";
 }
