@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -71,6 +72,22 @@ public class KafkaSender {
         dto.setCompany_id(employeeDO.getCompanyId());
         dto.setUser_id(employeeDO.getSysuserId());
         list.add(dto);
+        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(list));
+    }
+
+    public void sendEmployeeCertification(List<UserEmployeeDO> employeeDOs){
+        List<KafkaBaseDto> list = new ArrayList<>();
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new Date(current));
+        for(UserEmployeeDO userEmployeeDO : employeeDOs){
+            KafkaBaseDto dto = new KafkaBaseDto();
+            dto.setEvent_time(currentTime);
+            dto.setEvent(EMPLOYEE_CERTIFICATION);
+            dto.setCompany_id(userEmployeeDO.getCompanyId());
+            dto.setUser_id(userEmployeeDO.getSysuserId());
+            list.add(dto);
+        }
         sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(list));
     }
 

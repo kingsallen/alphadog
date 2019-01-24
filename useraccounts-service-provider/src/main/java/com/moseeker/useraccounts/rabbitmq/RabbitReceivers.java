@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
@@ -15,10 +16,12 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.aspect.RadarSwitchAspect;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.constant.ReferralApplyHandleEnum;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -29,6 +32,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +52,8 @@ public class RabbitReceivers {
     private JobPositionDao jobPositionDao;
     @Autowired
     private HrWxWechatDao hrWxWechatDao;
+    @Autowired
+    private UserEmployeeDao userEmployeeDao;
     @Autowired
     private HrWxNoticeMessageDao wxNoticeMessageDao;
     @Autowired
@@ -105,16 +111,21 @@ public class RabbitReceivers {
         if(switchVO.getValid()==1){
             // 将消息模板开关打开
             openTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
-            sendEmployeeToKafka(switchVO.getCompanyId(), 1);
+            sendEmployeeToKafka(switchVO.getCompanyId());
         }else if(switchVO.getValid() == 0){
             // 将开关关闭
             closeTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
-            sendEmployeeToKafka(switchVO.getCompanyId(), 0);
+            handleEmployeeNetwork(switchVO.getCompanyId());
         }
     }
 
-    private void sendEmployeeToKafka(int companyId, int switchState) {
+    private void handleEmployeeNetwork(int companyId) {
 
+    }
+
+    private void sendEmployeeToKafka(int companyId) {
+        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getEmployeeBycompanyId(companyId);
+        kafkaSender.sendEmployeeCertification(userEmployeeDOS);
     }
 
     private void closeTemMiniteTemplateSwitch(int wechatId, int templateId) {
