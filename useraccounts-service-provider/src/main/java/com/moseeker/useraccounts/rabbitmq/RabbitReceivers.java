@@ -105,15 +105,16 @@ public class RabbitReceivers {
         if(switchVO.getValid()==1){
             // 将消息模板开关打开
             openTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
-            sendEmployeeToKafka();
+            sendEmployeeToKafka(switchVO.getCompanyId(), 1);
         }else if(switchVO.getValid() == 0){
             // 将开关关闭
             closeTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
-            sendEmployeeToKafka();
+            sendEmployeeToKafka(switchVO.getCompanyId(), 0);
         }
     }
 
-    private void sendEmployeeToKafka() {
+    private void sendEmployeeToKafka(int companyId, int switchState) {
+
     }
 
     private void closeTemMiniteTemplateSwitch(int wechatId, int templateId) {
