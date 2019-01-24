@@ -532,6 +532,26 @@ public class UserCenterBizTools {
         }
     }
 
+    /**
+     * 查找查找推荐记录相关的职位编号
+     * @param userId 用户编号
+     * @return
+     */
+    public List<Integer> listPositionIdByUserIdAndStatus(int userId) {
+        try {
+            UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(userId);
+            if (employeeDO != null) {
+                List<Integer> companyIdList = employeeEntity.getCompanyIds(employeeDO.getCompanyId());
+                return positionDao.getPositionIdListByCompanyIdListAndStatus(companyIdList);
+            }
+            return null;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+
     public List<CandidateRecomRecordRecord> listCandidateRecomRecords(int userId, List<Integer> positionIdList, Set<Integer> employeeUserIdList, int companyId){
         List<CandidateRecomRecordRecord> recomRecordDOList = candidateRecomRecordDao.listCandidateRecomRecordsByPositionSetAndPostAndPresenteeId(
                 positionIdList, userId, employeeUserIdList);
