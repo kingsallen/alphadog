@@ -3,10 +3,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.moseeker.baseorm.constant.ActivityStatus;
 import com.moseeker.baseorm.dao.dictdb.DictReferralEvaluateDao;
-import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
-import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
-import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
-import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.CustomReferralEmployeeBonusDao;
@@ -92,6 +89,9 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
     private JobPositionDao positionDao;
+
+    @Autowired
+    private ThemeDao themeDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -194,7 +194,7 @@ public class ReferralServiceImpl implements ReferralService {
     public void updateActivity(ActivityVO activityVO) throws UserAccountException {
 
         Activity activity = ActivityType.buildActivity(activityVO.getId(), configDao, positionBindingDao, itemsDao,
-                positionDao);
+                themeDao, positionDao);
         if (activityVO.getStatus() != null) {
             ActivityStatus activityStatus = ActivityStatus.instanceFromValue(activityVO.getStatus().byteValue());
 
