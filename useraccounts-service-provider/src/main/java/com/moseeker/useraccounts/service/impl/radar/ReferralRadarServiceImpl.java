@@ -366,6 +366,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public void saveTenMinuteCandidateShareChain(int companyId, ReferralCardInfo cardInfo) {
+        UserEmployeeDO employee = employeeEntity.getEmployeeByID(cardInfo.getUserId());
+        if(employee == null){
+            logger.info("======无员工信息");
+            return;
+        }
         long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
         if(flag == 0){
@@ -493,7 +498,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }else {
             jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), progressList);
         }
-        jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, false);
+//        jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, false);
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
         Set<String> names = userUsers.stream().map(UserUserRecord::getName).collect(Collectors.toSet());
@@ -508,12 +513,16 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private List<JobApplicationDO> paginationJobApplication(ReferralProgressInfo progressInfo, List<JobApplicationDO> jobApplicationDOS, boolean pagination) {
         List<JobApplicationDO> list = new ArrayList<>();
-        if(jobApplicationDOS.size() <= progressInfo.getPageSize() || !pagination){
+        if(!pagination){
             return jobApplicationDOS;
         }
         int startIndex = (progressInfo.getPageNum()-1)*progressInfo.getPageSize();
         int totalRows = jobApplicationDOS.size();
-        if(progressInfo.getPageNum() * progressInfo.getPageSize() > totalRows){
+        if(startIndex >= totalRows){
+            return list;
+        }
+        int currentPage = progressInfo.getPageNum() * progressInfo.getPageSize();
+        if(currentPage > totalRows){
             for(int i=startIndex;i<totalRows;i++){
                 list.add(jobApplicationDOS.get(i));
             }
