@@ -366,8 +366,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public void saveTenMinuteCandidateShareChain(int companyId, ReferralCardInfo cardInfo) {
-        UserEmployeeDO employee = employeeEntity.getEmployeeByID(cardInfo.getUserId());
-        if(employee == null){
+        boolean isEmployee = employeeEntity.isEmployee(cardInfo.getUserId(), companyId);
+        if(!isEmployee){
             logger.info("======无员工信息");
             return;
         }
