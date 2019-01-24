@@ -498,7 +498,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    @RadarSwitchLimit
     public int checkSeekReferral(int companyId, int userId, int presenteeId, int positionId, int shareChainId) {
         int employeeUserId = userId;
         if(shareChainId > 0){
@@ -1121,7 +1120,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         String templateTile = String.format(title, employee.getCname());
         inviteTemplateVO.put("first", templateTile);
         inviteTemplateVO.put("keyWord1", jobPosition.getTitle());
-        inviteTemplateVO.put("keyWord2", hrCompanyDO.getName());
+        inviteTemplateVO.put("keyWord2", hrCompanyDO.getAbbreviation());
         inviteTemplateVO.put("keyWord3", current);
         inviteTemplateVO.put("remark", "点击查看职位详情并投递简历");
         inviteTemplateVO.put("templateId", Constant.REFERRAL_INVITE_APPLICATION);
