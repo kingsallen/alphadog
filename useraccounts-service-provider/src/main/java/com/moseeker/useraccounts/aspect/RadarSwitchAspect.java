@@ -43,6 +43,7 @@ public class RadarSwitchAspect {
             }
             Map<String, Object> params = new HashMap<>();
             params.put("radar_status", switchCheck(companyId));
+//            params.put("radar_status", 1);
             local.set(params);
         }
         Signature signature = joinPoint.getSignature();
