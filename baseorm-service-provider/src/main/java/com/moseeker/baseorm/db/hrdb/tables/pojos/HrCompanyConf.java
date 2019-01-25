@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = 328085411;
+    private static final long serialVersionUID = 1696964153;
 
     private Integer   companyId;
     private Integer   themeId;
@@ -49,11 +49,11 @@ public class HrCompanyConf implements Serializable {
     private String    employeeSlug;
     private String    displayLocale;
     private Byte      talentpoolStatus;
+    private Byte      job51SalaryDiscuss;
     private Byte      veryeastSwitch;
     private Byte      mallSwitch;
     private String    mallGoodsMethod;
     private Byte      mallGoodsMethodState;
-    private Byte      job51SalaryDiscuss;
     private Byte      isOpenGdpr;
     private String    mobotHeadImg;
     private String    mobotName;
@@ -85,11 +85,11 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = value.employeeSlug;
         this.displayLocale = value.displayLocale;
         this.talentpoolStatus = value.talentpoolStatus;
+        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.veryeastSwitch = value.veryeastSwitch;
         this.mallSwitch = value.mallSwitch;
         this.mallGoodsMethod = value.mallGoodsMethod;
         this.mallGoodsMethodState = value.mallGoodsMethodState;
-        this.job51SalaryDiscuss = value.job51SalaryDiscuss;
         this.isOpenGdpr = value.isOpenGdpr;
         this.mobotHeadImg = value.mobotHeadImg;
         this.mobotName = value.mobotName;
@@ -120,11 +120,11 @@ public class HrCompanyConf implements Serializable {
         String    employeeSlug,
         String    displayLocale,
         Byte      talentpoolStatus,
+        Byte      job51SalaryDiscuss,
         Byte      veryeastSwitch,
         Byte      mallSwitch,
         String    mallGoodsMethod,
         Byte      mallGoodsMethodState,
-        Byte      job51SalaryDiscuss,
         Byte      isOpenGdpr,
         String    mobotHeadImg,
         String    mobotName
@@ -153,11 +153,11 @@ public class HrCompanyConf implements Serializable {
         this.employeeSlug = employeeSlug;
         this.displayLocale = displayLocale;
         this.talentpoolStatus = talentpoolStatus;
+        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.veryeastSwitch = veryeastSwitch;
         this.mallSwitch = mallSwitch;
         this.mallGoodsMethod = mallGoodsMethod;
         this.mallGoodsMethodState = mallGoodsMethodState;
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
         this.isOpenGdpr = isOpenGdpr;
         this.mobotHeadImg = mobotHeadImg;
         this.mobotName = mobotName;
@@ -355,6 +355,14 @@ public class HrCompanyConf implements Serializable {
         this.talentpoolStatus = talentpoolStatus;
     }
 
+    public Byte getJob51SalaryDiscuss() {
+        return this.job51SalaryDiscuss;
+    }
+
+    public void setJob51SalaryDiscuss(Byte job51SalaryDiscuss) {
+        this.job51SalaryDiscuss = job51SalaryDiscuss;
+    }
+
     public Byte getVeryeastSwitch() {
         return this.veryeastSwitch;
     }
@@ -385,14 +393,6 @@ public class HrCompanyConf implements Serializable {
 
     public void setMallGoodsMethodState(Byte mallGoodsMethodState) {
         this.mallGoodsMethodState = mallGoodsMethodState;
-    }
-
-    public Byte getJob51SalaryDiscuss() {
-        return this.job51SalaryDiscuss;
-    }
-
-    public void setJob51SalaryDiscuss(Byte job51SalaryDiscuss) {
-        this.job51SalaryDiscuss = job51SalaryDiscuss;
     }
 
     public Byte getIsOpenGdpr() {
@@ -447,11 +447,11 @@ public class HrCompanyConf implements Serializable {
         sb.append(", ").append(employeeSlug);
         sb.append(", ").append(displayLocale);
         sb.append(", ").append(talentpoolStatus);
+        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(veryeastSwitch);
         sb.append(", ").append(mallSwitch);
         sb.append(", ").append(mallGoodsMethod);
         sb.append(", ").append(mallGoodsMethodState);
-        sb.append(", ").append(job51SalaryDiscuss);
         sb.append(", ").append(isOpenGdpr);
         sb.append(", ").append(mobotHeadImg);
         sb.append(", ").append(mobotName);

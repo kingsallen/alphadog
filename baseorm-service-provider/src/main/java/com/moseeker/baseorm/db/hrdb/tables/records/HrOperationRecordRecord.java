@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrOperationRecordRecord extends UpdatableRecordImpl<HrOperationRecordRecord> implements Record7<Integer, Long, Long, Long, Long, Timestamp, Integer> {
 
-    private static final long serialVersionUID = 1753012836;
+    private static final long serialVersionUID = -395044836;
 
     /**
      * Setter for <code>hrdb.hr_operation_record.id</code>.
@@ -89,14 +89,14 @@ public class HrOperationRecordRecord extends UpdatableRecordImpl<HrOperationReco
     }
 
     /**
-     * Setter for <code>hrdb.hr_operation_record.status_id</code>. hr_award_config.id
+     * Setter for <code>hrdb.hr_operation_record.status_id</code>. hr_points_conf.id
      */
     public void setStatusId(Long value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_operation_record.status_id</code>. hr_award_config.id
+     * Getter for <code>hrdb.hr_operation_record.status_id</code>. hr_points_conf.id
      */
     public Long getStatusId() {
         return (Long) get(4);
@@ -117,14 +117,14 @@ public class HrOperationRecordRecord extends UpdatableRecordImpl<HrOperationReco
     }
 
     /**
-     * Setter for <code>hrdb.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
+     * Setter for <code>hrdb.hr_operation_record.operate_tpl_id</code>. config_sys_points_conf_tpl.id
      */
     public void setOperateTplId(Integer value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_operation_record.operate_tpl_id</code>. hr_award_config_template.id
+     * Getter for <code>hrdb.hr_operation_record.operate_tpl_id</code>. config_sys_points_conf_tpl.id
      */
     public Integer getOperateTplId() {
         return (Integer) get(6);
