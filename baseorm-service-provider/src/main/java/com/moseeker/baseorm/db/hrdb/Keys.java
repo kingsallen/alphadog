@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent;
-import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -70,8 +68,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.records.CrmCustomerOperationEventRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.CrmCustomerOperationRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAccountApplicationNotifyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
@@ -162,8 +158,6 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<CrmCustomerOperationEventRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_EVENT = Identities0.IDENTITY_CRM_CUSTOMER_OPERATION_EVENT;
-    public static final Identity<CrmCustomerOperationRecordRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_RECORD = Identities0.IDENTITY_CRM_CUSTOMER_OPERATION_RECORD;
     public static final Identity<HrAccountApplicationNotifyRecord, Integer> IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY = Identities0.IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY;
     public static final Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = Identities0.IDENTITY_HR_AI_CONF;
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
@@ -228,8 +222,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<CrmCustomerOperationEventRecord> KEY_CRM_CUSTOMER_OPERATION_EVENT_PRIMARY = UniqueKeys0.KEY_CRM_CUSTOMER_OPERATION_EVENT_PRIMARY;
-    public static final UniqueKey<CrmCustomerOperationRecordRecord> KEY_CRM_CUSTOMER_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_CRM_CUSTOMER_OPERATION_RECORD_PRIMARY;
     public static final UniqueKey<HrAccountApplicationNotifyRecord> KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY = UniqueKeys0.KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY;
     public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = UniqueKeys0.KEY_HR_AI_CONF_PRIMARY;
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
@@ -314,8 +306,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<CrmCustomerOperationEventRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_EVENT = createIdentity(CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT, CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT.ID);
-        public static Identity<CrmCustomerOperationRecordRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_RECORD = createIdentity(CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD, CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD.ID);
         public static Identity<HrAccountApplicationNotifyRecord, Integer> IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY = createIdentity(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY, HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.ID);
         public static Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = createIdentity(HrAiConf.HR_AI_CONF, HrAiConf.HR_AI_CONF.ID);
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
@@ -378,8 +368,6 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<CrmCustomerOperationEventRecord> KEY_CRM_CUSTOMER_OPERATION_EVENT_PRIMARY = createUniqueKey(CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT, "KEY_crm_customer_operation_event_PRIMARY", CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT.ID);
-        public static final UniqueKey<CrmCustomerOperationRecordRecord> KEY_CRM_CUSTOMER_OPERATION_RECORD_PRIMARY = createUniqueKey(CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD, "KEY_crm_customer_operation_record_PRIMARY", CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD.ID);
         public static final UniqueKey<HrAccountApplicationNotifyRecord> KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY = createUniqueKey(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY, "KEY_hr_account_application_notify_PRIMARY", HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.ID);
         public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = createUniqueKey(HrAiConf.HR_AI_CONF, "KEY_hr_ai_conf_PRIMARY", HrAiConf.HR_AI_CONF.ID);
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);

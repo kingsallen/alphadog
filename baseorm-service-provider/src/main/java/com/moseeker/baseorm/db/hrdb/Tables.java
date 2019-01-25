@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent;
-import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -87,16 +85,6 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-    /**
-     * The table <code>hrdb.crm_customer_operation_event</code>.
-     */
-    public static final CrmCustomerOperationEvent CRM_CUSTOMER_OPERATION_EVENT = com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT;
-
-    /**
-     * The table <code>hrdb.crm_customer_operation_record</code>.
-     */
-    public static final CrmCustomerOperationRecord CRM_CUSTOMER_OPERATION_RECORD = com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD;
 
     /**
      * The table <code>hrdb.hr_account_application_notify</code>.
