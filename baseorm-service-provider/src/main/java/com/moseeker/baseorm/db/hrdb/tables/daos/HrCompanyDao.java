@@ -7,7 +7,6 @@ package com.moseeker.baseorm.db.hrdb.tables.daos;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -223,7 +222,14 @@ public class HrCompanyDao extends DAOImpl<HrCompanyRecord, com.moseeker.baseorm.
     /**
      * Fetch records that have <code>fortune_year IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortuneYear(Date... values) {
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortuneYear(Timestamp... values) {
         return fetch(HrCompany.HR_COMPANY.FORTUNE_YEAR, values);
+    }
+
+    /**
+     * Fetch records that have <code>employee_number IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByEmployeeNumber(Integer... values) {
+        return fetch(HrCompany.HR_COMPANY.EMPLOYEE_NUMBER, values);
     }
 }

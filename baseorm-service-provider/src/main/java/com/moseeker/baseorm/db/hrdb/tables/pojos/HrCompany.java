@@ -5,7 +5,6 @@ package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -24,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany implements Serializable {
 
-    private static final long serialVersionUID = -223300201;
+    private static final long serialVersionUID = -323837774;
 
     private Integer   id;
     private Byte      type;
@@ -49,7 +48,8 @@ public class HrCompany implements Serializable {
     private String    feature;
     private Byte      fortune;
     private Byte      fortuneScale;
-    private Date      fortuneYear;
+    private Timestamp fortuneYear;
+    private Integer   employeeNumber;
 
     public HrCompany() {}
 
@@ -78,6 +78,7 @@ public class HrCompany implements Serializable {
         this.fortune = value.fortune;
         this.fortuneScale = value.fortuneScale;
         this.fortuneYear = value.fortuneYear;
+        this.employeeNumber = value.employeeNumber;
     }
 
     public HrCompany(
@@ -104,7 +105,8 @@ public class HrCompany implements Serializable {
         String    feature,
         Byte      fortune,
         Byte      fortuneScale,
-        Date      fortuneYear
+        Timestamp fortuneYear,
+        Integer   employeeNumber
     ) {
         this.id = id;
         this.type = type;
@@ -130,6 +132,7 @@ public class HrCompany implements Serializable {
         this.fortune = fortune;
         this.fortuneScale = fortuneScale;
         this.fortuneYear = fortuneYear;
+        this.employeeNumber = employeeNumber;
     }
 
     public Integer getId() {
@@ -316,12 +319,20 @@ public class HrCompany implements Serializable {
         this.fortuneScale = fortuneScale;
     }
 
-    public Date getFortuneYear() {
+    public Timestamp getFortuneYear() {
         return this.fortuneYear;
     }
 
-    public void setFortuneYear(Date fortuneYear) {
+    public void setFortuneYear(Timestamp fortuneYear) {
         this.fortuneYear = fortuneYear;
+    }
+
+    public Integer getEmployeeNumber() {
+        return this.employeeNumber;
+    }
+
+    public void setEmployeeNumber(Integer employeeNumber) {
+        this.employeeNumber = employeeNumber;
     }
 
     @Override
@@ -352,6 +363,7 @@ public class HrCompany implements Serializable {
         sb.append(", ").append(fortune);
         sb.append(", ").append(fortuneScale);
         sb.append(", ").append(fortuneYear);
+        sb.append(", ").append(employeeNumber);
 
         sb.append(")");
         return sb.toString();
