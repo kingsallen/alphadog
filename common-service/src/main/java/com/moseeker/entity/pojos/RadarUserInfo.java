@@ -95,6 +95,14 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
         return this;
     }
 
+    public RadarUserInfo initFromUserWxUser(Object userWxUser, UserUserRecord userRecord){
+        initFromUserWxUser(userWxUser);
+        if(!StringUtils.isNullOrEmpty(userRecord.getName())){
+            this.nickname = userRecord.getName();
+        }
+        return this;
+    }
+
     /**
      *
      * @param userDO 需要初始化的用户

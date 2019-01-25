@@ -162,8 +162,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 将过滤后的员工id对应员工信息，用于后续数据组装
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(cardInfo.getCompanyId());
         List<UserWxUserDO> userWxUserDOS = wxUserDao.getWXUsersByUserIds(allUsers, hrWxWechatDO.getId());
-//        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(allUsers));
         Map<Integer, UserWxUserDO> idWxUserMap = userWxUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
+        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(allUsers));
+        Map<Integer, UserUserRecord> idUserMap = userRecords.stream().collect(Collectors.toMap(UserUserRecord::getId, userRecord->userRecord));
         // 获取十分钟内转发的职位
         List<Integer> positionIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(positionIds);
@@ -188,7 +189,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 构造单个职位浏览人的卡片
             JSONObject card = new JSONObject();
                 // 候选人信息
-            RadarUserInfo user = doInitUser(idWxUserMap, candidatePositionDO.getUserId(), userDepthVOS);
+            RadarUserInfo user = doInitUser(idWxUserMap, idUserMap, candidatePositionDO.getUserId(), userDepthVOS);
                 // 转发链路
             List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
                 // 候选人浏览职位信息
@@ -1254,10 +1255,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/10
      * @return JSONObject
      */
-    private RadarUserInfo doInitUser(Map<Integer, UserWxUserDO> idUserMap, int endUserId, List<UserDepthVO> userDepthVOS) {
+    private RadarUserInfo doInitUser(Map<Integer, UserWxUserDO> idWxUserMap, Map<Integer, UserUserRecord> idUserMap, int endUserId, List<UserDepthVO> userDepthVOS) {
         RadarUserInfo user = new RadarUserInfo();
-        UserWxUserDO userWxUserDO = idUserMap.get(endUserId);
-        user.initFromUserWxUser(userWxUserDO);
+        UserWxUserDO userWxUserDO = idWxUserMap.get(endUserId);
+        UserUserRecord userUserRecord = idUserMap.get(endUserId);
+        user.initFromUserWxUser(userWxUserDO, userUserRecord);
         int degree = 0;
         for (UserDepthVO userDepthVO : userDepthVOS) {
             if(userDepthVO.getUserId() == endUserId){
