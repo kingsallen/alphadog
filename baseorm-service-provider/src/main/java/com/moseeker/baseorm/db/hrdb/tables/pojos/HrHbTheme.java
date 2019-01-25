@@ -23,32 +23,32 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbTheme implements Serializable {
 
-    private static final long serialVersionUID = 1251085368;
+    private static final long serialVersionUID = 567910158;
 
     private Integer   configId;
-    private Integer   themeId;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   themeId;
 
     public HrHbTheme() {}
 
     public HrHbTheme(HrHbTheme value) {
         this.configId = value.configId;
-        this.themeId = value.themeId;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.themeId = value.themeId;
     }
 
     public HrHbTheme(
         Integer   configId,
-        Integer   themeId,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   themeId
     ) {
         this.configId = configId;
-        this.themeId = themeId;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.themeId = themeId;
     }
 
     public Integer getConfigId() {
@@ -57,14 +57,6 @@ public class HrHbTheme implements Serializable {
 
     public void setConfigId(Integer configId) {
         this.configId = configId;
-    }
-
-    public Integer getThemeId() {
-        return this.themeId;
-    }
-
-    public void setThemeId(Integer themeId) {
-        this.themeId = themeId;
     }
 
     public Timestamp getCreateTime() {
@@ -83,14 +75,22 @@ public class HrHbTheme implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getThemeId() {
+        return this.themeId;
+    }
+
+    public void setThemeId(Integer themeId) {
+        this.themeId = themeId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrHbTheme (");
 
         sb.append(configId);
-        sb.append(", ").append(themeId);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(themeId);
 
         sb.append(")");
         return sb.toString();

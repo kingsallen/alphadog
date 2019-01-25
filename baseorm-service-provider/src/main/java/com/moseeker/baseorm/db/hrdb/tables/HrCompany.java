@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = -1038629945;
+    private static final long serialVersionUID = -332995623;
 
     /**
      * The reference instance of <code>hrdb.hr_company</code>
@@ -57,9 +57,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+     * The column <code>hrdb.hr_company.type</code>. 公司区分(测试用:2,免费用户:1,企业用户:0)
      */
-    public final TableField<HrCompanyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "公司区分(其它:2,免费用户:1,企业用户:0)");
+    public final TableField<HrCompanyRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "公司区分(测试用:2,免费用户:1,企业用户:0)");
 
     /**
      * The column <code>hrdb.hr_company.name</code>. 公司注册名称
@@ -157,24 +157,9 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
     public final TableField<HrCompanyRecord, String> FEATURE = createField("feature", org.jooq.impl.SQLDataType.VARCHAR.length(1000), this, "公司福利特色， 由公司下的职位的福利特色每天跑脚本合并而来，目前供支付宝使用");
 
     /**
-     * The column <code>hrdb.hr_company.fortune</code>. 是否500强，0：不是 1：是
+     * The column <code>hrdb.hr_company.fortune</code>. 是否世界500强，0：不是 1：是
      */
-    public final TableField<HrCompanyRecord, Byte> FORTUNE = createField("fortune", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否500强，0：不是 1：是");
-
-    /**
-     * The column <code>hrdb.hr_company.fortune_scale</code>. 五百强范围，1：世界 2：中国
-     */
-    public final TableField<HrCompanyRecord, Byte> FORTUNE_SCALE = createField("fortune_scale", org.jooq.impl.SQLDataType.TINYINT, this, "五百强范围，1：世界 2：中国");
-
-    /**
-     * The column <code>hrdb.hr_company.fortune_year</code>. 五百强评定年份
-     */
-    public final TableField<HrCompanyRecord, Timestamp> FORTUNE_YEAR = createField("fortune_year", org.jooq.impl.SQLDataType.TIMESTAMP, this, "五百强评定年份");
-
-    /**
-     * The column <code>hrdb.hr_company.employee_number</code>. 公司员工总数
-     */
-    public final TableField<HrCompanyRecord, Integer> EMPLOYEE_NUMBER = createField("employee_number", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "公司员工总数");
+    public final TableField<HrCompanyRecord, Byte> FORTUNE = createField("fortune", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否世界500强，0：不是 1：是");
 
     /**
      * Create a <code>hrdb.hr_company</code> table reference
