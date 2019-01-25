@@ -33,6 +33,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackup;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
@@ -229,6 +230,11 @@ public class Tables {
      * 红包发送记录
      */
     public static final HrHbSendRecord HR_HB_SEND_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord.HR_HB_SEND_RECORD;
+
+    /**
+     * 红包活动与主题的关系表
+     */
+    public static final HrHbTheme HR_HB_THEME = com.moseeker.baseorm.db.hrdb.tables.HrHbTheme.HR_HB_THEME;
 
     /**
      * 专题传播统计次数表

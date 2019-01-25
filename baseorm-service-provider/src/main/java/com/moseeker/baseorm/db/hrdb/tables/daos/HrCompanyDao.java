@@ -211,4 +211,25 @@ public class HrCompanyDao extends DAOImpl<HrCompanyRecord, com.moseeker.baseorm.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortune(Byte... values) {
         return fetch(HrCompany.HR_COMPANY.FORTUNE, values);
     }
+
+    /**
+     * Fetch records that have <code>fortune_scale IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortuneScale(Byte... values) {
+        return fetch(HrCompany.HR_COMPANY.FORTUNE_SCALE, values);
+    }
+
+    /**
+     * Fetch records that have <code>fortune_year IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortuneYear(Timestamp... values) {
+        return fetch(HrCompany.HR_COMPANY.FORTUNE_YEAR, values);
+    }
+
+    /**
+     * Fetch records that have <code>employee_number IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByEmployeeNumber(Integer... values) {
+        return fetch(HrCompany.HR_COMPANY.EMPLOYEE_NUMBER, values);
+    }
 }

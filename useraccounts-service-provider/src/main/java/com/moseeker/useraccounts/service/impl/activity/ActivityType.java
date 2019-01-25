@@ -3,7 +3,9 @@ package com.moseeker.useraccounts.service.impl.activity;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbItemsDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbPositionBindingDao;
+import com.moseeker.baseorm.dao.hrdb.ThemeDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.db.hrdb.tables.daos.HrHbThemeDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
 import com.moseeker.useraccounts.exception.UserAccountException;
 
@@ -41,7 +43,7 @@ public enum ActivityType {
     }
 
     public static Activity buildActivity(int id, HrHbConfigDao configDao, HrHbPositionBindingDao positionBindingDao,
-                                         HrHbItemsDao itemsDao, JobPositionDao positionDao) {
+                                         HrHbItemsDao itemsDao, ThemeDao themeDao, JobPositionDao positionDao) {
         Activity activity = null;
         HrHbConfigRecord record = configDao.fetchById(id);
         if (record == null) {
@@ -49,15 +51,15 @@ public enum ActivityType {
         }
         switch (ActivityType.instanceFromValue(record.getType())) {
             case EmployeeVerification:
-                activity = new EmployeeVerificationActivity(id, configDao, positionBindingDao, itemsDao); break;
+                activity = new EmployeeVerificationActivity(id, configDao, positionBindingDao, itemsDao, themeDao); break;
             case Referral:
-                activity = new ReferralActivity(id, configDao, positionBindingDao, itemsDao); break;
+                activity = new ReferralActivity(id, configDao, positionBindingDao, itemsDao, themeDao); break;
             case retransmitClick:
-                activity = new RetransmitClickActivity(id, configDao, positionBindingDao, itemsDao, positionDao); break;
+                activity = new RetransmitClickActivity(id, configDao, positionBindingDao, itemsDao, themeDao, positionDao); break;
             case retransmitApply:
-                activity = new RetransmitApplyActivity(id, configDao, positionBindingDao, itemsDao, positionDao); break;
+                activity = new RetransmitApplyActivity(id, configDao, positionBindingDao, itemsDao, themeDao, positionDao); break;
             case CVPassed:
-                activity = new CVPassedActivity(id, configDao, positionBindingDao, itemsDao, positionDao); break;
+                activity = new CVPassedActivity(id, configDao, positionBindingDao, itemsDao, themeDao, positionDao); break;
             default:;
         }
         return activity;
