@@ -161,8 +161,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         allUsers.add(cardInfo.getUserId());
         // 将过滤后的员工id对应员工信息，用于后续数据组装
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(cardInfo.getCompanyId());
-        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(allUsers, hrWxWechatDO.getId());
-        Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
+        List<UserWxUserDO> userWxUserDOS = wxUserDao.getWXUsersByUserIds(allUsers, hrWxWechatDO.getId());
+//        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(allUsers));
+        Map<Integer, UserWxUserDO> idWxUserMap = userWxUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
         // 获取十分钟内转发的职位
         List<Integer> positionIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(positionIds);
@@ -182,19 +183,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
         List<UserDepthVO> userDepthVOS = getEndUserDegrees(currentPageCandidatePositions, cardInfo);
-        // 给卡片按度数排序
-//        currentPageCandidatePositions = sortByDegree(currentPageCandidatePositions, userDepthVOS);
+
         for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
             // 构造单个职位浏览人的卡片
             JSONObject card = new JSONObject();
                 // 候选人信息
-            RadarUserInfo user = doInitUser(idUserMap, candidatePositionDO.getUserId(), userDepthVOS);
+            RadarUserInfo user = doInitUser(idWxUserMap, candidatePositionDO.getUserId(), userDepthVOS);
                 // 转发链路
-            List<RadarUserInfo> chain = doInitRadarCardChains(idUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
+            List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
                 // 候选人浏览职位信息
             JSONObject position = doInitPosition(idPositionMap.get(candidatePositionDO.getPositionId()), candidatePositionDO);
                 // 卡片类型相关信息
-            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idUserMap, positionShareRecordDOS);
+            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS);
             card.put("position", position);
             card.put("recom", recomInfo);
             card.put("user", user);
@@ -989,11 +989,19 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private List<RadarUserInfo> getOrderedChains(Set<Integer> userIds, List<ReferralConnectionChainRecord> chainRecords, Integer companyId) {
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
         List<UserWxUserDO> userDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
+        List<UserUserRecord> userRecords = userUserDao.fetchByIdList(new ArrayList<>(userIds));
         List<RadarUserInfo> userChains = new ArrayList<>();
         for(UserWxUserDO userDO : userDOS){
             RadarUserInfo userInfo = new RadarUserInfo();
+            UserUserRecord userUserRecord = null;
             // 初始化连连看信息
-            userInfo = userInfo.initFromChainsRecord(userDO, chainRecords);
+            for(UserUserRecord temp : userRecords){
+                if(userDO.getSysuserId() == temp.getId()){
+                    userUserRecord = temp;
+                    break;
+                }
+            }
+            userInfo = userInfo.initFromChainsRecord(userDO, userUserRecord, chainRecords);
             // 填充连连看排序
             userInfo = userInfo.fillNodesFromChainsRecord(userDO, chainRecords);
             userChains.add(userInfo);
