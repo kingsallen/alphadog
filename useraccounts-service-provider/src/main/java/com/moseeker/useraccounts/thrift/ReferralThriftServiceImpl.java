@@ -274,4 +274,13 @@ public class ReferralThriftServiceImpl implements ReferralService.Iface {
         }
     }
 
+    @Override
+    public void handleCandidateState(ReferralInviteInfo inviteInfo) throws BIZException, TException {
+        try {
+            radarService.handleCandidateState(inviteInfo.getCompanyId(), inviteInfo);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
 }

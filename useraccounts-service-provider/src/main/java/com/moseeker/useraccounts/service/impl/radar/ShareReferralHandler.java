@@ -64,12 +64,6 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                 nickname = wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname();
             }
         }
-//        for(JobApplicationDO one : oneDegree){
-//            if(one.getId() == jobApplicationDO.getId()){
-//                nickname = "";
-//                break;
-//            }
-//        }
         recom.put("nickname", nickname);
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
         return recom;
@@ -101,17 +95,6 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         List<Integer> oneDegreeJobApplication = new ArrayList<>();
         // 两度及以上链路对应申请
         JSONObject result = new JSONObject();
-//        for(JobApplicationDO jobApplicationDO : shareReferralList){
-//            boolean flag = true;
-//            for(int i=0;i<applierDegrees.size()&&flag;i++){
-//                UserDepthVO userDepthVO = applierDegrees.get(i);
-//                if(userDepthVO.getUserId() == jobApplicationDO.getApplierId() && userDepthVO.getDepth() == 1){
-//                    oneDegreeJobApplication.add(jobApplicationDO);
-//                    flag = false;
-//                }
-//            }
-//        }
-
         Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>(1 >> 5);
         // 候选人转发链路ID
         Set<Integer> shareChainIds = new HashSet<>();

@@ -686,7 +686,7 @@ public class UserEmployeeServiceImpl {
                 info.setParentId(0);
                 info.setRecomUserId(logRecord.getRootUserId());
                 info.setNextUserId(logRecord.getRootUserId());
-                RadarConnectResult result = radarService.connectRadar(0, info);
+                RadarConnectResult result = radarService.connectRadar(info);
                 connectionMap.put(logRecord.getRootChainId(), result.getChain());
                 cyclicBarrier.await();
                 return 0;
