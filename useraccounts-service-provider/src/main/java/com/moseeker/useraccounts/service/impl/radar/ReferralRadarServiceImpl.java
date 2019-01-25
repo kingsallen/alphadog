@@ -210,7 +210,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Transactional(rollbackFor = Exception.class)
     public String inviteApplication(int companyId, ReferralInviteInfo inviteInfo) throws BIZException {
         logger.info("inviteInfo:{}", inviteInfo);
-        JobPositionDO jobPositionDO = checkCorrectEmployee(inviteInfo);
+        checkCorrectEmployee(inviteInfo);
         JSONObject result = new JSONObject();
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
@@ -218,30 +218,33 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
         // 只有两度和三度的情况下才会产生连连看链路
         boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
+        Set<Integer> userIds = new HashSet<>(shortestChain);
+        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
+        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
         int chainId = 0;
+        List<RadarUserInfo> chain = new ArrayList<>();
         if(isChainLimit){
             // 如果之前该职位没有连接过连连看，生成一条最短链路记录
             chainId = doInsertConnection(connectionLogRecord, shortestChain, inviteInfo);
+            // 组装连连看链路返回数据
+            chain = doInitShortestChain(shortestChain, userUserDOS);
         }
-        // 组装连连看链路返回数据
-        Set<Integer> userIds = new HashSet<>(shortestChain);
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(jobPositionDO.getCompanyId());
-        List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
-        Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
-        result.put("chain", doInitRadarUsers(shortestChain, idUserMap));
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
         // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
                 inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
-        shareChainDao.updateTypeById(candidateShareChainDO.getId());
-        // type = 3 推荐ta
-        templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
+        if(isSent){
+            shareChainDao.updateTypeById(candidateShareChainDO.getId());
+            // type = 3 推荐ta
+            templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
+        }
         sendInviteLogToKafka(inviteInfo);
         result.put("notified", isSent ? 1 : 0);
         int degree = shortestChain.size()-1;
         result.put("degree", degree >= 0 ? degree : 0);
         result.put("chain_id", chainId);
+        result.put("chain", chain);
         logger.info("inviteApplication:{}", JSON.toJSONString(result));
         return JSON.toJSONString(result);
     }
@@ -519,6 +522,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
     }
 
+    private List<RadarUserInfo> doInitShortestChain(List<Integer> shortestChain, List<UserWxUserDO> userUserDOS) {
+        Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
+        return doInitRadarUsers(shortestChain, idUserMap);
+    }
+
     private List<JobApplicationDO> paginationJobApplication(ReferralProgressInfo progressInfo, List<JobApplicationDO> jobApplicationDOS, boolean pagination) {
         List<JobApplicationDO> list = new ArrayList<>();
         if(!pagination){
@@ -549,18 +557,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
         logger.info("candidateShareChainDO:{}", candidateShareChainDO);
         templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
-    }
-
-    private List<CandidatePositionDO> sortByDegree(List<CandidatePositionDO> currentPageCandidatePositions, List<UserDepthVO> userDepthVOS) {
-        List<CandidatePositionDO> tempList = new ArrayList<>();
-        for(UserDepthVO userDepthVO : userDepthVOS){
-            for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
-                if(userDepthVO.getUserId() == candidatePositionDO.getUserId()){
-                    tempList.add(candidatePositionDO);
-                }
-            }
-        }
-        return tempList;
     }
 
     private List<CandidatePositionDO> getCurrentPageCandidatePositions(List<CandidatePositionDO> candidatePositionDOS, ReferralCardInfo cardInfo) {
@@ -599,7 +595,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return parentId;
     }
 
-    private JobPositionDO checkCorrectEmployee(ReferralInviteInfo inviteInfo) throws BIZException {
+    private void checkCorrectEmployee(ReferralInviteInfo inviteInfo) throws BIZException {
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(inviteInfo.getPid());
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
@@ -607,7 +603,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(!employeeEntity.isEmployee(inviteInfo.getUserId(), jobPositionDO.getCompanyId())){
             throw UserAccountException.EMPLOYEE_COMPANY_UNMATCH;
         }
-        return jobPositionDO;
     }
 
     private void initApplyProgressList(List<Integer> progressList) {
