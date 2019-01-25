@@ -338,6 +338,7 @@ public class ReferralRadarController {
         validateInviteInfo(validateUtil, inviteForm);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
+            inviteForm.setTimestamp(0L);
             ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
             BeanUtils.copyProperties(inviteForm, inviteInfo);
             referralService.handleCandidateState(inviteInfo);

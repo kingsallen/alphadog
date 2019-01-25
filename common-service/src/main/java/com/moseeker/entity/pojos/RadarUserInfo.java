@@ -1,7 +1,9 @@
 package com.moseeker.entity.pojos;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import org.jetbrains.annotations.NotNull;
@@ -96,14 +98,16 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
     /**
      *
      * @param userDO 需要初始化的用户
+     * @param userUserRecord
      * @param chainRecords 人脉连连看记录
      * @return 返回人脉雷达该用户数据
      */
-    public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, List<ReferralConnectionChainRecord> chainRecords) {
-        List<ReferralConnectionChainRecord> newChainRecords = RadarUtils.getOrderedChainRecords(chainRecords);
+    public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, UserUserRecord userUserRecord, List<ReferralConnectionChainRecord> chainRecords) {
         // 获取连连看最长路径，用于定位度数，这里会对记录排序
+        List<ReferralConnectionChainRecord> newChainRecords = RadarUtils.getOrderedChainRecords(chainRecords);
+        String name = StringUtils.isNullOrEmpty(userUserRecord.getName()) ? userUserRecord.getNickname() : userUserRecord.getName();
         this.setUid(userDO.getSysuserId());
-        this.setNickname(userDO.getNickname());
+        this.setNickname(name);
         this.setAvatar(userDO.getHeadimgurl());
         for(int i = 0; i < newChainRecords.size(); i++){
             ReferralConnectionChainRecord connectionChain = newChainRecords.get(i);
