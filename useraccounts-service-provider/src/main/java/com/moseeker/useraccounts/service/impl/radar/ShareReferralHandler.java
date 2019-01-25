@@ -30,12 +30,12 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     protected JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject referralTypeSingleMap, boolean radarSwitchOpen) {
         JSONObject recom = new JSONObject();
         recom.put("type", getReferralType().getType());
-        if(radarSwitchOpen){
+        if(!radarSwitchOpen){
             return recom;
         }
         // 转发推荐类型（2）中的一度申请
-        TypeReference<List<JobApplicationDO>> applyTypeRef = new TypeReference<List<JobApplicationDO>>(){};
-        List<JobApplicationDO> oneDegree = JSON.parseObject(referralTypeSingleMap.getString("oneDegree"),applyTypeRef);
+        TypeReference<List<Integer>> applyTypeRef = new TypeReference<List<Integer>>(){};
+        List<Integer> oneDegree = JSON.parseObject(referralTypeSingleMap.getString("oneDegree"),applyTypeRef);
         // share_chain记录
         TypeReference<List<CandidatePositionShareRecordDO>> shareRecordTypeRef = new TypeReference<List<CandidatePositionShareRecordDO>>(){};
         List<CandidatePositionShareRecordDO> shareRecordDOS = JSON.parseObject(referralTypeSingleMap.getString("shareRecords"),shareRecordTypeRef);
@@ -56,18 +56,20 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                 if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
                     if(shareRecordDO.getClickFrom() == 2){
                         clickFromWxGroup = true;
-                        break;
                     }
+                    break;
                 }
             }
-            nickname = wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname();
-        }
-        for(JobApplicationDO one : oneDegree){
-            if(one.getId() == jobApplicationDO.getId()){
-                recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
-                return recom;
+            if(!oneDegree.contains(jobApplicationDO.getId())){
+                nickname = wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname();
             }
         }
+//        for(JobApplicationDO one : oneDegree){
+//            if(one.getId() == jobApplicationDO.getId()){
+//                nickname = "";
+//                break;
+//            }
+//        }
         recom.put("nickname", nickname);
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
         return recom;
@@ -96,19 +98,19 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByUserIdAndPresenteeAndPosition(employeeRecord.getSysuserId(), sharePids);
-        List<JobApplicationDO> oneDegreeJobApplication = new ArrayList<>();
+        List<Integer> oneDegreeJobApplication = new ArrayList<>();
         // 两度及以上链路对应申请
         JSONObject result = new JSONObject();
-        for(JobApplicationDO jobApplicationDO : shareReferralList){
-            boolean flag = true;
-            for(int i=0;i<applierDegrees.size()&&flag;i++){
-                UserDepthVO userDepthVO = applierDegrees.get(i);
-                if(userDepthVO.getUserId() == jobApplicationDO.getApplierId() && userDepthVO.getDepth() == 1){
-                    oneDegreeJobApplication.add(jobApplicationDO);
-                    flag = false;
-                }
-            }
-        }
+//        for(JobApplicationDO jobApplicationDO : shareReferralList){
+//            boolean flag = true;
+//            for(int i=0;i<applierDegrees.size()&&flag;i++){
+//                UserDepthVO userDepthVO = applierDegrees.get(i);
+//                if(userDepthVO.getUserId() == jobApplicationDO.getApplierId() && userDepthVO.getDepth() == 1){
+//                    oneDegreeJobApplication.add(jobApplicationDO);
+//                    flag = false;
+//                }
+//            }
+//        }
 
         Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>(1 >> 5);
         // 候选人转发链路ID
@@ -126,6 +128,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                     CandidateShareChainDO oneDegreeShareChainDO;
                     if(parentId == 0){
                         oneDegreeShareChainDO = shareChainDO;
+                        oneDegreeJobApplication.add(jobApplicationDO.getId());
                     }else {
                         oneDegreeShareChainDO = getShareChainDOByRecurrence(parentId, shareChainDOS);
                     }
@@ -152,7 +155,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     private CandidateShareChainDO getShareChainDOByRecurrence(int parentId, List<CandidateShareChainDO> shareChainDOS) {
         for(CandidateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getId() == parentId){
-                if(shareChainDO.getParentId() == 0){
+                if(shareChainDO.getRoot2RecomUserId() == 0){
                     return shareChainDO;
                 }else {
                     return getShareChainDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);

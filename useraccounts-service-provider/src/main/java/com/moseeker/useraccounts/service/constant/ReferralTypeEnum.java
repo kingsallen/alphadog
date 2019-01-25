@@ -35,7 +35,6 @@ public enum ReferralTypeEnum {
         if(source == ApplicationSource.EMPLOYEE_CHATBOT.getValue() || source == ApplicationSource.EMPLOYEE_REFERRAL.getValue()){
             return DIRECT_REFERRAL;
         }else if(source == ApplicationSource.SEEK_REFERRAL.getValue() ||
-                source == ApplicationSource.FORWARD_APPLICATION.getValue() ||
                 source == ApplicationSource.INVITE_REFERRAL.getValue()){
             // 如果是通过联系内推，目前有三个入口 1.邀请投递进入职位详情的联系内推 2.连连看进入职位详情的联系内通 3.转发职位进入职位详情的联系内推
             return SEEK_REFERRAL;
