@@ -29,7 +29,7 @@ public interface ReferralRadarService {
     /**
      * 10分钟消息模板-邀请投递
      *
-     * @param inviteInfo 邀请浏览职位的员工投递
+     * @param inviteInfo 邀请浏览职位的候选人投递
      * @return json
      * @author cjm
      * @date 2018/12/7
@@ -55,6 +55,16 @@ public interface ReferralRadarService {
      * @date 2018/12/7
      */
     RadarConnectResult connectRadar(int companyId, ConnectRadarInfo radarInfo) throws TException;
+
+    /**
+     * 点击人脉连连看按钮/点击分享的人脉连连看页面
+     *
+     * @param radarInfo 连接人脉雷达的参数
+     * @return json
+     * @author cjm
+     * @date 2018/12/7
+     */
+    RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) throws TException;
     /**
      * 候选人打开职位连接判断推荐人是否是员工
      *
@@ -120,4 +130,13 @@ public interface ReferralRadarService {
      * @return 求推荐id 查不到返回0
      */
     int checkSeekReferral(int companyId, int userId, int presenteeId, int positionId, int psc);
+
+    /**
+     * 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
+     *
+     * @param inviteInfo 邀请浏览职位的候选人投递
+     * @author cjm
+     * @date 2018/12/7
+     */
+    void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo);
 }

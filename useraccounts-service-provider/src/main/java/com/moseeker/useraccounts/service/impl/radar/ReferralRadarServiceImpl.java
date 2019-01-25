@@ -252,6 +252,16 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
+    public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) {
+        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
+                inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
+        shareChainDao.updateTypeById(candidateShareChainDO.getId());
+        templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
+    }
+
+    @Override
+    @RadarSwitchLimit
+    @Transactional(rollbackFor = Exception.class)
     public void ignoreCurrentViewer(int companyId, ReferralInviteInfo ignoreInfo) throws BIZException {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
         checkCorrectEmployee(ignoreInfo);
@@ -282,8 +292,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      */
     @Override
     @RadarSwitchLimit
-    @Transactional(rollbackFor = Exception.class)
     public RadarConnectResult connectRadar(int companyId, ConnectRadarInfo radarInfo) {
+        return connectRadar(radarInfo);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public RadarConnectResult connectRadar(ConnectRadarInfo radarInfo) {
         long start = System.currentTimeMillis();
         RadarConnectResult result = new RadarConnectResult();
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchByChainId(radarInfo.getChainId());
@@ -434,34 +450,30 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             return "";
         }
         List<Integer> applyIds = jobApplicationDOS.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
+        Map<Integer, List<HrOperationRecordRecord>> hrOperationMap = hrOperationRecordDao.getHrOperationMapByApplyIds(applyIds);
+        //申请人userids
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
+        Set<Integer> allUserIds = new HashSet<>(applierUserIds);
         List<Integer> recomUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getRecommenderUserId).distinct().collect(Collectors.toList());
+        allUserIds.addAll(recomUserIds);
+        // 获取所有user信息
+        Map<Integer, UserUserRecord> allUserMap = getUserMap(allUserIds);
         // neo4j 查
         List<UserDepthVO> applierDegrees = new ArrayList<>();
         if(radarSwitchOpen){
             applierDegrees = neo4jService.fetchDepthUserList(progressInfo.getUserId(), progressInfo.getCompanyId(), applierUserIds);
         }
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
-        Set<Integer> allUserIds = new HashSet<>();
-        allUserIds.addAll(applierUserIds);
-        allUserIds.addAll(recomUserIds);
-        Map<Integer, UserUserRecord> allUserMap = getUserMap(allUserIds);
         Map<Integer, JobPositionDO> positionMap = getPositionIdMap(applyPids);
-        Map<Integer, List<HrOperationRecordRecord>> hrOperationMap = hrOperationRecordDao.getHrOperationMapByApplyIds(applyIds);
+        // 组装每种申请类型需要的数据
+        Map<Integer, JSONObject> referralTypeMap = getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
 
         List<JSONObject> result = new ArrayList<>();
-        AbstractReferralTypeHandler handler;
-        Map<Integer, JSONObject> referralTypeMap = new HashMap<>(1 >> 4);
-        for(ReferralTypeEnum referralTypeEnum : ReferralTypeEnum.values()){
-            handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
-            JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
-            referralTypeMap.put(referralTypeEnum.getType(), referralSingleTypeMap);
-        }
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
 
-            ReferralTypeEnum referralTypeEnum = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin());
+            int referralType = ReferralTypeEnum.getReferralTypeByApplySource(jobApplicationDO.getOrigin()).getType();
 
-            handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
+            AbstractReferralTypeHandler handler = referralTypeFactory.getHandlerByType(referralType);
 
             JobPositionDO jobPositionDO = positionMap.get(jobApplicationDO.getPositionId());
 
@@ -469,7 +481,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             List<HrOperationRecordRecord> hrOperations = hrOperationMap.get(jobApplicationDO.getId());
 
-            JSONObject singleTypeMap = referralTypeMap.get(referralTypeEnum.getType());
+            JSONObject singleTypeMap = referralTypeMap.get(referralType);
 
             JSONObject card = handler.createApplyCard(jobApplicationDO, jobPositionDO, applier, hrOperations, singleTypeMap, radarSwitchOpen);
 
@@ -479,6 +491,17 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         logger.info("getProgressBatch:{}", result);
         return JSON.toJSONString(result);
+    }
+
+    private Map<Integer, JSONObject> getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees) throws BIZException {
+        AbstractReferralTypeHandler handler;
+        Map<Integer, JSONObject> referralTypeMap = new HashMap<>(1 >> 4);
+        for(ReferralTypeEnum referralTypeEnum : ReferralTypeEnum.values()){
+            handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
+            JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
+            referralTypeMap.put(referralTypeEnum.getType(), referralSingleTypeMap);
+        }
+        return referralTypeMap;
     }
 
     @Override

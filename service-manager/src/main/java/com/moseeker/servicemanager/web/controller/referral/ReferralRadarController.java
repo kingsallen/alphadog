@@ -4,26 +4,21 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.rpccenter.client.ServiceManager;
-import com.moseeker.servicemanager.common.ParamUtils;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
-import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
 import com.moseeker.thrift.gen.referral.struct.*;
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpRequest;
 import org.apache.thrift.TException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 @ResponseBody
 public class ReferralRadarController {
 
-    private ReferralService.Iface referralService =  ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
+    private ReferralService.Iface referralService = ServiceManager.SERVICEMANAGER.getService(ReferralService.Iface.class);
 
     @RequestMapping(value = "v1/referral/progress", method = RequestMethod.POST)
     public String progress(@RequestBody ProgressForm progressForm) throws TException {
@@ -38,10 +33,10 @@ public class ReferralRadarController {
         validateUtil.addRequiredValidate("companyId", progressForm.getCompanyId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-            if(progressForm.getPageNum() == null || progressForm.getPageNum() <= 0){
+            if (progressForm.getPageNum() == null || progressForm.getPageNum() <= 0) {
                 progressForm.setPageNum(1);
             }
-            if(progressForm.getPageSize() == null || progressForm.getPageSize() <= 0){
+            if (progressForm.getPageSize() == null || progressForm.getPageSize() <= 0) {
                 progressForm.setPageSize(10);
             }
             ReferralProgressInfo progressInfo = new ReferralProgressInfo();
@@ -123,11 +118,11 @@ public class ReferralRadarController {
 
     @RequestMapping(value = "v1/referral/seek/check", method = RequestMethod.GET)
     public String checkSeekReferral(@RequestParam(name = "recom_user_id") Integer userId,
-                                       @RequestParam(name = "appid") Integer appid,
-                                       @RequestParam(name = "company_id") Integer companyId,
-                                       @RequestParam(name = "presentee_user_id") Integer presenteeId,
-                                       @RequestParam(name = "position_id") Integer positionId,
-                                       @RequestParam(name = "psc") Integer parentChainId) throws TException {
+                                    @RequestParam(name = "appid") Integer appid,
+                                    @RequestParam(name = "company_id") Integer companyId,
+                                    @RequestParam(name = "presentee_user_id") Integer presenteeId,
+                                    @RequestParam(name = "position_id") Integer positionId,
+                                    @RequestParam(name = "psc") Integer parentChainId) throws TException {
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("员工userId", userId, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
@@ -154,6 +149,7 @@ public class ReferralRadarController {
 
     /**
      * 候选人打开职位连接判断推荐人是否是员工
+     *
      * @param checkForm 检验转发链路的起点是否是员工
      * @return 推荐结果
      */
@@ -178,7 +174,7 @@ public class ReferralRadarController {
             CheckEmployeeInfo checkInfo = new CheckEmployeeInfo();
             BeanUtils.copyProperties(checkForm, checkInfo);
             String jsonResult = referralService.checkEmployee(checkInfo);
-            jsonResult = (jsonResult == null ? "":jsonResult);
+            jsonResult = (jsonResult == null ? "" : jsonResult);
             JSONObject response = JSONObject.parseObject(jsonResult);
             return Result.success(response).toJson();
         } else {
@@ -188,6 +184,7 @@ public class ReferralRadarController {
 
     /**
      * 保存十分钟消息模板的sharechain记录
+     *
      * @return 推荐结果
      */
     @RequestMapping(value = "/v1/referral/radar/saveTemp", method = RequestMethod.POST)
@@ -213,6 +210,7 @@ public class ReferralRadarController {
 
     /**
      * 点击人脉连连看按钮/点击分享的人脉连连看页面
+     *
      * @param radarForm 连接人脉雷达的参数
      * @return 推荐结果
      */
@@ -235,7 +233,7 @@ public class ReferralRadarController {
             ConnectRadarInfo radarInfo = new ConnectRadarInfo();
             BeanUtils.copyProperties(radarForm, radarInfo);
             String jsonResult = referralService.connectRadar(radarInfo);
-            jsonResult = (jsonResult == null ? "":jsonResult);
+            jsonResult = (jsonResult == null ? "" : jsonResult);
             JSONObject response = JSONObject.parseObject(jsonResult);
             return Result.success(response).toJson();
         } else {
@@ -245,6 +243,7 @@ public class ReferralRadarController {
 
     /**
      * 10分钟消息模板-我不熟悉
+     *
      * @param inviteForm 跳过当前不熟悉的浏览人
      * @return 推荐结果
      */
@@ -253,6 +252,8 @@ public class ReferralRadarController {
     public String ignoreCurrentViewer(@RequestBody ReferralInviteForm inviteForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateInviteInfo(validateUtil, inviteForm);
+        validateUtil.addRequiredValidate("timestamp", inviteForm.getTimestamp());
+        validateUtil.addRequiredValidate("当前处理的endUserId", inviteForm.getEndUserId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
@@ -266,6 +267,7 @@ public class ReferralRadarController {
 
     /**
      * 10分钟消息模板-人脉筛选，获取卡片数据
+     *
      * @return 推荐结果
      */
     @RequestMapping(value = "/v1/referral/radar/cards", method = RequestMethod.POST)
@@ -282,16 +284,16 @@ public class ReferralRadarController {
 
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-            if(referralCard.getPageNumber() == null || referralCard.getPageNumber() <= 0){
+            if (referralCard.getPageNumber() == null || referralCard.getPageNumber() <= 0) {
                 referralCard.setPageNumber(1);
             }
-            if(referralCard.getPageSize() == null || referralCard.getPageSize() <= 0){
+            if (referralCard.getPageSize() == null || referralCard.getPageSize() <= 0) {
                 referralCard.setPageSize(10);
             }
             ReferralCardInfo cardInfo = new ReferralCardInfo();
             BeanUtils.copyProperties(referralCard, cardInfo);
             String jsonResult = referralService.getRadarCards(cardInfo);
-            jsonResult = (jsonResult == null ? "":jsonResult);
+            jsonResult = (jsonResult == null ? "" : jsonResult);
             JSONArray response = JSONArray.parseArray(jsonResult);
             return Result.success(response).toJson();
         } else {
@@ -301,7 +303,8 @@ public class ReferralRadarController {
 
     /**
      * 10分钟消息模板-邀请投递
-     * @param inviteForm 邀请浏览职位的员工投递
+     *
+     * @param inviteForm 邀请浏览职位的候选人投递
      * @return 推荐结果
      */
     @RequestMapping(value = "/v1/referral/radar/invite", method = RequestMethod.POST)
@@ -309,8 +312,6 @@ public class ReferralRadarController {
     public String inviteApplication(@RequestBody ReferralInviteForm inviteForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
         validateInviteInfo(validateUtil, inviteForm);
-        validateUtil.addIntTypeValidate("公司id", inviteForm.getCompanyId(), 1, Integer.MAX_VALUE);
-        validateUtil.addRequiredValidate("公司id", inviteForm.getCompanyId());
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
@@ -324,15 +325,42 @@ public class ReferralRadarController {
         }
     }
 
-    private void validateInviteInfo(ValidateUtil validateUtil, ReferralInviteForm inviteForm){
+    /**
+     * 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
+     *
+     * @param inviteForm 邀请浏览职位的候选人投递
+     * @return 推荐结果
+     */
+    @RequestMapping(value = "/v1/referral/candidate/state", method = RequestMethod.POST)
+    @ResponseBody
+    public String handleCandidateState(@RequestBody ReferralInviteForm inviteForm) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateInviteInfo(validateUtil, inviteForm);
+        String result = validateUtil.validate();
+        if (StringUtils.isBlank(result)) {
+            ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
+            BeanUtils.copyProperties(inviteForm, inviteInfo);
+            referralService.handleCandidateState(inviteInfo);
+            return Result.success().toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    private void validateInviteInfo(ValidateUtil validateUtil, ReferralInviteForm inviteForm) {
         validateUtil.addIntTypeValidate("员工userId", inviteForm.getUserId(), 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("被邀请人id", inviteForm.getEndUserId(), 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("appid", inviteForm.getAppid(), 0, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("职位id", inviteForm.getPid(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("员工userId", inviteForm.getUserId());
+
+        validateUtil.addIntTypeValidate("appid", inviteForm.getAppid(), 0, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("appid", inviteForm.getAppid());
+
+        validateUtil.addIntTypeValidate("职位id", inviteForm.getPid(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("职位id", inviteForm.getPid());
-        validateUtil.addRequiredValidate("timestamp", inviteForm.getTimestamp());
-        validateUtil.addRequiredValidate("当前处理的endUserId", inviteForm.getEndUserId());
+
+        validateUtil.addIntTypeValidate("被邀请人id", inviteForm.getEndUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("被邀请人id", inviteForm.getEndUserId());
+
+        validateUtil.addIntTypeValidate("公司id", inviteForm.getCompanyId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("公司id", inviteForm.getCompanyId());
     }
 }

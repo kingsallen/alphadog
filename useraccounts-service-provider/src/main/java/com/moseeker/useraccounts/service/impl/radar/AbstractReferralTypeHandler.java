@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.useraccounts.pojo.neo4j.UserDepthVO;
@@ -54,11 +55,12 @@ public abstract class AbstractReferralTypeHandler {
                 || progress == ReferralProgressEnum.SEEK_APPLY.getProgress()){
             progress = ReferralProgressEnum.APPLYED.getProgress();
         }
+        String username = StringUtils.isNullOrEmpty(applier.getName()) ? applier.getNickname() : applier.getName();
         card.put("apply_id", jobApplicationDO.getId());
         card.put("datetime", getLastDateTime(jobApplicationDO.getSubmitTime(), hrOperations));
         card.put("progress", progress);
         card.put("recom", initRecomUserInfo(jobApplicationDO, referralTypeSingleMap, radarSwitchOpen));
-        card.put("user", doInitUser(jobApplicationDO.getApplierId(), applier.getName()));
+        card.put("user", doInitUser(jobApplicationDO.getApplierId(), username));
         card.put("position", doInitPosition(jobPosition));
         return card;
     }
