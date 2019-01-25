@@ -28,7 +28,7 @@ public class ActivityForm {
     private Integer estimatedTotal;
     private Integer actualTotal;
     private List<Integer> positionIds;
-    private Integer redpacket_theme;
+    private Integer redpacketTheme;
 
     public Integer getAppid() {
         return appid;
@@ -190,11 +190,11 @@ public class ActivityForm {
         this.positionIds = positionIds;
     }
 
-    public Integer getRedpacket_theme() {
-        return redpacket_theme;
+    public Integer getRedpacketTheme() {
+        return redpacketTheme;
     }
 
-    public void setRedpacket_theme(Integer redpacket_theme) {
-        this.redpacket_theme = redpacket_theme;
+    public void setRedpacketTheme(Integer redpacketTheme) {
+        this.redpacketTheme = redpacketTheme;
     }
 }
