@@ -44,8 +44,7 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
 
     public ConfigOmsSwitchManagement getValidOmsSwitchByParams(int id,int companyId, Integer moduleId){
         return create.selectFrom(CONFIG_OMS_SWITCH_MANAGEMENT)
-                .where(CONFIG_OMS_SWITCH_MANAGEMENT.IS_VALID.eq(ValidGeneralType.valid.getValue())
-                        .and(CONFIG_OMS_SWITCH_MANAGEMENT.ID.eq(id))
+                .where(CONFIG_OMS_SWITCH_MANAGEMENT.ID.eq(id)
                         .and(CONFIG_OMS_SWITCH_MANAGEMENT.COMPANY_ID.eq(companyId))
                         .and(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.eq(moduleId)))
                 .fetchOneInto(ConfigOmsSwitchManagement.class);
