@@ -28,6 +28,7 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -168,7 +169,7 @@ public class ReferralTemplateSender {
         shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, seekRecommendRecords)));
         templateShareChainDao.addAllData(templateShareChainDOS);
         templateShareChainDOS.removeIf(record -> record.getType() != 0);
-        Set<Integer> userIds = filterAppliedShareChain(templateShareChainDOS).stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         int visitNum = userIds.size();
         List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
 
@@ -200,7 +201,6 @@ public class ReferralTemplateSender {
         List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
         List<CandidateTemplateShareChainDO> filterAppliedShareChain = new ArrayList<>();
-        Set<Integer> userIdset = new HashSet<>();
         for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
             boolean flag = true;
             for(int i=0;i<jobApplicationDOS.size() && flag;i++){

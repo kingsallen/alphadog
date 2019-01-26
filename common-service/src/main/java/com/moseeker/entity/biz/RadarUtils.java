@@ -1,6 +1,8 @@
 package com.moseeker.entity.biz;
 
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,34 @@ public class RadarUtils {
         }
         // 递归排序
         return findByParentId(parentId, orderedChainRecords, chainRecords);
+    }
+
+    public static CandidateShareChainDO getShareChainDOByRecurrence(int parentId, List<CandidateShareChainDO> shareChainDOS) {
+        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getId() == parentId){
+                if(shareChainDO.getRoot2RecomUserId() == 0){
+                    return shareChainDO;
+                }else {
+                    return getShareChainDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);
+                }
+            }
+        }
+        // 理论上不会到这
+        return shareChainDOS.get(0);
+    }
+
+    public static CandidateTemplateShareChainDO getShareChainTemplateDOByRecurrence(int parentId, List<CandidateTemplateShareChainDO> shareChainDOS) {
+        for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getChainId() == parentId){
+                if(shareChainDO.getRoot2UserId() == 0){
+                    return shareChainDO;
+                }else {
+                    return getShareChainTemplateDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);
+                }
+            }
+        }
+        // 理论上不会到这
+        return shareChainDOS.get(0);
     }
 
     private static List<ReferralConnectionChainRecord> findByParentId(int parentId, List<ReferralConnectionChainRecord> orderedChainRecords, List<ReferralConnectionChainRecord> chainRecords) {
