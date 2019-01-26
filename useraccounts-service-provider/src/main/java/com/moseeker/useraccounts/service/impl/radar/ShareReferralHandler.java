@@ -1,10 +1,9 @@
 package com.moseeker.useraccounts.service.impl.radar;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
@@ -66,7 +65,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         List<JobApplicationDO> shareReferralList = getApplicationsByReferralType(jobApplicationDOS);
         List<Integer> applierIds = shareReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<Integer> pid = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
-        List<ReferralRecomEvaluationRecord> evaluationRecords = evaluationDao.fetchEvaluationRecordsByAppids(employeeRecord.getSysuserId(), applierIds, pid);
+        List<ReferralRecomEvaluation> evaluationRecords = evaluationDao.fetchEvaluationRecordsByAppids(employeeRecord.getSysuserId(), applierIds, pid);
 
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
@@ -129,9 +128,9 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
 
     private int handleEvaluate(JSONObject referralTypeSingleMap, JobApplicationDO jobApplicationDO) {
         // 转发推荐类型（2）中的用户求推荐信息
-        TypeReference<List<ReferralRecomEvaluationRecord>> evaluateType = new TypeReference<List<ReferralRecomEvaluationRecord>>(){};
-        List<ReferralRecomEvaluationRecord> evaluateRecords = JSON.parseObject(referralTypeSingleMap.getString("evaluateRecords"), evaluateType);
-        for(ReferralRecomEvaluationRecord evaluationRecord : evaluateRecords){
+        TypeReference<List<ReferralRecomEvaluation>> evaluateType = new TypeReference<List<ReferralRecomEvaluation>>(){};
+        List<ReferralRecomEvaluation> evaluateRecords = JSON.parseObject(referralTypeSingleMap.getString("evaluateRecords"), evaluateType);
+        for(ReferralRecomEvaluation evaluationRecord : evaluateRecords){
             if(evaluationRecord.getPostUserId() == jobApplicationDO.getRecommenderUserId()
                     && evaluationRecord.getPresenteeUserId() == jobApplicationDO.getApplierId()
                     && evaluationRecord.getPositionId() == jobApplicationDO.getPositionId()){
