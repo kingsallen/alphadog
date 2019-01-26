@@ -186,6 +186,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
         List<UserDepthVO> userDepthVOS = getEndUserDegrees(currentPageCandidatePositions, cardInfo);
+        // 获取当前页候选人是否求推荐过
+        List<ReferralSeekRecommendRecord> seekRecommendRecords = getSeekRecommendRecords(currentPageCandidatePositions, cardInfo);
 
         for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
             // 构造单个职位浏览人的卡片
@@ -197,7 +199,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 候选人浏览职位信息
             JSONObject position = doInitPosition(idPositionMap.get(candidatePositionDO.getPositionId()), candidatePositionDO);
             // 卡片类型相关信息
-            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS);
+            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS, seekRecommendRecords);
             card.put("position", position);
             card.put("recom", recomInfo);
             card.put("user", user);
@@ -206,6 +208,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
+    }
+
+    private List<ReferralSeekRecommendRecord> getSeekRecommendRecords(List<CandidatePositionDO> currentPageCandidatePositions, ReferralCardInfo cardInfo) {
+        List<Integer> pids = currentPageCandidatePositions.stream().map(CandidatePositionDO::getPositionId).distinct().collect(Collectors.toList());
+        List<Integer> seekReferralUserIds = currentPageCandidatePositions.stream().map(CandidatePositionDO::getUserId).distinct().collect(Collectors.toList());
+        return seekRecommendDao.fetchSeekRecommendByPostAndPressentee(cardInfo.getUserId(), pids, seekReferralUserIds);
     }
 
     @Override
@@ -1195,7 +1203,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private JSONObject doInitRecomInfo(CandidatePositionDO candidatePositionDO, List<CandidateTemplateShareChainDO> shareChainDOS,
-                                       Map<Integer, UserWxUserDO> idUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS) {
+                                       Map<Integer, UserWxUserDO> idUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS,
+                                       List<ReferralSeekRecommendRecord> seekRecommendRecords) {
         int endUserId = candidatePositionDO.getUserId();
         int positionId = candidatePositionDO.getPositionId();
         // 查找来自【】转发
@@ -1229,13 +1238,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 查找卡片推荐类型是 邀请投递 还是 推荐TA
         int type = 0;
         int seekReferralId = 0;
-        for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
-            if(shareChainDO.getPositionId() == positionId && shareChainDO.getPresenteeUserId() == endUserId){
-                if(shareChainDO.getSeekReferralId() != 0){
-                    type = 1;
-                    seekReferralId = shareChainDO.getSeekReferralId();
-                    break;
-                }
+        for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendRecords){
+            if(seekRecommendRecord.getPositionId() == candidatePositionDO.getPositionId()
+                    && seekRecommendRecord.getPresenteeId() == candidatePositionDO.getUserId()){
+                seekReferralId = seekRecommendRecord.getId();
+                type = 1;
+                break;
             }
         }
         recomInfo.put("type", type);

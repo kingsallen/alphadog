@@ -47,6 +47,19 @@ public class RadarUtils {
         return shareChainDOS.get(0);
     }
 
+    public static List<CandidateShareChainDO> getCompleteShareChainsByRecurrence(int parentId, List<CandidateShareChainDO> shareChainDOS, List<CandidateShareChainDO> newShareChains){
+        if(parentId == 0){
+            return newShareChains;
+        }
+        for(CandidateShareChainDO shareChainDO : shareChainDOS){
+            if(shareChainDO.getId() == parentId){
+                newShareChains.add(shareChainDO);
+                return getCompleteShareChainsByRecurrence(shareChainDO.getParentId(), shareChainDOS, newShareChains);
+            }
+        }
+        return newShareChains;
+    }
+
     public static CandidateTemplateShareChainDO getShareChainTemplateDOByRecurrence(int parentId, List<CandidateTemplateShareChainDO> shareChainDOS) {
         for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getChainId() == parentId){

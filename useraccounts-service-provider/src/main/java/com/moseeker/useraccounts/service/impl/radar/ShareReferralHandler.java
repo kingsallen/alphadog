@@ -70,7 +70,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
 
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByUserIdAndPresenteeAndPosition(employeeRecord.getSysuserId(), sharePids);
+        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByUserIdAndPosition(employeeRecord.getSysuserId(), sharePids);
         List<Integer> oneDegreeJobApplication = new ArrayList<>();
         // 两度及以上链路对应申请
         JSONObject result = new JSONObject();

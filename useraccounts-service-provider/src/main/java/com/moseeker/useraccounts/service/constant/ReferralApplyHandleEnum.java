@@ -7,7 +7,7 @@ import com.moseeker.entity.Constant.ApplicationSource;
  */
 public enum  ReferralApplyHandleEnum {
     /**
-     * 由推荐产生的申请，需要将该候选人的处理状态修改掉 0 未处理 1 邀请投递 2 不熟悉 3 推荐ta 4 邀请投递后候选人自投
+     * 由推荐产生的申请，需要将该候选人的处理状态修改掉 0 未处理 1 邀请投递 2 不熟悉 3 推荐ta 4 转发投递 5 自投
      */
     unHandle(0),
     invite(1),

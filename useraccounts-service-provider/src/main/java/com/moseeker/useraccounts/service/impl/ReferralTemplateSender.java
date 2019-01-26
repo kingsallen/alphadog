@@ -26,6 +26,7 @@ import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
@@ -164,9 +165,9 @@ public class ReferralTemplateSender {
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-        List<ReferralSeekRecommendRecord> seekRecommendRecords = seekRecommendDao.getTenMinuteSeekRecords(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+        shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), shareChainDOS);
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, seekRecommendRecords)));
+        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
         templateShareChainDao.addAllData(templateShareChainDOS);
         templateShareChainDOS.removeIf(record -> record.getType() != 0);
         Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
@@ -196,28 +197,46 @@ public class ReferralTemplateSender {
         }
     }
 
-    public List<CandidateTemplateShareChainDO> filterAppliedShareChain(List<CandidateTemplateShareChainDO> templateShareChainDOS) {
-        List<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).distinct().collect(Collectors.toList());
-        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
-        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
-        List<CandidateTemplateShareChainDO> filterAppliedShareChain = new ArrayList<>();
-        for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
+    private List<CandidateShareChainDO> getCompleteShareChains(int userId, List<CandidateShareChainDO> currentShareChainDOS) {
+        List<Integer> pids = currentShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+        List<CandidateShareChainDO> allShareChains = shareChainDao.getShareChainsByUserIdAndPosition(userId, pids);
+        List<CandidateShareChainDO> returnShareChains = new ArrayList<>();
+        for(CandidateShareChainDO current : currentShareChainDOS){
             boolean flag = true;
-            for(int i=0;i<jobApplicationDOS.size() && flag;i++){
-                JobApplicationDO jobApplicationDO = jobApplicationDOS.get(i);
-                if(shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId() && jobApplicationDO.getPositionId() == shareChainDO.getPositionId()){
+            for(int i=0;i<allShareChains.size()&&flag;i++){
+                CandidateShareChainDO complete = allShareChains.get(i);
+                if(current.getPositionId() == complete.getPositionId() && current.getPresenteeUserId() == complete.getPresenteeUserId()){
                     flag = false;
+                    returnShareChains.add(complete);
+                    returnShareChains = RadarUtils.getCompleteShareChainsByRecurrence(complete.getParentId(), allShareChains, returnShareChains);
                 }
             }
-            if(flag){
-                filterAppliedShareChain.add(shareChainDO);
-            }
         }
-        return filterAppliedShareChain;
+        return returnShareChains;
     }
 
+//    public List<CandidateTemplateShareChainDO> filterAppliedShareChain(List<CandidateTemplateShareChainDO> templateShareChainDOS) {
+//        List<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).distinct().collect(Collectors.toList());
+//        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+//        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
+//        List<CandidateTemplateShareChainDO> filterAppliedShareChain = new ArrayList<>();
+//        for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
+//            boolean flag = true;
+//            for(int i=0;i<jobApplicationDOS.size() && flag;i++){
+//                JobApplicationDO jobApplicationDO = jobApplicationDOS.get(i);
+//                if(shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId() && jobApplicationDO.getPositionId() == shareChainDO.getPositionId()){
+//                    flag = false;
+//                }
+//            }
+//            if(flag){
+//                filterAppliedShareChain.add(shareChainDO);
+//            }
+//        }
+//        return filterAppliedShareChain;
+//    }
 
-    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<ReferralSeekRecommendRecord> seekRecommendRecords) {
+
+    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
         CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
         templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
         templateShareChainDO.setChainId(candidateShareChainDO.getId());
@@ -229,14 +248,6 @@ public class ReferralTemplateSender {
         templateShareChainDO.setRoot2UserId(candidateShareChainDO.getRoot2RecomUserId());
         templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
-        for(ReferralSeekRecommendRecord seekRecommendRecord : seekRecommendRecords){
-            if(seekRecommendRecord.getPostUserId() == candidateShareChainDO.getRootRecomUserId()
-                    && seekRecommendRecord.getPresenteeId() == candidateShareChainDO.getPresenteeUserId()
-                    && seekRecommendRecord.getPositionId() == candidateShareChainDO.getPositionId()){
-                templateShareChainDO.setSeekReferralId(seekRecommendRecord.getId());
-                break;
-            }
-        }
         return templateShareChainDO;
     }
 
