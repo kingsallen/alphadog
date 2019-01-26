@@ -405,7 +405,6 @@ public class ReferralServiceImpl implements ReferralService {
             logger.info("==========publishSeekReferralEvent");
             templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
             logger.info("==========updateCandidateShareChainTemlate");
-            radarService.updateCandidateShareChainTemlate(recommendRecord);
             KafkaAskReferralPojo kafkaAskReferralPojo = initKafkaAskReferralPojo(position.getCompanyId(), userId, positionId);
             kafkaSender.sendMessage(Constant.KAFKA_TOPIC_ASK_REFERRAL, JSON.toJSONString(kafkaAskReferralPojo));
         }
