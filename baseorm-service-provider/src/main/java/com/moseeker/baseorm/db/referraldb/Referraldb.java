@@ -22,6 +22,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
@@ -52,7 +53,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Referraldb extends SchemaImpl {
 
-    private static final long serialVersionUID = -1086277806;
+    private static final long serialVersionUID = 740440965;
 
     /**
      * The reference instance of <code>referraldb</code>
@@ -150,6 +151,11 @@ public class Referraldb extends SchemaImpl {
     public final ReferralPositionRel REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel.REFERRAL_POSITION_REL;
 
     /**
+     * 分享推荐进度页面用于存储候选人查看推荐进度时的申请状态
+     */
+    public final ReferralProgress REFERRAL_PROGRESS = com.moseeker.baseorm.db.referraldb.tables.ReferralProgress.REFERRAL_PROGRESS;
+
+    /**
      * 推荐人推荐理由信息
      */
     public final ReferralRecomEvaluation REFERRAL_RECOM_EVALUATION = com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION;
@@ -217,6 +223,7 @@ public class Referraldb extends SchemaImpl {
             ReferralPositionBonus.REFERRAL_POSITION_BONUS,
             ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL,
             ReferralPositionRel.REFERRAL_POSITION_REL,
+            ReferralProgress.REFERRAL_PROGRESS,
             ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION,
             ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION,
             ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND,

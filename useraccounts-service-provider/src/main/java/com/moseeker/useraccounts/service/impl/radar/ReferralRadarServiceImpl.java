@@ -15,14 +15,17 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralProgressDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -111,6 +114,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Autowired
     private JobApplicationDao jobApplicationDao;
     @Autowired
+    private ReferralProgressDao progressDao;
+    @Autowired
     private UserEmployeeDao userEmployeeDao;
     @Autowired
     private ReferralTemplateSender templateHelper;
@@ -135,7 +140,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final Integer CHAIN_LIMIT = 4;
+    private static final Integer CHAIN_LIMIT = 3;
 
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
 
@@ -190,16 +195,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<ReferralSeekRecommendRecord> seekRecommendRecords = getSeekRecommendRecords(currentPageCandidatePositions, cardInfo);
 
         for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
+            int endUserId = candidatePositionDO.getUserId();
+            int positionId = candidatePositionDO.getPositionId();
             // 构造单个职位浏览人的卡片
             JSONObject card = new JSONObject();
             // 候选人信息
-            RadarUserInfo user = doInitUser(idWxUserMap, idUserMap, candidatePositionDO.getUserId(), userDepthVOS);
+            RadarUserInfo user = doInitUser(idWxUserMap.get(endUserId), idUserMap.get(endUserId), endUserId, userDepthVOS);
             // 转发链路
             List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
             // 候选人浏览职位信息
-            JSONObject position = doInitPosition(idPositionMap.get(candidatePositionDO.getPositionId()), candidatePositionDO);
+            JSONObject position = doInitPosition(idPositionMap.get(positionId), candidatePositionDO);
             // 卡片类型相关信息
-            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS, seekRecommendRecords);
+            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS, seekRecommendRecords, idUserMap);
             card.put("position", position);
             card.put("recom", recomInfo);
             card.put("user", user);
@@ -263,7 +270,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
-    public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) {
+    public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) throws BIZException {
+        checkCorrectEmployee(inviteInfo);
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
                 inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
@@ -422,9 +430,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         UserWxUserRecord userWxUserDO = wxUserDao.getWxUserByUserIdAndWechatId(progressQuery.getUserId(), hrWxWechatDO.getId());
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(jobApplication.getPositionId());
         UserUserDO userUserDO = userUserDao.getUser(progressQuery.getUserId());
-        int factProgress = jobApplication.getAppTplId();
         JSONObject result = new JSONObject();
-        if(!checkIsNormal(factProgress, progressQuery.getProgress(), hrOperationRecords)){
+        if(!checkIsNormal(jobApplication, hrOperationRecords, progressQuery.getPresenteeUserId())){
             result.put("abnormal", 1);
             return JSON.toJSONString(result);
         }
@@ -439,7 +446,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JSONArray progressJson = doInitProgressJson(current, hrOperationRecords, refuse);
         result.put("progress", progressJson);
         result.put("abnormal", 0);
-        result.put("encourage", getEncourageByProgress(factProgress));
+        result.put("encourage", getEncourageByProgress(jobApplication.getAppTplId()));
         result.put("avatar", userWxUserDO.getHeadimgurl());
         result.put("name", handleCandidateName(userUserDO.getName(), progressQuery.getPresenteeUserId(),
                 jobApplication.getRecommenderUserId(), jobApplication.getApplierId()));
@@ -679,7 +686,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> chainBeRecomIds = getChainIdsByRecurrence(shareChainDOS, cardInfo, candidatePositionDO);
         for(Integer beRecomId : chainBeRecomIds){
             UserWxUserDO userWxUserDO = idUserMap.get(beRecomId);
-            if(chain.size() == CHAIN_LIMIT){
+            if(chain.size() == (CHAIN_LIMIT+1)){
                 chain.add(user);
                 break;
             }
@@ -1195,8 +1202,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private JSONObject doInitRecomInfo(CandidatePositionDO candidatePositionDO, List<CandidateTemplateShareChainDO> shareChainDOS,
-                                       Map<Integer, UserWxUserDO> idUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS,
-                                       List<ReferralSeekRecommendRecord> seekRecommendRecords) {
+                                       Map<Integer, UserWxUserDO> idWxUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS,
+                                       List<ReferralSeekRecommendRecord> seekRecommendRecords, Map<Integer, UserUserRecord> userMap) {
         int endUserId = candidatePositionDO.getUserId();
         int positionId = candidatePositionDO.getPositionId();
         // 查找来自【】转发
@@ -1217,7 +1224,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         if(recomUser != 0){
-            recomInfo.put("nickname", idUserMap.get(recomUser).getNickname());
+            String nickName = Optional.ofNullable(userMap.get(recomUser).getName())
+                    .orElse(idWxUserMap.get(recomUser).getNickname());
+            recomInfo.put("nickname", nickName);
         }
         boolean isFromWxGroup = false;
         for(CandidatePositionShareRecordDO positionShareRecordDO : positionShareRecordDOS){
@@ -1291,10 +1300,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/10
      * @return JSONObject
      */
-    private RadarUserInfo doInitUser(Map<Integer, UserWxUserDO> idWxUserMap, Map<Integer, UserUserRecord> idUserMap, int endUserId, List<UserDepthVO> userDepthVOS) {
+    private RadarUserInfo doInitUser(UserWxUserDO userWxUserDO, UserUserRecord userUserRecord, int endUserId,
+                                     List<UserDepthVO> userDepthVOS) {
         RadarUserInfo user = new RadarUserInfo();
-        UserWxUserDO userWxUserDO = idWxUserMap.get(endUserId);
-        UserUserRecord userUserRecord = idUserMap.get(endUserId);
         user.initFromUserWxUser(userWxUserDO, userUserRecord);
         int degree = 0;
         for (UserDepthVO userDepthVO : userDepthVOS) {
@@ -1396,24 +1404,62 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return sdf.format(new Date(optTime));
     }
 
-    private boolean checkIsNormal(int factProgress, int progress, List<HrOperationRecordRecord> hrOperationRecordDOS) {
-        if(progress == ReferralProgressEnum.FAILED.getProgress()){
-            return false;
+    private boolean checkIsNormal(JobApplication jobApplication, List<HrOperationRecordRecord> hrOperationRecords, int presenteeUserId) {
+        boolean isNormal = true;
+        if(presenteeUserId != jobApplication.getApplierId() && presenteeUserId != jobApplication.getRecommenderUserId()){
+            return true;
         }
-        int lastProgress = factProgress;
-        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
-            lastProgress = getLastProgress(lastProgress, hrOperationRecordDOS);
+        // 如果候选人没有查看过，第一次进来状态是4，认为是非正常状态
+        ReferralProgressRecord referralProgress = progressDao.fetchByAppid(jobApplication.getId());
+        if(referralProgress == null){
+            referralProgress = initReferralProgressRecord(jobApplication);
+            progressDao.insertRecord(referralProgress);
+            isNormal = referralProgress.getState() == 1;
+        }else {
+            if(referralProgress.getState() == 0){
+                isNormal = false;
+            }else {
+                ReferralProgressEnum lastViewProgress = ReferralProgressEnum.getEnumByProgress(referralProgress.getViewProgress());
+                if(jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress()){
+                    int lastProgress = getLastProgress(jobApplication.getAppTplId(), hrOperationRecords);
+                    ReferralProgressEnum lastProgressEnum = ReferralProgressEnum.getEnumByProgress(lastProgress);
+                    if(lastViewProgress.getOrder() >= lastProgressEnum.getOrder()){
+                        isNormal = false;
+                        referralProgress.setViewProgress(ReferralProgressEnum.FAILED.getProgress());
+                    }
+                }else {
+                    ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(jobApplication.getAppTplId());
+                    if(current == null){
+                        throw UserAccountException.REFERRAL_PROGRESS_ERROR;
+                    }
+                    if(lastViewProgress.getOrder() > current.getOrder()){
+                        isNormal = false;
+                    }
+                    referralProgress.setViewProgress(current.getProgress());
+                }
+                if(!isNormal){
+                    referralProgress.setState((byte)0);
+                }
+                referralProgress.setUpdateTime(null);
+                progressDao.updateRecord(referralProgress);
+            }
+        }
+        return isNormal;
+    }
 
+    private ReferralProgressRecord initReferralProgressRecord(JobApplication jobApplication) {
+        ReferralProgressRecord progress = new ReferralProgressRecord();
+        int currentProgress = jobApplication.getAppTplId();
+        if(jobApplication.getAppTplId() == ReferralProgressEnum.SEEK_APPLY.getProgress()
+            || jobApplication.getAppTplId() == ReferralProgressEnum.EMPLOYEE_UPLOAD.getProgress()
+            || jobApplication.getAppTplId() == ReferralProgressEnum.VIEW_APPLY.getProgress()){
+            currentProgress = ReferralProgressEnum.APPLYED.getProgress();
         }
-        ReferralProgressEnum last = ReferralProgressEnum.getEnumByProgress(lastProgress);
-        ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
-        if(current == null){
-            throw UserAccountException.REFERRAL_PROGRESS_ERROR;
-        }
-        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
-            return last.getOrder() > current.getOrder();
-        }
-        return last.getOrder() >= current.getOrder();
+        byte state = jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress() ? 0 : (byte)1;
+        progress.setAppId(jobApplication.getId());
+        progress.setViewProgress(currentProgress);
+        progress.setState(state);
+        return progress;
     }
 
     /**

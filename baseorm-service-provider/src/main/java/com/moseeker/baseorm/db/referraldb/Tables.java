@@ -22,6 +22,7 @@ import com.moseeker.baseorm.db.referraldb.tables.ReferralLog;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonus;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionBonusStageDetail;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel;
+import com.moseeker.baseorm.db.referraldb.tables.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomHbPosition;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralSeekRecommend;
@@ -133,6 +134,11 @@ public class Tables {
      * The table <code>referraldb.referral_position_rel</code>.
      */
     public static final ReferralPositionRel REFERRAL_POSITION_REL = com.moseeker.baseorm.db.referraldb.tables.ReferralPositionRel.REFERRAL_POSITION_REL;
+
+    /**
+     * 分享推荐进度页面用于存储候选人查看推荐进度时的申请状态
+     */
+    public static final ReferralProgress REFERRAL_PROGRESS = com.moseeker.baseorm.db.referraldb.tables.ReferralProgress.REFERRAL_PROGRESS;
 
     /**
      * 推荐人推荐理由信息

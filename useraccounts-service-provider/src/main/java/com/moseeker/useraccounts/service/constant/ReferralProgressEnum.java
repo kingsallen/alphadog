@@ -14,10 +14,10 @@ public enum  ReferralProgressEnum {
     FILTERED(10, 2),
     INTERVIEWED(12, 3),
     ENTRY(3, 4),
-    FAILED(4, -1),
-    VIEW_APPLY(6, -1),
-    EMPLOYEE_UPLOAD(15, -1),
-    SEEK_APPLY(16, -1),
+    FAILED(4, 4),
+    VIEW_APPLY(6, 1),
+    EMPLOYEE_UPLOAD(15, 1),
+    SEEK_APPLY(16, 1),
     ;
 
     int progress;
@@ -45,8 +45,10 @@ public enum  ReferralProgressEnum {
     }
 
     public static ReferralProgressEnum getEnumByProgress(int progress){
-        if(progress == 6 || progress == 15 || progress == 16){
-            progress = 1;
+        if(progress == VIEW_APPLY.getProgress()
+                || progress == EMPLOYEE_UPLOAD.getProgress()
+                || progress == SEEK_APPLY.getProgress()){
+            progress = APPLYED.getProgress();
         }
         return ENUM_MAP.get(progress);
     }

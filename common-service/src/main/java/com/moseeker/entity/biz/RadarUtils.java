@@ -53,7 +53,9 @@ public class RadarUtils {
         }
         for(CandidateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getId() == parentId){
-                newShareChains.add(shareChainDO);
+                if(!contains(shareChainDO, newShareChains)){
+                    newShareChains.add(shareChainDO);
+                }
                 return getCompleteShareChainsByRecurrence(shareChainDO.getParentId(), shareChainDOS, newShareChains);
             }
         }
@@ -82,5 +84,16 @@ public class RadarUtils {
             }
         }
         return orderedChainRecords;
+    }
+
+    public static boolean contains(CandidateShareChainDO current, List<CandidateShareChainDO> returnShareChains) {
+        for(CandidateShareChainDO shareChainDO : returnShareChains){
+            if(current.getPresenteeUserId() == shareChainDO.getPresenteeUserId()
+                    && current.getPositionId() == shareChainDO.getPositionId()
+                    && current.getParentId() == shareChainDO.getParentId()){
+                return true;
+            }
+        }
+        return false;
     }
 }

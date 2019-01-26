@@ -61,20 +61,17 @@ public class ReferralRadarController {
         validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("companyId", companyId, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("点击人userId", presenteeUserId, 1, Integer.MAX_VALUE);
-        validateUtil.addIntTypeValidate("推荐进度progress", progress, 0, Integer.MAX_VALUE);
 
         validateUtil.addRequiredValidate("候选人userId", userId);
         validateUtil.addRequiredValidate("appid", appid);
         validateUtil.addRequiredValidate("companyId", companyId);
         validateUtil.addRequiredValidate("点击人userId", presenteeUserId);
-        validateUtil.addRequiredValidate("推荐进度progress", progress);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
             ReferralProgressQueryInfo queryInfo = new ReferralProgressQueryInfo();
             queryInfo.setCompanyId(companyId);
             queryInfo.setApplyId(applyId);
             queryInfo.setPresenteeUserId(presenteeUserId);
-            queryInfo.setProgress(progress);
             queryInfo.setUserId(userId);
             String responseStr = referralService.getProgressByOne(queryInfo);
             JSONObject response = JSONObject.parseObject(responseStr);
