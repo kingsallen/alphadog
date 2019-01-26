@@ -135,7 +135,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private static final Integer CHAIN_LIMIT = 4;
+    private static final Integer CHAIN_LIMIT = 3;
 
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
 
@@ -190,16 +190,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<ReferralSeekRecommendRecord> seekRecommendRecords = getSeekRecommendRecords(currentPageCandidatePositions, cardInfo);
 
         for(CandidatePositionDO candidatePositionDO : currentPageCandidatePositions){
+            int endUserId = candidatePositionDO.getUserId();
+            int positionId = candidatePositionDO.getPositionId();
             // 构造单个职位浏览人的卡片
             JSONObject card = new JSONObject();
             // 候选人信息
-            RadarUserInfo user = doInitUser(idWxUserMap, idUserMap, candidatePositionDO.getUserId(), userDepthVOS);
+            RadarUserInfo user = doInitUser(idWxUserMap.get(endUserId), idUserMap.get(endUserId), endUserId, userDepthVOS);
             // 转发链路
             List<RadarUserInfo> chain = doInitRadarCardChains(idWxUserMap, cardInfo, candidatePositionDO, user, shareChainDOS);
             // 候选人浏览职位信息
-            JSONObject position = doInitPosition(idPositionMap.get(candidatePositionDO.getPositionId()), candidatePositionDO);
+            JSONObject position = doInitPosition(idPositionMap.get(positionId), candidatePositionDO);
             // 卡片类型相关信息
-            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS, seekRecommendRecords);
+            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS, seekRecommendRecords, idUserMap);
             card.put("position", position);
             card.put("recom", recomInfo);
             card.put("user", user);
@@ -263,7 +265,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
-    public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) {
+    public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) throws BIZException {
+        checkCorrectEmployee(inviteInfo);
         CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
                 inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         shareChainDao.updateTypeById(candidateShareChainDO.getId());
@@ -421,9 +424,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         UserWxUserRecord userWxUserDO = wxUserDao.getWxUserByUserIdAndWechatId(progressQuery.getUserId(), hrWxWechatDO.getId());
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(jobApplication.getPositionId());
         UserUserDO userUserDO = userUserDao.getUser(progressQuery.getUserId());
-        int factProgress = jobApplication.getAppTplId();
         JSONObject result = new JSONObject();
-        if(!checkIsNormal(factProgress, progressQuery.getProgress(), hrOperationRecords)){
+        if(!checkIsNormal(jobApplication.getAppTplId())){
             result.put("abnormal", 1);
             return JSON.toJSONString(result);
         }
@@ -438,7 +440,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JSONArray progressJson = doInitProgressJson(current, hrOperationRecords, refuse);
         result.put("progress", progressJson);
         result.put("abnormal", 0);
-        result.put("encourage", getEncourageByProgress(factProgress));
+        result.put("encourage", getEncourageByProgress(jobApplication.getAppTplId()));
         result.put("avatar", userWxUserDO.getHeadimgurl());
         result.put("name", handleCandidateName(userUserDO.getName(), progressQuery.getPresenteeUserId(),
                 jobApplication.getRecommenderUserId(), jobApplication.getApplierId()));
@@ -678,7 +680,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<Integer> chainBeRecomIds = getChainIdsByRecurrence(shareChainDOS, cardInfo, candidatePositionDO);
         for(Integer beRecomId : chainBeRecomIds){
             UserWxUserDO userWxUserDO = idUserMap.get(beRecomId);
-            if(chain.size() == CHAIN_LIMIT){
+            if(chain.size() == (CHAIN_LIMIT+1)){
                 chain.add(user);
                 break;
             }
@@ -1194,8 +1196,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private JSONObject doInitRecomInfo(CandidatePositionDO candidatePositionDO, List<CandidateTemplateShareChainDO> shareChainDOS,
-                                       Map<Integer, UserWxUserDO> idUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS,
-                                       List<ReferralSeekRecommendRecord> seekRecommendRecords) {
+                                       Map<Integer, UserWxUserDO> idWxUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS,
+                                       List<ReferralSeekRecommendRecord> seekRecommendRecords, Map<Integer, UserUserRecord> userMap) {
         int endUserId = candidatePositionDO.getUserId();
         int positionId = candidatePositionDO.getPositionId();
         // 查找来自【】转发
@@ -1216,7 +1218,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         if(recomUser != 0){
-            recomInfo.put("nickname", idUserMap.get(recomUser).getNickname());
+            String nickName = Optional.ofNullable(userMap.get(recomUser).getName())
+                    .orElse(idWxUserMap.get(recomUser).getNickname());
+            recomInfo.put("nickname", nickName);
         }
         boolean isFromWxGroup = false;
         for(CandidatePositionShareRecordDO positionShareRecordDO : positionShareRecordDOS){
@@ -1290,10 +1294,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/10
      * @return JSONObject
      */
-    private RadarUserInfo doInitUser(Map<Integer, UserWxUserDO> idWxUserMap, Map<Integer, UserUserRecord> idUserMap, int endUserId, List<UserDepthVO> userDepthVOS) {
+    private RadarUserInfo doInitUser(UserWxUserDO userWxUserDO, UserUserRecord userUserRecord, int endUserId,
+                                     List<UserDepthVO> userDepthVOS) {
         RadarUserInfo user = new RadarUserInfo();
-        UserWxUserDO userWxUserDO = idWxUserMap.get(endUserId);
-        UserUserRecord userUserRecord = idUserMap.get(endUserId);
         user.initFromUserWxUser(userWxUserDO, userUserRecord);
         int degree = 0;
         for (UserDepthVO userDepthVO : userDepthVOS) {
@@ -1395,11 +1398,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return sdf.format(new Date(optTime));
     }
 
-    private boolean checkIsNormal(int factProgress, int progress, List<HrOperationRecordRecord> hrOperationRecordDOS) {
-        if(progress == ReferralProgressEnum.FAILED.getProgress()){
+    private boolean checkIsNormal(int currentProgress) {
+        if(currentProgress == ReferralProgressEnum.FAILED.getProgress()){
             return false;
         }
-        int lastProgress = factProgress;
+
         if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
             lastProgress = getLastProgress(lastProgress, hrOperationRecordDOS);
 
