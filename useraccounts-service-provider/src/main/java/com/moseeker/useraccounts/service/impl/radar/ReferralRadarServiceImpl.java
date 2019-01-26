@@ -573,15 +573,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return list;
     }
 
-
-    @Override
-    public void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord record) {
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
-                record.getPostUserId(), record.getPresenteeId(), record.getPositionId());
-        logger.info("candidateShareChainDO:{}", candidateShareChainDO);
-        templateShareChainDao.updateRadarCardSeekRecomByChainId(candidateShareChainDO.getId(), record.getId());
-    }
-
     private List<CandidatePositionDO> getCurrentPageCandidatePositions(List<CandidatePositionDO> candidatePositionDOS, ReferralCardInfo cardInfo) {
         List<CandidatePositionDO> list = new ArrayList<>();
         int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();

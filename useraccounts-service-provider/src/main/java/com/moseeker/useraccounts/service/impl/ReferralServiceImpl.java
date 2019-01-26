@@ -382,7 +382,6 @@ public class ReferralServiceImpl implements ReferralService {
         if(recommendRecord.getAppId()<=0) {
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
             templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
-            radarService.updateCandidateShareChainTemlate(recommendRecord);
             KafkaAskReferralPojo kafkaAskReferralPojo = initKafkaAskReferralPojo(position.getCompanyId(), userId, positionId);
             kafkaSender.sendMessage(Constant.KAFKA_TOPIC_ASK_REFERRAL, JSON.toJSONString(kafkaAskReferralPojo));
         }
