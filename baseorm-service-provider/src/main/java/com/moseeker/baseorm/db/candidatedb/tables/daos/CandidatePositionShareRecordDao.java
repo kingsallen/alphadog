@@ -108,6 +108,13 @@ public class CandidatePositionShareRecordDao extends DAOImpl<CandidatePositionSh
     }
 
     /**
+     * Fetch records that have <code>presentee_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePositionShareRecord> fetchByPresenteeId(Long... values) {
+        return fetch(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>source IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePositionShareRecord> fetchBySource(Byte... values) {
@@ -126,13 +133,6 @@ public class CandidatePositionShareRecordDao extends DAOImpl<CandidatePositionSh
      */
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePositionShareRecord> fetchByUpdateTime(Timestamp... values) {
         return fetch(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>presentee_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePositionShareRecord> fetchByPresenteeId(Long... values) {
-        return fetch(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.PRESENTEE_ID, values);
     }
 
     /**
