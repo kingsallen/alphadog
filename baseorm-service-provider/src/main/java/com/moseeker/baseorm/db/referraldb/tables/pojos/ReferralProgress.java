@@ -23,10 +23,10 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralProgress implements Serializable {
 
-    private static final long serialVersionUID = -1535133912;
+    private static final long serialVersionUID = -1319408246;
 
     private Integer   id;
-    private String    appId;
+    private Integer   appId;
     private Integer   viewProgress;
     private Byte      state;
     private Timestamp createTime;
@@ -45,7 +45,7 @@ public class ReferralProgress implements Serializable {
 
     public ReferralProgress(
         Integer   id,
-        String    appId,
+        Integer   appId,
         Integer   viewProgress,
         Byte      state,
         Timestamp createTime,
@@ -67,11 +67,11 @@ public class ReferralProgress implements Serializable {
         this.id = id;
     }
 
-    public String getAppId() {
+    public Integer getAppId() {
         return this.appId;
     }
 
-    public void setAppId(String appId) {
+    public void setAppId(Integer appId) {
         this.appId = appId;
     }
 
