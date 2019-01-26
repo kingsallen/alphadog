@@ -15,14 +15,17 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionChainDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralConnectionLogDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralProgressDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
@@ -110,6 +113,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private JobPositionDao positionDao;
     @Autowired
     private JobApplicationDao jobApplicationDao;
+    @Autowired
+    private ReferralProgressDao progressDao;
     @Autowired
     private UserEmployeeDao userEmployeeDao;
     @Autowired
@@ -425,7 +430,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(jobApplication.getPositionId());
         UserUserDO userUserDO = userUserDao.getUser(progressQuery.getUserId());
         JSONObject result = new JSONObject();
-        if(!checkIsNormal(jobApplication.getAppTplId())){
+        if(!checkIsNormal(jobApplication, hrOperationRecords)){
             result.put("abnormal", 1);
             return JSON.toJSONString(result);
         }
@@ -1398,24 +1403,59 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return sdf.format(new Date(optTime));
     }
 
-    private boolean checkIsNormal(int currentProgress) {
-        if(currentProgress == ReferralProgressEnum.FAILED.getProgress()){
-            return false;
+    private boolean checkIsNormal(JobApplication jobApplication, List<HrOperationRecordRecord> hrOperationRecords) {
+        boolean isNormal = true;
+        // 如果候选人没有查看过，第一次进来状态是4，认为是非正常状态
+        ReferralProgressRecord referralProgress = progressDao.fetchByAppid(jobApplication.getId());
+        if(referralProgress == null){
+            referralProgress = initReferralProgressRecord(jobApplication);
+            progressDao.insertRecord(referralProgress);
+            isNormal = referralProgress.getState() == 1;
+        }else {
+            if(referralProgress.getState() == 0){
+                isNormal = false;
+            }else {
+                ReferralProgressEnum lastViewProgress = ReferralProgressEnum.getEnumByProgress(referralProgress.getViewProgress());
+                if(jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress()){
+                    int lastProgress = getLastProgress(jobApplication.getAppTplId(), hrOperationRecords);
+                    ReferralProgressEnum lastProgressEnum = ReferralProgressEnum.getEnumByProgress(lastProgress);
+                    if(lastViewProgress.getOrder() >= lastProgressEnum.getOrder()){
+                        isNormal = false;
+                        referralProgress.setViewProgress(ReferralProgressEnum.FAILED.getProgress());
+                    }
+                }else {
+                    ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(jobApplication.getAppTplId());
+                    if(current == null){
+                        throw UserAccountException.REFERRAL_PROGRESS_ERROR;
+                    }
+                    if(lastViewProgress.getOrder() > current.getOrder()){
+                        isNormal = false;
+                    }
+                    referralProgress.setViewProgress(current.getProgress());
+                }
+                if(!isNormal){
+                    referralProgress.setState((byte)0);
+                }
+                referralProgress.setUpdateTime(null);
+                progressDao.updateRecord(referralProgress);
+            }
         }
+        return isNormal;
+    }
 
-        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
-            lastProgress = getLastProgress(lastProgress, hrOperationRecordDOS);
-
+    private ReferralProgressRecord initReferralProgressRecord(JobApplication jobApplication) {
+        ReferralProgressRecord progress = new ReferralProgressRecord();
+        int currentProgress = jobApplication.getAppTplId();
+        if(jobApplication.getAppTplId() == ReferralProgressEnum.SEEK_APPLY.getProgress()
+            || jobApplication.getAppTplId() == ReferralProgressEnum.EMPLOYEE_UPLOAD.getProgress()
+            || jobApplication.getAppTplId() == ReferralProgressEnum.VIEW_APPLY.getProgress()){
+            currentProgress = ReferralProgressEnum.APPLYED.getProgress();
         }
-        ReferralProgressEnum last = ReferralProgressEnum.getEnumByProgress(lastProgress);
-        ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(progress);
-        if(current == null){
-            throw UserAccountException.REFERRAL_PROGRESS_ERROR;
-        }
-        if(factProgress == ReferralProgressEnum.FAILED.getProgress()){
-            return last.getOrder() > current.getOrder();
-        }
-        return last.getOrder() >= current.getOrder();
+        byte state = jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress() ? 0 : (byte)1;
+        progress.setAppId(jobApplication.getId());
+        progress.setViewProgress(currentProgress);
+        progress.setState(state);
+        return progress;
     }
 
     /**
