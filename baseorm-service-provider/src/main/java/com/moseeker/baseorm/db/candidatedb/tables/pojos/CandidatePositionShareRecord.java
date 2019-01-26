@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionShareRecord implements Serializable {
 
-    private static final long serialVersionUID = -818950618;
+    private static final long serialVersionUID = 664845194;
 
     private Integer   id;
     private Long      wechatId;
@@ -32,10 +32,10 @@ public class CandidatePositionShareRecord implements Serializable {
     private Integer   recomUserId;
     private String    viewerId;
     private Long      viewerIp;
+    private Long      presenteeId;
     private Byte      source;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Long      presenteeId;
     private Byte      clickFrom;
     private Integer   presenteeUserId;
     private Integer   shareChainId;
@@ -50,10 +50,10 @@ public class CandidatePositionShareRecord implements Serializable {
         this.recomUserId = value.recomUserId;
         this.viewerId = value.viewerId;
         this.viewerIp = value.viewerIp;
+        this.presenteeId = value.presenteeId;
         this.source = value.source;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.presenteeId = value.presenteeId;
         this.clickFrom = value.clickFrom;
         this.presenteeUserId = value.presenteeUserId;
         this.shareChainId = value.shareChainId;
@@ -67,10 +67,10 @@ public class CandidatePositionShareRecord implements Serializable {
         Integer   recomUserId,
         String    viewerId,
         Long      viewerIp,
+        Long      presenteeId,
         Byte      source,
         Timestamp createTime,
         Timestamp updateTime,
-        Long      presenteeId,
         Byte      clickFrom,
         Integer   presenteeUserId,
         Integer   shareChainId
@@ -82,10 +82,10 @@ public class CandidatePositionShareRecord implements Serializable {
         this.recomUserId = recomUserId;
         this.viewerId = viewerId;
         this.viewerIp = viewerIp;
+        this.presenteeId = presenteeId;
         this.source = source;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.presenteeId = presenteeId;
         this.clickFrom = clickFrom;
         this.presenteeUserId = presenteeUserId;
         this.shareChainId = shareChainId;
@@ -147,6 +147,14 @@ public class CandidatePositionShareRecord implements Serializable {
         this.viewerIp = viewerIp;
     }
 
+    public Long getPresenteeId() {
+        return this.presenteeId;
+    }
+
+    public void setPresenteeId(Long presenteeId) {
+        this.presenteeId = presenteeId;
+    }
+
     public Byte getSource() {
         return this.source;
     }
@@ -169,14 +177,6 @@ public class CandidatePositionShareRecord implements Serializable {
 
     public void setUpdateTime(Timestamp updateTime) {
         this.updateTime = updateTime;
-    }
-
-    public Long getPresenteeId() {
-        return this.presenteeId;
-    }
-
-    public void setPresenteeId(Long presenteeId) {
-        this.presenteeId = presenteeId;
     }
 
     public Byte getClickFrom() {
@@ -214,10 +214,10 @@ public class CandidatePositionShareRecord implements Serializable {
         sb.append(", ").append(recomUserId);
         sb.append(", ").append(viewerId);
         sb.append(", ").append(viewerIp);
+        sb.append(", ").append(presenteeId);
         sb.append(", ").append(source);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(presenteeId);
         sb.append(", ").append(clickFrom);
         sb.append(", ").append(presenteeUserId);
         sb.append(", ").append(shareChainId);

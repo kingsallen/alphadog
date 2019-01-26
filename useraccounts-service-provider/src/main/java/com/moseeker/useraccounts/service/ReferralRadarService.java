@@ -105,13 +105,7 @@ public interface ReferralRadarService {
      * @date 2018/12/7
      */
     void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type);
-    /**
-     * 更改template_share_chain中的候选人求推荐状态
-     *
-     * @author cjm
-     * @date 2018/12/7
-     */
-    void updateCandidateShareChainTemlate(ReferralSeekRecommendRecord recommendRecord);
+
     /**
      * 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
      *

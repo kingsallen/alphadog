@@ -53,14 +53,6 @@ public class CandidateTemplateShareChainDao extends JooqCrudImpl<CandidateTempla
                 .execute();
     }
 
-    public void updateRadarCardSeekRecomByChainId(int chainId, int seekReferralId) {
-        create.update(CANDIDATE_TEMPLATE_SHARE_CHAIN)
-                .set(CANDIDATE_TEMPLATE_SHARE_CHAIN.SEEK_REFERRAL_ID, seekReferralId)
-                .where(CANDIDATE_TEMPLATE_SHARE_CHAIN.CHAIN_ID.eq(chainId))
-                .and(CANDIDATE_TEMPLATE_SHARE_CHAIN.SEEK_REFERRAL_ID.eq(0))
-                .execute();
-    }
-
     public void updateHandledTypeByChainIds(List<Integer> shareChainIds, int type) {
         create.update(CANDIDATE_TEMPLATE_SHARE_CHAIN)
                 .set(CANDIDATE_TEMPLATE_SHARE_CHAIN.TYPE, (byte)type)

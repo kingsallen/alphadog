@@ -141,8 +141,11 @@ public class EmployeeBizTool {
         result.setReferralId(record.getId());
         UserWxUserRecord wxUserRecord = data.getWxUserRecordList().get(userId);
         if(wxUserRecord!=null){
-            result.setNickname(wxUserRecord.getNickname());
             result.setHeadimgurl(wxUserRecord.getHeadimgurl());
+        }
+        UserUserRecord userRecord = data.getUserRecordList().get(userId);
+        if(userRecord!=null){
+            result.setNickname(userRecord.getName());
         }
         JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
         if(position!=null){
