@@ -112,10 +112,12 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
         return evaluationRecord;
     }
 
-    public List<ReferralRecomEvaluationRecord> fetchEvaluationRecordsByAppids(List<Integer> seekAppids) {
+    public List<ReferralRecomEvaluationRecord> fetchEvaluationRecordsByAppids(int postUserId, List<Integer> applierIds, List<Integer> pids) {
         return using(configuration())
                 .selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
-                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.APP_ID.in(seekAppids))
+                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.in(applierIds))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID.in(pids))
                 .fetch();
     }
 }

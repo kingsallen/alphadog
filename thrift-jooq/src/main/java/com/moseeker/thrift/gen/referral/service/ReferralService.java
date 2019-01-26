@@ -1582,7 +1582,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1611,7 +1611,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1640,7 +1640,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1669,7 +1669,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1698,7 +1698,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1727,7 +1727,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1756,7 +1756,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1786,7 +1786,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1815,7 +1815,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1844,7 +1844,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1873,7 +1873,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1902,7 +1902,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1931,7 +1931,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1960,7 +1960,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -1989,7 +1989,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2018,7 +2018,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2047,7 +2047,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2076,7 +2076,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2105,7 +2105,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2134,7 +2134,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2163,7 +2163,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -2193,7 +2193,7 @@ public class ReferralService {
         return false;
       }
 
-      @Override
+      
       protected boolean handleRuntimeExceptions() {
         return false;
       }
@@ -3813,7 +3813,7 @@ public class ReferralService {
       return new getRedPackets_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setUserIdIsSet(false);
       this.userId = 0;
@@ -3991,7 +3991,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -4045,7 +4045,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -4060,7 +4060,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getRedPackets_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -4123,7 +4123,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getRedPackets_args(");
       boolean first = true;
@@ -4261,7 +4261,7 @@ public class ReferralService {
 
     private static class getRedPackets_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getRedPackets_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getRedPackets_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -4292,7 +4292,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getRedPackets_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(4);
@@ -4433,7 +4433,7 @@ public class ReferralService {
       return new getRedPackets_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -4535,7 +4535,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -4571,7 +4571,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -4586,7 +4586,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getRedPackets_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -4629,7 +4629,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getRedPackets_result(");
       boolean first = true;
@@ -4752,7 +4752,7 @@ public class ReferralService {
 
     private static class getRedPackets_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getRedPackets_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getRedPackets_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -4771,7 +4771,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getRedPackets_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -4932,7 +4932,7 @@ public class ReferralService {
       return new getBonus_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setUserIdIsSet(false);
       this.userId = 0;
@@ -5110,7 +5110,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -5164,7 +5164,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -5179,7 +5179,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getBonus_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -5242,7 +5242,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getBonus_args(");
       boolean first = true;
@@ -5380,7 +5380,7 @@ public class ReferralService {
 
     private static class getBonus_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getBonus_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getBonus_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -5411,7 +5411,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getBonus_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(4);
@@ -5552,7 +5552,7 @@ public class ReferralService {
       return new getBonus_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -5654,7 +5654,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -5690,7 +5690,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -5705,7 +5705,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getBonus_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -5748,7 +5748,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getBonus_result(");
       boolean first = true;
@@ -5871,7 +5871,7 @@ public class ReferralService {
 
     private static class getBonus_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getBonus_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getBonus_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -5890,7 +5890,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getBonus_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -6039,7 +6039,7 @@ public class ReferralService {
       return new getReferralProfileList_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setUserIdIsSet(false);
       this.userId = 0;
@@ -6179,7 +6179,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -6224,7 +6224,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -6237,7 +6237,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getReferralProfileList_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -6290,7 +6290,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getReferralProfileList_args(");
       boolean first = true;
@@ -6413,7 +6413,7 @@ public class ReferralService {
 
     private static class getReferralProfileList_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getReferralProfileList_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getReferralProfileList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -6438,7 +6438,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getReferralProfileList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(3);
@@ -6580,7 +6580,7 @@ public class ReferralService {
       return new getReferralProfileList_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -6697,7 +6697,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -6733,7 +6733,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -6748,7 +6748,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getReferralProfileList_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -6791,7 +6791,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getReferralProfileList_result(");
       boolean first = true;
@@ -6928,7 +6928,7 @@ public class ReferralService {
 
     private static class getReferralProfileList_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getReferralProfileList_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getReferralProfileList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -6953,7 +6953,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getReferralProfileList_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -7085,7 +7085,7 @@ public class ReferralService {
       return new updateActivity_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.activityDTO = null;
     }
@@ -7149,7 +7149,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -7176,7 +7176,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -7187,7 +7187,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(updateActivity_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -7220,7 +7220,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("updateActivity_args(");
       boolean first = true;
@@ -7321,7 +7321,7 @@ public class ReferralService {
 
     private static class updateActivity_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateActivity_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, updateActivity_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -7334,7 +7334,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, updateActivity_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -7452,7 +7452,7 @@ public class ReferralService {
       return new updateActivity_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -7516,7 +7516,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -7543,7 +7543,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -7554,7 +7554,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(updateActivity_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -7587,7 +7587,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("updateActivity_result(");
       boolean first = true;
@@ -7685,7 +7685,7 @@ public class ReferralService {
 
     private static class updateActivity_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<updateActivity_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, updateActivity_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -7698,7 +7698,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, updateActivity_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -7842,7 +7842,7 @@ public class ReferralService {
       return new getReferralReason_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setUserIdIsSet(false);
       this.userId = 0;
@@ -7982,7 +7982,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -8027,7 +8027,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -8040,7 +8040,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getReferralReason_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -8093,7 +8093,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getReferralReason_args(");
       boolean first = true;
@@ -8216,7 +8216,7 @@ public class ReferralService {
 
     private static class getReferralReason_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getReferralReason_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getReferralReason_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -8241,7 +8241,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getReferralReason_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(3);
@@ -8383,7 +8383,7 @@ public class ReferralService {
       return new getReferralReason_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -8500,7 +8500,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -8536,7 +8536,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -8551,7 +8551,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getReferralReason_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -8594,7 +8594,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getReferralReason_result(");
       boolean first = true;
@@ -8731,7 +8731,7 @@ public class ReferralService {
 
     private static class getReferralReason_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getReferralReason_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getReferralReason_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -8756,7 +8756,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getReferralReason_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -8902,7 +8902,7 @@ public class ReferralService {
       return new handerKeyInformationStatus_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
@@ -9004,7 +9004,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -9040,7 +9040,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -9051,7 +9051,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(handerKeyInformationStatus_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -9094,7 +9094,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("handerKeyInformationStatus_args(");
       boolean first = true;
@@ -9202,7 +9202,7 @@ public class ReferralService {
 
     private static class handerKeyInformationStatus_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<handerKeyInformationStatus_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, handerKeyInformationStatus_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -9221,7 +9221,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, handerKeyInformationStatus_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -9342,7 +9342,7 @@ public class ReferralService {
       return new handerKeyInformationStatus_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -9406,7 +9406,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -9433,7 +9433,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -9444,7 +9444,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(handerKeyInformationStatus_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -9477,7 +9477,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("handerKeyInformationStatus_result(");
       boolean first = true;
@@ -9575,7 +9575,7 @@ public class ReferralService {
 
     private static class handerKeyInformationStatus_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<handerKeyInformationStatus_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, handerKeyInformationStatus_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -9588,7 +9588,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, handerKeyInformationStatus_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -9708,7 +9708,7 @@ public class ReferralService {
       return new fetchKeyInformationStatus_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
@@ -9772,7 +9772,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -9799,7 +9799,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -9808,7 +9808,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(fetchKeyInformationStatus_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -9841,7 +9841,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("fetchKeyInformationStatus_args(");
       boolean first = true;
@@ -9934,7 +9934,7 @@ public class ReferralService {
 
     private static class fetchKeyInformationStatus_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<fetchKeyInformationStatus_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, fetchKeyInformationStatus_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -9947,7 +9947,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, fetchKeyInformationStatus_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -10078,7 +10078,7 @@ public class ReferralService {
       return new fetchKeyInformationStatus_result(this);
     }
 
-    @Override
+    
     public void clear() {
       setSuccessIsSet(false);
       this.success = 0;
@@ -10180,7 +10180,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -10216,7 +10216,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -10229,7 +10229,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(fetchKeyInformationStatus_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -10272,7 +10272,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("fetchKeyInformationStatus_result(");
       boolean first = true;
@@ -10389,7 +10389,7 @@ public class ReferralService {
 
     private static class fetchKeyInformationStatus_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<fetchKeyInformationStatus_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, fetchKeyInformationStatus_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -10408,7 +10408,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, fetchKeyInformationStatus_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -10530,7 +10530,7 @@ public class ReferralService {
       return new getRadarCards_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.cardInfo = null;
     }
@@ -10594,7 +10594,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -10621,7 +10621,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -10632,7 +10632,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getRadarCards_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -10665,7 +10665,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getRadarCards_args(");
       boolean first = true;
@@ -10766,7 +10766,7 @@ public class ReferralService {
 
     private static class getRadarCards_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getRadarCards_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getRadarCards_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -10779,7 +10779,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getRadarCards_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -10909,7 +10909,7 @@ public class ReferralService {
       return new getRadarCards_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -11011,7 +11011,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -11047,7 +11047,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -11062,7 +11062,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getRadarCards_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -11105,7 +11105,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getRadarCards_result(");
       boolean first = true;
@@ -11224,7 +11224,7 @@ public class ReferralService {
 
     private static class getRadarCards_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getRadarCards_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getRadarCards_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -11243,7 +11243,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getRadarCards_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -11365,7 +11365,7 @@ public class ReferralService {
       return new inviteApplication_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.inviteInfo = null;
     }
@@ -11429,7 +11429,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -11456,7 +11456,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -11467,7 +11467,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(inviteApplication_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -11500,7 +11500,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("inviteApplication_args(");
       boolean first = true;
@@ -11601,7 +11601,7 @@ public class ReferralService {
 
     private static class inviteApplication_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<inviteApplication_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, inviteApplication_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -11614,7 +11614,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, inviteApplication_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -11744,7 +11744,7 @@ public class ReferralService {
       return new inviteApplication_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -11846,7 +11846,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -11882,7 +11882,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -11897,7 +11897,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(inviteApplication_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -11940,7 +11940,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("inviteApplication_result(");
       boolean first = true;
@@ -12059,7 +12059,7 @@ public class ReferralService {
 
     private static class inviteApplication_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<inviteApplication_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, inviteApplication_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -12078,7 +12078,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, inviteApplication_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -12200,7 +12200,7 @@ public class ReferralService {
       return new ignoreCurrentViewer_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.ignoreInfo = null;
     }
@@ -12264,7 +12264,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -12291,7 +12291,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -12302,7 +12302,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(ignoreCurrentViewer_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -12335,7 +12335,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("ignoreCurrentViewer_args(");
       boolean first = true;
@@ -12436,7 +12436,7 @@ public class ReferralService {
 
     private static class ignoreCurrentViewer_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<ignoreCurrentViewer_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, ignoreCurrentViewer_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -12449,7 +12449,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, ignoreCurrentViewer_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -12579,7 +12579,7 @@ public class ReferralService {
       return new ignoreCurrentViewer_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -12681,7 +12681,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -12717,7 +12717,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -12732,7 +12732,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(ignoreCurrentViewer_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -12775,7 +12775,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("ignoreCurrentViewer_result(");
       boolean first = true;
@@ -12894,7 +12894,7 @@ public class ReferralService {
 
     private static class ignoreCurrentViewer_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<ignoreCurrentViewer_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, ignoreCurrentViewer_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -12913,7 +12913,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, ignoreCurrentViewer_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -13035,7 +13035,7 @@ public class ReferralService {
       return new connectRadar_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.radarInfo = null;
     }
@@ -13099,7 +13099,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -13126,7 +13126,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -13137,7 +13137,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(connectRadar_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -13170,7 +13170,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("connectRadar_args(");
       boolean first = true;
@@ -13271,7 +13271,7 @@ public class ReferralService {
 
     private static class connectRadar_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<connectRadar_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, connectRadar_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -13284,7 +13284,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, connectRadar_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -13414,7 +13414,7 @@ public class ReferralService {
       return new connectRadar_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -13516,7 +13516,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -13552,7 +13552,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -13567,7 +13567,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(connectRadar_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -13610,7 +13610,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("connectRadar_result(");
       boolean first = true;
@@ -13729,7 +13729,7 @@ public class ReferralService {
 
     private static class connectRadar_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<connectRadar_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, connectRadar_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -13748,7 +13748,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, connectRadar_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -13920,7 +13920,7 @@ public class ReferralService {
       return new addUserSeekRecommend_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
@@ -14136,7 +14136,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -14199,7 +14199,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -14216,7 +14216,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(addUserSeekRecommend_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -14289,7 +14289,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("addUserSeekRecommend_args(");
       boolean first = true;
@@ -14442,7 +14442,7 @@ public class ReferralService {
 
     private static class addUserSeekRecommend_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<addUserSeekRecommend_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, addUserSeekRecommend_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -14479,7 +14479,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, addUserSeekRecommend_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(5);
@@ -14612,7 +14612,7 @@ public class ReferralService {
       return new addUserSeekRecommend_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -14676,7 +14676,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -14703,7 +14703,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -14714,7 +14714,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(addUserSeekRecommend_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -14747,7 +14747,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("addUserSeekRecommend_result(");
       boolean first = true;
@@ -14845,7 +14845,7 @@ public class ReferralService {
 
     private static class addUserSeekRecommend_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<addUserSeekRecommend_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, addUserSeekRecommend_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -14858,7 +14858,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, addUserSeekRecommend_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -15052,7 +15052,7 @@ public class ReferralService {
       return new employeeReferralReason_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
@@ -15359,7 +15359,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -15440,7 +15440,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -15465,7 +15465,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(employeeReferralReason_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -15558,7 +15558,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("employeeReferralReason_args(");
       boolean first = true;
@@ -15770,7 +15770,7 @@ public class ReferralService {
 
     private static class employeeReferralReason_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeReferralReason_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, employeeReferralReason_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -15825,7 +15825,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, employeeReferralReason_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(7);
@@ -15975,7 +15975,7 @@ public class ReferralService {
       return new employeeReferralReason_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -16039,7 +16039,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -16066,7 +16066,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -16077,7 +16077,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(employeeReferralReason_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -16110,7 +16110,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("employeeReferralReason_result(");
       boolean first = true;
@@ -16208,7 +16208,7 @@ public class ReferralService {
 
     private static class employeeReferralReason_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeReferralReason_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, employeeReferralReason_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -16221,7 +16221,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, employeeReferralReason_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -16365,7 +16365,7 @@ public class ReferralService {
       return new fetchSeekRecommend_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
@@ -16505,7 +16505,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -16550,7 +16550,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -16563,7 +16563,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(fetchSeekRecommend_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -16616,7 +16616,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("fetchSeekRecommend_args(");
       boolean first = true;
@@ -16739,7 +16739,7 @@ public class ReferralService {
 
     private static class fetchSeekRecommend_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<fetchSeekRecommend_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, fetchSeekRecommend_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -16764,7 +16764,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, fetchSeekRecommend_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(3);
@@ -16901,7 +16901,7 @@ public class ReferralService {
       return new fetchSeekRecommend_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -17003,7 +17003,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -17039,7 +17039,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -17054,7 +17054,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(fetchSeekRecommend_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -17097,7 +17097,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("fetchSeekRecommend_result(");
       boolean first = true;
@@ -17220,7 +17220,7 @@ public class ReferralService {
 
     private static class fetchSeekRecommend_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<fetchSeekRecommend_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, fetchSeekRecommend_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -17239,7 +17239,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, fetchSeekRecommend_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -17362,7 +17362,7 @@ public class ReferralService {
       return new checkEmployee_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.checkInfo = null;
     }
@@ -17426,7 +17426,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -17453,7 +17453,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -17464,7 +17464,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(checkEmployee_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -17497,7 +17497,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("checkEmployee_args(");
       boolean first = true;
@@ -17598,7 +17598,7 @@ public class ReferralService {
 
     private static class checkEmployee_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<checkEmployee_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, checkEmployee_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -17611,7 +17611,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, checkEmployee_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -17741,7 +17741,7 @@ public class ReferralService {
       return new checkEmployee_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -17843,7 +17843,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -17879,7 +17879,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -17894,7 +17894,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(checkEmployee_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -17937,7 +17937,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("checkEmployee_result(");
       boolean first = true;
@@ -18056,7 +18056,7 @@ public class ReferralService {
 
     private static class checkEmployee_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<checkEmployee_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, checkEmployee_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -18075,7 +18075,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, checkEmployee_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -18197,7 +18197,7 @@ public class ReferralService {
       return new saveTenMinuteCandidateShareChain_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.cardInfo = null;
     }
@@ -18261,7 +18261,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -18288,7 +18288,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -18299,7 +18299,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(saveTenMinuteCandidateShareChain_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -18332,7 +18332,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("saveTenMinuteCandidateShareChain_args(");
       boolean first = true;
@@ -18433,7 +18433,7 @@ public class ReferralService {
 
     private static class saveTenMinuteCandidateShareChain_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<saveTenMinuteCandidateShareChain_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, saveTenMinuteCandidateShareChain_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -18446,7 +18446,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, saveTenMinuteCandidateShareChain_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -18564,7 +18564,7 @@ public class ReferralService {
       return new saveTenMinuteCandidateShareChain_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -18628,7 +18628,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -18655,7 +18655,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -18666,7 +18666,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(saveTenMinuteCandidateShareChain_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -18699,7 +18699,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("saveTenMinuteCandidateShareChain_result(");
       boolean first = true;
@@ -18797,7 +18797,7 @@ public class ReferralService {
 
     private static class saveTenMinuteCandidateShareChain_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<saveTenMinuteCandidateShareChain_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, saveTenMinuteCandidateShareChain_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -18810,7 +18810,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, saveTenMinuteCandidateShareChain_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -18928,7 +18928,7 @@ public class ReferralService {
       return new getProgressByOne_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.progressQuery = null;
     }
@@ -18992,7 +18992,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -19019,7 +19019,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -19030,7 +19030,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getProgressByOne_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -19063,7 +19063,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getProgressByOne_args(");
       boolean first = true;
@@ -19164,7 +19164,7 @@ public class ReferralService {
 
     private static class getProgressByOne_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getProgressByOne_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getProgressByOne_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -19177,7 +19177,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getProgressByOne_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -19307,7 +19307,7 @@ public class ReferralService {
       return new getProgressByOne_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -19409,7 +19409,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -19445,7 +19445,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -19460,7 +19460,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getProgressByOne_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -19503,7 +19503,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getProgressByOne_result(");
       boolean first = true;
@@ -19622,7 +19622,7 @@ public class ReferralService {
 
     private static class getProgressByOne_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getProgressByOne_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getProgressByOne_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -19641,7 +19641,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getProgressByOne_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -19763,7 +19763,7 @@ public class ReferralService {
       return new getProgressBatch_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.progressInfo = null;
     }
@@ -19827,7 +19827,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -19854,7 +19854,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -19865,7 +19865,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getProgressBatch_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -19898,7 +19898,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getProgressBatch_args(");
       boolean first = true;
@@ -19999,7 +19999,7 @@ public class ReferralService {
 
     private static class getProgressBatch_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<getProgressBatch_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getProgressBatch_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -20012,7 +20012,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getProgressBatch_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -20142,7 +20142,7 @@ public class ReferralService {
       return new getProgressBatch_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -20244,7 +20244,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -20280,7 +20280,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -20295,7 +20295,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(getProgressBatch_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -20338,7 +20338,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("getProgressBatch_result(");
       boolean first = true;
@@ -20457,7 +20457,7 @@ public class ReferralService {
 
     private static class getProgressBatch_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<getProgressBatch_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, getProgressBatch_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -20476,7 +20476,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, getProgressBatch_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -20598,7 +20598,7 @@ public class ReferralService {
       return new progressQueryKeyword_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.progressInfo = null;
     }
@@ -20662,7 +20662,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -20689,7 +20689,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -20700,7 +20700,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(progressQueryKeyword_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -20733,7 +20733,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("progressQueryKeyword_args(");
       boolean first = true;
@@ -20834,7 +20834,7 @@ public class ReferralService {
 
     private static class progressQueryKeyword_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<progressQueryKeyword_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, progressQueryKeyword_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -20847,7 +20847,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, progressQueryKeyword_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -20977,7 +20977,7 @@ public class ReferralService {
       return new progressQueryKeyword_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.success = null;
       this.e = null;
@@ -21079,7 +21079,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -21115,7 +21115,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -21130,7 +21130,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(progressQueryKeyword_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -21173,7 +21173,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("progressQueryKeyword_result(");
       boolean first = true;
@@ -21292,7 +21292,7 @@ public class ReferralService {
 
     private static class progressQueryKeyword_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<progressQueryKeyword_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, progressQueryKeyword_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -21311,7 +21311,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, progressQueryKeyword_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -21509,7 +21509,7 @@ public class ReferralService {
       return new employeeReferralRecomEvaluation_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setCompanyIdIsSet(false);
       this.companyId = 0;
@@ -21816,7 +21816,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -21897,7 +21897,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -21922,7 +21922,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(employeeReferralRecomEvaluation_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -22015,7 +22015,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("employeeReferralRecomEvaluation_args(");
       boolean first = true;
@@ -22227,7 +22227,7 @@ public class ReferralService {
 
     private static class employeeReferralRecomEvaluation_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeReferralRecomEvaluation_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, employeeReferralRecomEvaluation_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -22282,7 +22282,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, employeeReferralRecomEvaluation_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(7);
@@ -22432,7 +22432,7 @@ public class ReferralService {
       return new employeeReferralRecomEvaluation_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -22496,7 +22496,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -22523,7 +22523,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -22534,7 +22534,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(employeeReferralRecomEvaluation_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -22567,7 +22567,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("employeeReferralRecomEvaluation_result(");
       boolean first = true;
@@ -22665,7 +22665,7 @@ public class ReferralService {
 
     private static class employeeReferralRecomEvaluation_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<employeeReferralRecomEvaluation_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, employeeReferralRecomEvaluation_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -22678,7 +22678,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, employeeReferralRecomEvaluation_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -22846,7 +22846,7 @@ public class ReferralService {
       return new checkSeekReferral_args(this);
     }
 
-    @Override
+    
     public void clear() {
       setUserIdIsSet(false);
       this.userId = 0;
@@ -23062,7 +23062,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -23125,7 +23125,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -23142,7 +23142,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(checkSeekReferral_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -23215,7 +23215,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("checkSeekReferral_args(");
       boolean first = true;
@@ -23368,7 +23368,7 @@ public class ReferralService {
 
     private static class checkSeekReferral_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<checkSeekReferral_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, checkSeekReferral_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -23405,7 +23405,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, checkSeekReferral_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(5);
@@ -23552,7 +23552,7 @@ public class ReferralService {
       return new checkSeekReferral_result(this);
     }
 
-    @Override
+    
     public void clear() {
       setSuccessIsSet(false);
       this.success = 0;
@@ -23654,7 +23654,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -23690,7 +23690,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -23703,7 +23703,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(checkSeekReferral_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -23746,7 +23746,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("checkSeekReferral_result(");
       boolean first = true;
@@ -23863,7 +23863,7 @@ public class ReferralService {
 
     private static class checkSeekReferral_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<checkSeekReferral_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, checkSeekReferral_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -23882,7 +23882,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, checkSeekReferral_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(2);
@@ -24004,7 +24004,7 @@ public class ReferralService {
       return new handleCandidateState_args(this);
     }
 
-    @Override
+    
     public void clear() {
       this.inviteInfo = null;
     }
@@ -24068,7 +24068,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -24095,7 +24095,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -24106,7 +24106,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(handleCandidateState_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -24139,7 +24139,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
     }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("handleCandidateState_args(");
       boolean first = true;
@@ -24240,7 +24240,7 @@ public class ReferralService {
 
     private static class handleCandidateState_argsTupleScheme extends org.apache.thrift.scheme.TupleScheme<handleCandidateState_args> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, handleCandidateState_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -24253,7 +24253,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, handleCandidateState_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);
@@ -24371,7 +24371,7 @@ public class ReferralService {
       return new handleCandidateState_result(this);
     }
 
-    @Override
+    
     public void clear() {
       this.e = null;
     }
@@ -24435,7 +24435,7 @@ public class ReferralService {
       throw new IllegalStateException();
     }
 
-    @Override
+    
     public boolean equals(Object that) {
       if (that == null)
         return false;
@@ -24462,7 +24462,7 @@ public class ReferralService {
       return true;
     }
 
-    @Override
+    
     public int hashCode() {
       int hashCode = 1;
 
@@ -24473,7 +24473,7 @@ public class ReferralService {
       return hashCode;
     }
 
-    @Override
+    
     public int compareTo(handleCandidateState_result other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
@@ -24506,7 +24506,7 @@ public class ReferralService {
       scheme(oprot).write(oprot, this);
       }
 
-    @Override
+    
     public String toString() {
       StringBuilder sb = new StringBuilder("handleCandidateState_result(");
       boolean first = true;
@@ -24604,7 +24604,7 @@ public class ReferralService {
 
     private static class handleCandidateState_resultTupleScheme extends org.apache.thrift.scheme.TupleScheme<handleCandidateState_result> {
 
-      @Override
+      
       public void write(org.apache.thrift.protocol.TProtocol prot, handleCandidateState_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol oprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet optionals = new java.util.BitSet();
@@ -24617,7 +24617,7 @@ public class ReferralService {
         }
       }
 
-      @Override
+      
       public void read(org.apache.thrift.protocol.TProtocol prot, handleCandidateState_result struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TTupleProtocol iprot = (org.apache.thrift.protocol.TTupleProtocol) prot;
         java.util.BitSet incoming = iprot.readBitSet(1);

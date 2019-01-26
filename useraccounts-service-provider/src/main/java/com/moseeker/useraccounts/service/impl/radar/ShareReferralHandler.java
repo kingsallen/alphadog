@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
@@ -33,37 +34,15 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         if(!radarSwitchOpen){
             return recom;
         }
-        // 转发推荐类型（2）中的一度申请
-        TypeReference<List<Integer>> applyTypeRef = new TypeReference<List<Integer>>(){};
-        List<Integer> oneDegree = JSON.parseObject(referralTypeSingleMap.getString("oneDegree"),applyTypeRef);
-        // share_chain记录
-        TypeReference<List<CandidatePositionShareRecordDO>> shareRecordTypeRef = new TypeReference<List<CandidatePositionShareRecordDO>>(){};
-        List<CandidatePositionShareRecordDO> shareRecordDOS = JSON.parseObject(referralTypeSingleMap.getString("shareRecords"),shareRecordTypeRef);
-        // 转发推荐类型（2）中的n度申请
-        TypeReference<Map<Integer, CandidateShareChainDO>> moreDegree = new TypeReference<Map<Integer, CandidateShareChainDO>>(){};
-        Map<Integer, CandidateShareChainDO> appIdShareChainMap = JSON.parseObject(referralTypeSingleMap.getString("appIdShareChainMap"),moreDegree);
-        // 转发推荐类型（2）中的用户微信信息
-        TypeReference<Map<Integer, UserWxUserDO>> wxUserMapType = new TypeReference<Map<Integer, UserWxUserDO>>(){};
-        Map<Integer, UserWxUserDO> wxUserMap = JSON.parseObject(referralTypeSingleMap.getString("wxUserMap"), wxUserMapType);
-        // 转发推荐类型（2）中的用户求推荐信息
-        JSONArray evaluateIds = JSONArray.parseArray(referralTypeSingleMap.getString("evaluate"));
-        recom.put("evaluate", evaluateIds.contains(jobApplicationDO.getId()) ? 1 : 0);
-        CandidateShareChainDO shareChainDO = appIdShareChainMap.get(jobApplicationDO.getId());
-        boolean clickFromWxGroup = false;
-        String nickname = "";
-        if(shareChainDO != null){
-            for(CandidatePositionShareRecordDO shareRecordDO : shareRecordDOS){
-                if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
-                    if(shareRecordDO.getClickFrom() == 2){
-                        clickFromWxGroup = true;
-                    }
-                    break;
-                }
-            }
-            if(!oneDegree.contains(jobApplicationDO.getId())){
-                nickname = wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname();
-            }
-        }
+        // 找出该申请的一度链路
+        CandidateShareChainDO shareChainDO = handleShareChainDO(referralTypeSingleMap, jobApplicationDO);
+        // 是否已推荐评价
+        int evaluate = handleEvaluate(referralTypeSingleMap, jobApplicationDO);
+        // 候选人姓名，简历姓名为空时使用微信昵称
+        String nickname = handleCandidateName(referralTypeSingleMap, jobApplicationDO, shareChainDO);
+        // 找出是否来自微信群
+        boolean clickFromWxGroup = handleClickFromWxGroup(referralTypeSingleMap, shareChainDO);
+        recom.put("evaluate", evaluate);
         recom.put("nickname", nickname);
         recom.put("from_wx_group", clickFromWxGroup ? 1 : 0);
         return recom;
@@ -85,9 +64,9 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     protected JSONObject getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS,
                                             List<UserDepthVO> applierDegrees) {
         List<JobApplicationDO> shareReferralList = getApplicationsByReferralType(jobApplicationDOS);
-        List<Integer> seekAppids = shareReferralList.stream().map(JobApplicationDO::getId).distinct().collect(Collectors.toList());
-        List<ReferralRecomEvaluationRecord> evaluationRecords = evaluationDao.fetchEvaluationRecordsByAppids(seekAppids);
-        List<Integer> evaluationIds = evaluationRecords.stream().map(ReferralRecomEvaluationRecord::getAppId).distinct().collect(Collectors.toList());
+        List<Integer> applierIds = shareReferralList.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
+        List<Integer> pid = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
+        List<ReferralRecomEvaluationRecord> evaluationRecords = evaluationDao.fetchEvaluationRecordsByAppids(employeeRecord.getSysuserId(), applierIds, pid);
 
         HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
@@ -113,7 +92,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                         oneDegreeShareChainDO = shareChainDO;
                         oneDegreeJobApplication.add(jobApplicationDO.getId());
                     }else {
-                        oneDegreeShareChainDO = getShareChainDOByRecurrence(parentId, shareChainDOS);
+                        oneDegreeShareChainDO = RadarUtils.getShareChainDOByRecurrence(parentId, shareChainDOS);
                     }
                     shareChainIds.add(oneDegreeShareChainDO.getId());
                     appIdShareChainMap.put(jobApplicationDO.getId(), oneDegreeShareChainDO);
@@ -130,23 +109,9 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         result.put("oneDegree", JSON.toJSONString(oneDegreeJobApplication));
         result.put("appIdShareChainMap", JSON.toJSONString(appIdShareChainMap));
         result.put("shareRecords", JSON.toJSONString(positionShareRecordDOS));
-        result.put("evaluate", JSON.toJSONString(evaluationIds));
+        result.put("evaluateRecords", JSON.toJSONString(evaluationRecords));
         result.put("wxUserMap", JSON.toJSONString(userWxUserDOMap));
         return result;
-    }
-
-    private CandidateShareChainDO getShareChainDOByRecurrence(int parentId, List<CandidateShareChainDO> shareChainDOS) {
-        for(CandidateShareChainDO shareChainDO : shareChainDOS){
-            if(shareChainDO.getId() == parentId){
-                if(shareChainDO.getRoot2RecomUserId() == 0){
-                    return shareChainDO;
-                }else {
-                    return getShareChainDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);
-                }
-            }
-        }
-        // 理论上不会到这
-        return shareChainDOS.get(0);
     }
 
     @Override
@@ -160,5 +125,60 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         }
         card.put("degree", degree);
     }
+
+
+    private int handleEvaluate(JSONObject referralTypeSingleMap, JobApplicationDO jobApplicationDO) {
+        // 转发推荐类型（2）中的用户求推荐信息
+        TypeReference<List<ReferralRecomEvaluationRecord>> evaluateType = new TypeReference<List<ReferralRecomEvaluationRecord>>(){};
+        List<ReferralRecomEvaluationRecord> evaluateRecords = JSON.parseObject(referralTypeSingleMap.getString("evaluateRecords"), evaluateType);
+        for(ReferralRecomEvaluationRecord evaluationRecord : evaluateRecords){
+            if(evaluationRecord.getPostUserId() == jobApplicationDO.getRecommenderUserId()
+                    && evaluationRecord.getPresenteeUserId() == jobApplicationDO.getApplierId()
+                    && evaluationRecord.getPositionId() == jobApplicationDO.getPositionId()){
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+    private CandidateShareChainDO handleShareChainDO(JSONObject referralTypeSingleMap, JobApplicationDO jobApplicationDO) {
+        // 转发推荐类型（2）中的n度申请
+        TypeReference<Map<Integer, CandidateShareChainDO>> moreDegree = new TypeReference<Map<Integer, CandidateShareChainDO>>(){};
+        Map<Integer, CandidateShareChainDO> appIdShareChainMap = JSON.parseObject(referralTypeSingleMap.getString("appIdShareChainMap"),moreDegree);
+        return appIdShareChainMap.get(jobApplicationDO.getId());
+    }
+
+    private boolean handleClickFromWxGroup(JSONObject referralTypeSingleMap, CandidateShareChainDO shareChainDO) {
+        boolean clickFromWxGroup = false;
+        // share_chain记录
+        TypeReference<List<CandidatePositionShareRecordDO>> shareRecordTypeRef = new TypeReference<List<CandidatePositionShareRecordDO>>(){};
+        List<CandidatePositionShareRecordDO> shareRecordDOS = JSON.parseObject(referralTypeSingleMap.getString("shareRecords"),shareRecordTypeRef);
+        if(shareChainDO != null){
+            for(CandidatePositionShareRecordDO shareRecordDO : shareRecordDOS){
+                if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
+                    if(shareRecordDO.getClickFrom() == 2){
+                        clickFromWxGroup = true;
+                    }
+                    break;
+                }
+            }
+        }
+        return clickFromWxGroup;
+    }
+
+    private String handleCandidateName(JSONObject referralTypeSingleMap, JobApplicationDO jobApplicationDO, CandidateShareChainDO shareChainDO) {
+        String nickname = "";
+        // 转发推荐类型（2）中的用户微信信息
+        TypeReference<Map<Integer, UserWxUserDO>> wxUserMapType = new TypeReference<Map<Integer, UserWxUserDO>>(){};
+        Map<Integer, UserWxUserDO> wxUserMap = JSON.parseObject(referralTypeSingleMap.getString("wxUserMap"), wxUserMapType);
+        // 转发推荐类型（2）中的一度申请
+        TypeReference<List<Integer>> applyTypeRef = new TypeReference<List<Integer>>(){};
+        List<Integer> oneDegree = JSON.parseObject(referralTypeSingleMap.getString("oneDegree"), applyTypeRef);
+        if(!oneDegree.contains(jobApplicationDO.getId()) && shareChainDO != null){
+            nickname = wxUserMap.get(shareChainDO.getPresenteeUserId()).getNickname();
+        }
+        return nickname;
+    }
+
 
 }
