@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
 
-    private static final long serialVersionUID = -727270635;
+    private static final long serialVersionUID = 736961975;
 
     /**
      * The reference instance of <code>referraldb.referral_progress</code>
@@ -58,7 +58,7 @@ public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
     /**
      * The column <code>referraldb.referral_progress.app_id</code>. 申请id
      */
-    public final TableField<ReferralProgressRecord, String> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.VARCHAR.length(45).nullable(false), this, "申请id");
+    public final TableField<ReferralProgressRecord, Integer> APP_ID = createField("app_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "申请id");
 
     /**
      * The column <code>referraldb.referral_progress.view_progress</code>. 候选人查看推荐进度时的申请状态，每次候选人查看时会更新此字段

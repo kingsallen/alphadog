@@ -68,14 +68,14 @@ public class ReferralProgressDao extends DAOImpl<ReferralProgressRecord, com.mos
     /**
      * Fetch records that have <code>app_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress> fetchByAppId(String... values) {
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress> fetchByAppId(Integer... values) {
         return fetch(ReferralProgress.REFERRAL_PROGRESS.APP_ID, values);
     }
 
     /**
      * Fetch a unique record that has <code>app_id = value</code>
      */
-    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress fetchOneByAppId(String value) {
+    public com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress fetchOneByAppId(Integer value) {
         return fetchOne(ReferralProgress.REFERRAL_PROGRESS.APP_ID, value);
     }
 
