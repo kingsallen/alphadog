@@ -29,9 +29,10 @@ public class ReferralProgressDao {
     }
 
     public ReferralProgressRecord insertRecord(ReferralProgressRecord referralProgress) {
-        create.attach(referralProgress);
-        referralProgress.insert();
-        return referralProgress;
+        return create.insertInto(REFERRAL_PROGRESS)
+                .set(referralProgress)
+                .returning()
+                .fetchOne();
     }
 
     public void updateRecord(ReferralProgressRecord referralProgress) {

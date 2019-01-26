@@ -430,7 +430,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(jobApplication.getPositionId());
         UserUserDO userUserDO = userUserDao.getUser(progressQuery.getUserId());
         JSONObject result = new JSONObject();
-        if(!checkIsNormal(jobApplication, hrOperationRecords)){
+        if(!checkIsNormal(jobApplication, hrOperationRecords, progressQuery.getPresenteeUserId())){
             result.put("abnormal", 1);
             return JSON.toJSONString(result);
         }
@@ -1403,8 +1403,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return sdf.format(new Date(optTime));
     }
 
-    private boolean checkIsNormal(JobApplication jobApplication, List<HrOperationRecordRecord> hrOperationRecords) {
+    private boolean checkIsNormal(JobApplication jobApplication, List<HrOperationRecordRecord> hrOperationRecords, int presenteeUserId) {
         boolean isNormal = true;
+        if(presenteeUserId != jobApplication.getApplierId() && presenteeUserId != jobApplication.getRecommenderUserId()){
+            return true;
+        }
         // 如果候选人没有查看过，第一次进来状态是4，认为是非正常状态
         ReferralProgressRecord referralProgress = progressDao.fetchByAppid(jobApplication.getId());
         if(referralProgress == null){
