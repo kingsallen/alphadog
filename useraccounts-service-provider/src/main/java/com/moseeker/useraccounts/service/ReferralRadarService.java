@@ -132,5 +132,5 @@ public interface ReferralRadarService {
      * @author cjm
      * @date 2018/12/7
      */
-    void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo);
+    void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) throws BIZException;
 }

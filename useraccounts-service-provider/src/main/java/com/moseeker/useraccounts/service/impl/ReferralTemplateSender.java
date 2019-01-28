@@ -207,7 +207,9 @@ public class ReferralTemplateSender {
                 CandidateShareChainDO complete = allShareChains.get(i);
                 if(current.getPositionId() == complete.getPositionId() && current.getPresenteeUserId() == complete.getPresenteeUserId()){
                     flag = false;
-                    returnShareChains.add(complete);
+                    if(!RadarUtils.contains(current, returnShareChains)){
+                        returnShareChains.add(complete);
+                    }
                     returnShareChains = RadarUtils.getCompleteShareChainsByRecurrence(complete.getParentId(), allShareChains, returnShareChains);
                 }
             }
