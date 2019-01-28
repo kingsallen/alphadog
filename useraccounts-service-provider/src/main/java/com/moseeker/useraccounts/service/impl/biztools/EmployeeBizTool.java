@@ -127,10 +127,10 @@ public class EmployeeBizTool {
                 if(positionRecord.getUserId().intValue() == userId && positionRecord.getPositionId().intValue() == record.getPositionId().intValue()){
                     result.setViewCount(positionRecord.getViewNumber());
                     break;
-                }
-            }
+                }            }
         }
         return result;
+
     }
 
     public static RadarUserVO packageEmployeeSeekRecommendVO(EmployeeCardViewData data, ReferralSeekRecommendRecord record, List<UserDepthVO> depthList){
