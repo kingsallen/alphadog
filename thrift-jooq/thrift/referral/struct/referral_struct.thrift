@@ -128,6 +128,7 @@ struct ReferralProgressQueryInfo{
     1: optional i32 userId,
     2: optional i32 presenteeUserId,
     3: optional i32 applyId,
-    4: optional i32 companyId
+    4: optional i32 companyId,
+    5: optional i32 progress
 }
 

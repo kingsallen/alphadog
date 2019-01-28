@@ -430,7 +430,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(jobApplication.getPositionId());
         UserUserDO userUserDO = userUserDao.getUser(progressQuery.getUserId());
         JSONObject result = new JSONObject();
-        if(!checkIsNormal(jobApplication, hrOperationRecords, progressQuery.getPresenteeUserId())){
+        if(!checkIsNormal(jobApplication, hrOperationRecords, progressQuery.getProgress())){
             result.put("abnormal", 1);
             return JSON.toJSONString(result);
         }
@@ -1403,29 +1403,38 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return sdf.format(new Date(optTime));
     }
 
-    private boolean checkIsNormal(JobApplication jobApplication, List<HrOperationRecordRecord> hrOperationRecords, int presenteeUserId) {
+    private boolean checkIsNormal(JobApplication jobApplication, List<HrOperationRecordRecord> hrOperationRecords, int shareProgress) {
         boolean isNormal = true;
-        if(presenteeUserId != jobApplication.getApplierId() && presenteeUserId != jobApplication.getRecommenderUserId()){
-            return true;
+        if(shareProgress == ReferralProgressEnum.FAILED.getProgress()){
+            return false;
         }
         // 如果候选人没有查看过，第一次进来状态是4，认为是非正常状态
         ReferralProgressRecord referralProgress = progressDao.fetchByAppid(jobApplication.getId());
         if(referralProgress == null){
-            referralProgress = initReferralProgressRecord(jobApplication);
+            referralProgress = initReferralProgressRecord(jobApplication, shareProgress);
             progressDao.insertRecord(referralProgress);
-            isNormal = referralProgress.getState() == 1;
         }else {
             if(referralProgress.getState() == 0){
                 isNormal = false;
             }else {
+                boolean needUpdate = true;
+                // 如果上次浏览的是拒绝，本次浏览时不是拒绝，则认为不正常
+                if(referralProgress.getViewProgress() == ReferralProgressEnum.FAILED.getProgress()){
+                    isNormal = (jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress());
+                    referralProgress.setState((byte)0);
+                    referralProgress.setUpdateTime(null);
+                    progressDao.updateRecord(referralProgress);
+                    return isNormal;
+                }
+                // 如果本次查看是拒绝状态，判断拒绝前的状态和上次浏览的状态是否正常，若正常就将浏览状态改为4
                 ReferralProgressEnum lastViewProgress = ReferralProgressEnum.getEnumByProgress(referralProgress.getViewProgress());
                 if(jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress()){
                     int lastProgress = getLastProgress(jobApplication.getAppTplId(), hrOperationRecords);
                     ReferralProgressEnum lastProgressEnum = ReferralProgressEnum.getEnumByProgress(lastProgress);
                     if(lastViewProgress.getOrder() >= lastProgressEnum.getOrder()){
                         isNormal = false;
-                        referralProgress.setViewProgress(ReferralProgressEnum.FAILED.getProgress());
                     }
+                    referralProgress.setViewProgress(ReferralProgressEnum.FAILED.getProgress());
                 }else {
                     ReferralProgressEnum current = ReferralProgressEnum.getEnumByProgress(jobApplication.getAppTplId());
                     if(current == null){
@@ -1433,31 +1442,37 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                     }
                     if(lastViewProgress.getOrder() > current.getOrder()){
                         isNormal = false;
+                    }else {
+                        if(lastViewProgress.getOrder() == current.getOrder()){
+                            needUpdate = false;
+                        }else {
+                            referralProgress.setViewProgress(current.getProgress());
+                        }
                     }
-                    referralProgress.setViewProgress(current.getProgress());
                 }
                 if(!isNormal){
                     referralProgress.setState((byte)0);
                 }
-                referralProgress.setUpdateTime(null);
-                progressDao.updateRecord(referralProgress);
+                if(needUpdate){
+                    referralProgress.setUpdateTime(null);
+                    progressDao.updateRecord(referralProgress);
+                }
             }
         }
         return isNormal;
     }
 
-    private ReferralProgressRecord initReferralProgressRecord(JobApplication jobApplication) {
+    private ReferralProgressRecord initReferralProgressRecord(JobApplication jobApplication, int shareProgress) {
         ReferralProgressRecord progress = new ReferralProgressRecord();
-        int currentProgress = jobApplication.getAppTplId();
-        if(jobApplication.getAppTplId() == ReferralProgressEnum.SEEK_APPLY.getProgress()
-            || jobApplication.getAppTplId() == ReferralProgressEnum.EMPLOYEE_UPLOAD.getProgress()
-            || jobApplication.getAppTplId() == ReferralProgressEnum.VIEW_APPLY.getProgress()){
+        int currentProgress = shareProgress;
+        if(currentProgress == ReferralProgressEnum.SEEK_APPLY.getProgress()
+            || currentProgress == ReferralProgressEnum.EMPLOYEE_UPLOAD.getProgress()
+            || currentProgress == ReferralProgressEnum.VIEW_APPLY.getProgress()){
             currentProgress = ReferralProgressEnum.APPLYED.getProgress();
         }
-        byte state = jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress() ? 0 : (byte)1;
         progress.setAppId(jobApplication.getId());
         progress.setViewProgress(currentProgress);
-        progress.setState(state);
+        progress.setState((byte)1);
         return progress;
     }
 

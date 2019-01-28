@@ -957,6 +957,8 @@ public class TemplateMsgHttp {
         String positionsName = String.join(",", positionNameList);
         if(positionsName.length() > 18){
             positionsName = positionsName.substring(0, 18) + "...";
+        }else {
+            positionsName = positionsName + "...";
         }
         inviteTemplateVO.put("first", templateTile);
         inviteTemplateVO.put("keyWord1", String.format("已有%s人浏览该职位", visitNum));
