@@ -219,27 +219,6 @@ public class ReferralTemplateSender {
         return returnShareChains;
     }
 
-//    public List<CandidateTemplateShareChainDO> filterAppliedShareChain(List<CandidateTemplateShareChainDO> templateShareChainDOS) {
-//        List<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).distinct().collect(Collectors.toList());
-//        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
-//        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, userIds);
-//        List<CandidateTemplateShareChainDO> filterAppliedShareChain = new ArrayList<>();
-//        for(CandidateTemplateShareChainDO shareChainDO : templateShareChainDOS){
-//            boolean flag = true;
-//            for(int i=0;i<jobApplicationDOS.size() && flag;i++){
-//                JobApplicationDO jobApplicationDO = jobApplicationDOS.get(i);
-//                if(shareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId() && jobApplicationDO.getPositionId() == shareChainDO.getPositionId()){
-//                    flag = false;
-//                }
-//            }
-//            if(flag){
-//                filterAppliedShareChain.add(shareChainDO);
-//            }
-//        }
-//        return filterAppliedShareChain;
-//    }
-
-
     private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
         CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
         templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
