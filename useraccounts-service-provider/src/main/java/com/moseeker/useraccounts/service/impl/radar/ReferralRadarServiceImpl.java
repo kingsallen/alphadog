@@ -235,7 +235,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 查询最短路径
         List<Integer> shortestChain = neo4jService.fetchShortestPath(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getCompanyId());
         // 只有两度和三度的情况下才会产生连连看链路
-        boolean isChainLimit = shortestChain.size() >= (CHAIN_LIMIT-1) && shortestChain.size() <= CHAIN_LIMIT;
+        int degree = shortestChain.size()-1;
+        boolean isChainLimit = degree >= (CHAIN_LIMIT-1) && degree <= CHAIN_LIMIT;
         Set<Integer> userIds = new HashSet<>(shortestChain);
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(companyId);
         List<UserWxUserDO> userUserDOS = wxUserDao.getWXUsersByUserIds(userIds, hrWxWechatDO.getId());
@@ -259,7 +260,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         sendInviteLogToKafka(inviteInfo);
         result.put("notified", isSent ? 1 : 0);
-        int degree = shortestChain.size()-1;
         result.put("degree", degree >= 0 ? degree : 0);
         result.put("chain_id", chainId);
         result.put("chain", chain);
