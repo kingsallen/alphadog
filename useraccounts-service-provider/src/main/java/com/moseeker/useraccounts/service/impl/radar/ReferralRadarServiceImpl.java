@@ -462,7 +462,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
-        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, radarSwitchOpen, true);
+        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true);
         if(jobApplicationDOS == null || jobApplicationDOS.size() == 0){
             return "";
         }
@@ -517,7 +517,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
-        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, true, false);
+        List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, false);
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
         Set<String> names = userUsers.stream().map(UserUserRecord::getName).collect(Collectors.toSet());
@@ -632,7 +632,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         progressList.add(ReferralProgressEnum.SEEK_APPLY.getProgress());
     }
 
-    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo, boolean radarSwitchOpen, boolean pagination) {
+    private List<JobApplicationDO> getQueryJobApplications(ReferralProgressInfo progressInfo, boolean pagination) {
         List<JobApplicationDO> jobApplicationDOS;
         String queryName = progressInfo.getKeyword();
         int progress = progressInfo.getProgress();
@@ -657,22 +657,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 jobApplicationDOS = jobApplicationDao.getApplyByRecomUserIdAndCompanyId(progressInfo.getUserId(), progressInfo.getCompanyId(), queryNameIds, progressList);
             }
         }
-        if(!radarSwitchOpen){
-            jobApplicationDOS = filterRadarReferralApplication(jobApplicationDOS);
-        }
         // 分页
         jobApplicationDOS = paginationJobApplication(progressInfo, jobApplicationDOS, pagination);
         return jobApplicationDOS;
-    }
-
-    private List<JobApplicationDO> filterRadarReferralApplication(List<JobApplicationDO> jobApplicationDOS) {
-        List<JobApplicationDO> list = new ArrayList<>();
-        for(JobApplicationDO applicationDO : jobApplicationDOS){
-            if(ReferralTypeEnum.getReferralTypeByApplySource(applicationDO.getOrigin()) != ReferralTypeEnum.SEEK_REFERRAL){
-                list.add(applicationDO);
-            }
-        }
-        return list;
     }
 
     private List<RadarUserInfo> doInitRadarCardChains(Map<Integer, UserWxUserDO> idUserMap, ReferralCardInfo cardInfo,
