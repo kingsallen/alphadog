@@ -8,8 +8,10 @@ import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeNetworkResourcesDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
@@ -57,6 +59,8 @@ public class RabbitReceivers {
     @Autowired
     private HrWxNoticeMessageDao wxNoticeMessageDao;
     @Autowired
+    private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
+    @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
 
     @RabbitListener(queues = "handle_share_chain", containerFactory = "rabbitListenerContainerFactoryAutoAck")
@@ -90,7 +94,7 @@ public class RabbitReceivers {
         templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, type);
     }
 
-//    @RabbitListener(queues = "handle_switch_radar", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitListener(queues = "handle_radar_switch", containerFactory = "rabbitListenerContainerFactoryAutoAck")
 //    @RabbitHandler
     public void handleRadarSwitch(Message message){
         String msgBody = new String(message.getBody());
@@ -120,12 +124,31 @@ public class RabbitReceivers {
     }
 
     private void handleEmployeeNetwork(int companyId) {
-
+        networkResourcesDao.updateStatusByCompanyId(companyId);
     }
 
+    /**
+     * 分页将员工信心发到kafka，每页1000条数据
+     * @param companyId
+     */
     private void sendEmployeeToKafka(int companyId) {
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getEmployeeBycompanyId(companyId);
-        kafkaSender.sendEmployeeCertification(userEmployeeDOS);
+        int pageSize = 1000;
+        int totalRows = userEmployeeDOS.size();
+        int totalPage = totalRows/pageSize + 1;
+        if(totalRows > pageSize){
+            for(int i=0;i<totalPage;i++){
+                int startIndex = i*pageSize;
+                int endIndex = startIndex + pageSize;
+                if(endIndex >= userEmployeeDOS.size()){
+                    endIndex = userEmployeeDOS.size();
+                }
+                List<UserEmployeeDO> tempList = userEmployeeDOS.subList(startIndex, endIndex);
+                kafkaSender.sendEmployeeCertification(tempList);
+            }
+        }else {
+            kafkaSender.sendEmployeeCertification(userEmployeeDOS);
+        }
     }
 
     private void closeTemMiniteTemplateSwitch(int wechatId, int templateId) {
@@ -143,6 +166,7 @@ public class RabbitReceivers {
             messageDO.setNoticeId(templateId);
             messageDO.setStatus(1);
             messageDO.setWechatId(wechatId);
+            wxNoticeMessageDao.addData(messageDO);
         }else if(messageDO.getStatus() == 0){
             messageDO.setStatus(1);
             wxNoticeMessageDao.updateData(messageDO);

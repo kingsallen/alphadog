@@ -80,5 +80,10 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
         }
     }
 
-
+    public void updateStatusByCompanyId(int companyId) {
+        using(configuration()).update(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
+                .set(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.DISABLE, (byte)1)
+                .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.COMPANY_ID.eq(companyId))
+                .execute();
+    }
 }
