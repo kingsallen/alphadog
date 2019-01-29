@@ -378,18 +378,18 @@ public class ChatService {
                         List<UserHrAccountDO> hrAccountDOList = (List<UserHrAccountDO>) hrsFuture.get();
                         if (hrAccountDOList != null && hrAccountDOList.size() > 0) {
                             List<Integer> wxUserIds = hrAccountDOList.stream()
-                                    .filter(h->h.getWxuserId()==0)
-                                    .map(h->h.getWxuserId())
+                                    .filter(h -> h.getWxuserId() == 0)
+                                    .map(h -> h.getWxuserId())
                                     .collect(Collectors.toList());
 
-                            Map<Integer,UserWxUserDO> hrWxUserMap = wxUserDao.getWXUserMapByIds(wxUserIds);
+                            Map<Integer, UserWxUserDO> hrWxUserMap = wxUserDao.getWXUserMapByIds(wxUserIds);
 
                             Optional<UserHrAccountDO> hrAccountDOOptional = hrAccountDOList.stream()
                                     .filter(hrAccountDO -> hrAccountDO.getId() == hrChatUnreadCountDO.getHrId()).findAny();
                             if (hrAccountDOOptional.isPresent()) {
                                 UserHrAccountDO hrAccount = hrAccountDOOptional.get();
 
-                                String name = ChatHelper.hrChatName(hrAccount,hrWxUserMap.get(hrAccount.getWxuserId()));
+                                String name = ChatHelper.hrChatName(hrAccount, hrWxUserMap.get(hrAccount.getWxuserId()));
                                 userChatRoomVO.setName(name);
                                 userChatRoomVO.setHrId(hrAccount.getId());
                                 userChatRoomVO.setHeadImgUrl(hrAccount.getHeadimgurl());
@@ -522,9 +522,9 @@ public class ChatService {
 
     /**
      * 添加聊天内容，并修改未读消息数量
-     *
+     * <p>
      * 应Mobot需求，去除聊天保存限制
-     *
+     * <p>
      * 如以后有数据问题，可以先查询是否为Mobot入库数据
      *
      * @param chat 聊天信息
@@ -544,9 +544,9 @@ public class ChatService {
             chatDO.setMsgType(chat.getMsgType());
             chatDO.setCompoundContent(chat.getCompoundContent());
             chatDO.setStats(chat.getStats());
-            if(StringUtils.isNotNullOrEmpty(chat.getContent())){
+            if (StringUtils.isNotNullOrEmpty(chat.getContent())) {
                 chatDO.setContent(chat.getContent());
-            }else{
+            } else {
                 chatDO.setContent("");
             }
             chatDO.setPicUrl(chat.getAssetUrl());
@@ -678,16 +678,16 @@ public class ChatService {
             chatRoom.setCreateTime(createTime);
             chatRoom.setHraccountId(hrId);
             chatRoom.setSysuserId(userId);
-            chatRoom.setWelcomeStatus((byte)1);
+            chatRoom.setWelcomeStatus((byte) 1);
             chatRoom = chaoDao.saveChatRoom(chatRoom);
             chatDebut = true;
         }
 
         if (chatRoom != null) {
             resultOfSaveRoomVO = searchResult(chatRoom, positionId);
-            if(chatRoom.getWelcomeStatus() == 1){
+            if (chatRoom.getWelcomeStatus() == 1) {
                 createChat(resultOfSaveRoomVO, is_gamma);
-                chatRoom.setWelcomeStatus((byte)0);
+                chatRoom.setWelcomeStatus((byte) 0);
                 chaoDao.updateChatRoom(chatRoom);
             }
             if (chatDebut) {
@@ -804,7 +804,7 @@ public class ChatService {
                 HrVO hrVO = new HrVO();
 
                 UserWxUserDO wxUser = wxUserDao.getWXUserById(hrAccountDO.getWxuserId());
-                String hrName = ChatHelper.hrChatName(hrAccountDO,wxUser);
+                String hrName = ChatHelper.hrChatName(hrAccountDO, wxUser);
                 hrVO.setHrName(hrName);
 
                 hrVO.setHrId(hrAccountDO.getId());
@@ -847,9 +847,9 @@ public class ChatService {
             content = String.format(WELCOMES_CONTER, resultOfSaveRoomVO.getUser().getUserName());
         } else {
             String companyName;
-            if ( resultOfSaveRoomVO.getPosition() != null){
+            if (resultOfSaveRoomVO.getPosition() != null) {
                 companyName = resultOfSaveRoomVO.getPosition().getCompanyName();
-            } else{
+            } else {
                 companyName = resultOfSaveRoomVO.getHr().getCompanyName();
             }
 
@@ -858,11 +858,16 @@ public class ChatService {
                     && resultOfSaveRoomVO.getPosition() != null) {
 
                 HrCompanyDO companyDO = chaoDao.getCompany(resultOfSaveRoomVO.getHr().getHrId());
-                HrCompanyConf companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
+                HrCompanyConf companyConf;
+                if (companyDO.getParentId() != 0) {
+                    companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getParentId());
+                } else {
+                    companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
+                }
                 if (companyConf.getHrChat() != null && companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)) {
                     HrCompanyMobotConfDO mobotConf = hrCompanyConfDao.getMobotConf(companyDO.getId());
 
-                    if(StringUtils.isNotNullOrEmpty(mobotConf.getMobotName())) {
+                    if (StringUtils.isNotNullOrEmpty(mobotConf.getMobotName())) {
                         content = AUTO_CONTENT_WITH_HR_EXIST
                                 .replace("{hrName}", mobotConf.getMobotName())
                                 .replace("{companyName}", companyName);
@@ -967,25 +972,25 @@ public class ChatService {
             if (records != null && records.size() > 0) {
                 for (int i = 0; i < records.size(); i++) {
                     ChatVO chatVO = new ChatVO();
-                    int id = (int)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.ID);
-                    byte origin = (byte)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.ORIGIN);
-                    byte speaker = (byte)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER);
-                    String assetUrl = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL);
-                    String msgType = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE);
-                    String btnContent = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT);
-                    String serverId = (String)records.getValue(i, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID);
-                    String content = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.CONTENT);
-                    int positionId = (int)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.PID);
-                    String createTime = sdf.format((Timestamp)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME));
-                    if(null != records.getValue(i, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION)){
-                        chatVO.setDuration((byte)records.getValue(i, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION));
+                    int id = (int) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.ID);
+                    byte origin = (byte) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.ORIGIN);
+                    byte speaker = (byte) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.SPEAKER);
+                    String assetUrl = (String) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.PIC_URL);
+                    String msgType = (String) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.MSG_TYPE);
+                    String btnContent = (String) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.BTN_CONTENT);
+                    String serverId = (String) records.getValue(i, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.SERVER_ID);
+                    String content = (String) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.CONTENT);
+                    int positionId = (int) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.PID);
+                    String createTime = sdf.format((Timestamp) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.CREATE_TIME));
+                    if (null != records.getValue(i, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION)) {
+                        chatVO.setDuration((byte) records.getValue(i, HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE.DURATION));
                     }
                     if (speaker == 2) {
                         chatVO.setSpeaker((byte) 1);
-                    }else{
+                    } else {
                         chatVO.setSpeaker(speaker);
                     }
-                    String compoundContent = (String)records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT);
+                    String compoundContent = (String) records.getValue(i, HrWxHrChat.HR_WX_HR_CHAT.COMPOUND_CONTENT);
                     chatVO.setAssetUrl(assetUrl);
                     chatVO.setCreateTime(createTime);
                     chatVO.setMsgType(msgType);
@@ -1080,7 +1085,7 @@ public class ChatService {
                 hrVO.setHrHeadImg(hr.getHeadimgurl());
 
                 UserWxUserDO wxUserDO = wxUserDao.getWXUserById(hr.getWxuserId());
-                hrVO.setHrName(ChatHelper.hrChatName(hr,wxUserDO));
+                hrVO.setHrName(ChatHelper.hrChatName(hr, wxUserDO));
             }
         }
         return hrVO;
@@ -1248,7 +1253,7 @@ public class ChatService {
                 clearObject.put("warn_email_send_state", 0);
             }
             String frequency = redisClient.get(Constant.APPID_ALPHADOG, VOICE_DOWNLOAD_FREQUENCY, String.valueOf(companyId));
-            if(StringUtils.isNotNullOrEmpty(frequency)){
+            if (StringUtils.isNotNullOrEmpty(frequency)) {
                 redisClient.set(Constant.APPID_ALPHADOG, VOICE_DOWNLOAD_FREQUENCY, String.valueOf(companyId), "0");
             }
             redisClient.set(Constant.APPID_ALPHADOG, VOICE_CLEAR_TIMES, String.valueOf(companyId), JSONObject.toJSONString(clearObject));
