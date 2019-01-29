@@ -341,4 +341,24 @@ public class AppConfig {
                     .with("referral_*_handle"));
         }};
     }
+
+    @Bean
+    public TopicExchange companySwitchExchange() {
+        return new TopicExchange("company_switch_exchange", true, false);
+    }
+
+    @Bean
+    public Queue handleRadarSwitchQueue() {
+        return new Queue("handle_radar_switch", true, false, false);
+    }
+
+    @Bean
+    public List<Binding> bindRadarSwitchQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(handleRadarSwitchQueue()).to(companySwitchExchange())
+                    .with("handle_*_switch"));
+        }};
+    }
+
+
 }
