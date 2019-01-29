@@ -68,16 +68,13 @@ public class RadarSwitchAspect {
     }
 
     private int switchCheck(int companyId){
-        List<String> list = new ArrayList<>();
-        list.add(RADAR_LANAGUE);
         try {
-            List<CompanySwitchVO>  switchVOS = service.switchCheck(companyId, list);
-            if(!StringUtils.isEmptyList(switchVOS)){
-               for(CompanySwitchVO switchVO :switchVOS){
-                   if(switchVO.getKeyword().equals(RADAR_LANAGUE) && switchVO.getValid() == 1){
-                       return 1;
-                   }
+            CompanySwitchVO  switchVO = service.companySwitch(companyId, RADAR_LANAGUE);
+            if(switchVO != null){
+               if(switchVO.getKeyword().equals(RADAR_LANAGUE) && switchVO.getValid() == 1){
+                   return 1;
                }
+
             }
         } catch (TException e) {
            throw CommonException.PROGRAM_EXCEPTION;
