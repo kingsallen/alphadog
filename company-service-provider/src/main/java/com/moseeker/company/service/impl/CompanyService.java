@@ -51,6 +51,8 @@ import com.moseeker.company.exception.CompanySwitchException;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.exception.CompanyException;
+import com.moseeker.company.service.impl.CompanySwitchHandler.AbstractCompanySwitchHandler;
+import com.moseeker.company.service.impl.CompanySwitchHandler.CompanySwitchFactory;
 import com.moseeker.company.service.impl.vo.GDPRProtectedInfoVO;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -162,6 +164,9 @@ public class CompanyService {
 
     @Autowired
     private ConfigOmsSwitchManagementDao configOmsSwitchManagementDao;
+
+    @Autowired
+    CompanySwitchFactory companySwitchFactory;
 
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
@@ -1347,6 +1352,7 @@ public class CompanyService {
      * */
     @Transactional
     public CompanySwitchVO switchPost(CompanySwitchVO companySwitchVO) {
+
         HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companySwitchVO.getCompanyId());
         companySwitchVO.setCompanyId(hrCompanyDO.getId());
         Integer moduleId = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword()).getValue();
@@ -1367,6 +1373,8 @@ public class CompanyService {
                 if(i>0){
                     companySwitchVO.setId(configOmsSwitchManagementDO.getId());
                     companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+                    AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
                     return companySwitchVO;
                 }else{
                     //如果更新失败，抛出异常
@@ -1379,6 +1387,8 @@ public class CompanyService {
         configOmsSwitchManagementDO.setModuleParam(companySwitchVO.getFieldValue());
         Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagementDO);
         companySwitchVO.setId(id);
+        AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+        abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
         return companySwitchVO;
     }
 
@@ -1412,6 +1422,8 @@ public class CompanyService {
             Integer i = configOmsSwitchManagementDao.update(configOmsSwitchManagement);
             //如果更新成功，返回开关对象
             if(i>0){
+                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+                abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
                 return companySwitchVO;
             }else{
                 //如果更新失败，抛出异常
