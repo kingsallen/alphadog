@@ -627,6 +627,21 @@ public class CompanyServicesImpl implements Iface {
     }
     /*
      *
+     *获取当前公司的单个开关权限
+     *@Param  moduleNames 模块名
+     *@Param  companyId 公司Id
+     * */
+    @Override
+    public CompanySwitchVO companySwitch(int companyId, String moduleNames) throws BIZException, TException {
+        try {
+            return service.companySwitch(companyId,moduleNames);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    /*
+     *
      *添加新的公司开关权限
      *@Param appid
      *@Param CompanySwitchVO 公司开关对象

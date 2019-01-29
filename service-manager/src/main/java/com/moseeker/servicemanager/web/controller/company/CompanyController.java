@@ -945,6 +945,28 @@ public class CompanyController {
 
     /*
      *
+     *获取当前公司的某个开关权限
+     *@Param appid
+     *@Param companyId 公司id
+     *@Param moduleNames 各产品定义标识（单个）
+     *
+     * */
+    @RequestMapping(value = "/api/company/switch", method = RequestMethod.GET)
+    @ResponseBody
+    public String companySwitch(@RequestParam Integer appid,@RequestParam(name = "companyId" , required = false) Integer companyId, @RequestParam String moduleName) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("开关标识", moduleName);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.companySwitch(companyId,moduleName)).toJson();
+        }
+    }
+
+    /*
+     *
      *添加新的公司开关权限
      *@Param appid
      *@Param CompanySwitchVO 公司开关对象
