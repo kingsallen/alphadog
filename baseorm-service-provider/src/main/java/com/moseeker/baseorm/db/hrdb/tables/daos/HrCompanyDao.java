@@ -211,7 +211,6 @@ public class HrCompanyDao extends DAOImpl<HrCompanyRecord, com.moseeker.baseorm.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByFortune(Byte... values) {
         return fetch(HrCompany.HR_COMPANY.FORTUNE, values);
     }
-<<<<<<< HEAD
 
     /**
      * Fetch records that have <code>fortune_scale IN (values)</code>
@@ -233,6 +232,4 @@ public class HrCompanyDao extends DAOImpl<HrCompanyRecord, com.moseeker.baseorm.
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompany> fetchByEmployeeNumber(Integer... values) {
         return fetch(HrCompany.HR_COMPANY.EMPLOYEE_NUMBER, values);
     }
-=======
->>>>>>> remotes/origin/feature/1004252
 }
