@@ -312,7 +312,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public RadarConnectResult connectRadar(int companyId, ConnectRadarInfo radarInfo) {
-        return connectRadar(radarInfo);
+        try{
+            return connectRadar(radarInfo);
+        }catch (Exception e){
+            logger.info("errmsg:{}", e.getMessage());
+            throw e;
+        }
+
 
     }
 
