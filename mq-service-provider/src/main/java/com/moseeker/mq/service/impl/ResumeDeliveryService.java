@@ -690,27 +690,29 @@ public class ResumeDeliveryService {
                     positionDO.getId()).buildQuery());
             logger.info("抄送邮箱长度："+ccmailList.size());
             if(ccmailList != null && ccmailList.size()>0){
+                //添加逻辑：1，查询邮件额度是否满足发送 2，扣除邮件额度 3，发送邮件
+                int id = emailEntity.handerTalentpoolEmailLogAndBalanceNew(1,1,companyDO.getId(),accountDO.getId());
                 //遍历抄送邮箱发送邮件
-                for(JobPositionCcmailRecord ccmail : ccmailList){
-                    emailStruct.put("to_email", ccmail.getToEmail());
-                    sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
-                    try{
-                        LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
-                        emailrecord1.setEmail(ccmail.getToEmail());
-                        emailrecord1.setContent(sendEmail.getMessage());
-                        emailSendrecordDao.addData(emailrecord1);
-
-                        LogEmailProfileSendLogRecord record1=new LogEmailProfileSendLogRecord();
-                        record1.setEmail(ccmail.getToEmail());
-                        record1.setUserId(userUserDO.getId());
-                        record1.setType(SendEmailTypeEnum.POSITION_INVATE_EMAIL.getValue());
-                        record1.setCompanyId(accountDO.getCompanyId());
-                        logEmailProfileSendLogDao.addRecord(record1);
-
-                    }catch(Exception e){
-                        logger.error("简历抄送邮箱日记记录失败：{}", e.getMessage());
+                if(id>0){
+                    for (JobPositionCcmailRecord ccmail : ccmailList) {
+                        emailStruct.put("to_email", ccmail.getToEmail());
+                        sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                        try {
+                            LogEmailSendrecordDO emailrecord1 = new LogEmailSendrecordDO();
+                            emailrecord1.setEmail(ccmail.getToEmail());
+                            emailrecord1.setContent(sendEmail.getMessage());
+                            emailSendrecordDao.addData(emailrecord1);
+                            LogEmailProfileSendLogRecord record1 = new LogEmailProfileSendLogRecord();
+                            record1.setEmail(ccmail.getToEmail());
+                            record1.setUserId(userUserDO.getId());
+                            record1.setType(SendEmailTypeEnum.POSITION_INVATE_EMAIL.getValue());
+                            record1.setCompanyId(accountDO.getCompanyId());
+                            logEmailProfileSendLogDao.addRecord(record1);
+                        } catch (Exception e) {
+                            logger.error("简历抄送邮箱日记记录失败：{}", e.getMessage());
+                        }
+                        logger.info("抄送邮箱：" + ccmail.getToEmail());
                     }
-                    logger.info("抄送邮箱："+ccmail.getToEmail());
                 }
             }
         }
