@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrTopic extends TableImpl<HrTopicRecord> {
 
-    private static final long serialVersionUID = 1103807460;
+    private static final long serialVersionUID = 1066236288;
 
     /**
      * The reference instance of <code>hrdb.hr_topic</code>
@@ -77,9 +77,9 @@ public class HrTopic extends TableImpl<HrTopicRecord> {
     public final TableField<HrTopicRecord, String> SHARE_DESCRIPTION = createField("share_description", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "分享描述");
 
     /**
-     * The column <code>hrdb.hr_topic.style_id</code>. wx_group_user.id， 推荐者微信ID
+     * The column <code>hrdb.hr_topic.style_id</code>. config_sys_h5_style_tpl.id， 样式Id
      */
-    public final TableField<HrTopicRecord, Integer> STYLE_ID = createField("style_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "wx_group_user.id， 推荐者微信ID");
+    public final TableField<HrTopicRecord, Integer> STYLE_ID = createField("style_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "config_sys_h5_style_tpl.id， 样式Id");
 
     /**
      * The column <code>hrdb.hr_topic.creator</code>. hr_account.id

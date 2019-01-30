@@ -1360,11 +1360,10 @@ public class CandidateEntity implements Candidate {
             if (candidateCompanyDOOptional.isPresent()) {
                 CandidateCompanyDO candidateCompanyDO = candidateCompanyDOOptional.get();
                 if (type == Constant.ELASTIC_LAYER_QRCODE) {
-                    candidateCompanyDO.setPositionWxLayerQrcode((byte) 1);
+                    candidateDBDao.updateCandidateCompanySetPositionWxLayerQrcode(candidateCompanyDO.getId(), (byte) 1);
                 } else if (type == Constant.ELASTIC_LAYER_PROFILE) {
-                    candidateCompanyDO.setPositionWxLayerProfile((byte) 1);
+                    candidateDBDao.updateCandidateCompanySetPositionWxLayerProfile(candidateCompanyDO.getId(), (byte) 1);
                 }
-                candidateDBDao.updateCandidateCompany(candidateCompanyDO);
             } else {
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }

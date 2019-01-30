@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany implements Serializable {
 
-    private static final long serialVersionUID = -323837774;
+    private static final long serialVersionUID = -475759613;
 
     private Integer   id;
     private Byte      type;
@@ -132,7 +132,6 @@ public class HrCompany implements Serializable {
         this.fortune = fortune;
         this.fortuneScale = fortuneScale;
         this.fortuneYear = fortuneYear;
-        this.employeeNumber = employeeNumber;
     }
 
     public Integer getId() {
@@ -327,14 +326,6 @@ public class HrCompany implements Serializable {
         this.fortuneYear = fortuneYear;
     }
 
-    public Integer getEmployeeNumber() {
-        return this.employeeNumber;
-    }
-
-    public void setEmployeeNumber(Integer employeeNumber) {
-        this.employeeNumber = employeeNumber;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompany (");
@@ -363,7 +354,6 @@ public class HrCompany implements Serializable {
         sb.append(", ").append(fortune);
         sb.append(", ").append(fortuneScale);
         sb.append(", ").append(fortuneYear);
-        sb.append(", ").append(employeeNumber);
 
         sb.append(")");
         return sb.toString();
