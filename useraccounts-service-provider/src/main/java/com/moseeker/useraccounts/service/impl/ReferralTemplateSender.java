@@ -120,6 +120,7 @@ public class ReferralTemplateSender {
         jsonObject.put("referral_id", referralId);
         jsonObject.put("application_id", applicationId);
         jsonObject.put("user_id", userId);
+        jsonObject.put("employee_id", employeeId);
         logger.info("publishReferralEvaluateEvent json:{}", jsonObject);
         amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
                 EMPLOYEE_REFERRAL_EVALUATE, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
@@ -142,9 +143,6 @@ public class ReferralTemplateSender {
             jsonObject.put("templateId", Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-            com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(applicationId, new Date().getTime(),
-                    Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND, employeeDO.getCompanyId(), 0);
 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
