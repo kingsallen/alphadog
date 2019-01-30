@@ -129,6 +129,22 @@ public class CandidateDBDao {
         }
     }
 
+    public void updateCandidateCompanySetPositionWxLayerQrcode(int id, byte status) throws TException {
+        try {
+            candidateCompanyDao.updateCandidateCompanySetPositionWxLayerQrcode(id, status);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateCandidateCompanySetPositionWxLayerProfile(int id, byte status) throws TException {
+        try {
+            candidateCompanyDao.updateCandidateCompanySetPositionWxLayerProfile(id, status);
+        } catch (TException e) {
+            e.printStackTrace();
+        }
+    }
+
     public CandidateCompanyDO saveCandidateCompany(CandidateCompanyDO candidateCompanyDO) {
         try {
             return candidateCompanyDao.saveCandidateCompany(candidateCompanyDO);
