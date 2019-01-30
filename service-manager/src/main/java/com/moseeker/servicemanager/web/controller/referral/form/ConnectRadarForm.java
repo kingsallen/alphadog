@@ -10,6 +10,7 @@ public class ConnectRadarForm {
     private Integer nextUserId;
     private Integer chainId;
     private Integer parentId;
+    private Integer companyId;
 
     public Integer getAppid() {
         return appid;
@@ -49,5 +50,13 @@ public class ConnectRadarForm {
 
     public void setParentId(Integer parentId) {
         this.parentId = parentId;
+    }
+
+    public Integer getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 }
