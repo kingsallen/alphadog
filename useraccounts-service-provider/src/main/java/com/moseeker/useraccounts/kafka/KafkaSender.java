@@ -16,7 +16,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.moseeker.useraccounts.service.impl.pojos.KafkaBindDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -70,30 +72,30 @@ public class KafkaSender {
     }
 
     public void sendEmployeeCertification(UserEmployeeDO employeeDO){
-        List<KafkaBaseDto> list = new ArrayList<>();
-        KafkaBaseDto dto = new KafkaBaseDto();
+        List<Integer> userIds = new ArrayList<>();
+        userIds.add(employeeDO.getSysuserId());
+        KafkaBindDto dto = new KafkaBindDto();
         dto.setEvent_time(employeeDO.getBindingTime());
         dto.setEvent(EMPLOYEE_CERTIFICATION);
         dto.setCompany_id(employeeDO.getCompanyId());
-        dto.setUser_id(employeeDO.getSysuserId());
-        list.add(dto);
-        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(list));
+        dto.setUser_id(userIds);
+        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(dto));
     }
 
     public void sendEmployeeCertification(List<UserEmployeeDO> employeeDOs){
-        List<KafkaBaseDto> list = new ArrayList<>();
+        if(employeeDOs == null || employeeDOs.size() == 0){
+            return;
+        }
+        KafkaBindDto dto = new KafkaBindDto();
         long current = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = sdf.format(new Date(current));
-        for(UserEmployeeDO userEmployeeDO : employeeDOs){
-            KafkaBaseDto dto = new KafkaBaseDto();
-            dto.setEvent_time(currentTime);
-            dto.setEvent(EMPLOYEE_CERTIFICATION);
-            dto.setCompany_id(userEmployeeDO.getCompanyId());
-            dto.setUser_id(userEmployeeDO.getSysuserId());
-            list.add(dto);
-        }
-        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(list));
+        dto.setEvent_time(currentTime);
+        dto.setEvent(EMPLOYEE_CERTIFICATION);
+        dto.setCompany_id(employeeDOs.get(0).getCompanyId());
+        List<Integer> userIds = employeeDOs.stream().map(UserEmployeeDO::getSysuserId).distinct().collect(Collectors.toList());
+        dto.setUser_id(userIds);
+        sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(dto));
     }
 
 
