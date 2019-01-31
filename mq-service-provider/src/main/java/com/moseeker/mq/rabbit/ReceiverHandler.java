@@ -140,6 +140,7 @@ public class ReceiverHandler {
             Integer positionId = jsonObject.getIntValue("position_id");
             Integer referralId = jsonObject.getIntValue("referral_id");
             log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            log.info("seekReferralReceive jsonObject:{}", jsonObject);
             if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
