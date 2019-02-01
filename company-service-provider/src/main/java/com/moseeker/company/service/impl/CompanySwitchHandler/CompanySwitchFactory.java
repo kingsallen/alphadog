@@ -24,6 +24,6 @@ public class CompanySwitchFactory {
                 return abstractCompanySwitchHandler;
             }
         }
-        throw CompanySwitchException.UNKNOW_SWITCH_TYPE;
+        return null;
     }
 }
