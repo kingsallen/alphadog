@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = -1088295010;
+    private static final long serialVersionUID = 1430209991;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -132,6 +132,11 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      * The column <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息
      */
     public final TableField<HrThirdPartyAccountRecord, String> EXT2 = createField("ext2", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息");
+
+    /**
+     * The column <code>hrdb.hr_third_party_account.template_sender</code>. 第三方账号同步时，指定发送验证码的HR
+     */
+    public final TableField<HrThirdPartyAccountRecord, Integer> TEMPLATE_SENDER = createField("template_sender", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方账号同步时，指定发送验证码的HR");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference

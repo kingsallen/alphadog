@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany extends TableImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = -332995623;
+    private static final long serialVersionUID = -172043809;
 
     /**
      * The reference instance of <code>hrdb.hr_company</code>
@@ -160,6 +160,16 @@ public class HrCompany extends TableImpl<HrCompanyRecord> {
      * The column <code>hrdb.hr_company.fortune</code>. 是否世界500强，0：不是 1：是
      */
     public final TableField<HrCompanyRecord, Byte> FORTUNE = createField("fortune", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否世界500强，0：不是 1：是");
+
+    /**
+     * The column <code>hrdb.hr_company.fortune_scale</code>. 五百强范围，1：世界 2：中国
+     */
+    public final TableField<HrCompanyRecord, Byte> FORTUNE_SCALE = createField("fortune_scale", org.jooq.impl.SQLDataType.TINYINT, this, "五百强范围，1：世界 2：中国");
+
+    /**
+     * The column <code>hrdb.hr_company.fortune_year</code>. 五百强评定年份
+     */
+    public final TableField<HrCompanyRecord, Timestamp> FORTUNE_YEAR = createField("fortune_year", org.jooq.impl.SQLDataType.TIMESTAMP, this, "五百强评定年份");
 
     /**
      * Create a <code>hrdb.hr_company</code> table reference
