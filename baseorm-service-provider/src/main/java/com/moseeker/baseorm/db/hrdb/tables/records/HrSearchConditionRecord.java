@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchConditionRecord extends UpdatableRecordImpl<HrSearchConditionRecord> {
 
-    private static final long serialVersionUID = 86319449;
+    private static final long serialVersionUID = -825196155;
 
     /**
      * Setter for <code>hrdb.hr_search_condition.id</code>.

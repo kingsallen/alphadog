@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = -1219091366;
+    private static final long serialVersionUID = 81463068;
 
     /**
      * Setter for <code>hrdb.hr_third_party_position.id</code>.
@@ -72,14 +72,14 @@ public class HrThirdPartyPositionRecord extends UpdatableRecordImpl<HrThirdParty
     }
 
     /**
-     * Setter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * Setter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
      */
     public void setChannel(Short value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * Getter for <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin,6=最佳东方，7=一览英才，8=JobsDB，9=民航
      */
     public Short getChannel() {
         return (Short) get(3);

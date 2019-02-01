@@ -36,6 +36,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcess;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcessRound;
 import com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
@@ -95,7 +97,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Hrdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 290729342;
+    private static final long serialVersionUID = 1934811609;
 
     /**
      * The reference instance of <code>hrdb</code>
@@ -261,6 +263,16 @@ public class Hrdb extends SchemaImpl {
      * 企业用户导入数据异步处理监控操作表
      */
     public final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
+
+    /**
+     * The table <code>hrdb.hr_interview_process</code>.
+     */
+    public final HrInterviewProcess HR_INTERVIEW_PROCESS = com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcess.HR_INTERVIEW_PROCESS;
+
+    /**
+     * The table <code>hrdb.hr_interview_process_round</code>.
+     */
+    public final HrInterviewProcessRound HR_INTERVIEW_PROCESS_ROUND = com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND;
 
     /**
      * 榜单开关
@@ -489,6 +501,8 @@ public class Hrdb extends SchemaImpl {
             HrHtml5Statistics.HR_HTML5_STATISTICS,
             HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS,
             HrImporterMonitor.HR_IMPORTER_MONITOR,
+            HrInterviewProcess.HR_INTERVIEW_PROCESS,
+            HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND,
             HrLeaderBoard.HR_LEADER_BOARD,
             HrNps.HR_NPS,
             HrNpsRecommend.HR_NPS_RECOMMEND,

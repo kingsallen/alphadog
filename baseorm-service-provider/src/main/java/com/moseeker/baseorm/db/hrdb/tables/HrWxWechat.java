@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechat extends TableImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = 1206897548;
+    private static final long serialVersionUID = -1114887892;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_wechat</code>

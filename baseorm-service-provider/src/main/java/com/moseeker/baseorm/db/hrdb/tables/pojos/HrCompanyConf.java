@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConf implements Serializable {
 
-    private static final long serialVersionUID = -989785865;
+    private static final long serialVersionUID = 1696964153;
 
     private Integer   companyId;
     private Integer   themeId;

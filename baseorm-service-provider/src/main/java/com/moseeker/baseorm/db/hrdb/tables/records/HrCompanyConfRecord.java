@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = 756032146;
+    private static final long serialVersionUID = -2016157759;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -282,14 +282,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     * Setter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public void setNewjdStatus(Integer value) {
         set(18, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是为开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
+     * Getter for <code>hrdb.hr_company_conf.newjd_status</code>. 新jd页去设置状态0是未开启，1是用户开启，2是审核通过（使用新jd），3撤销（返回基础版） 默认是0
      */
     public Integer getNewjdStatus() {
         return (Integer) get(18);
@@ -352,14 +352,14 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启普通人才库，2开启高端人才库
+     * Setter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
      */
     public void setTalentpoolStatus(Byte value) {
         set(23, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. 人才库状态表 0未开启，1开启普通人才库，2开启高端人才库
+     * Getter for <code>hrdb.hr_company_conf.talentpool_status</code>. '人才库状态表 0未开启，1开启普通人才库，2开启高端人才库';
      */
     public Byte getTalentpoolStatus() {
         return (Byte) get(23);

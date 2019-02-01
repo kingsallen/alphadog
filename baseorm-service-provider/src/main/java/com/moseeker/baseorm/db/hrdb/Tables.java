@@ -36,6 +36,8 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcess;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcessRound;
 import com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
@@ -52,6 +54,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrSuperaccountApply;
 import com.moseeker.baseorm.db.hrdb.tables.HrTalentpool;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeam;
 import com.moseeker.baseorm.db.hrdb.tables.HrTeamMember;
+import com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccount;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyAccountHr;
 import com.moseeker.baseorm.db.hrdb.tables.HrThirdPartyPosition;
@@ -68,6 +71,7 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
+import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi;
 
 import javax.annotation.Generated;
 
@@ -246,6 +250,16 @@ public class Tables {
     public static final HrImporterMonitor HR_IMPORTER_MONITOR = com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor.HR_IMPORTER_MONITOR;
 
     /**
+     * The table <code>hrdb.hr_interview_process</code>.
+     */
+    public static final HrInterviewProcess HR_INTERVIEW_PROCESS = com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcess.HR_INTERVIEW_PROCESS;
+
+    /**
+     * The table <code>hrdb.hr_interview_process_round</code>.
+     */
+    public static final HrInterviewProcessRound HR_INTERVIEW_PROCESS_ROUND = com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND;
+
+    /**
      * 榜单开关
      */
     public static final HrLeaderBoard HR_LEADER_BOARD = com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard.HR_LEADER_BOARD;
@@ -319,6 +333,11 @@ public class Tables {
      * 团队信息
      */
     public static final HrTeam HR_TEAM = com.moseeker.baseorm.db.hrdb.tables.HrTeam.HR_TEAM;
+
+    /**
+     * The table <code>hrdb.hr_team_20180118_chendi</code>.
+     */
+    public static final HrTeam_20180118Chendi HR_TEAM_20180118_CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrTeam_20180118Chendi.HR_TEAM_20180118_CHENDI;
 
     /**
      * 团队成员信息
@@ -399,6 +418,11 @@ public class Tables {
      * 微信公众号表
      */
     public static final HrWxWechat HR_WX_WECHAT = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat.HR_WX_WECHAT;
+
+    /**
+     * The table <code>hrdb.hr_wx_wechat_20180127chendi</code>.
+     */
+    public static final HrWxWechat_20180127chendi HR_WX_WECHAT_20180127CHENDI = com.moseeker.baseorm.db.hrdb.tables.HrWxWechat_20180127chendi.HR_WX_WECHAT_20180127CHENDI;
 
     /**
      * 微信消息通知同步状态
