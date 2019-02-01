@@ -5,7 +5,6 @@ package com.moseeker.baseorm.db.hrdb.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.annotation.Generated;
@@ -24,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany implements Serializable {
 
-    private static final long serialVersionUID = -223300201;
+    private static final long serialVersionUID = -475759613;
 
     private Integer   id;
     private Byte      type;
@@ -49,7 +48,7 @@ public class HrCompany implements Serializable {
     private String    feature;
     private Byte      fortune;
     private Byte      fortuneScale;
-    private Date      fortuneYear;
+    private Timestamp fortuneYear;
 
     public HrCompany() {}
 
@@ -104,7 +103,7 @@ public class HrCompany implements Serializable {
         String    feature,
         Byte      fortune,
         Byte      fortuneScale,
-        Date      fortuneYear
+        Timestamp fortuneYear
     ) {
         this.id = id;
         this.type = type;
@@ -316,11 +315,11 @@ public class HrCompany implements Serializable {
         this.fortuneScale = fortuneScale;
     }
 
-    public Date getFortuneYear() {
+    public Timestamp getFortuneYear() {
         return this.fortuneYear;
     }
 
-    public void setFortuneYear(Date fortuneYear) {
+    public void setFortuneYear(Timestamp fortuneYear) {
         this.fortuneYear = fortuneYear;
     }
 

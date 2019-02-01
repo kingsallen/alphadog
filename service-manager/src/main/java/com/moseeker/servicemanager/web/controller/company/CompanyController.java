@@ -25,6 +25,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyMobotConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
@@ -647,6 +648,37 @@ public class CompanyController {
             return ResponseLogNotification.success(request, result);
         }catch(Exception e){
             logger.info(e.getMessage(),e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/hrcompany/mobot/conf", method = RequestMethod.GET)
+    @ResponseBody
+    public String getMobotConf(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = parseRequestParam(request);
+            int company_id = data.getInt("company_id");
+            if (company_id <= 0) {
+                ResponseLogNotification.fail(request, "公司编号不可以为空");
+            }
+            HrCompanyMobotConfDO result = companyServices.getMobotConf(company_id);
+            return Result.success(result).toJson();
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/hrcompany/mobot/conf", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateMobotConf(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = parseRequestParam(request);
+            HrCompanyMobotConfDO param = ParamUtils.initModelForm(data, HrCompanyMobotConfDO.class);
+            HrCompanyMobotConfDO result = companyServices.updateMobotConf(param);
+            return Result.success(result).toJson();
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

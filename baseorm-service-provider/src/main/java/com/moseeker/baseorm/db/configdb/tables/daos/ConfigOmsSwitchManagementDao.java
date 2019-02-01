@@ -80,13 +80,6 @@ public class ConfigOmsSwitchManagementDao extends DAOImpl<ConfigOmsSwitchManagem
     }
 
     /**
-     * Fetch a unique record that has <code>module_name = value</code>
-     */
-    public com.moseeker.baseorm.db.configdb.tables.pojos.ConfigOmsSwitchManagement fetchOneByModuleName(Integer value) {
-        return fetchOne(ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME, value);
-    }
-
-    /**
      * Fetch records that have <code>module_param IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigOmsSwitchManagement> fetchByModuleParam(String... values) {

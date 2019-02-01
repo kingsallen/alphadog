@@ -1675,7 +1675,9 @@ public class PositionService {
                     query.getDepartment(),
                     true,
                     query.getCustom());
-
+            logger.info("============================================");
+            logger.info(JSON.toJSONString(ret));
+            logger.info("============================================");
             if (ret.getStatus() == 0 && !StringUtils.isNullOrEmpty(ret.getData())) {
                 JSONObject jobj = JSON.parseObject(ret.getData());
                 JSONArray jdIdJsonArray = jobj.getJSONArray("jd_id_list");
@@ -1904,7 +1906,11 @@ public class PositionService {
                     }
                     e.setPublish_date(new SimpleDateFormat("YYYY-MM-dd HH:mm:ss").format(jr.getUpdateTime()));
                     e.setDepartment(jr.getDepartment());
-                    e.setVisitnum(jr.getVisitnum());
+                    int visitorNum=0;
+                    if(jr.getVisitnum()!=null){
+                        visitorNum=jr.getVisitnum();
+                    }
+                    e.setVisitnum(visitorNum);
                     e.setIn_hb(jr.getHbStatus() > 0);
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());

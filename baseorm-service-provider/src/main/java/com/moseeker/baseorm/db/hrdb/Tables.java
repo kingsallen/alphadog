@@ -28,9 +28,11 @@ import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrGroupCompanyRel;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbConfig;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
@@ -139,7 +141,7 @@ public class Tables {
     public static final HrCompanyConf HR_COMPANY_CONF = com.moseeker.baseorm.db.hrdb.tables.HrCompanyConf.HR_COMPANY_CONF;
 
     /**
-     * 邮件额度每天使用日志
+     * 公司和CS匹配表
      */
     public static final HrCompanyCs HR_COMPANY_CS = com.moseeker.baseorm.db.hrdb.tables.HrCompanyCs.HR_COMPANY_CS;
 
@@ -204,6 +206,11 @@ public class Tables {
     public static final HrHbItems HR_HB_ITEMS = com.moseeker.baseorm.db.hrdb.tables.HrHbItems.HR_HB_ITEMS;
 
     /**
+     * The table <code>hrdb.hr_hb_items_backup_chendi_180625</code>.
+     */
+    public static final HrHbItemsBackupChendi_180625 HR_HB_ITEMS_BACKUP_CHENDI_180625 = com.moseeker.baseorm.db.hrdb.tables.HrHbItemsBackupChendi_180625.HR_HB_ITEMS_BACKUP_CHENDI_180625;
+
+    /**
      * 红包配置和职位绑定表
      */
     public static final HrHbPositionBinding HR_HB_POSITION_BINDING = com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding.HR_HB_POSITION_BINDING;
@@ -217,6 +224,11 @@ public class Tables {
      * 红包发送记录
      */
     public static final HrHbSendRecord HR_HB_SEND_RECORD = com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord.HR_HB_SEND_RECORD;
+
+    /**
+     * 红包活动与主题的关系表
+     */
+    public static final HrHbTheme HR_HB_THEME = com.moseeker.baseorm.db.hrdb.tables.HrHbTheme.HR_HB_THEME;
 
     /**
      * 专题传播统计次数表
@@ -349,7 +361,7 @@ public class Tables {
     public static final HrWxHrChatList HR_WX_HR_CHAT_LIST = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatList.HR_WX_HR_CHAT_LIST;
 
     /**
-     * The table <code>hrdb.hr_wx_hr_chat_voice</code>.
+     * 语音聊天的语音信息
      */
     public static final HrWxHrChatVoice HR_WX_HR_CHAT_VOICE = com.moseeker.baseorm.db.hrdb.tables.HrWxHrChatVoice.HR_WX_HR_CHAT_VOICE;
 
@@ -359,7 +371,7 @@ public class Tables {
     public static final HrWxImageReply HR_WX_IMAGE_REPLY = com.moseeker.baseorm.db.hrdb.tables.HrWxImageReply.HR_WX_IMAGE_REPLY;
 
     /**
-     * The table <code>hrdb.hr_wx_module</code>.
+     * 微信模块表
      */
     public static final HrWxModule HR_WX_MODULE = com.moseeker.baseorm.db.hrdb.tables.HrWxModule.HR_WX_MODULE;
 

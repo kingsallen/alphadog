@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord> {
 
-    private static final long serialVersionUID = -1436427731;
+    private static final long serialVersionUID = 756032146;
 
     /**
      * Setter for <code>hrdb.hr_company_conf.company_id</code>.
@@ -366,30 +366,30 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     }
 
     /**
-     * Setter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c端简历导入开关 0：未开启，1：开启
-     */
-    public void setVeryeastSwitch(Byte value) {
-        set(24, value);
-    }
-
-    /**
-     * Getter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c端简历导入开关 0：未开启，1：开启
-     */
-    public Byte getVeryeastSwitch() {
-        return (Byte) get(24);
-    }
-
-    /**
      * Setter for <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
      */
     public void setJob51SalaryDiscuss(Byte value) {
-        set(25, value);
+        set(24, value);
     }
 
     /**
      * Getter for <code>hrdb.hr_company_conf.job51_salary_discuss</code>. 51薪资面议开关 0：未开启，1：开启
      */
     public Byte getJob51SalaryDiscuss() {
+        return (Byte) get(24);
+    }
+
+    /**
+     * Setter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
+     */
+    public void setVeryeastSwitch(Byte value) {
+        set(25, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_company_conf.veryeast_switch</code>. 最佳东方c 端简 导入开关 0：未开启，1：开启
+     */
+    public Byte getVeryeastSwitch() {
         return (Byte) get(25);
     }
 
@@ -503,7 +503,7 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
     /**
      * Create a detached, initialised HrCompanyConfRecord
      */
-    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte veryeastSwitch, Byte job51SalaryDiscuss, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName) {
+    public HrCompanyConfRecord(Integer companyId, Integer themeId, Integer hbThrottle, String appReply, Timestamp createTime, Timestamp updateTime, String employeeBinding, String recommendPresentee, String recommendSuccess, String forwardMessage, Short applicationCountLimit, Short schoolApplicationCountLimit, String jobCustomTitle, String searchSeq, String searchImg, String jobOccupation, String teamnameCustom, Timestamp applicationTime, Integer newjdStatus, Byte hrChat, Byte showInQx, String employeeSlug, String displayLocale, Byte talentpoolStatus, Byte job51SalaryDiscuss, Byte veryeastSwitch, Byte mallSwitch, String mallGoodsMethod, Byte mallGoodsMethodState, Byte isOpenGdpr, String mobotHeadImg, String mobotName) {
         super(HrCompanyConf.HR_COMPANY_CONF);
 
         set(0, companyId);
@@ -530,8 +530,8 @@ public class HrCompanyConfRecord extends UpdatableRecordImpl<HrCompanyConfRecord
         set(21, employeeSlug);
         set(22, displayLocale);
         set(23, talentpoolStatus);
-        set(24, veryeastSwitch);
-        set(25, job51SalaryDiscuss);
+        set(24, job51SalaryDiscuss);
+        set(25, veryeastSwitch);
         set(26, mallSwitch);
         set(27, mallGoodsMethod);
         set(28, mallGoodsMethodState);

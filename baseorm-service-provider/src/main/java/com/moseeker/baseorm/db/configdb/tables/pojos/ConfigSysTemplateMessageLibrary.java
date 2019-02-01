@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary implements Serializable {
 
-    private static final long serialVersionUID = -1884090126;
+    private static final long serialVersionUID = -2086204881;
 
     private Integer id;
     private String  title;
@@ -43,8 +43,6 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
     private String  url;
     private String  fromName;
     private String  subject;
-    private String  symbol;
-    private String  colorJson;
 
     public ConfigSysTemplateMessageLibrary() {}
 
@@ -68,8 +66,6 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.url = value.url;
         this.fromName = value.fromName;
         this.subject = value.subject;
-        this.symbol = value.symbol;
-        this.colorJson = value.colorJson;
     }
 
     public ConfigSysTemplateMessageLibrary(
@@ -91,9 +87,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         String  remark,
         String  url,
         String  fromName,
-        String  subject,
-        String  symbol,
-        String  colorJson
+        String  subject
     ) {
         this.id = id;
         this.title = title;
@@ -114,8 +108,6 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.url = url;
         this.fromName = fromName;
         this.subject = subject;
-        this.symbol = symbol;
-        this.colorJson = colorJson;
     }
 
     public Integer getId() {
@@ -270,22 +262,6 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.subject = subject;
     }
 
-    public String getSymbol() {
-        return this.symbol;
-    }
-
-    public void setSymbol(String symbol) {
-        this.symbol = symbol;
-    }
-
-    public String getColorJson() {
-        return this.colorJson;
-    }
-
-    public void setColorJson(String colorJson) {
-        this.colorJson = colorJson;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ConfigSysTemplateMessageLibrary (");
@@ -309,8 +285,6 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         sb.append(", ").append(url);
         sb.append(", ").append(fromName);
         sb.append(", ").append(subject);
-        sb.append(", ").append(symbol);
-        sb.append(", ").append(colorJson);
 
         sb.append(")");
         return sb.toString();

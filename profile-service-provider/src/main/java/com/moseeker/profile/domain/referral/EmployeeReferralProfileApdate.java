@@ -7,6 +7,7 @@ import com.moseeker.entity.ReferralEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
+import com.moseeker.profile.domain.ProfileAttementVO;
 import com.moseeker.profile.service.impl.ProfileCompanyTagService;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -39,8 +40,10 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
-    public void storeReferralUser(UserUserRecord userRecord,EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
-             UserEmployeeDO employeeDO){
+    public void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice, ProfilePojo profilePojo,
+                                  UserEmployeeDO employeeDO, ProfileAttementVO attementVO){
+        int userId = 0;
+        int attachementId = 0;
         if (userRecord != null) {
             logger.info("recommend userRecord.id:{}", userRecord.getId());
             UserUserRecord userUserRecord = new UserUserRecord();
@@ -70,9 +73,10 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
                 if(logRecord != null){
                     id = logRecord.getAttementId();
                 }
-                attachmentId = profileEntity.mergeProfileReferral(profilePojo, userId, id);
+                attachementId = profileEntity.mergeProfileReferral(profilePojo, userId, id);
+                int temp= userId;
                 tp.startTast(() -> {
-                    companyTagService.handlerCompanyTagByUserId(userId);
+                    companyTagService.handlerCompanyTagByUserId(temp);
                     return true;
                 });
             }
@@ -83,13 +87,16 @@ public abstract class EmployeeReferralProfileApdate extends EmployeeReferralProf
             ProfileProfileDO profileDO =profileEntity.getProfileByUserId(userId);
             ProfileAttachmentDO attachmentRecord = profileEntity.getProfileAttachmentByProfileId(profileDO.getId());
             if(attachmentRecord!=null) {
-                attachmentId = attachmentRecord.getId();
+                attachementId = attachmentRecord.getId();
             }
+            int temp= userId;
             tp.startTast(() -> {
-                companyTagService.handlerCompanyTagByUserId(userId);
+                companyTagService.handlerCompanyTagByUserId(temp);
                 return true;
             });
         }
+        attementVO.setUserId(userId);
+        attementVO.setAttachmentId(attachementId);
     }
 
 }

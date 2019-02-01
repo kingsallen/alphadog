@@ -4,14 +4,17 @@ import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.searchengine.domain.PastPOJO;
 import com.moseeker.searchengine.domain.SearchPast;
+import com.moseeker.searchengine.util.SearTypeEnum;
 import com.moseeker.searchengine.util.SearchMethodUtil;
 import com.moseeker.searchengine.util.SearchUtil;
 import org.apache.log4j.Logger;
@@ -21,6 +24,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.*;
 import org.elasticsearch.script.Script;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.metrics.MetricsAggregationBuilder;
@@ -30,6 +34,7 @@ import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -47,6 +52,8 @@ public class TalentpoolSearchengine {
     private SearchMethodUtil searchMethodUtil;
     @Autowired
     private DictCityDao dictCityDao;
+    @Resource(name="cacheClient")
+    private RedisClient redis;
     @CounterIface
     public Map<String, Object> talentSearch(Map<String, String> params) {
         logger.info("===================+++++++++++++++++++++++++++++++++++");
@@ -56,7 +63,7 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
-            QueryBuilder query = this.query(params);
+            QueryBuilder query = this.query(params,client);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerSortOrder(params, builder);
             this.handlerPage(params, builder);
@@ -141,7 +148,7 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
-            QueryBuilder query = this.query(params);
+            QueryBuilder query = this.query(params,client);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             this.handlerPage(params, builder);
             String[] returnParams={"user.profiles.profile.user_id"};
@@ -197,7 +204,7 @@ public class TalentpoolSearchengine {
         TransportClient client=null;
         try {
             client = searchUtil.getEsClient();
-            QueryBuilder query = this.query(params);
+            QueryBuilder query = this.query(params,client);
             logger.info("=========================================");
             logger.info(query.toString());
             logger.info("=========================================");
@@ -231,7 +238,7 @@ public class TalentpoolSearchengine {
                 params.put("progress",progressStatus);
             }
             client=searchUtil.getEsClient();
-            QueryBuilder query = this.query(params);
+            QueryBuilder query = this.query(params,client);
             SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
             builder.addAggregation(this.handleAllApplicationCountAgg(params))        //当前状态下的申请数量数量
 //                   .addAggregation(this.handleAllcountAgg(params))
@@ -708,7 +715,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(sex)&&Integer.parseInt(sex)!=0){
             this.queryByGender(sex,query);
         }
-        if(Integer.parseInt(isRecommend)>0){
+        if(StringUtils.isNotNullOrEmpty(isRecommend)&&Integer.parseInt(isRecommend)>0){
             this.queryByRecom(query);
         }
         if(StringUtils.isNotNullOrEmpty(companyName)){
@@ -748,7 +755,7 @@ public class TalentpoolSearchengine {
             }
             ((BoolQueryBuilder) query).must(keyand);
         }
-        if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||Integer.parseInt(isRecommend)>0){
+        if(StringUtils.isNotNullOrEmpty(origins)||StringUtils.isNotNullOrEmpty(submitTime)||(StringUtils.isNotNullOrEmpty(isRecommend)&&Integer.parseInt(isRecommend)>0)){
             //这里是处理groovy语法的位置
             StringBuffer sb=new StringBuffer();
             sb.append("user=_source.user;if(user){applications=user.applications;;origins=user.origin_data;if(applications){for(val in applications){if(");
@@ -762,7 +769,7 @@ public class TalentpoolSearchengine {
                 String longTime=this.getLongTime(submitTime);
                 sb.append(" val.submit_time>'"+longTime+"'&&");
             }
-            if(Integer.parseInt(isRecommend)>0){
+            if(StringUtils.isNotNullOrEmpty(isRecommend) && Integer.parseInt(isRecommend)>0){
                 sb.append("val.recommender_user_id>0 &&");
             }
             if(StringUtils.isNotNullOrEmpty(origins)){
@@ -839,12 +846,12 @@ public class TalentpoolSearchengine {
     /*
      组装查询语句
      */
-    public QueryBuilder query(Map<String,String> params) throws TException {
+    public QueryBuilder query(Map<String,String> params,TransportClient client) throws TException {
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         this.handlerPositionId(params);
         this.handlerProvinceCity(params);
-        this.queryCommons(params,query);
+        this.queryCommons(params,query,client);
         this.queryProfiles(params,query);
         this.queryApplications(params,query);
         QueryBuilder queryAppScript=this.queryScript(params);
@@ -921,7 +928,7 @@ public class TalentpoolSearchengine {
         String hrId=params.get("hr_account_id");
         String companyId=params.get("company_id");
         if(!this.isUseFieldorder(params)){
-            builder.addSort(this.handlerScoreOrderScript(publisherIds));
+            builder.addSort("_score", SortOrder.DESC);
             if(this.isOrderTalent(params)){
                 this.orderByTalent(publisherIdList,hrId,companyId,builder);
             }else {
@@ -1053,7 +1060,7 @@ public class TalentpoolSearchengine {
     /*
      组装基本部分的查询条件
      */
-    private void queryCommons(Map<String,String> params,QueryBuilder query){
+    private void queryCommons(Map<String,String> params,QueryBuilder query,TransportClient client){
         String keyword=params.get("keyword");
         String cityCode=params.get("city_code");
         String companyName=params.get("company_name");
@@ -1071,8 +1078,11 @@ public class TalentpoolSearchengine {
                 this.queryByIntentionCity(intentionCityCode,query);
             }
             if(StringUtils.isNotNullOrEmpty(keyword)){
-                this.queryByKeyWord(keyword,query);
+//                this.queryByKeyWord(keyword,query);
+                String cid=params.get("company_id");
+                this.queryNewKeyWords(keyword,cid,query,client);
             }
+
             this.homeQuery(cityCode,query);
             String lastCompany=params.get("in_last_job_search_company");
             this.pastCompanyQuery(lastCompany,companyName,pastCompanyKeyWord,query);
@@ -1279,7 +1289,6 @@ public class TalentpoolSearchengine {
             Map<String,String> suggetParams=this.convertParams(params);
             Map<String,Object> result=searchMethodUtil.suggestPosition(suggetParams);
             List<Integer> positionIdList=this.getSuggestPositionId(result);
-
             String positionIds=searchUtil.listConvertString(positionIdList);
             return positionIds;
         }
@@ -1600,6 +1609,219 @@ public class TalentpoolSearchengine {
         List<Integer> boostList=this.getBoostList();
         searchUtil.keyWordforQueryStringPropery(keyWord,queryBuilder,fieldList,boostList);
     }
+
+
+    private void queryNewKeyWords(String keyWord,String companyId,QueryBuilder queryBuilder,TransportClient client){
+        int flag=this.getSearchCataGoery(keyWord,companyId,client);
+        if(flag== SearTypeEnum.SEARCH_CITY.getValue()){
+            this.convertCitySearch(keyWord,queryBuilder);
+        }else if(flag== SearTypeEnum.SEARCH_POSITION.getValue()){
+            this.convertPositionSearch(keyWord,queryBuilder);
+        }else if(flag== SearTypeEnum.SEARCH_COMAPNY.getValue()){
+            this.convertvalidateCompanySearch(keyWord,queryBuilder);
+        }else if(flag== SearTypeEnum.SEARCH_NAME.getValue()){
+            this.convertValidateNameSearch("user.profiles.basic.name",keyWord,queryBuilder);
+        }else{
+            this.queryByKeyWord(keyWord,queryBuilder);
+        }
+
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  组装查询职位的语句
+     * @Date 下午3:02 19/1/18
+     * @Param [keyWord, queryBuilder]
+     * @return void
+     **/
+    private void convertPositionSearch(String keyWord,QueryBuilder queryBuilder){
+        this.convertPositionValidateSearch(keyWord,queryBuilder);
+        searchUtil.searchNewPositionDataGroup(keyWord,queryBuilder);
+    }
+
+
+    /*
+     * @Author zztaiwll
+     * @Description  判断类别
+     * @Date 下午2:14 19/1/18
+     * @Param [keyWord, companyId, client]
+     * @return int
+     **/
+    private int getSearchCataGoery(String keyWord,String companyId,TransportClient client){
+
+        boolean isCity=this.ValidateCitySearch(keyWord,companyId,client);
+        if(isCity){
+            return SearTypeEnum.SEARCH_CITY.getValue();
+        }
+        boolean isPosition=this.validatePositionSearch(keyWord,companyId,client);
+        if(isPosition){
+            return SearTypeEnum.SEARCH_POSITION.getValue();
+        }
+        boolean isCompany=this.validateCompanySearch(keyWord,companyId,client);
+        if(isCompany){
+            return SearTypeEnum.SEARCH_COMAPNY.getValue();
+        }
+        boolean isName=this.validateNameSearch("user.profiles.basic.name",keyWord,companyId,client);
+        if(isName){
+            return SearTypeEnum.SEARCH_NAME.getValue();
+        }
+        return -1;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  校验是否是公司
+     * @Date 下午2:30 19/1/18
+     * @Param [condition, companyId, client]
+     * @return boolean
+     **/
+    private boolean validateCompanySearch(String condition,String companyId,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.convertvalidateCompanySearch(condition,query);
+        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        builder.setSize(0);
+        logger.info("==========查询是否属于公司============");
+        logger.info(builder.toString());
+        logger.info("====================================");
+        SearchResponse response = builder.execute().actionGet();
+        SearchHits hit=response.getHits();
+        long totalNum=hit.getTotalHits();
+        if(totalNum>0){
+            return true;
+        }
+        return false;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  校验是否是公司的语句
+     * @Date 下午2:29 19/1/18
+     * @Param [condition, query]
+     * @return void
+     **/
+    private void  convertvalidateCompanySearch(String condition,QueryBuilder query){
+        List<String> fieldNameList=new ArrayList<>();
+        fieldNameList.add("user.profiles.other_workexps.company_name_data");
+        fieldNameList.add("user.profiles.recent_job.company_name_data");
+        searchUtil.shouldMatchParseQuery(fieldNameList,condition,query);
+    }
+
+    /*
+     * @Author zztaiwll
+     * @Description  校验是否是职位
+     * @Date 下午2:27 19/1/18
+     * @Param [condition, companyId, client]
+     * @return boolean
+     **/
+    private boolean validatePositionSearch(String condition,String companyId,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.convertPositionValidateSearch(condition,query);
+        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        builder.setSize(0);
+        logger.info("==========查询是否属于职位============");
+        logger.info(builder.toString());
+        logger.info("====================================");
+        SearchResponse response = builder.execute().actionGet();
+        SearchHits hit=response.getHits();
+        long totalNum=hit.getTotalHits();
+        if(totalNum>0){
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * @Author zztaiwll
+     * @Description  校验是否是职位的语句拼装
+     * @Date 下午2:27 19/1/18
+     * @Param [condition, companyId, client]
+     * @return boolean
+     **/
+    private void convertPositionValidateSearch(String condition,QueryBuilder query){
+        List<String> fieldNameList=new ArrayList<>();
+        fieldNameList.add("user.profiles.other_workexps.job_name");
+        fieldNameList.add("user.profiles.recent_job.job_name");
+        searchUtil.shouldWildCard(fieldNameList,condition,query);
+
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  组装查询姓名的语句可以复用
+     * @Date 上午11:58 19/1/18
+     * @Param [fieldName, condition, query]
+     * @return void
+     **/
+    private void convertValidateNameSearch(String fieldName,String condition, QueryBuilder query){
+        searchUtil.queryMatchPrefixSingle(fieldName,condition,query);
+        searchUtil.convertSearchNameScript(condition,query);
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  查询是否是名字
+     * @Date 上午11:55 19/1/18
+     * @Param [fieldName, condition, client]
+     * @return boolean
+     **/
+    private boolean validateNameSearch(String fieldName,String condition,String companyId,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.convertValidateNameSearch(fieldName,condition,query);
+        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        builder.setSize(0);
+        logger.info("==========查询是否属于人名============");
+        logger.info(builder.toString());
+        logger.info("====================================");
+        SearchResponse response = builder.execute().actionGet();
+        SearchHits hit=response.getHits();
+        long totalNum=hit.getTotalHits();
+        if(totalNum>0){
+            return true;
+        }
+        return false;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  校验城市
+     * @Date 下午12:01 19/1/18
+     * @Param [fieldName, condition, client]
+     * @return boolean
+     **/
+    private boolean ValidateCitySearch(String condition,String companyId,TransportClient client){
+        QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
+        QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
+        this.convertCitySearch(condition,query);
+        searchUtil.handleTerm(companyId,query,"user.applications.company_id");
+        SearchRequestBuilder builder = client.prepareSearch(Constant.ES_INDEX).setTypes(Constant.ES_TYPE).setQuery(query);
+        builder.setSize(0);
+        logger.info("==========查询是否属于城市============");
+        logger.info(builder.toString());
+        logger.info("====================================");
+        SearchResponse response = builder.execute().actionGet();
+        SearchHits hit=response.getHits();
+        long totalNum=hit.getTotalHits();
+        if(totalNum>0){
+            return true;
+        }
+        return false;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  组装查询城市的语句
+     * @Date 下午3:08 19/1/18
+     * @Param [condition, query]
+     * @return void
+     **/
+    private void convertCitySearch(String condition,QueryBuilder query){
+        List<String> cityField=new ArrayList<>();
+        cityField.add("user.profiles.basic.city_name");
+        cityField.add("user.profiles.intentions.cities.city_name");
+        searchUtil.shouldMatchParseQuery(cityField,condition,query);
+    }
+
+
+
     /*
        构建招聘类型的查询语句
      */

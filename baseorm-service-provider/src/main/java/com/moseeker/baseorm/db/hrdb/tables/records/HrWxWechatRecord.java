@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
 
-    private static final long serialVersionUID = -1866257017;
+    private static final long serialVersionUID = -1156073374;
 
     /**
      * Setter for <code>hrdb.hr_wx_wechat.id</code>.
@@ -421,6 +421,20 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
         return (Integer) get(27);
     }
 
+    /**
+     * Setter for <code>hrdb.hr_wx_wechat.defaultMessage</code>. 替代defalut字段,等微信端修改后弃用default字段
+     */
+    public void setDefaultmessage(Integer value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>hrdb.hr_wx_wechat.defaultMessage</code>. 替代defalut字段,等微信端修改后弃用default字段
+     */
+    public Integer getDefaultmessage() {
+        return (Integer) get(28);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -447,7 +461,7 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
     /**
      * Create a detached, initialised HrWxWechatRecord
      */
-    public HrWxWechatRecord(Integer id, Integer companyId, Byte type, String signature, String name, String alias, String username, String password, String token, String appid, String secret, Integer welcome, Integer default_, String qrcode, Byte passiveSeeker, Byte thirdOauth, Byte hrRegister, Integer accessTokenCreateTime, Integer accessTokenExpired, String accessToken, String jsapiTicket, Byte authorized, Integer unauthorizedTime, String authorizerRefreshToken, Timestamp createTime, Timestamp updateTime, Integer showQxQrcode, Integer showCustomTheme) {
+    public HrWxWechatRecord(Integer id, Integer companyId, Byte type, String signature, String name, String alias, String username, String password, String token, String appid, String secret, Integer welcome, Integer default_, String qrcode, Byte passiveSeeker, Byte thirdOauth, Byte hrRegister, Integer accessTokenCreateTime, Integer accessTokenExpired, String accessToken, String jsapiTicket, Byte authorized, Integer unauthorizedTime, String authorizerRefreshToken, Timestamp createTime, Timestamp updateTime, Integer showQxQrcode, Integer showCustomTheme, Integer defaultmessage) {
         super(HrWxWechat.HR_WX_WECHAT);
 
         set(0, id);
@@ -478,5 +492,6 @@ public class HrWxWechatRecord extends UpdatableRecordImpl<HrWxWechatRecord> {
         set(25, updateTime);
         set(26, showQxQrcode);
         set(27, showCustomTheme);
+        set(28, defaultmessage);
     }
 }

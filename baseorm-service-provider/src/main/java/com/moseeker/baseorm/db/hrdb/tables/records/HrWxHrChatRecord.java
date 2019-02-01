@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record13<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String, String, String> {
 
-    private static final long serialVersionUID = 291368062;
+    private static final long serialVersionUID = -1109599774;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -61,14 +61,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
+     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
      */
     public void setContent(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
+     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
      */
     public String getContent() {
         return (String) get(2);
@@ -89,14 +89,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者
+     * Setter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
      */
     public void setSpeaker(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者
+     * Getter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
      */
     public Byte getSpeaker() {
         return (Byte) get(4);
@@ -145,14 +145,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio、voice
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio、voice
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
      */
     public String getMsgType() {
         return (String) get(8);
@@ -187,14 +187,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. ChatBot复杂结构体的聊天内容
+     * Setter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
      */
     public void setCompoundContent(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. ChatBot复杂结构体的聊天内容
+     * Getter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
      */
     public String getCompoundContent() {
         return (String) get(11);

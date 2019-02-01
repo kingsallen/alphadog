@@ -412,4 +412,23 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
                 .fetchInto(UserEmployeeDO.class);
     }
 
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> getEmployeeList(List<Integer> userIdList,int companyId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(userIdList)).and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.eq(companyId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
+    }
+
+    public com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee getSingleEmployeeByUserId(int userId) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte)0)).and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte)0))
+                .fetchOneInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
+    }
+
+    public List<com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee> getDataListByCidListAndUserIdList(List<Integer> userIdList,List<Integer> companyIdList) {
+        return create.selectFrom(UserEmployee.USER_EMPLOYEE).where(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.in(userIdList))
+                .and(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIdList)).orderBy(UserEmployee.USER_EMPLOYEE.ACTIVATION.asc(),UserEmployee.USER_EMPLOYEE.DISABLE.asc())
+                .fetchInto(com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee.class);
+    }
+
+
 }

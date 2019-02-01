@@ -11,6 +11,9 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 
 import java.util.List;
 
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyMobotConfDO;
+import org.jooq.UpdateSetFirstStep;
+import org.jooq.UpdateSetMoreStep;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -75,5 +78,29 @@ public class HrCompanyConfDao extends JooqCrudImpl<HrCompanyConfDO, HrCompanyCon
 		com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf data=create.selectFrom(HrCompanyConf.HR_COMPANY_CONF).where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(id)).fetchOneInto(com.moseeker.baseorm.db.hrdb.tables.pojos.HrCompanyConf.class);
 		return data;
 
+	}
+
+    public HrCompanyMobotConfDO getMobotConf(int companyId) {
+		return create.select(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID,HrCompanyConf.HR_COMPANY_CONF.MOBOT_HEAD_IMG,HrCompanyConf.HR_COMPANY_CONF.MOBOT_NAME)
+				.from(HrCompanyConf.HR_COMPANY_CONF)
+				.where(HrCompanyConf.HR_COMPANY_CONF.COMPANY_ID.eq(companyId))
+				.fetchOneInto(HrCompanyMobotConfDO.class);
+    }
+
+	public int updateMobotConf(HrCompanyMobotConfDO mobotConf) {
+		HrCompanyConfRecord record = new HrCompanyConfRecord();
+		record.setCompanyId(mobotConf.getCompanyId());
+
+		create.update(HrCompanyConf.HR_COMPANY_CONF);
+		if(mobotConf.getMobotHeadImg() != null) {
+			record.setMobotHeadImg(mobotConf.getMobotHeadImg());
+		}
+
+		if(mobotConf.getMobotName() != null) {
+			record.setMobotName(mobotConf.getMobotName());
+		}
+
+		create.attach(record);
+		return record.update();
 	}
 }

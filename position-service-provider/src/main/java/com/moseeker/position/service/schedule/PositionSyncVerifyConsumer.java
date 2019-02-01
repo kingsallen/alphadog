@@ -40,8 +40,8 @@ public class PositionSyncVerifyConsumer {
     @Resource(name = "cacheClient")
     protected RedisClient redisClient;
 
-    @RabbitListener(queues = {PositionSyncVerify.MOBILE_VERIFY_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
-    @RabbitHandler
+//    @RabbitListener(queues = {PositionSyncVerify.MOBILE_VERIFY_QUEUE}, containerFactory = "rabbitListenerContainerFactoryAutoAck")
+//    @RabbitHandler
     public void handle(Message message) {
         String json="";
 

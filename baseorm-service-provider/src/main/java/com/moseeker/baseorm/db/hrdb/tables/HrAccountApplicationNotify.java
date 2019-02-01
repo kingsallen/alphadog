@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrAccountApplicationNotify extends TableImpl<HrAccountApplicationNotifyRecord> {
 
-    private static final long serialVersionUID = -91646231;
+    private static final long serialVersionUID = 100822474;
 
     /**
      * The reference instance of <code>hrdb.hr_account_application_notify</code>
@@ -64,7 +64,7 @@ public class HrAccountApplicationNotify extends TableImpl<HrAccountApplicationNo
     /**
      * The column <code>hrdb.hr_account_application_notify.flag</code>. 是否提醒 0:不需要 1:需要
      */
-    public final TableField<HrAccountApplicationNotifyRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否提醒 0:不需要 1:需要");
+    public final TableField<HrAccountApplicationNotifyRecord, Byte> FLAG = createField("flag", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否提醒 0:不需要 1:需要");
 
     /**
      * The column <code>hrdb.hr_account_application_notify.create_time</code>. 创建时间
