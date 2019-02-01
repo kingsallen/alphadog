@@ -1422,8 +1422,13 @@ public class CompanyService {
             Integer i = configOmsSwitchManagementDao.update(configOmsSwitchManagement);
             //如果更新成功，返回开关对象
             if(i>0){
-                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
-                abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                /*
+                * 等人脉雷达上线
+                * */
+//                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagement.getModuleName()));
+//                if(abstractCompanySwitchHandler!=null) {
+//                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+//                }
                 return companySwitchVO;
             }else{
                 //如果更新失败，抛出异常
