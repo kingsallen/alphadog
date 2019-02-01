@@ -7,6 +7,7 @@ import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
@@ -24,12 +25,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractReferralTypeHandler {
 
 
     @Autowired
     protected UserWxUserDao wxUserDao;
+    @Autowired
+    protected UserUserDao userUserDao;
     @Autowired
     protected HrWxWechatDao wxWechatDao;
     @Autowired
@@ -69,7 +73,8 @@ public abstract class AbstractReferralTypeHandler {
      * 组装推荐人数据
      * @return jsonObject
      */
-    protected abstract JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject referralTypeSingleMap, boolean radarSwitchOpen);
+    protected abstract JSONObject initRecomUserInfo(JobApplicationDO jobApplicationDO, JSONObject referralTypeSingleMap,
+                                                    boolean radarSwitchOpen);
 
     protected abstract List<JobApplicationDO> getApplicationsByReferralType(List<JobApplicationDO> jobApplicationDOS);
 
@@ -101,6 +106,7 @@ public abstract class AbstractReferralTypeHandler {
         JSONObject position = new JSONObject();
         position.put("pid", jobPosition.getId());
         position.put("title", jobPosition.getTitle());
+        position.put("status", jobPosition.getStatus());
         return position;
     }
 
