@@ -178,10 +178,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidateTemplateShareChainDO> handledRecords = shareChainDOS.stream().filter(record -> (record.getType() != 0)).collect(Collectors.toList());
         // 通过职位id和userid获取职位转发记录
         List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIdsAndPids(beRecomUserIds, positionIds);
-
-        candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
-
-        candidatePositionDOS = filterAppliedCandidate(candidatePositionDOS);
+        // 过滤指定规则的浏览记录
+        candidatePositionDOS = filterSpecficCandidate(candidatePositionDOS, handledRecords, jobPositions);
 
         List<JSONObject> cards = new ArrayList<>();
         int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
@@ -215,12 +213,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
-    }
-
-    private List<ReferralSeekRecommendRecord> getSeekRecommendRecords(List<CandidatePositionDO> currentPageCandidatePositions, ReferralCardInfo cardInfo) {
-        List<Integer> pids = currentPageCandidatePositions.stream().map(CandidatePositionDO::getPositionId).distinct().collect(Collectors.toList());
-        List<Integer> seekReferralUserIds = currentPageCandidatePositions.stream().map(CandidatePositionDO::getUserId).distinct().collect(Collectors.toList());
-        return seekRecommendDao.fetchSeekRecommendByPostAndPressentee(cardInfo.getUserId(), pids, seekReferralUserIds);
     }
 
     @Override
@@ -494,11 +486,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
             JobPositionDO jobPositionDO = positionMap.get(jobApplicationDO.getPositionId());
 
-            UserUserRecord applier = allUserMap.get(jobApplicationDO.getApplierId());
-
             List<HrOperationRecordRecord> hrOperations = hrOperationMap.get(jobApplicationDO.getId());
 
             JSONObject singleTypeMap = referralTypeMap.get(referralType);
+
+            UserUserRecord applier = allUserMap.get(jobApplicationDO.getApplierId());
 
             JSONObject card = handler.createApplyCard(jobApplicationDO, jobPositionDO, applier, hrOperations, singleTypeMap, radarSwitchOpen);
 
@@ -1176,7 +1168,32 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return inviteTemplateVO;
     }
 
+    private List<CandidatePositionDO> filterSpecficCandidate(List<CandidatePositionDO> candidatePositionDOS,
+                                                             List<CandidateTemplateShareChainDO> handledRecords,
+                                                             List<JobPositionDO> jobPositions) {
+        // 过滤掉已处理过的候选人
+        candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
+        // 过滤已申请过对应职位的候选人
+        candidatePositionDOS = filterAppliedCandidate(candidatePositionDOS);
+        // 过滤已下架的职位
+        candidatePositionDOS = filterDownShelfCandidate(candidatePositionDOS, jobPositions);
 
+        return candidatePositionDOS;
+    }
+
+    private List<CandidatePositionDO> filterDownShelfCandidate(List<CandidatePositionDO> candidatePositionDOS, List<JobPositionDO> jobPositions) {
+        List<Integer> downShelfPids = jobPositions.stream().filter(jobPositionDO -> jobPositionDO.getStatus() != 0)
+                .map(JobPositionDO::getId).collect(Collectors.toList());
+        candidatePositionDOS = candidatePositionDOS.stream().filter(candidatePositionDO -> !downShelfPids.contains(candidatePositionDO.getPositionId()))
+                .collect(Collectors.toList());
+        return candidatePositionDOS;
+    }
+
+    private List<ReferralSeekRecommendRecord> getSeekRecommendRecords(List<CandidatePositionDO> currentPageCandidatePositions, ReferralCardInfo cardInfo) {
+        List<Integer> pids = currentPageCandidatePositions.stream().map(CandidatePositionDO::getPositionId).distinct().collect(Collectors.toList());
+        List<Integer> seekReferralUserIds = currentPageCandidatePositions.stream().map(CandidatePositionDO::getUserId).distinct().collect(Collectors.toList());
+        return seekRecommendDao.fetchSeekRecommendByPostAndPressentee(cardInfo.getUserId(), pids, seekReferralUserIds);
+    }
 
     private void getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {
         // 查找浏览人中的员工
