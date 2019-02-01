@@ -106,7 +106,7 @@ public abstract class AbstractReferralTypeHandler {
         JSONObject position = new JSONObject();
         position.put("pid", jobPosition.getId());
         position.put("title", jobPosition.getTitle());
-        position.put("status", jobPosition.getStatus());
+        position.put("status", (int)jobPosition.getStatus());
         return position;
     }
 
