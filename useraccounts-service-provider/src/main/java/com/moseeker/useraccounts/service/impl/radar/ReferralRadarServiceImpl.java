@@ -509,13 +509,15 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         if(employeeRecord == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
+        String keyWord = progressInfo.getKeyword();
+        progressInfo.setKeyword("");
         List<JobApplicationDO> jobApplicationDOS = getQueryJobApplications(progressInfo, false);
         List<Integer> applierUserIds = jobApplicationDOS.stream().map(JobApplicationDO::getApplierId).distinct().collect(Collectors.toList());
         List<UserUserRecord> userUsers = userUserDao.fetchByIdList(applierUserIds);
         Set<String> names = userUsers.stream().map(UserUserRecord::getName).collect(Collectors.toSet());
         Set<String> result = new HashSet<>();
         for(String name : names){
-            if(name.contains(progressInfo.getKeyword())){
+            if(name.contains(keyWord)){
                 result.add(name);
             }
         }
