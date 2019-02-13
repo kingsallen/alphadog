@@ -321,17 +321,17 @@ public class TemplateMsgHttp {
         MessageTplDataCol keywords1 = new MessageTplDataCol();
         keywords1.setColor(keyword1Color);
         keywords1.setValue(position.getTitle());
-        colMap.put("keyword1", keywords1);
+        colMap.put("job", keywords1);
 
         MessageTplDataCol keywords2 = new MessageTplDataCol();
         keywords2.setColor("#173177");
         keywords2.setValue(companyDO.getAbbreviation());
-        colMap.put("keyword2", keywords2);
+        colMap.put("company", keywords2);
 
         MessageTplDataCol keywords3 = new MessageTplDataCol();
         keywords3.setColor("#173177");
         keywords3.setValue(time);
-        colMap.put("keyword3", keywords3);
+        colMap.put("time", keywords3);
 
         MessageTplDataCol remarkJson = new MessageTplDataCol();
         remarkJson.setColor("#173177");
