@@ -7,10 +7,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.*;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -958,5 +955,56 @@ public class SearchUtil {
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
         }
+    }
+
+
+
+
+    public void queryMatchPrefixSingle(String fieldName,String condition,QueryBuilder query){
+        MatchQueryBuilder search = QueryBuilders.matchPhrasePrefixQuery(fieldName, condition);
+        search.maxExpansions(0);
+        ((BoolQueryBuilder) query).must(search);
+    }
+
+    public void convertSearchNameScript(String condition,QueryBuilder query){
+        StringBuffer sb=new StringBuffer();
+        sb.append("_source.user.profiles.basic.name=='"+condition+"'");
+        ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
+        ((BoolQueryBuilder) query).filter(script);
+    }
+
+    public void shouldWildCard(List<String> fieldNameList,String condition,QueryBuilder query){
+        if (fieldNameList!=null&&fieldNameList.size()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String fields : fieldNameList) {
+                QueryBuilder fullf = QueryBuilders.wildcardQuery(fields, "*"+condition+"*");
+                ((BoolQueryBuilder) keyand).should(fullf);
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
+
+    public void searchNewPositionDataGroup(String condition,QueryBuilder query){
+        QueryBuilder keyand = QueryBuilders.boolQuery();
+
+        MatchQueryBuilder otherWorkexpJobMatch=QueryBuilders.matchQuery("user.profiles.other_workexps.job_name_data",condition);
+        otherWorkexpJobMatch.boost(1);
+        ((BoolQueryBuilder) keyand).should(otherWorkexpJobMatch);
+
+        MatchQueryBuilder otherWorkexpJobMatchparse=QueryBuilders.matchPhraseQuery("user.profiles.other_workexps.job_name_data",condition);
+        otherWorkexpJobMatchparse.boost(10);
+        ((BoolQueryBuilder) keyand).should(otherWorkexpJobMatchparse);
+
+        MatchQueryBuilder recentJobMatch=QueryBuilders.matchQuery("user.profiles.recent_job.job_name_data",condition);
+        recentJobMatch.boost(2);
+        ((BoolQueryBuilder) keyand).should(recentJobMatch);
+
+        MatchQueryBuilder recentJobMatchParse=QueryBuilders.matchPhraseQuery("user.profiles.recent_job.job_name_data",condition);
+        recentJobMatchParse.boost(20);
+        ((BoolQueryBuilder) keyand).should(recentJobMatchParse);
+
+        ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+        ((BoolQueryBuilder) query).must(keyand);
     }
 }

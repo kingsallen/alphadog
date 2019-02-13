@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> {
 
-    private static final long serialVersionUID = 427851902;
+    private static final long serialVersionUID = 912761620;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_position</code>
@@ -67,9 +67,9 @@ public class HrThirdPartyPosition extends TableImpl<HrThirdPartyPositionRecord> 
     public final TableField<HrThirdPartyPositionRecord, String> THIRD_PART_POSITION_ID = createField("third_part_position_id", org.jooq.impl.SQLDataType.VARCHAR.length(200).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "第三方渠道编号");
 
     /**
-     * The column <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,4=linkedin
+     * The column <code>hrdb.hr_third_party_position.channel</code>. 1=51job,2=猎聘,3=智联,6=最佳东方,7=一览英才，8=JobsDB，9=民航招聘，10=脉脉，11=58同城，12=台湾104，13=千寻猎头
      */
-    public final TableField<HrThirdPartyPositionRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,4=linkedin");
+    public final TableField<HrThirdPartyPositionRecord, Short> CHANNEL = createField("channel", org.jooq.impl.SQLDataType.SMALLINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "1=51job,2=猎聘,3=智联,6=最佳东方,7=一览英才，8=JobsDB，9=民航招聘，10=脉脉，11=58同城，12=台湾104，13=千寻猎头");
 
     /**
      * The column <code>hrdb.hr_third_party_position.is_synchronization</code>. 是否同步:0=未同步,1=同步,2=同步中，3=同步失败，4=同步错误(发生不能给用户显示的错误)

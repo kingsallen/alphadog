@@ -1287,20 +1287,20 @@ public class EmployeeEntity {
                     int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
                     if(result >0 ){
 
-                        /*JSONObject eventMessage = new JSONObject();
-                        eventMessage.put("name", "application cvpass");
-                        eventMessage.put("ID", UUID.randomUUID().toString());
-                        eventMessage.put("hr_id", jobPositionRecord.getPublisher());
-                        eventMessage.put("application_id", jobApplication.getId());
-                        eventMessage.put("recommend_user_id", jobApplication.getRecommenderUserId());
-                        eventMessage.put("position_id", jobPositionRecord.getId());
-                        eventMessage.put("applier_id", jobApplication.getApplierId());
-                        eventMessage.put("cvpass_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
-                        eventMessage.put("company_id", jobApplication.getCompanyId());
-
-                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
-                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
-                                        .build());*/
+//                        JSONObject eventMessage = new JSONObject();
+//                        eventMessage.put("name", "application cvpass");
+//                        eventMessage.put("ID", UUID.randomUUID().toString());
+//                        eventMessage.put("hr_id", jobPositionRecord.getPublisher());
+//                        eventMessage.put("application_id", jobApplication.getId());
+//                        eventMessage.put("recommend_user_id", jobApplication.getRecommenderUserId());
+//                        eventMessage.put("position_id", jobPositionRecord.getId());
+//                        eventMessage.put("applier_id", jobApplication.getApplierId());
+//                        eventMessage.put("cvpass_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+//                        eventMessage.put("company_id", jobApplication.getCompanyId());
+//
+//                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
+//                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
+//                                        .build());
                         HrWxWechatDO wechat = wechatDao.getHrWxWechatByCompanyId(jobPositionRecord.getCompanyId());
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("application_id", jobApplication.getId());

@@ -4,8 +4,6 @@
 package com.moseeker.baseorm.db.hrdb;
 
 
-import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationEvent;
-import com.moseeker.baseorm.db.hrdb.tables.CrmCustomerOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrAccountApplicationNotify;
 import com.moseeker.baseorm.db.hrdb.tables.HrAiConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrAppCvConf;
@@ -34,9 +32,12 @@ import com.moseeker.baseorm.db.hrdb.tables.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbPositionBinding;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbScratchCard;
 import com.moseeker.baseorm.db.hrdb.tables.HrHbSendRecord;
+import com.moseeker.baseorm.db.hrdb.tables.HrHbTheme;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5Statistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrHtml5UniqueStatistics;
 import com.moseeker.baseorm.db.hrdb.tables.HrImporterMonitor;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcess;
+import com.moseeker.baseorm.db.hrdb.tables.HrInterviewProcessRound;
 import com.moseeker.baseorm.db.hrdb.tables.HrLeaderBoard;
 import com.moseeker.baseorm.db.hrdb.tables.HrNps;
 import com.moseeker.baseorm.db.hrdb.tables.HrNpsRecommend;
@@ -69,8 +70,6 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxRule;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxTemplateMessage;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechatNoticeSyncStatus;
-import com.moseeker.baseorm.db.hrdb.tables.records.CrmCustomerOperationEventRecord;
-import com.moseeker.baseorm.db.hrdb.tables.records.CrmCustomerOperationRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAccountApplicationNotifyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAiConfRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrAppCvConfRecord;
@@ -99,9 +98,12 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrHbItemsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbPositionBindingRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbScratchCardRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbSendRecordRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrHbThemeRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHtml5StatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHtml5UniqueStatisticsRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrImporterMonitorRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrInterviewProcessRecord;
+import com.moseeker.baseorm.db.hrdb.tables.records.HrInterviewProcessRoundRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrLeaderBoardRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrNpsRecommendRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrNpsRecord;
@@ -160,8 +162,6 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<CrmCustomerOperationEventRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_EVENT = Identities0.IDENTITY_CRM_CUSTOMER_OPERATION_EVENT;
-    public static final Identity<CrmCustomerOperationRecordRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_RECORD = Identities0.IDENTITY_CRM_CUSTOMER_OPERATION_RECORD;
     public static final Identity<HrAccountApplicationNotifyRecord, Integer> IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY = Identities0.IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY;
     public static final Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = Identities0.IDENTITY_HR_AI_CONF;
     public static final Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = Identities0.IDENTITY_HR_APP_CV_CONF;
@@ -189,6 +189,8 @@ public class Keys {
     public static final Identity<HrHtml5StatisticsRecord, Integer> IDENTITY_HR_HTML5_STATISTICS = Identities0.IDENTITY_HR_HTML5_STATISTICS;
     public static final Identity<HrHtml5UniqueStatisticsRecord, Integer> IDENTITY_HR_HTML5_UNIQUE_STATISTICS = Identities0.IDENTITY_HR_HTML5_UNIQUE_STATISTICS;
     public static final Identity<HrImporterMonitorRecord, Integer> IDENTITY_HR_IMPORTER_MONITOR = Identities0.IDENTITY_HR_IMPORTER_MONITOR;
+    public static final Identity<HrInterviewProcessRecord, Integer> IDENTITY_HR_INTERVIEW_PROCESS = Identities0.IDENTITY_HR_INTERVIEW_PROCESS;
+    public static final Identity<HrInterviewProcessRoundRecord, Integer> IDENTITY_HR_INTERVIEW_PROCESS_ROUND = Identities0.IDENTITY_HR_INTERVIEW_PROCESS_ROUND;
     public static final Identity<HrLeaderBoardRecord, Integer> IDENTITY_HR_LEADER_BOARD = Identities0.IDENTITY_HR_LEADER_BOARD;
     public static final Identity<HrNpsRecord, Integer> IDENTITY_HR_NPS = Identities0.IDENTITY_HR_NPS;
     public static final Identity<HrNpsRecommendRecord, Integer> IDENTITY_HR_NPS_RECOMMEND = Identities0.IDENTITY_HR_NPS_RECOMMEND;
@@ -226,8 +228,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<CrmCustomerOperationEventRecord> KEY_CRM_CUSTOMER_OPERATION_EVENT_PRIMARY = UniqueKeys0.KEY_CRM_CUSTOMER_OPERATION_EVENT_PRIMARY;
-    public static final UniqueKey<CrmCustomerOperationRecordRecord> KEY_CRM_CUSTOMER_OPERATION_RECORD_PRIMARY = UniqueKeys0.KEY_CRM_CUSTOMER_OPERATION_RECORD_PRIMARY;
     public static final UniqueKey<HrAccountApplicationNotifyRecord> KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY = UniqueKeys0.KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY;
     public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = UniqueKeys0.KEY_HR_AI_CONF_PRIMARY;
     public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = UniqueKeys0.KEY_HR_APP_CV_CONF_PRIMARY;
@@ -261,9 +261,12 @@ public class Keys {
     public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = UniqueKeys0.KEY_HR_HB_POSITION_BINDING_PRIMARY;
     public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = UniqueKeys0.KEY_HR_HB_SCRATCH_CARD_PRIMARY;
     public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = UniqueKeys0.KEY_HR_HB_SEND_RECORD_PRIMARY;
+    public static final UniqueKey<HrHbThemeRecord> KEY_HR_HB_THEME_PRIMARY = UniqueKeys0.KEY_HR_HB_THEME_PRIMARY;
     public static final UniqueKey<HrHtml5StatisticsRecord> KEY_HR_HTML5_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_HTML5_STATISTICS_PRIMARY;
     public static final UniqueKey<HrHtml5UniqueStatisticsRecord> KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY = UniqueKeys0.KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY;
     public static final UniqueKey<HrImporterMonitorRecord> KEY_HR_IMPORTER_MONITOR_PRIMARY = UniqueKeys0.KEY_HR_IMPORTER_MONITOR_PRIMARY;
+    public static final UniqueKey<HrInterviewProcessRecord> KEY_HR_INTERVIEW_PROCESS_PRIMARY = UniqueKeys0.KEY_HR_INTERVIEW_PROCESS_PRIMARY;
+    public static final UniqueKey<HrInterviewProcessRoundRecord> KEY_HR_INTERVIEW_PROCESS_ROUND_PRIMARY = UniqueKeys0.KEY_HR_INTERVIEW_PROCESS_ROUND_PRIMARY;
     public static final UniqueKey<HrLeaderBoardRecord> KEY_HR_LEADER_BOARD_PRIMARY = UniqueKeys0.KEY_HR_LEADER_BOARD_PRIMARY;
     public static final UniqueKey<HrLeaderBoardRecord> KEY_HR_LEADER_BOARD_LEADER_BOARD_COMPANY_ID = UniqueKeys0.KEY_HR_LEADER_BOARD_LEADER_BOARD_COMPANY_ID;
     public static final UniqueKey<HrNpsRecord> KEY_HR_NPS_PRIMARY = UniqueKeys0.KEY_HR_NPS_PRIMARY;
@@ -311,8 +314,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<CrmCustomerOperationEventRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_EVENT = createIdentity(CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT, CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT.ID);
-        public static Identity<CrmCustomerOperationRecordRecord, Integer> IDENTITY_CRM_CUSTOMER_OPERATION_RECORD = createIdentity(CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD, CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD.ID);
         public static Identity<HrAccountApplicationNotifyRecord, Integer> IDENTITY_HR_ACCOUNT_APPLICATION_NOTIFY = createIdentity(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY, HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.ID);
         public static Identity<HrAiConfRecord, Integer> IDENTITY_HR_AI_CONF = createIdentity(HrAiConf.HR_AI_CONF, HrAiConf.HR_AI_CONF.ID);
         public static Identity<HrAppCvConfRecord, Integer> IDENTITY_HR_APP_CV_CONF = createIdentity(HrAppCvConf.HR_APP_CV_CONF, HrAppCvConf.HR_APP_CV_CONF.ID);
@@ -340,6 +341,8 @@ public class Keys {
         public static Identity<HrHtml5StatisticsRecord, Integer> IDENTITY_HR_HTML5_STATISTICS = createIdentity(HrHtml5Statistics.HR_HTML5_STATISTICS, HrHtml5Statistics.HR_HTML5_STATISTICS.ID);
         public static Identity<HrHtml5UniqueStatisticsRecord, Integer> IDENTITY_HR_HTML5_UNIQUE_STATISTICS = createIdentity(HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS, HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS.ID);
         public static Identity<HrImporterMonitorRecord, Integer> IDENTITY_HR_IMPORTER_MONITOR = createIdentity(HrImporterMonitor.HR_IMPORTER_MONITOR, HrImporterMonitor.HR_IMPORTER_MONITOR.ID);
+        public static Identity<HrInterviewProcessRecord, Integer> IDENTITY_HR_INTERVIEW_PROCESS = createIdentity(HrInterviewProcess.HR_INTERVIEW_PROCESS, HrInterviewProcess.HR_INTERVIEW_PROCESS.ID);
+        public static Identity<HrInterviewProcessRoundRecord, Integer> IDENTITY_HR_INTERVIEW_PROCESS_ROUND = createIdentity(HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND, HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND.ID);
         public static Identity<HrLeaderBoardRecord, Integer> IDENTITY_HR_LEADER_BOARD = createIdentity(HrLeaderBoard.HR_LEADER_BOARD, HrLeaderBoard.HR_LEADER_BOARD.ID);
         public static Identity<HrNpsRecord, Integer> IDENTITY_HR_NPS = createIdentity(HrNps.HR_NPS, HrNps.HR_NPS.ID);
         public static Identity<HrNpsRecommendRecord, Integer> IDENTITY_HR_NPS_RECOMMEND = createIdentity(HrNpsRecommend.HR_NPS_RECOMMEND, HrNpsRecommend.HR_NPS_RECOMMEND.ID);
@@ -375,8 +378,6 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<CrmCustomerOperationEventRecord> KEY_CRM_CUSTOMER_OPERATION_EVENT_PRIMARY = createUniqueKey(CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT, "KEY_crm_customer_operation_event_PRIMARY", CrmCustomerOperationEvent.CRM_CUSTOMER_OPERATION_EVENT.ID);
-        public static final UniqueKey<CrmCustomerOperationRecordRecord> KEY_CRM_CUSTOMER_OPERATION_RECORD_PRIMARY = createUniqueKey(CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD, "KEY_crm_customer_operation_record_PRIMARY", CrmCustomerOperationRecord.CRM_CUSTOMER_OPERATION_RECORD.ID);
         public static final UniqueKey<HrAccountApplicationNotifyRecord> KEY_HR_ACCOUNT_APPLICATION_NOTIFY_PRIMARY = createUniqueKey(HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY, "KEY_hr_account_application_notify_PRIMARY", HrAccountApplicationNotify.HR_ACCOUNT_APPLICATION_NOTIFY.ID);
         public static final UniqueKey<HrAiConfRecord> KEY_HR_AI_CONF_PRIMARY = createUniqueKey(HrAiConf.HR_AI_CONF, "KEY_hr_ai_conf_PRIMARY", HrAiConf.HR_AI_CONF.ID);
         public static final UniqueKey<HrAppCvConfRecord> KEY_HR_APP_CV_CONF_PRIMARY = createUniqueKey(HrAppCvConf.HR_APP_CV_CONF, "KEY_hr_app_cv_conf_PRIMARY", HrAppCvConf.HR_APP_CV_CONF.ID);
@@ -410,9 +411,12 @@ public class Keys {
         public static final UniqueKey<HrHbPositionBindingRecord> KEY_HR_HB_POSITION_BINDING_PRIMARY = createUniqueKey(HrHbPositionBinding.HR_HB_POSITION_BINDING, "KEY_hr_hb_position_binding_PRIMARY", HrHbPositionBinding.HR_HB_POSITION_BINDING.ID);
         public static final UniqueKey<HrHbScratchCardRecord> KEY_HR_HB_SCRATCH_CARD_PRIMARY = createUniqueKey(HrHbScratchCard.HR_HB_SCRATCH_CARD, "KEY_hr_hb_scratch_card_PRIMARY", HrHbScratchCard.HR_HB_SCRATCH_CARD.ID);
         public static final UniqueKey<HrHbSendRecordRecord> KEY_HR_HB_SEND_RECORD_PRIMARY = createUniqueKey(HrHbSendRecord.HR_HB_SEND_RECORD, "KEY_hr_hb_send_record_PRIMARY", HrHbSendRecord.HR_HB_SEND_RECORD.ID);
+        public static final UniqueKey<HrHbThemeRecord> KEY_HR_HB_THEME_PRIMARY = createUniqueKey(HrHbTheme.HR_HB_THEME, "KEY_hr_hb_theme_PRIMARY", HrHbTheme.HR_HB_THEME.CONFIG_ID);
         public static final UniqueKey<HrHtml5StatisticsRecord> KEY_HR_HTML5_STATISTICS_PRIMARY = createUniqueKey(HrHtml5Statistics.HR_HTML5_STATISTICS, "KEY_hr_html5_statistics_PRIMARY", HrHtml5Statistics.HR_HTML5_STATISTICS.ID);
         public static final UniqueKey<HrHtml5UniqueStatisticsRecord> KEY_HR_HTML5_UNIQUE_STATISTICS_PRIMARY = createUniqueKey(HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS, "KEY_hr_html5_unique_statistics_PRIMARY", HrHtml5UniqueStatistics.HR_HTML5_UNIQUE_STATISTICS.ID);
         public static final UniqueKey<HrImporterMonitorRecord> KEY_HR_IMPORTER_MONITOR_PRIMARY = createUniqueKey(HrImporterMonitor.HR_IMPORTER_MONITOR, "KEY_hr_importer_monitor_PRIMARY", HrImporterMonitor.HR_IMPORTER_MONITOR.ID);
+        public static final UniqueKey<HrInterviewProcessRecord> KEY_HR_INTERVIEW_PROCESS_PRIMARY = createUniqueKey(HrInterviewProcess.HR_INTERVIEW_PROCESS, "KEY_hr_interview_process_PRIMARY", HrInterviewProcess.HR_INTERVIEW_PROCESS.ID);
+        public static final UniqueKey<HrInterviewProcessRoundRecord> KEY_HR_INTERVIEW_PROCESS_ROUND_PRIMARY = createUniqueKey(HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND, "KEY_hr_interview_process_round_PRIMARY", HrInterviewProcessRound.HR_INTERVIEW_PROCESS_ROUND.ID);
         public static final UniqueKey<HrLeaderBoardRecord> KEY_HR_LEADER_BOARD_PRIMARY = createUniqueKey(HrLeaderBoard.HR_LEADER_BOARD, "KEY_hr_leader_board_PRIMARY", HrLeaderBoard.HR_LEADER_BOARD.ID);
         public static final UniqueKey<HrLeaderBoardRecord> KEY_HR_LEADER_BOARD_LEADER_BOARD_COMPANY_ID = createUniqueKey(HrLeaderBoard.HR_LEADER_BOARD, "KEY_hr_leader_board_leader_board_company_id", HrLeaderBoard.HR_LEADER_BOARD.COMPANY_ID);
         public static final UniqueKey<HrNpsRecord> KEY_HR_NPS_PRIMARY = createUniqueKey(HrNps.HR_NPS, "KEY_hr_nps_PRIMARY", HrNps.HR_NPS.ID);
