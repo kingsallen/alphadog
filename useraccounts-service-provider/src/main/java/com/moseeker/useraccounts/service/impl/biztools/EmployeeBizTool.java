@@ -89,6 +89,7 @@ public class EmployeeBizTool {
         if(position!=null){
             result.setPositionId(record.getPositionId().intValue());
             result.setPositionTitle(position.getTitle());
+            result.setStatus((int)position.getStatus());
         }
         String time = DateUtils.dateToMinuteDate(record.getClickTime());
         result.setClickTime(time);
@@ -150,6 +151,7 @@ public class EmployeeBizTool {
         if(position!=null){
             result.setPositionId(record.getPositionId());
             result.setPositionTitle(position.getTitle());
+            result.setStatus((int)position.getStatus());
         }
         String time = DateUtils.dateToMinuteDate(record.getRecommendTime());
         result.setClickTime(time);

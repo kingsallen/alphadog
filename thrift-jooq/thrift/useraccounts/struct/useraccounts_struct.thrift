@@ -567,6 +567,7 @@ struct RadarUserInfo {
     10:optional bool forwardSourceWx,
     11:optional i32 referralId,
     12:optional string clickTime
+    13:optional i32 status
 }
 
 struct RadarInfo{
@@ -588,7 +589,8 @@ struct EmployeeForwardView {
     10:optional bool forwardSourceWx,
     11:optional string clickTime,
     12:optional i32 invitationStatus,
-    13:optional list<Connection> chain
+    13:optional list<Connection> chain,
+    14:optional i32 status
 }
 
 struct Connection{
