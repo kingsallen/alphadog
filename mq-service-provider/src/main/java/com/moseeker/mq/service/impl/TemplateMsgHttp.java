@@ -294,7 +294,8 @@ public class TemplateMsgHttp {
             return;
         }
         logger.info("==========================="+employee.getCname());
-        String first = String.format(ReferralEvaluateFirst,employee.getCname());
+        String cname = employee.getCname() == null ? "":employee.getCname();
+        String first = String.format(ReferralEvaluateFirst,cname);
         String firstColor = "#2CD6B1";
         String keyword1Color = "#66A4F9";
         ConfigSysTemplateMessageLibraryRecord record =

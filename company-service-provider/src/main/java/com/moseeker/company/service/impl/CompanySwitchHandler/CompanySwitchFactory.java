@@ -24,6 +24,6 @@ public class CompanySwitchFactory {
                 return abstractCompanySwitchHandler;
             }
         }
-       return  null;
+        return null;
     }
 }

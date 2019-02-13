@@ -611,6 +611,8 @@ public class CompanyServicesImpl implements Iface {
             throw ExceptionUtils.convertException(e);
         }
     }
+
+
     /*
      *
      *获取当前公司的开关权限

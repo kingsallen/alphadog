@@ -19,6 +19,7 @@ public class RadarUserVO {
     public int referralId;
     public boolean forwardSourceWx;
     public String clickTime;
+    public int status;
 
     public int getUserId() {
         return userId;
@@ -114,5 +115,13 @@ public class RadarUserVO {
 
     public void setClickTime(String clickTime) {
         this.clickTime = clickTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
