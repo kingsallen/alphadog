@@ -94,6 +94,7 @@ public class ReferralRadarController {
                                        @RequestParam(name = "company_id") Integer companyId,
                                        @RequestParam(name = "keyword") String keyword,
                                        @RequestParam(name = "progress") Integer progress) throws TException {
+        logger.info("userId:{}, companyId:{}, keyword:{}, progress:{}", userId, companyId, keyword, progress);
         ValidateUtil validateUtil = new ValidateUtil();
         validateUtil.addIntTypeValidate("员工userId", userId, 1, Integer.MAX_VALUE);
         validateUtil.addIntTypeValidate("appid", appid, 0, Integer.MAX_VALUE);
@@ -113,6 +114,7 @@ public class ReferralRadarController {
             progressInfo.setProgress(progress);
             progressInfo.setUserId(userId);
             String resultJson = referralService.progressQueryKeyword(progressInfo);
+            logger.info("================resultJson:{}", resultJson);
             JSONArray response = JSONArray.parseArray(resultJson);
             return Result.success(response).toJson();
         } else {
