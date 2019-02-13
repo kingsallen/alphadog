@@ -412,8 +412,8 @@ public class ReferralServiceImpl implements ReferralService {
             throw UserAccountException.NODATA_EXCEPTION;
         }
         info.setUserId(user.getId());
-        info.setUsername(user.getNickname());
-        if(StringUtils.isNullOrEmpty(user.getNickname())){
+        info.setUsername(user.getName());
+        if(StringUtils.isNullOrEmpty(user.getName())){
             UserWxUserRecord wxUser = wxUserDao.getWXUserByUserId(user.getId());
             if(wxUser!= null && StringUtils.isNotNullOrEmpty(wxUser.getNickname())){
                 info.setUsername(wxUser.getNickname());
