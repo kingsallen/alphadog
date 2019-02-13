@@ -103,6 +103,7 @@ public enum RecruitmentScheduleEnum {
         switch (this.id) {
             case 1:
             case 15:
+            case 16:
             case 6: value = 1;break;
             case 8:
             case 9:
