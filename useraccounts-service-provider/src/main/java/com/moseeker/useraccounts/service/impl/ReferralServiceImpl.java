@@ -51,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date: 2018/9/26
  */
 @Service
-@CounterIface
+//@CounterIface
 public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
