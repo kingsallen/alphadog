@@ -162,10 +162,10 @@ public class ReferralTemplateSender {
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
         // 获取指定时间前十分钟内的职位浏览人
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
-        shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), shareChainDOS);
+        List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+        List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO)));
+        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainDOS)));
         templateShareChainDao.addAllData(templateShareChainDOS);
         templateShareChainDOS.removeIf(record -> record.getType() != 0);
         Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
@@ -215,7 +215,7 @@ public class ReferralTemplateSender {
         return returnShareChains;
     }
 
-    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO) {
+    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<CandidateShareChainDO> factShareChainDOS) {
         CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
         templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
         templateShareChainDO.setChainId(candidateShareChainDO.getId());
@@ -227,6 +227,11 @@ public class ReferralTemplateSender {
         templateShareChainDO.setRoot2UserId(candidateShareChainDO.getRoot2RecomUserId());
         templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
+        if(factShareChainDOS.contains(candidateShareChainDO)){
+            templateShareChainDO.setStatus(0);
+        }else {
+            templateShareChainDO.setStatus(1);
+        }
         return templateShareChainDO;
     }
 
