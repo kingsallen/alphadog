@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain implements Serializable {
 
-    private static final long serialVersionUID = -1583872857;
+    private static final long serialVersionUID = -393038617;
 
     private Integer   id;
     private Integer   positionId;
@@ -36,6 +36,7 @@ public class CandidateShareChain implements Serializable {
     private Byte      type;
     private Timestamp clickTime;
     private Timestamp createTime;
+    private String    forwardId;
 
     public CandidateShareChain() {}
 
@@ -51,6 +52,7 @@ public class CandidateShareChain implements Serializable {
         this.type = value.type;
         this.clickTime = value.clickTime;
         this.createTime = value.createTime;
+        this.forwardId = value.forwardId;
     }
 
     public CandidateShareChain(
@@ -64,7 +66,8 @@ public class CandidateShareChain implements Serializable {
         Integer   parentId,
         Byte      type,
         Timestamp clickTime,
-        Timestamp createTime
+        Timestamp createTime,
+        String    forwardId
     ) {
         this.id = id;
         this.positionId = positionId;
@@ -77,6 +80,7 @@ public class CandidateShareChain implements Serializable {
         this.type = type;
         this.clickTime = clickTime;
         this.createTime = createTime;
+        this.forwardId = forwardId;
     }
 
     public Integer getId() {
@@ -167,6 +171,14 @@ public class CandidateShareChain implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getForwardId() {
+        return this.forwardId;
+    }
+
+    public void setForwardId(String forwardId) {
+        this.forwardId = forwardId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidateShareChain (");
@@ -182,6 +194,7 @@ public class CandidateShareChain implements Serializable {
         sb.append(", ").append(type);
         sb.append(", ").append(clickTime);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(forwardId);
 
         sb.append(")");
         return sb.toString();

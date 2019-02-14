@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShareChainRecord> {
 
-    private static final long serialVersionUID = -1124634380;
+    private static final long serialVersionUID = 1144874529;
 
     /**
      * The reference instance of <code>candidatedb.candidate_template_share_chain</code>
@@ -102,9 +102,14 @@ public class CandidateTemplateShareChain extends TableImpl<CandidateTemplateShar
     public final TableField<CandidateTemplateShareChainRecord, Integer> DEPTH = createField("depth", org.jooq.impl.SQLDataType.INTEGER, this, "链路深度");
 
     /**
-     * The column <code>candidatedb.candidate_template_share_chain.type</code>. 员工对候选人的标记类型 0 未处理 1 已处理（邀请投递/推荐TA） 2 员工不熟悉此候选人
+     * The column <code>candidatedb.candidate_template_share_chain.type</code>. 员工/候选人/职位的标记类型，用于标记该候选人是否显示在卡片中 0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐ta 4 转发形成的投递 5 自投
      */
-    public final TableField<CandidateTemplateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "员工对候选人的标记类型 0 未处理 1 已处理（邀请投递/推荐TA） 2 员工不熟悉此候选人");
+    public final TableField<CandidateTemplateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "员工/候选人/职位的标记类型，用于标记该候选人是否显示在卡片中 0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐ta 4 转发形成的投递 5 自投");
+
+    /**
+     * The column <code>candidatedb.candidate_template_share_chain.status</code>. 0 实际点击链路 1 实际点击链路的父链路，点击人不显示在卡片里
+     */
+    public final TableField<CandidateTemplateShareChainRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 实际点击链路 1 实际点击链路的父链路，点击人不显示在卡片里");
 
     /**
      * The column <code>candidatedb.candidate_template_share_chain.create_time</code>.

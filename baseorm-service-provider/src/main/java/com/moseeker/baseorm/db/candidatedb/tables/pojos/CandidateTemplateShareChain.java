@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateTemplateShareChain implements Serializable {
 
-    private static final long serialVersionUID = -553797571;
+    private static final long serialVersionUID = 663292233;
 
     private Integer   id;
     private Integer   chainId;
@@ -36,6 +36,7 @@ public class CandidateTemplateShareChain implements Serializable {
     private Integer   parentId;
     private Integer   depth;
     private Byte      type;
+    private Byte      status;
     private Timestamp createTime;
     private Timestamp updateTime;
 
@@ -53,6 +54,7 @@ public class CandidateTemplateShareChain implements Serializable {
         this.parentId = value.parentId;
         this.depth = value.depth;
         this.type = value.type;
+        this.status = value.status;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
@@ -69,6 +71,7 @@ public class CandidateTemplateShareChain implements Serializable {
         Integer   parentId,
         Integer   depth,
         Byte      type,
+        Byte      status,
         Timestamp createTime,
         Timestamp updateTime
     ) {
@@ -83,6 +86,7 @@ public class CandidateTemplateShareChain implements Serializable {
         this.parentId = parentId;
         this.depth = depth;
         this.type = type;
+        this.status = status;
         this.createTime = createTime;
         this.updateTime = updateTime;
     }
@@ -175,6 +179,14 @@ public class CandidateTemplateShareChain implements Serializable {
         this.type = type;
     }
 
+    public Byte getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -206,6 +218,7 @@ public class CandidateTemplateShareChain implements Serializable {
         sb.append(", ").append(parentId);
         sb.append(", ").append(depth);
         sb.append(", ").append(type);
+        sb.append(", ").append(status);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 
