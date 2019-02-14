@@ -51,7 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date: 2018/9/26
  */
 @Service
-@CounterIface
+//@CounterIface
 public class ReferralServiceImpl implements ReferralService {
 
     @Autowired
@@ -176,8 +176,14 @@ public class ReferralServiceImpl implements ReferralService {
 
     @Override
     public List<ReferralProfileTab> getReferralProfileTabList(int userId, int companyId, int hrId) throws UserAccountException {
+        long startTime = System.currentTimeMillis();
         List<ReferralLog> logList = referralEntity.fetchReferralLog(userId, employeeEntity.getCompanyIds(companyId), hrId);
+        long logListTime = System.currentTimeMillis();
+        logger.info("profile tab getReferralProfileTabList groupCompanyRelTime:{}", logListTime- startTime);
         ReferralProfileData profileData = referralEntity.fetchReferralProfileData(logList);
+        long profileDataTime = System.currentTimeMillis();
+        logger.info("profile tab getReferralProfileTabList profileDataTime:{}", profileDataTime- logListTime);
+
         List<ReferralProfileTab> profileTabs = new ArrayList<>();
         if(profileData != null){
             for(ReferralLog log : logList){
@@ -186,6 +192,8 @@ public class ReferralServiceImpl implements ReferralService {
             return profileTabs.stream().filter(f -> StringUtils.isNotNullOrEmpty(f.getFilePath()))
                     .collect(Collectors.toList());
         }
+        long endTime = System.currentTimeMillis();
+        logger.info("profile tab getReferralProfileTabList endTime:{}", endTime-profileDataTime);
         return new ArrayList<>();
     }
 

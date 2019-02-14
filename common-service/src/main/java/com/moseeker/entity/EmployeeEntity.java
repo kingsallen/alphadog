@@ -858,6 +858,7 @@ public class EmployeeEntity {
      * @return
      */
     public List<Integer> getCompanyIds(Integer companyId) {
+        long startTime = System.currentTimeMillis();
         List<Integer> list = new ArrayList<>();
         logger.info("compangId:{}", companyId);
         // 查询集团ID
@@ -865,6 +866,8 @@ public class EmployeeEntity {
         queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.COMPANY_ID.getName(), companyId);
         HrGroupCompanyRelDO hrGroupCompanyRelDO = hrGroupCompanyRelDao.getData(queryBuilder.buildQuery());
         // 没有集团信息，返回当前companyId
+        long groupCompanyRelTime = System.currentTimeMillis();
+        logger.info("profile tab getCompanyIds groupCompanyRelTime:{}", groupCompanyRelTime- startTime);
         if (hrGroupCompanyRelDO == null) {
             logger.info("未查询到该公司的集团ID");
             list.add(companyId);
@@ -873,6 +876,9 @@ public class EmployeeEntity {
         queryBuilder.clear();
         queryBuilder.where(HrGroupCompanyRel.HR_GROUP_COMPANY_REL.GROUP_ID.getName(), hrGroupCompanyRelDO.getGroupId());
         List<HrGroupCompanyRelDO> hrGroupCompanyRelDOS = hrGroupCompanyRelDao.getDatas(queryBuilder.buildQuery());
+        long groupCompanyRelEndTime = System.currentTimeMillis();
+        logger.info("profile tab getCompanyIds groupCompanyRelEndTime:{}", groupCompanyRelEndTime - groupCompanyRelTime);
+
         if (StringUtils.isEmptyList(hrGroupCompanyRelDOS)) {
             return list;
         }
