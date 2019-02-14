@@ -880,6 +880,7 @@ public class EmployeeEntity {
      * @return
      */
     public List<Integer> getCompanyIds(Integer companyId) {
+
         List<Integer> list = new ArrayList<>();
         logger.info("compangId:{}", companyId);
         // 查询集团ID
