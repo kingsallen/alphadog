@@ -136,6 +136,13 @@ public class CandidateTemplateShareChainDao extends DAOImpl<CandidateTemplateSha
     }
 
     /**
+     * Fetch records that have <code>status IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateTemplateShareChain> fetchByStatus(Byte... values) {
+        return fetch(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.STATUS, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateTemplateShareChain> fetchByCreateTime(Timestamp... values) {

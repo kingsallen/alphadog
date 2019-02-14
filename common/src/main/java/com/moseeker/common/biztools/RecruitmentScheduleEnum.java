@@ -103,6 +103,7 @@ public enum RecruitmentScheduleEnum {
         switch (this.id) {
             case 1:
             case 15:
+            case 16:
             case 6: value = 1;break;
             case 8:
             case 9:
@@ -340,7 +341,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 2;
                 this.recuritOrder = 2;
-                this.applierView = "员工推荐评价投递职位";
+                this.applierView = "恭喜您已被內部员工推荐";
                 break;
         }
     }
