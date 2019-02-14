@@ -341,7 +341,7 @@ public enum RecruitmentScheduleEnum {
                 this.disable = true;
                 this.priority = 2;
                 this.recuritOrder = 2;
-                this.applierView = "员工推荐评价投递职位";
+                this.applierView = "恭喜您已被內部员工推荐";
                 break;
         }
     }
