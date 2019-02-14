@@ -14,6 +14,7 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
+import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.neo4j.*;
 import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
@@ -193,6 +194,9 @@ public class Neo4jServiceImpl implements Neo4jService {
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
         UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        if(employee == null){
+            throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
+        }
         List<Integer> list = new ArrayList<>();
         list.add(employee.getCompanyId());
         List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
