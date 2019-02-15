@@ -58,6 +58,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import java.net.ConnectException;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -295,7 +296,7 @@ public class TemplateMsgHttp {
         }
         logger.info("==========================="+employee.getCname());
         String cname = employee.getCname() == null ? "":employee.getCname();
-        String first = String.format(ReferralEvaluateFirst,cname);
+        String first = MessageFormat.format(ReferralEvaluateFirst,cname);
         String firstColor = "#2CD6B1";
         String keyword1Color = "#66A4F9";
         ConfigSysTemplateMessageLibraryRecord record =
