@@ -30,6 +30,7 @@ import com.moseeker.entity.PositionEntity;
 import com.moseeker.position.pojo.ReferralPositionMatchInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
+import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusStageDetailDO;
@@ -466,7 +467,7 @@ public class ReferralPositionService {
                         }
                         logger.info("fetchPositionMatchByUserId cityIds:{}",JSONObject.toJSONString(cityIds));
                         Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
-                        List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
+                        List<DictCityDO> dictCityRecordList = cityDao.getDatas(query);
                         logger.info("fetchPositionMatchByUserId dictCityRecordList:{}",JSONObject.toJSONString(dictCityRecordList));
                         if (!StringUtils.isEmptyList(positionList)) {
                             for (JobPosition position : positionList) {
@@ -481,9 +482,9 @@ public class ReferralPositionService {
                                 if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
                                     StringBuffer cityNameBuffer = new StringBuffer();
                                     for (JobPositionCityDO positionCityRecord : positionCityRecordList) {
-                                        Optional<DictCityRecord> optionalDictCity = dictCityRecordList.stream()
+                                        Optional<DictCityDO> optionalDictCity = dictCityRecordList.stream()
                                                 .filter(dictCityRecord ->
-                                                        dictCityRecord.getCode().intValue() == positionCityRecord.getCode())
+                                                        dictCityRecord.getCode() == positionCityRecord.getCode())
                                                 .findAny();
                                         if (optionalDictCity.isPresent()) {
                                             cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
