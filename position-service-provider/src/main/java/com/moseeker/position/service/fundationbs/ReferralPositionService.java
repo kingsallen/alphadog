@@ -454,16 +454,20 @@ public class ReferralPositionService {
                 if (map.get("pids") != null) {
                     String pids = (String) map.get("pids");
                     List<String> pidList = StringUtils.stringToList(pids, ",");
+                    logger.info("fetchPositionMatchByUserId pidList:{}",JSONObject.toJSONString(pidList));
                     if (!StringUtils.isEmptyList(pidList)) {
                         List<Integer> idList = pidList.subList(0, 3).stream().map(m ->Integer.valueOf(m)).collect(Collectors.toList());
+                        logger.info("fetchPositionMatchByUserId idList:{}",JSONObject.toJSONString(pidList));
                         List<JobPosition> positionList = positionEntity.getPositionInfoByIdList(idList);
                         List<JobPositionCityDO> positionCityList = positionCityDao.getPositionCityBypids(idList);
                         Set<Integer> cityIds = new HashSet<>();
                         for (JobPositionCityDO positionCity : positionCityList) {
                             cityIds.add(positionCity.getCode());
                         }
+                        logger.info("fetchPositionMatchByUserId cityIds:{}",JSONObject.toJSONString(cityIds));
                         Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
                         List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
+                        logger.info("fetchPositionMatchByUserId dictCityRecordList:{}",JSONObject.toJSONString(dictCityRecordList));
                         if (!StringUtils.isEmptyList(positionList)) {
                             for (JobPosition position : positionList) {
                                 ReferralPositionMatchInfo match = new ReferralPositionMatchInfo();
@@ -473,10 +477,9 @@ public class ReferralPositionService {
                                         .filter(jobPositionCity ->
                                                 jobPositionCity.getPid() == position.getId().intValue())
                                         .collect(Collectors.toList());
-
+                                logger.info("fetchPositionMatchByUserId positionCityRecordList:{}",JSONObject.toJSONString(positionCityRecordList));
                                 if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
                                     StringBuffer cityNameBuffer = new StringBuffer();
-                                    StringBuffer cityENameBuffer = new StringBuffer();
                                     for (JobPositionCityDO positionCityRecord : positionCityRecordList) {
                                         Optional<DictCityRecord> optionalDictCity = dictCityRecordList.stream()
                                                 .filter(dictCityRecord ->
@@ -491,6 +494,7 @@ public class ReferralPositionService {
                                         match.setCity(cityNameBuffer.toString());
                                     }
                                 }
+                                logger.info("fetchPositionMatchByUserId match:{}",match);
                                 list.add(match);
                             }
                         }
