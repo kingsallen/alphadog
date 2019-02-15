@@ -202,9 +202,8 @@ public abstract class EmployeeReferralProfile {
             }
 
             com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
-                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
-
+//            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
+//                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
