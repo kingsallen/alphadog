@@ -78,6 +78,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -93,7 +99,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date: 2018/7/18
  */
 @Service
-@CounterIface
+//@CounterIface
 public class ReferralEntity {
 
 
@@ -569,54 +575,72 @@ public class ReferralEntity {
 
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
         ReferralProfileData data = new ReferralProfileData();
+        long startTime = System.currentTimeMillis();
         Future<UserHrAccountDO> accountFuture = threadPool.startTast(
                 () -> userHrAccountDao.getUserHrAccountById(hrId));
-        Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
-                () -> employeeDao.getEmployeeBycompanyIds(companyIds));
-        Future<List<HistoryUserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
-                () -> historyUserEmployeeDao.getHistoryEmployeeByCompanyIds(companyIds));
-
         List<Integer> employeeIds = new ArrayList<>();
         UserHrAccountDO account = new UserHrAccountDO();
         List<Integer> positionIds = new ArrayList<>();
+        List<ReferralLog> logs = new ArrayList<>();
         try {
             account = accountFuture.get();
+            long accountTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog accountTime:{}", accountTime- startTime);
             if(account == null){
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }
+            long positionTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog positionTime:{}", positionTime- accountTime);
             if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
-               positionIds = positionDao.getPositionIdByPublisher(hrId);
+                positionIds = positionDao.getPositionIdByPublisher(hrId);
+                logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(userId, positionIds);
+            }else {
+                logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(userId);
             }
+            List<Integer> employeeIdList = new ArrayList<>();
+            if(StringUtils.isEmptyList(logs)){
+                employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+            }
+            long employeeTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- positionTime);
+            List<Integer> temp = employeeIdList;
+            Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
+                    () -> employeeDao.getUserEmployeeForIdList(temp));;
+            Future<List<UserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
+                    () -> historyUserEmployeeDao.getHistoryEmployeeByIds(temp));;
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
             if (!StringUtils.isEmptyList(employeeList)){
-                List<Integer> employeeIds1 = employeeList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                List<Integer> employeeIds1 = employeeList.stream().filter(f -> companyIds.contains(f.getCompanyId()))
+                        .map(m -> m.getId()).collect(Collectors.toList());
                 employeeIds.addAll(employeeIds1);
             }
-            List<HistoryUserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
+            long midTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- midTime);
+            List<UserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
             if (!StringUtils.isEmptyList(historyUserEmployees)){
-                List<Integer> employeeIds2 = historyUserEmployees.stream().map(m -> m.getId()).collect(Collectors.toList());
+                List<Integer> employeeIds2 = historyUserEmployees.stream().filter(f -> companyIds.contains(f.getCompanyId()))
+                        .map(m -> m.getId()).collect(Collectors.toList());
                 employeeIds.addAll(employeeIds2);
             }
+            long historyUserEmployeeTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog historyUserEmployeeTime:{}", historyUserEmployeeTime- employeeTime);
+
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
         }
-        List<ReferralLog> logs = new ArrayList<>();
-        if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
-            logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(employeeIds, userId, positionIds);
-        }else {
-            logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
-        }
         List<ReferralLog> logList = new ArrayList<>();
-        if(!StringUtils.isEmptyList(logs)){
+        if(!StringUtils.isEmptyList(logs) && !StringUtils.isEmptyList(employeeIds)){
             Set<Integer> idList = new HashSet<>();
             for (ReferralLog log :logs){
-                if(!idList.contains(log.getEmployeeId())){
+                if(!idList.contains(log.getEmployeeId()) && employeeIds.contains(log.getEmployeeId())){
                     logList.add(log);
                     idList.add(log.getEmployeeId());
                 }
             }
         }
+        long endTime = System.currentTimeMillis();
+        logger.info("profile tab fetchReferralLog endTime:{}", endTime- startTime);
         return logList;
     }
 
@@ -625,7 +649,7 @@ public class ReferralEntity {
         if(StringUtils.isEmptyList(logs)){
             return null;
         }
-        List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+        long startTime = System.currentTimeMillis();List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         List<Integer> empolyeeReferralIds = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
         List<Integer> attementIds = logs.stream().map(m -> m.getAttementId()).collect(Collectors.toList());
         Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
@@ -646,6 +670,8 @@ public class ReferralEntity {
                                 position.getTitle()));
                 data.setPositionTitleMap(positionTitileMap);
             }
+            long positionListTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData positionListTime:{}", positionListTime-startTime);
             Map<Integer, String> employeeNameMap = new HashMap<>();
             List<UserEmployeeDO> empList = empListFuture.get();
             if(!StringUtils.isEmptyList(empList)){
@@ -653,6 +679,8 @@ public class ReferralEntity {
                     employeeNameMap.put(employee.getId(), employee.getCname())
                 );
             }
+            long empTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData empTime:{}", empTime- positionListTime);
             List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
             if(!StringUtils.isEmptyList(historyEmpList)){
                 historyEmpList.forEach(employee ->
@@ -660,7 +688,11 @@ public class ReferralEntity {
                 );
             }
             data.setEmployeeNameMap(employeeNameMap);
+            long hisEmpTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData empTime:{}", hisEmpTime - empTime);
             List<ProfileAttachmentDO> attachmentList = attachmentListFuture.get();
+            long attachmentTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData attachmentTime:{}", attachmentTime - empTime);
             if(StringUtils.isEmptyList(attachmentList)){
                 return null;
             }
@@ -670,6 +702,8 @@ public class ReferralEntity {
             );
             data.setAttchmentMap(attachmentMap);
             data.setLogList(logs);
+            long endTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData endTime:{}", endTime- attachmentTime);
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }

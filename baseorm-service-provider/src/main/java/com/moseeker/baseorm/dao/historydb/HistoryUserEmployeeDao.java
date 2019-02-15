@@ -30,16 +30,6 @@ public class HistoryUserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, History
 
 
 
-   public List<HistoryUserEmployeeDO> getHistoryEmployeeByCompanyIds(List<Integer> compantIds){
-        List<HistoryUserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)
-                .where(HISTORY_USER_EMPLOYEE.COMPANY_ID.in(compantIds))
-                .fetchInto(HistoryUserEmployeeDO.class);
-        if(StringUtils.isEmptyList(historyUserEmployees)){
-            return new ArrayList<>();
-        }
-        return historyUserEmployees;
-
-   }
 
     public List<UserEmployeeDO> getHistoryEmployeeByIds(List<Integer> ids){
         List<UserEmployeeDO> historyUserEmployees=  create.selectFrom(HISTORY_USER_EMPLOYEE)
