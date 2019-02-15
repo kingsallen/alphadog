@@ -29,12 +29,12 @@ public class ReferralServiceTest {
     @Test
     public void testGetRadar() throws TException {
         ReferralCardInfo  cardInfo = new ReferralCardInfo();
-        cardInfo.setUser_id(5283788);
+        cardInfo.setUserId(5283788);
         cardInfo.setTimestamp(1545034217595L);
-        cardInfo.setPage_size(10);
-        cardInfo.setPage_number(1);
-        cardInfo.setCompany_id(39978);
-        referralService.getRadarCards(cardInfo);
+        cardInfo.setPageSize(10);
+        cardInfo.setPageNumber(1);
+        cardInfo.setCompanyId(39978);
+//        referralService.getRadarCards(cardInfo);
     }
 
     @Test
