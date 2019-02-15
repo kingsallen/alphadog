@@ -46,6 +46,7 @@ import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.RecommendHBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
+import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -75,10 +76,9 @@ import org.springframework.transaction.annotation.Transactional;
 @CounterIface
 public class ReferralEntity {
 
-
     @Autowired
     private HrHbConfigDao configDao;
-g
+
     @Autowired
     private HrHbPositionBindingDao positionBindingDao;
 
