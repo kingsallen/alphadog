@@ -33,6 +33,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusSt
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
@@ -45,7 +46,6 @@ import com.moseeker.entity.pojos.BonusData;
 import com.moseeker.entity.pojos.HBData;
 import com.moseeker.entity.pojos.RecommendHBData;
 import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -72,13 +72,13 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date: 2018/7/18
  */
 @Service
-//@CounterIface
+@CounterIface
 public class ReferralEntity {
 
 
     @Autowired
     private HrHbConfigDao configDao;
-
+g
     @Autowired
     private HrHbPositionBindingDao positionBindingDao;
 
