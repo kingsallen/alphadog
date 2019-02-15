@@ -452,11 +452,11 @@ public class ReferralPositionService {
             if (StringUtils.isNotNullOrEmpty(result)) {
                 Map<String, Object> map = JSON.parseObject(result, Map.class);
                 if (map.get("pids") != null) {
-                    String pids = (String) map.get("pids");
-                    List<String> pidList = StringUtils.stringToList(pids, ",");
+                    JSONArray pids = (JSONArray) map.get("pids");
+                    List<Integer> pidList = pids.toJavaList(Integer.class);
                     logger.info("fetchPositionMatchByUserId pidList:{}",JSONObject.toJSONString(pidList));
                     if (!StringUtils.isEmptyList(pidList)) {
-                        List<Integer> idList = pidList.subList(0, 3).stream().map(m ->Integer.valueOf(m)).collect(Collectors.toList());
+                        List<Integer> idList = pidList.subList(0, 3);
                         logger.info("fetchPositionMatchByUserId idList:{}",JSONObject.toJSONString(pidList));
                         List<JobPosition> positionList = positionEntity.getPositionInfoByIdList(idList);
                         List<JobPositionCityDO> positionCityList = positionCityDao.getPositionCityBypids(idList);
