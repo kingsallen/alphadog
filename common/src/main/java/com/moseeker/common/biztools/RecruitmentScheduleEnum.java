@@ -76,6 +76,7 @@ public enum RecruitmentScheduleEnum {
                         case 1:
                         case 7 :
                         case 15:
+                        case 16:
                         case 13 : value = 6; break;
                         case 6:  value = 7; break;
                         case 8:
