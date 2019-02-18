@@ -679,12 +679,14 @@ public class ReferralController {
         validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
                 "推荐理由文本长度过长",null, 201);
         validateUtil.addSensitiveValidate("推荐理由文本", form.getRecomReasonText(), null, null);
-        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
         if (form.getReferralReasons() != null) {
             String reasons = form.getReferralReasons().stream().collect(Collectors.joining(","));
             validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
         }
         String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
         if (org.apache.commons.lang.StringUtils.isBlank(result)) {
             referralService.employeeReferralReason(form.getCompanyId(), form.getPostUserId(),form.getPositionId(), form.getReferralId(), form.getReferralReasons(),
                     form.getRelationship(), form.getRecomReasonText());
