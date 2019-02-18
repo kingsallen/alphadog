@@ -155,6 +155,7 @@ public class RabbitReceivers {
         HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatId, templateId);
         if(messageDO != null && messageDO.getStatus() == 1){
             messageDO.setStatus(0);
+            messageDO.setDisable(1);
             wxNoticeMessageDao.updateData(messageDO);
         }
     }
@@ -169,6 +170,7 @@ public class RabbitReceivers {
             wxNoticeMessageDao.addData(messageDO);
         }else if(messageDO.getStatus() == 0){
             messageDO.setStatus(1);
+            messageDO.setDisable(0);
             wxNoticeMessageDao.updateData(messageDO);
         }
     }
