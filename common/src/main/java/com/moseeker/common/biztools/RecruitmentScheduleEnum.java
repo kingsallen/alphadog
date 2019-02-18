@@ -128,6 +128,7 @@ public enum RecruitmentScheduleEnum {
                     case 2:
                     case 5:
                     case 15:
+                    case 16:
                         value = 2;
                         break;
                     case 12:
@@ -167,6 +168,7 @@ public enum RecruitmentScheduleEnum {
             case 12 :
             case 11 :
             case 3:
+            case 16:
             case 15:
                 if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
@@ -186,7 +188,7 @@ public enum RecruitmentScheduleEnum {
      * @throws RecruitmentScheduleLastStepNotExistException
      */
     public void setLastStep(int lastStep) throws RecruitmentScheduleLastStepNotExistException {
-        if(lastStep == 0 || lastStep > 15) {
+        if(lastStep == 0 || lastStep > 16) {
             throw new RecruitmentScheduleLastStepNotExistException();
         }
         this.lastID = lastStep;
@@ -337,7 +339,7 @@ public enum RecruitmentScheduleEnum {
             case 16:
                 this.id = value;
                 this.status = "内部员工推荐";
-                this.award = 20;
+                this.award = 10;
                 this.description = "联系内推员工完善推荐评价投递职位";
                 this.disable = true;
                 this.priority = 2;
