@@ -94,8 +94,8 @@ public class RabbitReceivers {
         templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, type);
     }
 
-//    @RabbitListener(queues = "handle_radar_switch", containerFactory = "rabbitListenerContainerFactoryAutoAck")
-//    @RabbitHandler
+    @RabbitListener(queues = "handle_radar_switch", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
     public void handleRadarSwitch(Message message){
         String msgBody = new String(message.getBody());
         logger.info("msgBody:{}", msgBody);
