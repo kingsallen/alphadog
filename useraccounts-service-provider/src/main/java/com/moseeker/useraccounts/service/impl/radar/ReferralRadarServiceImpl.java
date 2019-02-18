@@ -411,7 +411,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    @RadarSwitchLimit
     public String getProgressByOne(int companyId, ReferralProgressQueryInfo progressQuery) throws BIZException {
         logger.info("progressQuery:{}", progressQuery);
         JobApplication jobApplication = jobApplicationDao.fetchOneById(progressQuery.getApplyId());
