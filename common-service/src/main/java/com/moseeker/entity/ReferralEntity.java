@@ -41,6 +41,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
@@ -99,9 +100,8 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date: 2018/7/18
  */
 @Service
-//@CounterIface
+@CounterIface
 public class ReferralEntity {
-
 
     @Autowired
     private HrHbConfigDao configDao;
@@ -250,7 +250,7 @@ public class ReferralEntity {
     }
 
     public void logReferralOperation(int positionId, int applicationId,  List<String> referralReasons,String mobile,
-                                     int postUserId, int presenteeUserId, byte shipType, String referralText) {
+                                     UserEmployeeDO employeeDO, int presenteeUserId, byte shipType, String referralText) {
         ReferralRecomEvaluationRecord evaluationRecord = new ReferralRecomEvaluationRecord();
         evaluationRecord.setAppId(applicationId);
         evaluationRecord.setRecomReasonTag(referralReasons.stream().collect(Collectors.joining(",")));
@@ -258,7 +258,7 @@ public class ReferralEntity {
         evaluationRecord.setRecomReasonText(referralText);
         evaluationRecord.setMobile(mobile);
         evaluationRecord.setPresenteeUserId(presenteeUserId);
-        evaluationRecord.setPostUserId(postUserId);
+        evaluationRecord.setPostUserId(employeeDO.getSysuserId());
         evaluationRecord.setPositionId(positionId);
         recomEvaluationDao.insertIfNotExist(evaluationRecord);
     }

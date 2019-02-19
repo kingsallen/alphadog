@@ -76,7 +76,7 @@ import java.util.stream.Collectors;
  * @Date: 2018/9/26
  */
 @Service
-//@CounterIface
+@CounterIface
 public class ReferralServiceImpl implements ReferralService {
 
     JobApplicationServices.Iface applicationService = ServiceManager.SERVICEMANAGER
