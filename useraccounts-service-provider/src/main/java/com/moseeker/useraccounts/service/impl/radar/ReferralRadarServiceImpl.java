@@ -509,7 +509,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    @RadarSwitchLimit
     public String progressQueryKeyword(int companyId, ReferralProgressInfo progressInfo) {
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
         if(employeeRecord == null){
