@@ -1287,6 +1287,9 @@ public class EmployeeEntity {
                             pscId = referral.getPscId();
                             directReferralUserId = referral.getDirectReferralUserId();
                         }
+                        if(directReferralUserId == 0){
+                            directReferralUserId = jobApplication.getRecommenderUserId();
+                        }
                         jsonObject.put("psc", pscId);
                         jsonObject.put("direct_referral_user_id", directReferralUserId);
                         amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
