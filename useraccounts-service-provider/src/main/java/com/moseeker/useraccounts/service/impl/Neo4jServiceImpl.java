@@ -6,6 +6,7 @@ import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.exception.CommonException;
@@ -230,7 +231,7 @@ public class Neo4jServiceImpl implements Neo4jService {
         if(userId>0) {
             UserUserRecord record1 = userUserDao.getUserById(userId);
             UserWxUserRecord wxUser = wxUserDao.getWXUserByUserId(userId);
-            UserEmployeeDO employee = employeeDao.getEmployeeById(userId);
+            UserEmployeeRecord employee = employeeDao.getActiveEmployeeByUserId(userId);
             UserNode node = new UserNode();
             node.setUser_id(userId);
             if (record1 != null) {
