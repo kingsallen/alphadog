@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.moseeker.baseorm.config.HRAccountType;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
+import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
@@ -31,6 +32,7 @@ import com.moseeker.position.pojo.ReferralPositionMatchInfo;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrTeamDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionCityDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusStageDetailDO;
@@ -89,6 +91,9 @@ public class ReferralPositionService {
 
     @Autowired
     Environment env;
+
+    @Autowired
+    HrTeamDao teamDao;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -464,10 +469,22 @@ public class ReferralPositionService {
                         }
                         Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
                         List<DictCityDO> dictCityRecordList = cityDao.getDatas(query);
+                        List<Integer> teamIds = positionList.stream().map(m -> m.getTeamId()).collect(Collectors.toList());
+                        List<HrTeamDO> teamDOS = new ArrayList<>();
+                        if(!StringUtils.isEmptyList(teamIds)){
+                            teamDOS = teamDao.getTeamList(teamIds);
+                        }
                         if (!StringUtils.isEmptyList(positionList)) {
                             for (JobPosition position : positionList) {
                                 ReferralPositionMatchInfo match = new ReferralPositionMatchInfo();
-                                BeanUtils.copyProperties(position, match);
+                                copyPosition(position, match);
+                                if(!StringUtils.isEmptyList(teamDOS)){
+                                    for(HrTeamDO team : teamDOS){
+                                        if(team.getId() == position.getTeamId()){
+                                            match.setTeam(team.getName());
+                                        }
+                                    }
+                                }
                                 /** 职位城市关系记录 */
                                 List<JobPositionCityDO> positionCityRecordList = positionCityList.stream()
                                         .filter(jobPositionCity ->
@@ -476,7 +493,6 @@ public class ReferralPositionService {
 
                                 if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
                                     StringBuffer cityNameBuffer = new StringBuffer();
-                                    StringBuffer cityENameBuffer = new StringBuffer();
                                     for (JobPositionCityDO positionCityRecord : positionCityRecordList) {
                                         Optional<DictCityDO> optionalDictCity = dictCityRecordList.stream()
                                                 .filter(dictCityRecord ->
@@ -502,6 +518,17 @@ public class ReferralPositionService {
             return new ArrayList<>();
         }
         return list;
+    }
+
+    private void copyPosition(JobPosition position, ReferralPositionMatchInfo match){
+       BeanUtils.copyProperties(position, match);
+       match.setDegree(position.getDegree());
+       match.setDegreeAbove(position.getDegreeAbove());
+       match.setExperience(Integer.valueOf(position.getExperience()));
+       match.setExperienceAbove(position.getExperienceAbove());
+       match.setHbStatus(position.getHbStatus());
+       match.setSalaryBottom(position.getSalaryBottom());
+       match.setSalaryTop(position.getSalaryTop());
     }
 
 }
