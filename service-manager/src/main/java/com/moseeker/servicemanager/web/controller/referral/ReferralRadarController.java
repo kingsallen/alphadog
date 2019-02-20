@@ -340,7 +340,6 @@ public class ReferralRadarController {
         validateInviteInfo(validateUtil, inviteForm);
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-            inviteForm.setTimestamp(0L);
             ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
             BeanUtils.copyProperties(inviteForm, inviteInfo);
             referralService.handleCandidateState(inviteInfo);
@@ -365,5 +364,9 @@ public class ReferralRadarController {
 
         validateUtil.addIntTypeValidate("公司id", inviteForm.getCompanyId(), 1, Integer.MAX_VALUE);
         validateUtil.addRequiredValidate("公司id", inviteForm.getCompanyId());
+
+        if(inviteForm.getTimestamp() == null){
+            inviteForm.setTimestamp(0L);
+        }
     }
 }
