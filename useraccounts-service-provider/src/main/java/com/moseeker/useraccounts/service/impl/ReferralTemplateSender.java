@@ -166,16 +166,17 @@ public class ReferralTemplateSender {
         List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
         shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainDOS)));
-        templateShareChainDao.addAllData(templateShareChainDOS);
-        templateShareChainDOS.removeIf(record -> record.getType() != 0);
-        Set<Integer> userIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        factShareChainDOS.removeIf(record -> record.getType() != 0);
+        //
+        Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
+        List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+        List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
+        userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
         int visitNum = userIds.size();
-        logger.info("visitNum:{}", visitNum);
-        List<Integer> positionIds = templateShareChainDOS.stream().map(CandidateTemplateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
-
+        logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
         if(visitNum > 0){
             UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
-
+            templateShareChainDao.addAllData(templateShareChainDOS);
             List<Integer> newPositionIds = new ArrayList<>();
             if(positionIds.size() > 2){
                 newPositionIds.add(positionIds.get(0));
@@ -194,6 +195,24 @@ public class ReferralTemplateSender {
                     REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
                             .build());
         }
+    }
+
+    private Set<Integer> filterAppliedUsers(List<JobApplicationDO> jobApplicationDOS, List<CandidateShareChainDO> factShareChainDOS) {
+        Set<Integer> userIds = new HashSet<>();
+        for(CandidateShareChainDO candidateShareChainDO : factShareChainDOS){
+            boolean flag = true;
+            for(int i=0;i<jobApplicationDOS.size()&&flag;i++){
+                JobApplicationDO jobApplicationDO = jobApplicationDOS.get(i);
+                if(candidateShareChainDO.getPositionId() == jobApplicationDO.getPositionId()
+                && candidateShareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
+                    flag = false;
+                }
+            }
+            if(flag){
+                userIds.add(candidateShareChainDO.getPresenteeUserId());
+            }
+        }
+        return userIds;
     }
 
     private List<CandidateShareChainDO> getCompleteShareChains(int userId, List<CandidateShareChainDO> currentShareChainDOS) {
