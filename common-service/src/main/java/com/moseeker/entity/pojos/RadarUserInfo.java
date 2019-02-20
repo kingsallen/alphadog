@@ -113,9 +113,8 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
     public RadarUserInfo initFromChainsRecord(UserWxUserDO userDO, UserUserRecord userUserRecord, List<ReferralConnectionChainRecord> chainRecords) {
         // 获取连连看最长路径，用于定位度数，这里会对记录排序
         List<ReferralConnectionChainRecord> newChainRecords = RadarUtils.getOrderedChainRecords(chainRecords);
-        String name = StringUtils.isNullOrEmpty(userUserRecord.getName()) ? userUserRecord.getNickname() : userUserRecord.getName();
         this.setUid(userDO.getSysuserId());
-        this.setNickname(name);
+        this.setNickname(userUserRecord.getNickname());
         this.setAvatar(userDO.getHeadimgurl());
         for(int i = 0; i < newChainRecords.size(); i++){
             ReferralConnectionChainRecord connectionChain = newChainRecords.get(i);
