@@ -165,7 +165,8 @@ public class ReferralTemplateSender {
         List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
         List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
-        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainDOS)));
+        List<Integer> factShareChainIds = factShareChainDOS.stream().map(CandidateShareChainDO::getId).distinct().collect(Collectors.toList());
+        shareChainDOS.forEach(candidateShareChainDO -> templateShareChainDOS.add(initTemplateShareChain(cardInfo.getTimestamp(), candidateShareChainDO, factShareChainIds)));
         factShareChainDOS.removeIf(record -> record.getType() != 0);
         //
         Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
@@ -219,13 +220,16 @@ public class ReferralTemplateSender {
         List<Integer> pids = currentShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<CandidateShareChainDO> allShareChains = shareChainDao.getShareChainsByUserIdAndPosition(userId, pids);
         List<CandidateShareChainDO> returnShareChains = new ArrayList<>();
+
         for(CandidateShareChainDO current : currentShareChainDOS){
             boolean flag = true;
             for(int i=0;i<allShareChains.size()&&flag;i++){
                 CandidateShareChainDO complete = allShareChains.get(i);
+                // 点击人和职位id都相等时
                 if(current.getPositionId() == complete.getPositionId() && current.getPresenteeUserId() == complete.getPresenteeUserId()){
                     flag = false;
                     if(!RadarUtils.contains(current, returnShareChains)){
+                        // 如果不存在，认为该链路是父链路
                         returnShareChains.add(complete);
                     }
                     returnShareChains = RadarUtils.getCompleteShareChainsByRecurrence(complete.getParentId(), allShareChains, returnShareChains);
@@ -235,7 +239,7 @@ public class ReferralTemplateSender {
         return returnShareChains;
     }
 
-    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<CandidateShareChainDO> factShareChainDOS) {
+    private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<Integer> factShareChainIds) {
         CandidateTemplateShareChainDO templateShareChainDO = new CandidateTemplateShareChainDO();
         templateShareChainDO.setDepth((byte)candidateShareChainDO.getDepth());
         templateShareChainDO.setChainId(candidateShareChainDO.getId());
@@ -247,7 +251,7 @@ public class ReferralTemplateSender {
         templateShareChainDO.setRoot2UserId(candidateShareChainDO.getRoot2RecomUserId());
         templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
-        if(factShareChainDOS.contains(candidateShareChainDO)){
+        if(factShareChainIds.contains(candidateShareChainDO.getId())){
             templateShareChainDO.setStatus(0);
         }else {
             templateShareChainDO.setStatus(1);

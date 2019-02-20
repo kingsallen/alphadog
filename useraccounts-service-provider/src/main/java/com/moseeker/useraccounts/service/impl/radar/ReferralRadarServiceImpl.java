@@ -702,7 +702,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private Map<Integer, JSONObject> getReferralTypeMap(UserEmployeeRecord employeeRecord, List<JobApplicationDO> jobApplicationDOS, List<UserDepthVO> applierDegrees) throws BIZException {
         AbstractReferralTypeHandler handler;
-        Map<Integer, JSONObject> referralTypeMap = new HashMap<>(1 >> 4);
+        Map<Integer, JSONObject> referralTypeMap = new HashMap<>(1 << 4);
         for(ReferralTypeEnum referralTypeEnum : ReferralTypeEnum.values()){
             handler = referralTypeFactory.getHandlerByType(referralTypeEnum.getType());
             JSONObject referralSingleTypeMap = handler.getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
@@ -748,7 +748,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private Map<Integer, UserUserRecord> getUserMap(Set<Integer> applierUserIds) {
         List<Integer> list = new ArrayList<>(applierUserIds);
         List<UserUserRecord> userUsers = userUserDao.fetchByIdList(list);
-        Map<Integer, UserUserRecord> map = new HashMap<>(1>>4);
+        Map<Integer, UserUserRecord> map = new HashMap<>(1 << 4);
         for(UserUserRecord userUserRecord : userUsers){
             map.put(userUserRecord.getId(), userUserRecord);
         }
@@ -757,7 +757,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private Map<Integer, JobPositionDO> getPositionIdMap(List<Integer> applyPids) {
         List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(applyPids);
-        Map<Integer, JobPositionDO> map = new HashMap<>(1 >> 5);
+        Map<Integer, JobPositionDO> map = new HashMap<>(1 << 5);
         for(JobPositionDO jobPositionDO : jobPositions){
             map.put(jobPositionDO.getId(), jobPositionDO);
         }
@@ -1221,7 +1221,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 }else {
                     oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);
                 }
-                recomUser = oneDegreeShareChainDO.getPresenteeUserId();
+                int oneDegreeUser = oneDegreeShareChainDO.getPresenteeUserId();
+                if(oneDegreeUser != candidatePositionDO.getUserId()){
+                    recomUser = oneDegreeUser;
+                }
                 shareChainId = oneDegreeShareChainDO.getChainId();
                 break;
             }

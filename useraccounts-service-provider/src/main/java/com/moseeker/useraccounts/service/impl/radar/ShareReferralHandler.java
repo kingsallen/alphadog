@@ -76,7 +76,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         List<Integer> oneDegreeJobApplication = new ArrayList<>();
         // 两度及以上链路对应申请
         JSONObject result = new JSONObject();
-        Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>(1 >> 5);
+        Map<Integer, CandidateShareChainDO>  appIdShareChainMap = new HashMap<>(1 << 5);
         // 候选人转发链路ID
         Set<Integer> shareChainIds = new HashSet<>();
         // 一度转发人user.id
@@ -103,7 +103,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
             }
         }
         List<UserUserDO> userDOS = userUserDao.fetchDOByIdList(new ArrayList<>(oneDegreeUserIds));
-        Map<Integer, UserUserDO> userUserMap = new HashMap<>(1 >> 4);
+        Map<Integer, UserUserDO> userUserMap = new HashMap<>(1 << 4);
         userDOS.forEach(userUserDO -> userUserMap.put(userUserDO.getId(), userUserDO));
 //        wxUserDOS.forEach(userWxUserDO -> userWxUserDOMap.put(userWxUserDO.getSysuserId(), userWxUserDO));
         List<CandidatePositionShareRecordDO> positionShareRecordDOS =
