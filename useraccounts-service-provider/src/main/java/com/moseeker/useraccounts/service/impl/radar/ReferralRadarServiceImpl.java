@@ -1221,7 +1221,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 }else {
                     oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(shareChainDO.getParentId(), shareChainDOS);
                 }
-                recomUser = oneDegreeShareChainDO.getPresenteeUserId();
+                int oneDegreeUser = oneDegreeShareChainDO.getPresenteeUserId();
+                if(oneDegreeUser != candidatePositionDO.getUserId()){
+                    recomUser = oneDegreeUser;
+                }
                 shareChainId = oneDegreeShareChainDO.getChainId();
                 break;
             }

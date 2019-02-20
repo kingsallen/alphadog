@@ -63,9 +63,7 @@ import com.moseeker.entity.pojos.RadarUserInfo;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import org.apache.thrift.TException;
@@ -678,7 +676,7 @@ public class UserEmployeeServiceImpl {
             return;
         }
         Map<Integer, List<RadarUserInfo>> connectionMap = new HashMap<>();
-        CyclicBarrier cyclicBarrier = new CyclicBarrier(connectionLogList.size());
+        CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
             threadPool.startTast(()->{
                 ConnectRadarInfo info = new ConnectRadarInfo();
@@ -688,9 +686,14 @@ public class UserEmployeeServiceImpl {
                 info.setNextUserId(logRecord.getRootUserId());
                 RadarConnectResult result = radarService.connectRadar(info);
                 connectionMap.put(logRecord.getRootChainId(), result.getChain());
-                cyclicBarrier.await();
+                countDownLatch.countDown();
                 return 0;
             });
+        }
+        try {
+            countDownLatch.await(60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.info("fetchEmployeePostConnection overTime");
         }
         data.setConnectionMap(connectionMap);
 
