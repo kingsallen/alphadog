@@ -97,9 +97,9 @@ public class RadarUserInfo implements Comparable<RadarUserInfo>{
 
     public RadarUserInfo initFromUserWxUser(Object userWxUser, UserUserRecord userRecord){
         initFromUserWxUser(userWxUser);
-        if(!StringUtils.isNullOrEmpty(userRecord.getName())){
-            this.nickname = userRecord.getName();
-        }
+//        if(!StringUtils.isNullOrEmpty(userRecord.getName())){
+//            this.nickname = userRecord.getName();
+//        }
         return this;
     }
 
