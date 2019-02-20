@@ -343,8 +343,8 @@ public enum RecruitmentScheduleEnum {
                 this.award = 10;
                 this.description = "联系内推员工完善推荐评价投递职位";
                 this.disable = true;
-                this.priority = 2;
-                this.recuritOrder = 2;
+                this.priority = 4;
+                this.recuritOrder = 3;
                 this.applierView = "恭喜您已被內部员工推荐";
                 break;
         }
