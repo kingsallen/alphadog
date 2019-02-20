@@ -530,7 +530,9 @@ public class ReferralPositionService {
        BeanUtils.copyProperties(position, match);
        match.setDegree(position.getDegree());
        match.setDegreeAbove(position.getDegreeAbove());
-       match.setExperience(Integer.valueOf(position.getExperience()));
+       if(!StringUtils.isNullOrEmpty(position.getExperience())) {
+           match.setExperience(Integer.valueOf(position.getExperience()));
+       }
        match.setExperienceAbove(position.getExperienceAbove());
        match.setHbStatus(position.getHbStatus());
        match.setSalaryBottom(position.getSalaryBottom());
