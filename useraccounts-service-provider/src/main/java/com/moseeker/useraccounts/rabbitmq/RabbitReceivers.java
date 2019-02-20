@@ -152,7 +152,7 @@ public class RabbitReceivers {
     }
 
     private void closeTemMiniteTemplateSwitch(int wechatId, int templateId) {
-        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatId, templateId);
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOWithoutStatus(wechatId, templateId);
         if(messageDO != null && messageDO.getStatus() == 1){
             messageDO.setStatus(0);
             messageDO.setDisable(1);
@@ -161,7 +161,7 @@ public class RabbitReceivers {
     }
 
     private void openTemMiniteTemplateSwitch(int wechatId, int templateId) {
-        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(wechatId, templateId);
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOWithoutStatus(wechatId, templateId);
         if(messageDO == null){
             messageDO = new HrWxNoticeMessageDO();
             messageDO.setNoticeId(templateId);
