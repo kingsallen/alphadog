@@ -703,35 +703,33 @@ public class UserEmployeeServiceImpl {
             return;
         }
         Map<Integer, List<RadarUserInfo>> connectionMap = new HashMap<>();
-//        CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
+        Map<Integer, Integer> chainStatusMap = new HashMap<>();
+        CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
-            long dataTime = System.currentTimeMillis();
-            logger.info("fetchEmployeeForwardView dataBizTime:{}",logRecord);
-//            threadPool.startTast(()->{
-                ConnectRadarInfo info = new ConnectRadarInfo();
-                info.setChainId(logRecord.getId());
-                info.setParentId(0);
-                info.setRecomUserId(logRecord.getRootUserId());
-                info.setNextUserId(logRecord.getRootUserId());
-            RadarConnectResult result = new RadarConnectResult();
-            try {
-                result = radarService.connectRadar(info);
-            } catch (TException e) {
-                e.printStackTrace();
-            }
-            long dataBizTime = System.currentTimeMillis();
-            logger.info("fetchEmployeeForwardView dataBiz1Time:{}",dataBizTime-dataTime);
-            connectionMap.put(logRecord.getRootChainId(), result.getChain());
-//                countDownLatch.countDown();
-//                return 0;
-//            });
+            threadPool.startTast(()->{
+                try {
+                    ConnectRadarInfo info = new ConnectRadarInfo();
+                    info.setChainId(logRecord.getId());
+                    info.setParentId(0);
+                    info.setRecomUserId(logRecord.getRootUserId());
+                    info.setNextUserId(logRecord.getRootUserId());
+                    RadarConnectResult result = radarService.connectRadar(info);
+                    connectionMap.put(logRecord.getRootChainId(), result.getChain());
+                    chainStatusMap.put(logRecord.getRootChainId(), result.getState());
+                }catch (Exception e){
+                    logger.info("fetchEmployeePostConnection:{}", e.getMessage());
+                }
+                countDownLatch.countDown();
+                return 0;
+            });
         }
-//        try {
-//            countDownLatch.await(60, TimeUnit.SECONDS);
-//        } catch (InterruptedException e) {
-//            logger.info("fetchEmployeePostConnection overTime");
-//        }
+        try {
+            countDownLatch.await(60, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            logger.info("fetchEmployeePostConnection overTime");
+        }
         data.setConnectionMap(connectionMap);
+        data.setChainStatus(chainStatusMap);
 
     }
 

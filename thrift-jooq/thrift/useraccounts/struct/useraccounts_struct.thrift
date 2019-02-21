@@ -590,7 +590,8 @@ struct EmployeeForwardView {
     11:optional string clickTime,
     12:optional i32 invitationStatus,
     13:optional list<Connection> chain,
-    14:optional i32 status
+    14:optional i32 status,
+    15:optional i32 chainStatus
 }
 
 struct Connection{
