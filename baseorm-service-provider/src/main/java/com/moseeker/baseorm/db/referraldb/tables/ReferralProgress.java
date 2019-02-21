@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
 
-    private static final long serialVersionUID = 736961975;
+    private static final long serialVersionUID = -1708140779;
 
     /**
      * The reference instance of <code>referraldb.referral_progress</code>
@@ -73,12 +74,12 @@ public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
     /**
      * The column <code>referraldb.referral_progress.create_time</code>.
      */
-    public final TableField<ReferralProgressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReferralProgressRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * The column <code>referraldb.referral_progress.update_time</code>.
      */
-    public final TableField<ReferralProgressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<ReferralProgressRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
 
     /**
      * Create a <code>referraldb.referral_progress</code> table reference
@@ -108,6 +109,14 @@ public class ReferralProgress extends TableImpl<ReferralProgressRecord> {
     @Override
     public Schema getSchema() {
         return Referraldb.REFERRALDB;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<ReferralProgressRecord, Integer> getIdentity() {
+        return Keys.IDENTITY_REFERRAL_PROGRESS;
     }
 
     /**
