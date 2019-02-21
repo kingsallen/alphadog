@@ -1182,14 +1182,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidateTemplateShareChainDO> handledRecords = shareChainDOS.stream().filter(record -> (record.getType() != 0)).collect(Collectors.toList());
         // 过滤点status为1的候选人
         List<CandidateTemplateShareChainDO> completeRecords = shareChainDOS.stream().filter(record -> (record.getStatus() != 0)).collect(Collectors.toList());
+        // 过滤由于完整路径copy的status为1的转发链路
+        candidatePositionDOS = filterCompleteCandidate(candidatePositionDOS, completeRecords);
         // 过滤掉已处理过的候选人
         candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
         // 过滤已申请过对应职位的候选人
         candidatePositionDOS = filterAppliedCandidate(candidatePositionDOS);
         // 过滤已下架的职位
         candidatePositionDOS = filterDownShelfCandidate(candidatePositionDOS, jobPositions);
-        // 过滤由于完整路径copy的status为1的转发链路
-        candidatePositionDOS = filterCompleteCandidate(candidatePositionDOS, completeRecords);
 
         return candidatePositionDOS;
     }
@@ -1197,18 +1197,20 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private List<CandidatePositionDO> filterCompleteCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> completeRecords) {
         List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
         for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
-            boolean flag = true;
-            for(int i=0;i<completeRecords.size()&&flag;i++){
+            boolean flag = false;
+            boolean isExist = false;
+            for(int i=0;i<completeRecords.size()&&!flag;i++){
                 CandidateTemplateShareChainDO shareChainDO = completeRecords.get(i);
                 if(shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId() &&
                         shareChainDO.getPositionId() == candidatePositionDO.getPositionId()){
                     if(shareChainDO.getStatus() == 0) {
                         // 如果存在等于0的，就是实际候选人
-                        flag = false;
+                        flag = true;
                     }
+                    isExist = true;
                 }
             }
-            if(!flag){
+            if(flag || !isExist){
                 filteredCandidateDOs.add(candidatePositionDO);
             }
         }
