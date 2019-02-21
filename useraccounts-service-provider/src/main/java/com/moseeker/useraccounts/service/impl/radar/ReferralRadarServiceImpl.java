@@ -241,13 +241,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         // 发送消息模板
         boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS);
-        // 邀请投递后，将该候选人标记为已处理，下次该职位的候选人卡片中不再包括此人
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
-                inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
         if(isSent){
-            shareChainDao.updateTypeById(candidateShareChainDO.getId());
-            // type = 3 推荐ta
-            templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
+            if(inviteInfo.getTimestamp() != 0){
+                templateShareChainDao.updateTypeBySendTime(inviteInfo, ReferralApplyHandleEnum.invite.getType());
+            }
         }
         sendInviteLogToKafka(inviteInfo);
         result.put("notified", isSent ? 1 : 0);
@@ -263,10 +260,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Transactional(rollbackFor = Exception.class)
     public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) throws BIZException {
         checkCorrectEmployee(inviteInfo);
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(
-                inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
-        shareChainDao.updateTypeById(candidateShareChainDO.getId());
-        templateShareChainDao.updateHandledRadarCardType(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid(),ReferralApplyHandleEnum.invite.getType());
+        if(inviteInfo.getTimestamp() != 0){
+            templateShareChainDao.updateTypeBySendTime(inviteInfo, ReferralApplyHandleEnum.invite.getType());
+        }
     }
 
     @Override
