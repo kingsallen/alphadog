@@ -26,6 +26,7 @@ public class EmployeeCardViewData {
     private List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
     private Map<Integer, List<RadarUserInfo>> connectionMap= new HashMap<>();
     private List<CandidateShareChainDO> shareChainList = new ArrayList<>();
+    private Map<Integer,Integer> chainStatus = new HashMap<>();
 
     public Map<Integer, UserWxUserRecord> getWxUserRecordList() {
         return wxUserRecordList;
@@ -97,5 +98,13 @@ public class EmployeeCardViewData {
 
     public void setShareChainList(List<CandidateShareChainDO> shareChainList) {
         this.shareChainList = shareChainList;
+    }
+
+    public Map<Integer, Integer> getChainStatus() {
+        return chainStatus;
+    }
+
+    public void setChainStatus(Map<Integer, Integer> chainStatus) {
+        this.chainStatus = chainStatus;
     }
 }

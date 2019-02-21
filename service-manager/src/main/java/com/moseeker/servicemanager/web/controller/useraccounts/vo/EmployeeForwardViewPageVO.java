@@ -22,6 +22,15 @@ public class EmployeeForwardViewPageVO {
     public int invitationStatus;
     public List<RadarUserInfo> chain;
     public int status;
+    public int chainStatus;
+
+    public int getChainStatus() {
+        return chainStatus;
+    }
+
+    public void setChainStatus(int chainStatus) {
+        this.chainStatus = chainStatus;
+    }
 
     public int getUserId() {
         return userId;
