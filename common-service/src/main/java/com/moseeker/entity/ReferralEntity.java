@@ -751,6 +751,7 @@ public class ReferralEntity {
             Map<Integer, Integer> positionView = new HashMap<>();
             Map<Integer, Integer> positionIdMap = new HashMap<>();
             List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
+            logger.info("fetchEmployeeRadarData candidatePositionList:{}", JSON.toJSONString(candidatePositionList));
             if(!StringUtils.isEmptyList(candidatePositionList) && !StringUtils.isEmptyList(shareChainDOS)) {
                 for (CandidatePositionRecord candidatePosition : candidatePositionList) {
                     for (ReferralEmployeeNetworkResourcesRecord record : records){
@@ -799,6 +800,7 @@ public class ReferralEntity {
             data.setTimeMap(timeMap);
             data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            logger.info("fetchEmployeeRadarData candidatePositionList:{}", JSON.toJSONString(positionListFuture.get()));
             if(!StringUtils.isEmptyList(positionListFuture.get())){
                 positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
             }
@@ -838,7 +840,7 @@ public class ReferralEntity {
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }
-
+        logger.info("fetchEmployeeRadarData data:{}", JSON.toJSONString(data));
         return data;
     }
 
