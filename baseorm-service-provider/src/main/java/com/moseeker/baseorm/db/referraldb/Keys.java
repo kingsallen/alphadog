@@ -96,6 +96,7 @@ public class Keys {
     public static final Identity<ReferralPositionBonusRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS = Identities0.IDENTITY_REFERRAL_POSITION_BONUS;
     public static final Identity<ReferralPositionBonusStageDetailRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS_STAGE_DETAIL = Identities0.IDENTITY_REFERRAL_POSITION_BONUS_STAGE_DETAIL;
     public static final Identity<ReferralPositionRelRecord, Integer> IDENTITY_REFERRAL_POSITION_REL = Identities0.IDENTITY_REFERRAL_POSITION_REL;
+    public static final Identity<ReferralProgressRecord, Integer> IDENTITY_REFERRAL_PROGRESS = Identities0.IDENTITY_REFERRAL_PROGRESS;
     public static final Identity<ReferralRecomEvaluationRecord, Integer> IDENTITY_REFERRAL_RECOM_EVALUATION = Identities0.IDENTITY_REFERRAL_RECOM_EVALUATION;
     public static final Identity<ReferralRecomHbPositionRecord, Integer> IDENTITY_REFERRAL_RECOM_HB_POSITION = Identities0.IDENTITY_REFERRAL_RECOM_HB_POSITION;
     public static final Identity<ReferralSeekRecommendRecord, Integer> IDENTITY_REFERRAL_SEEK_RECOMMEND = Identities0.IDENTITY_REFERRAL_SEEK_RECOMMEND;
@@ -166,6 +167,7 @@ public class Keys {
         public static Identity<ReferralPositionBonusRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS = createIdentity(ReferralPositionBonus.REFERRAL_POSITION_BONUS, ReferralPositionBonus.REFERRAL_POSITION_BONUS.ID);
         public static Identity<ReferralPositionBonusStageDetailRecord, Integer> IDENTITY_REFERRAL_POSITION_BONUS_STAGE_DETAIL = createIdentity(ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL, ReferralPositionBonusStageDetail.REFERRAL_POSITION_BONUS_STAGE_DETAIL.ID);
         public static Identity<ReferralPositionRelRecord, Integer> IDENTITY_REFERRAL_POSITION_REL = createIdentity(ReferralPositionRel.REFERRAL_POSITION_REL, ReferralPositionRel.REFERRAL_POSITION_REL.ID);
+        public static Identity<ReferralProgressRecord, Integer> IDENTITY_REFERRAL_PROGRESS = createIdentity(ReferralProgress.REFERRAL_PROGRESS, ReferralProgress.REFERRAL_PROGRESS.ID);
         public static Identity<ReferralRecomEvaluationRecord, Integer> IDENTITY_REFERRAL_RECOM_EVALUATION = createIdentity(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION, ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.ID);
         public static Identity<ReferralRecomHbPositionRecord, Integer> IDENTITY_REFERRAL_RECOM_HB_POSITION = createIdentity(ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION, ReferralRecomHbPosition.REFERRAL_RECOM_HB_POSITION.ID);
         public static Identity<ReferralSeekRecommendRecord, Integer> IDENTITY_REFERRAL_SEEK_RECOMMEND = createIdentity(ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND, ReferralSeekRecommend.REFERRAL_SEEK_RECOMMEND.ID);

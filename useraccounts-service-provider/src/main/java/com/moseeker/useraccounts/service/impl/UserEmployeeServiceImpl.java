@@ -558,7 +558,7 @@ public class UserEmployeeServiceImpl {
         Future<Integer> countFuture = threadPool.startTast(
                 () -> networkResourcesDao.fetchByPostUserIdCount(userId, employeeUserFuture.get()));
         List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
-        EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(userIdList, userId,companyId);
+        EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(resourcesRecordList, userId,companyId);
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
         result.setPage(page);
         try {
