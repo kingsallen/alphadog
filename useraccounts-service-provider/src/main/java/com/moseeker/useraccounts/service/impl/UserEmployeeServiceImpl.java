@@ -642,6 +642,7 @@ public class UserEmployeeServiceImpl {
 
     @RadarSwitchLimit
     public EmployeeForwardViewVO fetchEmployeeForwardView(int companyId, int userId, String positionTitle, String order, int page, int size){
+        long startTime = System.currentTimeMillis();
         EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
             page=1;
@@ -654,6 +655,8 @@ public class UserEmployeeServiceImpl {
             throw UserAccountException.PERMISSION_DENIED;
         }
         Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
+        long employeeTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView employeeTime:{}",employeeTime-startTime );
         List<Integer> positionIdList = bizTools.listPositionIdByUserIdAndStatus(userId);
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
@@ -661,6 +664,8 @@ public class UserEmployeeServiceImpl {
         if (StringUtils.isEmptyList(positionIdList)) {
             return result;
         }
+        long positionIdListTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView positionIdListTime:{}",positionIdListTime-employeeTime);
         List<CandidateRecomRecordRecord> list = null;
         try {
             list = this.pagePositionById(positionIdList, employeeUserFuture.get(), userId, companyId, order, page, size, result);
@@ -670,14 +675,24 @@ public class UserEmployeeServiceImpl {
         if(StringUtils.isEmptyList(list)){
             return result;
         }
+        long listTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView listTime:{}",listTime - positionIdListTime);
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
+        long dataTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView dataTime:{}",dataTime - listTime);
         this.fetchEmployeePostConnection(data);
+        long chainTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView chainTime:{}",chainTime -dataTime);
         List<Integer> userIdList = list.stream().map(m ->m.getPresenteeUserId()).collect(Collectors.toList());
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
+        long neo4jTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView neo4jTime:{}",neo4jTime-chainTime);
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
         for(CandidateRecomRecordRecord record: list){
             viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList));
         }
+        long dataBizTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView dataBizTime:{}",dataBizTime-neo4jTime);
         result.setUserList(viewPages);
         return result;
     }
