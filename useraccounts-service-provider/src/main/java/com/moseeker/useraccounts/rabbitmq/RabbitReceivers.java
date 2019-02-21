@@ -75,23 +75,28 @@ public class RabbitReceivers {
         if(applyId == 0){
             return;
         }
-        JobApplication jobApplication = jobApplicationDao.fetchOneById(applyId);
-        if(jobApplication == null){
-            return;
+        try {
+            JobApplication jobApplication = jobApplicationDao.fetchOneById(applyId);
+            if(jobApplication == null){
+                return;
+            }
+            sendApplyToKafka(jobApplication);
+            // 获取申请来源对应的shareChain处理类型
+            int type = ReferralApplyHandleEnum.getByApplicationSource(jobApplication.getOrigin());
+            if(type == 0){
+                return;
+            }
+            List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByPresenteeAndPosition(jobApplication.getApplierId(), jobApplication.getPositionId());
+            List<Integer> shareChainIds = shareChainDOS.stream().map(CandidateShareChainDO::getId).collect(Collectors.toList());
+            if(shareChainIds.size() == 0){
+                return;
+            }
+            shareChainDao.updateTypeByIds(shareChainIds, type);
+            templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, type);
+        }catch (Exception e){
+            logger.info("==========handleReferralApply:{}, msgBody:{}", e.getMessage(), msgBody);
         }
-        sendApplyToKafka(jobApplication);
-        // 获取申请来源对应的shareChain处理类型
-        int type = ReferralApplyHandleEnum.getByApplicationSource(jobApplication.getOrigin());
-        if(type == 0){
-            return;
-        }
-        List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByPresenteeAndPosition(jobApplication.getApplierId(), jobApplication.getPositionId());
-        List<Integer> shareChainIds = shareChainDOS.stream().map(CandidateShareChainDO::getId).collect(Collectors.toList());
-        if(shareChainIds.size() == 0){
-            return;
-        }
-        shareChainDao.updateTypeByIds(shareChainIds, type);
-        templateShareChainDao.updateHandledTypeByChainIds(shareChainIds, type);
+
     }
 
     @RabbitListener(queues = "handle_radar_switch", containerFactory = "rabbitListenerContainerFactoryAutoAck")
@@ -103,23 +108,27 @@ public class RabbitReceivers {
         if(StringUtils.isEmpty(msgBody)){
             return;
         }
-        CompanySwitchVO switchVO = JSONObject.parseObject(msgBody, CompanySwitchVO.class);
-        // 仅处理雷达开关
-        if(!(switchVO.getKeyword().equals(RadarSwitchAspect.RADAR_LANAGUE))){
-            return;
-        }
-        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(switchVO.getCompanyId());
-        if(hrWxWechatDO == null){
-            return;
-        }
-        if(switchVO.getValid()==1){
-            // 将消息模板开关打开
-            openTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
-            sendEmployeeToKafka(switchVO.getCompanyId());
-        }else if(switchVO.getValid() == 0){
-            // 将开关关闭
-            closeTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
-            handleEmployeeNetwork(switchVO.getCompanyId());
+        try {
+            CompanySwitchVO switchVO = JSONObject.parseObject(msgBody, CompanySwitchVO.class);
+            // 仅处理雷达开关
+            if(!(switchVO.getKeyword().equals(RadarSwitchAspect.RADAR_LANAGUE))){
+                return;
+            }
+            HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(switchVO.getCompanyId());
+            if(hrWxWechatDO == null){
+                return;
+            }
+            if(switchVO.getValid()==1){
+                // 将消息模板开关打开
+                openTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
+                sendEmployeeToKafka(switchVO.getCompanyId());
+            }else if(switchVO.getValid() == 0){
+                // 将开关关闭
+                closeTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
+                handleEmployeeNetwork(switchVO.getCompanyId());
+            }
+        }catch (Exception e){
+            logger.info("==========handleRadarSwitch:{}, msgBody:{}", e.getMessage(), msgBody);
         }
     }
 
