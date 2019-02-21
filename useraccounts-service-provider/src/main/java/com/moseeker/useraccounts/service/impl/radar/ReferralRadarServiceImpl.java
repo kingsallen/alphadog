@@ -70,6 +70,7 @@ import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
@@ -219,7 +220,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Transactional(rollbackFor = Exception.class)
     public String inviteApplication(int companyId, ReferralInviteInfo inviteInfo) throws BIZException {
         logger.info("inviteInfo:{}", inviteInfo);
-        checkCorrectEmployee(inviteInfo);
+        checkCorrectEmployee(inviteInfo.getPid(), inviteInfo.getUserId());
         JSONObject result = new JSONObject();
         // 先查询之前是否存在，是否已完成，如果是员工触发则生成连连看链路，遍历每个员工入库
         ReferralConnectionLogRecord connectionLogRecord = connectionLogDao.fetchChainLogRecord(inviteInfo.getUserId(), inviteInfo.getEndUserId(), inviteInfo.getPid());
@@ -258,10 +259,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     @Transactional(rollbackFor = Exception.class)
-    public void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) throws BIZException {
-        checkCorrectEmployee(inviteInfo);
-        if(inviteInfo.getTimestamp() != 0){
-            templateShareChainDao.updateTypeBySendTime(inviteInfo, ReferralApplyHandleEnum.invite.getType());
+    public void handleCandidateState(int companyId, ReferralStateInfo stateInfo) throws BIZException {
+        logger.info("handleCandidateState:{}", stateInfo);
+        checkCorrectEmployee(stateInfo.getPid(), stateInfo.getUserId());
+        if(stateInfo.getTimestamp() != 0){
+            ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
+            BeanUtils.copyProperties(stateInfo, inviteInfo);
+            templateShareChainDao.updateTypeBySendTime(inviteInfo, stateInfo.getState());
         }
     }
 
@@ -270,7 +274,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Transactional(rollbackFor = Exception.class)
     public void ignoreCurrentViewer(int companyId, ReferralInviteInfo ignoreInfo) throws BIZException {
         logger.info("ignoreUserId:{}", ignoreInfo.getEndUserId());
-        checkCorrectEmployee(ignoreInfo);
+        checkCorrectEmployee(ignoreInfo.getPid(), ignoreInfo.getUserId());
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(ignoreInfo.getUserId(), ignoreInfo.getTimestamp());
         if(shareChainDOS.size() == 0){
             return;
@@ -538,14 +542,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return recommendRecord == null ? 0 : recommendRecord.getId();
     }
 
-    @Override
-    public void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type) {
-        CandidateShareChainDO candidateShareChainDO = shareChainDao.getLastOneByRootAndPresenteeAndPid(rootUserId, presenteeUserId, positionId);
-        shareChainDao.updateTypeById(candidateShareChainDO.getId());
-        // type = 3 推荐ta
-        templateShareChainDao.updateHandledRadarCardType(rootUserId, presenteeUserId, positionId, type);
-    }
-
     private List<RadarUserInfo> doInitShortestChain(List<Integer> shortestChain, List<UserWxUserDO> userUserDOS) {
         Map<Integer, UserWxUserDO> idUserMap = userUserDOS.stream().collect(Collectors.toMap(UserWxUserDO::getSysuserId, userWxUserDO->userWxUserDO));
         return doInitRadarUsers(shortestChain, idUserMap);
@@ -610,12 +606,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return parentId;
     }
 
-    private void checkCorrectEmployee(ReferralInviteInfo inviteInfo) throws BIZException {
-        JobPositionDO jobPositionDO = positionDao.getJobPositionById(inviteInfo.getPid());
+    private void checkCorrectEmployee(int pid, int uid) throws BIZException {
+        JobPositionDO jobPositionDO = positionDao.getJobPositionById(pid);
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
-        if(!employeeEntity.isEmployee(inviteInfo.getUserId(), jobPositionDO.getCompanyId())){
+        if(!employeeEntity.isEmployee(uid, jobPositionDO.getCompanyId())){
             throw UserAccountException.EMPLOYEE_COMPANY_UNMATCH;
         }
     }
