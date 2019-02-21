@@ -176,17 +176,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<JobPositionDO> jobPositions = positionDao.getPositionListWithoutStatus(positionIds);
         // 将职位id和职位映射，用于后续数据组装
         Map<Integer, JobPositionDO> idPositionMap = jobPositions.stream().collect(Collectors.toMap(JobPositionDO::getId, jobPositionDO -> jobPositionDO));
-        // 过滤掉员工已处理过的候选人
-        List<CandidateTemplateShareChainDO> handledRecords = shareChainDOS.stream().filter(record -> (record.getType() != 0)).collect(Collectors.toList());
         // 通过职位id和userid获取职位转发记录
         List<CandidatePositionDO> candidatePositionDOS = candidatePositionDao.fetchRecentViewedByUserIdsAndPids(beRecomUserIds, positionIds);
         // 过滤指定规则的浏览记录
-        candidatePositionDOS = filterSpecficCandidate(candidatePositionDOS, handledRecords, jobPositions);
+        candidatePositionDOS = filterSpecficCandidate(candidatePositionDOS, shareChainDOS, jobPositions);
 
         List<JSONObject> cards = new ArrayList<>();
-        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
         // 本批卡片展示的候选人useIds
-        List<CandidatePositionShareRecordDO> positionShareRecordDOS = getPositionShareRecordDOS(startIndex, cardInfo, candidatePositionDOS, shareChainDOS);
+        List<CandidatePositionShareRecordDO> positionShareRecordDOS = getPositionShareRecordDOS(cardInfo, candidatePositionDOS, shareChainDOS);
         // 获取当前页的卡片数据
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
@@ -722,7 +719,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return userDepthVOS;
     }
 
-    private List<CandidatePositionShareRecordDO> getPositionShareRecordDOS(int startIndex, ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
+    private List<CandidatePositionShareRecordDO> getPositionShareRecordDOS(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
+        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
         Set<Integer> shareChainIds = new HashSet<>();
         for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
             CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
@@ -1178,16 +1176,43 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private List<CandidatePositionDO> filterSpecficCandidate(List<CandidatePositionDO> candidatePositionDOS,
-                                                             List<CandidateTemplateShareChainDO> handledRecords,
+                                                             List<CandidateTemplateShareChainDO> shareChainDOS,
                                                              List<JobPositionDO> jobPositions) {
+        // 过滤掉员工已处理过的候选人
+        List<CandidateTemplateShareChainDO> handledRecords = shareChainDOS.stream().filter(record -> (record.getType() != 0)).collect(Collectors.toList());
+        // 过滤点status为1的候选人
+        List<CandidateTemplateShareChainDO> completeRecords = shareChainDOS.stream().filter(record -> (record.getStatus() != 0)).collect(Collectors.toList());
         // 过滤掉已处理过的候选人
         candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
         // 过滤已申请过对应职位的候选人
         candidatePositionDOS = filterAppliedCandidate(candidatePositionDOS);
         // 过滤已下架的职位
         candidatePositionDOS = filterDownShelfCandidate(candidatePositionDOS, jobPositions);
+        // 过滤由于完整路径copy的status为1的转发链路
+        candidatePositionDOS = filterCompleteCandidate(candidatePositionDOS, completeRecords);
 
         return candidatePositionDOS;
+    }
+
+    private List<CandidatePositionDO> filterCompleteCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> completeRecords) {
+        List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
+        for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
+            boolean flag = true;
+            for(int i=0;i<completeRecords.size()&&flag;i++){
+                CandidateTemplateShareChainDO shareChainDO = completeRecords.get(i);
+                if(shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId() &&
+                        shareChainDO.getPositionId() == candidatePositionDO.getPositionId()){
+                    if(shareChainDO.getStatus() == 0) {
+                        // 如果存在等于0的，就是实际候选人
+                        flag = false;
+                    }
+                }
+            }
+            if(!flag){
+                filteredCandidateDOs.add(candidatePositionDO);
+            }
+        }
+        return filteredCandidateDOs;
     }
 
     private List<CandidatePositionDO> filterDownShelfCandidate(List<CandidatePositionDO> candidatePositionDOS, List<JobPositionDO> jobPositions) {
@@ -1372,17 +1397,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         JSONArray progressJson = new JSONArray();
         for(ReferralProgressEnum progressEnum : ReferralProgressEnum.getEnumList()){
             JSONObject oneProgress = new JSONObject();
-            if(current.getOrder() > progressEnum.getOrder()){
+            if(current.getOrder() >= progressEnum.getOrder()){
                 oneProgress.put("progress_status", progressEnum.getProgress());
                 oneProgress.put("progress_pass", 1);
                 oneProgress.put("datetime", getLastOptTime(progressEnum.getProgress(), hrOperationRecords));
                 progressJson.add(oneProgress);
-            }else if(current.getOrder() == progressEnum.getOrder()) {
-                oneProgress.put("progress_status", progressEnum.getProgress());
-                oneProgress.put("progress_pass", refuse ? 2 : 1);
-                oneProgress.put("datetime", getLastOptTime(current.getProgress(), hrOperationRecords));
-                progressJson.add(oneProgress);
-            }else{
+            }else {
+                if(refuse){
+                    oneProgress.put("progress_status", progressEnum.getProgress());
+                    oneProgress.put("progress_pass", 2);
+                    oneProgress.put("datetime", getLastOptTime(current.getProgress(), hrOperationRecords));
+                    progressJson.add(oneProgress);
+                }
                 break;
             }
         }
@@ -1445,7 +1471,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 if(jobApplication.getAppTplId() == ReferralProgressEnum.FAILED.getProgress()){
                     int lastProgress = getLastProgress(jobApplication.getAppTplId(), hrOperationRecords);
                     ReferralProgressEnum lastProgressEnum = ReferralProgressEnum.getEnumByProgress(lastProgress);
-                    if(lastViewProgress.getOrder() >= lastProgressEnum.getOrder()){
+                    if(lastViewProgress.getOrder() > lastProgressEnum.getOrder()){
                         isNormal = false;
                     }
                     referralProgress.setViewProgress(ReferralProgressEnum.FAILED.getProgress());

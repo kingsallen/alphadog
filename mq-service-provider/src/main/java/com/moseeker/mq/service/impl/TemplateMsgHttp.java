@@ -975,7 +975,7 @@ public class TemplateMsgHttp {
         if(hrWxTemplateMessageDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
         }
-        Map<String, Object> requestMap = new HashMap<>(1 >> 4);
+        Map<String, Object> requestMap = new HashMap<>(1 << 4);
         Map<String, JSONObject> dataMap = createDataMap(inviteTemplateVO);
         requestMap.put("data", dataMap);
         requestMap.put("touser", userWxUserRecord.getOpenid());
