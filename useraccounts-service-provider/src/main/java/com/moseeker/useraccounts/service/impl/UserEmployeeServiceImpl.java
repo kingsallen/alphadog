@@ -679,13 +679,17 @@ public class UserEmployeeServiceImpl {
         CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
             threadPool.startTast(()->{
-                ConnectRadarInfo info = new ConnectRadarInfo();
-                info.setChainId(logRecord.getId());
-                info.setParentId(0);
-                info.setRecomUserId(logRecord.getRootUserId());
-                info.setNextUserId(logRecord.getRootUserId());
-                RadarConnectResult result = radarService.connectRadar(info);
-                connectionMap.put(logRecord.getRootChainId(), result.getChain());
+                try {
+                    ConnectRadarInfo info = new ConnectRadarInfo();
+                    info.setChainId(logRecord.getId());
+                    info.setParentId(0);
+                    info.setRecomUserId(logRecord.getRootUserId());
+                    info.setNextUserId(logRecord.getRootUserId());
+                    RadarConnectResult result = radarService.connectRadar(info);
+                    connectionMap.put(logRecord.getRootChainId(), result.getChain());
+                }catch (Exception e){
+                    logger.info("fetchEmployeePostConnection:{}", e.getMessage());
+                }
                 countDownLatch.countDown();
                 return 0;
             });

@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
+import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrCompanyDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
@@ -126,6 +127,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private CandidatePositionDao candidatePositionDao;
     @Autowired
     private ReferralConnectionChainDao connectionChainDao;
+    @Autowired
+    private HistoryUserEmployeeDao historyUserEmployeeDao;
     @Autowired
     private ReferralConnectionLogDao connectionLogDao;
     @Autowired
@@ -336,7 +339,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 获取排好序并包括连接状态的人脉连连看链路
         List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
         // 填充员工姓名
-        fillEmployeeName(connectionLogRecord.getRootUserId(), radarInfo.getCompanyId(), userChains);
+        fillEmployeeName(connectionLogRecord.getRootUserId(), connectionLogRecord.getCompanyId(), userChains);
         result.setParent_id(parentId);
         result.setDegree(userChains.size()-1);
         result.setPid(connectionLogRecord.getPositionId());
@@ -981,12 +984,19 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private void fillEmployeeName(int userId, int companyId, List<RadarUserInfo> userChains) {
         UserEmployeeRecord employee = userEmployeeDao.getUnActiveEmployee(userId, companyId);
+        String cname = "";
         if(employee == null){
-            throw UserAccountException.USEREMPLOYEES_EMPTY;
+            UserEmployeeDO userEmployeeDO = historyUserEmployeeDao.getHistoryEmployeeByCompanyIdAndSysuserId(userId, companyId);
+            if(userEmployeeDO == null){
+                throw UserAccountException.USEREMPLOYEES_EMPTY;
+            }
+            cname = userEmployeeDO.getCname();
+        }else {
+            cname = employee.getCname();
         }
         for(RadarUserInfo userInfo : userChains){
-            if(userInfo.getUid().equals(employee.getSysuserId())){
-                userInfo.setName(employee.getCname());
+            if(userInfo.getUid().equals(userId)){
+                userInfo.setName(cname);
                 break;
             }
         }
