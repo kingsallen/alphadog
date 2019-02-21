@@ -113,6 +113,7 @@ public class EmployeeBizTool {
                 if(logRecord.getEndUserId().intValue() == userId && logRecord.getPositionId().intValue() == record.getPositionId().intValue()){
                     result.setConnection(logRecord.getState());
                     result.setChain(data.getConnectionMap().get(logRecord.getRootChainId()));
+                    result.setChainStatus(data.getChainStatus().get(logRecord.getRootChainId()));
                     break;
                 }
             }

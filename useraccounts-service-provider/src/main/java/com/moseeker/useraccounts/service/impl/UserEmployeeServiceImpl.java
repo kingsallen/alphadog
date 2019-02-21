@@ -676,6 +676,7 @@ public class UserEmployeeServiceImpl {
             return;
         }
         Map<Integer, List<RadarUserInfo>> connectionMap = new HashMap<>();
+        Map<Integer, Integer> chainStatusMap = new HashMap<>();
         CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
             threadPool.startTast(()->{
@@ -687,6 +688,7 @@ public class UserEmployeeServiceImpl {
                     info.setNextUserId(logRecord.getRootUserId());
                     RadarConnectResult result = radarService.connectRadar(info);
                     connectionMap.put(logRecord.getRootChainId(), result.getChain());
+                    chainStatusMap.put(logRecord.getRootChainId(), result.getState());
                 }catch (Exception e){
                     logger.info("fetchEmployeePostConnection:{}", e.getMessage());
                 }
@@ -700,6 +702,7 @@ public class UserEmployeeServiceImpl {
             logger.info("fetchEmployeePostConnection overTime");
         }
         data.setConnectionMap(connectionMap);
+        data.setChainStatus(chainStatusMap);
 
     }
 

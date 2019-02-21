@@ -396,14 +396,13 @@ public class TemplateMsgHttp {
             logger.info("公众号没有配置此消息模板");
             return;
         }
-        String first;
+        String first = SeekReferralFirst;
         String firstColor = "#2CD6B1";
         String keyword1Color = "#66A4F9";
         String keyword2Color = "#66A4F9";
         ConfigSysTemplateMessageLibraryRecord record =
                 templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(REFERRAL_SEEK_REFERRAL);
         if (record != null) {
-            first = record.getFirst();
             if(StringUtils.isNotNullOrEmpty(record.getColorJson())) {
                 Map<String, Object> color = (Map<String, Object>) JSON.parse(record.getColorJson());
                 if(color.get("first") != null) {
@@ -416,8 +415,6 @@ public class TemplateMsgHttp {
                     keyword2Color = (String) color.get("keyword2");
                 }
             }
-        } else {
-            first = SeekReferralFirst;
         }
         String time =  DateUtils.dateToMinuteCNDate(new Date());
 
