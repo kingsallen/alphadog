@@ -67,6 +67,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
+import com.sun.org.apache.regexp.internal.RE;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -716,7 +717,9 @@ public class ReferralEntity {
         return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
     }
 
-    public EmployeeRadarData fetchEmployeeRadarData(List<Integer> userIdList, int postUserId, int companyId){
+   public EmployeeRadarData fetchEmployeeRadarData(List<ReferralEmployeeNetworkResourcesRecord> records, int postUserId, int companyId){
+        List<Integer> userIdList = records.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+        List<Integer> positionIdList = records.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         EmployeeRadarData data = new EmployeeRadarData();
         if(StringUtils.isEmptyList(userIdList)){
             return data;
@@ -730,21 +733,15 @@ public class ReferralEntity {
                     () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(userIdList));
-
             List<CandidateShareChainDO> shareChainDOS = shareFuture.get();
-            Future<List<CandidatePositionRecord>> candidatePositionListFuture = null;
-            if(!StringUtils.isEmptyList(shareChainDOS)) {
-                List<Integer> sharePositionIdstemp = shareChainDOS.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
-                candidatePositionListFuture = threadPool.startTast(() -> candidatePositionDao.fetchViewedByUserIdsAndPidList(userIdList, sharePositionIdstemp));
-            }
+            Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
+                    () -> candidatePositionDao.fetchViewedByUserIdsAndPidList(userIdList, positionIdList));
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
-            Map<Integer, Integer> positionIdMap = new HashMap<>();
             Map<Integer, Timestamp> timeMap = new HashMap<>();
             Set<Integer> recommendUserSet = new HashSet<>();
             Map<Integer, Integer> recommendMap = new HashMap<>();
             if(!StringUtils.isEmptyList(recommendList)){
                 recommendList.forEach( recommend -> {
-                        positionIdMap.put(recommend.getPresenteeId(), recommend.getPositionId());
                         recommendUserSet.add(recommend.getPresenteeId());
                         recommendMap.put(recommend.getPresenteeId(), recommend.getId());
                         timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
@@ -752,26 +749,20 @@ public class ReferralEntity {
                 );
             }
             Map<Integer, Integer> positionView = new HashMap<>();
+            Map<Integer, Integer> positionIdMap = new HashMap<>();
             List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
             if(!StringUtils.isEmptyList(candidatePositionList) && !StringUtils.isEmptyList(shareChainDOS)) {
                 for (CandidatePositionRecord candidatePosition : candidatePositionList) {
-                    for (CandidateShareChainDO candidateShareChainDO : shareChainDOS){
-                        if (candidatePosition.getUserId() == candidateShareChainDO.getPresenteeUserId()
-                                && candidatePosition.getPositionId() == candidateShareChainDO.getPositionId()){
-                            if(positionIdMap.get(candidateShareChainDO.getPresenteeUserId())== null) {
-                                positionIdMap.put(candidateShareChainDO.getPresenteeUserId(), candidatePosition.getPositionId());
-                                timeMap.put(candidateShareChainDO.getPresenteeUserId(), candidatePosition.getUpdateTime());
-                            }
-                            if(positionIdMap.get(candidateShareChainDO.getPresenteeUserId())!= null && positionView.get(candidateShareChainDO.getPresenteeUserId()) == null
-                                    && positionIdMap.get(candidateShareChainDO.getPresenteeUserId()).intValue() == candidatePosition.getPositionId()) {
-                                positionView.put(candidateShareChainDO.getPresenteeUserId(), candidatePosition.getViewNumber());
-                            }
+                    for (ReferralEmployeeNetworkResourcesRecord record : records){
+                        if (candidatePosition.getUserId() == record.getPresenteeUserId()
+                                && candidatePosition.getPositionId() == record.getPositionId()){
+                            timeMap.put(record.getPresenteeUserId(), candidatePosition.getUpdateTime());
+                            positionView.put(record.getPresenteeUserId(), candidatePosition.getViewNumber());
+                            positionIdMap.put(record.getPresenteeUserId(), record.getPositionId());
                         }
                     }
                 }
             }
-            Collection<Integer> valueCollection = positionIdMap.values();
-            List<Integer> positionIdList = new ArrayList<Integer>(valueCollection);
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
                     () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
@@ -1065,20 +1056,21 @@ public class ReferralEntity {
             String messageStr = (String)message;
             KafkaNetworkResource resource = JSONObject.parseObject(messageStr, KafkaNetworkResource.class);
             logger.info("fetchEmployeeNetworkResource resource:{}",JSON.toJSONString(resource));
-            if (resource != null && !StringUtils.isEmptyList(resource.getUser_id())){
+            if (resource != null && !StringUtils.isEmptyList(resource.getData())){
                 List<ReferralEmployeeNetworkResourcesRecord> list = networkResourcesDao.fetchByPostUserId(resource.getEmployee_id());
                 List<ReferralEmployeeNetworkResourcesRecord> updateRecordList = new ArrayList<>();
                 List<ReferralEmployeeNetworkResourcesRecord> insertRecordList = new ArrayList<>();
-                int num = list.size()>resource.getUser_id().size()?list.size():resource.getUser_id().size();
+                int num = list.size()>resource.getData().size()?list.size():resource.getData().size();
                 logger.info("fetchEmployeeNetworkResource num:{}",num);
                 for(int i =0; i<num;i++){
                     logger.info("fetchEmployeeNetworkResource i:{}",i);
                     if(i <= (list.size()-1)) {
                         logger.info("fetchEmployeeNetworkResource2 i:{}",i);
                         ReferralEmployeeNetworkResourcesRecord record = list.get(i);
-                        if (resource.getUser_id().size() > i) {
+                        if (resource.getData().size() > i) {
                             record.setDisable((byte) Constant.DISABLE);
-                            record.setPresenteeUserId(resource.getUser_id().get(i));
+                            record.setPresenteeUserId(resource.getData().get(i).getUser_id());
+                            record.setPositionId(resource.getData().get(i).getPosition_id());
                             record.setCompanyId(resource.getCompany_id());
                         } else {
                             record.setDisable((byte) Constant.ENABLE);
@@ -1087,7 +1079,8 @@ public class ReferralEntity {
                     }else {
                         ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
                         record.setPostUserId(resource.getEmployee_id());
-                        record.setPresenteeUserId(resource.getUser_id().get(i));
+                        record.setPresenteeUserId(resource.getData().get(i).getUser_id());
+                        record.setPositionId(resource.getData().get(i).getPosition_id());
                         record.setCompanyId(resource.getCompany_id());
                         insertRecordList.add(record);
                     }
