@@ -705,6 +705,8 @@ public class UserEmployeeServiceImpl {
         Map<Integer, List<RadarUserInfo>> connectionMap = new HashMap<>();
 //        CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
+            long dataTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView dataBizTime:{}",logRecord);
 //            threadPool.startTast(()->{
                 ConnectRadarInfo info = new ConnectRadarInfo();
                 info.setChainId(logRecord.getId());
@@ -717,6 +719,8 @@ public class UserEmployeeServiceImpl {
             } catch (TException e) {
                 e.printStackTrace();
             }
+            long dataBizTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView dataBiz1Time:{}",dataBizTime-dataTime);
             connectionMap.put(logRecord.getRootChainId(), result.getChain());
 //                countDownLatch.countDown();
 //                return 0;
