@@ -22,7 +22,6 @@ import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralProgress;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionChainRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralConnectionLogRecord;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralProgressRecord;
@@ -343,7 +342,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 获取排好序并包括连接状态的人脉连连看链路
         List<RadarUserInfo> userChains = getOrderedChains(userIds, chainRecords, connectionLogRecord.getCompanyId());
         // 填充员工姓名
-        fillEmployeeName(connectionLogRecord.getRootUserId(), userChains);
+        fillEmployeeName(connectionLogRecord.getRootUserId(), radarInfo.getCompanyId(), userChains);
         result.setParent_id(parentId);
         result.setDegree(userChains.size()-1);
         result.setPid(connectionLogRecord.getPositionId());
@@ -987,14 +986,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return needUpdate;
     }
 
-    private void fillEmployeeName(int userId, List<RadarUserInfo> userChains) {
-        UserUserDO employee = userUserDao.getUser(userId);
+    private void fillEmployeeName(int userId, int companyId, List<RadarUserInfo> userChains) {
+        UserEmployeeRecord employee = userEmployeeDao.getUnActiveEmployee(userId, companyId);
         if(employee == null){
             throw UserAccountException.USEREMPLOYEES_EMPTY;
         }
         for(RadarUserInfo userInfo : userChains){
-            if(userInfo.getUid().equals(employee.getId())){
-                userInfo.setName(employee.getName());
+            if(userInfo.getUid().equals(employee.getSysuserId())){
+                userInfo.setName(employee.getCname());
                 break;
             }
         }
@@ -1237,9 +1236,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             }
         }
         if(recomUser != 0){
-            String nickName = Optional.ofNullable(userMap.get(recomUser).getName())
-                    .orElse(idWxUserMap.get(recomUser).getNickname());
-            recomInfo.put("nickname", nickName);
+            recomInfo.put("nickname", idWxUserMap.get(recomUser).getNickname());
         }
         boolean isFromWxGroup = false;
         for(CandidatePositionShareRecordDO positionShareRecordDO : positionShareRecordDOS){
