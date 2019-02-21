@@ -51,5 +51,5 @@ service ReferralService {
     // 检查职位详情页点击人是否对该职位发起过帮我内推
     i32 checkSeekReferral(1: i32 userId, 2:i32 presenteeId, 3:i32 positionId, 4: i32 companyId, 5: i32 parentChainId) throws (1: common_struct.BIZException e);
     // 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
-    void handleCandidateState(1:referral_struct.ReferralInviteInfo inviteInfo) throws (1: common_struct.BIZException e);
+    void handleCandidateState(1:referral_struct.ReferralStateInfo stateInfo) throws (1: common_struct.BIZException e);
 }

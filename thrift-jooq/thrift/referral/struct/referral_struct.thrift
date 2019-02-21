@@ -133,3 +133,11 @@ struct ReferralProgressQueryInfo{
     5: optional i32 progress
 }
 
+struct ReferralStateInfo{
+    1: optional i32 pid,
+    2: optional i32 userId,
+    3: optional i32 endUserId,
+    4: optional i32 companyId,
+    5: optional i64 timestamp,
+    6: optional i32 state
+}

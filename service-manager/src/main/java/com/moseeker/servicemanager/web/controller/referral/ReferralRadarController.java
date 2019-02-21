@@ -330,19 +330,39 @@ public class ReferralRadarController {
     /**
      * 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
      *
-     * @param inviteForm 邀请浏览职位的候选人投递
+     * @param referralStateForm 邀请投递或推荐它
      * @return 推荐结果
      */
     @RequestMapping(value = "/v1/referral/candidate/state", method = RequestMethod.POST)
     @ResponseBody
-    public String handleCandidateState(@RequestBody ReferralInviteForm inviteForm) throws Exception {
+    public String handleCandidateState(@RequestBody ReferralStateForm referralStateForm) throws Exception {
         ValidateUtil validateUtil = new ValidateUtil();
-        validateInviteInfo(validateUtil, inviteForm);
+        validateUtil.addIntTypeValidate("员工userId", referralStateForm.getUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("员工userId", referralStateForm.getUserId());
+
+        validateUtil.addIntTypeValidate("appid", referralStateForm.getAppid(), 0, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("appid", referralStateForm.getAppid());
+
+        validateUtil.addIntTypeValidate("职位id", referralStateForm.getPid(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("职位id", referralStateForm.getPid());
+
+        validateUtil.addIntTypeValidate("卡片处理状态", referralStateForm.getState(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("卡片处理状态", referralStateForm.getState());
+
+        validateUtil.addIntTypeValidate("被邀请人id", referralStateForm.getEndUserId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("被邀请人id", referralStateForm.getEndUserId());
+
+        validateUtil.addIntTypeValidate("公司id", referralStateForm.getCompanyId(), 1, Integer.MAX_VALUE);
+        validateUtil.addRequiredValidate("公司id", referralStateForm.getCompanyId());
+
+        if(referralStateForm.getTimestamp() == null){
+            referralStateForm.setTimestamp(0L);
+        }
         String result = validateUtil.validate();
         if (StringUtils.isBlank(result)) {
-            ReferralInviteInfo inviteInfo = new ReferralInviteInfo();
-            BeanUtils.copyProperties(inviteForm, inviteInfo);
-            referralService.handleCandidateState(inviteInfo);
+            ReferralStateInfo referralStateInfo = new ReferralStateInfo();
+            BeanUtils.copyProperties(referralStateForm, referralStateInfo);
+            referralService.handleCandidateState(referralStateInfo);
             return Result.success().toJson();
         } else {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();

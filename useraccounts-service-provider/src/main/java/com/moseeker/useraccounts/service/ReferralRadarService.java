@@ -98,13 +98,6 @@ public interface ReferralRadarService {
      * @date 2018/12/7
      */
     String getProgressBatch(int companyId, ReferralProgressInfo progressInfo) throws BIZException;
-    /**
-     * 更改share_chain中的候选人处理状态
-     *
-     * @author cjm
-     * @date 2018/12/7
-     */
-    void updateShareChainHandleType(int rootUserId, int presenteeUserId, int positionId, int type);
 
     /**
      * 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
@@ -128,9 +121,9 @@ public interface ReferralRadarService {
     /**
      * 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
      *
-     * @param inviteInfo 邀请浏览职位的候选人投递
+     * @param stateInfo 邀请浏览职位的候选人投递
      * @author cjm
      * @date 2018/12/7
      */
-    void handleCandidateState(int companyId, ReferralInviteInfo inviteInfo) throws BIZException;
+    void handleCandidateState(int companyId, ReferralStateInfo stateInfo) throws BIZException;
 }
