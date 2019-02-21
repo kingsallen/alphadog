@@ -703,25 +703,30 @@ public class UserEmployeeServiceImpl {
             return;
         }
         Map<Integer, List<RadarUserInfo>> connectionMap = new HashMap<>();
-        CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
+//        CountDownLatch countDownLatch = new CountDownLatch(connectionLogList.size());
         for(ReferralConnectionLogRecord logRecord:connectionLogList){
-            threadPool.startTast(()->{
+//            threadPool.startTast(()->{
                 ConnectRadarInfo info = new ConnectRadarInfo();
                 info.setChainId(logRecord.getId());
                 info.setParentId(0);
                 info.setRecomUserId(logRecord.getRootUserId());
                 info.setNextUserId(logRecord.getRootUserId());
-                RadarConnectResult result = radarService.connectRadar(info);
-                connectionMap.put(logRecord.getRootChainId(), result.getChain());
-                countDownLatch.countDown();
-                return 0;
-            });
+            RadarConnectResult result = new RadarConnectResult();
+            try {
+                result = radarService.connectRadar(info);
+            } catch (TException e) {
+                e.printStackTrace();
+            }
+            connectionMap.put(logRecord.getRootChainId(), result.getChain());
+//                countDownLatch.countDown();
+//                return 0;
+//            });
         }
-        try {
-            countDownLatch.await(60, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            logger.info("fetchEmployeePostConnection overTime");
-        }
+//        try {
+//            countDownLatch.await(60, TimeUnit.SECONDS);
+//        } catch (InterruptedException e) {
+//            logger.info("fetchEmployeePostConnection overTime");
+//        }
         data.setConnectionMap(connectionMap);
 
     }
