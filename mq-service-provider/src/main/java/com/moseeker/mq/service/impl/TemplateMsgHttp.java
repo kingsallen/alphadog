@@ -142,7 +142,7 @@ public class TemplateMsgHttp {
     private static String PositionSyncFailFirst = "抱歉，您的职位同步到渠道失败";
     private static String PositionSyncFailKeyword3 = "如有疑问请联系您的客户成功经理";
 
-    private static String SeekReferralFirst = "人脉无敌！有一位朋友求推荐，快去看看吧~\n\n";
+    private static String SeekReferralFirst = "人脉无敌！有一位朋友求推荐，快去看看吧~\n";
     private static String ReferralEvaluateFirst = "恭喜您！內推大使【{0}】已成功帮您投递了简历，耐心等待好消息吧！";
     private static String ReferralEvaluateRemark = "请点击查看最新进度~";
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
@@ -396,14 +396,13 @@ public class TemplateMsgHttp {
             logger.info("公众号没有配置此消息模板");
             return;
         }
-        String first;
+        String first = SeekReferralFirst;
         String firstColor = "#2CD6B1";
         String keyword1Color = "#66A4F9";
         String keyword2Color = "#66A4F9";
         ConfigSysTemplateMessageLibraryRecord record =
                 templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(REFERRAL_SEEK_REFERRAL);
         if (record != null) {
-            first = record.getFirst();
             if(StringUtils.isNotNullOrEmpty(record.getColorJson())) {
                 Map<String, Object> color = (Map<String, Object>) JSON.parse(record.getColorJson());
                 if(color.get("first") != null) {
@@ -416,8 +415,6 @@ public class TemplateMsgHttp {
                     keyword2Color = (String) color.get("keyword2");
                 }
             }
-        } else {
-            first = SeekReferralFirst;
         }
         String time =  DateUtils.dateToMinuteCNDate(new Date());
 
