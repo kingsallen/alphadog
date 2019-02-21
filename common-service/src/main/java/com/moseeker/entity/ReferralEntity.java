@@ -675,16 +675,12 @@ public class ReferralEntity {
         if(StringUtils.isEmptyList(userIdList)){
             return data;
         }
-        try {
-            Future<List<CandidateShareChainDO>> shareFuture = threadPool.startTast(
-                    () -> shareChainDao.getShareChainsByUserIdAndPresenteeAndPresentee(postUserId, userIdList));
-            Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
+        try {Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
                     () -> wxEntity.getUserWxUserData(userIdList));
             Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
                     () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
             Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(userIdList));
-            List<CandidateShareChainDO> shareChainDOS = shareFuture.get();
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchViewedByUserIdsAndPidList(userIdList, positionIdList));
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
@@ -702,11 +698,11 @@ public class ReferralEntity {
             Map<Integer, Integer> positionView = new HashMap<>();
             Map<Integer, Integer> positionIdMap = new HashMap<>();
             List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
-            if(!StringUtils.isEmptyList(candidatePositionList) && !StringUtils.isEmptyList(shareChainDOS)) {
+            if(!StringUtils.isEmptyList(candidatePositionList)) {
                 for (CandidatePositionRecord candidatePosition : candidatePositionList) {
                     for (ReferralEmployeeNetworkResourcesRecord record : records){
-                        if (candidatePosition.getUserId() == record.getPresenteeUserId()
-                                && candidatePosition.getPositionId() == record.getPositionId()){
+                        if (candidatePosition.getUserId().intValue() == record.getPresenteeUserId().intValue()
+                                && candidatePosition.getPositionId().intValue() == record.getPositionId().intValue()){
                             timeMap.put(record.getPresenteeUserId(), candidatePosition.getUpdateTime());
                             positionView.put(record.getPresenteeUserId(), candidatePosition.getViewNumber());
                             positionIdMap.put(record.getPresenteeUserId(), record.getPositionId());
