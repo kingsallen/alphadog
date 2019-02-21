@@ -11,13 +11,8 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
-import static com.moseeker.common.constants.Constant.EMPLOYEE_REFERRAL_EVALUATE;
-import static com.moseeker.common.constants.Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE;
-import static com.moseeker.common.constants.Constant.REFERRAL_RADAR_TEMPLATE;
-
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -29,17 +24,13 @@ import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChainDO;
-import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
-import com.moseeker.useraccounts.service.impl.vo.InviteTemplateVO;
 import com.moseeker.useraccounts.service.impl.vo.TemplateBaseVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +45,8 @@ import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.moseeker.common.constants.Constant.*;
 
 /**
  * 目前该类中发消息模板有两种方式，一种是异步的不关心发送结果，一种是同步的需要知道是否发送成功
