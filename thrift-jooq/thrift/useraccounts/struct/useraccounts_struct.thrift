@@ -543,3 +543,66 @@ struct CenterUserInfo {
     3 : optional string name,
     4 : optional string headimg
 }
+struct PositionReferralInfo {
+    1:optional i32 userId,
+    2:optional string employeeName,
+    3:optional i32 employeeId,
+    4:optional string positionName,
+    5:optional i32 positionId,
+    6:optional string employeeIcon,
+    7:optional string nickname
+
+}
+
+struct RadarUserInfo {
+    1:optional i32 userId,
+    2:optional string nickname,
+    3:optional i32 viewCount,
+    4:optional bool seekRecommend,
+    5:optional i32 depth,
+    6:optional string headimgurl,
+    7:optional string positionTitle,
+    8:optional i32 positionId,
+    9:optional string forwardName,
+    10:optional bool forwardSourceWx,
+    11:optional i32 referralId,
+    12:optional string clickTime
+    13:optional i32 status
+}
+
+struct RadarInfo{
+    1:optional i32 totalCount,
+    2:optional i32 page,
+    3:optional list<RadarUserInfo> userList
+}
+
+struct EmployeeForwardView {
+    1:optional i32 userId,
+    2:optional string nickname,
+    3:optional i32 viewCount,
+    4:optional i32 connection,
+    5:optional i32 depth,
+    6:optional string headimgurl,
+    7:optional string positionTitle,
+    8:optional i32 positionId,
+    9:optional string forwardName,
+    10:optional bool forwardSourceWx,
+    11:optional string clickTime,
+    12:optional i32 invitationStatus,
+    13:optional list<Connection> chain,
+    14:optional i32 status,
+    15:optional i32 chainStatus
+}
+
+struct Connection{
+    1:optional list<i32> pnodes,
+    2:optional i32 uid,
+    3:optional i32 degree,
+    4:optional string avatar
+}
+
+struct EmployeeForwardViewPage{
+    1:optional i32 totalCount,
+    2:optional i32 page,
+    3:optional list<EmployeeForwardView> userList
+}

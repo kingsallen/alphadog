@@ -222,7 +222,6 @@ public class ReferralServiceImpl implements ReferralService {
                 "");
     }
 
-
     @Override
     public Map<String, String> saveMobotReferralProfile(int employeeId, List<Integer> ids) throws BIZException, InterruptedException {
 
@@ -486,6 +485,7 @@ public class ReferralServiceImpl implements ReferralService {
      * @return 推荐记录编号
      * @throws ProfileException
      */
+    @Transactional
     @CounterIface
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,

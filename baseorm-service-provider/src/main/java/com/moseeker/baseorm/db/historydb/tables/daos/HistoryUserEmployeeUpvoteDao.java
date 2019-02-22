@@ -73,7 +73,7 @@ public class HistoryUserEmployeeUpvoteDao extends DAOImpl<HistoryUserEmployeeUpv
     }
 
     /**
-     * Fetch records that have <code>receiver IN (values)</code>
+     * Fetch records that have <code>rabbitmq IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.historydb.tables.pojos.HistoryUserEmployeeUpvote> fetchByReceiver(Integer... values) {
         return fetch(HistoryUserEmployeeUpvote.HISTORY_USER_EMPLOYEE_UPVOTE.RECEIVER, values);

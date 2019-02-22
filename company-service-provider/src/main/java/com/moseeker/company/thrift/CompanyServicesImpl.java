@@ -674,6 +674,24 @@ public class CompanyServicesImpl implements Iface {
         }
     }
 
+    @Override
+    public HrCompanyMobotConfDO getMobotConf(int companyId) throws BIZException, TException {
+        try {
+            return companyPcService.getMobotConf(companyId);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public HrCompanyMobotConfDO updateMobotConf(HrCompanyMobotConfDO mobotConf) throws BIZException, TException {
+        try {
+            return companyPcService.updateMobotConf(mobotConf);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
     /**
      * 获取公司员工认证后补填字段配置信息列表
      *

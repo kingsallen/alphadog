@@ -1,17 +1,17 @@
 package com.moseeker.mq.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
-import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxNoticeMessageDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
-import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
+import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
@@ -19,12 +19,18 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
-import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
+import com.moseeker.baseorm.db.userdb.tables.pojos.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.common.constants.ChannelType;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.Constant;
+import static com.moseeker.common.constants.Constant.REFERRAL_SEEK_REFERRAL;
+import static com.moseeker.common.constants.Constant.REFERRA_RECOMMEND_EVALUATE;
+import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NOTICE_TPL;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.DecodeUtils;
@@ -34,11 +40,15 @@ import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.UserAccountEntity;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxHrChatDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogWxMessageRecordDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
@@ -47,7 +57,11 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTplDataCol;
 import java.net.ConnectException;
+import java.text.DateFormat;
+import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -55,6 +69,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+
+import java.net.ConnectException;
+import java.util.*;
 
 import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NOTICE_TPL;
 
@@ -65,6 +82,7 @@ import static com.moseeker.common.constants.Constant.TEMPLATES_REFERRAL_BONUS_NO
 
 @Service
 public class TemplateMsgHttp {
+
     @Autowired
     private HrWxNoticeMessageDao wxNoticeMessageDao;
     @Autowired
@@ -89,7 +107,10 @@ public class TemplateMsgHttp {
     private JobPositionDao positionDao;
 
     @Autowired
-    private ReferralLogDao referralLogDao;
+    private UserUserDao userDao;
+
+    @Autowired
+    HrCompanyDao companyDao;
 
     @Autowired
     private EmployeeEntity employeeEntity;
@@ -110,7 +131,9 @@ public class TemplateMsgHttp {
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
 
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
-    private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
+    //private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
+
+    private static String NoticeEmployeeVerifyFirstTemplateId = "I0r7v2HKg4-flc6IaPVwoT8wud6hX2l_w4BUGIAAUSM";
 
     private static String NoticeEmployeeReferralBonusFirst = "恭喜你获得内推入职奖励";
     private static String NoticeEmployeeReferralBonusRemark = "请点击查看详情";
@@ -118,10 +141,16 @@ public class TemplateMsgHttp {
     private static String NoticeEmployeeReferralBonusTitle = "简历推荐成功提醒";
     private static String PositionSyncFailFirst = "抱歉，您的职位同步到渠道失败";
     private static String PositionSyncFailKeyword3 = "如有疑问请联系您的客户成功经理";
+
+    private static String SeekReferralFirst = "人脉无敌！有一位朋友求推荐，快去看看吧~\n";
+    private static String ReferralEvaluateFirst = "恭喜您！內推大使【{0}】已成功帮您投递了简历，耐心等待好消息吧！";
+    private static String ReferralEvaluateRemark = "请点击查看最新进度~";
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
     public void noticeEmployeeVerify(int userId, int companyId, String companyName) {
         UserEmployeeRecord userEmployeeRecord = employeeDao.getActiveEmployee(userId, companyId);
+
+        logger.info("noticeEmployeeVerify userEmployeeRecord:{}", userEmployeeRecord);
         if (userEmployeeRecord == null) {
 
             logger.info("noticeEmployeeVerify userEmployeeRecord != null");
@@ -137,7 +166,8 @@ public class TemplateMsgHttp {
                  first = NoticeEmployeeVerifyFirst;
                 remark = "";
             }
-
+            logger.info("noticeEmployeeVerify first:{}", first);
+            logger.info("noticeEmployeeVerify remark:{}", first);
             //公司公众号
             HrWxWechatDO hrChatDO = hrWxWechatDao.getData(new Query.QueryBuilder().where(HrWxWechat.HR_WX_WECHAT.COMPANY_ID.getName(),
                     companyId).buildQuery());
@@ -152,10 +182,14 @@ public class TemplateMsgHttp {
                     templateId = hrWxTemplateMessage.getWxTemplateId();
                 }
 
+                logger.info("noticeEmployeeVerify templateId:{}", templateId);
                 UserWxUserDO userWxUserDO = userWxUserDao.getData(new Query.QueryBuilder().where(UserWxUser.USER_WX_USER.SYSUSER_ID.getName(),
                         userId).and(UserWxUser.USER_WX_USER.WECHAT_ID.getName(), hrChatDO.getId()).buildQuery());
 
                 if (userWxUserDO != null) {
+
+                    logger.info("noticeEmployeeVerify openid:{}", userWxUserDO.getOpenid());
+
                     JSONObject colMap = new JSONObject();
 
                     JSONObject firstJson = new JSONObject();
@@ -194,6 +228,7 @@ public class TemplateMsgHttp {
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
 
+
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
                     String url=env.getProperty("message.template.delivery.url").replace("{}", hrChatDO.getAccessToken());
@@ -213,6 +248,226 @@ public class TemplateMsgHttp {
                 logger.error("微信公众号不存在！userId:{}, companyId:{}", userId, companyId);
             }
         }
+    }
+
+    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId) {
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+
+        UserUserDO user = userDao.getUser(userId);
+        if(user == null){
+            logger.info("求内推候选人数据为空");
+            return;
+        }
+        String username = user.getNickname();
+        if(StringUtils.isNullOrEmpty(username)) {
+            UserWxUserRecord userWxUser = userWxUserDao.getWXUserByUserId(userId);
+            if(userWxUser != null) {
+                username = userWxUser.getNickname();
+            }
+        }
+        if(position == null){
+            logger.info("职位为空");
+            return;
+        }
+        HrCompanyDO companyDO = companyDao.getCompanyById(position.getCompanyId());
+        if(companyDO == null){
+            logger.info("公司信息为空");
+            return;
+        }
+        UserEmployeeDO employee = employeeDao.getEmployeeById(employeeId);
+        if(employee == null){
+            logger.info("员工信息为空");
+            return ;
+        }
+        HrWxWechatDO wxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+        if(wxWechatDO == null){
+            logger.info("公众号信息为空");
+            return;
+        }
+        UserWxUserRecord postWxUser = userWxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(userId, wxWechatDO.getId());
+        if(postWxUser == null){
+            logger.info("候选人微信信息为空");
+            return;
+        }
+        HrWxTemplateMessageDO templateMessageDO = wxTemplateMessageDao.getHrWxTemplateMessageDOByWechatId(wxWechatDO.getId(), REFERRA_RECOMMEND_EVALUATE);
+        if(templateMessageDO == null){
+            logger.info("公众号没有配置此消息模板");
+            return;
+        }
+        logger.info("==========================="+employee.getCname());
+        String cname = employee.getCname() == null ? "":employee.getCname();
+        String first = MessageFormat.format(ReferralEvaluateFirst,cname);
+        String firstColor = "#2CD6B1";
+        String keyword1Color = "#66A4F9";
+        ConfigSysTemplateMessageLibraryRecord record =
+                templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(REFERRA_RECOMMEND_EVALUATE);
+        if (record != null) {
+            if(StringUtils.isNotNullOrEmpty(record.getColorJson())) {
+                Map<String, Object> color = (Map<String, Object>) JSON.parse(record.getColorJson());
+                if(color.get("first") != null) {
+                    firstColor = (String) color.get("first");
+                }
+                if(color.get("keyword1") != null) {
+                    keyword1Color = (String) color.get("keyword1");
+                }
+            }
+        }
+        String time =  DateUtils.dateToMinuteCNDate(new Date());
+        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        MessageTplDataCol firstJson = new MessageTplDataCol();
+        firstJson.setColor(firstColor);
+        firstJson.setValue(first);
+        colMap.put("first", firstJson);
+
+        MessageTplDataCol keywords1 = new MessageTplDataCol();
+        keywords1.setColor(keyword1Color);
+        keywords1.setValue(position.getTitle());
+        colMap.put("job", keywords1);
+
+        MessageTplDataCol keywords2 = new MessageTplDataCol();
+        keywords2.setColor("#173177");
+        keywords2.setValue(companyDO.getAbbreviation());
+        colMap.put("company", keywords2);
+
+        MessageTplDataCol keywords3 = new MessageTplDataCol();
+        keywords3.setColor("#173177");
+        keywords3.setValue(time);
+        colMap.put("time", keywords3);
+
+        MessageTplDataCol remarkJson = new MessageTplDataCol();
+        remarkJson.setColor("#173177");
+        remarkJson.setValue(ReferralEvaluateRemark);
+        colMap.put("remark", remarkJson);
+
+        Map<String, Object> applierTemplate = new HashMap<>();
+        applierTemplate.put("data", colMap);
+        applierTemplate.put("touser", postWxUser.getOpenid());
+        applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
+        applierTemplate.put("topcolor", "#FF0000");
+        String link = env.getProperty("message.template.delivery.applier.link")
+                .replace("{}", String.valueOf(applicationId))+"?wechat_signature="+wxWechatDO.getSignature()
+                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + new Date().getTime();
+        applierTemplate.put("url",link);
+        logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+        String url=env.getProperty("message.template.delivery.url").replace("{}", wxWechatDO.getAccessToken());
+        logger.info("noticeEmployeeVerify url : {}", url);
+        try {
+            String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            Map<String, Object> params = JSON.parseObject(result);
+            insertLogWxMessageRecord(wxWechatDO, templateMessageDO,  postWxUser.getOpenid(), link, colMap ,params);
+            logger.info("noticeEmployeeVerify result:{}", result);
+        } catch (ConnectException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+    }
+
+    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId) {
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+        UserUserDO user = userDao.getUser(userId);
+        if(user == null){
+            logger.info("求内推候选人数据为空");
+            return;
+        }
+        String username = user.getName();
+        if(StringUtils.isNullOrEmpty(username)) {
+            UserWxUserRecord userWxUser = userWxUserDao.getWXUserByUserId(userId);
+            if(userWxUser != null) {
+                username = userWxUser.getNickname();
+            }
+        }
+        if(position == null){
+            logger.info("职位为空");
+            return;
+        }
+        HrWxWechatDO wxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+        if(wxWechatDO == null){
+            logger.info("公众号信息为空");
+            return;
+        }
+        UserWxUserRecord postWxUser = userWxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(postUserId, wxWechatDO.getId());
+        if(postWxUser == null){
+            logger.info("员工微信信息为空");
+            return;
+        }
+        HrWxTemplateMessageDO templateMessageDO = wxTemplateMessageDao.getHrWxTemplateMessageDOByWechatId(wxWechatDO.getId(), REFERRAL_SEEK_REFERRAL);
+        if(templateMessageDO == null){
+            logger.info("公众号没有配置此消息模板");
+            return;
+        }
+        String first = SeekReferralFirst;
+        String firstColor = "#2CD6B1";
+        String keyword1Color = "#66A4F9";
+        String keyword2Color = "#66A4F9";
+        ConfigSysTemplateMessageLibraryRecord record =
+                templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(REFERRAL_SEEK_REFERRAL);
+        if (record != null) {
+            if(StringUtils.isNotNullOrEmpty(record.getColorJson())) {
+                Map<String, Object> color = (Map<String, Object>) JSON.parse(record.getColorJson());
+                if(color.get("first") != null) {
+                    firstColor = (String) color.get("first");
+                }
+                if(color.get("keyword1") != null) {
+                    keyword1Color = (String) color.get("keyword1");
+                }
+                if(color.get("keyword2") != null) {
+                    keyword2Color = (String) color.get("keyword2");
+                }
+            }
+        }
+        String time =  DateUtils.dateToMinuteCNDate(new Date());
+
+
+        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        MessageTplDataCol firstJson = new MessageTplDataCol();
+        firstJson.setColor(firstColor);
+        firstJson.setValue(first);
+        colMap.put("first", firstJson);
+
+        MessageTplDataCol keywords1 = new MessageTplDataCol();
+        keywords1.setColor(keyword1Color);
+        keywords1.setValue(position.getTitle());
+        colMap.put("keyword1", keywords1);
+
+        MessageTplDataCol keywords2 = new MessageTplDataCol();
+        keywords2.setColor(keyword2Color);
+        keywords2.setValue(username);
+        colMap.put("keyword2", keywords2);
+
+        MessageTplDataCol keywords3 = new MessageTplDataCol();
+        keywords3.setColor("#173177");
+        keywords3.setValue(String.valueOf(user.getMobile()));
+        colMap.put("keyword3", keywords3);
+
+        MessageTplDataCol remarkJson = new MessageTplDataCol();
+        remarkJson.setColor("#173177");
+        remarkJson.setValue("求推荐时间："+time);
+        colMap.put("remark", remarkJson);
+
+        Map<String, Object> applierTemplate = new HashMap<>();
+        applierTemplate.put("data", colMap);
+        applierTemplate.put("touser", postWxUser.getOpenid());
+        applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
+        applierTemplate.put("topcolor", "#FF0000");
+        String link = env.getProperty("message.template.employee.recommend")
+                .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
+                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+        applierTemplate.put("url", link);
+        logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+        String url=env.getProperty("message.template.delivery.url").replace("{}", wxWechatDO.getAccessToken());
+        logger.info("noticeEmployeeVerify url : {}", url);
+        try {
+            String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            Map<String, Object> params = JSON.parseObject(result);
+            insertLogWxMessageRecord(wxWechatDO, templateMessageDO,  postWxUser.getOpenid(), link, colMap ,params);
+
+            logger.info("noticeEmployeeVerify result:{}", result);
+        } catch (ConnectException e) {
+            logger.error(e.getMessage(), e);
+        }
+
     }
 
     public void positionSyncFailTemplate(int positionId, String message, int channal) {
@@ -296,7 +551,13 @@ public class TemplateMsgHttp {
 
     }
     public void noticeEmployeeReferralBonus(int applicationId, long operationTIme, Integer nowStage) {
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus applicationId:{}, operationTIme:{}, nowStage:{}",
+                applicationId, operationTIme, nowStage);
         JobApplication application = applicationDao.fetchOneById(applicationId);
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus application:{}", application);
+
+        logger.info("TemplateMsgHttp noticeEmployeeRererralBonus BonusStage.Hired:{}, result:{}",
+                BonusStage.Hired.getValue(), nowStage == BonusStage.Hired.getValue());
         if (application != null && nowStage == BonusStage.Hired.getValue()
                 && application.getRecommenderUserId() != null && application.getRecommenderUserId() > 0) {
             UserEmployeeDO employeeDO = employeeEntity.getActiveEmployeeDOByUserId(application.getRecommenderUserId());
@@ -347,31 +608,30 @@ public class TemplateMsgHttp {
                         handlerTime = new DateTime(hrOperationRecord.getOptTime().getTime());
                     }
 
-                    JSONObject colMap = new JSONObject();
-
-                    JSONObject firstJson = new JSONObject();
-                    firstJson.put("color", "#173177");
-                    firstJson.put("value", first);
+                    Map<String,MessageTplDataCol> colMap =new HashMap<>();
+                    MessageTplDataCol firstJson = new MessageTplDataCol();
+                    firstJson.setColor("#173177");
+                    firstJson.setValue(first);
                     colMap.put("first", firstJson);
 
-                    JSONObject keywords1 = new JSONObject();
-                    keywords1.put("color", "#173177");
-                    keywords1.put("value", name);
+                    MessageTplDataCol keywords1 = new MessageTplDataCol();
+                    keywords1.setColor("#173177");
+                    keywords1.setValue(name);
                     colMap.put("keyword1", keywords1);
 
-                    JSONObject keywords2 = new JSONObject();
-                    keywords2.put("color", "#173177");
-                    keywords2.put("value", title);
+                    MessageTplDataCol keywords2 = new MessageTplDataCol();
+                    keywords2.setColor("#173177");
+                    keywords2.setValue(title);
                     colMap.put("keyword2", keywords2);
 
-                    JSONObject keywords3 = new JSONObject();
-                    keywords3.put("color", "#173177");
-                    keywords3.put("value", handlerTime.toString("yyyy-MM-dd HH:mm:ss"));
+                    MessageTplDataCol keywords3 = new MessageTplDataCol();
+                    keywords3.setColor("#173177");
+                    keywords3.setValue(handlerTime.toString("yyyy-MM-dd HH:mm:ss"));
                     colMap.put("keyword3", keywords3);
 
-                    JSONObject remarkJson = new JSONObject();
-                    remarkJson.put("color", "#173177");
-                    remarkJson.put("value", remark);
+                    MessageTplDataCol remarkJson = new MessageTplDataCol();
+                    remarkJson.setColor("#173177");
+                    remarkJson.setValue(remark);
                     colMap.put("remark", remarkJson);
 
                     Map<String, Object> applierTemplate = new HashMap<>();
@@ -379,7 +639,9 @@ public class TemplateMsgHttp {
                     applierTemplate.put("touser", userWxUserDO.getOpenid());
                     applierTemplate.put("template_id", templateId);
                     applierTemplate.put("topcolor", "#FF0000");
-                    applierTemplate.put("url", env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature()));
+                    String link = env.getProperty("message.template.referral.employee.bonus.url").replace("{signature}", hrChatDO.getSignature());
+                    link = link+"&from_template_message="+TEMPLATES_REFERRAL_BONUS_NOTICE_TPL+"&send_time=" + new Date().getTime();
+                    applierTemplate.put("url", link);
 
                     logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
@@ -388,7 +650,10 @@ public class TemplateMsgHttp {
 
                     try {
                         String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+                        Map<String, Object> params = JSON.parseObject(result);
+                        insertLogWxMessageRecord(hrChatDO, hrWxTemplateMessage, userWxUserDO.getOpenid(), link, colMap ,params);
                         logger.info("noticeEmployeeVerify result:{}", result);
+
                     } catch (ConnectException e) {
                         logger.error(e.getMessage(), e);
                     }
@@ -396,7 +661,7 @@ public class TemplateMsgHttp {
             }
 
         } else {
-            logger.error("noticeEmployeeReferralBonus 申请信息不存在!");
+            logger.error("TemplateMsgHttp noticeEmployeeRererralBonus 申请信息不存在!");
         }
     }
 
@@ -653,6 +918,124 @@ public class TemplateMsgHttp {
             messageRecord.setAccessToken(hrWxWechatDO.getAccessToken());
         }
         return wxMessageRecordDao.addData(messageRecord).getId();
+    }
+
+    public void sendTenMinuteTemplate(JSONObject jsonObject) throws BIZException, ConnectException {
+        int employeeId = jsonObject.getIntValue("employeeId");
+        List<Integer> positionIds = JSONArray.parseArray(jsonObject.getString("pids")).toJavaList(Integer.class);
+        int visitNum = jsonObject.getIntValue("visitNum");
+        int companyId = jsonObject.getIntValue("companyId");
+        long timestamp = jsonObject.getLong("timestamp");
+        UserEmployeeDO employee = employeeEntity.getEmployeeByID(employeeId);
+        if(employee == null){
+            logger.info("======无员工信息");
+            return;
+        }
+        List<JobPositionDO> positionDOS = positionDao.getPositionList(positionIds);
+        HrWxWechatDO hrWxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(companyId);
+        if(hrWxWechatDO == null){
+            return;
+        }
+        HrWxNoticeMessageDO messageDO = wxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(hrWxWechatDO.getId(), Constant.POSITION_VIEW_TPL);
+        if(messageDO == null || messageDO.getStatus() == 0){
+            return;
+        }
+        UserWxUserRecord userWxUserRecord = userWxUserDao.getWxUserByUserIdAndWechatId(employee.getSysuserId(), hrWxWechatDO.getId());
+        JSONObject inviteTemplateVO = new JSONObject();
+        DateTime dateTime = DateTime.now();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日");
+        String current = dateFormat.format(dateTime.toDate());
+        String title = "太棒了！您分享的职位在过去10分钟内已被%s个朋友浏览，快去看看吧~\n\n" +
+                "\t\t\t\toooO      \n" +
+                "\t\t\t\t (      )      Oooo\n" +
+                "\t\t\t\t   \\   (         (     )\n" +
+                "\t\t\t\t　 \\_)         )   /\n" +
+                "\t\t\t\t                  (_/\n";
+        String templateTile = String.format(title, String.valueOf(visitNum));
+        List<String> positionNameList = positionDOS.stream().map(JobPositionDO::getTitle).collect(Collectors.toList());
+        String positionsName = String.join(",", positionNameList);
+        if(positionsName.length() > 18){
+            positionsName = positionsName.substring(0, 18) + "...";
+        }else {
+            positionsName = positionsName + "...";
+        }
+        inviteTemplateVO.put("first", templateTile);
+        inviteTemplateVO.put("keyWord1", String.format("已有%s人浏览该职位", visitNum));
+        inviteTemplateVO.put("keyWord2", positionsName);
+        inviteTemplateVO.put("keyWord3", "薪资面议");
+        inviteTemplateVO.put("keyWord4", current);
+        inviteTemplateVO.put("templateId", Constant.POSITION_VIEW_TPL);
+        String redirectUrl = env.getProperty("message.template.delivery.radar.tenminute") + "?send_time=" +
+                timestamp + "&page_size=10&page_number=1&wechat_signature=" + hrWxWechatDO.getSignature()
+                + "&from_template_message="+Constant.POSITION_VIEW_TPL;
+        String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
+        // 发送十分钟消息模板
+        HrWxTemplateMessageDO hrWxTemplateMessageDO = wxTemplateMessageDao.getData(new Query.QueryBuilder().where("wechat_id",
+                hrWxWechatDO.getId()).and("sys_template_id", inviteTemplateVO.getIntValue("templateId")).and("disable","0").buildQuery());
+        if(hrWxTemplateMessageDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);
+        }
+        Map<String, Object> requestMap = new HashMap<>(1 << 4);
+        Map<String, JSONObject> dataMap = createDataMap(inviteTemplateVO);
+        requestMap.put("data", dataMap);
+        requestMap.put("touser", userWxUserRecord.getOpenid());
+        requestMap.put("template_id", hrWxTemplateMessageDO.getWxTemplateId());
+        requestMap.put("url", redirectUrl);
+        requestMap.put("topcolor", hrWxTemplateMessageDO.getTopcolor());
+        String result = HttpClient.sendPost(requestUrl, JSON.toJSONString(requestMap));
+        Map<String, Object> params = JSON.parseObject(result);
+        requestMap.put("response", params);
+        requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
+        logger.info("====================requestMap:{}", requestMap);
+        // 插入模板消息发送记录
+        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
+    }
+
+    private Map<String,JSONObject> createDataMap(JSONObject templateVO) {
+        ConfigSysTemplateMessageLibraryRecord record =
+                templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(templateVO.getIntValue("templateId"));
+        String colorJson = record.getColorJson();
+        if(StringUtils.isNullOrEmpty(colorJson)){
+            colorJson = initColor();
+        }
+        JSONObject color = JSONObject.parseObject(colorJson);
+        Map<String, JSONObject> dataMap = new HashMap<>(1 >> 4);
+        String first = templateVO.getString("first");
+        if(StringUtils.isNotNullOrEmpty(first)){
+            dataMap.put("first", createTplVO(color.getString("first"), first));
+        }
+        String keyWord1 = templateVO.getString("keyWord1");
+        if(StringUtils.isNotNullOrEmpty(keyWord1)){
+            dataMap.put("keyword1", createTplVO(color.getString("keyWord1"), keyWord1));
+        }
+        String keyWord2 = templateVO.getString("keyWord2");
+        if(StringUtils.isNotNullOrEmpty(keyWord2)){
+            dataMap.put("keyword2", createTplVO(color.getString("keyWord2"), keyWord2));
+        }
+        String keyWord3 = templateVO.getString("keyWord3");
+        if(StringUtils.isNotNullOrEmpty(keyWord3)){
+            dataMap.put("keyword3", createTplVO(color.getString("keyWord3"), keyWord3));
+        }
+        String keyWord4 = templateVO.getString("keyWord4");
+        if(StringUtils.isNotNullOrEmpty(keyWord4)){
+            dataMap.put("keyword4", createTplVO(color.getString("keyWord4"), keyWord4));
+        }
+        String remark = templateVO.getString("remark");
+        if(StringUtils.isNotNullOrEmpty(remark)){
+            dataMap.put("remark", createTplVO(color.getString("remark"), remark));
+        }
+        return dataMap;
+    }
+
+    private String initColor() {
+        return "{\"first\":\"#173177\",\"keyword1\":\"#173177\",\"keyword2\":\"#173177\",\"keyword3\":\"#173177\",\"keyword3\":\"#173177\",\"remark\":\"#173177\"}";
+    }
+
+    private JSONObject createTplVO(String color, String value){
+        JSONObject templateBaseVO = new JSONObject();
+        templateBaseVO.put("color", color);
+        templateBaseVO.put("value", value);
+        return templateBaseVO;
     }
 
 

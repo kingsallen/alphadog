@@ -100,4 +100,10 @@ public class JobPositionCityDao extends JooqCrudImpl<JobPositionCityDO, JobPosit
                 .where(JobPositionCity.JOB_POSITION_CITY.PID.eq(id))
                 .fetchInto(JobPositionCityDO.class);
     }
+
+    public List<JobPositionCityDO> getPositionCityBypids(List<Integer> pids){
+        return create.selectFrom(JobPositionCity.JOB_POSITION_CITY)
+                .where(JobPositionCity.JOB_POSITION_CITY.PID.in(pids))
+                .fetchInto(JobPositionCityDO.class);
+    }
 }

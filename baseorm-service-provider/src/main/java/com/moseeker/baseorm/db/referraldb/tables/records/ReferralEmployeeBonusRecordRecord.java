@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeBonusRecordRecord extends UpdatableRecordImpl<ReferralEmployeeBonusRecordRecord> implements Record10<Integer, Integer, Integer, Integer, Integer, Byte, Timestamp, Timestamp, Timestamp, Integer> {
 
-    private static final long serialVersionUID = 1712982335;
+    private static final long serialVersionUID = -946576565;
 
     /**
      * Setter for <code>referraldb.referral_employee_bonus_record.id</code>. 序列ID
@@ -159,14 +159,14 @@ public class ReferralEmployeeBonusRecordRecord extends UpdatableRecordImpl<Refer
     }
 
     /**
-     * Setter for <code>referraldb.referral_employee_bonus_record.disable</code>. 记录是否可用 1:不可用 0：可用
+     * Setter for <code>referraldb.referral_employee_bonus_record.disable</code>. 记录是否可用 0 可用 1 不可用
      */
     public void setDisable(Integer value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>referraldb.referral_employee_bonus_record.disable</code>. 记录是否可用 1:不可用 0：可用
+     * Getter for <code>referraldb.referral_employee_bonus_record.disable</code>. 记录是否可用 0 可用 1 不可用
      */
     public Integer getDisable() {
         return (Integer) get(9);

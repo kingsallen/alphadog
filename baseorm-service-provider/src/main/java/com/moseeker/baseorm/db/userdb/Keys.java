@@ -4,10 +4,6 @@
 package com.moseeker.baseorm.db.userdb;
 
 
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusiness;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyBusinessType;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessage;
-import com.moseeker.baseorm.db.userdb.tables.ConsistencyMessageType;
 import com.moseeker.baseorm.db.userdb.tables.UserAliUser;
 import com.moseeker.baseorm.db.userdb.tables.UserBdUser;
 import com.moseeker.baseorm.db.userdb.tables.UserCollectPosition;
@@ -19,6 +15,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployeePointsRecordCompanyRel;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeReferralPolicy;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployeeUpvote;
 import com.moseeker.baseorm.db.userdb.tables.UserFavPosition;
+import com.moseeker.baseorm.db.userdb.tables.UserFormerEmployee;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.UserPositionEmail;
 import com.moseeker.baseorm.db.userdb.tables.UserPrivacyRecord;
@@ -32,10 +29,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserUser;
 import com.moseeker.baseorm.db.userdb.tables.UserViewedPosition;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.UserWxViewer;
-import com.moseeker.baseorm.db.userdb.tables.records.ConsistencyBusinessRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.ConsistencyBusinessTypeRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.ConsistencyMessageRecord;
-import com.moseeker.baseorm.db.userdb.tables.records.ConsistencyMessageTypeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserAliUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserBdUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserCollectPositionRecord;
@@ -47,6 +40,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeReferralPolicyRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeUpvoteRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserFavPositionRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserFormerEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserPositionEmailRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserPrivacyRecordRecord;
@@ -86,7 +80,6 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
-    public static final Identity<ConsistencyBusinessRecord, Integer> IDENTITY_CONSISTENCY_BUSINESS = Identities0.IDENTITY_CONSISTENCY_BUSINESS;
     public static final Identity<UserAliUserRecord, Integer> IDENTITY_USER_ALI_USER = Identities0.IDENTITY_USER_ALI_USER;
     public static final Identity<UserBdUserRecord, Long> IDENTITY_USER_BD_USER = Identities0.IDENTITY_USER_BD_USER;
     public static final Identity<UserCollectPositionRecord, Integer> IDENTITY_USER_COLLECT_POSITION = Identities0.IDENTITY_USER_COLLECT_POSITION;
@@ -98,6 +91,7 @@ public class Keys {
     public static final Identity<UserEmployeeReferralPolicyRecord, Integer> IDENTITY_USER_EMPLOYEE_REFERRAL_POLICY = Identities0.IDENTITY_USER_EMPLOYEE_REFERRAL_POLICY;
     public static final Identity<UserEmployeeUpvoteRecord, Integer> IDENTITY_USER_EMPLOYEE_UPVOTE = Identities0.IDENTITY_USER_EMPLOYEE_UPVOTE;
     public static final Identity<UserFavPositionRecord, Integer> IDENTITY_USER_FAV_POSITION = Identities0.IDENTITY_USER_FAV_POSITION;
+    public static final Identity<UserFormerEmployeeRecord, Integer> IDENTITY_USER_FORMER_EMPLOYEE = Identities0.IDENTITY_USER_FORMER_EMPLOYEE;
     public static final Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = Identities0.IDENTITY_USER_HR_ACCOUNT;
     public static final Identity<UserPositionEmailRecord, Integer> IDENTITY_USER_POSITION_EMAIL = Identities0.IDENTITY_USER_POSITION_EMAIL;
     public static final Identity<UserPrivacyRecordRecord, Integer> IDENTITY_USER_PRIVACY_RECORD = Identities0.IDENTITY_USER_PRIVACY_RECORD;
@@ -116,11 +110,6 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_BUSINESS_PRIMARY;
-    public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME = UniqueKeys0.KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME;
-    public static final UniqueKey<ConsistencyBusinessTypeRecord> KEY_CONSISTENCY_BUSINESS_TYPE_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_BUSINESS_TYPE_PRIMARY;
-    public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_MESSAGE_PRIMARY;
-    public static final UniqueKey<ConsistencyMessageTypeRecord> KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY = UniqueKeys0.KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY;
     public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_PRIMARY = UniqueKeys0.KEY_USER_ALI_USER_PRIMARY;
     public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_USER_ID = UniqueKeys0.KEY_USER_ALI_USER_USER_ID;
     public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = UniqueKeys0.KEY_USER_BD_USER_PRIMARY;
@@ -134,7 +123,9 @@ public class Keys {
     public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_REFERRAL_POLICY_PRIMARY;
     public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_USER_EMPLOYEE_REFERRAL_POLICY_EMPLOYEE_ID_PK = UniqueKeys0.KEY_USER_EMPLOYEE_REFERRAL_POLICY_USER_EMPLOYEE_REFERRAL_POLICY_EMPLOYEE_ID_PK;
     public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_PRIMARY = UniqueKeys0.KEY_USER_EMPLOYEE_UPVOTE_PRIMARY;
+    public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER = UniqueKeys0.KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER;
     public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = UniqueKeys0.KEY_USER_FAV_POSITION_PRIMARY;
+    public static final UniqueKey<UserFormerEmployeeRecord> KEY_USER_FORMER_EMPLOYEE_PRIMARY = UniqueKeys0.KEY_USER_FORMER_EMPLOYEE_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = UniqueKeys0.KEY_USER_HR_ACCOUNT_PRIMARY;
     public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = UniqueKeys0.KEY_USER_HR_ACCOUNT_WXUSER_ID;
     public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_PRIMARY = UniqueKeys0.KEY_USER_POSITION_EMAIL_PRIMARY;
@@ -168,7 +159,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
-        public static Identity<ConsistencyBusinessRecord, Integer> IDENTITY_CONSISTENCY_BUSINESS = createIdentity(ConsistencyBusiness.CONSISTENCY_BUSINESS, ConsistencyBusiness.CONSISTENCY_BUSINESS.ID);
         public static Identity<UserAliUserRecord, Integer> IDENTITY_USER_ALI_USER = createIdentity(UserAliUser.USER_ALI_USER, UserAliUser.USER_ALI_USER.ID);
         public static Identity<UserBdUserRecord, Long> IDENTITY_USER_BD_USER = createIdentity(UserBdUser.USER_BD_USER, UserBdUser.USER_BD_USER.ID);
         public static Identity<UserCollectPositionRecord, Integer> IDENTITY_USER_COLLECT_POSITION = createIdentity(UserCollectPosition.USER_COLLECT_POSITION, UserCollectPosition.USER_COLLECT_POSITION.ID);
@@ -180,6 +170,7 @@ public class Keys {
         public static Identity<UserEmployeeReferralPolicyRecord, Integer> IDENTITY_USER_EMPLOYEE_REFERRAL_POLICY = createIdentity(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.ID);
         public static Identity<UserEmployeeUpvoteRecord, Integer> IDENTITY_USER_EMPLOYEE_UPVOTE = createIdentity(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID);
         public static Identity<UserFavPositionRecord, Integer> IDENTITY_USER_FAV_POSITION = createIdentity(UserFavPosition.USER_FAV_POSITION, UserFavPosition.USER_FAV_POSITION.ID);
+        public static Identity<UserFormerEmployeeRecord, Integer> IDENTITY_USER_FORMER_EMPLOYEE = createIdentity(UserFormerEmployee.USER_FORMER_EMPLOYEE, UserFormerEmployee.USER_FORMER_EMPLOYEE.ID);
         public static Identity<UserHrAccountRecord, Integer> IDENTITY_USER_HR_ACCOUNT = createIdentity(UserHrAccount.USER_HR_ACCOUNT, UserHrAccount.USER_HR_ACCOUNT.ID);
         public static Identity<UserPositionEmailRecord, Integer> IDENTITY_USER_POSITION_EMAIL = createIdentity(UserPositionEmail.USER_POSITION_EMAIL, UserPositionEmail.USER_POSITION_EMAIL.ID);
         public static Identity<UserPrivacyRecordRecord, Integer> IDENTITY_USER_PRIVACY_RECORD = createIdentity(UserPrivacyRecord.USER_PRIVACY_RECORD, UserPrivacyRecord.USER_PRIVACY_RECORD.ID);
@@ -196,11 +187,6 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
-        public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_PRIMARY = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_PRIMARY", ConsistencyBusiness.CONSISTENCY_BUSINESS.ID);
-        public static final UniqueKey<ConsistencyBusinessRecord> KEY_CONSISTENCY_BUSINESS_CONSISTENCY_BUSINESS_NAME = createUniqueKey(ConsistencyBusiness.CONSISTENCY_BUSINESS, "KEY_consistency_business_consistency_business_name", ConsistencyBusiness.CONSISTENCY_BUSINESS.MESSAGE_ID, ConsistencyBusiness.CONSISTENCY_BUSINESS.NAME);
-        public static final UniqueKey<ConsistencyBusinessTypeRecord> KEY_CONSISTENCY_BUSINESS_TYPE_PRIMARY = createUniqueKey(ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE, "KEY_consistency_business_type_PRIMARY", ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.NAME, ConsistencyBusinessType.CONSISTENCY_BUSINESS_TYPE.MESSAGE_NAME);
-        public static final UniqueKey<ConsistencyMessageRecord> KEY_CONSISTENCY_MESSAGE_PRIMARY = createUniqueKey(ConsistencyMessage.CONSISTENCY_MESSAGE, "KEY_consistency_message_PRIMARY", ConsistencyMessage.CONSISTENCY_MESSAGE.MESSAGE_ID);
-        public static final UniqueKey<ConsistencyMessageTypeRecord> KEY_CONSISTENCY_MESSAGE_TYPE_PRIMARY = createUniqueKey(ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE, "KEY_consistency_message_type_PRIMARY", ConsistencyMessageType.CONSISTENCY_MESSAGE_TYPE.NAME);
         public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_PRIMARY = createUniqueKey(UserAliUser.USER_ALI_USER, "KEY_user_ali_user_PRIMARY", UserAliUser.USER_ALI_USER.ID);
         public static final UniqueKey<UserAliUserRecord> KEY_USER_ALI_USER_USER_ID = createUniqueKey(UserAliUser.USER_ALI_USER, "KEY_user_ali_user_user_id", UserAliUser.USER_ALI_USER.USER_ID);
         public static final UniqueKey<UserBdUserRecord> KEY_USER_BD_USER_PRIMARY = createUniqueKey(UserBdUser.USER_BD_USER, "KEY_user_bd_user_PRIMARY", UserBdUser.USER_BD_USER.ID);
@@ -214,7 +200,9 @@ public class Keys {
         public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_PRIMARY = createUniqueKey(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, "KEY_user_employee_referral_policy_PRIMARY", UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.ID);
         public static final UniqueKey<UserEmployeeReferralPolicyRecord> KEY_USER_EMPLOYEE_REFERRAL_POLICY_USER_EMPLOYEE_REFERRAL_POLICY_EMPLOYEE_ID_PK = createUniqueKey(UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY, "KEY_user_employee_referral_policy_user_employee_referral_policy_employee_id_pk", UserEmployeeReferralPolicy.USER_EMPLOYEE_REFERRAL_POLICY.EMPLOYEE_ID);
         public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_PRIMARY = createUniqueKey(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE, "KEY_user_employee_upvote_PRIMARY", UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.ID);
+        public static final UniqueKey<UserEmployeeUpvoteRecord> KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER = createUniqueKey(UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE, "KEY_user_employee_upvote_user_employee_upvote_sender_receiver", UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.COMPANY_ID, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.RECEIVER, UserEmployeeUpvote.USER_EMPLOYEE_UPVOTE.SENDER);
         public static final UniqueKey<UserFavPositionRecord> KEY_USER_FAV_POSITION_PRIMARY = createUniqueKey(UserFavPosition.USER_FAV_POSITION, "KEY_user_fav_position_PRIMARY", UserFavPosition.USER_FAV_POSITION.ID);
+        public static final UniqueKey<UserFormerEmployeeRecord> KEY_USER_FORMER_EMPLOYEE_PRIMARY = createUniqueKey(UserFormerEmployee.USER_FORMER_EMPLOYEE, "KEY_user_former_employee_PRIMARY", UserFormerEmployee.USER_FORMER_EMPLOYEE.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_PRIMARY = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_PRIMARY", UserHrAccount.USER_HR_ACCOUNT.ID);
         public static final UniqueKey<UserHrAccountRecord> KEY_USER_HR_ACCOUNT_WXUSER_ID = createUniqueKey(UserHrAccount.USER_HR_ACCOUNT, "KEY_user_hr_account_wxuser_id", UserHrAccount.USER_HR_ACCOUNT.WXUSER_ID);
         public static final UniqueKey<UserPositionEmailRecord> KEY_USER_POSITION_EMAIL_PRIMARY = createUniqueKey(UserPositionEmail.USER_POSITION_EMAIL, "KEY_user_position_email_PRIMARY", UserPositionEmail.USER_POSITION_EMAIL.ID);

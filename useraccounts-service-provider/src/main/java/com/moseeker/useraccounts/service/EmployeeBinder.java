@@ -29,6 +29,7 @@ import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -97,6 +98,12 @@ public abstract class EmployeeBinder {
     @Autowired
     private AmqpTemplate amqpTemplate;
 
+    @Autowired
+    KafkaSender kafkaSender;
+
+    @Autowired
+    private Neo4jService neo4jService;
+
     protected ThreadLocal<UserEmployeeDO> userEmployeeDOThreadLocal = new ThreadLocal<>();
 
     /**
@@ -123,6 +130,7 @@ public abstract class EmployeeBinder {
             paramCheck(bindingParams, certConf);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
+            kafkaSender.sendEmployeeCertification(userEmployee);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             response.setSuccess(false);
@@ -258,7 +266,7 @@ public abstract class EmployeeBinder {
         }
 
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
-
+        neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证

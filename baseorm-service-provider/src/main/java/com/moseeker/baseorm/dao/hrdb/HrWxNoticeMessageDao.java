@@ -45,4 +45,11 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
                 .fetchOneInto(HrWxNoticeMessageDO.class);
         return result;
     }
+
+    public HrWxNoticeMessageDO getHrWxNoticeMessageDOWithoutStatus(Integer id, int sysTemplateId){
+        return create.selectFrom(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE)
+                .where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.eq(id))
+                .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(sysTemplateId))
+                .fetchOneInto(HrWxNoticeMessageDO.class);
+    }
 }
