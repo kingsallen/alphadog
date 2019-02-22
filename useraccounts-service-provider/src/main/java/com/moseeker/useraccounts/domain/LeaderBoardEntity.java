@@ -63,7 +63,7 @@ public class LeaderBoardEntity {
                 info.setLastUpdateTime(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
             }else if(obj instanceof String){
                 try {
-                    Date date = DateUtils.longTimeToDate(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getString("last_update_time"));
+                    Date date = DateUtils.minuteTimeToDate(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getString("last_update_time"));
                     info.setLastUpdateTime(date.getTime());
                 } catch (ParseException e) {
                     logger.error(e.getMessage());
