@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * 简历类型
  * Created by jack on 18/08/2017.
- */R
+ */
 public enum ApplicationSource {
 
     PC(1, 1), ENTERPRISE(2, 10), GATHER(4, 100), JOB51(8, 1000), ZHILIAN(16, 10000), LIEPIN(32, 100000),
