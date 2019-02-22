@@ -146,6 +146,14 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return new ArrayList<>();
     }
 
+    public List<UserEmployeeDO> getUserEmployeeForIdList(List<Integer> idList) {
+        if(idList != null && idList.size()>0) {
+            List<UserEmployeeRecord> record = create.selectFrom(table).where(UserEmployee.USER_EMPLOYEE.ID.in(idList)).fetch();
+            return BeanUtils.DBToStruct(UserEmployeeDO.class, record);
+        }
+        return new ArrayList<>();
+    }
+
 
     public Map<Integer, Integer> getEmployeeNum(List<Integer> idList) {
         if(!StringUtils.isEmptyList(idList)) {

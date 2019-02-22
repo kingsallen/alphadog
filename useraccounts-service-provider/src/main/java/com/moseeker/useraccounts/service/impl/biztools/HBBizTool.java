@@ -135,6 +135,7 @@ public class HBBizTool {
      * @return
      */
     public static ReferralProfileTab packageReferralTab(ReferralLog log, ReferralProfileData profileData) {
+        long startTime = System.currentTimeMillis();
         ReferralProfileTab tab = new ReferralProfileTab();
         tab.setUploadTime(DateUtils.dateToShortTime(log.getCreateTime()));
         tab.setClaim(log.getClaim());
@@ -154,6 +155,8 @@ public class HBBizTool {
             tab.setFilePath(profileData.getAttchmentMap().get(log.getAttementId()).getPath());
             tab.setName(profileData.getAttchmentMap().get(log.getAttementId()).getName());
         }
+        long endTime = System.currentTimeMillis();
+        logger.info("profile tab packageReferralTab endTime:{}", endTime- startTime);
         return tab;
     }
 }
