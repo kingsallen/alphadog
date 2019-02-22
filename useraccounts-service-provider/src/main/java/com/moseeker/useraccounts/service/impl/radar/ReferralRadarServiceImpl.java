@@ -358,14 +358,21 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public String checkEmployee(int companyId, CheckEmployeeInfo checkInfo) throws BIZException {
+        logger.info("checkEmployee:{}", checkInfo);
         JSONObject result = new JSONObject();
         int recomUserId = checkInfo.getRecomUserId();
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
         if(jobPositionDO == null){
             throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
         }
+        if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
+            result.put("employee", 0);
+            logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
+            return JSON.toJSONString(result);
+        }
+        boolean isEmployeeRecom = employeeEntity.isEmployee(recomUserId, jobPositionDO.getCompanyId());
         UserEmployeeRecord recomUser = null;
-        if(recomUserId != 0){
+        if(isEmployeeRecom){
             recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
         }
         if(recomUser == null){
@@ -380,18 +387,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 }
                 recomUserId = shareChainDO.getRootRecomUserId();
             }
-            recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
-        }
-        if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
-            result.put("employee", 0);
-            logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
-            return JSON.toJSONString(result);
+            isEmployeeRecom = employeeEntity.isEmployee(recomUserId, jobPositionDO.getCompanyId());
+            if(isEmployeeRecom){
+                recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
+            }
         }
         if(recomUser == null){
-            result.put("employee", 0);
-            return JSON.toJSONString(result);
-        }
-        if(!employeeEntity.isEmployee(recomUserId, jobPositionDO.getCompanyId())){
             result.put("employee", 0);
             logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
             return JSON.toJSONString(result);

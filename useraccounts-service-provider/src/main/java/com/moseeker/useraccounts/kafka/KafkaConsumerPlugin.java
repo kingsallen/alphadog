@@ -18,7 +18,8 @@ public class KafkaConsumerPlugin {
     /**
      * 即所有副本都同步到数据时send方法才返回, 以此来完全判断数据是否发送成功, 理论上来讲数据不会丢失.
      */
-    @Value(value = "${kafka.bootstrap.servers}")
+    //    @Value(value = "${kafka.bootstrap.servers}")
+    @Value(value = "#{'${kafka.bootstrap.servers}'.split(',')}")
     private String servers;
 
     /**
