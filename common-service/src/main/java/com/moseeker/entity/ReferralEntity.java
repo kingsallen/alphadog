@@ -685,18 +685,10 @@ public class ReferralEntity {
                     () -> userDao.fetchByIdList(userIdList));
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchViewedByUserIdsAndPidList(userIdList, positionIdList));
-            List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
+
             Map<Integer, Timestamp> timeMap = new HashMap<>();
             Set<Integer> recommendUserSet = new HashSet<>();
             Map<Integer, Integer> recommendMap = new HashMap<>();
-            if(!StringUtils.isEmptyList(recommendList)){
-                recommendList.forEach( recommend -> {
-                        recommendUserSet.add(recommend.getPresenteeId());
-                        recommendMap.put(recommend.getPresenteeId(), recommend.getId());
-                        timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
-                    }
-                );
-            }
             Map<Integer, Integer> positionView = new HashMap<>();
             Map<Integer, Integer> positionIdMap = new HashMap<>();
             List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
@@ -736,6 +728,15 @@ public class ReferralEntity {
                         shareChainIdList.add(share.getId());
                     }
                 });
+            }
+            List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
+            if(!StringUtils.isEmptyList(recommendList)){
+                recommendList.forEach( recommend -> {
+                            recommendUserSet.add(recommend.getPresenteeId());
+                            recommendMap.put(recommend.getPresenteeId(), recommend.getId());
+                            timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
+                        }
+                );
             }
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
                     () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
