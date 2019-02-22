@@ -360,11 +360,14 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public String checkEmployee(int companyId, CheckEmployeeInfo checkInfo) throws BIZException {
         JSONObject result = new JSONObject();
         int recomUserId = checkInfo.getRecomUserId();
+        JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
+        if(jobPositionDO == null){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+        }
         UserEmployeeRecord recomUser = null;
         if(recomUserId != 0){
             recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
         }
-        JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
         if(recomUser == null){
             // 获取rootUserId
             if(checkInfo.getParentChainId() != 0 && checkInfo.getParentChainId() != -1){
@@ -377,16 +380,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 }
                 recomUserId = shareChainDO.getRootRecomUserId();
             }
-
-            if(jobPositionDO == null){
-                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
-            }
-            if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
-                result.put("employee", 0);
-                logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
-                return JSON.toJSONString(result);
-            }
             recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
+        }
+        if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
+            result.put("employee", 0);
+            logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
+            return JSON.toJSONString(result);
         }
         if(recomUser == null){
             result.put("employee", 0);
