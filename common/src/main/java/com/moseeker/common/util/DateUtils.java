@@ -80,6 +80,13 @@ public class DateUtils {
         }
     }
 
+    public static Date minuteTimeSDFToDate(String shortDate) throws ParseException {
+        synchronized (minuteTimeSDF) {
+            Date date = minuteTimeSDF.parse(shortDate);
+            return date;
+        }
+    }
+
     public static Date shortDateToDate(String shortDate) throws ParseException {
         synchronized (SHOT_DATE_SDF) {
             Date date = SHOT_DATE_SDF.parse(shortDate);
