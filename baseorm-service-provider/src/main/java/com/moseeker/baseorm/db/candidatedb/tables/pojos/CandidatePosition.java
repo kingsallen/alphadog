@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePosition implements Serializable {
 
-    private static final long serialVersionUID = 480994150;
+    private static final long serialVersionUID = 1996305906;
 
     private Integer   positionId;
     private Timestamp updateTime;
@@ -33,7 +33,6 @@ public class CandidatePosition implements Serializable {
     private Integer   viewNumber;
     private Byte      sharedFromEmployee;
     private Integer   userId;
-    private Byte      type;
 
     public CandidatePosition() {}
 
@@ -46,7 +45,6 @@ public class CandidatePosition implements Serializable {
         this.viewNumber = value.viewNumber;
         this.sharedFromEmployee = value.sharedFromEmployee;
         this.userId = value.userId;
-        this.type = value.type;
     }
 
     public CandidatePosition(
@@ -57,8 +55,7 @@ public class CandidatePosition implements Serializable {
         Integer   candidateCompanyId,
         Integer   viewNumber,
         Byte      sharedFromEmployee,
-        Integer   userId,
-        Byte      type
+        Integer   userId
     ) {
         this.positionId = positionId;
         this.updateTime = updateTime;
@@ -68,7 +65,6 @@ public class CandidatePosition implements Serializable {
         this.viewNumber = viewNumber;
         this.sharedFromEmployee = sharedFromEmployee;
         this.userId = userId;
-        this.type = type;
     }
 
     public Integer getPositionId() {
@@ -135,14 +131,6 @@ public class CandidatePosition implements Serializable {
         this.userId = userId;
     }
 
-    public Byte getType() {
-        return this.type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidatePosition (");
@@ -155,7 +143,6 @@ public class CandidatePosition implements Serializable {
         sb.append(", ").append(viewNumber);
         sb.append(", ").append(sharedFromEmployee);
         sb.append(", ").append(userId);
-        sb.append(", ").append(type);
 
         sb.append(")");
         return sb.toString();
