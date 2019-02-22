@@ -115,15 +115,6 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .fetchOneInto(CandidateShareChainDO.class);
     }
 
-
-    public void updateTypeById(int updateId) {
-        create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-                .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)1)
-                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ID.eq(updateId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE.eq((byte)0))
-                .execute();
-    }
-
     public void updateTypeByIds(List<Integer> updateIds, int type) {
         create.update(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
                 .set(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, (byte)type)
@@ -195,24 +186,6 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
                 .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(0))
                 .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.desc())
                 .fetchInto(CandidateShareChainDO.class);
-    }
-
-    public List<CandidateShareChainDO> getShareChainsByUserIdAndPresenteeAndPresentee(Integer sysuserId, List<Integer> sharePids) {
-        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(sysuserId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.in(sharePids))
-                .fetchInto(CandidateShareChainDO.class);
-    }
-
-    public CandidateShareChainDO getLastOneByRootAndPresenteeAndPid(int rootUserId, int presenteeUserId, int positionId) {
-        return create.selectFrom(CandidateShareChain.CANDIDATE_SHARE_CHAIN)
-                .where(CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID.eq(rootUserId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.POSITION_ID.eq(positionId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.PRESENTEE_USER_ID.eq(presenteeUserId))
-                .and(CandidateShareChain.CANDIDATE_SHARE_CHAIN.DEPTH.ne(0))
-                .orderBy(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_TIME.desc())
-                .limit(1)
-                .fetchOneInto(CandidateShareChainDO.class);
     }
 
     public List<CandidateShareChainDO> getShareChainsByPresenteeAndPosition(Integer applierId, Integer positionId) {
