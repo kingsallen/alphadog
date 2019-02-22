@@ -360,32 +360,43 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     public String checkEmployee(int companyId, CheckEmployeeInfo checkInfo) throws BIZException {
         JSONObject result = new JSONObject();
         int recomUserId = checkInfo.getRecomUserId();
-        // 获取rootUserId
-        if(checkInfo.getParentChainId() != 0 && checkInfo.getParentChainId() != -1){
-            CandidateShareChainDO shareChainDO = shareChainDao.getRecordById(checkInfo.getParentChainId());
-            if(shareChainDO == null){
-                throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
-            }
-            if(shareChainDO.getPresenteeUserId() != checkInfo.getRecomUserId()){
-                throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
-            }
-            recomUserId = shareChainDO.getRootRecomUserId();
+        UserEmployeeRecord recomUser = null;
+        if(recomUserId != 0){
+            recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
         }
         JobPositionDO jobPositionDO = positionDao.getJobPositionById(checkInfo.getPid());
-        if(jobPositionDO == null){
-            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+        if(recomUser == null){
+            // 获取rootUserId
+            if(checkInfo.getParentChainId() != 0 && checkInfo.getParentChainId() != -1){
+                CandidateShareChainDO shareChainDO = shareChainDao.getRecordById(checkInfo.getParentChainId());
+                if(shareChainDO == null){
+                    throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
+                }
+                if(shareChainDO.getPresenteeUserId() != checkInfo.getRecomUserId()){
+                    throw UserAccountException.REFERRAL_CHAIN_NONEXISTS;
+                }
+                recomUserId = shareChainDO.getRootRecomUserId();
+            }
+
+            if(jobPositionDO == null){
+                throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.POSITION_DATA_DELETE_FAIL);
+            }
+            if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
+                result.put("employee", 0);
+                logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
+                return JSON.toJSONString(result);
+            }
+            recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
+        }
+        if(recomUser == null){
+            result.put("employee", 0);
+            return JSON.toJSONString(result);
         }
         if(!employeeEntity.isEmployee(recomUserId, jobPositionDO.getCompanyId())){
             result.put("employee", 0);
             logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
             return JSON.toJSONString(result);
         }
-        if(employeeEntity.isEmployee(checkInfo.getPresenteeUserId(), jobPositionDO.getCompanyId())){
-            result.put("employee", 0);
-            logger.info("点击人:{}和推荐人:{}是同一集团公司下的员工", recomUserId, checkInfo.getPresenteeUserId());
-            return JSON.toJSONString(result);
-        }
-        UserEmployeeRecord recomUser = userEmployeeDao.getActiveEmployeeByUserId(recomUserId);
         HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(jobPositionDO.getCompanyId());
         UserWxUserRecord wxUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(recomUserId, hrWxWechatDO.getId());
         result.put("employee", 1);
