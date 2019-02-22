@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplateMessageLibraryRecord> {
 
-    private static final long serialVersionUID = -1333086756;
+    private static final long serialVersionUID = 1232722773;
 
     /**
      * The reference instance of <code>configdb.config_sys_template_message_library</code>
@@ -123,7 +123,7 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
     /**
      * The column <code>configdb.config_sys_template_message_library.first</code>. 消息模板first文案
      */
-    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "消息模板first文案");
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息模板first文案");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.remark</code>. 消息模板remark文案

@@ -23,16 +23,16 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ReferralEmployeeNetworkResources implements Serializable {
 
-    private static final long serialVersionUID = -536888049;
+    private static final long serialVersionUID = -1214766693;
 
     private Integer   id;
     private Integer   postUserId;
     private Integer   presenteeUserId;
-    private Timestamp createTime;
-    private Timestamp updateTime;
+    private Integer   positionId;
     private Byte      disable;
     private Integer   companyId;
-    private Integer   positionId;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 
     public ReferralEmployeeNetworkResources() {}
 
@@ -40,31 +40,31 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.id = value.id;
         this.postUserId = value.postUserId;
         this.presenteeUserId = value.presenteeUserId;
-        this.createTime = value.createTime;
-        this.updateTime = value.updateTime;
+        this.positionId = value.positionId;
         this.disable = value.disable;
         this.companyId = value.companyId;
-        this.positionId = value.positionId;
+        this.createTime = value.createTime;
+        this.updateTime = value.updateTime;
     }
 
     public ReferralEmployeeNetworkResources(
         Integer   id,
         Integer   postUserId,
         Integer   presenteeUserId,
-        Timestamp createTime,
-        Timestamp updateTime,
+        Integer   positionId,
         Byte      disable,
         Integer   companyId,
-        Integer   positionId
+        Timestamp createTime,
+        Timestamp updateTime
     ) {
         this.id = id;
         this.postUserId = postUserId;
         this.presenteeUserId = presenteeUserId;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
+        this.positionId = positionId;
         this.disable = disable;
         this.companyId = companyId;
-        this.positionId = positionId;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public Integer getId() {
@@ -91,20 +91,12 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.presenteeUserId = presenteeUserId;
     }
 
-    public Timestamp getCreateTime() {
-        return this.createTime;
+    public Integer getPositionId() {
+        return this.positionId;
     }
 
-    public void setCreateTime(Timestamp createTime) {
-        this.createTime = createTime;
-    }
-
-    public Timestamp getUpdateTime() {
-        return this.updateTime;
-    }
-
-    public void setUpdateTime(Timestamp updateTime) {
-        this.updateTime = updateTime;
+    public void setPositionId(Integer positionId) {
+        this.positionId = positionId;
     }
 
     public Byte getDisable() {
@@ -123,12 +115,20 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         this.companyId = companyId;
     }
 
-    public Integer getPositionId() {
-        return this.positionId;
+    public Timestamp getCreateTime() {
+        return this.createTime;
     }
 
-    public void setPositionId(Integer positionId) {
-        this.positionId = positionId;
+    public void setCreateTime(Timestamp createTime) {
+        this.createTime = createTime;
+    }
+
+    public Timestamp getUpdateTime() {
+        return this.updateTime;
+    }
+
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     @Override
@@ -138,11 +138,11 @@ public class ReferralEmployeeNetworkResources implements Serializable {
         sb.append(id);
         sb.append(", ").append(postUserId);
         sb.append(", ").append(presenteeUserId);
-        sb.append(", ").append(createTime);
-        sb.append(", ").append(updateTime);
+        sb.append(", ").append(positionId);
         sb.append(", ").append(disable);
         sb.append(", ").append(companyId);
-        sb.append(", ").append(positionId);
+        sb.append(", ").append(createTime);
+        sb.append(", ").append(updateTime);
 
         sb.append(")");
         return sb.toString();

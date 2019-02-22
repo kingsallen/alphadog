@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionShareRecord extends TableImpl<CandidatePositionShareRecordRecord> {
 
-    private static final long serialVersionUID = 1997680452;
+    private static final long serialVersionUID = -1903192928;
 
     /**
      * The reference instance of <code>candidatedb.candidate_position_share_record</code>
@@ -87,11 +87,6 @@ public class CandidatePositionShareRecord extends TableImpl<CandidatePositionSha
     public final TableField<CandidatePositionShareRecordRecord, Long> VIEWER_IP = createField("viewer_ip", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "浏览用户IP");
 
     /**
-     * The column <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
-     */
-    public final TableField<CandidatePositionShareRecordRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id");
-
-    /**
      * The column <code>candidatedb.candidate_position_share_record.source</code>. 来源0：企业后台1：聚合平台
      */
     public final TableField<CandidatePositionShareRecordRecord, Byte> SOURCE = createField("source", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源0：企业后台1：聚合平台");
@@ -107,6 +102,11 @@ public class CandidatePositionShareRecord extends TableImpl<CandidatePositionSha
     public final TableField<CandidatePositionShareRecordRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "修改时间");
 
     /**
+     * The column <code>candidatedb.candidate_position_share_record.presentee_id</code>. 被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
+     */
+    public final TableField<CandidatePositionShareRecordRecord, Long> PRESENTEE_ID = createField("presentee_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BIGINT)), this, "被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id");
+
+    /**
      * The column <code>candidatedb.candidate_position_share_record.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
      */
     public final TableField<CandidatePositionShareRecordRecord, Byte> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3");
@@ -117,9 +117,9 @@ public class CandidatePositionShareRecord extends TableImpl<CandidatePositionSha
     public final TableField<CandidatePositionShareRecordRecord, Integer> PRESENTEE_USER_ID = createField("presentee_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "userdb.user_user.id 浏览者的C端账号编号");
 
     /**
-     * The column <code>candidatedb.candidate_position_share_record.share_chain_id</code>.
+     * The column <code>candidatedb.candidate_position_share_record.share_chain_id</code>. candidate_share_chain表对应的id
      */
-    public final TableField<CandidatePositionShareRecordRecord, Integer> SHARE_CHAIN_ID = createField("share_chain_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CandidatePositionShareRecordRecord, Integer> SHARE_CHAIN_ID = createField("share_chain_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "candidate_share_chain表对应的id");
 
     /**
      * Create a <code>candidatedb.candidate_position_share_record</code> table reference

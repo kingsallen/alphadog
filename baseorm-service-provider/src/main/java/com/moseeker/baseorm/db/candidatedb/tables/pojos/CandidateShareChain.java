@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain implements Serializable {
 
-    private static final long serialVersionUID = -393038617;
+    private static final long serialVersionUID = 1399862835;
 
     private Integer   id;
     private Integer   positionId;
@@ -33,9 +33,9 @@ public class CandidateShareChain implements Serializable {
     private Integer   presenteeUserId;
     private Integer   depth;
     private Integer   parentId;
-    private Byte      type;
     private Timestamp clickTime;
     private Timestamp createTime;
+    private Byte      type;
     private String    forwardId;
 
     public CandidateShareChain() {}
@@ -49,9 +49,9 @@ public class CandidateShareChain implements Serializable {
         this.presenteeUserId = value.presenteeUserId;
         this.depth = value.depth;
         this.parentId = value.parentId;
-        this.type = value.type;
         this.clickTime = value.clickTime;
         this.createTime = value.createTime;
+        this.type = value.type;
         this.forwardId = value.forwardId;
     }
 
@@ -64,9 +64,9 @@ public class CandidateShareChain implements Serializable {
         Integer   presenteeUserId,
         Integer   depth,
         Integer   parentId,
-        Byte      type,
         Timestamp clickTime,
         Timestamp createTime,
+        Byte      type,
         String    forwardId
     ) {
         this.id = id;
@@ -77,9 +77,9 @@ public class CandidateShareChain implements Serializable {
         this.presenteeUserId = presenteeUserId;
         this.depth = depth;
         this.parentId = parentId;
-        this.type = type;
         this.clickTime = clickTime;
         this.createTime = createTime;
+        this.type = type;
         this.forwardId = forwardId;
     }
 
@@ -147,14 +147,6 @@ public class CandidateShareChain implements Serializable {
         this.parentId = parentId;
     }
 
-    public Byte getType() {
-        return this.type;
-    }
-
-    public void setType(Byte type) {
-        this.type = type;
-    }
-
     public Timestamp getClickTime() {
         return this.clickTime;
     }
@@ -169,6 +161,14 @@ public class CandidateShareChain implements Serializable {
 
     public void setCreateTime(Timestamp createTime) {
         this.createTime = createTime;
+    }
+
+    public Byte getType() {
+        return this.type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
     }
 
     public String getForwardId() {
@@ -191,9 +191,9 @@ public class CandidateShareChain implements Serializable {
         sb.append(", ").append(presenteeUserId);
         sb.append(", ").append(depth);
         sb.append(", ").append(parentId);
-        sb.append(", ").append(type);
         sb.append(", ").append(clickTime);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(type);
         sb.append(", ").append(forwardId);
 
         sb.append(")");

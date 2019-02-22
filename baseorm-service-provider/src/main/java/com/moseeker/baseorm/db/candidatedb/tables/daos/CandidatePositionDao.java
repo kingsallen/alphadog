@@ -107,11 +107,4 @@ public class CandidatePositionDao extends DAOImpl<CandidatePositionRecord, com.m
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePosition> fetchByUserId(Integer... values) {
         return fetch(CandidatePosition.CANDIDATE_POSITION.USER_ID, values);
     }
-
-    /**
-     * Fetch records that have <code>type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidatePosition> fetchByType(Byte... values) {
-        return fetch(CandidatePosition.CANDIDATE_POSITION.TYPE, values);
-    }
 }

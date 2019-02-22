@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record13<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String, String, String> {
 
-    private static final long serialVersionUID = -1109599774;
+    private static final long serialVersionUID = -995281702;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -61,14 +61,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
+     * Setter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
      */
     public void setContent(String value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容
+     * Getter for <code>hrdb.hr_wx_hr_chat.content</code>. 聊天内容,job类型：职位ID
      */
     public String getContent() {
         return (String) get(2);
@@ -145,42 +145,42 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html,qrcode,image,button,job,voice,cards,jobCard,citySelect,teamSelect,redisrect,jobSelect,employeeBind
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
      */
     public String getMsgType() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
+     * Setter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url,不再使用
      */
     public void setPicUrl(String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
+     * Getter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url,不再使用
      */
     public String getPicUrl() {
         return (String) get(9);
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426"}]"
+     * Setter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426”}]”，不再使用
      */
     public void setBtnContent(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426"}]"
+     * Getter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426”}]”，不再使用
      */
     public String getBtnContent() {
         return (String) get(10);
