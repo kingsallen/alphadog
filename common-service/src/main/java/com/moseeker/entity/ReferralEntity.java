@@ -44,6 +44,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
@@ -65,6 +66,7 @@ import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
 import com.sun.org.apache.regexp.internal.RE;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Future;
@@ -725,6 +727,11 @@ public class ReferralEntity {
                             && root2Map.get(share.getPresenteeUserId()) == null) {
                         root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
                         root2Set.add(share.root2RecomUserId);
+                        try {
+                            timeMap.put(share.getPresenteeUserId(), new Timestamp(DateUtils.shortTimeToDate(share.getClickTime()).getTime()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
                         shareChainIdList.add(share.getId());
                     }
