@@ -151,6 +151,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @RadarSwitchLimit
     public String getRadarCards(int companyId, ReferralCardInfo cardInfo) {
         logger.info("ReferralCardInfo:{}", cardInfo);
+        long start = System.currentTimeMillis();
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getUserId(), cardInfo.getTimestamp());
         if(shareChainDOS.size() == 0){
@@ -212,6 +213,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             cards.add(card);
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
+        long end = System.currentTimeMillis();
+        logger.info("getRadarCards time :{}", start - end);
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
     }
 
@@ -349,7 +352,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setState(connectionLogRecord.getState().intValue());
         result.setChain(userChains);
         result.setEnable_viewer(enableViewer);
-        logger.info("connectRadar:{}", JSON.toJSONString(result));
+        logger.info("connectRadar:{}", result);
         long end = System.currentTimeMillis();
         logger.info("连连看时长:{}", end - start);
         return result;
@@ -405,7 +408,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         userInfo.setName(recomUser.getCname());
         userInfo.setAvatar(wxUserRecord.getHeadimgurl());
         result.put("user", userInfo);
-        logger.info("checkEmployee:{}", JSON.toJSONString(result));
+        logger.info("checkEmployee:{}", result);
         return JSON.toJSONString(result);
     }
 
@@ -465,6 +468,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit(status = false)
     public String getProgressBatch(int companyId, ReferralProgressInfo progressInfo) throws BIZException {
+        long start = System.currentTimeMillis();
         boolean radarSwitchOpen = RadarSwitchAspect.checkSoftAuthorityLimit();
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
         if(employeeRecord == null){
@@ -515,6 +519,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             result.add(card);
         }
         logger.info("getProgressBatch:{}", result);
+        long end = System.currentTimeMillis();
+        logger.info("getRadarCards time :{}", start - end);
         return JSON.toJSONString(result);
     }
 
