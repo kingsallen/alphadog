@@ -146,7 +146,7 @@ public class EmployeeBizTool {
         }
         UserUserRecord userRecord = data.getUserRecordList().get(userId);
         if(userRecord!=null){
-            result.setNickname(userRecord.getName());
+            result.setNickname(userRecord.getNickname());
         }
         JobPositionDO position = data.getPositionMap().get(record.getPositionId().intValue());
         if(position!=null){
