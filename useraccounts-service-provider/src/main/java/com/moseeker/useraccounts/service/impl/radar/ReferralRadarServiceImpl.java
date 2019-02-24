@@ -151,6 +151,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @RadarSwitchLimit
     public String getRadarCards(int companyId, ReferralCardInfo cardInfo) {
         logger.info("ReferralCardInfo:{}", cardInfo);
+        long start = System.currentTimeMillis();
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getUserId(), cardInfo.getTimestamp());
         if(shareChainDOS.size() == 0){
@@ -184,7 +185,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
         List<JSONObject> cards = new ArrayList<>();
         // 本批卡片展示的候选人useIds
+        long start1 = System.currentTimeMillis();
         List<CandidatePositionShareRecordDO> positionShareRecordDOS = getPositionShareRecordDOS(cardInfo, candidatePositionDOS, shareChainDOS);
+        long end1 = System.currentTimeMillis();
+        logger.info("=======positionShareRecordDOS:{}", end1- start1);
         // 获取当前页的卡片数据
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
@@ -212,6 +216,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             cards.add(card);
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
+        long end = System.currentTimeMillis();
+        logger.info("=====getRadarCards:{}", end - start);
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
     }
 
@@ -479,12 +485,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // neo4j 查
         List<UserDepthVO> applierDegrees = new ArrayList<>();
         if(radarSwitchOpen){
+            long start = System.currentTimeMillis();
             applierDegrees = neo4jService.fetchDepthUserList(progressInfo.getUserId(), progressInfo.getCompanyId(), applierUserIds);
+            long end = System.currentTimeMillis();
+            logger.info("=======referralTypeMap:{}", end - start);
         }
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         Map<Integer, JobPositionDO> positionMap = getPositionIdMap(applyPids);
         // 组装每种申请类型需要的数据
+        long start = System.currentTimeMillis();
         Map<Integer, JSONObject> referralTypeMap = getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
+        long end = System.currentTimeMillis();
+        logger.info("=======referralTypeMap:{}", end - start);
 
         List<JSONObject> result = new ArrayList<>();
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
