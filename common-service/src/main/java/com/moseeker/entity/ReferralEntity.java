@@ -40,7 +40,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
@@ -51,30 +50,13 @@ import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojos.*;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateCompanyDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionDO;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
-import com.moseeker.entity.pojos.BonusData;
-import com.moseeker.entity.pojos.HBData;
-import com.moseeker.entity.pojos.RecommendHBData;
-import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
-import com.sun.org.apache.regexp.internal.RE;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -96,7 +78,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @Date: 2018/7/18
  */
 @Service
-@CounterIface
+//@CounterIface
 public class ReferralEntity {
 
     @Autowired
@@ -840,6 +822,7 @@ public class ReferralEntity {
 
 
     public EmployeeCardViewData fetchEmployeeViewCardData(List<CandidateRecomRecordRecord> recomRecordList, int postUserId, int companyId){
+        long startTime = System.currentTimeMillis();
         EmployeeCardViewData data = new EmployeeCardViewData();
         if(StringUtils.isEmptyList(recomRecordList)){
             return data;
@@ -850,6 +833,7 @@ public class ReferralEntity {
             userIdList.add(record.getPresenteeUserId());
             positionIdList.add(record.getPositionId());
         });
+
         try {
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
                     () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
@@ -866,6 +850,8 @@ public class ReferralEntity {
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = new ArrayList<>();
             List<Integer> shareChainIdList = new ArrayList<>();
+            long futureTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView futureTime:{}", futureTime- startTime);
             if(!StringUtils.isEmptyList(shareChainListFuture.get())) {
                 shareChainListFuture.get().forEach(share -> {
                     recomRecordList.forEach( recom ->{
@@ -879,12 +865,16 @@ public class ReferralEntity {
 
                 });
             }
+            long futureTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView futureTime:{}", futureTime- startTime);
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
                     () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
             data.setShareChainList(shareChainList);
             List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
+            long future2Time = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView futureTime:{}", future2Time -futureTime);
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
                 for(CandidateRecomRecordRecord record :recomRecordList){
                     for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
@@ -897,26 +887,36 @@ public class ReferralEntity {
                 }
                 data.setConnectionLogList(connectionLogList);
             }
+            long connectionTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView connectionTime:{}", connectionTime- future2Time);
             if (!StringUtils.isEmptyList(wxUserListFuture.get())){
                 Map<Integer, UserWxUserRecord> wxUserRecordMap = new HashMap<>();
                 wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));
                 data.setWxUserRecordList(wxUserRecordMap);
             }
+            long wxUserTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView wxUserTime:{}", wxUserTime- connectionTime);
             Map<Integer, UserUserRecord> userMap = new HashMap<>();
             if(!StringUtils.isEmptyList(userListFuture.get())){
                 userListFuture.get().forEach(fe ->userMap.put(fe.getId(), fe) );
             }
+            long userTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView userTime:{}", userTime- wxUserTime);
             data.setUserRecordList(userMap);
             Map<Integer, JobPositionDO> positionMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionListFuture.get())){
                 positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
             }
+            long positionTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView positionTime:{}", positionTime- userTime);
             data.setPositionMap(positionMap);
             data.setCandidatePositionRecords(candidatePositionListFuture.get());
             Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
             if(!StringUtils.isEmptyList(root2ListFuture.get())){
                 root2ListFuture.get().forEach(root2 ->root2UserMap.put(root2.getId(), root2));
             }
+            long candidateTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView candidateTime:{}", candidateTime- positionTime);
             data.setRoot2UserMap(root2UserMap);
             Map<Integer, Byte> fromMap = new HashMap<>();
             if(!StringUtils.isEmptyList(positionShareRecordListFuture.get())){
@@ -926,6 +926,8 @@ public class ReferralEntity {
                     }
                 );
             }
+            long positionshareTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView positionshareTime:{}", positionshareTime- candidateTime);
             data.setUserFromMap(fromMap);
         }catch (Exception e){
             logger.error(e.getMessage(), e);
