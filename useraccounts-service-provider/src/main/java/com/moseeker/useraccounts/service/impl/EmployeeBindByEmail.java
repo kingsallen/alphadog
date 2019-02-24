@@ -23,6 +23,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.employee.struct.BindingParams;
 import com.moseeker.thrift.gen.employee.struct.Result;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.service.EmployeeBinder;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -52,6 +53,9 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
+
+    @Autowired
+    KafkaSender kafkaSender;
 
     @Autowired
     private LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
