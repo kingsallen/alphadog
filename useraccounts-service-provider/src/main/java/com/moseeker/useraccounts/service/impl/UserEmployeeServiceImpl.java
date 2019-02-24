@@ -77,7 +77,7 @@ import org.springframework.stereotype.Service;
  * Created by eddie on 2017/3/9.
  */
 @Service
-@CounterIface
+//@CounterIface
 public class UserEmployeeServiceImpl {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -630,6 +630,7 @@ public class UserEmployeeServiceImpl {
 
     @RadarSwitchLimit
     public EmployeeForwardViewVO fetchEmployeeForwardView(int companyId, int userId, String positionTitle, String order, int page, int size){
+        long startTime = System.currentTimeMillis();
         EmployeeForwardViewVO result = new EmployeeForwardViewVO();
         if(page == 0){
             page=1;
@@ -641,8 +642,12 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
+        long employeeTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView employeeTime:{}",employeeTime - startTime);
         Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         List<Integer> positionIdList = bizTools.listPositionIdByUserIdAndStatus(userId);
+        long positionTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView positionTime:{}",positionTime- employeeTime);
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
         }
@@ -655,17 +660,26 @@ public class UserEmployeeServiceImpl {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+        long listTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView listTime:{}",listTime - positionTime);
         if(StringUtils.isEmptyList(list)){
             return result;
         }
         EmployeeCardViewData data = referralEntity.fetchEmployeeViewCardData(list, userId, companyId);
+        long dataTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView dataTime:{}",dataTime-listTime);
         this.fetchEmployeePostConnection(data);
         List<Integer> userIdList = list.stream().map(m ->m.getPresenteeUserId()).collect(Collectors.toList());
         List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
+        long neo4jTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView neo4jTime:{}",neo4jTime - dataTime);
         List<EmployeeForwardViewPageVO> viewPages = new ArrayList<>();
         for(CandidateRecomRecordRecord record: list){
             viewPages.add(EmployeeBizTool.packageEmployeeForwardViewVO(data, record, depthList));
         }
+        long packageTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView listTime:{}",packageTime - neo4jTime);
+        logger.info("fetchEmployeeForwardView Time:{}",packageTime - startTime);
         result.setUserList(viewPages);
         return result;
     }
