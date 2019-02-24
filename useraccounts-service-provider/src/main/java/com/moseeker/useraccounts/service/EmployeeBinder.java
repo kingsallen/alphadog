@@ -130,7 +130,6 @@ public abstract class EmployeeBinder {
             paramCheck(bindingParams, certConf);
             UserEmployeeDO userEmployee = createEmployee(bindingParams);
             response = doneBind(userEmployee,bingSource);
-            kafkaSender.sendEmployeeCertification(userEmployee);
         } catch (Exception e) {
             log.warn(e.getMessage(), e);
             response.setSuccess(false);
@@ -267,6 +266,7 @@ public abstract class EmployeeBinder {
 
         searchengineEntity.updateEmployeeAwards(new ArrayList<Integer>(){{add(employeeId);}});
         neo4jService.updateUserEmployeeCompany(useremployee.getSysuserId(),useremployee.getCompanyId());
+        kafkaSender.sendEmployeeCertification(useremployee);
         //将属于本公司的潜在候选人设置为无效
         cancelCandidate(useremployee.getSysuserId(),useremployee.getCompanyId());
         // 将其他公司的员工认证记录设为未认证
