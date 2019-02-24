@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrPointsConfRecord extends UpdatableRecordImpl<HrPointsConfRecord> implements Record16<Integer, Integer, String, Long, String, Byte, Byte, Timestamp, String, Byte, String, String, Byte, String, String, Integer> {
 
-    private static final long serialVersionUID = -1184351578;
+    private static final long serialVersionUID = 1254368774;
 
     /**
      * Setter for <code>hrdb.hr_points_conf.id</code>.
@@ -145,14 +145,14 @@ public class HrPointsConfRecord extends UpdatableRecordImpl<HrPointsConfRecord> 
     }
 
     /**
-     * Setter for <code>hrdb.hr_points_conf.tag</code>.
+     * Setter for <code>hrdb.hr_points_conf.tag</code>. 已弃用
      */
     public void setTag(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_points_conf.tag</code>.
+     * Getter for <code>hrdb.hr_points_conf.tag</code>. 已弃用
      */
     public String getTag() {
         return (String) get(8);
@@ -243,14 +243,14 @@ public class HrPointsConfRecord extends UpdatableRecordImpl<HrPointsConfRecord> 
     }
 
     /**
-     * Setter for <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
+     * Setter for <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，config_sys_points_conf_tpl.id
      */
     public void setTemplateId(Integer value) {
         set(15, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，hr_award_config_template.id
+     * Getter for <code>hrdb.hr_points_conf.template_id</code>. 申请状态模板ID，config_sys_points_conf_tpl.id
      */
     public Integer getTemplateId() {
         return (Integer) get(15);

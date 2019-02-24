@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
 
-    private static final long serialVersionUID = 1694590883;
+    private static final long serialVersionUID = -1831074086;
 
     /**
      * The reference instance of <code>candidatedb.candidate_share_chain</code>
@@ -92,11 +92,6 @@ public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
     public final TableField<CandidateShareChainRecord, Integer> PARENT_ID = createField("parent_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "candidatedb.candidate_share_chain.id,上一条 share_chain.id");
 
     /**
-     * The column <code>candidatedb.candidate_share_chain.type</code>. 用于标记由员工，职位，候选人确定的关系中，员工是否处理过该候选人的申请或候选人是否已经主动投递过 0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐ta 4 转发形成的投递 5 自投
-     */
-    public final TableField<CandidateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "用于标记由员工，职位，候选人确定的关系中，员工是否处理过该候选人的申请或候选人是否已经主动投递过 0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐ta 4 转发形成的投递 5 自投");
-
-    /**
      * The column <code>candidatedb.candidate_share_chain.click_time</code>. candidatedb.candidate_position_share_record.click_time,点击时间
      */
     public final TableField<CandidateShareChainRecord, Timestamp> CLICK_TIME = createField("click_time", org.jooq.impl.SQLDataType.TIMESTAMP, this, "candidatedb.candidate_position_share_record.click_time,点击时间");
@@ -107,9 +102,14 @@ public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
     public final TableField<CandidateShareChainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
 
     /**
-     * The column <code>candidatedb.candidate_share_chain.forward_id</code>. 唯一标识员工转出职位链路，数据组统计数据用
+     * The column <code>candidatedb.candidate_share_chain.type</code>. 0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐TA 4 转发投递 5 候选人主动投递
      */
-    public final TableField<CandidateShareChainRecord, String> FORWARD_ID = createField("forward_id", org.jooq.impl.SQLDataType.VARCHAR.length(32).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "唯一标识员工转出职位链路，数据组统计数据用");
+    public final TableField<CandidateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐TA 4 转发投递 5 候选人主动投递");
+
+    /**
+     * The column <code>candidatedb.candidate_share_chain.forward_id</code>.
+     */
+    public final TableField<CandidateShareChainRecord, String> FORWARD_ID = createField("forward_id", org.jooq.impl.SQLDataType.VARCHAR.length(32), this, "");
 
     /**
      * Create a <code>candidatedb.candidate_share_chain</code> table reference

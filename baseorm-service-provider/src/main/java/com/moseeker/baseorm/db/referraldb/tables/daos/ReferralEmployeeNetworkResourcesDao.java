@@ -80,17 +80,10 @@ public class ReferralEmployeeNetworkResourcesDao extends DAOImpl<ReferralEmploye
     }
 
     /**
-     * Fetch records that have <code>create_time IN (values)</code>
+     * Fetch records that have <code>position_id IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByCreateTime(Timestamp... values) {
-        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.CREATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>update_time IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByUpdateTime(Timestamp... values) {
-        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.UPDATE_TIME, values);
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByPositionId(Integer... values) {
+        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POSITION_ID, values);
     }
 
     /**
@@ -108,9 +101,16 @@ public class ReferralEmployeeNetworkResourcesDao extends DAOImpl<ReferralEmploye
     }
 
     /**
-     * Fetch records that have <code>position_id IN (values)</code>
+     * Fetch records that have <code>create_time IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByPositionId(Integer... values) {
-        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POSITION_ID, values);
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByCreateTime(Timestamp... values) {
+        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.CREATE_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>update_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeNetworkResources> fetchByUpdateTime(Timestamp... values) {
+        return fetch(ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES.UPDATE_TIME, values);
     }
 }

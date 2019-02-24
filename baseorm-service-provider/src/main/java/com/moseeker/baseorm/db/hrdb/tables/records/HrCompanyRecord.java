@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> {
 
-    private static final long serialVersionUID = 173791167;
+    private static final long serialVersionUID = -477463557;
 
     /**
      * Setter for <code>hrdb.hr_company.id</code>.
@@ -44,14 +44,14 @@ public class HrCompanyRecord extends UpdatableRecordImpl<HrCompanyRecord> {
     }
 
     /**
-     * Setter for <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+     * Setter for <code>hrdb.hr_company.type</code>. 公司区分(测试用:2,免费用户:1,企业用户:0)
      */
     public void setType(Byte value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_company.type</code>. 公司区分(其它:2,免费用户:1,企业用户:0)
+     * Getter for <code>hrdb.hr_company.type</code>. 公司区分(测试用:2,免费用户:1,企业用户:0)
      */
     public Byte getType() {
         return (Byte) get(1);
