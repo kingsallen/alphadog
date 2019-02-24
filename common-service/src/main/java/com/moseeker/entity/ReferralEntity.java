@@ -865,8 +865,8 @@ public class ReferralEntity {
 
                 });
             }
-            long futureTime = System.currentTimeMillis();
-            logger.info("fetchEmployeeForwardView futureTime:{}", futureTime- startTime);
+            long shareChainTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView shareChainTime:{}", shareChainTime - futureTime);
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
                     () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
@@ -874,7 +874,7 @@ public class ReferralEntity {
             data.setShareChainList(shareChainList);
             List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
             long future2Time = System.currentTimeMillis();
-            logger.info("fetchEmployeeForwardView futureTime:{}", future2Time -futureTime);
+            logger.info("fetchEmployeeForwardView futureTime:{}", future2Time -shareChainTime);
             if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
                 for(CandidateRecomRecordRecord record :recomRecordList){
                     for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
