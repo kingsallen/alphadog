@@ -471,7 +471,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit(status = false)
     public String getProgressBatch(int companyId, ReferralProgressInfo progressInfo) throws BIZException {
-        long start = System.currentTimeMillis();
         boolean radarSwitchOpen = RadarSwitchAspect.checkSoftAuthorityLimit();
         UserEmployeeRecord employeeRecord = userEmployeeDao.getActiveEmployeeByUserId(progressInfo.getUserId());
         if(employeeRecord == null){
@@ -528,8 +527,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             result.add(card);
         }
         logger.info("getProgressBatch:{}", result);
-        long end = System.currentTimeMillis();
-        logger.info("getRadarCards time :{}", start - end);
         return JSON.toJSONString(result);
     }
 

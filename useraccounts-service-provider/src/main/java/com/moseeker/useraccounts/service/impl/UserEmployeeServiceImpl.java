@@ -657,8 +657,6 @@ public class UserEmployeeServiceImpl {
         long employeeTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView employeeTime:{}",employeeTime - startTime);
         Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
-        long employeeTime = System.currentTimeMillis();
-        logger.info("fetchEmployeeForwardView employeeTime:{}",employeeTime-startTime );
         List<Integer> positionIdList = bizTools.listPositionIdByUserIdAndStatus(userId);
         long positionTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView positionTime:{}",positionTime- employeeTime);
