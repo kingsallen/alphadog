@@ -1042,7 +1042,7 @@ public class ReferralEntity {
                 int num = list.size()>resource.getData().size()?list.size():resource.getData().size();
                 logger.info("fetchEmployeeNetworkResource num:{}",num);
                 for(int i =0; i<num;i++){
-                    if(i < (list.size()-1)) {
+                    if(i < list.size()) {
                         ReferralEmployeeNetworkResourcesRecord record = list.get(i);
                         if (resource.getData().size() > i) {
                             record.setDisable((byte) Constant.DISABLE);
