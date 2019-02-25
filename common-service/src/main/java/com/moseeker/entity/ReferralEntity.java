@@ -846,7 +846,7 @@ public class ReferralEntity {
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
-                    () -> positionDao.getPositionList(positionIdList));
+                    () -> positionDao.getPositionListByIdList(positionIdList));
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = new ArrayList<>();
             List<Integer> shareChainIdList = new ArrayList<>();
@@ -949,7 +949,7 @@ public class ReferralEntity {
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
-                    () -> positionDao.getPositionList(positionIdList));
+                    () -> positionDao.getPositionListByIdList(positionIdList));
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = new ArrayList<>();
             List<Integer> shareChainIdList = new ArrayList<>();
