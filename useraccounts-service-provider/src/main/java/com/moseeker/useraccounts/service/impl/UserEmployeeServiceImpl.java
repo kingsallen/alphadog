@@ -78,7 +78,7 @@ import org.springframework.stereotype.Service;
  * Created by eddie on 2017/3/9.
  */
 @Service
-@CounterIface
+//@CounterIface
 public class UserEmployeeServiceImpl {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -654,10 +654,14 @@ public class UserEmployeeServiceImpl {
         if(!employeeEntity.isEmployee(userId, companyId)) {
             throw UserAccountException.PERMISSION_DENIED;
         }
+        long employeeTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView employeeTime:{}",employeeTime - startTime);
         Future<Set<Integer>> employeeUserFuture =  threadPool.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
         long employeeTime = System.currentTimeMillis();
         logger.info("fetchEmployeeForwardView employeeTime:{}",employeeTime-startTime );
         List<Integer> positionIdList = bizTools.listPositionIdByUserIdAndStatus(userId);
+        long positionTime = System.currentTimeMillis();
+        logger.info("fetchEmployeeForwardView positionTime:{}",positionTime- employeeTime);
         if(StringUtils.isNotNullOrEmpty(positionTitle)){
             positionIdList = positionEntity.getPositionIdListByTitle(positionIdList, positionTitle);
         }
@@ -671,8 +675,7 @@ public class UserEmployeeServiceImpl {
             list = this.pagePositionById(positionIdList, employeeUserFuture.get(), userId, companyId, order, page, size, result);
         } catch (Exception e) {
             logger.error(e.getMessage());
-        }
-        if(StringUtils.isEmptyList(list)){
+        }if(StringUtils.isEmptyList(list)){
             return result;
         }
         long listTime = System.currentTimeMillis();

@@ -457,8 +457,10 @@ public class ReferralPositionService {
             logger.info("fetchPositionMatchByUserId result:{}",result);
             if (StringUtils.isNotNullOrEmpty(result)) {
                 Map<String, Object> map = JSON.parseObject(result, Map.class);
+                logger.info("fetchPositionMatchByUserId result:{}",result);
                 if (map.get("pids") != null) {
                     JSONArray pids = (JSONArray) map.get("pids");
+                    logger.info("fetchPositionMatchByUserId pids:{}",pids);
                     List<Integer> pidList = pids.toJavaList(Integer.class);
                     logger.info("fetchPositionMatchByUserId pidList:{}",JSONObject.toJSONString(pidList));
                     if (!StringUtils.isEmptyList(pidList)) {

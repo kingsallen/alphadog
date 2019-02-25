@@ -185,7 +185,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
         List<JSONObject> cards = new ArrayList<>();
         // 本批卡片展示的候选人useIds
-        List<CandidatePositionShareRecordDO> positionShareRecordDOS = getPositionShareRecordDOS(cardInfo, candidatePositionDOS, shareChainDOS);
+//        long start1 = System.currentTimeMillis();
+//        List<CandidateTemplateShareChainDO> oneDegreeShareChains = getOneDegreeShareChains(cardInfo, candidatePositionDOS, shareChainDOS);
+//        long end1 = System.currentTimeMillis();
+//        logger.info("=======positionShareRecordDOS:{}", end1- start1);
         // 获取当前页的卡片数据
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
@@ -205,7 +208,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             // 候选人浏览职位信息
             JSONObject position = doInitPosition(idPositionMap.get(positionId), candidatePositionDO);
             // 卡片类型相关信息
-            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, positionShareRecordDOS, seekRecommendRecords, idUserMap);
+            JSONObject recomInfo = doInitRecomInfo(candidatePositionDO, shareChainDOS, idWxUserMap, seekRecommendRecords);
             card.put("position", position);
             card.put("recom", recomInfo);
             card.put("user", user);
@@ -214,7 +217,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         }
         logger.info("getRadarCards:{}", JSON.toJSONString(cards));
         long end = System.currentTimeMillis();
-        logger.info("getRadarCards time :{}", start - end);
+        logger.info("=====getRadarCards:{}", end - start);
         return JSON.toJSONString(cards, SerializerFeature.DisableCircularReferenceDetect);
     }
 
@@ -490,12 +493,18 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // neo4j 查
         List<UserDepthVO> applierDegrees = new ArrayList<>();
         if(radarSwitchOpen){
+            long start = System.currentTimeMillis();
             applierDegrees = neo4jService.fetchDepthUserList(progressInfo.getUserId(), progressInfo.getCompanyId(), applierUserIds);
+            long end = System.currentTimeMillis();
+            logger.info("=======referralTypeMap:{}", end - start);
         }
         List<Integer> applyPids = jobApplicationDOS.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         Map<Integer, JobPositionDO> positionMap = getPositionIdMap(applyPids);
         // 组装每种申请类型需要的数据
+        long start = System.currentTimeMillis();
         Map<Integer, JSONObject> referralTypeMap = getReferralTypeMap(employeeRecord, jobApplicationDOS, applierDegrees);
+        long end = System.currentTimeMillis();
+        logger.info("=======referralTypeMap:{}", end - start);
 
         List<JSONObject> result = new ArrayList<>();
         for(JobApplicationDO jobApplicationDO : jobApplicationDOS){
@@ -735,9 +744,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return userDepthVOS;
     }
 
-    private List<CandidatePositionShareRecordDO> getPositionShareRecordDOS(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
+    private List<CandidateTemplateShareChainDO> getOneDegreeShareChains(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
         int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
-        Set<Integer> shareChainIds = new HashSet<>();
+        List<CandidateTemplateShareChainDO> oneDegreeShareChains = new ArrayList<>();
         for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
             CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
             boolean flag = true;
@@ -753,11 +762,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                     }else {
                         oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(parentId, shareChainDOS);
                     }
-                    shareChainIds.add(oneDegreeShareChainDO.getChainId());
+                    oneDegreeShareChains.add(oneDegreeShareChainDO);
                 }
             }
         }
-        return positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIds);
+        return oneDegreeShareChains;
     }
 
 
@@ -1257,14 +1266,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     private JSONObject doInitRecomInfo(CandidatePositionDO candidatePositionDO, List<CandidateTemplateShareChainDO> shareChainDOS,
-                                       Map<Integer, UserWxUserDO> idWxUserMap, List<CandidatePositionShareRecordDO> positionShareRecordDOS,
-                                       List<ReferralSeekRecommendRecord> seekRecommendRecords, Map<Integer, UserUserRecord> userMap) {
+                                       Map<Integer, UserWxUserDO> idWxUserMap, List<ReferralSeekRecommendRecord> seekRecommendRecords) {
         int endUserId = candidatePositionDO.getUserId();
         int positionId = candidatePositionDO.getPositionId();
         // 查找来自【】转发
         int recomUser = 0;
         JSONObject recomInfo = new JSONObject();
-        int shareChainId = 0;
+        boolean isFromWxGroup = false;
         for(CandidateTemplateShareChainDO shareChainDO : shareChainDOS){
             if(shareChainDO.getPresenteeUserId() == endUserId && positionId == shareChainDO.getPositionId()){
                 CandidateTemplateShareChainDO oneDegreeShareChainDO;
@@ -1277,19 +1285,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 if(oneDegreeUser != candidatePositionDO.getUserId()){
                     recomUser = oneDegreeUser;
                 }
-                shareChainId = oneDegreeShareChainDO.getChainId();
+                isFromWxGroup = (oneDegreeShareChainDO.getClickFrom() == 2);
                 break;
             }
         }
         if(recomUser != 0){
             recomInfo.put("nickname", idWxUserMap.get(recomUser).getNickname());
-        }
-        boolean isFromWxGroup = false;
-        for(CandidatePositionShareRecordDO positionShareRecordDO : positionShareRecordDOS){
-            if(positionShareRecordDO.getShareChainId() == shareChainId){
-                isFromWxGroup = (positionShareRecordDO.getClickFrom() == 2);
-                break;
-            }
         }
         recomInfo.put("from_wx_group", isFromWxGroup ? 1 : 0);
         // 查找卡片推荐类型是 邀请投递 还是 推荐TA

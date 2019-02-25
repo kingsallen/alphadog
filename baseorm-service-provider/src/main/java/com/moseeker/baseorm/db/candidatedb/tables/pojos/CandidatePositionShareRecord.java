@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidatePositionShareRecord implements Serializable {
 
-    private static final long serialVersionUID = -818950618;
+    private static final long serialVersionUID = 34030651;
 
     private Integer   id;
     private Long      wechatId;
@@ -38,7 +38,6 @@ public class CandidatePositionShareRecord implements Serializable {
     private Long      presenteeId;
     private Byte      clickFrom;
     private Integer   presenteeUserId;
-    private Integer   shareChainId;
 
     public CandidatePositionShareRecord() {}
 
@@ -56,7 +55,6 @@ public class CandidatePositionShareRecord implements Serializable {
         this.presenteeId = value.presenteeId;
         this.clickFrom = value.clickFrom;
         this.presenteeUserId = value.presenteeUserId;
-        this.shareChainId = value.shareChainId;
     }
 
     public CandidatePositionShareRecord(
@@ -72,8 +70,7 @@ public class CandidatePositionShareRecord implements Serializable {
         Timestamp updateTime,
         Long      presenteeId,
         Byte      clickFrom,
-        Integer   presenteeUserId,
-        Integer   shareChainId
+        Integer   presenteeUserId
     ) {
         this.id = id;
         this.wechatId = wechatId;
@@ -88,7 +85,6 @@ public class CandidatePositionShareRecord implements Serializable {
         this.presenteeId = presenteeId;
         this.clickFrom = clickFrom;
         this.presenteeUserId = presenteeUserId;
-        this.shareChainId = shareChainId;
     }
 
     public Integer getId() {
@@ -195,14 +191,6 @@ public class CandidatePositionShareRecord implements Serializable {
         this.presenteeUserId = presenteeUserId;
     }
 
-    public Integer getShareChainId() {
-        return this.shareChainId;
-    }
-
-    public void setShareChainId(Integer shareChainId) {
-        this.shareChainId = shareChainId;
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidatePositionShareRecord (");
@@ -220,7 +208,6 @@ public class CandidatePositionShareRecord implements Serializable {
         sb.append(", ").append(presenteeId);
         sb.append(", ").append(clickFrom);
         sb.append(", ").append(presenteeUserId);
-        sb.append(", ").append(shareChainId);
 
         sb.append(")");
         return sb.toString();

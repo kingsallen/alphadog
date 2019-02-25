@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
 
-    private static final long serialVersionUID = -1831074086;
+    private static final long serialVersionUID = -2141716547;
 
     /**
      * The reference instance of <code>candidatedb.candidate_share_chain</code>
@@ -110,6 +110,11 @@ public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
      * The column <code>candidatedb.candidate_share_chain.forward_id</code>.
      */
     public final TableField<CandidateShareChainRecord, String> FORWARD_ID = createField("forward_id", org.jooq.impl.SQLDataType.VARCHAR.length(32), this, "");
+
+    /**
+     * The column <code>candidatedb.candidate_share_chain.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
+     */
+    public final TableField<CandidateShareChainRecord, Integer> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3");
 
     /**
      * Create a <code>candidatedb.candidate_share_chain</code> table reference

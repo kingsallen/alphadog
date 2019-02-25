@@ -66,4 +66,9 @@ public class DirectReferralHandler extends AbstractReferralTypeHandler{
         }
         return claimApplyMap;
     }
+
+    @Override
+    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {
+
+    }
 }

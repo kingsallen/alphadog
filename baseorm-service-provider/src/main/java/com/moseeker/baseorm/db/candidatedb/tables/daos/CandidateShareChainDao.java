@@ -141,4 +141,11 @@ public class CandidateShareChainDao extends DAOImpl<CandidateShareChainRecord, c
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateShareChain> fetchByForwardId(String... values) {
         return fetch(CandidateShareChain.CANDIDATE_SHARE_CHAIN.FORWARD_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>click_from IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateShareChain> fetchByClickFrom(Integer... values) {
+        return fetch(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_FROM, values);
+    }
 }

@@ -117,5 +117,14 @@ public abstract class AbstractReferralTypeHandler {
         return user;
     }
 
-    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {}
+    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {
+        int degree = 0;
+        for(UserDepthVO userDepthVO : applierDegrees){
+            if(userDepthVO.getUserId() == jobApplicationDO.getApplierId()){
+                degree = userDepthVO.getDepth();
+                break;
+            }
+        }
+        card.put("degree", degree);
+    }
 }
