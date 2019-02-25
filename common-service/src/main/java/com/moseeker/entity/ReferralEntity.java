@@ -1059,6 +1059,7 @@ public class ReferralEntity {
                         record.setPresenteeUserId(resource.getData().get(i).getUser_id());
                         record.setPositionId(resource.getData().get(i).getPosition_id());
                         record.setCompanyId(resource.getCompany_id());
+                        insertRecordList.add(record);
                     }
                 }
                 logger.info("fetchEmployeeNetworkResource updateRecordList:{}",updateRecordList);
