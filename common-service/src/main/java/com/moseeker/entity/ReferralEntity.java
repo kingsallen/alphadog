@@ -757,6 +757,7 @@ public class ReferralEntity {
                         }
                 );
             }
+
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
                     () -> positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIdList));
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
@@ -865,6 +866,7 @@ public class ReferralEntity {
 
                 });
             }
+            logger.info("fetchEmployeeForwardView shareChainIdList:{}", shareChainIdList);
             long shareChainTime = System.currentTimeMillis();
             logger.info("fetchEmployeeForwardView shareChainTime:{}", shareChainTime - futureTime);
             Future<List<CandidatePositionShareRecordRecord>> positionShareRecordListFuture = threadPool.startTast(
