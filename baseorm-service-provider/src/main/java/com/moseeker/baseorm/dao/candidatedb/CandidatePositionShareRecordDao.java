@@ -6,12 +6,10 @@ import static com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareR
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
-import org.jooq.impl.TableImpl;
-import org.springframework.stereotype.Repository;
-
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
+import org.jooq.impl.TableImpl;
+import org.springframework.stereotype.Repository;
 
 /**
  * Created by jack on 15/02/2017.
