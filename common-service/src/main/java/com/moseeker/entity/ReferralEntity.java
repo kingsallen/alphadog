@@ -1061,6 +1061,8 @@ public class ReferralEntity {
                         record.setCompanyId(resource.getCompany_id());
                     }
                 }
+                logger.info("fetchEmployeeNetworkResource updateRecordList:{}",updateRecordList);
+                logger.info("fetchEmployeeNetworkResource insertRecordList:{}",insertRecordList);
                 networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
                 networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
             }
