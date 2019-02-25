@@ -2880,18 +2880,7 @@ public class PositionService {
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
                 long totalNum = jobj.getLong("totalNum");
-                JSONArray jsonArray  =  jobj.getJSONArray("suggest");
-
-                List<Integer> jdIdList = new ArrayList<>();
-
-                if(jsonArray!=null&&jsonArray.size()>0){
-                    for(int j=0;j<jsonArray.size();j++) {
-                        JSONObject object = jsonArray.getJSONObject(j);
-                        Integer pid = object.getIntValue("id");
-                        jdIdList.add(pid);
-                    }
-                }
-
+                List<Integer> jdIdList  =(List<Integer>)jobj.get("jd_id_list");
                 dataList = this.getWxPosition(jdIdList,(int)totalNum);
             } else {
                 return new ArrayList<>();
