@@ -14,6 +14,7 @@ struct CandidateShareChainDO {
 	8: optional i32 parentId,	//candidatedb.candidate_share_chain.id,上一条 share_chain.id
 	9: optional string clickTime,	//candidatedb.candidate_position_share_record.click_time,点击时间
 	10: optional string createTime,	//创建时间
-	11: optional i8 clickFrom
+	11: optional i32 type,
+	12: optional i8 clickFrom
 
 }

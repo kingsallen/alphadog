@@ -244,6 +244,7 @@ public class ReferralTemplateSender {
         templateShareChainDO.setRoot2UserId(candidateShareChainDO.getRoot2RecomUserId());
         templateShareChainDO.setRecomUserId(candidateShareChainDO.getRecomUserId());
         templateShareChainDO.setRootUserId(candidateShareChainDO.getRootRecomUserId());
+        templateShareChainDO.setClickFrom(candidateShareChainDO.getClickFrom());
         if(factShareChainIds.contains(candidateShareChainDO.getId())){
             templateShareChainDO.setStatus(0);
         }else {

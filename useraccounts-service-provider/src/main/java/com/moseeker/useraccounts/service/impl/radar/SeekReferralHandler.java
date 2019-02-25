@@ -60,16 +60,4 @@ public class SeekReferralHandler extends AbstractReferralTypeHandler {
         return seekApplyMap;
     }
 
-    @Override
-    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {
-        int degree = 0;
-        for(UserDepthVO userDepthVO : applierDegrees){
-            if(userDepthVO.getUserId() == jobApplicationDO.getApplierId()){
-                degree = userDepthVO.getDepth();
-                break;
-            }
-        }
-        card.put("degree", degree);
-    }
-
 }

@@ -70,7 +70,6 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         List<Integer> pid = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         List<ReferralRecomEvaluation> evaluationRecords = evaluationDao.fetchEvaluationRecordsByAppids(employeeRecord.getSysuserId(), applierIds, pid);
 
-//        HrWxWechatDO hrWxWechatDO = wxWechatDao.getHrWxWechatByCompanyId(employeeRecord.getCompanyId());
         List<Integer> sharePids = shareReferralList.stream().map(JobApplicationDO::getPositionId).distinct().collect(Collectors.toList());
         List<CandidateShareChainDO> shareChainDOS = shareChainDao.getShareChainsByUserIdAndPosition(employeeRecord.getSysuserId(), sharePids);
         List<Integer> oneDegreeJobApplication = new ArrayList<>();
@@ -81,6 +80,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         Set<Integer> shareChainIds = new HashSet<>();
         // 一度转发人user.id
         Set<Integer> oneDegreeUserIds = new HashSet<>();
+        List<CandidateShareChainDO> oneDegreeShareChains = new ArrayList<>();
         for(JobApplicationDO jobApplicationDO : shareReferralList){
             boolean flag = true;
             for(int i=0;i<shareChainDOS.size()&&flag;i++){
@@ -96,7 +96,7 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
                     }else {
                         oneDegreeShareChainDO = RadarUtils.getShareChainDOByRecurrence(parentId, shareChainDOS);
                     }
-                    shareChainIds.add(oneDegreeShareChainDO.getId());
+                    oneDegreeShareChains.add(oneDegreeShareChainDO);
                     appIdShareChainMap.put(jobApplicationDO.getId(), oneDegreeShareChainDO);
                     oneDegreeUserIds.add(oneDegreeShareChainDO.getPresenteeUserId());
                 }
@@ -105,29 +105,14 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
         List<UserUserDO> userDOS = userUserDao.fetchDOByIdList(new ArrayList<>(oneDegreeUserIds));
         Map<Integer, UserUserDO> userUserMap = new HashMap<>(1 << 4);
         userDOS.forEach(userUserDO -> userUserMap.put(userUserDO.getId(), userUserDO));
-//        wxUserDOS.forEach(userWxUserDO -> userWxUserDOMap.put(userWxUserDO.getSysuserId(), userWxUserDO));
-        List<CandidatePositionShareRecordDO> positionShareRecordDOS =
-                positionShareRecordDao.fetchPositionShareByShareChainIds(shareChainIds);
+
         result.put("oneDegree", JSON.toJSONString(oneDegreeJobApplication));
         result.put("appIdShareChainMap", JSON.toJSONString(appIdShareChainMap));
-        result.put("shareRecords", JSON.toJSONString(positionShareRecordDOS));
+        result.put("oneDegreeShareChains", JSON.toJSONString(oneDegreeShareChains));
         result.put("evaluateRecords", JSON.toJSONString(evaluationRecords));
         result.put("userUserMap", JSON.toJSONString(userUserMap));
         return result;
     }
-
-    @Override
-    public void postProcessAfterCreateCard(JSONObject card, JobApplicationDO jobApplicationDO, List<UserDepthVO> applierDegrees) {
-        int degree = 0;
-        for(UserDepthVO userDepthVO : applierDegrees){
-            if(userDepthVO.getUserId() == jobApplicationDO.getApplierId()){
-                degree = userDepthVO.getDepth();
-                break;
-            }
-        }
-        card.put("degree", degree);
-    }
-
 
     private int handleEvaluate(JSONObject referralTypeSingleMap, JobApplicationDO jobApplicationDO) {
         // 转发推荐类型（2）中的用户求推荐信息
@@ -153,12 +138,12 @@ public class ShareReferralHandler extends AbstractReferralTypeHandler {
     private boolean handleClickFromWxGroup(JSONObject referralTypeSingleMap, CandidateShareChainDO shareChainDO) {
         boolean clickFromWxGroup = false;
         // share_chain记录
-        TypeReference<List<CandidatePositionShareRecordDO>> shareRecordTypeRef = new TypeReference<List<CandidatePositionShareRecordDO>>(){};
-        List<CandidatePositionShareRecordDO> shareRecordDOS = JSON.parseObject(referralTypeSingleMap.getString("shareRecords"),shareRecordTypeRef);
+        TypeReference<List<CandidateShareChainDO>> oneDegreeShareChainTypeRef = new TypeReference<List<CandidateShareChainDO>>(){};
+        List<CandidateShareChainDO> shareChainDOS = JSON.parseObject(referralTypeSingleMap.getString("oneDegreeShareChains"),oneDegreeShareChainTypeRef);
         if(shareChainDO != null){
-            for(CandidatePositionShareRecordDO shareRecordDO : shareRecordDOS){
-                if(shareChainDO.getId() == shareRecordDO.getShareChainId()){
-                    if(shareRecordDO.getClickFrom() == 2){
+            for(CandidateShareChainDO oneDegreeShareChain : shareChainDOS){
+                if(shareChainDO.getId() == oneDegreeShareChain.getId()){
+                    if(oneDegreeShareChain.getClickFrom() == 2){
                         clickFromWxGroup = true;
                     }
                     break;

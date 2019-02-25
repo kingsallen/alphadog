@@ -15,7 +15,8 @@
  	9: optional i32 parentId,	//candidatedb.candidate_share_chain.id,上一条 share_chain.id
  	10: optional i32 type,	// 标记是否已经处理（ 0 未处理 1 邀请投递或推荐TA ）
  	11: optional i32 status, // 该链路是否在本次十分钟消息模板中产生了实际点击
-    12: optional i64 sendTime,       // 十分钟消息模板发送时间
-    13: optional string createTime,
-    14: optional string updateTime
+ 	12: optional i8 clickFrom,
+    13: optional i64 sendTime,       // 十分钟消息模板发送时间
+    14: optional string createTime,
+    15: optional string updateTime
  }
