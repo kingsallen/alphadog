@@ -456,8 +456,10 @@ public class ReferralPositionService {
             String result = HttpClient.sendPost(env.getProperty("ai.position.match.url"), JSON.toJSONString(params));
             if (StringUtils.isNotNullOrEmpty(result)) {
                 Map<String, Object> map = JSON.parseObject(result, Map.class);
+                logger.info("fetchPositionMatchByUserId result:{}",result);
                 if (map.get("pids") != null) {
                     JSONArray pids = (JSONArray) map.get("pids");
+                    logger.info("fetchPositionMatchByUserId pids:{}",pids);
                     List<Integer> pidList = pids.toJavaList(Integer.class);
                     if (!StringUtils.isEmptyList(pidList)) {
                         List<Integer> idList = pidList.subList(0, 3);
