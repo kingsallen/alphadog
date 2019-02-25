@@ -32,20 +32,4 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
         this.deleteRecord(p);
     }
 
-    public List<CandidatePositionShareRecordDO> fetchPositionShareByShareChainIds(Set<Integer> shareChainIds) {
-        return create.selectFrom(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD)
-                .where(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID.in(shareChainIds))
-                .groupBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID)
-                .orderBy(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.desc())
-                .fetchInto(CandidatePositionShareRecordDO.class);
-
-    }
-
-
-    public List<CandidatePositionShareRecordRecord> fetchPositionShareByShareChainIds(List<Integer> shareChainIds) {
-        return create.selectFrom(CANDIDATE_POSITION_SHARE_RECORD)
-                .where(CANDIDATE_POSITION_SHARE_RECORD.SHARE_CHAIN_ID.in(shareChainIds))
-                .orderBy(CANDIDATE_POSITION_SHARE_RECORD.CREATE_TIME.desc())
-                .fetch();
-    }
 }
