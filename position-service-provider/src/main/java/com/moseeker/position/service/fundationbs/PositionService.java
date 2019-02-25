@@ -2958,7 +2958,7 @@ public class PositionService {
         query.setPage_size(Integer.valueOf(map.getOrDefault("page_size", "10")));
 
         query.setUser_id(Integer.valueOf( map.getOrDefault("user_id", "0")));
-        query.setKeywords(StringUtils.filterStringForSearch(map.getOrDefault("keywords", "")));
+        query.setKeywords(StringUtils.filterStringForSearch(map.getOrDefault("keyWord", "")));
         query.setCities((String) map.getOrDefault("cities", ""));
         query.setIndustries(StringUtils.filterStringForSearch( map.getOrDefault("industries", "")));
         query.setOccupations( map.getOrDefault("occupations", ""));
