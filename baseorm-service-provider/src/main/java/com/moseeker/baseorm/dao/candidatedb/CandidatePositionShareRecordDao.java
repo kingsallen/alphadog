@@ -31,4 +31,5 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
         p.setId(id);
         this.deleteRecord(p);
     }
+
 }
