@@ -210,7 +210,7 @@ public class Neo4jServiceImpl implements Neo4jService {
             List<UserDepthVO> depthUser = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
             return depthUser;
         }catch (Exception e){
-            throw UserAccountException.ACTIVITY_AMOUNT_ERROR
+            throw UserAccountException.ACTIVITY_AMOUNT_ERROR;
         }
 
     }
