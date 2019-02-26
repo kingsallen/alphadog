@@ -56,6 +56,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
+import com.moseeker.position.kafka.KafkaSender;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
@@ -113,6 +114,9 @@ public class PositionService {
     private DictConstantDao dictConstantDao;
     @Autowired
     private JobCustomDao jobCustomDao;
+    @Autowired
+    KafkaSender kafkaSender;
+
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
     @Autowired
@@ -2850,6 +2854,7 @@ public class PositionService {
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
                 updateField.put("updateTime", dateStr);
+                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), positionDO.getCompanyId());
 
                 // 猎聘api新增
                 if (updateField.get("status") != null) {
