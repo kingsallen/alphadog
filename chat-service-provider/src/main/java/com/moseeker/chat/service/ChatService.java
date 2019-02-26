@@ -865,7 +865,12 @@ public class ChatService {
                     companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
                 }
                 if (companyConf.getHrChat() != null && companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)) {
-                    HrCompanyMobotConfDO mobotConf = hrCompanyConfDao.getMobotConf(companyDO.getId());
+                    HrCompanyMobotConfDO mobotConf;
+                    if (companyDO.getParentId() != 0) {
+                        mobotConf = hrCompanyConfDao.getMobotConf(companyDO.getParentId());
+                    } else {
+                        mobotConf = hrCompanyConfDao.getMobotConf(companyDO.getId());
+                    }
 
                     if (StringUtils.isNotNullOrEmpty(mobotConf.getMobotName())) {
                         content = AUTO_CONTENT_WITH_HR_EXIST
