@@ -33,10 +33,6 @@ public class KafkaSender {
 
     private final static String SOCIAL_GRAPH_CHANGE = "position_status";
 
-    private final static String EMPLOYEE_CERTIFICATION = "employee_certification";
-
-    private final static String CONNECTION_CHANGE = "radar_link_game";
-
     public void sendMessage(String topic, String data){
         logger.info("kafkaMessage date:{}",data);
         kafkaTemplate.send(topic, data);
