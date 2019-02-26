@@ -1,14 +1,12 @@
 package com.moseeker.useraccounts.config;
 
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.util.query.Query;
-import com.moseeker.useraccounts.kafka.KafkaConsumerPlugin;
-import com.moseeker.useraccounts.kafka.KafkaProducerPlugin;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+import com.moseeker.entity.pojo.mq.kafka.KafkaConsumerPlugin;
+import com.moseeker.entity.pojo.mq.kafka.KafkaProducerPlugin;
 import com.rabbitmq.client.ConnectionFactory;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.producer.ProducerConfig;
+import java.util.ArrayList;
+import java.util.List;
 import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +27,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.*;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
 
 /**
  * Created by lucky8987 on 17/5/12.
