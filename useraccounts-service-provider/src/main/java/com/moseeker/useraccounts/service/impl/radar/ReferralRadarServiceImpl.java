@@ -184,11 +184,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         candidatePositionDOS = filterSpecficCandidate(candidatePositionDOS, shareChainDOS, jobPositions);
 
         List<JSONObject> cards = new ArrayList<>();
-        // 本批卡片展示的候选人useIds
-//        long start1 = System.currentTimeMillis();
-//        List<CandidateTemplateShareChainDO> oneDegreeShareChains = getOneDegreeShareChains(cardInfo, candidatePositionDOS, shareChainDOS);
-//        long end1 = System.currentTimeMillis();
-//        logger.info("=======positionShareRecordDOS:{}", end1- start1);
         // 获取当前页的卡片数据
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
@@ -362,7 +357,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    @RadarSwitchLimit
     public String checkEmployee(int companyId, CheckEmployeeInfo checkInfo) throws BIZException {
         logger.info("checkEmployee:{}", checkInfo);
         JSONObject result = new JSONObject();
