@@ -389,8 +389,10 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(child_company_name)) {
-            QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
-            ((BoolQueryBuilder) query).must(child_company_filter);
+            if(!"0".equals(child_company_name)) {
+                QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
+                ((BoolQueryBuilder) query).must(child_company_filter);
+            }
         }
 
         if (!StringUtils.isEmpty(custom)) {
