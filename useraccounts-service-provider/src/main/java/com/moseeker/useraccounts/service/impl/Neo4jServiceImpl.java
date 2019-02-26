@@ -209,8 +209,13 @@ public class Neo4jServiceImpl implements Neo4jService {
         if(employee == null ){
             return new ArrayList<>();
         }
-        List<UserDepthVO> depthUser = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
-        return depthUser;
+        try {
+            List<UserDepthVO> depthUser = userNeo4jDao.fetchEmployeeThreeDepthUser(userId, peresentUserIdList, employee.getCompanyId());
+            return depthUser;
+        }catch (Exception e){
+            throw UserAccountException.ACTIVITY_AMOUNT_ERROR;
+        }
+
     }
 
     @Override

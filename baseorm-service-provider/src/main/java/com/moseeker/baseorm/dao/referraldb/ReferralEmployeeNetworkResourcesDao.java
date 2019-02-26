@@ -1,5 +1,6 @@
 package com.moseeker.baseorm.dao.referraldb;
 
+import static com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
 import static com.moseeker.baseorm.db.referraldb.tables.ReferralEmployeeNetworkResources.REFERRAL_EMPLOYEE_NETWORK_RESOURCES;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralEmployeeNetworkResourcesRecord;
 import com.moseeker.common.util.StringUtils;
@@ -29,21 +30,25 @@ public class ReferralEmployeeNetworkResourcesDao extends com.moseeker.baseorm.db
 
 
     public List<ReferralEmployeeNetworkResourcesRecord> fetchByPostUserIdPage(int postUserId, Set<Integer> presenteeUserId, int page, int size){
-        return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
+        return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.leftJoin(JOB_POSITION)
+                .on(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POSITION_ID.eq(JOB_POSITION.ID)))
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.DISABLE.eq((byte)0))
+                .and(JOB_POSITION.STATUS.eq((byte)0))
                 .orderBy(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.ID.asc())
                 .offset((page-1)*size)
                 .limit(size)
-                .fetch();
+                .fetchInto(ReferralEmployeeNetworkResourcesRecord.class);
     }
 
     public int fetchByPostUserIdCount(int postUserId, Set<Integer> presenteeUserId){
-        return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES)
+        return using(configuration()).selectFrom(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.leftJoin(JOB_POSITION)
+                .on(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POSITION_ID.eq(JOB_POSITION.ID)))
                 .where(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.POST_USER_ID.eq(postUserId))
                 .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.PRESENTEE_USER_ID.notIn(presenteeUserId))
                 .and(REFERRAL_EMPLOYEE_NETWORK_RESOURCES.DISABLE.eq((byte)0))
+                .and(JOB_POSITION.STATUS.eq((byte)0))
                 .fetchCount();
     }
 

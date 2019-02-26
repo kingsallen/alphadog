@@ -877,7 +877,7 @@ public class ReferralEntity {
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
-                    () -> positionDao.getPositionList(positionIdList));
+                    () -> positionDao.getPositionListByIdList(positionIdList));
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = new ArrayList<>();
             List<Integer> shareChainIdList = new ArrayList<>();
@@ -980,7 +980,7 @@ public class ReferralEntity {
             Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
                     () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
-                    () -> positionDao.getPositionList(positionIdList));
+                    () -> positionDao.getPositionListByIdList(positionIdList));
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = new ArrayList<>();
             List<Integer> shareChainIdList = new ArrayList<>();
@@ -1073,9 +1073,8 @@ public class ReferralEntity {
                 int num = list.size()>resource.getData().size()?list.size():resource.getData().size();
                 logger.info("fetchEmployeeNetworkResource num:{}",num);
                 for(int i =0; i<num;i++){
+                    if(i < list.size()) {
                     logger.info("fetchEmployeeNetworkResource i:{}",i);
-                    if(i <= (list.size()-1)) {
-                        logger.info("fetchEmployeeNetworkResource2 i:{}",i);
                         ReferralEmployeeNetworkResourcesRecord record = list.get(i);
                         if (resource.getData().size() > i) {
                             record.setDisable((byte) Constant.DISABLE);
