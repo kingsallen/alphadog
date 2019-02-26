@@ -40,6 +40,7 @@ import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
 import com.moseeker.thrift.gen.searchengine.service.SearchengineServices;
 import java.math.BigDecimal;
+import java.net.ConnectException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -453,71 +454,61 @@ public class ReferralPositionService {
         params.put("history", true);
         params.put("employee", false);
         try {
-            String result = HttpClient.sendPost(env.getProperty("ai.position.match.url"), JSON.toJSONString(params));
-            logger.info("fetchPositionMatchByUserId result:{}",result);
-            if (StringUtils.isNotNullOrEmpty(result)) {
-                Map<String, Object> map = JSON.parseObject(result, Map.class);
-                logger.info("fetchPositionMatchByUserId result:{}",result);
-                if (map.get("pids") != null) {
-                    JSONArray pids = (JSONArray) map.get("pids");
-                    logger.info("fetchPositionMatchByUserId pids:{}",pids);
-                    List<Integer> pidList = pids.toJavaList(Integer.class);
-                    logger.info("fetchPositionMatchByUserId pidList:{}",JSONObject.toJSONString(pidList));
-                    if (!StringUtils.isEmptyList(pidList)) {
-                        List<Integer> idList = pidList.subList(0, 3);
-                        logger.info("fetchPositionMatchByUserId idList:{}",JSONObject.toJSONString(pidList));
-                        List<JobPosition> positionList = positionEntity.getPositionInfoByIdList(idList);
-                        List<JobPositionCityDO> positionCityList = positionCityDao.getPositionCityBypids(idList);
-                        Set<Integer> cityIds = new HashSet<>();
-                        for (JobPositionCityDO positionCity : positionCityList) {
-                            cityIds.add(positionCity.getCode());
-                        }
-                        logger.info("fetchPositionMatchByUserId cityIds:{}",JSONObject.toJSONString(cityIds));
-                        Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
-                        List<DictCityDO> dictCityRecordList = cityDao.getDatas(query);
-                        logger.info("fetchPositionMatchByUserId dictCityRecordList:{}",JSONObject.toJSONString(dictCityRecordList));
-                        List<Integer> teamIds = positionList.stream().map(m -> m.getTeamId()).collect(Collectors.toList());
-                        List<HrTeamDO> teamDOS = new ArrayList<>();
-                        if(!StringUtils.isEmptyList(teamIds)){
-                            teamDOS = teamDao.getTeamList(teamIds);
-                        }
-                        if (!StringUtils.isEmptyList(positionList)) {
-                            for (JobPosition position : positionList) {
-                                ReferralPositionMatchInfo match = new ReferralPositionMatchInfo();
-                                copyPosition(position, match);
-                                if(!StringUtils.isEmptyList(teamDOS)){
-                                    for(HrTeamDO team : teamDOS){
-                                        if(team.getId() == position.getTeamId()){
-                                            match.setTeam(team.getName());
-                                        }
-                                    }
+            List<Integer> pidList = fetchMatchPositionIds(params);
+            if(StringUtils.isEmptyList(pidList)){
+                params.put("employee", true);
+                pidList = fetchMatchPositionIds(params);
+            }
+            logger.info("fetchPositionMatchByUserId pids:{}", pidList);
+            if (!StringUtils.isEmptyList(pidList)) {
+                List<Integer> idList = pidList.subList(0, 3);
+                List<JobPosition> positionList = positionEntity.getPositionInfoByIdList(idList);
+                List<JobPositionCityDO> positionCityList = positionCityDao.getPositionCityBypids(idList);
+                Set<Integer> cityIds = new HashSet<>();
+                for (JobPositionCityDO positionCity : positionCityList) {
+                    cityIds.add(positionCity.getCode());
+                }
+                Query query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
+                List<DictCityDO> dictCityRecordList = cityDao.getDatas(query);
+                List<Integer> teamIds = positionList.stream().map(m -> m.getTeamId()).collect(Collectors.toList());
+                List<HrTeamDO> teamDOS = new ArrayList<>();
+                if(!StringUtils.isEmptyList(teamIds)){
+                    teamDOS = teamDao.getTeamList(teamIds);
+                }
+                if (!StringUtils.isEmptyList(positionList)) {
+                    for (JobPosition position : positionList) {
+                        ReferralPositionMatchInfo match = new ReferralPositionMatchInfo();
+                        copyPosition(position, match);
+                        if(!StringUtils.isEmptyList(teamDOS)){
+                            for(HrTeamDO team : teamDOS){
+                                if(team.getId() == position.getTeamId()){
+                                    match.setTeam(team.getName());
                                 }
-                                /** 职位城市关系记录 */
-                                List<JobPositionCityDO> positionCityRecordList = positionCityList.stream()
-                                        .filter(jobPositionCity ->
-                                                jobPositionCity.getPid() == position.getId().intValue())
-                                        .collect(Collectors.toList());
-                                logger.info("fetchPositionMatchByUserId positionCityRecordList:{}",JSONObject.toJSONString(positionCityRecordList));
-                                if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
-                                    StringBuffer cityNameBuffer = new StringBuffer();
-                                    for (JobPositionCityDO positionCityRecord : positionCityRecordList) {
-                                        Optional<DictCityDO> optionalDictCity = dictCityRecordList.stream()
-                                                .filter(dictCityRecord ->
-                                                        dictCityRecord.getCode() == positionCityRecord.getCode())
-                                                .findAny();
-                                        if (optionalDictCity.isPresent()) {
-                                            cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
-                                        }
-                                    }
-                                    if (cityNameBuffer.length() > 0) {
-                                        cityNameBuffer.deleteCharAt(cityNameBuffer.length() - 1);
-                                        match.setCity(cityNameBuffer.toString());
-                                    }
-                                }
-                                logger.info("fetchPositionMatchByUserId match:{}",match);
-                                list.add(match);
                             }
                         }
+                        /** 职位城市关系记录 */
+                        List<JobPositionCityDO> positionCityRecordList = positionCityList.stream()
+                                .filter(jobPositionCity ->
+                                        jobPositionCity.getPid() == position.getId().intValue())
+                                .collect(Collectors.toList());
+
+                        if (positionCityRecordList != null && positionCityRecordList.size() > 0) {
+                            StringBuffer cityNameBuffer = new StringBuffer();
+                            for (JobPositionCityDO positionCityRecord : positionCityRecordList) {
+                                Optional<DictCityDO> optionalDictCity = dictCityRecordList.stream()
+                                        .filter(dictCityRecord ->
+                                                dictCityRecord.getCode() == positionCityRecord.getCode())
+                                        .findAny();
+                                if (optionalDictCity.isPresent()) {
+                                    cityNameBuffer.append(optionalDictCity.get().getName()).append(",");
+                                }
+                            }
+                            if (cityNameBuffer.length() > 0) {
+                                cityNameBuffer.deleteCharAt(cityNameBuffer.length() - 1);
+                                match.setCity(cityNameBuffer.toString());
+                            }
+                        }
+                        list.add(match);
                     }
                 }
             }
@@ -526,6 +517,21 @@ public class ReferralPositionService {
             return new ArrayList<>();
         }
         return list;
+    }
+
+    private List<Integer> fetchMatchPositionIds(Map<String, Object> params) throws ConnectException {
+        String result = HttpClient.sendPost(env.getProperty("ai.position.match.url"), JSON.toJSONString(params));
+        if (StringUtils.isNotNullOrEmpty(result)) {
+            Map<String, Object> map = JSON.parseObject(result, Map.class);
+            logger.info("fetchPositionMatchByUserId result:{}", result);
+            if (map.get("pids") != null) {
+                JSONArray pids = (JSONArray) map.get("pids");
+                logger.info("fetchPositionMatchByUserId pids:{}", pids);
+                List<Integer> pidList = pids.toJavaList(Integer.class);
+                return pidList;
+            }
+        }
+        return new ArrayList<>();
     }
 
     private void copyPosition(JobPosition position, ReferralPositionMatchInfo match){

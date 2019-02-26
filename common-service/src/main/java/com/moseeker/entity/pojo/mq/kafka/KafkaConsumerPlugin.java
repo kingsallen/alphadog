@@ -1,13 +1,12 @@
-package com.moseeker.useraccounts.kafka;
+package com.moseeker.entity.pojo.mq.kafka;
 
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author cjm
