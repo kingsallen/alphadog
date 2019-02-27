@@ -153,7 +153,7 @@ public class ReferralPositionController {
             if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
                 queryMapString.put("page_from",page_num);
             } else {
-                queryMapString.put("page_from","0");
+                queryMapString.put("page_from","1");
             }
 
             //只看内推职位固定传is_referral=1
@@ -181,7 +181,7 @@ public class ReferralPositionController {
      */
     @RequestMapping(value = "/v1/referral/hr/position/list", method = RequestMethod.GET)
     @ResponseBody
-git     public String hrPositionList(HttpServletRequest request, HttpServletResponse response) {
+    public String hrPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
 
@@ -195,7 +195,7 @@ git     public String hrPositionList(HttpServletRequest request, HttpServletResp
             if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
                 queryMapString.put("page_from",page_num);
             }else{
-                queryMapString.put("page_from","0");
+                queryMapString.put("page_from","1");
             }
 
             //该接口给flag默认值0
