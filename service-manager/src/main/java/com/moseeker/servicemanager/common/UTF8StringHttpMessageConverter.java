@@ -58,7 +58,6 @@ public class UTF8StringHttpMessageConverter extends AbstractHttpMessageConverter
 	protected List<Charset> getAcceptedCharsets() {
         return this.availableCharsets;
     }
-
 	private Charset getContentTypeCharset(MediaType contentType) {
         if (contentType != null && contentType.getCharSet() != null) {
             return contentType.getCharSet();
