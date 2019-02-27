@@ -2911,10 +2911,10 @@ public class PositionService {
         } else {
             throw new Exception("公司 id 未提供!");
         }
-
-        query.setPage_from(Integer.valueOf(map.getOrDefault("page_from", "0")));
-        query.setPage_size(Integer.valueOf(map.getOrDefault("page_size", "10")));
-
+        int pageNum=Integer.valueOf(map.getOrDefault("page_from", "0"));
+        int pageSize=Integer.valueOf(map.getOrDefault("page_size", "10"));
+        query.setPage_from((pageNum-1)*pageSize);
+        query.setPage_size(pageSize);
         query.setUser_id(Integer.valueOf( map.getOrDefault("user_id", "0")));
         query.setKeywords(StringUtils.filterStringForSearch(map.getOrDefault("keyWord", "")));
         query.setCities((String) map.getOrDefault("cities", ""));
