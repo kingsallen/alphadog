@@ -404,7 +404,7 @@ public class SearchengineService {
             ((BoolQueryBuilder) query).must(custom_filter);
         }
         if(!StringUtils.isEmpty(is_reference)){
-            QueryBuilder custom_filter = QueryBuilders.termQuery("is_reference", is_reference);
+            QueryBuilder custom_filter = QueryBuilders.termQuery("is_referral", is_reference);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
         return query;
