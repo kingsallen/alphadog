@@ -195,7 +195,7 @@ public class ReferralPositionController {
             if(StringUtils.isNotNullOrEmpty(queryMapString.get("page_num"))) {
                 queryMapString.put("page_from",page_num);
             }else{
-                queryMapString.put("page_from","1");
+                queryMapString.put("page_from","0");
             }
 
             //该接口给flag默认值0
