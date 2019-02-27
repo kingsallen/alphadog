@@ -181,7 +181,7 @@ public class ReferralPositionController {
      */
     @RequestMapping(value = "/v1/referral/hr/position/list", method = RequestMethod.GET)
     @ResponseBody
-    public String hrPositionList(HttpServletRequest request, HttpServletResponse response) {
+git     public String hrPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
 
