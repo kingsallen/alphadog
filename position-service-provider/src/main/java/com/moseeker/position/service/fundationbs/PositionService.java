@@ -2917,8 +2917,9 @@ public class PositionService {
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
                 long totalNum = jobj.getLong("total");
-                List<Integer> jdIdList  =(List<Integer>)jobj.get("jd_id_list");
-                dataList = this.getWxPosition(jdIdList,(int)totalNum);
+                List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
+                List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);
+                dataList = this.getWxPosition(idList,(int)totalNum);
             } else {
                 return new ArrayList<>();
             }
