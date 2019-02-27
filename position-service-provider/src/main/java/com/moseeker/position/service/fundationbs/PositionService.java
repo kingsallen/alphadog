@@ -2916,7 +2916,7 @@ public class PositionService {
             Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
-                long totalNum = jobj.getLong("totalNum");
+                long totalNum = jobj.getLong("total");
                 List<Integer> jdIdList  =(List<Integer>)jobj.get("jd_id_list");
                 dataList = this.getWxPosition(jdIdList,(int)totalNum);
             } else {
