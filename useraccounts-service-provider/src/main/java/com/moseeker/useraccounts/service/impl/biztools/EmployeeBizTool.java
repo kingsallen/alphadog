@@ -118,6 +118,7 @@ public class EmployeeBizTool {
                 }
             }
         }
+        result.setDepth(1);
         for(UserDepthVO depth : depthList){
             if(depth.getUserId() == userId) {
                 result.setDepth(depth.getDepth());
