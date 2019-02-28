@@ -723,6 +723,7 @@ public class ReferralEntity {
                     }
                 }
             }
+            logger.info("fetchEmployeeRadarData positionId:{}, userIdList:{}", positionIdList, userIdList);
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
                     () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
@@ -730,6 +731,7 @@ public class ReferralEntity {
             Map<Integer, Integer> root2Map = new HashMap<>();
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = shareChainListFuture.get();
+            logger.info("fetchEmployeeRadarData shareChainList:{}", shareChainList);
             List<Integer> shareChainIdList = new ArrayList<>();
             Map<Integer, Integer> shareChainIdMap = new HashMap<>();
             Map<Integer, Byte> userFromMap = new HashMap<>();
@@ -750,6 +752,7 @@ public class ReferralEntity {
                     }
                 });
             }
+            logger.info("fetchEmployeeRadarData timeMap:{}", timeMap);
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
             if(!StringUtils.isEmptyList(recommendList)){
                 recommendList.forEach( recommend -> {
@@ -759,6 +762,7 @@ public class ReferralEntity {
                         }
                 );
             }
+            logger.info("fetchEmployeeRadarData timeMap:{}", timeMap);
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
             if (!StringUtils.isEmptyList(wxUserListFuture.get())){
