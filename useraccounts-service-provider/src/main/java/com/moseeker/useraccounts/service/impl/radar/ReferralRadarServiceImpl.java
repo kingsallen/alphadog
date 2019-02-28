@@ -908,7 +908,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             needUpdateLog = updateConnectionLogState(radarInfo, connectionLogRecord);
             // 根据指定规则过滤链路
             chainRecords = filterChain(connectionLogRecord.getRootUserId(), radarInfo, chainRecords);
+        }else {
+            if(connectionLogRecord.getState() == 3){
+                connectionLogRecord.setState((byte)0);
+                needUpdateLog = true;
+            }
         }
+
         if(needUpdateLog){
             connectionLogRecord.setUpdateTime(null);
             connectionLogDao.updateRecord(connectionLogRecord);
@@ -981,7 +987,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private boolean updateConnectionLogState(ConnectRadarInfo radarInfo, ReferralConnectionLogRecord connectionLogRecord) {
         boolean needUpdate = false;
-        // 更新degree
+
         if(radarInfo.getNextUserId() == connectionLogRecord.getEndUserId()){
             if(connectionLogRecord.getState() != RadarStateEnum.Finished.getState()){
                 needUpdate = true;
@@ -1131,7 +1137,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         connectionLogRecord.setPositionId(inviteInfo.getPid());
         connectionLogRecord.setEndUserId(inviteInfo.getEndUserId());
         connectionLogRecord.setCompanyId(inviteInfo.getCompanyId());
-        connectionLogRecord.setState((byte)0);
+        // 3是不可用状态，邀请投递时生成，并非用户主动发起连连看
+        connectionLogRecord.setState((byte)3);
         connectionLogRecord = connectionLogDao.insertRecord(connectionLogRecord);
         return connectionLogRecord;
     }
