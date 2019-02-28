@@ -87,6 +87,13 @@ public class DateUtils {
         }
     }
 
+    public static Date minuteTimeToDate(String minuteTime) throws ParseException {
+        synchronized (minuteTimeSDF) {
+            Date date = minuteTimeSDF.parse(minuteTime);
+            return date;
+        }
+    }
+
     public static Date nomalDateToDate(String normalDate) throws ParseException {
         synchronized (normalDateSDF) {
             Date date = normalDateSDF.parse(normalDate);
