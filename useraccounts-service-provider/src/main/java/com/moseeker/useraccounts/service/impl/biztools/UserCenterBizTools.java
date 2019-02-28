@@ -560,8 +560,10 @@ public class UserCenterBizTools {
         }
         List<Integer> presenteeUserIds = recomRecordDOList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
         List<JobApplicationDO> applicationList = applicationEntity.fetchByRecomUserIdAndPosition(positionIdList, presenteeUserIds);
+        logger.info("listCandidateRecomRecords userId:{},positionIdList:{}, employeeUserIdList:{}",userId, positionIdList,employeeUserIdList);
+        logger.info("listCandidateRecomRecords presenteeUserIds:{}",presenteeUserIds);
         List<ReferralSeekRecommendRecord> seekRecommendRecordList = referralEntity.fetchSeekRecommendByPostUserId(userId, positionIdList, presenteeUserIds);
-
+        logger.info("listCandidateRecomRecords seekRecommendRecordList:{}",seekRecommendRecordList);
         List<CandidateRecomRecordRecord> list = new ArrayList<>();
 
         for (CandidateRecomRecordRecord record : recomRecordDOList) {
