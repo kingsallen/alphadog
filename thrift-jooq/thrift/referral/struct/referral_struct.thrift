@@ -1,7 +1,5 @@
 namespace java com.moseeker.thrift.gen.referral.struct
 
-typedef string Timestamp
-
 struct RedPacket {
     1 : optional i32 type,
     2 : optional string name,
@@ -79,4 +77,67 @@ struct ReferralReasonInfo{
     4: optional string recomReasonText
 }
 
+struct ContactPushInfo{
+    1: optional i32 userId;
+    2: optional string username;
+    3: optional i32 positionId;
+    4: optional string positionName,
+    5: optional i32 applicationId
+}
 
+struct ReferralCardInfo{
+    1: optional i32 userId,
+    2: optional i32 companyId,
+    3: optional i32 pageNumber,
+    4: optional i32 pageSize,
+    5: optional i64 timestamp
+}
+
+struct ReferralInviteInfo{
+    1: optional i32 pid,
+    2: optional i32 userId,
+    3: optional i32 endUserId,
+    4: optional i32 companyId,
+    5: optional i64 timestamp
+}
+
+struct ConnectRadarInfo{
+    1: optional i32 chainId,
+    2: optional i32 recomUserId,
+    3: optional i32 nextUserId,
+    4: optional i32 parentId,
+    5: optional i32 companyId
+}
+
+struct CheckEmployeeInfo{
+    1: optional i32 parentChainId,
+    2: optional i32 recomUserId,
+    3: optional i32 presenteeUserId,
+    4: optional i32 pid,
+    5: optional i32 companyId
+}
+struct ReferralProgressInfo{
+    1: optional i32 userId,
+    2: optional i32 companyId,
+    3: optional i32 pageNum,
+    4: optional i32 pageSize,
+    5: optional i32 progress,
+    6: optional string keyword
+}
+
+struct ReferralProgressQueryInfo{
+    1: optional i32 userId,
+    2: optional i32 presenteeUserId,
+    3: optional i32 applyId,
+    4: optional i32 companyId,
+    5: optional i32 progress
+}
+
+struct ReferralStateInfo{
+    1: optional i32 pid,
+    2: optional i32 userId,
+    3: optional i32 endUserId,
+    4: optional i32 companyId,
+    5: optional i64 timestamp,
+    6: optional i32 state
+}

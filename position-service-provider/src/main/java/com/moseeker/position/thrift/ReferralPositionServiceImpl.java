@@ -3,15 +3,22 @@ package com.moseeker.position.thrift;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.util.StringUtils;
+import com.moseeker.position.pojo.ReferralPositionMatchInfo;
 import com.moseeker.position.service.fundationbs.ReferralPositionService;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.position.service.ReferralPositionServices;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionBonusVO;
+import com.moseeker.thrift.gen.position.struct.ReferralPositionMatchDO;
 import com.moseeker.thrift.gen.position.struct.ReferralPositionUpdateDataDO;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,5 +89,20 @@ public class ReferralPositionServiceImpl implements ReferralPositionServices.Ifa
         ReferralPositionBonusVO vo =  referralPositionService.getReferralPositionBonus(positionId);
         return vo;
     }
+
+    @Override
+    public List<ReferralPositionMatchDO> getMatchPositionInfo(int userId, int companyId) throws BIZException, TException {
+        List<ReferralPositionMatchInfo> matchList = referralPositionService.fetchPositionMatchByUserId(companyId, userId);
+        List<ReferralPositionMatchDO> result = new ArrayList<>();
+        if(!StringUtils.isEmptyList(matchList)){
+            result = matchList.stream().map(m -> {
+                ReferralPositionMatchDO match = new ReferralPositionMatchDO();
+                BeanUtils.copyProperties(m, match);
+                return match;
+            }).collect(Collectors.toList());
+        }
+        return result;
+    }
+
 
 }

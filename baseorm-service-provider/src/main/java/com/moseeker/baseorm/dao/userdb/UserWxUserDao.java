@@ -8,10 +8,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.*;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.jooq.impl.TableImpl;
@@ -146,5 +143,12 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
         return create.selectFrom(USER_WX_USER)
                 .where(USER_WX_USER.SYSUSER_ID.in(idList))
                 .fetch();
+    }
+
+    public List<UserWxUserDO> getWXUsersByUserIds(Set<Integer> idSet, Integer wechatId) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.SYSUSER_ID.in(idSet))
+                .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
+                .fetchInto(UserWxUserDO.class);
     }
 }

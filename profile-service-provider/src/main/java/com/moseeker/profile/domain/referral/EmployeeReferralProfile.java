@@ -138,7 +138,7 @@ public abstract class EmployeeReferralProfile {
             int applicationId = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(),
                     profileNotice.getName(), origin, employeeDO.getSysuserId(), referralResultVO);
             referralEntity.logReferralOperation(jobPositionDO.getId(), applicationId,  profileNotice.getReferralReasons(),
-                    profileNotice.getMobile(), employeeDO, userId, profileNotice.getRelationship(), profileNotice.getReferralText());
+                    profileNotice.getMobile(), employeeDO.getSysuserId(), userId, profileNotice.getRelationship(), profileNotice.getReferralText());
             addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), profileNotice.getReferralType());
             referralResultVO.setId(referralId);
             resultVOS.add(referralResultVO);
@@ -202,9 +202,8 @@ public abstract class EmployeeReferralProfile {
             }
 
             com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
-                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
-
+//            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
+//                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;

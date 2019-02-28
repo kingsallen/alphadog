@@ -21,6 +21,12 @@ import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.constant.AwardEvent;
 import com.moseeker.useraccounts.service.impl.UserEmployeeServiceImpl;
 import com.moseeker.useraccounts.service.impl.pojos.ContributionDetail;
+import com.moseeker.useraccounts.service.impl.pojos.EmployeeForwardViewVO;
+import com.moseeker.useraccounts.service.impl.pojos.RadarInfoVO;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.StringUtils;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -28,10 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by eddie on 2017/3/9.
@@ -187,6 +189,72 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
         }
+    }
+
+    @Override
+    public PositionReferralInfo getPositionReferralInfo(int userId, int positionId) throws BIZException, TException {
+        try {
+            com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
+            PositionReferralInfo referralInfo = new PositionReferralInfo();
+            BeanUtils.copyProperties(info, referralInfo);
+            return referralInfo;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+    @Override
+    public RadarInfo fetchRadarIndex(int userId, int companyId, int page, int size) throws BIZException, TException {
+        RadarInfoVO infoVO = employeeService.fetchRadarIndex(companyId, userId, page, size);
+        return copyRadarInfoVO(infoVO);
+    }
+
+    @Override
+    public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
+                                                            String order, int page, int size) throws BIZException, TException {
+        EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(companyId,userId, positionTitle, order, page, size);
+        EmployeeForwardViewPage result = new EmployeeForwardViewPage();
+        result.setPage(viewVO.getPage());
+        result.setTotalCount(viewVO.getTotalCount());
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(viewVO.getUserList())){
+            List<EmployeeForwardView> forwardViews = new ArrayList<>();
+            viewVO.getUserList().forEach(view -> {
+                EmployeeForwardView forwardView = new EmployeeForwardView();
+                BeanUtils.copyProperties(view, forwardView);
+                if(!com.moseeker.common.util.StringUtils.isEmptyList(view.getChain())){
+                    List<Connection> connectionList = new ArrayList<>();
+                    view.getChain().forEach(chain -> {
+                        Connection connection = new Connection();
+                        BeanUtils.copyProperties(chain, connection);
+                        connectionList.add(connection);
+                    });
+                    forwardView.setChain(connectionList);
+                }
+                forwardViews.add(forwardView);
+            });
+            result.setUserList(forwardViews);
+        }
+        return result;
+    }
+
+    @Override
+    public RadarInfo fetchEmployeeSeekRecommendPage(int userId, int companyId, int page, int size) throws BIZException, TException {
+        RadarInfoVO infoVO = employeeService.fetchEmployeeSeekRecommend(companyId, userId, page, size);
+        return copyRadarInfoVO(infoVO);
+    }
+
+    private RadarInfo copyRadarInfoVO(RadarInfoVO infoVO){
+        RadarInfo radarInfo = new RadarInfo();
+        if(!com.moseeker.common.util.StringUtils.isEmptyList(infoVO.getUserList())){
+            radarInfo.setUserList( infoVO.getUserList().stream().map(m ->{
+                RadarUserInfo userInfo = new RadarUserInfo();
+                BeanUtils.copyProperties(m, userInfo);
+                return userInfo;
+            }).collect(Collectors.toList()));
+            radarInfo.setPage(infoVO.getPage());
+            radarInfo.setTotalCount(infoVO.getTotalCount());
+        }
+        return radarInfo;
     }
 
     @Override

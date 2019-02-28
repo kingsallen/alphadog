@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Candidatedb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1813531166;
+    private static final long serialVersionUID = -80479280;
 
     /**
      * The reference instance of <code>candidatedb</code>
@@ -98,6 +99,11 @@ public class Candidatedb extends SchemaImpl {
     public final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
 
     /**
+     * 十分钟消息模板
+     */
+    public final CandidateTemplateShareChain CANDIDATE_TEMPLATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN;
+
+    /**
      * VIEW
      */
     public final CandidateVJobPositionRecom CANDIDATE_V_JOB_POSITION_RECOM = com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM;
@@ -137,6 +143,7 @@ public class Candidatedb extends SchemaImpl {
             CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417,
             CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418,
             CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION,
+            CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN,
             CandidateVJobPositionRecom.CANDIDATE_V_JOB_POSITION_RECOM);
     }
 }

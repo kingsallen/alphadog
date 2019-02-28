@@ -127,4 +127,25 @@ public class CandidateShareChainDao extends DAOImpl<CandidateShareChainRecord, c
     public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateShareChain> fetchByCreateTime(Timestamp... values) {
         return fetch(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CREATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateShareChain> fetchByType(Byte... values) {
+        return fetch(CandidateShareChain.CANDIDATE_SHARE_CHAIN.TYPE, values);
+    }
+
+    /**
+     * Fetch records that have <code>forward_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateShareChain> fetchByForwardId(String... values) {
+        return fetch(CandidateShareChain.CANDIDATE_SHARE_CHAIN.FORWARD_ID, values);
+    }
+
+    /**
+     * Fetch records that have <code>click_from IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.candidatedb.tables.pojos.CandidateShareChain> fetchByClickFrom(Integer... values) {
+        return fetch(CandidateShareChain.CANDIDATE_SHARE_CHAIN.CLICK_FROM, values);
+    }
 }

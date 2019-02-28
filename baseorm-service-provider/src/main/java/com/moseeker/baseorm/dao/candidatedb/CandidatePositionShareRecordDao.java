@@ -2,9 +2,12 @@ package com.moseeker.baseorm.dao.candidatedb;
 
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord;
+import static com.moseeker.baseorm.db.candidatedb.tables.CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidatePositionShareRecordDO;
+import java.util.List;
+import java.util.Set;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +19,7 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
 
 
     public CandidatePositionShareRecordDao() {
-        super(CandidatePositionShareRecord.CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecordDO.class);
+        super(CANDIDATE_POSITION_SHARE_RECORD, CandidatePositionShareRecordDO.class);
     }
 
     public CandidatePositionShareRecordDao(TableImpl<CandidatePositionShareRecordRecord> table, Class<CandidatePositionShareRecordDO> candidatePositionShareRecordDOClass) {
@@ -28,4 +31,5 @@ public class CandidatePositionShareRecordDao extends JooqCrudImpl<CandidatePosit
         p.setId(id);
         this.deleteRecord(p);
     }
+
 }
