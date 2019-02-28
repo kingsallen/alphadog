@@ -728,30 +728,30 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return userDepthVOS;
     }
 
-    private List<CandidateTemplateShareChainDO> getOneDegreeShareChains(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
-        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
-        List<CandidateTemplateShareChainDO> oneDegreeShareChains = new ArrayList<>();
-        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
-            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
-            boolean flag = true;
-            for(int j=0;j<shareChainDOS.size()&&flag;j++){
-                CandidateTemplateShareChainDO shareChainDO = shareChainDOS.get(j);
-                if(shareChainDO.getPositionId() == candidatePositionDO.getPositionId() && shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()){
-                    flag = false;
-                    // 找出一度的sharechainId
-                    int parentId = shareChainDO.getParentId();
-                    CandidateTemplateShareChainDO oneDegreeShareChainDO;
-                    if(parentId == 0){
-                        oneDegreeShareChainDO = shareChainDO;
-                    }else {
-                        oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(parentId, shareChainDOS);
-                    }
-                    oneDegreeShareChains.add(oneDegreeShareChainDO);
-                }
-            }
-        }
-        return oneDegreeShareChains;
-    }
+//    private List<CandidateTemplateShareChainDO> getOneDegreeShareChains(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
+//        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
+//        List<CandidateTemplateShareChainDO> oneDegreeShareChains = new ArrayList<>();
+//        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
+//            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
+//            boolean flag = true;
+//            for(int j=0;j<shareChainDOS.size()&&flag;j++){
+//                CandidateTemplateShareChainDO shareChainDO = shareChainDOS.get(j);
+//                if(shareChainDO.getPositionId() == candidatePositionDO.getPositionId() && shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()){
+//                    flag = false;
+//                    // 找出一度的sharechainId
+//                    int parentId = shareChainDO.getParentId();
+//                    CandidateTemplateShareChainDO oneDegreeShareChainDO;
+//                    if(parentId == 0){
+//                        oneDegreeShareChainDO = shareChainDO;
+//                    }else {
+//                        oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(parentId, shareChainDOS);
+//                    }
+//                    oneDegreeShareChains.add(oneDegreeShareChainDO);
+//                }
+//            }
+//        }
+//        return oneDegreeShareChains;
+//    }
 
 
     private Map<Integer, UserUserRecord> getUserMap(Set<Integer> applierUserIds) {
