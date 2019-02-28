@@ -138,8 +138,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private ReferralSeekRecommendDao seekRecommendDao;
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
-    @Autowired
-    private CandidatePositionShareRecordDao positionShareRecordDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 

@@ -229,7 +229,19 @@ public class ReferralTemplateSender {
                 }
             }
         }
-        return returnShareChains;
+
+        Set<Integer> chainIds = currentShareChainDOS.stream().map(CandidateShareChainDO::getId).collect(Collectors.toSet());
+
+        List<CandidateShareChainDO> tempShareChains = new ArrayList<>();
+
+        for(CandidateShareChainDO candidateShareChainDO : returnShareChains){
+            if(chainIds.contains(candidateShareChainDO.getId())){
+                tempShareChains.add(candidateShareChainDO);
+                chainIds.remove(candidateShareChainDO.getId());
+            }
+        }
+
+        return tempShareChains;
     }
 
     private CandidateTemplateShareChainDO initTemplateShareChain(long timestamp, CandidateShareChainDO candidateShareChainDO, List<Integer> factShareChainIds) {
