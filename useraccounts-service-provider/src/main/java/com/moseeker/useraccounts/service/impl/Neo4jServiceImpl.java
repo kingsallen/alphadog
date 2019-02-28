@@ -214,16 +214,21 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
-        UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId);
+        List<ConfigOmsSwitchManagementDO>  managementDOList =  managementDao.fetchRadarStatus(7, 1);
+        if(StringUtils.isEmptyList(managementDOList)){
+            return new ArrayList<>();
+        }
+        Set<Integer> companyIdSet = managementDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toSet());
+        UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId, companyIdSet);
+        if(employee == null ){
+            return new ArrayList<>();
+        }
         List<Integer> list = new ArrayList<>();
         list.add(employee.getCompanyId());
         List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
         List<Integer> positionIds = positionEntity.getPositionIdListByCompanyIdListAndStatus(companyIds);
         List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId, positionIds);
         if(StringUtils.isEmptyList(peresentUserIdList)){
-            return new ArrayList<>();
-        }
-        if(employee == null ){
             return new ArrayList<>();
         }
         try {
