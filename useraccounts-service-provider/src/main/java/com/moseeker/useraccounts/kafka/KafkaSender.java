@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBindDto;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaSwitchDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,8 @@ public class KafkaSender {
     private final static String EMPLOYEE_CERTIFICATION = "employee_certification";
 
     private final static String CONNECTION_CHANGE = "radar_link_game";
+
+    private final static String RADAR_BUTTON_STATUS = "button_status";
 
     public void sendMessage(String topic, String data){
         logger.info("topic:{}, data:{}", topic, data);
@@ -98,5 +101,15 @@ public class KafkaSender {
         sendMessage(Constant.KAFKA_TOPIC_EMPLOYEE_CERTIFICATION, JSON.toJSONString(dto));
     }
 
-
+    public void sendRadarSwitchToKafka(byte switchState, int companyId) {
+        KafkaSwitchDto switchDto = new KafkaSwitchDto();
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = sdf.format(new Date(current));
+        switchDto.setCompany_id(companyId);
+        switchDto.setEvent(RADAR_BUTTON_STATUS);
+        switchDto.setEvent_time(currentTime);
+        switchDto.setStatus(switchState);
+        sendMessage(Constant.KAFKA_TOPIC_RADAR_STATUS, JSON.toJSONString(switchDto));
+    }
 }
