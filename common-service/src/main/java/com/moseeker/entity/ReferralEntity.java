@@ -764,9 +764,11 @@ public class ReferralEntity {
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
             if(!StringUtils.isEmptyList(recommendList)){
                 recommendList.forEach( recommend -> {
-                            recommendUserSet.add(recommend.getPresenteeId());
-                            recommendMap.put(recommend.getPresenteeId(), recommend.getId());
-                            timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
+                            if (!recommendUserSet.contains(recommend.getPresenteeId())) {
+                                recommendUserSet.add(recommend.getPresenteeId());
+                                recommendMap.put(recommend.getPresenteeId(), recommend.getId());
+                                timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
+                            }
                         }
                 );
             }
