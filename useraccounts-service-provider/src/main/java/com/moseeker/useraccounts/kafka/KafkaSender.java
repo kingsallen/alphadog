@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
 
+import com.moseeker.useraccounts.thrift.EmployeeServiceImpl;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,12 +19,15 @@ import java.util.stream.Collectors;
 
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBindDto;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaSwitchDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KafkaSender {
+    Logger logger = LoggerFactory.getLogger(KafkaSender.class);
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
@@ -40,6 +44,7 @@ public class KafkaSender {
     private final static String RADAR_BUTTON_STATUS = "button_status";
 
     public void sendMessage(String topic, String data){
+        logger.info("kafka topic:{},data:{}",topic, data);
         kafkaTemplate.send(topic, data);
     }
 
