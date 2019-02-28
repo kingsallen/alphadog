@@ -1181,6 +1181,25 @@ public class EmployeeEntity {
         }
     }
 
+    /**
+     * 根据用户编号查找用户的员工信息
+     *
+     * @param userId 用户编号
+     * @return 员工信息
+     */
+    public UserEmployeeDO getActiveEmployeeDOByUserId(int userId,Set<Integer> companyIds) {
+        if (userId > 0) {
+            // 首先通过CompanyId 查询到该公司集团下所有的公司ID
+            Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
+            queryBuilder.where(USER_EMPLOYEE.SYSUSER_ID.getName(), userId)
+                    .and(USER_EMPLOYEE.ACTIVATION.getName(), EmployeeActiveState.Actived.getState())
+                    .and(USER_EMPLOYEE.DISABLE.getName(), AbleFlag.OLDENABLE.getValue())
+                    .and(USER_EMPLOYEE.COMPANY_ID.getName(), companyIds);
+            return employeeDao.getData(queryBuilder.buildQuery());
+        } else {
+            return null;
+        }
+    }
     public void followWechat(int userId, int wechatId, long subscribeTime) throws EmployeeException {
         if(userId <= 0 || wechatId <= 0){
             throw EmployeeException.NODATA_EXCEPTION;
