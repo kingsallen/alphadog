@@ -737,18 +737,21 @@ public class ReferralEntity {
             Map<Integer, Byte> userFromMap = new HashMap<>();
             if(!StringUtils.isEmptyList(shareChainList)) {
                 shareChainList.forEach(share -> {
-                    if (positionIdMap.get(share.getPresenteeUserId()).intValue() == share.getPositionId()
-                            && root2Map.get(share.getPresenteeUserId()) == null) {
-                        root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
-                        root2Set.add(share.root2RecomUserId);
-                        try {
-                            timeMap.put(share.getPresenteeUserId(), new Timestamp(DateUtils.shortTimeToDate(share.getClickTime()).getTime()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    for(ReferralEmployeeNetworkResourcesRecord record : records) {
+                        if (record.getPositionId().intValue() == share.getPositionId()
+                                && record.getPresenteeUserId() == share.getPresenteeUserId()
+                                && root2Map.get(share.getPresenteeUserId()) == null) {
+                            root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
+                            root2Set.add(share.root2RecomUserId);
+                            try {
+                                timeMap.put(share.getPresenteeUserId(), new Timestamp(DateUtils.shortTimeToDate(share.getClickTime()).getTime()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
+                            shareChainIdList.add(share.getId());
+                            userFromMap.put(share.getPresenteeUserId(), share.getClickFrom());
                         }
-                        shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
-                        shareChainIdList.add(share.getId());
-                        userFromMap.put(share.getPresenteeUserId(), share.getClickFrom());
                     }
                 });
             }
