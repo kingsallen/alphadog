@@ -579,7 +579,7 @@ public class UserCenterBizTools {
             if(!StringUtils.isEmptyList(seekRecommendRecordList)){
                 for(ReferralSeekRecommendRecord recommend : seekRecommendRecordList){
                     if(recommend.getPresenteeId().intValue() == record.getPresenteeUserId().intValue() &&
-                            recommend.getPostUserId().intValue() == record.getPresenteeUserId().intValue()){
+                            recommend.getPositionId().intValue() == record.getPositionId().intValue()){
                         status = true;
                         break;
                     }
