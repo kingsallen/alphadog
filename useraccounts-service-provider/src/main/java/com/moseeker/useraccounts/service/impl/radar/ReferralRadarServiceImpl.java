@@ -154,6 +154,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         long start = System.currentTimeMillis();
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getUserId(), cardInfo.getTimestamp());
+        logger.info("getRadarCards shareChainDOS:{}",shareChainDOS);
         if(shareChainDOS.size() == 0){
             throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
         }
@@ -776,6 +777,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> handledRecords) {
         List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
+        logger.info("getRadarCards candidatePositionDOS:{}",candidatePositionDOS);
+        logger.info("getRadarCards handledRecords:{}",handledRecords);
         for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
             boolean flag = true;
             for(int i=0;i<handledRecords.size() && flag;i++){
@@ -1200,6 +1203,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidateTemplateShareChainDO> completeRecords = shareChainDOS.stream().filter(record -> (record.getStatus() != 0)).collect(Collectors.toList());
         // 过滤由于完整路径copy的status为1的转发链路
         candidatePositionDOS = filterCompleteCandidate(candidatePositionDOS, completeRecords);
+        logger.info("getRadarCards shareChainDOS:{}",handledRecords);
         // 过滤掉已处理过的候选人
         candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
         // 过滤已申请过对应职位的候选人
