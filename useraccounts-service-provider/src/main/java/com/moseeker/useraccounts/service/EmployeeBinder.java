@@ -30,6 +30,7 @@ import com.moseeker.thrift.gen.employee.struct.Result;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
+import java.util.*;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -44,10 +45,6 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
 import static com.moseeker.common.constants.Constant.EMPLOYEE_REGISTER_EXCHNAGE;
@@ -155,9 +152,7 @@ public abstract class EmployeeBinder {
         userEmployee.setWxuserId(wxEntity.getWxuserId(bindingParams.getUserId(), bindingParams.getCompanyId()));
         userEmployee.setAuthMethod((byte)bindingParams.getType().getValue());
         userEmployee.setActivation((byte)0);
-        userEmployee.setSource(bindingParams.getSource());
-        userEmployee.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        userEmployee.setSource(bindingParams.getSource());userEmployee.setBindingTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         userEmployeeDOThreadLocal.set(userEmployee);
         return userEmployee;
     }
@@ -235,6 +230,7 @@ public abstract class EmployeeBinder {
                 if(useremployee.getSource()>0){
                     unActiveEmployee.setSource((byte)useremployee.getSource());
                 }
+                unActiveEmployee.setUpdateTime(new Timestamp(new Date().getTime()));
                 employeeDao.updateRecord(unActiveEmployee);
 
                 if (useremployee.getId() > 0 && useremployee.getId() != unActiveEmployee.getId()) {
