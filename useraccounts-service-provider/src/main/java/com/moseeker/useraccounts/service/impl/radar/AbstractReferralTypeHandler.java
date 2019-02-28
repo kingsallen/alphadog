@@ -59,7 +59,10 @@ public abstract class AbstractReferralTypeHandler {
                 || progress == ReferralProgressEnum.SEEK_APPLY.getProgress()){
             progress = ReferralProgressEnum.APPLYED.getProgress();
         }
-        String username = StringUtils.isNullOrEmpty(applier.getName()) ? applier.getNickname() : applier.getName();
+        String username = "";
+        if(applier != null){
+            username = StringUtils.isNullOrEmpty(applier.getName()) ? applier.getNickname() : applier.getName();
+        }
         card.put("apply_id", jobApplicationDO.getId());
         card.put("datetime", getLastDateTime(jobApplicationDO.getSubmitTime(), hrOperations));
         card.put("progress", progress);
