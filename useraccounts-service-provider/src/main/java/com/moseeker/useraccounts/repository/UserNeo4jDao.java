@@ -34,7 +34,7 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
     List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(@Param("userId") int userId, @Param("userIdList") List<Integer> userIdList);
 
     @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} and u2.employee_company <> {employeeCompany} match p =shortestpath((u1)-[*]-(u2)) " +
-                   "where all(x in nodes(p)  where x.user_id={userId} or x.employee_company<>{employeeCompany}) return u2.user_id as userId,length(p) as depth order by depth limit 300")
+                   " return u2.user_id as userId,length(p) as depth order by depth limit 300")
     List<UserDepthVO> fetchEmployeeThreeDepthUser(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
 
     @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} and u2.employee_company <> {employeeCompany} match p =shortestpath((u1)-[*]-(u2)) " +
