@@ -785,11 +785,15 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 CandidateTemplateShareChainDO shareChainDO = handledRecords.get(i);
                 if(candidatePositionDO.getPositionId() == shareChainDO.getPositionId()
                         && candidatePositionDO.getUserId() == shareChainDO.getPresenteeUserId()){
+                    logger.info("getRadarCards flag:{}",candidatePositionDO.getPositionId() == shareChainDO.getPositionId()
+                            && candidatePositionDO.getUserId() == shareChainDO.getPresenteeUserId());
                     flag = false;
                 }
             }
             if(flag){
+                logger.info("getRadarCards flag:{}", flag);
                 filteredCandidateDOs.add(candidatePositionDO);
+                logger.info("getRadarCards filteredCandidateDOs:{}", filteredCandidateDOs);
             }
         }
         return filteredCandidateDOs;
