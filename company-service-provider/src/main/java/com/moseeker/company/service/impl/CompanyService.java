@@ -1374,7 +1374,9 @@ public class CompanyService {
                     companySwitchVO.setId(configOmsSwitchManagementDO.getId());
                     companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
                     AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
-                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                    if(abstractCompanySwitchHandler!=null) {
+                        abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                    }
                     return companySwitchVO;
                 }else{
                     //如果更新失败，抛出异常
@@ -1388,7 +1390,9 @@ public class CompanyService {
         Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagementDO);
         companySwitchVO.setId(id);
         AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
-        abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+        if(abstractCompanySwitchHandler!=null) {
+            abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+        }
         return companySwitchVO;
     }
 
