@@ -2,6 +2,7 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
+import com.moseeker.baseorm.dao.configdb.ConfigOmsSwitchManagementDao;
 import com.moseeker.baseorm.dao.hrdb.HrGroupCompanyRelDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -10,10 +11,12 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.exception.CommonException;
+import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigOmsSwitchManagementDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
@@ -22,10 +25,9 @@ import com.moseeker.useraccounts.repository.ConnectionNeo4jDao;
 import com.moseeker.useraccounts.repository.ForwardNeo4jDao;
 import com.moseeker.useraccounts.repository.UserNeo4jDao;
 import com.moseeker.useraccounts.service.Neo4jService;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +52,9 @@ public class Neo4jServiceImpl implements Neo4jService {
     ConnectionNeo4jDao connNeo4jDao;
 
     @Autowired
+    ConfigOmsSwitchManagementDao managementDao;
+
+    @Autowired
     UserUserDao userUserDao;
 
     @Autowired
@@ -72,6 +77,8 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Autowired
     PositionEntity positionEntity;
+
+    ThreadPool tp =ThreadPool.Instance;
 
 
     @Override
@@ -176,37 +183,55 @@ public class Neo4jServiceImpl implements Neo4jService {
 
     @Override
     public List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(int userId, int companyId) throws CommonException {
+        Future<List<ConfigOmsSwitchManagementDO>>  managementDOListFuture = tp.startTast(
+                ()-> managementDao.fetchRadarStatus(7, 1));
         List<Integer> rootUserList = candidateShareChainDao.fetchRootIdByPresentee(userId);
         if(StringUtils.isEmptyList(rootUserList)){
             return new ArrayList<>();
         }
-        if(companyId >0) {
-            List<UserEmployeeDO> employeeList = employeeDao.getActiveEmployee(rootUserList, companyId);
-            rootUserList.clear();
-            if(StringUtils.isEmptyList(employeeList)){
+        try {
+            if(StringUtils.isEmptyList(managementDOListFuture.get())){
                 return new ArrayList<>();
             }
-            rootUserList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+            Set<Integer> companyIdSet = managementDOListFuture.get().stream().map(m -> m.getCompanyId()).collect(Collectors.toSet());
+            if(companyId >0 && companyIdSet.contains(companyId)) {
+                List<UserEmployeeDO> employeeList = employeeDao.getActiveEmployee(rootUserList, companyId);
+                rootUserList.clear();
+                if(StringUtils.isEmptyList(employeeList)){
+                    return new ArrayList<>();
+                }
+                rootUserList = employeeList.stream().map(m -> m.getSysuserId()).collect(Collectors.toList());
+                List<EmployeeCompanyVO> postUserIdList = userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserList);
+                return postUserIdList;
+            }
+
+        } catch (Exception e) {
+           logger.error(e.getMessage());
+           throw UserAccountException.NEO4J_STATUS_ERROR;
         }
-        List<EmployeeCompanyVO> postUserIdList = userNeo4jDao.fetchUserThreeDepthEmployee(userId, rootUserList);
-        return postUserIdList;
+        return new ArrayList<>();
     }
 
     @Override
     public List<UserDepthVO> fetchEmployeeThreeDepthUser(int userId) throws CommonException {
-        UserEmployeeDO employee = employeeEntity.getActiveEmployeeDOByUserId(userId);
-        if(employee == null){
-            throw UserAccountException.AWARD_EMPLOYEE_ELEGAL;
+        List<ConfigOmsSwitchManagementDO>  managementDOList =  managementDao.fetchRadarStatus(7, 1);
+        logger.info("fetchEmployeeThreeDepthUser managementDOList:{}",managementDOList);
+        if(StringUtils.isEmptyList(managementDOList)){
+            return new ArrayList<>();
+        }
+        Set<Integer> companyIdSet = managementDOList.stream().map(m -> m.getCompanyId()).collect(Collectors.toSet());
+        UserEmployeeRecord employee = employeeDao.getEmployeeByIdAndCompanyIds(userId, companyIdSet);
+        logger.info("fetchEmployeeThreeDepthUser employee:{}",employee);
+        if(employee == null ){
+            return new ArrayList<>();
         }
         List<Integer> list = new ArrayList<>();
         list.add(employee.getCompanyId());
         List<Integer> companyIds = companyRelDao.getGroupCompanyRelDoByCompanyIds(list);
         List<Integer> positionIds = positionEntity.getPositionIdListByCompanyIdListAndStatus(companyIds);
         List<Integer> peresentUserIdList = candidateShareChainDao.fetchRootIdByRootUserId(userId, positionIds);
+        logger.info("fetchEmployeeThreeDepthUser peresentUserIdList:{}",peresentUserIdList);
         if(StringUtils.isEmptyList(peresentUserIdList)){
-            return new ArrayList<>();
-        }
-        if(employee == null ){
             return new ArrayList<>();
         }
         try {
