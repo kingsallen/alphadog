@@ -31,8 +31,6 @@ import org.springframework.stereotype.Component;
 public class KafkaSender {
     Logger logger = LoggerFactory.getLogger(KafkaSender.class);
 
-    Logger logger = LoggerFactory.getLogger(KafkaSender.class);
-
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
