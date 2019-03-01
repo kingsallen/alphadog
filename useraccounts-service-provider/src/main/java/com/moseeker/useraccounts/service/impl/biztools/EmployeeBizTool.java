@@ -70,7 +70,7 @@ public class EmployeeBizTool {
         }
         Byte forward = data.getUserFromMap().get(userId);
         radar.setForwardSourceWx(false);
-        if(forward != null && forward== ForwardSourceType.Groupmessage.getValue()){
+        if(forward != null && forward== ForwardSourceType.Singlemessage.getValue()){
             radar.setForwardSourceWx(true);
         }
         return radar;
@@ -100,7 +100,7 @@ public class EmployeeBizTool {
                     result.setForwardName(root2User!=null?root2User.getName():"");
                     result.setForwardSourceWx(false);
                     if(data.getUserFromMap().get(shareChain.getId()) != null
-                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Groupmessage.getValue()){
+                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Singlemessage.getValue()){
                         result.setForwardSourceWx(true);
                     }
                     result.setInvitationStatus(shareChain.getType()==1?1:0);
@@ -164,7 +164,7 @@ public class EmployeeBizTool {
                     result.setForwardName(root2User!=null?root2User.getName():"");
                     result.setForwardSourceWx(false);
                     if(data.getUserFromMap().get(shareChain.getId()) != null
-                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Groupmessage.getValue()){
+                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Singlemessage.getValue()){
                         result.setForwardSourceWx(true);
                     }
                     break;
