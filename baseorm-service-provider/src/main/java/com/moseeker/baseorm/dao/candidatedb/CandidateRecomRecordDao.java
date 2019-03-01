@@ -82,6 +82,7 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
             List<Integer> idList = result.stream().map(m -> m.value1()).collect(Collectors.toList());
             List<CandidateRecomRecordRecord> list = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
                     .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.in(idList))
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc())
                     .fetchInto(CandidateRecomRecordRecord.class);
             if(!StringUtils.isEmptyList(list)){
                 return list;
