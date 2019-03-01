@@ -22,4 +22,34 @@ service ReferralService {
     //获取内推规则关键信息推荐配置
     i32 fetchKeyInformationStatus(1: i32 companyId) throws (1: common_struct.BIZException e);
 
+    // 10分钟消息模板-人脉筛选，获取卡片数据
+    string getRadarCards(1:referral_struct.ReferralCardInfo cardInfo) throws (1: common_struct.BIZException e);
+    // 10分钟消息模板-邀请投递
+    string inviteApplication(1:referral_struct.ReferralInviteInfo inviteInfo) throws (1: common_struct.BIZException e);
+    // 10分钟消息模板-我不熟悉
+    string ignoreCurrentViewer(1:referral_struct.ReferralInviteInfo ignoreInfo) throws (1: common_struct.BIZException e);
+    // 点击人脉连连看按钮/点击分享的人脉连连看页面
+    string connectRadar(1:referral_struct.ConnectRadarInfo radarInfo) throws (1: common_struct.BIZException e);
+    //候选人求推荐记录保存
+    void addUserSeekRecommend(1:i32 companyId,2:i32 userId, 3:i32 postUserId, 4:i32 positionId, 5: i32 origin)throws (1: common_struct.BIZException e);
+    //员工推荐评价
+    void employeeReferralReason(1: i32 companyId, 2: i32 postUserId, 3:i32 positionId, 4:i32 referralId, 5: list<string> referralReasons, 6: i8 relationship, 7: string recomReasonText) throws (1: common_struct.BIZException e);
+    //候选人联系内推模板消息发送之后员工点击之后展示内容
+    referral_struct.ContactPushInfo fetchSeekRecommend(1:i32 companyId, 2: i32 referralId, 3:i32 postUserId) throws (1: common_struct.BIZException e);
+    // 候选人打开职位连接判断推荐人是否是员工
+    string checkEmployee(1: referral_struct.CheckEmployeeInfo checkInfo) throws (1: common_struct.BIZException e);
+     // 10分钟消息模板-人脉筛选，存储十分钟内的卡片数据
+    void saveTenMinuteCandidateShareChain(1:referral_struct.ReferralCardInfo cardInfo) throws (1: common_struct.BIZException e);
+    // 获取某个候选人的推荐进度
+    string getProgressByOne(1:referral_struct.ReferralProgressQueryInfo progressQuery) throws (1: common_struct.BIZException e);
+    // 根据条件批量查询候选人推荐进度
+    string getProgressBatch(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
+    // 推荐进度搜索框输入名字显示该员工推荐申请中的申请人名字
+    string progressQueryKeyword(1:referral_struct.ReferralProgressInfo progressInfo) throws (1: common_struct.BIZException e);
+    //员工推荐评价
+    void employeeReferralRecomEvaluation(1:i32 companyId, 2: i32 postUserId, 3:i32 positionId, 4:i32 presenteeId, 5: list<string> referralReasons, 6: i8 relationship, 7: string recomReasonText) throws (1: common_struct.BIZException e);
+    // 检查职位详情页点击人是否对该职位发起过帮我内推
+    i32 checkSeekReferral(1: i32 userId, 2:i32 presenteeId, 3:i32 positionId, 4: i32 companyId, 5: i32 parentChainId) throws (1: common_struct.BIZException e);
+    // 邀请投递不可触达候选人时，掉此接口将候选人标记为已处理
+    void handleCandidateState(1:referral_struct.ReferralStateInfo stateInfo) throws (1: common_struct.BIZException e);
 }

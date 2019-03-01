@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserEmployeeUpvote extends TableImpl<UserEmployeeUpvoteRecord> {
 
-    private static final long serialVersionUID = 2137528754;
+    private static final long serialVersionUID = 784844959;
 
     /**
      * The reference instance of <code>userdb.user_employee_upvote</code>
@@ -147,7 +147,7 @@ public class UserEmployeeUpvote extends TableImpl<UserEmployeeUpvoteRecord> {
      */
     @Override
     public List<UniqueKey<UserEmployeeUpvoteRecord>> getKeys() {
-        return Arrays.<UniqueKey<UserEmployeeUpvoteRecord>>asList(Keys.KEY_USER_EMPLOYEE_UPVOTE_PRIMARY);
+        return Arrays.<UniqueKey<UserEmployeeUpvoteRecord>>asList(Keys.KEY_USER_EMPLOYEE_UPVOTE_PRIMARY, Keys.KEY_USER_EMPLOYEE_UPVOTE_USER_EMPLOYEE_UPVOTE_SENDER_RECEIVER);
     }
 
     /**

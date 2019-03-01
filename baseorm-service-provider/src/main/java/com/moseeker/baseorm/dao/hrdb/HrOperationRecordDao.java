@@ -3,20 +3,17 @@ package com.moseeker.baseorm.dao.hrdb;
 import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.HrOperationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrOperationRecordRecord;
-import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.dao.struct.HistoryOperate;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
+import java.sql.Timestamp;
+import java.util.*;
+
 import org.jooq.Record;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @Repository
 public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOperationRecordRecord> {
@@ -119,4 +116,29 @@ public class HrOperationRecordDao extends JooqCrudImpl<HrOperationRecordDO, HrOp
 		}
 
     }
+
+	public Map<Integer, List<HrOperationRecordRecord>> getHrOperationMapByApplyIds(List<Integer> applyIds) {
+		List<HrOperationRecordRecord> operationRecordS = create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.in(applyIds))
+				.fetchInto(HrOperationRecordRecord.class);
+		Map<Integer, List<HrOperationRecordRecord>> map = new HashMap<>();
+		for(HrOperationRecordRecord hrOperationRecord : operationRecordS){
+			if(map.get(hrOperationRecord.getAppId().intValue()) == null){
+				List<HrOperationRecordRecord> list = new ArrayList<>();
+				list.add(hrOperationRecord);
+				map.put(hrOperationRecord.getAppId().intValue(), list);
+			}else {
+				map.get(hrOperationRecord.getAppId().intValue()).add(hrOperationRecord);
+			}
+		}
+		return map;
+	}
+
+	public List<HrOperationRecordRecord> getHrOperationRecordByAppid(int applyId){
+		return create.selectFrom(HrOperationRecord.HR_OPERATION_RECORD)
+				.where(HrOperationRecord.HR_OPERATION_RECORD.APP_ID.eq((long)applyId))
+				.orderBy(HrOperationRecord.HR_OPERATION_RECORD.OPT_TIME.desc())
+				.fetchInto(HrOperationRecordRecord.class);
+
+	}
 }

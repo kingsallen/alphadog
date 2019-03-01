@@ -248,6 +248,14 @@ public class ResumeDeliveryService {
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
+                //内推推荐评价
+                case 262144:
+                case 524288:{
+                    Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
+                            workExp, lastWorkName);
+                    sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
+                }
+                break;
                 //简历回流
                 default:{
                     sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
@@ -520,7 +528,7 @@ public class ResumeDeliveryService {
                 HrWxTemplateMessageDO templateMessageDOQX = wxTemplateMessageDao.getData(new Query.QueryBuilder().where(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.WECHAT_ID.getName(),
                         qxChatDO.getId()).and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.SYS_TEMPLATE_ID.getName(), Constant.TEMPLATES_NEW_RESUME_TPL)
                         .and(HrWxTemplateMessage.HR_WX_TEMPLATE_MESSAGE.DISABLE.getName(), "0").buildQuery());
-                String link = handlerLink("recom")+ "?wechat_signature="+ qxChatDO.getSignature()+"&from_template_message="+Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL+"&send_time=" + new Date().getTime();;
+                String link = handlerLink("recom")+ "?wechat_signature="+ qxChatDO.getSignature()+"&from_template_message="+Constant.TEMPLATES_SWITCH_NEW_RESUME_TPL+"&send_time=" + new Date().getTime();
                 response = msgHttp.handleRecomTemplate(positionDO, qxChatDO, templateMessageDOQX, userRecomDO, workExp, lastWorkName, qx_userWxDO.getOpenid(), url, link);
             }else {
                 return   ResponseUtils.fail(ConstantErrorCodeMessage.MQ_TEMPLATE_NOTICE_CLOSE);

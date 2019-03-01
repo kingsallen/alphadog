@@ -16,6 +16,6 @@ struct CandidatePositionShareRecordDO {
 	10: optional string updateTime,	//修改时间
 	11: optional double presenteeId,	//被动求职者,浏览者的微信ID，userdb.user_wx_user.id。现在已经废弃，请参考presentee_user_id
 	12: optional double clickFrom,	//来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
-	13: optional i32 presenteeUserId	//userdb.user_user.id 浏览者的C端账号编号
-
+	13: optional i32 presenteeUserId,	//userdb.user_user.id 浏览者的C端账号编号
+    14: optional i32 shareChainId
 }

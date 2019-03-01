@@ -173,4 +173,5 @@ public class CandidateThriftService implements CandidateService.Iface {
     public Response getCandidateRecoms(List<Integer> appIds) throws BIZException, TException {
         return candidate.getCandidateRecoms(appIds);
     }
+
 }
