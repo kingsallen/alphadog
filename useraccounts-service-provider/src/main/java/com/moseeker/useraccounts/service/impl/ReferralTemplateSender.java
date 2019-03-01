@@ -175,7 +175,7 @@ public class ReferralTemplateSender {
         Set<Integer> userIdList = new HashSet<>();
         List<CandidateShareChainDO> list = new ArrayList<>();
         for(CandidateShareChainDO candidateShareChainDO : factShareChainDOS){
-            if(positionIds.contains(candidateShareChainDO.getPositionId())){
+            if(companyPositionIds.contains(candidateShareChainDO.getPositionId())){
                 userIdList.add(candidateShareChainDO.getPresenteeUserId());
                 list.add(candidateShareChainDO);
             }
@@ -188,10 +188,10 @@ public class ReferralTemplateSender {
             templateShareChainDao.addAllData(templateShareChainDOS);
             List<Integer> newPositionIds = new ArrayList<>();
             if(positionIds.size() > 2){
-                newPositionIds.add(positionIds.get(0));
-                newPositionIds.add(positionIds.get(1));
+                newPositionIds.add(companyPositionIds.get(0));
+                newPositionIds.add(companyPositionIds.get(1));
             }else {
-                newPositionIds = positionIds;
+                newPositionIds = companyPositionIds;
             }
             JSONObject request = new JSONObject();
             request.put("pids", JSON.toJSONString(newPositionIds));
