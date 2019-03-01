@@ -2,12 +2,14 @@ package com.moseeker.useraccounts.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateTemplateShareChainDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
 import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.hrdb.HrWxTemplateMessageDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
+import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.logdb.LogWxMessageRecordDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralSeekRecommendDao;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigSysTemplateMessageLibraryRecord;
@@ -93,6 +95,9 @@ public class ReferralTemplateSender {
     @Autowired
     private ReferralSeekRecommendDao seekRecommendDao;
 
+    @Autowired
+    private JobPositionDao positionDao;
+
     ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId){
@@ -165,8 +170,18 @@ public class ReferralTemplateSender {
         Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
+        List<Integer> companyPositionIds = positionDao.listPositionIdFilterCompany(positionIds, cardInfo.getCompanyId());
         userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
-        int visitNum = userIds.size();
+        Set<Integer> userIdList = new HashSet<>();
+        List<CandidateShareChainDO> list = new ArrayList<>();
+        for(CandidateShareChainDO candidateShareChainDO : factShareChainDOS){
+            if(positionIds.contains(candidateShareChainDO.getPositionId())){
+                userIdList.add(candidateShareChainDO.getPresenteeUserId());
+                list.add(candidateShareChainDO);
+            }
+        }
+        factShareChainDOS = list;
+        int visitNum = userIdList.size();
         logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
         if(visitNum > 0){
             UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
@@ -198,7 +213,7 @@ public class ReferralTemplateSender {
             for(int i=0;i<jobApplicationDOS.size()&&flag;i++){
                 JobApplicationDO jobApplicationDO = jobApplicationDOS.get(i);
                 if(candidateShareChainDO.getPositionId() == jobApplicationDO.getPositionId()
-                && candidateShareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
+                        && candidateShareChainDO.getPresenteeUserId() == jobApplicationDO.getApplierId()){
                     flag = false;
                 }
             }
