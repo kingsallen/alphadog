@@ -534,23 +534,6 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         }
         return list;
     }
-
-    public List<Integer> listPositionIdFilterCompany(List<Integer> idList, int companyId) {
-        List<Integer> list = new ArrayList<>();
-        if (!StringUtils.isEmptyList(idList)) {
-            Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
-                    .from(JobPosition.JOB_POSITION)
-                    .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
-                    .and(JobPosition.JOB_POSITION.ID.in(idList))
-                    .fetch();
-            if (result != null && result.size() > 0) {
-                result.forEach(record -> {
-                    list.add(record.value1());
-                });
-            }
-        }
-        return list;
-    }
 	/*
 	 * 根据职位id列表获取职位列表
 	 */

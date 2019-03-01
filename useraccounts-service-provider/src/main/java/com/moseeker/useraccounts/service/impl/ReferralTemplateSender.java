@@ -31,6 +31,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateTemplateShareChai
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxTemplateMessageDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxWechatDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.useraccounts.service.impl.vo.TemplateBaseVO;
@@ -91,9 +92,6 @@ public class ReferralTemplateSender {
 
     @Autowired
     private EmployeeEntity employeeEntity;
-
-    @Autowired
-    private ReferralSeekRecommendDao seekRecommendDao;
 
     @Autowired
     private JobPositionDao positionDao;
@@ -161,6 +159,8 @@ public class ReferralTemplateSender {
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateShareChainDO> factShareChainDOS = shareChainDao.getRadarCards(cardInfo.getUserId(), beforeTenMinite, tenMinite);
+        factShareChainDOS = filterUnSelfCompanyJobShare(cardInfo.getCompanyId(), factShareChainDOS);
+        List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
         List<CandidateShareChainDO> shareChainDOS = getCompleteShareChains(cardInfo.getUserId(), factShareChainDOS);
         List<CandidateTemplateShareChainDO> templateShareChainDOS = new ArrayList<>();
         List<Integer> factShareChainIds = factShareChainDOS.stream().map(CandidateShareChainDO::getId).distinct().collect(Collectors.toList());
@@ -168,30 +168,21 @@ public class ReferralTemplateSender {
         factShareChainDOS.removeIf(record -> record.getType() != 0);
         //
         Set<Integer> userIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
-        List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+
         List<JobApplicationDO> jobApplicationDOS = applicationDao.getApplicationsByApplierAndPosition(positionIds, new ArrayList<>(userIds));
-        List<Integer> companyPositionIds = positionDao.listPositionIdFilterCompany(positionIds, cardInfo.getCompanyId());
+
         userIds = filterAppliedUsers(jobApplicationDOS, factShareChainDOS);
-        Set<Integer> userIdList = new HashSet<>();
-        List<CandidateShareChainDO> list = new ArrayList<>();
-        for(CandidateShareChainDO candidateShareChainDO : factShareChainDOS){
-            if(companyPositionIds.contains(candidateShareChainDO.getPositionId())){
-                userIdList.add(candidateShareChainDO.getPresenteeUserId());
-                list.add(candidateShareChainDO);
-            }
-        }
-        factShareChainDOS = list;
-        int visitNum = userIdList.size();
+        int visitNum = userIds.size();
         logger.info("======sendTenMinuteTemplateIfNecessary, visitNum:{}", visitNum);
         if(visitNum > 0){
             UserEmployeeDO employee = employeeEntity.getCompanyEmployee(cardInfo.getUserId(), cardInfo.getCompanyId());
             templateShareChainDao.addAllData(templateShareChainDOS);
             List<Integer> newPositionIds = new ArrayList<>();
             if(positionIds.size() > 2){
-                newPositionIds.add(companyPositionIds.get(0));
-                newPositionIds.add(companyPositionIds.get(1));
+                newPositionIds.add(positionIds.get(0));
+                newPositionIds.add(positionIds.get(1));
             }else {
-                newPositionIds = companyPositionIds;
+                newPositionIds = positionIds;
             }
             JSONObject request = new JSONObject();
             request.put("pids", JSON.toJSONString(newPositionIds));
@@ -204,6 +195,27 @@ public class ReferralTemplateSender {
                     REFERRAL_RADAR_TEMPLATE, MessageBuilder.withBody(request.toJSONString().getBytes())
                             .build());
         }
+    }
+
+    /**
+     * 过滤非本公司的职位分享点击链路
+     * @param companyId 公司id
+     * @param factShareChainDOS 本次十分钟消息模板中实际链路
+     * @return 过滤非本公司的职位分享点击链路
+     */
+    private List<CandidateShareChainDO> filterUnSelfCompanyJobShare(int companyId, List<CandidateShareChainDO> factShareChainDOS) {
+        Iterator<CandidateShareChainDO> iterator = factShareChainDOS.iterator();
+        List<Integer> positionIds = factShareChainDOS.stream().map(CandidateShareChainDO::getPositionId).distinct().collect(Collectors.toList());
+        List<JobPositionDO> positions = positionDao.getPositionListWithoutStatus(positionIds);
+        positions = positions.stream().filter(record -> record.getCompanyId() == companyId).collect(Collectors.toList());
+        positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());
+        while(iterator.hasNext()){
+            CandidateShareChainDO candidateShareChainDO = iterator.next();
+            if(!positionIds.contains(candidateShareChainDO.getPositionId())){
+                iterator.remove();
+            }
+        }
+        return factShareChainDOS;
     }
 
     private Set<Integer> filterAppliedUsers(List<JobApplicationDO> jobApplicationDOS, List<CandidateShareChainDO> factShareChainDOS) {
