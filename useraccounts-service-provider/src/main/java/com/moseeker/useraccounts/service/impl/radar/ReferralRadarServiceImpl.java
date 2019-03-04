@@ -396,13 +396,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
             return JSON.toJSONString(result);
         }
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(jobPositionDO.getCompanyId());
-        UserWxUserRecord wxUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(recomUserId, hrWxWechatDO.getId());
+        UserUserDO userUserDO = userUserDao.getUser(recomUser.getSysuserId());
         result.put("employee", 1);
         RadarUserInfo userInfo = new RadarUserInfo();
         userInfo.setUid(recomUserId);
         userInfo.setName(recomUser.getCname());
-        userInfo.setAvatar(wxUserRecord.getHeadimgurl());
+        userInfo.setAvatar(userUserDO.getHeadimg());
         result.put("user", userInfo);
         logger.info("checkEmployee:{}", result);
         return JSON.toJSONString(result);
