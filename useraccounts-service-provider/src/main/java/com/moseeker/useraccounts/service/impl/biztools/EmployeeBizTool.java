@@ -71,7 +71,7 @@ public class EmployeeBizTool {
         }
         Byte forward = data.getUserFromMap().get(userId);
         radar.setForwardSourceWx(false);
-        if(forward != null && forward== ForwardSourceType.Groupmessage.getValue()){
+        if(forward != null && forward== ForwardSourceType.Singlemessage.getValue()){
             radar.setForwardSourceWx(true);
         }
         return radar;
@@ -98,10 +98,18 @@ public class EmployeeBizTool {
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
                 if(shareChain.getPositionId() == record.getPositionId().intValue() && shareChain.getPresenteeUserId() == userId){
                     UserUserRecord root2User = data.getRoot2UserMap().get(shareChain.getRoot2RecomUserId());
-                    result.setForwardName(root2User!=null?root2User.getName():"");
+                    String name = "";
+                    if(root2User != null){
+                        if(StringUtils.isNotNullOrEmpty(root2User.getName())){
+                            name = root2User.getName();
+                        }else {
+                            name = root2User.getNickname();
+                        }
+                    }
+                    result.setForwardName(name);
                     result.setForwardSourceWx(false);
                     if(data.getUserFromMap().get(shareChain.getId()) != null
-                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Groupmessage.getValue()){
+                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Singlemessage.getValue()){
                         result.setForwardSourceWx(true);
                     }
                     result.setInvitationStatus(shareChain.getType()==1?1:0);
@@ -119,6 +127,7 @@ public class EmployeeBizTool {
                 }
             }
         }
+        result.setDepth(1);
         for(UserDepthVO depth : depthList){
             if(depth.getUserId() == userId) {
                 result.setDepth(depth.getDepth());
@@ -164,7 +173,7 @@ public class EmployeeBizTool {
                     result.setForwardName(root2User!=null?root2User.getName():"");
                     result.setForwardSourceWx(false);
                     if(data.getUserFromMap().get(shareChain.getId()) != null
-                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Groupmessage.getValue()){
+                            && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Singlemessage.getValue()){
                         result.setForwardSourceWx(true);
                     }
                     break;

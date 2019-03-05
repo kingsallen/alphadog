@@ -70,4 +70,11 @@ public class ConfigOmsSwitchManagementDao extends JooqCrudImpl<ConfigOmsSwitchMa
                         .and(CONFIG_OMS_SWITCH_MANAGEMENT.VERSION.eq(configOmsSwitchManagement.getVersion())))
                 .execute();
     }
+
+    public List<ConfigOmsSwitchManagementDO> fetchRadarStatus(int moduleId, int isValid) {
+        return create.selectFrom(CONFIG_OMS_SWITCH_MANAGEMENT)
+                .where(CONFIG_OMS_SWITCH_MANAGEMENT.IS_VALID.eq((byte)isValid)
+                        .and(CONFIG_OMS_SWITCH_MANAGEMENT.MODULE_NAME.eq(moduleId)))
+                .fetchInto(ConfigOmsSwitchManagementDO.class);
+    }
 }

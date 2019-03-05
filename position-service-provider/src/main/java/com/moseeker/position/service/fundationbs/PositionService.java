@@ -2916,9 +2916,10 @@ public class PositionService {
             Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
-                long totalNum = jobj.getLong("totalNum");
-                List<Integer> jdIdList  =(List<Integer>)jobj.get("jd_id_list");
-                dataList = this.getWxPosition(jdIdList,(int)totalNum);
+                long totalNum = jobj.getLong("total");
+                List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
+                List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);
+                dataList = this.getWxPosition(idList,(int)totalNum);
             } else {
                 return new ArrayList<>();
             }
@@ -2948,9 +2949,10 @@ public class PositionService {
             throw new Exception("公司 id 未提供!");
         }
 
-        query.setPage_from(Integer.valueOf(map.getOrDefault("page_from", "0")));
-        query.setPage_size(Integer.valueOf(map.getOrDefault("page_size", "10")));
-
+        int pageNum=Integer.valueOf(map.getOrDefault("page_from", "0"));
+        int pageSize=Integer.valueOf(map.getOrDefault("page_size", "10"));
+        query.setPage_from((pageNum-1)*pageSize);
+        query.setPage_size(pageSize);
         query.setUser_id(Integer.valueOf( map.getOrDefault("user_id", "0")));
         query.setKeywords(StringUtils.filterStringForSearch(map.getOrDefault("keyWord", "")));
         query.setCities((String) map.getOrDefault("cities", ""));

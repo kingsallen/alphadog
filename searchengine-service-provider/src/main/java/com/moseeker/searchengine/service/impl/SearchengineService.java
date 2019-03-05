@@ -389,10 +389,11 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(child_company_name)) {
-            QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
-            ((BoolQueryBuilder) query).must(child_company_filter);
+            if(!"0".equals(child_company_name)){
+                QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
+                ((BoolQueryBuilder) query).must(child_company_filter);
+            }
         }
-
         if (!StringUtils.isEmpty(custom)) {
             QueryBuilder custom_filter = QueryBuilders.termQuery("search_data.custom", custom);
             ((BoolQueryBuilder) query).must(custom_filter);
@@ -402,7 +403,7 @@ public class SearchengineService {
             ((BoolQueryBuilder) query).must(custom_filter);
         }
         if(!StringUtils.isEmpty(is_reference)){
-            QueryBuilder custom_filter = QueryBuilders.termQuery("is_reference", is_reference);
+            QueryBuilder custom_filter = QueryBuilders.termQuery("is_referral", is_reference);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
         return query;

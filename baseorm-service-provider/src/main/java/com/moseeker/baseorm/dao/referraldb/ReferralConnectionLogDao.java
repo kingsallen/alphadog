@@ -44,6 +44,7 @@ public class ReferralConnectionLogDao {
                 .where(REFERRAL_CONNECTION_LOG.POSITION_ID.in(positionIds))
                 .and(REFERRAL_CONNECTION_LOG.ROOT_USER_ID.eq(userId))
                 .and(REFERRAL_CONNECTION_LOG.END_USER_ID.in(endUserIds))
+                .and(REFERRAL_CONNECTION_LOG.STATE.ne((byte)3))
                 .fetch();
     }
 

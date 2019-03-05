@@ -6,14 +6,9 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.position.pojo.KafkaBindDto;
 import com.moseeker.position.pojo.PositionStatus;
-import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
-import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +27,6 @@ public class KafkaSender {
     private JobPositionDao positionDao;
 
     private final static String SOCIAL_GRAPH_CHANGE = "position_status";
-
-    private final static String EMPLOYEE_CERTIFICATION = "employee_certification";
-
-    private final static String CONNECTION_CHANGE = "radar_link_game";
 
     public void sendMessage(String topic, String data){
         logger.info("kafkaMessage date:{}",data);

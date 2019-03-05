@@ -435,12 +435,12 @@ public class TemplateMsgHttp {
         colMap.put("keyword2", keywords2);
 
         MessageTplDataCol keywords3 = new MessageTplDataCol();
-        keywords3.setColor("#173177");
+        keywords3.setColor("#171717");
         keywords3.setValue(String.valueOf(user.getMobile()));
         colMap.put("keyword3", keywords3);
 
         MessageTplDataCol remarkJson = new MessageTplDataCol();
-        remarkJson.setColor("#173177");
+        remarkJson.setColor("#171717");
         remarkJson.setValue("求推荐时间："+time);
         colMap.put("remark", remarkJson);
 

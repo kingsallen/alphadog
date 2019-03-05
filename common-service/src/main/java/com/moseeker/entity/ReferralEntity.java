@@ -23,7 +23,6 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
@@ -40,8 +39,6 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
@@ -53,34 +50,12 @@ import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.entity.pojos.*;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
-import com.moseeker.entity.pojos.BonusData;
-import com.moseeker.entity.pojos.HBData;
-import com.moseeker.entity.pojos.RecommendHBData;
-import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import com.moseeker.thrift.gen.neo4j.struct.UserDepth;
-import com.sun.org.apache.regexp.internal.RE;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -753,6 +728,7 @@ public class ReferralEntity {
                     }
                 }
             }
+            logger.info("fetchEmployeeRadarData positionId:{}, userIdList:{}", positionIdList, userIdList);
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
                     () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
@@ -760,35 +736,43 @@ public class ReferralEntity {
             Map<Integer, Integer> root2Map = new HashMap<>();
             Set<Integer> root2Set = new HashSet<>();
             List<CandidateShareChainDO> shareChainList = shareChainListFuture.get();
+            logger.info("fetchEmployeeRadarData shareChainList:{}", shareChainList);
             List<Integer> shareChainIdList = new ArrayList<>();
             Map<Integer, Integer> shareChainIdMap = new HashMap<>();
             Map<Integer, Byte> userFromMap = new HashMap<>();
             if(!StringUtils.isEmptyList(shareChainList)) {
                 shareChainList.forEach(share -> {
-                    if (positionIdMap.get(share.getPresenteeUserId()).intValue() == share.getPositionId()
-                            && root2Map.get(share.getPresenteeUserId()) == null) {
-                        root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
-                        root2Set.add(share.root2RecomUserId);
-                        try {
-                            timeMap.put(share.getPresenteeUserId(), new Timestamp(DateUtils.shortTimeToDate(share.getClickTime()).getTime()));
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                    for(ReferralEmployeeNetworkResourcesRecord record : records) {
+                        if (record.getPositionId().intValue() == share.getPositionId()
+                                && record.getPresenteeUserId() == share.getPresenteeUserId()
+                                && root2Map.get(share.getPresenteeUserId()) == null) {
+                            root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
+                            root2Set.add(share.root2RecomUserId);
+                            try {
+                                timeMap.put(share.getPresenteeUserId(), new Timestamp(DateUtils.shortTimeToDate(share.getClickTime()).getTime()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
+                            shareChainIdList.add(share.getId());
+                            userFromMap.put(share.getPresenteeUserId(), share.getClickFrom());
                         }
-                        shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
-                        shareChainIdList.add(share.getId());
-                        userFromMap.put(share.getPresenteeUserId(), share.getClickFrom());
                     }
                 });
             }
+            logger.info("fetchEmployeeRadarData timeMap:{}", timeMap);
             List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
             if(!StringUtils.isEmptyList(recommendList)){
                 recommendList.forEach( recommend -> {
-                            recommendUserSet.add(recommend.getPresenteeId());
-                            recommendMap.put(recommend.getPresenteeId(), recommend.getId());
-                            timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
+                            if (!recommendUserSet.contains(recommend.getPresenteeId())) {
+                                recommendUserSet.add(recommend.getPresenteeId());
+                                recommendMap.put(recommend.getPresenteeId(), recommend.getId());
+                                timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
+                            }
                         }
                 );
             }
+            logger.info("fetchEmployeeRadarData timeMap:{}", timeMap);
             Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
                     () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
             if (!StringUtils.isEmptyList(wxUserListFuture.get())){

@@ -68,6 +68,16 @@ public class UserEmployeeDao extends JooqCrudImpl<UserEmployeeDO, UserEmployeeRe
         return list;
     }
 
+    public UserEmployeeRecord getEmployeeByIdAndCompanyIds(Integer userId, Set<Integer> companyIds) {
+        UserEmployeeRecord record = create.select().from(UserEmployee.USER_EMPLOYEE)
+                .where(UserEmployee.USER_EMPLOYEE.COMPANY_ID.in(companyIds))
+                .and(UserEmployee.USER_EMPLOYEE.DISABLE.eq((byte) 0))
+                .and(UserEmployee.USER_EMPLOYEE.ACTIVATION.eq((byte) 0))
+                .and(UserEmployee.USER_EMPLOYEE.SYSUSER_ID.eq(userId))
+                .limit(1).fetchOneInto(UserEmployeeRecord.class);
+        return record;
+    }
+
     public int delResource(com.moseeker.common.util.query.Query query) throws Exception {
         if (query != null && query.getConditions() != null) {
             List<UserEmployeeRecord> records = getRecords(query);

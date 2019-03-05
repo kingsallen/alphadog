@@ -138,8 +138,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private ReferralSeekRecommendDao seekRecommendDao;
     @Autowired
     private CandidateTemplateShareChainDao templateShareChainDao;
-    @Autowired
-    private CandidatePositionShareRecordDao positionShareRecordDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -154,6 +152,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         long start = System.currentTimeMillis();
         // 获取指定时间前十分钟内的职位浏览人
         List<CandidateTemplateShareChainDO> shareChainDOS = templateShareChainDao.getRadarCards(cardInfo.getUserId(), cardInfo.getTimestamp());
+        logger.info("getRadarCards shareChainDOS:{}",shareChainDOS);
         if(shareChainDOS.size() == 0){
             throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
         }
@@ -184,11 +183,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         candidatePositionDOS = filterSpecficCandidate(candidatePositionDOS, shareChainDOS, jobPositions);
 
         List<JSONObject> cards = new ArrayList<>();
-        // 本批卡片展示的候选人useIds
-//        long start1 = System.currentTimeMillis();
-//        List<CandidateTemplateShareChainDO> oneDegreeShareChains = getOneDegreeShareChains(cardInfo, candidatePositionDOS, shareChainDOS);
-//        long end1 = System.currentTimeMillis();
-//        logger.info("=======positionShareRecordDOS:{}", end1- start1);
         // 获取当前页的卡片数据
         List<CandidatePositionDO> currentPageCandidatePositions = getCurrentPageCandidatePositions(candidatePositionDOS, cardInfo);
         // neo4j 查被推荐人度数
@@ -362,7 +356,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     }
 
     @Override
-    @RadarSwitchLimit
     public String checkEmployee(int companyId, CheckEmployeeInfo checkInfo) throws BIZException {
         logger.info("checkEmployee:{}", checkInfo);
         JSONObject result = new JSONObject();
@@ -403,13 +396,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             logger.info("起始推荐人非员工RecomUserId:{}", checkInfo.getRecomUserId());
             return JSON.toJSONString(result);
         }
-        HrWxWechatDO hrWxWechatDO = wechatDao.getHrWxWechatByCompanyId(jobPositionDO.getCompanyId());
-        UserWxUserRecord wxUserRecord = wxUserDao.getWxUserByUserIdAndWechatId(recomUserId, hrWxWechatDO.getId());
+        UserUserDO userUserDO = userUserDao.getUser(recomUser.getSysuserId());
         result.put("employee", 1);
         RadarUserInfo userInfo = new RadarUserInfo();
         userInfo.setUid(recomUserId);
         userInfo.setName(recomUser.getCname());
-        userInfo.setAvatar(wxUserRecord.getHeadimgurl());
+        userInfo.setAvatar(userUserDO.getHeadimg());
         result.put("user", userInfo);
         logger.info("checkEmployee:{}", result);
         return JSON.toJSONString(result);
@@ -741,30 +733,30 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return userDepthVOS;
     }
 
-    private List<CandidateTemplateShareChainDO> getOneDegreeShareChains(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
-        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
-        List<CandidateTemplateShareChainDO> oneDegreeShareChains = new ArrayList<>();
-        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
-            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
-            boolean flag = true;
-            for(int j=0;j<shareChainDOS.size()&&flag;j++){
-                CandidateTemplateShareChainDO shareChainDO = shareChainDOS.get(j);
-                if(shareChainDO.getPositionId() == candidatePositionDO.getPositionId() && shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()){
-                    flag = false;
-                    // 找出一度的sharechainId
-                    int parentId = shareChainDO.getParentId();
-                    CandidateTemplateShareChainDO oneDegreeShareChainDO;
-                    if(parentId == 0){
-                        oneDegreeShareChainDO = shareChainDO;
-                    }else {
-                        oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(parentId, shareChainDOS);
-                    }
-                    oneDegreeShareChains.add(oneDegreeShareChainDO);
-                }
-            }
-        }
-        return oneDegreeShareChains;
-    }
+//    private List<CandidateTemplateShareChainDO> getOneDegreeShareChains(ReferralCardInfo cardInfo, List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> shareChainDOS) {
+//        int startIndex = (cardInfo.getPageNumber() - 1) * cardInfo.getPageSize();
+//        List<CandidateTemplateShareChainDO> oneDegreeShareChains = new ArrayList<>();
+//        for(int i = startIndex; i < candidatePositionDOS.size() && i < cardInfo.getPageNumber() * cardInfo.getPageSize();i++){
+//            CandidatePositionDO candidatePositionDO = candidatePositionDOS.get(i);
+//            boolean flag = true;
+//            for(int j=0;j<shareChainDOS.size()&&flag;j++){
+//                CandidateTemplateShareChainDO shareChainDO = shareChainDOS.get(j);
+//                if(shareChainDO.getPositionId() == candidatePositionDO.getPositionId() && shareChainDO.getPresenteeUserId() == candidatePositionDO.getUserId()){
+//                    flag = false;
+//                    // 找出一度的sharechainId
+//                    int parentId = shareChainDO.getParentId();
+//                    CandidateTemplateShareChainDO oneDegreeShareChainDO;
+//                    if(parentId == 0){
+//                        oneDegreeShareChainDO = shareChainDO;
+//                    }else {
+//                        oneDegreeShareChainDO = RadarUtils.getShareChainTemplateDOByRecurrence(parentId, shareChainDOS);
+//                    }
+//                    oneDegreeShareChains.add(oneDegreeShareChainDO);
+//                }
+//            }
+//        }
+//        return oneDegreeShareChains;
+//    }
 
 
     private Map<Integer, UserUserRecord> getUserMap(Set<Integer> applierUserIds) {
@@ -789,17 +781,23 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private List<CandidatePositionDO> filterHandledCandidate(List<CandidatePositionDO> candidatePositionDOS, List<CandidateTemplateShareChainDO> handledRecords) {
         List<CandidatePositionDO> filteredCandidateDOs = new ArrayList<>();
+        logger.info("getRadarCards candidatePositionDOS:{}",candidatePositionDOS);
+        logger.info("getRadarCards handledRecords:{}",handledRecords);
         for(CandidatePositionDO candidatePositionDO : candidatePositionDOS){
             boolean flag = true;
             for(int i=0;i<handledRecords.size() && flag;i++){
                 CandidateTemplateShareChainDO shareChainDO = handledRecords.get(i);
                 if(candidatePositionDO.getPositionId() == shareChainDO.getPositionId()
                         && candidatePositionDO.getUserId() == shareChainDO.getPresenteeUserId()){
+                    logger.info("getRadarCards flag:{}",candidatePositionDO.getPositionId() == shareChainDO.getPositionId()
+                            && candidatePositionDO.getUserId() == shareChainDO.getPresenteeUserId());
                     flag = false;
                 }
             }
             if(flag){
+                logger.info("getRadarCards flag:{}", flag);
                 filteredCandidateDOs.add(candidatePositionDO);
+                logger.info("getRadarCards filteredCandidateDOs:{}", filteredCandidateDOs);
             }
         }
         return filteredCandidateDOs;
@@ -914,7 +912,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             needUpdateLog = updateConnectionLogState(radarInfo, connectionLogRecord);
             // 根据指定规则过滤链路
             chainRecords = filterChain(connectionLogRecord.getRootUserId(), radarInfo, chainRecords);
+        }else {
+            if(connectionLogRecord.getState() == 3){
+                connectionLogRecord.setState((byte)0);
+                needUpdateLog = true;
+            }
         }
+
         if(needUpdateLog){
             connectionLogRecord.setUpdateTime(null);
             connectionLogDao.updateRecord(connectionLogRecord);
@@ -987,7 +991,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private boolean updateConnectionLogState(ConnectRadarInfo radarInfo, ReferralConnectionLogRecord connectionLogRecord) {
         boolean needUpdate = false;
-        // 更新degree
+
         if(radarInfo.getNextUserId() == connectionLogRecord.getEndUserId()){
             if(connectionLogRecord.getState() != RadarStateEnum.Finished.getState()){
                 needUpdate = true;
@@ -1137,7 +1141,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         connectionLogRecord.setPositionId(inviteInfo.getPid());
         connectionLogRecord.setEndUserId(inviteInfo.getEndUserId());
         connectionLogRecord.setCompanyId(inviteInfo.getCompanyId());
-        connectionLogRecord.setState((byte)0);
+        // 3是不可用状态，邀请投递时生成，并非用户主动发起连连看
+        connectionLogRecord.setState((byte)3);
         connectionLogRecord = connectionLogDao.insertRecord(connectionLogRecord);
         return connectionLogRecord;
     }
@@ -1206,6 +1211,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         List<CandidateTemplateShareChainDO> completeRecords = shareChainDOS.stream().filter(record -> (record.getStatus() != 0)).collect(Collectors.toList());
         // 过滤由于完整路径copy的status为1的转发链路
         candidatePositionDOS = filterCompleteCandidate(candidatePositionDOS, completeRecords);
+        logger.info("getRadarCards shareChainDOS:{}",handledRecords);
         // 过滤掉已处理过的候选人
         candidatePositionDOS = filterHandledCandidate(candidatePositionDOS, handledRecords);
         // 过滤已申请过对应职位的候选人
