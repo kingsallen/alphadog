@@ -272,8 +272,12 @@ public class MessageTemplateEntity {
             //智能推荐职位列表引导语和结束语特殊处理,有推荐的职位列表,引导语和结束语写死 从HR_WX_NOTICE_MESSAGE表有自定义first和remark,有就拿出来使用
             HrWxNoticeMessageDO hrWxNoticeMessageDO = hrWxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(weChatId, Constant.FANS_RECOM_POSITION);
             if (aiTemplateType == 1 && hrWxNoticeMessageDO != null) {
-                firstName = hrWxNoticeMessageDO.getFirst();
-                remarkName = hrWxNoticeMessageDO.getRemark();
+                if(StringUtils.isNotNullOrEmpty(hrWxNoticeMessageDO.getFirst())) {
+                    firstName = hrWxNoticeMessageDO.getFirst();
+                }
+                if(StringUtils.isNotNullOrEmpty(hrWxNoticeMessageDO.getRemark())) {
+                    remarkName = hrWxNoticeMessageDO.getRemark();
+                }
                 //没有推荐的职位列表,引导语和结束语写死
             } else if (aiTemplateType == 2) {
                 firstName = "根据您的求职意愿，暂时没有合适职位机会。";
