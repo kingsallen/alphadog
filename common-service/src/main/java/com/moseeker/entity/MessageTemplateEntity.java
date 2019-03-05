@@ -110,7 +110,7 @@ public class MessageTemplateEntity {
         if(url.contains("{hr_id}")){
             url=url.replace("{hr_id}",company.getHraccountId()+"");
         }
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName());
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName(),params.getAiTemplateType());
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;
@@ -199,13 +199,13 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int wxId,int type,int companyId,int weChatId,String companyName){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int wxId,int type,int companyId,int weChatId,String companyName,int aiTemplateType){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId,wxId,weChatId);
         }else if(type==2||type==3){
-            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,companyName);
+            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,companyName,aiTemplateType);
         }else if(type==4){
             colMap=this.handleDataProfileTemplate(userId,companyId,weChatId);
         }
@@ -260,15 +260,30 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId,String companyName){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId,String companyName,int aiTemplateType){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String jobName="";
 //        String companyName=this.getCompanyName(companyId);
-        if(type==2){
-            jobName = this.getJobName(userId,companyId,0);
-            String firstName="根据您的求职意愿，仟寻为您挑选了一些新机会。";
-            String remarkName="点击查看推荐职位";
-            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.FANS_RECOM_POSITION);
+        if(type==2) {
+            jobName = this.getJobName(userId, companyId, 0);
+            String firstName = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
+            String remarkName = "点击查看推荐职位";
+
+            //智能推荐职位列表引导语和结束语特殊处理,有推荐的职位列表,引导语和结束语写死 从HR_WX_NOTICE_MESSAGE表有自定义first和remark,有就拿出来使用
+            HrWxNoticeMessageDO hrWxNoticeMessageDO = hrWxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(weChatId, Constant.FANS_RECOM_POSITION);
+            if (aiTemplateType == 1 && hrWxNoticeMessageDO != null) {
+                if(StringUtils.isNotNullOrEmpty(hrWxNoticeMessageDO.getFirst())) {
+                    firstName = hrWxNoticeMessageDO.getFirst();
+                }
+                if(StringUtils.isNotNullOrEmpty(hrWxNoticeMessageDO.getRemark())) {
+                    remarkName = hrWxNoticeMessageDO.getRemark();
+                }
+                //没有推荐的职位列表,引导语和结束语写死
+            } else if (aiTemplateType == 2) {
+                firstName = "根据您的求职意愿，暂时没有合适职位机会。";
+                remarkName = "欢迎持续关注我们，或点开修改您感兴趣的职位。";
+            }
+            colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
         }
         if(type==3){
             jobName = this.getJobName(userId,companyId,1);
