@@ -270,21 +270,16 @@ public class MessageTemplateEntity {
             String firstName = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
             String remarkName = "点击查看推荐职位";
 
-            //智能推荐职位列表引导语和结束语特殊处理,有推荐的职位列表,引导语和结束语写死 从HR_WX_NOTICE_MESSAGE表有自定义first和remark,有就拿出来使用
-            HrWxNoticeMessageDO hrWxNoticeMessageDO = hrWxNoticeMessageDao.getHrWxNoticeMessageDOByWechatId(weChatId, Constant.FANS_RECOM_POSITION);
-            if (aiTemplateType == 1 && hrWxNoticeMessageDO != null) {
-                if(StringUtils.isNotNullOrEmpty(hrWxNoticeMessageDO.getFirst())) {
-                    firstName = hrWxNoticeMessageDO.getFirst();
-                }
-                if(StringUtils.isNotNullOrEmpty(hrWxNoticeMessageDO.getRemark())) {
-                    remarkName = hrWxNoticeMessageDO.getRemark();
-                }
-                //没有推荐的职位列表,引导语和结束语写死
-            } else if (aiTemplateType == 2) {
-                firstName = "根据您的求职意愿，暂时没有合适职位机会。";
-                remarkName = "欢迎持续关注我们，或点开修改您感兴趣的职位。";
-            }
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
+            //智能推荐职位列表的特殊处理,如果没有推荐的职位列表,文案变一下
+            if(aiTemplateType == 2) {
+                MessageTplDataCol firstCol=  (MessageTplDataCol)colMap.get("first");
+                MessageTplDataCol remarkCol=   (MessageTplDataCol)colMap.get("remark");
+                firstCol.setValue("根据您的求职意愿，暂时没有合适职位机会。");
+                remarkCol.setValue("欢迎持续关注我们，或点开修改您感兴趣的职位。");
+                colMap.put("first",firstCol);
+                colMap.put("remark",remarkCol);
+            }
             log.info("handleDataRecommendTemplate {} {} {}",firstName,remarkName,aiTemplateType);
             log.info("handleDataRecommendTemplate colMap {}", JSON.toJSONString(colMap));
         }
