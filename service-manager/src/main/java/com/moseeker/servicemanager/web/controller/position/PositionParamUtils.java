@@ -103,6 +103,8 @@ public class PositionParamUtils extends ParamUtils {
     public static BatchHandlerJobPostion parseBatchHandlerJobPostionParam(HttpServletRequest request) throws Exception {
         HashMap<String, Object> data = parseRequestParam(request);
 
+        logger.info("batchHandlerJobPostion param :{}",new JSONObject(data).toJSONString());
+
         BatchHandlerJobPostion batchHandlerDate = initBatchHandlerJobPostion(data);
 
         List<JobPostrionObj> cs = new ArrayList<>();
