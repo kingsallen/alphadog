@@ -1,7 +1,6 @@
 package com.moseeker.mq.rabbit;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
@@ -22,7 +21,6 @@ import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Envelope;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -38,11 +36,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
-import static com.alibaba.fastjson.serializer.SerializerFeature.WriteMapNullValue;
-import static com.alibaba.fastjson.serializer.SerializerFeature.WriteNullNumberAsZero;
 
 /**
  * Created by lucky8987 on 17/8/3.
@@ -279,8 +274,9 @@ public class ReceiverHandler {
         if(StringUtils.isEmpty(url)){
             url=handlerUrl(type);
         }
+        int aiTemplateId = jsonObject.getIntValue("ai_template_type");
         String algorithmName=jsonObject.getString("algorithm_name");
-        AIRecomParams recomParams=new AIRecomParams(userId,wxId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName);
+        AIRecomParams recomParams=new AIRecomParams(userId,wxId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName,aiTemplateId);
         return recomParams;
     }
 
