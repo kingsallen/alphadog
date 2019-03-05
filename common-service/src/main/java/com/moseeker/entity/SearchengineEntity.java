@@ -181,9 +181,15 @@ public class SearchengineEntity {
                     jsonObject.put("position", userEmployeeDO.getPosition());
                     jsonObject.put("bonus", userEmployeeDO.getBonus());
                     JSONObject searchData = new JSONObject();
-                    searchData.put("email",userEmployeeDO.getEmail());
+                    searchData.put("email", "");
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getEmail())) {
+                        searchData.put("email", userEmployeeDO.getEmail().toLowerCase());
+                    }
                     searchData.put("mobile",String.valueOf(userEmployeeDO.getMobile()));
-                    searchData.put("custom_field", userEmployeeDO.getCustomField());
+                    searchData.put("custom_field", "");
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCustomField())) {
+                        searchData.put("custom_field", userEmployeeDO.getCustomField().toLowerCase());
+                    }
                     // 取年积分
                     List<EmployeePointsRecordPojo> listYear = userEmployeePointsDao.getAwardByYear(userEmployeeDO.getId());
                     // 取季度积分
@@ -205,10 +211,10 @@ public class SearchengineEntity {
                         UserUserDO userUserDO = (UserUserDO) userUerMap.get(userEmployeeDO.getSysuserId());
                         if (userUserDO.getName() != null) {
                             jsonObject.put("nickname", userUserDO.getName());
-                            searchData.put("nickname", userUserDO.getName());
+                            searchData.put("nickname", userUserDO.getName().toLowerCase());
                         } else if (userUserDO.getName() == null && userUserDO.getNickname() != null) {
                             jsonObject.put("nickname", userUserDO.getNickname());
-                            searchData.put("nickname", userUserDO.getNickname());
+                            searchData.put("nickname", userUserDO.getNickname().toLowerCase());
                         }
                     }
                     if (jsonObject.get("nickname") == null) {
@@ -217,7 +223,7 @@ public class SearchengineEntity {
                         UserWxUserDO userWxUserDO = userWxUserDao.getData(queryBuilder.buildQuery());
                         if (userWxUserDO != null) {
                             jsonObject.put("nickname", userWxUserDO.getNickname());
-                            searchData.put("nickname", userWxUserDO.getNickname());
+                            searchData.put("nickname", userWxUserDO.getNickname().toLowerCase());
                         }
                     }
                     jsonObject.put("ename", userEmployeeDO.getEname());
@@ -226,7 +232,10 @@ public class SearchengineEntity {
                     jsonObject.put("award", userEmployeeDO.getAward());
                     jsonObject.put("email", userEmployeeDO.getEmail());
                     jsonObject.put("cname", userEmployeeDO.getCname());
-                    searchData.put("cname", userEmployeeDO.getCname());
+                    searchData.put("cname", "");
+                    if(StringUtils.isNotNullOrEmpty(userEmployeeDO.getCname())) {
+                        searchData.put("cname", userEmployeeDO.getCname().toLowerCase());
+                    }
                     jsonObject.put("disable", userEmployeeDO.getDisable());
                     jsonObject.put("search_data", searchData);
 
