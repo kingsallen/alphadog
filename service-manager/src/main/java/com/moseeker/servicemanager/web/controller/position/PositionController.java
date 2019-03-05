@@ -476,7 +476,6 @@ public class PositionController {
     @ResponseBody
     public String batchHandlerJobPostion(HttpServletRequest request, HttpServletResponse response) {
         try {
-            logger.info("batchHandlerJobPostion param :{}",new JSONObject(parseRequestParam(request)).toJSONString());
             BatchHandlerJobPostion batchHandlerJobPostion = PositionParamUtils.parseBatchHandlerJobPostionParam(request);
             Response res = positonServices.batchHandlerJobPostion(batchHandlerJobPostion);
             logger.info("batchhandler result:{}",JSON.toJSONString(res));

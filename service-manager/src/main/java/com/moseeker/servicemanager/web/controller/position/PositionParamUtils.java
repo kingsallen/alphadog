@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.position;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
@@ -12,6 +13,7 @@ import com.moseeker.thrift.gen.apps.positionbs.struct.ThirdPartyPositionForm;
 import com.moseeker.thrift.gen.position.struct.BatchHandlerJobPostion;
 import com.moseeker.thrift.gen.position.struct.City;
 import com.moseeker.thrift.gen.position.struct.JobPostrionObj;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 public class PositionParamUtils extends ParamUtils {
+
+
+    private static Logger logger = LoggerFactory.getLogger(PositionParamUtils.class);
+
 
     /**
      * 解析一键同步参数
@@ -64,6 +70,8 @@ public class PositionParamUtils extends ParamUtils {
      */
     public static BatchHandlerJobPostion parseGlluePostionParam(HttpServletRequest request) throws Exception {
         HashMap<String, Object> data = parseRequestParam(request);
+
+        logger.info("batchHandlerJobPostion param :{}",new JSONObject(data).toJSONString());
 
         BatchHandlerJobPostion batchHandlerDate = initBatchHandlerJobPostion(data);
 
