@@ -1,5 +1,6 @@
 package com.moseeker.entity;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPersonaRecomDao;
 import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysTemplateMessageLibraryDao;
@@ -284,6 +285,8 @@ public class MessageTemplateEntity {
                 remarkName = "欢迎持续关注我们，或点开修改您感兴趣的职位。";
             }
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
+            log.info("handleDataRecommendTemplate {} {} {}",firstName,remarkName,aiTemplateType);
+            log.info("handleDataRecommendTemplate colMap {}", JSON.toJSONString(colMap));
         }
         if(type==3){
             jobName = this.getJobName(userId,companyId,1);
