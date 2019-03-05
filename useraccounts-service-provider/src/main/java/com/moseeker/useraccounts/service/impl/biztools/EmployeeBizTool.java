@@ -98,7 +98,15 @@ public class EmployeeBizTool {
             for(CandidateShareChainDO shareChain : data.getShareChainList()){
                 if(shareChain.getPositionId() == record.getPositionId().intValue() && shareChain.getPresenteeUserId() == userId){
                     UserUserRecord root2User = data.getRoot2UserMap().get(shareChain.getRoot2RecomUserId());
-                    result.setForwardName(root2User!=null?root2User.getName():"");
+                    String name = "";
+                    if(root2User != null){
+                        if(StringUtils.isNotNullOrEmpty(root2User.getName())){
+                            name = root2User.getName();
+                        }else {
+                            name = root2User.getNickname();
+                        }
+                    }
+                    result.setForwardName(name);
                     result.setForwardSourceWx(false);
                     if(data.getUserFromMap().get(shareChain.getId()) != null
                             && data.getUserFromMap().get(shareChain.getId()) ==ForwardSourceType.Singlemessage.getValue()){
