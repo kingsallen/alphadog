@@ -280,7 +280,6 @@ public class MessageTemplateEntity {
                 colMap.put("first",firstCol);
                 colMap.put("remark",remarkCol);
             }
-            log.info("handleDataRecommendTemplate {} {} {}",firstName,remarkName,aiTemplateType);
             log.info("handleDataRecommendTemplate colMap {}", JSON.toJSONString(colMap));
         }
         if(type==3){
