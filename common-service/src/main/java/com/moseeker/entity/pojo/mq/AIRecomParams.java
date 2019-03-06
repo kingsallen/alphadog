@@ -13,9 +13,10 @@ public class AIRecomParams {
     private String url;
     private int templateId;
     private String algorithmName;
+    private int aiTemplateType;// 1 有匹配职位列表推荐的模板  2.没有匹配职位列表的消息模表
 
 
-    public AIRecomParams(int userId,int wxId, int companyId, int type, String positionIds, String enableQxRetry, String url, int templateId,String algorithmName){
+    public AIRecomParams(int userId,int wxId, int companyId, int type, String positionIds, String enableQxRetry, String url, int templateId,String algorithmName,int aiTemplateType){
         this.userId=userId;
         this.wxId=wxId;
         this.companyId=companyId;
@@ -25,6 +26,7 @@ public class AIRecomParams {
         this.url=url;
         this.templateId=templateId;
         this.algorithmName=algorithmName;
+        this.aiTemplateType = aiTemplateType;
     }
     public int getUserId() {
         return userId;
@@ -96,5 +98,13 @@ public class AIRecomParams {
 
     public void setWxId(int wxId) {
         this.wxId = wxId;
+    }
+
+    public int getAiTemplateType() {
+        return aiTemplateType;
+    }
+
+    public void setAiTemplateType(int aiTemplateType) {
+        this.aiTemplateType = aiTemplateType;
     }
 }
