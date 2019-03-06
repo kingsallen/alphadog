@@ -1,8 +1,11 @@
 package com.moseeker.position.service.third;
 
 import com.alibaba.fastjson.JSON;
+import com.moseeker.baseorm.dao.thirdpartydb.ThirdpartyCommonInfoDao;
 import com.moseeker.common.constants.ChannelType;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
+import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.position.service.third.base.AbstractThirdInfoProvider;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.thirdpart.struct.*;
@@ -21,6 +24,9 @@ import java.util.stream.Collectors;
 @Service
 public class ThirdPartyAccountInfoService {
     Logger logger= LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    ThirdpartyCommonInfoDao thirdpartyCommonInfoDao;
 
     Map<ChannelType,AbstractThirdInfoProvider> providers=new HashMap<>();
 
@@ -58,5 +64,23 @@ public class ThirdPartyAccountInfoService {
 
         logger.info("ThirdPartyInfo json result : "+json);
         return info;
+    }
+
+    public int postThirdPartyCommonInfo(ThirdPartyCommonInfo param) throws BIZException{
+        if(param.getCompany_id() ==0 || param.getUser_id()==0
+                || StringUtils.isNullOrEmpty(param.getContent())
+                || StringUtils.isNullOrEmpty(param.getType())) {
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        return thirdpartyCommonInfoDao.postThirdPartyCommonInfo(param);
+
+    }
+
+    public List<ThirdPartyCommonInfo> getThirdPartyCommonInfo(ThirdPartyCommonInfo param) throws BIZException {
+        if(param.getCompany_id()==0 && param.getUser_id()==0){
+            throw ExceptionUtils.getBizException(ConstantErrorCodeMessage.PROGRAM_DATA_EMPTY);
+        }
+        return thirdpartyCommonInfoDao.getThirdPartyCommonInfo(param);
+
     }
 }
