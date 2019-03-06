@@ -92,8 +92,7 @@ public class ThirdPartyAccountInfoService {
             List<ThirdPartyCommonInfo> emailInfo = new ArrayList<>();
             out:for (ThirdPartyCommonInfo result : results) {
                 for (UserEmployeeDO employee : employees) {
-                    if (result.getUser_id() == employee.getSysuserId()
-                            &&){
+                    if (result.getUser_id() == employee.getSysuserId()){
                         ThirdPartyCommonInfo info = new ThirdPartyCommonInfo();
                         info.setUser_id(result.getUser_id());
                         info.setCompany_id(result.getCompany_id());
