@@ -122,7 +122,7 @@ public class RabbitReceivers {
                 // 将消息模板开关打开
                 openTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
                 kafkaSender.sendRadarSwitchToKafka(switchVO.getValid(),switchVO.getCompanyId());
-                sendEmployeeToKafka(switchVO.getCompanyId());
+//                sendEmployeeToKafka(switchVO.getCompanyId());
             }else if(switchVO.getValid() == 0){
                 // 将开关关闭
                 closeTemMiniteTemplateSwitch(hrWxWechatDO.getId(), templateId);
