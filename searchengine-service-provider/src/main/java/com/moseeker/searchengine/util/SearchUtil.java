@@ -968,7 +968,7 @@ public class SearchUtil {
 
     public void convertSearchNameScript(String condition,QueryBuilder query){
         StringBuffer sb=new StringBuffer();
-        sb.append("_source.user.profiles.basic.name=='"+condition+"'");
+        sb.append("user=_source.user; if(user){profiles=user.user;if(profiles){basic=profiles.basic;if(basic){name=basic.name;if(name&&name=='"+condition+"'){return true;}}};return false;}");
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         ((BoolQueryBuilder) query).filter(script);
     }
