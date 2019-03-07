@@ -445,11 +445,11 @@ public class CandidateEntity implements Candidate {
             }
         }
 
-        /*if (employeeDO != null) {
+        if (employeeDO != null) {
             publishRecommendEvent(employeeDO.getId(), param.getPostUserId(),
                     candidateRecomRecordDO.getPresenteeUserId(), param.getCompanyId(),
                     candidateRecomRecordDO.getPositionId());
-        }*/
+        }
 
         return assembleRecommendResult(param.getId(), param.getPostUserId(), param.getClickTime(), param.getCompanyId());
     }
