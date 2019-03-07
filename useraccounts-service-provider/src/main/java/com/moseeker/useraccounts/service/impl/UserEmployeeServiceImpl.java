@@ -561,28 +561,26 @@ public class UserEmployeeServiceImpl {
         try {
             resourcesRecordList = networkResourcesDao.fetchByPostUserIdPage(userId,
                     employeeUserFuture.get(), page, size);
-        } catch (Exception e) {
-           logger.error(e.getMessage());
-        }
-        if(StringUtils.isEmptyList(resourcesRecordList)){
-            return result;
-        }
-        Future<Integer> countFuture = threadPool.startTast(
-                () -> networkResourcesDao.fetchByPostUserIdCount(userId, employeeUserFuture.get()));
-        List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
-        EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(resourcesRecordList, userId,companyId);
-        List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
-        result.setPage(page);
-        try {
+            if(StringUtils.isEmptyList(resourcesRecordList)){
+                return result;
+            }
+            logger.info("fetchRadarIndex user:{},employeeUserFuture:{}",userId, employeeUserFuture.get());
+            Future<Integer> countFuture = threadPool.startTast(
+                    () -> networkResourcesDao.fetchByPostUserIdCount(userId, employeeUserFuture.get()));
+            List<Integer> userIdList = resourcesRecordList.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+            EmployeeRadarData data = referralEntity.fetchEmployeeRadarData(resourcesRecordList, userId,companyId);
+            List<UserDepthVO> depthList = neo4jService.fetchDepthUserList(userId, companyId, userIdList);
+            result.setPage(page);
+            logger.info("fetchRadarIndex countFuture:{}",countFuture.get());
             result.setTotalCount(countFuture.get());
+            List<RadarUserVO> list = new ArrayList<>();
+            for(Integer id : userIdList){
+                list.add(EmployeeBizTool.packageRadarUser(data, depthList, id));
+            }
+            result.setUserList(list);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
-        List<RadarUserVO> list = new ArrayList<>();
-        for(Integer id : userIdList){
-            list.add(EmployeeBizTool.packageRadarUser(data, depthList, id));
-        }
-        result.setUserList(list);
         return result;
     }
 

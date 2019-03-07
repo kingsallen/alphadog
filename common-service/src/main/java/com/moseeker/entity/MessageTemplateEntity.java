@@ -271,6 +271,13 @@ public class MessageTemplateEntity {
             String remarkName = "点击查看推荐职位";
 
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
+
+        }
+        if(type==3){
+            jobName = this.getJobName(userId,companyId,1);
+            String firstName="以下职位虚位以待，赶快转发起来吧~ ";
+            String remarkName="点击查看推荐职位。";
+            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.EMPLOYEE_RECOM_POSITION);
             //智能推荐职位列表的特殊处理,如果没有推荐的职位列表,文案变一下
             if(aiTemplateType == 2) {
                 MessageTplDataCol firstCol=  (MessageTplDataCol)colMap.get("first");
@@ -281,12 +288,6 @@ public class MessageTemplateEntity {
                 colMap.put("remark",remarkCol);
             }
             log.info("handleDataRecommendTemplate colMap {}", JSON.toJSONString(colMap));
-        }
-        if(type==3){
-            jobName = this.getJobName(userId,companyId,1);
-            String firstName="以下职位虚位以待，赶快转发起来吧~ ";
-            String remarkName="点击查看推荐职位。";
-            colMap=this.handlerTemplateData(weChatId,firstName,remarkName,Constant.EMPLOYEE_RECOM_POSITION);
         }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
