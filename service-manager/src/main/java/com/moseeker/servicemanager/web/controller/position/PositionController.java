@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.moseeker.servicemanager.common.ParamUtils.parseRequestParam;
 import static java.util.Arrays.asList;
 
 //@Scope("prototype") // 多例模式, 单例模式无法发现新注册的服务节点
@@ -101,7 +102,7 @@ public class PositionController {
         try {
             WechatPositionListQuery query = new WechatPositionListQuery();
 
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            Map<String, Object> map = parseRequestParam(request);
             logger.info("map: " + map.toString());
 
             if (map.getOrDefault("company_id", null) != null) {
@@ -157,7 +158,7 @@ public class PositionController {
     @ResponseBody
     public String getPositionExtList(HttpServletRequest request, HttpServletResponse response) throws Exception {
         try{
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            Map<String, Object> map = parseRequestParam(request);
 
             List<Integer> ids = (List<Integer>) map.get("ids");
 
@@ -201,7 +202,7 @@ public class PositionController {
     public String customField(HttpServletRequest request, HttpServletResponse response) {
         //PrintWriter writer = null;
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            Map<String, Object> map = parseRequestParam(request);
             Response result = positonServices.CustomField(JSONObject.toJSONString(map));
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
@@ -214,7 +215,7 @@ public class PositionController {
     @ResponseBody
     public String occupation(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            Map<String, Object> map = parseRequestParam(request);
             String company_id = (String) map.get("company_id");
             Query.QueryBuilder query = new Query.QueryBuilder();
             query.where("company_id", company_id);
@@ -231,7 +232,7 @@ public class PositionController {
     @ResponseBody
     public String refreshThirdPartyParam(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> map = ParamUtils.parseRequestParam(request);
+            Params<String, Object> map = parseRequestParam(request);
             if(!"moseeker.com".equals(map.get("refreshKey"))){
                 throw new BIZException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,"wrong request param!");
             }
@@ -277,7 +278,7 @@ public class PositionController {
     @ResponseBody
     public String syncVerifyInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             String jsonParam=JSON.toJSONString(params);
             logger.info("-----------syncVerifyInfo------------");
             logger.info("syncVerifyInfo params:" + jsonParam);
@@ -298,7 +299,7 @@ public class PositionController {
     @ResponseBody
     public String getVerifyParam(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             String jsonParam=JSON.toJSONString(params);
             logger.info("-----------getVerifyInfo------------");
             logger.info("getVerifyInfo params:" + jsonParam);
@@ -340,7 +341,7 @@ public class PositionController {
     public String refreshPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
             logger.info("/position/refresh");
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             List< Integer> paramQXList = PositionParamUtils.parseRefreshParamQX(params);
             logger.info("/position/refresh paramQXList{}:" ,paramQXList);
 
@@ -394,7 +395,7 @@ public class PositionController {
     @ResponseBody
     public String getHbShareInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             Integer hbConfigId = Integer.valueOf((String) params.get("hb_config_id"));
             WechatShareData shareData = positonServices.getShareInfo(hbConfigId);
 
@@ -417,7 +418,7 @@ public class PositionController {
     @ResponseBody
     public String getRpPositionList(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             Integer hbConfigId = Integer.valueOf((String) params.get("hb_config_id"));
             if (hbConfigId == null) {
                 throw new Exception("红包活动 id 不正确!");
@@ -453,7 +454,7 @@ public class PositionController {
     @SuppressWarnings("unchecked")
     public String getPositionListRpExt(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             List<String> pidStringList = asList(((String) params.get("pids")).split(","));
             List<Integer> pids = pidStringList.stream().map(Integer::valueOf).collect(Collectors.toList());
 
@@ -513,7 +514,7 @@ public class PositionController {
     @ResponseBody
     public String getTeamIdByDepartmentName(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Map<String, Object> map = ParamUtils.parseRequestParam(request);
+            Map<String, Object> map = parseRequestParam(request);
             Integer companyId = null;
             if ((String) map.get("company_id") != null) {
                 companyId = Integer.valueOf((String) map.get("company_id"));
@@ -552,7 +553,7 @@ public class PositionController {
     @ResponseBody
     public PositionDetailsVO positionDetails(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer positionId = params.getInt("position_id");
             return positonServices.positionDetails(positionId);
         } catch (Exception e) {
@@ -568,7 +569,7 @@ public class PositionController {
     @ResponseBody
     public PositionDetailsListVO companyHotPositionDetailsList(HttpServletRequest request) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer companyId = params.getInt("company_id");
             Integer page = params.getInt("page");
             Integer per_age = params.getInt("per_age");
@@ -592,7 +593,7 @@ public class PositionController {
     public PositionDetailsListVO similarityPositionDetailsList(HttpServletRequest request, HttpServletResponse response) {
 
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer pid = params.getInt("position_id");
             Integer page = params.getInt("page");
             Integer per_age = params.getInt("per_age");
@@ -610,7 +611,7 @@ public class PositionController {
     @ResponseBody
     public String getPcRecommendPosition(HttpServletRequest request, HttpServletResponse response){
     	try{
-	    	Params<String, Object> params = ParamUtils.parseRequestParam(request);
+	    	Params<String, Object> params = parseRequestParam(request);
 	        Integer page = params.getInt("page");
 	        Integer pageSize = params.getInt("pageSize");
 	        if(page==null){
@@ -634,7 +635,7 @@ public class PositionController {
     @ResponseBody
     public String getPositionForThirdParty(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer pid = params.getInt("positionId");
             Integer channel = params.getInt("channel");
             Response res =  positonServices.getPositionForThirdParty(pid, channel);
@@ -655,7 +656,7 @@ public class PositionController {
     @ResponseBody
     public String getPositionListForThirdParty(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer channel = params.getInt("channel");
             Integer type = params.getInt("type");
             String start_time = params.getString("start_time");
@@ -695,7 +696,7 @@ public class PositionController {
     @ResponseBody
     public String updateThirdPartyPosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             HrThirdPartyAccountDO thirdPartyAccount = ParamUtils.initModelForm(params, HrThirdPartyAccountDO.class);
             HrThirdPartyPositionDO thirdPartyPosition = ParamUtils.initModelForm(params, HrThirdPartyPositionDO.class);
             Map<String,String> extThirdPartyPosition = PositionParamUtils.toExtThirdPartyPosition(params);
@@ -721,7 +722,7 @@ public class PositionController {
     @ResponseBody
     public String updatePosition(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Response result = positonServices.updatePosition(JSONObject.toJSONString(params));
             if(result.getStatus()==0) {
                 return ResponseLogNotification.successJson(request, result.getData());
@@ -741,7 +742,7 @@ public class PositionController {
     @ResponseBody
     public String getPcPositionDetail(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int positionId = params.getInt("positionId");
             Response result=positonServices.getPcPositionDetail(positionId);
             return ResponseLogNotification.success(request, result);
@@ -758,7 +759,7 @@ public class PositionController {
     @ResponseBody
     public String addPcReport(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             String type= (String) params.get("type");
             String descrptiton= (String) params.get("description");
             String userId= (String) params.get("userId");
@@ -786,7 +787,7 @@ public class PositionController {
     @ResponseBody
     public String getPcdvertisement(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer page = params.getInt("page");
             Integer pageSize = params.getInt("pageSize");
             if(page==null){
@@ -810,7 +811,7 @@ public class PositionController {
     @ResponseBody
     public String getPcecommendposition(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer page = params.getInt("page");
             Integer pageSize = params.getInt("pageSize");
             if(page==null){
@@ -838,7 +839,7 @@ public class PositionController {
     @ResponseBody
     public String getAliPayPosition(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             String publisher = (String) params.get("publisher");
             String companyId= (String) params.get("companyId");
             int candidateSource=params.getInt("candidatesource");
@@ -882,7 +883,7 @@ public class PositionController {
     @ResponseBody
     public String putAlipayResult(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             Integer channel=params.getInt("channel");
             int positionId=params.getInt("positionId");
             int alipayJobId=params.getInt("alipayJobid");
@@ -907,7 +908,7 @@ public class PositionController {
     @ResponseBody
     public String personaRecomPosition(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             String pageNum=params.getString("pageNum");
             String pageSize=params.getString("pageSize");
             String userId=params.getString("userId");
@@ -941,7 +942,7 @@ public class PositionController {
     @ResponseBody
     public String positionCvConf(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             int positionId = params.getInt("positionId", 0);
             if(positionId == 0){
                 return ResponseLogNotification.fail(request, "positionId不能为空");
@@ -961,7 +962,7 @@ public class PositionController {
     @ResponseBody
     public String employeeRecomPosition(HttpServletRequest request, HttpServletResponse response){
         try{
-            Params<String, Object> params = ParamUtils.parseRequestParam(request);
+            Params<String, Object> params = parseRequestParam(request);
             String recomPushId=params.getString("recomPushId");
             String companyId=params.getString("companyId");
             String type=params.getString("type");
@@ -1009,7 +1010,7 @@ public class PositionController {
     @ResponseBody
     public String updateFeatureList( HttpServletRequest request, HttpServletResponse response){
         try{
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             List<Integer> fidList=(List<Integer>)params.get("fids");
             int pid=(int)params.get("position_id");
             Response result=positonServices.updatePositionFeatures(pid,fidList);
@@ -1024,7 +1025,7 @@ public class PositionController {
     @ResponseBody
     public String updateFeature( HttpServletRequest request, HttpServletResponse response){
         try{
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             int fid=(int)params.get("fid");
             int pid=(int)params.get("position_id");
             Response result=positonServices.updatePositionFeature(pid,fid);
@@ -1038,7 +1039,7 @@ public class PositionController {
     @ResponseBody
     public String updateFeatureBatch( HttpServletRequest request, HttpServletResponse response){
         try{
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             List<Map<String,Object>> list= (List<Map<String, Object>>) params.get("data");
             if(StringUtils.isEmptyList(list)){
                 return ResponseLogNotification.fail(request, "所传参数不能为空");
@@ -1071,7 +1072,7 @@ public class PositionController {
     @ResponseBody
     public String getFeatureBatch( HttpServletRequest request, HttpServletResponse response){
         try{
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             List<Integer> pidList=ParamUtils.convertIntList(String.valueOf(params.get("pids")));
             if(StringUtils.isEmptyList(pidList)){
                 return ResponseLogNotification.fail(request, "职位id不能为空");
@@ -1117,7 +1118,7 @@ public class PositionController {
     @ResponseBody
     public String getLiepinPositionIds( HttpServletRequest request, HttpServletResponse response){
         try{
-            Map<String, Object> params = ParamUtils.parseRequestParam(request);
+            Map<String, Object> params = parseRequestParam(request);
             String liepinUserId = String.valueOf(params.get("liepin_user_id"));
             if(StringUtils.isNullOrEmpty(liepinUserId)){
                 return ResponseLogNotification.fail(request, "猎聘用户id不能为空");

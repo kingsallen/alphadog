@@ -183,11 +183,8 @@ public class EmployeeEntity {
     @Resource(name = "cacheClient")
     private RedisClient client;
 
-    /*private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "cvpass_exchange";
-    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "cvpass_exchange.redpacket";*/
-
-    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "redpacket_exchange";
-    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "screen.red_packet";
+    private static final String APLICATION_STATE_CHANGE_EXCHNAGE = "cvpass_exchange";
+    private static final String APLICATION_STATE_CHANGE_ROUTINGKEY = "cvpass_exchange.redpacket";
 
     private static final String ADD_BONUS_CHANGE_EXCHNAGE = "add_bonus_change_exchange";
     private static final String ADD_BONUS_CHANGE_ROUTINGKEY = "add_bonus_change_routingkey.add_bonus";
@@ -1328,15 +1325,14 @@ public class EmployeeEntity {
         if(jobApplication != null && jobPositionRecord != null) {
             int hbStatus = jobPositionRecord.getHbStatus();
             logger.info("publishInitalScreenHbEvent  nextStage {}",nextStage);
+            boolean inActivity = activityPositionJOOQDao.isInActivity(jobPositionRecord.getId());
             logger.info("publishInitalScreenHbEvent  bool {}",((hbStatus >> 2) & 1) == 1);
-            if (((hbStatus >> 2) & 1) == 1 && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
-
+            if (inActivity && nextStage == Constant.RECRUIT_STATUS_CVPASSED) {
                 ConfigSysPointsConfTplRecord confTplDO = configSysPointsConfTplDao.getTplById(nextStage);
                 ReferralApplicationStatusCount statusCount = referralApplicationStatusCountDao
                         .fetchApplicationStatusCountByAppicationIdAndTplId(confTplDO.getId(), jobApplication.getId());
                 logger.info("EmployeeEntity publishInitalScreenHbEvent statusCount:{}",statusCount);
                 if(statusCount == null){
-                    CandidateApplicationReferralDO referral = applicationPscDao.getApplicationPscByApplication(jobApplication.getId());
                     statusCount = new ReferralApplicationStatusCount();
                     statusCount.setAppicationTplStatus(confTplDO.getId());
                     statusCount.setApplicationId(jobApplication.getId());
@@ -1344,47 +1340,21 @@ public class EmployeeEntity {
                     int result = referralApplicationStatusCountDao.addReferralApplicationStatusCount(statusCount);
                     if(result >0 ){
 
-//                        JSONObject eventMessage = new JSONObject();
-//                        eventMessage.put("name", "application cvpass");
-//                        eventMessage.put("ID", UUID.randomUUID().toString());
-//                        eventMessage.put("hr_id", jobPositionRecord.getPublisher());
-//                        eventMessage.put("application_id", jobApplication.getId());
-//                        eventMessage.put("recommend_user_id", jobApplication.getRecommenderUserId());
-//                        eventMessage.put("position_id", jobPositionRecord.getId());
-//                        eventMessage.put("applier_id", jobApplication.getApplierId());
-//                        eventMessage.put("cvpass_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
-//                        eventMessage.put("company_id", jobApplication.getCompanyId());
-//                        logger.info("EmployeeEntity publishInitalScreenHbEvent param:{}, exchange:{}, routing:{}",
-//                                eventMessage.toJSONString(), APLICATION_STATE_CHANGE_EXCHNAGE, APLICATION_STATE_CHANGE_ROUTINGKEY);
-//                        amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
-//                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
-//                                        .build());
-                        HrWxWechatDO wechat = wechatDao.getHrWxWechatByCompanyId(jobPositionRecord.getCompanyId());
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("application_id", jobApplication.getId());
-                        jsonObject.put("be_recom_user_id", jobApplication.getApplierId());
-                        jsonObject.put("next_stage", nextStage);
-                        jsonObject.put("position_id", jobPositionRecord.getId());
-                        jsonObject.put("company_id", jobPositionRecord.getCompanyId());
-                        jsonObject.put("user_id", userId);
-                        if(wechat != null){
-                            jsonObject.put("wechat_id", wechat.getId());
-                        }
-                        int pscId = 0;
-                        int directReferralUserId = 0;
-                        if(referral != null){
-                            pscId = referral.getPscId();
-                            directReferralUserId = referral.getDirectReferralUserId();
-                        }
-                        if(directReferralUserId == 0){
-                            directReferralUserId = jobApplication.getRecommenderUserId();
-                        }
-                        jsonObject.put("psc", pscId);
-                        jsonObject.put("direct_referral_user_id", directReferralUserId);
+                        JSONObject eventMessage = new JSONObject();
+                        eventMessage.put("name", "application cvpass");
+                        eventMessage.put("ID", UUID.randomUUID().toString());
+                        eventMessage.put("hr_id", jobPositionRecord.getPublisher());
+                        eventMessage.put("application_id", jobApplication.getId());
+                        eventMessage.put("recommend_user_id", jobApplication.getRecommenderUserId());
+                        eventMessage.put("position_id", jobPositionRecord.getId());
+                        eventMessage.put("applier_id", jobApplication.getApplierId());
+                        eventMessage.put("cvpass_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
+                        eventMessage.put("company_id", jobApplication.getCompanyId());
+                        logger.info("EmployeeEntity publishInitalScreenHbEvent param:{}, exchange:{}, routing:{}",
+                                eventMessage.toJSONString(), APLICATION_STATE_CHANGE_EXCHNAGE, APLICATION_STATE_CHANGE_ROUTINGKEY);
                         amqpTemplate.sendAndReceive(APLICATION_STATE_CHANGE_EXCHNAGE,
-                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
+                                APLICATION_STATE_CHANGE_ROUTINGKEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
                                         .build());
-                        logger.info("publishInitalScreenHbEvent message:{}", jsonObject);
                     }
                 }else{
                     int i =0;
