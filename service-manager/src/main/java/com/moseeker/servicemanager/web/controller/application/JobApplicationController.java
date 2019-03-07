@@ -101,8 +101,25 @@ public class JobApplicationController {
             List<Integer> ids = (List<Integer>) params.get("ids");
             Integer appid = params.getInt("appid");
             Integer ats_status = params.getInt("ats_status");
+            Integer company_id = params.getInt("company_id");
 
             ArrayList<Map> results = new ArrayList<>();
+            for (Integer id : ids) {
+                //校验该申请是否存在
+                int i = applicationService.validateAppid(id, company_id);
+                if (i == 0) {
+                    Map result = new HashMap<>();
+                    result.put("id", id);
+                    result.put("status", 1);
+                    result.put("message", "该申请不存在！");
+                    results.add(result);
+                }
+            }
+            //若有在公司id下不存在的appid，则认为该申请是非法的，返回
+            if (results.size() > 0) {
+                return ResponseLogNotification.failJson(request, "", results);
+            }
+
             for (Integer id : ids) {
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("appid", appid);

@@ -1305,5 +1305,9 @@ public class JobApplicataionService {
         }
         return applications;
     }
+
+    public int validateAppid(int appId, int companyId)  throws ApplicationException {
+        return jobApplicationDao.validateAppid(appId, companyId);
+    }
 }
 
