@@ -971,7 +971,7 @@ public class SearchUtil {
             ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
             ((BoolQueryBuilder) query).must(keyand);
         }
-    }S
+    }
 
 
 
