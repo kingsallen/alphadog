@@ -151,6 +151,34 @@ public class ReceiverHandler {
         }
     }
 
+    @RabbitListener(queues = "#{redpacketTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  redpacketTemplateReceive(Message message){
+        String msgBody = "{}";
+
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            Integer userId = jsonObject.getIntValue("user_id");
+            Integer positionId = jsonObject.getIntValue("position_id");
+            Integer referralId = jsonObject.getIntValue("referral_id");
+            log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
+                Integer postUserId = jsonObject.getIntValue("post_user_id");
+                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+            }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
+                Integer applicationId= jsonObject.getIntValue("application_id");
+                Integer employeeId= jsonObject.getIntValue("employee_id");
+                templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
+            }
+
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     @RabbitListener(queues = "#{referralRadarTenMinuteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void  sendTenMinuteTemplate(Message message){
