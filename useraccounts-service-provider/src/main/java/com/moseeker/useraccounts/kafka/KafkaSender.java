@@ -10,6 +10,7 @@ import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.useraccounts.pojo.neo4j.Connection;
+import com.moseeker.useraccounts.service.impl.pojos.KafkaApplyPojo;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaBaseDto;
 
 import com.moseeker.useraccounts.thrift.EmployeeServiceImpl;
@@ -113,5 +114,22 @@ public class KafkaSender {
         switchDto.setEvent_time(currentTime);
         switchDto.setStatus(switchState);
         sendMessage(Constant.KAFKA_TOPIC_RADAR_STATUS, JSON.toJSONString(switchDto));
+    }
+
+    public void sendUserClaimToKafka(int userId,  int positionId) {
+        KafkaSwitchDto switchDto = new KafkaSwitchDto();
+        long current = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        KafkaApplyPojo kafkaApplyPojo = new KafkaApplyPojo();
+        kafkaApplyPojo.setApplied(1);
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+        if(position != null){
+            kafkaApplyPojo.setCompany_id(position.getCompanyId());
+        }
+        kafkaApplyPojo.setEvent("application");
+        kafkaApplyPojo.setEvent_time(sdf.format(new Date(current)));
+        kafkaApplyPojo.setPosition_id(positionId);
+        kafkaApplyPojo.setUser_id(userId);
+        sendMessage(Constant.KAFKA_TOPIC_APPLICATION, JSON.toJSONString(kafkaApplyPojo));
     }
 }
