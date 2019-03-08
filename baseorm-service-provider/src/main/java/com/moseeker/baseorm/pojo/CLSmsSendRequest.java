@@ -9,16 +9,16 @@ public class CLSmsSendRequest {
     private String password;
     private String msg;
     private String params;
+    private String phone;
     private String sendtime;
     private String report;
     private String extend;
     private String uid;
 
-    public CLSmsSendRequest(String account, String password, String msg, String params) {
+    public CLSmsSendRequest(String account, String password, String msg) {
         this.account = account;
         this.password = password;
         this.msg = msg;
-        this.params = params;
     }
 
     public CLSmsSendRequest(String account, String password, String msg, String params, String sendtime, String report, String extend, String uid) {
@@ -94,5 +94,13 @@ public class CLSmsSendRequest {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 }

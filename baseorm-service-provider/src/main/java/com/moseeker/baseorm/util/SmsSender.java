@@ -79,14 +79,14 @@ public class SmsSender {
         return taobaoclient;
     }
 
-    public  CLSmsSendRequest initCLSmsSendRequest(String msg, String params){
+    public  CLSmsSendRequest initCLSmsSendRequest(String msg){
         ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
                 .getInstance();
         String account = propertiesUtils.get("sms.cl253.account",
                 String.class);
         String password = propertiesUtils.get("sms.cl253.password",
                 String.class);
-        return new CLSmsSendRequest(account, password, msg, params);
+        return new CLSmsSendRequest(account, password, msg);
     }
 
     /**
@@ -98,29 +98,36 @@ public class SmsSender {
      *
      * */
     public boolean sendCLSMS(String mobile, String templateCode, Map<String, String> params, ConfigSmsTemplateRecord templateRecord){
+
         if (StringUtils.isNullOrEmpty(mobile)){
             return false;
         }
         if (!isMoreThanUpperLimit(mobile.trim())) {
             return false;
         }
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
+                .getInstance();
+        CLSmsSendRequest clSmsSendRequest = initCLSmsSendRequest(templateRecord.getContent_253());
+        String url = "";
         String variable = templateRecord.getVariableOrder_253();
-        StringBuilder sbf = new StringBuilder();
-        sbf.append(mobile).append(",");
         if(StringUtils.isNotNullOrEmpty(variable)){
+            StringBuilder sbf = new StringBuilder();
+            sbf.append(mobile).append(",");
             String[] vars = variable.split(",");
             if(vars != null && vars.length >0){
                 for(String str : vars){
                     sbf.append(params.get(str)).append(",");
                 }
             }
+            String var = sbf.toString().substring(0, sbf.length()-1);
+            clSmsSendRequest.setParams(var);
+            url = propertiesUtils.get("sms.cl253.variable.url",
+                    String.class);
+        }else {
+            clSmsSendRequest.setPhone(mobile);
+            url = propertiesUtils.get("sms.cl253.send.url",
+                    String.class);
         }
-        String var = sbf.toString().substring(0, sbf.length()-1);
-        CLSmsSendRequest clSmsSendRequest = initCLSmsSendRequest(templateRecord.getContent_253(), var);
-        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
-                .getInstance();
-        String url = propertiesUtils.get("sms.cl253.url",
-                String.class);
         try {
             String result = HttpClient.sendPost(url, JSON.toJSONString(clSmsSendRequest));
             Map<String, Object> resp =JSON.parseObject(result);
