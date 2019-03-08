@@ -133,7 +133,7 @@ public class SmsSender {
             String result = HttpClient.sendPost(url, JSON.toJSONString(clSmsSendRequest));
             logger.info("sendCLSMS result:{}",result);
             Map<String, Object> resp =JSON.parseObject(result);
-            if (resp !=null && (Integer)resp.get("code")==0) {
+            if (resp !=null && "0".equals((String)resp.get("code"))) {
                 LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
                 record.setMobile(Long.valueOf(mobile));
                 record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);
