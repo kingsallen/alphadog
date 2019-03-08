@@ -9,12 +9,14 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
 import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysCvTpl;
@@ -49,7 +51,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Configdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -590031516;
+    private static final long serialVersionUID = -2026803566;
 
     /**
      * The reference instance of <code>configdb</code>
@@ -82,6 +84,11 @@ public class Configdb extends SchemaImpl {
     public final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
     /**
+     * 招聘管理自定义可显示字段基表
+     */
+    public final ConfigAtsApplicationShowField CONFIG_ATS_APPLICATION_SHOW_FIELD = com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD;
+
+    /**
      * The table <code>configdb.config_ats_source</code>.
      */
     public final ConfigAtsSource CONFIG_ATS_SOURCE = com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource.CONFIG_ATS_SOURCE;
@@ -110,6 +117,11 @@ public class Configdb extends SchemaImpl {
      * kenexa职位字段映射表
      */
     public final ConfigPositionKenexa CONFIG_POSITION_KENEXA = com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa.CONFIG_POSITION_KENEXA;
+
+    /**
+     * 短信模板配置（包括发送渠道）
+     */
+    public final ConfigSmsTemplate CONFIG_SMS_TEMPLATE = com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate.CONFIG_SMS_TEMPLATE;
 
     /**
      * 大岂运维平台管理员表
@@ -186,12 +198,14 @@ public class Configdb extends SchemaImpl {
             ConfigAdminnotificationGroup.CONFIG_ADMINNOTIFICATION_GROUP,
             ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS,
             ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS,
+            ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD,
             ConfigAtsSource.CONFIG_ATS_SOURCE,
             ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY,
             ConfigCronjobs.CONFIG_CRONJOBS,
             ConfigHbBalance.CONFIG_HB_BALANCE,
             ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT,
             ConfigPositionKenexa.CONFIG_POSITION_KENEXA,
+            ConfigSmsTemplate.CONFIG_SMS_TEMPLATE,
             ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR,
             ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE,
             ConfigSysCvTpl.CONFIG_SYS_CV_TPL,

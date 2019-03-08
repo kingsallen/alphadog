@@ -80,6 +80,13 @@ public class ConfigCacheconfigRediskeyDao extends DAOImpl<ConfigCacheconfigRedis
     }
 
     /**
+     * Fetch a unique record that has <code>key_identifier = value</code>
+     */
+    public com.moseeker.baseorm.db.configdb.tables.pojos.ConfigCacheconfigRediskey fetchOneByKeyIdentifier(String value) {
+        return fetchOne(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER, value);
+    }
+
+    /**
      * Fetch records that have <code>type IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigCacheconfigRediskey> fetchByType(Byte... values) {
@@ -91,6 +98,13 @@ public class ConfigCacheconfigRediskeyDao extends DAOImpl<ConfigCacheconfigRedis
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigCacheconfigRediskey> fetchByPattern(String... values) {
         return fetch(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PATTERN, values);
+    }
+
+    /**
+     * Fetch a unique record that has <code>pattern = value</code>
+     */
+    public com.moseeker.baseorm.db.configdb.tables.pojos.ConfigCacheconfigRediskey fetchOneByPattern(String value) {
+        return fetchOne(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PATTERN, value);
     }
 
     /**

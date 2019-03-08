@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplateMessageLibraryRecord> {
 
-    private static final long serialVersionUID = 1232722773;
+    private static final long serialVersionUID = -1515682990;
 
     /**
      * The reference instance of <code>configdb.config_sys_template_message_library</code>
@@ -123,7 +123,7 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
     /**
      * The column <code>configdb.config_sys_template_message_library.first</code>. 消息模板first文案
      */
-    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "消息模板first文案");
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> FIRST = createField("first", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "消息模板first文案");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.remark</code>. 消息模板remark文案
@@ -144,6 +144,11 @@ public class ConfigSysTemplateMessageLibrary extends TableImpl<ConfigSysTemplate
      * The column <code>configdb.config_sys_template_message_library.subject</code>.
      */
     public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SUBJECT = createField("subject", org.jooq.impl.SQLDataType.VARCHAR.length(100), this, "");
+
+    /**
+     * The column <code>configdb.config_sys_template_message_library.symbol</code>. 占位符 用逗号分隔
+     */
+    public final TableField<ConfigSysTemplateMessageLibraryRecord, String> SYMBOL = createField("symbol", org.jooq.impl.SQLDataType.VARCHAR.length(64), this, "占位符 用逗号分隔");
 
     /**
      * The column <code>configdb.config_sys_template_message_library.color_json</code>. 消息模板字体默认颜色

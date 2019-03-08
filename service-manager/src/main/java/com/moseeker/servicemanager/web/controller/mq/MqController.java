@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.servicemanager.web.controller.mq.vo.SmsInfo;
 import com.moseeker.thrift.gen.mq.struct.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +63,20 @@ public class MqController {
         	EmailStruct emailStruct = ParamUtils.initModelForm(request, EmailStruct.class);
 
             Response result = mqService.sendEMail(emailStruct);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/sms/sendSms", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendSms(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+            SmsInfo smsInfo = ParamUtils.initModelForm(request, SmsInfo.class);
+
+            Response result = mqService.sendSMS(smsInfo.getSmsType(),smsInfo.getMobile(), smsInfo.getData(), smsInfo.getSys(), smsInfo.getIp());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
