@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary implements Serializable {
 
-    private static final long serialVersionUID = 793797446;
+    private static final long serialVersionUID = -1884090126;
 
     private Integer id;
     private String  title;
@@ -43,6 +43,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
     private String  url;
     private String  fromName;
     private String  subject;
+    private String  symbol;
     private String  colorJson;
 
     public ConfigSysTemplateMessageLibrary() {}
@@ -67,6 +68,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.url = value.url;
         this.fromName = value.fromName;
         this.subject = value.subject;
+        this.symbol = value.symbol;
         this.colorJson = value.colorJson;
     }
 
@@ -90,6 +92,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         String  url,
         String  fromName,
         String  subject,
+        String  symbol,
         String  colorJson
     ) {
         this.id = id;
@@ -111,6 +114,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.url = url;
         this.fromName = fromName;
         this.subject = subject;
+        this.symbol = symbol;
         this.colorJson = colorJson;
     }
 
@@ -266,6 +270,14 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.subject = subject;
     }
 
+    public String getSymbol() {
+        return this.symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
     public String getColorJson() {
         return this.colorJson;
     }
@@ -297,6 +309,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         sb.append(", ").append(url);
         sb.append(", ").append(fromName);
         sb.append(", ").append(subject);
+        sb.append(", ").append(symbol);
         sb.append(", ").append(colorJson);
 
         sb.append(")");

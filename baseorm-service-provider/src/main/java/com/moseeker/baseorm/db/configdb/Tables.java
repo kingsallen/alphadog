@@ -9,12 +9,14 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
+import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
 import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysCvTpl;
@@ -67,6 +69,11 @@ public class Tables {
     public static final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
 
     /**
+     * 招聘管理自定义可显示字段基表
+     */
+    public static final ConfigAtsApplicationShowField CONFIG_ATS_APPLICATION_SHOW_FIELD = com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD;
+
+    /**
      * The table <code>configdb.config_ats_source</code>.
      */
     public static final ConfigAtsSource CONFIG_ATS_SOURCE = com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource.CONFIG_ATS_SOURCE;
@@ -95,6 +102,11 @@ public class Tables {
      * kenexa职位字段映射表
      */
     public static final ConfigPositionKenexa CONFIG_POSITION_KENEXA = com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa.CONFIG_POSITION_KENEXA;
+
+    /**
+     * 短信模板配置（包括发送渠道）
+     */
+    public static final ConfigSmsTemplate CONFIG_SMS_TEMPLATE = com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate.CONFIG_SMS_TEMPLATE;
 
     /**
      * 大岂运维平台管理员表

@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigOmsSwitchManagementRecord extends UpdatableRecordImpl<ConfigOmsSwitchManagementRecord> implements Record8<Integer, Integer, Integer, String, Byte, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -563418124;
+    private static final long serialVersionUID = -1249265868;
 
     /**
      * Setter for <code>configdb.config_oms_switch_management.id</code>. primaryKey
@@ -61,14 +61,14 @@ public class ConfigOmsSwitchManagementRecord extends UpdatableRecordImpl<ConfigO
     }
 
     /**
-     * Setter for <code>configdb.config_oms_switch_management.module_name</code>. 各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强
+     * Setter for <code>configdb.config_oms_switch_management.module_name</code>. 各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强显示
      */
     public void setModuleName(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>configdb.config_oms_switch_management.module_name</code>. 各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强
+     * Getter for <code>configdb.config_oms_switch_management.module_name</code>. 各产品定义标识 1:我是员工，2:粉丝智能推荐，3:meet mobot(问卷调查)，4:员工智能推荐，5:社招，6:校招，7.人脉雷达，8.老员工回聘， 9.五百强显示
      */
     public Integer getModuleName() {
         return (Integer) get(2);

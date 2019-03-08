@@ -191,6 +191,13 @@ public class ConfigSysTemplateMessageLibraryDao extends DAOImpl<ConfigSysTemplat
     }
 
     /**
+     * Fetch records that have <code>symbol IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysTemplateMessageLibrary> fetchBySymbol(String... values) {
+        return fetch(ConfigSysTemplateMessageLibrary.CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.SYMBOL, values);
+    }
+
+    /**
      * Fetch records that have <code>color_json IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSysTemplateMessageLibrary> fetchByColorJson(String... values) {

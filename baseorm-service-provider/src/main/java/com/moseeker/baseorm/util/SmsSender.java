@@ -4,14 +4,19 @@ package com.moseeker.baseorm.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.SMSScene;
+import com.moseeker.baseorm.dao.configdb.ConfigSmsTemplateDao;
 import com.moseeker.baseorm.dao.logdb.LogSmsSendrecordDao;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigSmsTemplateRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogSmsSendrecordRecord;
+import com.moseeker.baseorm.pojo.CLSmsSendRequest;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.constants.SmsChannelType;
 import com.moseeker.common.constants.SmsNationUtil;
 import com.moseeker.common.exception.CacheConfigNotExistException;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.ConfigPropertiesUtil;
+import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
@@ -46,9 +51,13 @@ public class SmsSender {
     private static TaobaoClient taobaoclient;
     private static Logger logger = LoggerFactory.getLogger(SmsSender.class);
     private static final String SMS_LIMIT_KEY = "SMS_LIMIT";
+
     
     @Autowired
 	protected LogSmsSendrecordDao smsRecordDao;
+
+    @Autowired
+    private ConfigSmsTemplateDao smsTemplateDao;
 
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -68,7 +77,76 @@ public class SmsSender {
             }
         }
         return taobaoclient;
-    }    
+    }
+
+    public  CLSmsSendRequest initCLSmsSendRequest(String msg, String params){
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
+                .getInstance();
+        String account = propertiesUtils.get("sms.cl253.account",
+                String.class);
+        String password = propertiesUtils.get("sms.cl253.password",
+                String.class);
+        return new CLSmsSendRequest(account, password, msg, params);
+    }
+
+    /**
+     * 发送短信
+     *
+     * @param mobile 手机号
+     * @param templateCode 模板code
+     * @param params 需要的变量map
+     *
+     * */
+    public boolean sendCLSMS(String mobile, String templateCode, Map<String, String> params, ConfigSmsTemplateRecord templateRecord){
+        if (StringUtils.isNullOrEmpty(mobile)){
+            return false;
+        }
+        if (!isMoreThanUpperLimit(mobile.trim())) {
+            return false;
+        }
+        String variable = templateRecord.getVariableOrder_253();
+        StringBuilder sbf = new StringBuilder();
+        sbf.append(mobile).append(",");
+        if(StringUtils.isNotNullOrEmpty(variable)){
+            String[] vars = variable.split(",");
+            if(vars != null && vars.length >0){
+                for(String str : vars){
+                    sbf.append(params.get(str)).append(",");
+                }
+            }
+        }
+        String var = sbf.toString().substring(0, sbf.length()-1);
+        CLSmsSendRequest clSmsSendRequest = initCLSmsSendRequest(templateRecord.getContent_253(), var);
+        ConfigPropertiesUtil propertiesUtils = ConfigPropertiesUtil
+                .getInstance();
+        String url = propertiesUtils.get("sms.cl253.url",
+                String.class);
+        try {
+            String result = HttpClient.sendPost(url, JSON.toJSONString(clSmsSendRequest));
+            Map<String, Object> resp =JSON.parseObject(result);
+            if (resp !=null && (Integer)resp.get("code")==0) {
+                LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
+                record.setMobile(Long.valueOf(mobile));
+                record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);
+                JSONObject json = new JSONObject();
+                json.put("extend", mobile);
+                json.put("sms_type", "nomal");
+                json.put("sms_free_sign_name", "仟寻");
+                json.put("template_code", templateCode);
+                json.put("params", params);
+                record.setMsg(json.toJSONString());
+                smsRecordDao.addRecord(record);
+                logger.info(json.toJSONString());
+                return true;
+            }
+            else{
+                logger.warn("短信发送失败:{}   手机号码:{}", resp, mobile);
+            }
+        } catch (Exception e) {
+            logger.warn("短信发送失败:" + e.getMessage(), e);
+        }
+        return false;
+    }
 
     /**
      * 发送短信
@@ -79,8 +157,23 @@ public class SmsSender {
      *
      * */
     public boolean sendSMS(String mobile, String templateCode, Map<String, String> params){
+        ConfigSmsTemplateRecord record = smsTemplateDao.getConfigSmsTemplateByCodeAndChannel(templateCode);
+        if(record == null){
+            return this.alibabaSmsSend(mobile, templateCode, params);
+        }else {
+            switch (record.getChannelType()) {
+                case 2:
+                    return this.sendCLSMS(mobile, templateCode, params, record);
+                default:
+                    return this.alibabaSmsSend(mobile, templateCode, params);
+            }
+        }
+
+    }
+
+    private boolean alibabaSmsSend(String mobile, String templateCode, Map<String, String> params){
         initTaobaoClientInstance();
-        
+
         if (StringUtils.isNullOrEmpty(mobile)){
             return false;
         }
@@ -105,29 +198,29 @@ public class SmsSender {
         try {
             rsp = taobaoclient.execute(req);
             if (rsp.getBody().indexOf("success")>-1) {
-            	LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
-            	record.setMobile(Long.valueOf(mobile));
-            	record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);
-            	JSONObject json = new JSONObject();
-            	json.put("extend", mobile);
-            	json.put("sms_type", "nomal");
-            	json.put("sms_free_sign_name", "仟寻");
-            	json.put("template_code", templateCode);
-            	json.put("params", params);
-            	record.setMsg(json.toJSONString());
-            	smsRecordDao.addRecord(record);
-            	logger.info(json.toJSONString());
+                LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
+                record.setMobile(Long.valueOf(mobile));
+                record.setSys(Constant.LOG_SMS_SENDRECORD_SYS_ALPHADOG);
+                JSONObject json = new JSONObject();
+                json.put("extend", mobile);
+                json.put("sms_type", "nomal");
+                json.put("sms_free_sign_name", "仟寻");
+                json.put("template_code", templateCode);
+                json.put("params", params);
+                record.setMsg(json.toJSONString());
+                smsRecordDao.addRecord(record);
+                logger.info(json.toJSONString());
                 return true;
             }
             else{
-            	logger.warn("短信发送失败:{}   手机号码:{}",rsp.getBody(), mobile);
+                logger.warn("短信发送失败:{}   手机号码:{}",rsp.getBody(), mobile);
             }
         } catch (ApiException e) {
-        	logger.warn("短信发送失败:{},  手机号码:{}", e.getMessage(), mobile);
+            logger.warn("短信发送失败:{},  手机号码:{}", e.getMessage(), mobile);
         } catch (Exception e) {
-        	logger.warn("短信发送失败:" + e.getMessage(), e);
-		}
-        return false;    
+            logger.warn("短信发送失败:" + e.getMessage(), e);
+        }
+        return false;
     }
 
     /**
