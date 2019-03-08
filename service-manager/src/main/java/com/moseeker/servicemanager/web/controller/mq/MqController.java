@@ -75,8 +75,8 @@ public class MqController {
         try {
             // 发送消息模板
             SmsInfo smsInfo = ParamUtils.initModelForm(request, SmsInfo.class);
-
-            Response result = mqService.sendSMS(smsInfo.getSmsType(),smsInfo.getMobile(), smsInfo.getData(), smsInfo.getSys(), smsInfo.getIp());
+            logger.info("sendSms smsInfo:{}", smsInfo);
+            Response result = mqService.sendSMS(SmsType.findByValue(smsInfo.getSmsType()),smsInfo.getMobile(), smsInfo.getData(), smsInfo.getSys(), smsInfo.getIp());
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
