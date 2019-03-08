@@ -75,6 +75,8 @@ public final class Constant {
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
     public static final String REFERRAL_RADAR_TEMPLATE = "referral_radar.referral_radar_template";
+
+    public static final String BALANCE_CHARGE_ROUTINGKEY = "balance_charge.redpacket_template";
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";

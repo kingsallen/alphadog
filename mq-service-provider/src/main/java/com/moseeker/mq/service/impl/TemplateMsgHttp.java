@@ -470,6 +470,113 @@ public class TemplateMsgHttp {
 
     }
 
+    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId) {
+        JobPositionDO position = positionDao.getJobPositionById(positionId);
+        UserUserDO user = userDao.getUser(userId);
+        if(user == null){
+            logger.info("求内推候选人数据为空");
+            return;
+        }
+        String username = user.getName();
+        if(StringUtils.isNullOrEmpty(username)) {
+            UserWxUserRecord userWxUser = userWxUserDao.getWXUserByUserId(userId);
+            if(userWxUser != null) {
+                username = userWxUser.getNickname();
+            }
+        }
+        if(position == null){
+            logger.info("职位为空");
+            return;
+        }
+        HrWxWechatDO wxWechatDO = hrWxWechatDao.getHrWxWechatByCompanyId(position.getCompanyId());
+        if(wxWechatDO == null){
+            logger.info("公众号信息为空");
+            return;
+        }
+        UserWxUserRecord postWxUser = userWxUserDao.getWxUserByUserIdAndWechatIdAndSubscribe(postUserId, wxWechatDO.getId());
+        if(postWxUser == null){
+            logger.info("员工微信信息为空");
+            return;
+        }
+        HrWxTemplateMessageDO templateMessageDO = wxTemplateMessageDao.getHrWxTemplateMessageDOByWechatId(wxWechatDO.getId(), REFERRAL_SEEK_REFERRAL);
+        if(templateMessageDO == null){
+            logger.info("公众号没有配置此消息模板");
+            return;
+        }
+        String first = SeekReferralFirst;
+        String firstColor = "#2CD6B1";
+        String keyword1Color = "#66A4F9";
+        String keyword2Color = "#66A4F9";
+        ConfigSysTemplateMessageLibraryRecord record =
+                templateMessageLibraryDao.getConfigSysTemplateMessageLibraryDOByidListAndDisable(REFERRAL_SEEK_REFERRAL);
+        if (record != null) {
+            if(StringUtils.isNotNullOrEmpty(record.getColorJson())) {
+                Map<String, Object> color = (Map<String, Object>) JSON.parse(record.getColorJson());
+                if(color.get("first") != null) {
+                    firstColor = (String) color.get("first");
+                }
+                if(color.get("keyword1") != null) {
+                    keyword1Color = (String) color.get("keyword1");
+                }
+                if(color.get("keyword2") != null) {
+                    keyword2Color = (String) color.get("keyword2");
+                }
+            }
+        }
+        String time =  DateUtils.dateToMinuteCNDate(new Date());
+
+
+        Map<String,MessageTplDataCol> colMap =new HashMap<>();
+        MessageTplDataCol firstJson = new MessageTplDataCol();
+        firstJson.setColor(firstColor);
+        firstJson.setValue(first);
+        colMap.put("first", firstJson);
+
+        MessageTplDataCol keywords1 = new MessageTplDataCol();
+        keywords1.setColor(keyword1Color);
+        keywords1.setValue(position.getTitle());
+        colMap.put("keyword1", keywords1);
+
+        MessageTplDataCol keywords2 = new MessageTplDataCol();
+        keywords2.setColor(keyword2Color);
+        keywords2.setValue(username);
+        colMap.put("keyword2", keywords2);
+
+        MessageTplDataCol keywords3 = new MessageTplDataCol();
+        keywords3.setColor("#171717");
+        keywords3.setValue(String.valueOf(user.getMobile()));
+        colMap.put("keyword3", keywords3);
+
+        MessageTplDataCol remarkJson = new MessageTplDataCol();
+        remarkJson.setColor("#171717");
+        remarkJson.setValue("求推荐时间："+time);
+        colMap.put("remark", remarkJson);
+
+        Map<String, Object> applierTemplate = new HashMap<>();
+        applierTemplate.put("data", colMap);
+        applierTemplate.put("touser", postWxUser.getOpenid());
+        applierTemplate.put("template_id", templateMessageDO.getWxTemplateId());
+        applierTemplate.put("topcolor", "#FF0000");
+        String link = env.getProperty("message.template.employee.recommend")
+                .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
+                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+        applierTemplate.put("url", link);
+        logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
+
+        String url=env.getProperty("message.template.delivery.url").replace("{}", wxWechatDO.getAccessToken());
+        logger.info("noticeEmployeeVerify url : {}", url);
+        try {
+            String result = HttpClient.sendPost(url, JSON.toJSONString(applierTemplate));
+            Map<String, Object> params = JSON.parseObject(result);
+            insertLogWxMessageRecord(wxWechatDO, templateMessageDO,  postWxUser.getOpenid(), link, colMap ,params);
+
+            logger.info("noticeEmployeeVerify result:{}", result);
+        } catch (ConnectException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+    }
+
     public void positionSyncFailTemplate(int positionId, String message, int channal) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
         if (position == null) {

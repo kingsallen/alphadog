@@ -159,17 +159,11 @@ public class ReceiverHandler {
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
-            Integer userId = jsonObject.getIntValue("user_id");
-            Integer positionId = jsonObject.getIntValue("position_id");
-            Integer referralId = jsonObject.getIntValue("referral_id");
-            log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
-            if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
-                Integer postUserId = jsonObject.getIntValue("post_user_id");
+            log.info("redpacketTemplateReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            if(Constant.BALANCE_CHARGE_ROUTINGKEY.equals(message.getMessageProperties().getReceivedRoutingKey())) {
+                Integer companyId = jsonObject.getIntValue("company_id");
+                Integer amount = jsonObject.getIntValue("amount");
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
-            }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
-                Integer applicationId= jsonObject.getIntValue("application_id");
-                Integer employeeId= jsonObject.getIntValue("employee_id");
-                templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
             }
 
         } catch (CommonException e) {
