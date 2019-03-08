@@ -43,7 +43,8 @@ public enum SmsType implements org.apache.thrift.TEnum {
   APPLIER_APP_ATTACH_RESOLVE_ERROR_SMS(28),
   PPLIER_APP_ATTACH_RESOLVE_OVERSIZE_SMS(29),
   APPLIER_APP_RESOLVE_FAIL_SMS(30),
-  ALARM_SMS(31);
+  ALARM_SMS(31),
+  ;
 
   private final int value;
 
