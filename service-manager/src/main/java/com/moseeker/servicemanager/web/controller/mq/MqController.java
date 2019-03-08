@@ -74,9 +74,16 @@ public class MqController {
     public String sendSms(HttpServletRequest request, HttpServletResponse response) {
         try {
             // 发送消息模板
-            SmsInfo smsInfo = ParamUtils.initModelForm(request, SmsInfo.class);
-            logger.info("sendSms smsInfo:{}", smsInfo);
-            Response result = mqService.sendSMS(SmsType.findByValue(smsInfo.getSmsType()),smsInfo.getMobile(), smsInfo.getData(), smsInfo.getSys(), smsInfo.getIp());
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+            Map<String, String> data = (Map<String, String>) param.get("data");
+            int smsType = param.getInt("smsType");
+            String mobile = param.getString("mobile");
+            String sys = param.getString("sys");
+            String ip = param.getString("ip");
+
+
+            logger.info("sendSms smsType:{},mobile:{},sys:{},ip:{},data:{}", smsType, mobile, sys,ip, data);
+            Response result = mqService.sendSMS(SmsType.findByValue(smsType),mobile, data, sys, ip);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
