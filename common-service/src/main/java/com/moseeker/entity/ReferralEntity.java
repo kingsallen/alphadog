@@ -725,7 +725,7 @@ public class ReferralEntity {
             }
             logger.info("fetchEmployeeRadarData positionId:{}, userIdList:{}", positionIdList, userIdList);
             Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
-                    () -> shareChainDao.getShareChainByPositionAndPresentee(positionIdList, userIdList, postUserId));
+                    () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
             Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
                     () -> positionDao.getPositionListWithoutStatus(positionIdList));
             Map<Integer, Integer> root2Map = new HashMap<>();
