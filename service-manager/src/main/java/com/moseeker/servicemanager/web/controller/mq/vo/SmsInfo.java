@@ -8,18 +8,17 @@ import java.util.Map;
  * Created by liuxuhui on 2019/3/8.
  */
 public class SmsInfo {
-    private SmsType smsType;
+    private int smsType;
     private String mobile;
     private Map<String, String> data;
     private String sys;
     private String ip;
 
-
-    public SmsType getSmsType() {
+    public int getSmsType() {
         return smsType;
     }
 
-    public void setSmsType(SmsType smsType) {
+    public void setSmsType(int smsType) {
         this.smsType = smsType;
     }
 
