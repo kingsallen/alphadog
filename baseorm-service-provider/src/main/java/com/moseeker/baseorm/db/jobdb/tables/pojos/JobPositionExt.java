@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExt implements Serializable {
 
-    private static final long serialVersionUID = -1717013411;
+    private static final long serialVersionUID = -1694358234;
 
     private Integer   pid;
     private Integer   jobCustomId;
@@ -32,6 +32,7 @@ public class JobPositionExt implements Serializable {
     private Integer   jobOccupationId;
     private String    extra;
     private Integer   alipayJobId;
+    private String    ext;
 
     public JobPositionExt() {}
 
@@ -43,6 +44,7 @@ public class JobPositionExt implements Serializable {
         this.jobOccupationId = value.jobOccupationId;
         this.extra = value.extra;
         this.alipayJobId = value.alipayJobId;
+        this.ext = value.ext;
     }
 
     public JobPositionExt(
@@ -52,7 +54,8 @@ public class JobPositionExt implements Serializable {
         Timestamp updateTime,
         Integer   jobOccupationId,
         String    extra,
-        Integer   alipayJobId
+        Integer   alipayJobId,
+        String    ext
     ) {
         this.pid = pid;
         this.jobCustomId = jobCustomId;
@@ -61,6 +64,7 @@ public class JobPositionExt implements Serializable {
         this.jobOccupationId = jobOccupationId;
         this.extra = extra;
         this.alipayJobId = alipayJobId;
+        this.ext = ext;
     }
 
     public Integer getPid() {
@@ -119,6 +123,14 @@ public class JobPositionExt implements Serializable {
         this.alipayJobId = alipayJobId;
     }
 
+    public String getExt() {
+        return this.ext;
+    }
+
+    public void setExt(String ext) {
+        this.ext = ext;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("JobPositionExt (");
@@ -130,6 +142,7 @@ public class JobPositionExt implements Serializable {
         sb.append(", ").append(jobOccupationId);
         sb.append(", ").append(extra);
         sb.append(", ").append(alipayJobId);
+        sb.append(", ").append(ext);
 
         sb.append(")");
         return sb.toString();

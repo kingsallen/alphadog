@@ -995,7 +995,10 @@ public class PositionService {
                             jobPositionCityRecordsUpdatelist.addAll(jobPositionCityRecordList);
                         }
                         // 需要更新的JobPositionExra数据
-                        if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0 || customId != 0) {
+                        if (jobPositionHandlerDate.getExtra() != null
+                                || jobOccupationId != 0
+                                || customId != 0
+                                || StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
                             if (jobPositionExtRecord == null) {
                                 jobPositionExtRecord = new JobPositionExtRecord();
                                 jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
@@ -1006,6 +1009,9 @@ public class PositionService {
                                 if (customId != 0) {
                                     jobPositionExtRecord.setJobCustomId(customId);
                                 }
+                                if (StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
+                                    jobPositionExtRecord.setExt(jobPositionHandlerDate.getExt());
+                                }
                                 jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                             } else {
                                 jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
@@ -1014,6 +1020,9 @@ public class PositionService {
                                 }
                                 if (customId != 0) {
                                     jobPositionExtRecord.setJobCustomId(customId);
+                                }
+                                if (StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
+                                    jobPositionExtRecord.setExt(jobPositionHandlerDate.getExt());
                                 }
                                 jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
                             }
@@ -1048,14 +1057,19 @@ public class PositionService {
                     handleCcmail(jobPositionHandlerDate, record, jobPositionCcmailRecordsAddlist);
                 }
 
-                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra())
+                        || jobOccupationId != 0
+                        || customId != 0
+                        || StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
                     // 新增jobPostion_ext数据
                     JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
                     jobPositionExtRecord.setJobOccupationId(jobOccupationId);
                     jobPositionExtRecord.setJobCustomId(customId);
                     jobPositionExtRecord.setPid(pid);
+                    jobPositionExtRecord.setExt(jobPositionHandlerDate.getExt());
                     jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
+
                 }
             }
         }
