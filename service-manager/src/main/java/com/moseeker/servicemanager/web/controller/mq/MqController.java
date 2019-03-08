@@ -71,8 +71,8 @@ public class MqController {
 
     @RequestMapping(value = "/sms/sendSms", method = RequestMethod.POST)
     @ResponseBody
-    public String sendSms(HttpServletRequest request, HttpServletResponse response) throws Exception {
-//        try {
+    public String sendSms(HttpServletRequest request, HttpServletResponse response) {
+        try {
             // 发送消息模板
             Params<String, Object> param = ParamUtils.parseRequestParam(request);
             logger.error("sendSms param:{}",param);
@@ -86,9 +86,9 @@ public class MqController {
             logger.info("sendSms smsType:{},mobile:{},sys:{},ip:{},data:{}", smsType, mobile, sys,ip, data);
             Response result = mqService.sendSMS(SmsType.findByValue(smsType),mobile, data, sys, ip);
             return ResponseLogNotification.success(request, result);
-//        } catch (Exception e) {
-//            return ResponseLogNotification.fail(request, e.getMessage());
-//        }
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/v4/email/sendAuthEMail", method = RequestMethod.POST)
