@@ -129,7 +129,9 @@ public class SmsSender {
                     String.class);
         }
         try {
+            logger.info("sendCLSMS url:{},request:{}",url,clSmsSendRequest);
             String result = HttpClient.sendPost(url, JSON.toJSONString(clSmsSendRequest));
+            logger.info("sendCLSMS result:{}",result);
             Map<String, Object> resp =JSON.parseObject(result);
             if (resp !=null && (Integer)resp.get("code")==0) {
                 LogSmsSendrecordRecord record = new LogSmsSendrecordRecord();
@@ -165,6 +167,8 @@ public class SmsSender {
      * */
     public boolean sendSMS(String mobile, String templateCode, Map<String, String> params){
         ConfigSmsTemplateRecord record = smsTemplateDao.getConfigSmsTemplateByCodeAndChannel(templateCode);
+        logger.info("sendCLSMS record:{}",record);
+        logger.info("sendCLSMS mobile:{}, templateCode:{}, params:{}",mobile,templateCode,params);
         if(record == null){
             return this.alibabaSmsSend(mobile, templateCode, params);
         }else {
