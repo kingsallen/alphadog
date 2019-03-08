@@ -24,7 +24,7 @@ import org.jooq.impl.TableImpl;
 
 
 /**
- * 红包触发人记录
+ * 红包触发记录
  */
 @Generated(
     value = {
@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketRedpacketTrigger extends TableImpl<RedpacketRedpacketTriggerRecord> {
 
-    private static final long serialVersionUID = -844020050;
+    private static final long serialVersionUID = -480385818;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_redpacket_trigger</code>
@@ -67,6 +67,11 @@ public class RedpacketRedpacketTrigger extends TableImpl<RedpacketRedpacketTrigg
     public final TableField<RedpacketRedpacketTriggerRecord, Integer> TRIGGER_USER_ID = createField("trigger_user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "红包触发人编号");
 
     /**
+     * The column <code>redpacketdb.redpacket_redpacket_trigger.activity_id</code>. 红包活动编号
+     */
+    public final TableField<RedpacketRedpacketTriggerRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "红包活动编号");
+
+    /**
      * The column <code>redpacketdb.redpacket_redpacket_trigger.create_time</code>. 创建时间
      */
     public final TableField<RedpacketRedpacketTriggerRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
@@ -75,11 +80,6 @@ public class RedpacketRedpacketTrigger extends TableImpl<RedpacketRedpacketTrigg
      * The column <code>redpacketdb.redpacket_redpacket_trigger.update_time</code>. 更新时间
      */
     public final TableField<RedpacketRedpacketTriggerRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>redpacketdb.redpacket_redpacket_trigger.activity_id</code>. 红包活动编号
-     */
-    public final TableField<RedpacketRedpacketTriggerRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "红包活动编号");
 
     /**
      * Create a <code>redpacketdb.redpacket_redpacket_trigger</code> table reference
@@ -100,7 +100,7 @@ public class RedpacketRedpacketTrigger extends TableImpl<RedpacketRedpacketTrigg
     }
 
     private RedpacketRedpacketTrigger(String alias, Table<RedpacketRedpacketTriggerRecord> aliased, Field<?>[] parameters) {
-        super(alias, null, aliased, parameters, "红包触发人记录");
+        super(alias, null, aliased, parameters, "红包触发记录");
     }
 
     /**

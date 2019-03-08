@@ -94,6 +94,13 @@ public class RedpacketActivityPositionDao extends DAOImpl<RedpacketActivityPosit
     }
 
     /**
+     * Fetch records that have <code>enable IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByEnable(Byte... values) {
+        return fetch(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.ENABLE, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByCreateTime(Timestamp... values) {
@@ -108,9 +115,9 @@ public class RedpacketActivityPositionDao extends DAOImpl<RedpacketActivityPosit
     }
 
     /**
-     * Fetch records that have <code>enable IN (values)</code>
+     * Fetch records that have <code>storage IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByEnable(Byte... values) {
-        return fetch(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.ENABLE, values);
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition> fetchByStorage(Integer... values) {
+        return fetch(RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION.STORAGE, values);
     }
 }

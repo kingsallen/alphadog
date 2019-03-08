@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketRedpacketPosition extends TableImpl<RedpacketRedpacketPositionRecord> {
 
-    private static final long serialVersionUID = 40497084;
+    private static final long serialVersionUID = 1708919548;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_redpacket_position</code>
@@ -127,7 +127,7 @@ public class RedpacketRedpacketPosition extends TableImpl<RedpacketRedpacketPosi
      */
     @Override
     public List<UniqueKey<RedpacketRedpacketPositionRecord>> getKeys() {
-        return Arrays.<UniqueKey<RedpacketRedpacketPositionRecord>>asList(Keys.KEY_REDPACKET_REDPACKET_POSITION_PRIMARY);
+        return Arrays.<UniqueKey<RedpacketRedpacketPositionRecord>>asList(Keys.KEY_REDPACKET_REDPACKET_POSITION_PRIMARY, Keys.KEY_REDPACKET_REDPACKET_POSITION_REDPACKET_LOG_ID);
     }
 
     /**

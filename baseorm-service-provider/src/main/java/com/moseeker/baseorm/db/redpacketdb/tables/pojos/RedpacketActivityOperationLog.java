@@ -23,44 +23,48 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityOperationLog implements Serializable {
 
-    private static final long serialVersionUID = -206908634;
+    private static final long serialVersionUID = -196770321;
 
     private Integer   id;
+    private Integer   activityId;
     private Byte      type;
     private Integer   userId;
-    private Integer   activityId;
     private String    desc;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   storage;
 
     public RedpacketActivityOperationLog() {}
 
     public RedpacketActivityOperationLog(RedpacketActivityOperationLog value) {
         this.id = value.id;
+        this.activityId = value.activityId;
         this.type = value.type;
         this.userId = value.userId;
-        this.activityId = value.activityId;
         this.desc = value.desc;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.storage = value.storage;
     }
 
     public RedpacketActivityOperationLog(
         Integer   id,
+        Integer   activityId,
         Byte      type,
         Integer   userId,
-        Integer   activityId,
         String    desc,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   storage
     ) {
         this.id = id;
+        this.activityId = activityId;
         this.type = type;
         this.userId = userId;
-        this.activityId = activityId;
         this.desc = desc;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.storage = storage;
     }
 
     public Integer getId() {
@@ -69,6 +73,14 @@ public class RedpacketActivityOperationLog implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getActivityId() {
+        return this.activityId;
+    }
+
+    public void setActivityId(Integer activityId) {
+        this.activityId = activityId;
     }
 
     public Byte getType() {
@@ -85,14 +97,6 @@ public class RedpacketActivityOperationLog implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public Integer getActivityId() {
-        return this.activityId;
-    }
-
-    public void setActivityId(Integer activityId) {
-        this.activityId = activityId;
     }
 
     public String getDesc() {
@@ -119,17 +123,26 @@ public class RedpacketActivityOperationLog implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getStorage() {
+        return this.storage;
+    }
+
+    public void setStorage(Integer storage) {
+        this.storage = storage;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RedpacketActivityOperationLog (");
 
         sb.append(id);
+        sb.append(", ").append(activityId);
         sb.append(", ").append(type);
         sb.append(", ").append(userId);
-        sb.append(", ").append(activityId);
         sb.append(", ").append(desc);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(storage);
 
         sb.append(")");
         return sb.toString();

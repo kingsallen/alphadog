@@ -108,6 +108,13 @@ public class RedpacketActivityDao extends DAOImpl<RedpacketActivityRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>left_amount IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByLeftAmount(Integer... values) {
+        return fetch(RedpacketActivity.REDPACKET_ACTIVITY.LEFT_AMOUNT, values);
+    }
+
+    /**
      * Fetch records that have <code>range_min IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByRangeMin(Integer... values) {
@@ -185,6 +192,13 @@ public class RedpacketActivityDao extends DAOImpl<RedpacketActivityRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>d_type IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByDType(Byte... values) {
+        return fetch(RedpacketActivity.REDPACKET_ACTIVITY.D_TYPE, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByCreateTime(Timestamp... values) {
@@ -196,19 +210,5 @@ public class RedpacketActivityDao extends DAOImpl<RedpacketActivityRecord, com.m
      */
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByUpdateTime(Timestamp... values) {
         return fetch(RedpacketActivity.REDPACKET_ACTIVITY.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>left_amount IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByLeftAmount(Integer... values) {
-        return fetch(RedpacketActivity.REDPACKET_ACTIVITY.LEFT_AMOUNT, values);
-    }
-
-    /**
-     * Fetch records that have <code>d_type IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity> fetchByDType(Byte... values) {
-        return fetch(RedpacketActivity.REDPACKET_ACTIVITY.D_TYPE, values);
     }
 }

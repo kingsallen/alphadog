@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityOperationLog extends TableImpl<RedpacketActivityOperationLogRecord> {
 
-    private static final long serialVersionUID = -1709799911;
+    private static final long serialVersionUID = 262901326;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_activity_operation_log</code>
@@ -57,19 +57,19 @@ public class RedpacketActivityOperationLog extends TableImpl<RedpacketActivityOp
     public final TableField<RedpacketActivityOperationLogRecord, Integer> ID = createField("id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
-     * The column <code>redpacketdb.redpacket_activity_operation_log.type</code>. 操作类型：0 创建， 1 审核变更， 2 状态变更, 3 归档
+     * The column <code>redpacketdb.redpacket_activity_operation_log.activity_id</code>. 红包活动编号
      */
-    public final TableField<RedpacketActivityOperationLogRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "操作类型：0 创建， 1 审核变更， 2 状态变更, 3 归档");
+    public final TableField<RedpacketActivityOperationLogRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "红包活动编号");
+
+    /**
+     * The column <code>redpacketdb.redpacket_activity_operation_log.type</code>. 操作类型：2:未开始，3:进行中：4:暂停中，5：已完成， 0: 已删除, -1 归档
+     */
+    public final TableField<RedpacketActivityOperationLogRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "操作类型：2:未开始，3:进行中：4:暂停中，5：已完成， 0: 已删除, -1 归档");
 
     /**
      * The column <code>redpacketdb.redpacket_activity_operation_log.user_id</code>. 操作人编号
      */
     public final TableField<RedpacketActivityOperationLogRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "操作人编号");
-
-    /**
-     * The column <code>redpacketdb.redpacket_activity_operation_log.activity_id</code>. 红包活动编号
-     */
-    public final TableField<RedpacketActivityOperationLogRecord, Integer> ACTIVITY_ID = createField("activity_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "红包活动编号");
 
     /**
      * The column <code>redpacketdb.redpacket_activity_operation_log.desc</code>. 操作说明
@@ -85,6 +85,11 @@ public class RedpacketActivityOperationLog extends TableImpl<RedpacketActivityOp
      * The column <code>redpacketdb.redpacket_activity_operation_log.update_time</code>. 更新时间
      */
     public final TableField<RedpacketActivityOperationLogRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>redpacketdb.redpacket_activity_operation_log.storage</code>. 剩余红包数量
+     */
+    public final TableField<RedpacketActivityOperationLogRecord, Integer> STORAGE = createField("storage", org.jooq.impl.SQLDataType.INTEGER, this, "剩余红包数量");
 
     /**
      * Create a <code>redpacketdb.redpacket_activity_operation_log</code> table reference

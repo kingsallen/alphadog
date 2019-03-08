@@ -720,6 +720,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getJobPositionByIdList(List<Integer> positionIdList) {
 
 
+
         Result<JobPositionRecord> positionRecords = create.selectFrom(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.ID.in(positionIdList))
                 .and(JobPosition.JOB_POSITION.STATUS.eq((byte) AbleFlag.OLDENABLE.getValue()))

@@ -424,7 +424,7 @@ public class PositionController {
             if(StringUtils.isNullOrEmpty(pageSize)){
                 pageSize="15";
             }
-            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId,Integer.parseInt(pageNum),Integer.parseInt(pageSize));
+            List<WechatRpPositionListData> rpPositionList = positonServices.getRpPositionList(hbConfigId, Integer.parseInt(pageNum),Integer.parseInt(pageSize));
 
             Response res = ResponseUtils.success(rpPositionList);
             return ResponseLogNotification.success(request, res);

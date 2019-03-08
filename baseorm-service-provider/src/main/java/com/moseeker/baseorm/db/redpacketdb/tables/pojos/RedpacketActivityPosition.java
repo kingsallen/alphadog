@@ -23,16 +23,17 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityPosition implements Serializable {
 
-    private static final long serialVersionUID = -2081857654;
+    private static final long serialVersionUID = -1071582035;
 
     private Integer   id;
     private Integer   activityId;
     private Integer   positionId;
     private Integer   totalAmount;
     private Integer   leftAmount;
+    private Byte      enable;
     private Timestamp createTime;
     private Timestamp updateTime;
-    private Byte      enable;
+    private Integer   storage;
 
     public RedpacketActivityPosition() {}
 
@@ -42,9 +43,10 @@ public class RedpacketActivityPosition implements Serializable {
         this.positionId = value.positionId;
         this.totalAmount = value.totalAmount;
         this.leftAmount = value.leftAmount;
+        this.enable = value.enable;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
-        this.enable = value.enable;
+        this.storage = value.storage;
     }
 
     public RedpacketActivityPosition(
@@ -53,18 +55,20 @@ public class RedpacketActivityPosition implements Serializable {
         Integer   positionId,
         Integer   totalAmount,
         Integer   leftAmount,
+        Byte      enable,
         Timestamp createTime,
         Timestamp updateTime,
-        Byte      enable
+        Integer   storage
     ) {
         this.id = id;
         this.activityId = activityId;
         this.positionId = positionId;
         this.totalAmount = totalAmount;
         this.leftAmount = leftAmount;
+        this.enable = enable;
         this.createTime = createTime;
         this.updateTime = updateTime;
-        this.enable = enable;
+        this.storage = storage;
     }
 
     public Integer getId() {
@@ -107,6 +111,14 @@ public class RedpacketActivityPosition implements Serializable {
         this.leftAmount = leftAmount;
     }
 
+    public Byte getEnable() {
+        return this.enable;
+    }
+
+    public void setEnable(Byte enable) {
+        this.enable = enable;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -123,12 +135,12 @@ public class RedpacketActivityPosition implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public Byte getEnable() {
-        return this.enable;
+    public Integer getStorage() {
+        return this.storage;
     }
 
-    public void setEnable(Byte enable) {
-        this.enable = enable;
+    public void setStorage(Integer storage) {
+        this.storage = storage;
     }
 
     @Override
@@ -140,9 +152,10 @@ public class RedpacketActivityPosition implements Serializable {
         sb.append(", ").append(positionId);
         sb.append(", ").append(totalAmount);
         sb.append(", ").append(leftAmount);
+        sb.append(", ").append(enable);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
-        sb.append(", ").append(enable);
+        sb.append(", ").append(storage);
 
         sb.append(")");
         return sb.toString();

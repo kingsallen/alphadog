@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivity extends TableImpl<RedpacketActivityRecord> {
 
-    private static final long serialVersionUID = -1251028014;
+    private static final long serialVersionUID = 850054722;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_activity</code>
@@ -85,6 +85,11 @@ public class RedpacketActivity extends TableImpl<RedpacketActivityRecord> {
      * The column <code>redpacketdb.redpacket_activity.total_amount</code>. 总预算。单位 分
      */
     public final TableField<RedpacketActivityRecord, Integer> TOTAL_AMOUNT = createField("total_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "总预算。单位 分");
+
+    /**
+     * The column <code>redpacketdb.redpacket_activity.left_amount</code>. 剩余红包金额。单位 分
+     */
+    public final TableField<RedpacketActivityRecord, Integer> LEFT_AMOUNT = createField("left_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "剩余红包金额。单位 分");
 
     /**
      * The column <code>redpacketdb.redpacket_activity.range_min</code>. 红包最小金额
@@ -142,6 +147,11 @@ public class RedpacketActivity extends TableImpl<RedpacketActivityRecord> {
     public final TableField<RedpacketActivityRecord, Integer> ESTIMATED_TOTAL = createField("estimated_total", org.jooq.impl.SQLDataType.INTEGER, this, "预估红包总数");
 
     /**
+     * The column <code>redpacketdb.redpacket_activity.d_type</code>. 分布类型 0:平均分布，1:指数分布
+     */
+    public final TableField<RedpacketActivityRecord, Byte> D_TYPE = createField("d_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分布类型 0:平均分布，1:指数分布");
+
+    /**
      * The column <code>redpacketdb.redpacket_activity.create_time</code>. 创建时间
      */
     public final TableField<RedpacketActivityRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
@@ -150,16 +160,6 @@ public class RedpacketActivity extends TableImpl<RedpacketActivityRecord> {
      * The column <code>redpacketdb.redpacket_activity.update_time</code>. 更新时间
      */
     public final TableField<RedpacketActivityRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>redpacketdb.redpacket_activity.left_amount</code>. 剩余红包金额。单位 分
-     */
-    public final TableField<RedpacketActivityRecord, Integer> LEFT_AMOUNT = createField("left_amount", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "剩余红包金额。单位 分");
-
-    /**
-     * The column <code>redpacketdb.redpacket_activity.d_type</code>. 分布类型 0:平均分布，1:指数分布
-     */
-    public final TableField<RedpacketActivityRecord, Byte> D_TYPE = createField("d_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "分布类型 0:平均分布，1:指数分布");
 
     /**
      * Create a <code>redpacketdb.redpacket_activity</code> table reference
