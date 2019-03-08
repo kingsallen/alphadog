@@ -277,6 +277,10 @@ public class CrawlerUtils {
                 && (Integer) messagBean.get("status") == 9) {
             decre(user_id, channelType);
             return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_TIME_OUT);
+        } else if (messagBean.get("status") != null
+                && (Integer) messagBean.get("status") == 10) {
+            decre(user_id, channelType);
+            return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_SERVICE_MUCH_PASSWORD_WRONG);
         }
         decre(user_id, channelType);
         return ResponseUtils.fail(ConstantErrorCodeMessage.CRAWLER_PARAM_ILLEGAL);

@@ -114,6 +114,13 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue sendSeekReferralTemplateQueue() {
+        Queue queue = new Queue("seek_referral_template_queue", true, false, false);
+        return queue;
+    }
+
+
+    @Bean
     public Queue employeeFirstRegisterQueue() {
         Queue queue = new Queue("employee_first_register_exchange", true, false, false);
         return queue;
@@ -124,6 +131,13 @@ public class AppConfig {
         TopicExchange topicExchange = new TopicExchange("employee_register_exchange", true, false);
         return topicExchange;
     }
+
+    @Bean
+    public TopicExchange seekReferralTemplateExchange() {
+        TopicExchange topicExchange = new TopicExchange("referral_seek_exchange", true, false);
+        return topicExchange;
+    }
+
     @Bean
     public TopicExchange templateExchange() {
         TopicExchange topicExchange = new TopicExchange("message_template_exchange", true, false);
@@ -154,8 +168,20 @@ public class AppConfig {
     }
 
     @Bean
+    public TopicExchange referralRadarExchange() {
+        TopicExchange topicExchange = new TopicExchange("referral_radar_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
     public Queue bonusNoticeQueue() {
         Queue queue = new Queue("bonus_notice_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public Queue referralRadarTenMinuteQueue() {
+        Queue queue = new Queue("referral_radar_tenminute_queue", true, false, false);
         return queue;
     }
 
@@ -174,6 +200,9 @@ public class AppConfig {
             add(BindingBuilder.bind(profileCompanyTagQue()).to(profileCompanyTagRecomExchange()).with("profilecompanytagrecom.#"));
             add(BindingBuilder.bind(bonusNoticeQueue()).to(applicationStateChangeExchange()).with("add_bonus_change_routingkey.add_bonus"));
             add(BindingBuilder.bind(employeeFirstRegisterQueue()).to(employeeRegisterExchange()).with("employee_register_routingkey.first_register"));
+            add(BindingBuilder.bind(sendSeekReferralTemplateQueue()).to(seekReferralTemplateExchange()).with("*.referral_template"));
+            add(BindingBuilder.bind(referralRadarTenMinuteQueue()).to(referralRadarExchange()).with("referral_radar.referral_radar_template"));
+
         }};
     }
 }

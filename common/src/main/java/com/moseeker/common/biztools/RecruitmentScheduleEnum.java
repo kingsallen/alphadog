@@ -27,7 +27,8 @@ public enum RecruitmentScheduleEnum {
     CV_PASSED(Constant.RECRUIT_STATUS_CVPASSED),
     OFFER_ACCEPT(Constant.RECRUIT_STATUS_OFFERACCEPTED),
     OFFERED(Constant.RECRUIT_STATUS_OFFERED),
-    IMPROVE_CANDIDATE(Constant.RECRUIT_STATUS_FULL_RECOM_INFO);
+    IMPROVE_CANDIDATE(Constant.RECRUIT_STATUS_FULL_RECOM_INFO),
+    EMPLOYEE_RECOMMEND(Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
 
     RecruitmentScheduleEnum(int value) {
         init(value);
@@ -56,6 +57,7 @@ public enum RecruitmentScheduleEnum {
             case 1:
             case 7 :
             case 15:
+            case 16:
             case 13 : value =  1;break;
             case 6: value = 2; break;
             case 8:
@@ -74,6 +76,7 @@ public enum RecruitmentScheduleEnum {
                         case 1:
                         case 7 :
                         case 15:
+                        case 16:
                         case 13 : value = 6; break;
                         case 6:  value = 7; break;
                         case 8:
@@ -102,6 +105,7 @@ public enum RecruitmentScheduleEnum {
         switch (this.id) {
             case 1:
             case 15:
+            case 16:
             case 6: value = 1;break;
             case 8:
             case 9:
@@ -125,6 +129,7 @@ public enum RecruitmentScheduleEnum {
                     case 2:
                     case 5:
                     case 15:
+                    case 16:
                         value = 2;
                         break;
                     case 12:
@@ -164,6 +169,7 @@ public enum RecruitmentScheduleEnum {
             case 12 :
             case 11 :
             case 3:
+            case 16:
             case 15:
                 if(emailStatus != EmailStatus.NOMAIL.getValue()) {
                     value = 0;
@@ -183,7 +189,7 @@ public enum RecruitmentScheduleEnum {
      * @throws RecruitmentScheduleLastStepNotExistException
      */
     public void setLastStep(int lastStep) throws RecruitmentScheduleLastStepNotExistException {
-        if(lastStep == 0 || lastStep > 15) {
+        if(lastStep == 0 || lastStep > 16) {
             throw new RecruitmentScheduleLastStepNotExistException();
         }
         this.lastID = lastStep;
@@ -331,6 +337,16 @@ public enum RecruitmentScheduleEnum {
                 this.recuritOrder = 2;
                 this.applierView = "";
                 break;
+            case 16:
+                this.id = value;
+                this.status = "内部员工推荐";
+                this.award = 10;
+                this.description = "联系内推员工完善推荐评价投递职位";
+                this.disable = true;
+                this.priority = 4;
+                this.recuritOrder = 3;
+                this.applierView = "恭喜您已被內部员工推荐";
+                break;
         }
     }
 
@@ -435,6 +451,12 @@ public enum RecruitmentScheduleEnum {
         if (id == RecruitmentScheduleEnum.EMPLOYEE_REFERRAL.getId()) {
             if (StringUtils.isNotBlank(name)) {
                 return name+"推荐了您的简历";
+            }
+            return "恭喜您已被内部员工推荐";
+        }
+        if (id == RecruitmentScheduleEnum.EMPLOYEE_RECOMMEND.getId()) {
+            if (StringUtils.isNotBlank(name)) {
+                return "【"+name+"】推荐了您的简历";
             }
             return "恭喜您已被内部员工推荐";
         }

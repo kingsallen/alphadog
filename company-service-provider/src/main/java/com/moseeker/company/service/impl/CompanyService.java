@@ -1373,8 +1373,10 @@ public class CompanyService {
                 if(i>0){
                     companySwitchVO.setId(configOmsSwitchManagementDO.getId());
                     companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
-//                    AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
-//                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                    AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+                    if(abstractCompanySwitchHandler!=null) {
+                        abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                    }
                     return companySwitchVO;
                 }else{
                     //如果更新失败，抛出异常
@@ -1387,8 +1389,10 @@ public class CompanyService {
         configOmsSwitchManagementDO.setModuleParam(companySwitchVO.getFieldValue());
         Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagementDO);
         companySwitchVO.setId(id);
-//        AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
-//        abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+        AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+        if(abstractCompanySwitchHandler!=null) {
+            abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+        }
         return companySwitchVO;
     }
 
@@ -1425,10 +1429,10 @@ public class CompanyService {
                 /*
                 * 等人脉雷达上线
                 * */
-//                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagement.getModuleName()));
-//                if(abstractCompanySwitchHandler!=null) {
-//                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
-//                }
+                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagement.getModuleName()));
+                if(abstractCompanySwitchHandler!=null) {
+                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                }
                 return companySwitchVO;
             }else{
                 //如果更新失败，抛出异常

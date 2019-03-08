@@ -9,7 +9,7 @@ import java.util.regex.PatternSyntaxException;
 public class FormCheck {
 
 	private static String MOBILE_EXP = "^[1][3,4,5,6,7,8,9][0-9]{9}$";
-	private static String EMAIL_EXP = "^([a-z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
+	private static String EMAIL_EXP = "^([a-zA-Z0-9_\\.-]+)@([\\da-z\\.-]+)\\.([a-z]{2,6})$";
 	private static String URL_EXP = "[a-zA-z]+://[^\\s]*";
 
 	public static String getMobileExp() {

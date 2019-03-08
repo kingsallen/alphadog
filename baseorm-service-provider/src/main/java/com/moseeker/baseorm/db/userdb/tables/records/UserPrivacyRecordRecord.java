@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPrivacyRecordRecord extends UpdatableRecordImpl<UserPrivacyRecordRecord> implements Record5<Integer, Integer, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -443118311;
+    private static final long serialVersionUID = 1540668973;
 
     /**
      * Setter for <code>userdb.user_privacy_record.id</code>. 主key
@@ -61,14 +61,14 @@ public class UserPrivacyRecordRecord extends UpdatableRecordImpl<UserPrivacyReco
     }
 
     /**
-     * Setter for <code>userdb.user_privacy_record.status</code>. 0:未读隐私协议, 1已读隐私协议
+     * Setter for <code>userdb.user_privacy_record.status</code>. 0:不弹窗， 1弹窗
      */
     public void setStatus(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>userdb.user_privacy_record.status</code>. 0:未读隐私协议, 1已读隐私协议
+     * Getter for <code>userdb.user_privacy_record.status</code>. 0:不弹窗， 1弹窗
      */
     public Integer getStatus() {
         return (Integer) get(2);

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrHbTheme extends TableImpl<HrHbThemeRecord> {
 
-    private static final long serialVersionUID = -83857410;
+    private static final long serialVersionUID = -337230914;
 
     /**
      * The reference instance of <code>hrdb.hr_hb_theme</code>
@@ -56,6 +56,11 @@ public class HrHbTheme extends TableImpl<HrHbThemeRecord> {
     public final TableField<HrHbThemeRecord, Integer> CONFIG_ID = createField("config_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "红包活动编号");
 
     /**
+     * The column <code>hrdb.hr_hb_theme.theme_id</code>. 主题编号
+     */
+    public final TableField<HrHbThemeRecord, Integer> THEME_ID = createField("theme_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "主题编号");
+
+    /**
      * The column <code>hrdb.hr_hb_theme.create_time</code>. 创建时间
      */
     public final TableField<HrHbThemeRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
@@ -64,11 +69,6 @@ public class HrHbTheme extends TableImpl<HrHbThemeRecord> {
      * The column <code>hrdb.hr_hb_theme.update_time</code>. 更新时间
      */
     public final TableField<HrHbThemeRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
-
-    /**
-     * The column <code>hrdb.hr_hb_theme.theme_id</code>. 主题编号
-     */
-    public final TableField<HrHbThemeRecord, Integer> THEME_ID = createField("theme_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "主题编号");
 
     /**
      * Create a <code>hrdb.hr_hb_theme</code> table reference

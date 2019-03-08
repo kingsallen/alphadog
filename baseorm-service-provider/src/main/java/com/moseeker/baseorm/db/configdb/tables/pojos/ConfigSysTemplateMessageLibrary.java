@@ -22,7 +22,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSysTemplateMessageLibrary implements Serializable {
 
-    private static final long serialVersionUID = -2086204881;
+    private static final long serialVersionUID = 793797446;
 
     private Integer id;
     private String  title;
@@ -43,6 +43,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
     private String  url;
     private String  fromName;
     private String  subject;
+    private String  colorJson;
 
     public ConfigSysTemplateMessageLibrary() {}
 
@@ -66,6 +67,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.url = value.url;
         this.fromName = value.fromName;
         this.subject = value.subject;
+        this.colorJson = value.colorJson;
     }
 
     public ConfigSysTemplateMessageLibrary(
@@ -87,7 +89,8 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         String  remark,
         String  url,
         String  fromName,
-        String  subject
+        String  subject,
+        String  colorJson
     ) {
         this.id = id;
         this.title = title;
@@ -108,6 +111,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.url = url;
         this.fromName = fromName;
         this.subject = subject;
+        this.colorJson = colorJson;
     }
 
     public Integer getId() {
@@ -262,6 +266,14 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         this.subject = subject;
     }
 
+    public String getColorJson() {
+        return this.colorJson;
+    }
+
+    public void setColorJson(String colorJson) {
+        this.colorJson = colorJson;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ConfigSysTemplateMessageLibrary (");
@@ -285,6 +297,7 @@ public class ConfigSysTemplateMessageLibrary implements Serializable {
         sb.append(", ").append(url);
         sb.append(", ").append(fromName);
         sb.append(", ").append(subject);
+        sb.append(", ").append(colorJson);
 
         sb.append(")");
         return sb.toString();

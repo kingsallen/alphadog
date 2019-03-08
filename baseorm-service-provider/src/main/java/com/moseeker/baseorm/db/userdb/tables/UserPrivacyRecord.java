@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPrivacyRecord extends TableImpl<UserPrivacyRecordRecord> {
 
-    private static final long serialVersionUID = 835697276;
+    private static final long serialVersionUID = -323105183;
 
     /**
      * The reference instance of <code>userdb.user_privacy_record</code>
@@ -62,9 +62,9 @@ public class UserPrivacyRecord extends TableImpl<UserPrivacyRecordRecord> {
     public final TableField<UserPrivacyRecordRecord, Integer> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "user_user.id, 用户id");
 
     /**
-     * The column <code>userdb.user_privacy_record.status</code>. 0:未读隐私协议, 1已读隐私协议
+     * The column <code>userdb.user_privacy_record.status</code>. 0:不弹窗， 1弹窗
      */
-    public final TableField<UserPrivacyRecordRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:未读隐私协议, 1已读隐私协议");
+    public final TableField<UserPrivacyRecordRecord, Integer> STATUS = createField("status", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.INTEGER)), this, "0:不弹窗， 1弹窗");
 
     /**
      * The column <code>userdb.user_privacy_record.create_time</code>. 创建时间
