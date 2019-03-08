@@ -862,19 +862,20 @@ public class ReferralEntity {
             Map<Integer, Byte> fromMap = new HashMap<>();
             long futureTime = System.currentTimeMillis();
             logger.info("fetchEmployeeForwardView futureTime:{}", futureTime- startTime);
-            if(!StringUtils.isEmptyList(shareChainListFuture.get())) {
-                shareChainListFuture.get().forEach(share -> {
-                    recomRecordList.forEach( recom ->{
+            List<CandidateShareChainDO> shareChainDOS = shareChainListFuture.get();
+            if(!StringUtils.isEmptyList(shareChainDOS)) {
+                for(CandidateRecomRecordRecord recom : recomRecordList){
+                    for(CandidateShareChainDO share : shareChainDOS) {
                         if(recom.getPresenteeUserId().intValue() == share.getPresenteeUserId()
                                 && recom.getPositionId().intValue() == share.getPositionId()){
                             root2Set.add(share.root2RecomUserId);
                             shareChainIdList.add(share.getId());
                             shareChainList.add(share);
                             fromMap.put(share.getId(),share.getClickFrom());
+                            break;
                         }
-                    });
-
-                });
+                    }
+                }
             }
             logger.info("fetchEmployeeForwardView shareChainIdList:{}", shareChainIdList);
             long shareChainTime = System.currentTimeMillis();
