@@ -105,6 +105,7 @@ public final class ConstantErrorCodeMessage {
     public static final String CRAWLER_SERVICE_ACCOUNT_LIMIT = "{'status':32012,'message':'账号被限制！'}";
     public static final String CRAWLER_SERVICE_VERIFY_CODE_WRONG = "{'status':32013,'message':'验证码错误！'}";
     public static final String CRAWLER_SERVICE_TIME_OUT = "{'status':32014,'message':'授权超时，请重试'}";
+    public static final String CRAWLER_SERVICE_MUCH_PASSWORD_WRONG = "{'status':32015,'message':'密码错误次数超限，请稍后重试或使用其他方式导入'}";
     //talentpool
     public static final String COMPANY_STATUS_NOT_AUTHORITY = "{'status':34001,'message':'免费公司没有权限'}";
     public static final String COMPANY_CONF_TALENTPOOL_NOT = "{'status':34002,'message':'该公司还没有开启智能人才库'}";
@@ -130,6 +131,8 @@ public final class ConstantErrorCodeMessage {
     public static final String APPLICATION_SOURCE_NOTEXIST = "{'status':41007,'message':'申请来源不存在!'}";
     public static final String APPLICATION_VALIDATE_SCHOOL_COUNT_CHECK = "{'status':41008,'message':'本月您申请校招职位已达到投递次数上限!'}";
     public static final String APPLICATION_VALIDATE_SOCIAL_COUNT_CHECK = "{'status':41009,'message':'本月您申请社招已达到投递次数上限!'}";
+    public static final String APPLICATION_NOTEXIST = "{'status':41010,'message':'申请不存在!'}";
+    public static final String APPLICATION_STATE_ERROR = "{'status':41011,'message':'申请状态异常!'}";
 
     //HR帐号
     public static final String HRACCOUNT_ALREADY_BOUND_BYOTHER = "{'status':42001,'message':'该帐号已被其他人绑定！'}";

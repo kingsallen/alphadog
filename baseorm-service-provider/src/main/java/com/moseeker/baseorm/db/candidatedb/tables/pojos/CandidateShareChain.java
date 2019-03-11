@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain implements Serializable {
 
-    private static final long serialVersionUID = 1194848393;
+    private static final long serialVersionUID = 1624289347;
 
     private Integer   id;
     private Integer   positionId;
@@ -35,6 +35,9 @@ public class CandidateShareChain implements Serializable {
     private Integer   parentId;
     private Timestamp clickTime;
     private Timestamp createTime;
+    private Byte      type;
+    private String    forwardId;
+    private Integer   clickFrom;
 
     public CandidateShareChain() {}
 
@@ -49,6 +52,9 @@ public class CandidateShareChain implements Serializable {
         this.parentId = value.parentId;
         this.clickTime = value.clickTime;
         this.createTime = value.createTime;
+        this.type = value.type;
+        this.forwardId = value.forwardId;
+        this.clickFrom = value.clickFrom;
     }
 
     public CandidateShareChain(
@@ -61,7 +67,10 @@ public class CandidateShareChain implements Serializable {
         Integer   depth,
         Integer   parentId,
         Timestamp clickTime,
-        Timestamp createTime
+        Timestamp createTime,
+        Byte      type,
+        String    forwardId,
+        Integer   clickFrom
     ) {
         this.id = id;
         this.positionId = positionId;
@@ -73,6 +82,9 @@ public class CandidateShareChain implements Serializable {
         this.parentId = parentId;
         this.clickTime = clickTime;
         this.createTime = createTime;
+        this.type = type;
+        this.forwardId = forwardId;
+        this.clickFrom = clickFrom;
     }
 
     public Integer getId() {
@@ -155,6 +167,30 @@ public class CandidateShareChain implements Serializable {
         this.createTime = createTime;
     }
 
+    public Byte getType() {
+        return this.type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public String getForwardId() {
+        return this.forwardId;
+    }
+
+    public void setForwardId(String forwardId) {
+        this.forwardId = forwardId;
+    }
+
+    public Integer getClickFrom() {
+        return this.clickFrom;
+    }
+
+    public void setClickFrom(Integer clickFrom) {
+        this.clickFrom = clickFrom;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CandidateShareChain (");
@@ -169,6 +205,9 @@ public class CandidateShareChain implements Serializable {
         sb.append(", ").append(parentId);
         sb.append(", ").append(clickTime);
         sb.append(", ").append(createTime);
+        sb.append(", ").append(type);
+        sb.append(", ").append(forwardId);
+        sb.append(", ").append(clickFrom);
 
         sb.append(")");
         return sb.toString();

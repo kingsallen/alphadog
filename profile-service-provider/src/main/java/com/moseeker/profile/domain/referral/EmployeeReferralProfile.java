@@ -19,6 +19,7 @@ import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.entity.exception.EmployeeException;
 import com.moseeker.profile.domain.EmployeeReferralProfileNotice;
+import com.moseeker.profile.domain.ProfileAttementVO;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.MobotReferralResultVO;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -76,16 +77,16 @@ public abstract class EmployeeReferralProfile {
 
     ThreadPool tp = ThreadPool.Instance;
 
-    static int userId;
-    static int attachmentId = 0;
+
     protected abstract void validateReferralInfo(EmployeeReferralProfileNotice profileNotice);
 
     protected abstract ProfilePojo getProfilePojo(EmployeeReferralProfileNotice profileNotice);
 
     protected abstract void storeReferralUser(UserUserRecord userRecord, EmployeeReferralProfileNotice profileNotice,
-                                              ProfilePojo profilePojo, UserEmployeeDO employeeDO);
+                                              ProfilePojo profilePojo, UserEmployeeDO employeeDO, ProfileAttementVO attementVO);
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
+        ProfileAttementVO attementVO = new ProfileAttementVO();
         validateReferralInfo(profileNotice);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(profileNotice.getEmployeeId());
         if (employeeDO == null || employeeDO.getId() <= 0) {
@@ -95,7 +96,7 @@ public abstract class EmployeeReferralProfile {
         ProfilePojo profilePojo = getProfilePojo(profileNotice);
         UserUserRecord userRecord = userAccountEntity.getReferralUser(
                 profileNotice.getMobile(), employeeDO.getCompanyId(), profileNotice.getReferralScene());
-        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO);
+        storeReferralUser(userRecord, profileNotice, profilePojo, employeeDO, attementVO);
         int origin = profileNotice.getReferralScene().getScene() == ReferralScene.Referral.getScene() ? ApplicationSource.EMPLOYEE_REFERRAL.getValue() :
                 ApplicationSource.EMPLOYEE_CHATBOT.getValue();
         List<Integer> positionIds = positions.stream().map(JobPositionDO::getId).collect(Collectors.toList());
@@ -103,8 +104,8 @@ public abstract class EmployeeReferralProfile {
         CountDownLatch countDownLatch = new CountDownLatch(positionIds.size());
         for(JobPositionDO jobPositionDO : positions){
             tp.startTast(() -> {
-                handleRecommend( profileNotice, employeeDO, userId, jobPositionDO,  origin,
-                        resultVOS, countDownLatch, attachmentId);
+                handleRecommend( profileNotice, employeeDO, attementVO.getUserId(), jobPositionDO,  origin,
+                        resultVOS, countDownLatch, attementVO.getAttachmentId());
                 return 0;
             });
         }
@@ -137,7 +138,7 @@ public abstract class EmployeeReferralProfile {
             int applicationId = createJobApplication(userId, jobPositionDO.getCompanyId(), jobPositionDO.getId(),
                     profileNotice.getName(), origin, employeeDO.getSysuserId(), referralResultVO);
             referralEntity.logReferralOperation(jobPositionDO.getId(), applicationId,  profileNotice.getReferralReasons(),
-                    profileNotice.getMobile(), employeeDO, userId, profileNotice.getRelationship(), profileNotice.getReferralText());
+                    profileNotice.getMobile(), employeeDO.getSysuserId(), userId, profileNotice.getRelationship(), profileNotice.getReferralText());
             addRecommandReward(employeeDO, userId, applicationId, jobPositionDO.getId(), profileNotice.getReferralType());
             referralResultVO.setId(referralId);
             resultVOS.add(referralResultVO);
@@ -201,9 +202,8 @@ public abstract class EmployeeReferralProfile {
             }
 
             com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication application = applicationDao.fetchOneById(applicationId);
-            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
-                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
-
+//            operationRecordDao.addRecord(application.getId(), application.getSubmitTime().getTime(),
+//                    Constant.RECRUIT_STATUS_UPLOAD_PROFILE, employeeDO.getCompanyId(), 0);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;

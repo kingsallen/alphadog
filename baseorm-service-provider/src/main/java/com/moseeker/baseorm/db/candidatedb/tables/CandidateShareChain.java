@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
 
-    private static final long serialVersionUID = -496798018;
+    private static final long serialVersionUID = -2141716547;
 
     /**
      * The reference instance of <code>candidatedb.candidate_share_chain</code>
@@ -100,6 +100,21 @@ public class CandidateShareChain extends TableImpl<CandidateShareChainRecord> {
      * The column <code>candidatedb.candidate_share_chain.create_time</code>. 创建时间
      */
     public final TableField<CandidateShareChainRecord, Timestamp> CREATE_TIME = createField("create_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "创建时间");
+
+    /**
+     * The column <code>candidatedb.candidate_share_chain.type</code>. 0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐TA 4 转发投递 5 候选人主动投递
+     */
+    public final TableField<CandidateShareChainRecord, Byte> TYPE = createField("type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "0 未处理 1 邀请投递 2 员工不熟悉此候选人 3 推荐TA 4 转发投递 5 候选人主动投递");
+
+    /**
+     * The column <code>candidatedb.candidate_share_chain.forward_id</code>.
+     */
+    public final TableField<CandidateShareChainRecord, String> FORWARD_ID = createField("forward_id", org.jooq.impl.SQLDataType.VARCHAR.length(32), this, "");
+
+    /**
+     * The column <code>candidatedb.candidate_share_chain.click_from</code>. 来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3
+     */
+    public final TableField<CandidateShareChainRecord, Integer> CLICK_FROM = createField("click_from", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "来自, 0:未知, 朋友圈(timeline ) 1, 微信群(groupmessage) 2, 个人消息(singlemessage) 3");
 
     /**
      * Create a <code>candidatedb.candidate_share_chain</code> table reference

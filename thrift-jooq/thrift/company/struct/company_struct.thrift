@@ -127,3 +127,13 @@ struct GDPRProtectedInfo {
     1 : optional i32 userId,
     2 : optional bool trigger,
 }
+
+struct CompanySwitchVO{
+    1: optional i32 id;
+    2: optional i32 companyId;
+    3: optional string keyword;
+    4: optional string fieldValue;
+    5: optional i8 valid;
+}
+
+

@@ -1229,6 +1229,9 @@ public class UserHrAccountService {
         // 取公司ID
         List<Integer> companyIds = employeeEntity.getCompanyIds(companyId);
         Response response;
+        if(StringUtils.isNotNullOrEmpty(keyword)){
+            keyword = keyword.toLowerCase();
+        }
         try {
             response = searchengineServices.fetchEmployees(companyIds, keyword, filter, order, asc, emailValidate,
                     pageSize, pageNumber,balanceType, timeSpan);

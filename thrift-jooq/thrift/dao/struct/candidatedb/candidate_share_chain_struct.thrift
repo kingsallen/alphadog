@@ -13,6 +13,8 @@ struct CandidateShareChainDO {
 	7: optional i32 depth,	//第几层关系, 默认从 1 开始,当 presentee_id 是员工时,depth 为 0,表示该员工把链路截断了
 	8: optional i32 parentId,	//candidatedb.candidate_share_chain.id,上一条 share_chain.id
 	9: optional string clickTime,	//candidatedb.candidate_position_share_record.click_time,点击时间
-	10: optional string createTime	//创建时间
+	10: optional string createTime,	//创建时间
+	11: optional i32 type,
+	12: optional i8 clickFrom
 
 }

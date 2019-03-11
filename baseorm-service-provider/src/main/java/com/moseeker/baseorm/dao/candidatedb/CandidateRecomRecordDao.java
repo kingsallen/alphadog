@@ -5,9 +5,11 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidatePosition;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.util.BeanUtils;
+import com.moseeker.common.util.StringUtils;
 import com.moseeker.thrift.gen.common.struct.CURDException;
 import com.moseeker.thrift.gen.dao.struct.CandidateRecomRecordSortingDO;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
+import java.util.stream.Collectors;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -68,27 +70,25 @@ public class CandidateRecomRecordDao extends JooqCrudImpl<CandidateRecomRecordDO
         return candidateRecomRecordDOList;
     }
 
-    public List<CandidateRecomRecordDO> listCandidateRecomRecordsByPositionSetAndPresenteeId(Set<Integer> positionIdSet, int presenteeId, int pageNo, int pageSize) {
-        List<CandidateRecomRecordDO> candidateRecomRecordDOList = new ArrayList<>();
-        SelectConditionStep selectConditionStep = create.select(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.APP_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.REPOST_USER_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.CLICK_TIME,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.RECOM_TIME,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.IS_RECOM,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
-                CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID)
+    public List<CandidateRecomRecordRecord> listCandidateRecomRecordsByPositionSetAndPostAndPresenteeId(List<Integer> positionIdSet, int postUserId,Set<Integer> presentUserIds) {
+        Result<Record1<Integer>> result = create.select(max(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID))
                 .from(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
-                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal((int) (presenteeId))
-                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet)));
-        if (pageNo > 0 && pageSize > 0) {
-            selectConditionStep.limit((pageNo - 1) * pageSize, pageSize);
-        }
-        Result<CandidateRecomRecordRecord> result = selectConditionStep.fetch().into(CandidateRecomRecord.CANDIDATE_RECOM_RECORD);
+                .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POST_USER_ID.equal(postUserId)
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID.in(positionIdSet))
+                        .and(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID.notIn(presentUserIds)))
+                .groupBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.PRESENTEE_USER_ID,
+                        CandidateRecomRecord.CANDIDATE_RECOM_RECORD.POSITION_ID).fetch();
         if (result != null && result.size() > 0) {
-            candidateRecomRecordDOList = BeanUtils.DBToStruct(CandidateRecomRecordDO.class, result);
+            List<Integer> idList = result.stream().map(m -> m.value1()).collect(Collectors.toList());
+            List<CandidateRecomRecordRecord> list = create.selectFrom(CandidateRecomRecord.CANDIDATE_RECOM_RECORD)
+                    .where(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.in(idList))
+                    .orderBy(CandidateRecomRecord.CANDIDATE_RECOM_RECORD.ID.desc())
+                    .fetchInto(CandidateRecomRecordRecord.class);
+            if(!StringUtils.isEmptyList(list)){
+                return list;
+            }
         }
-        return candidateRecomRecordDOList;
+        return new ArrayList<>();
     }
 
     public int countAppliedCandidateRecomRecord(int userId) {

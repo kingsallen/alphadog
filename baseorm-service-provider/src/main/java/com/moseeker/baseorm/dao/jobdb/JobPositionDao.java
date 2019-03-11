@@ -18,6 +18,7 @@ import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
 import com.moseeker.baseorm.tool.QueryConvert;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.AbleFlag;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.Position.PositionStatus;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
@@ -546,6 +547,19 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
         return result;
     }
 
+    /*
+ * 根据职位id列表获取职位列表
+ */
+    public List<JobPositionDO> getPositionListByIdList(List<Integer> list){
+        if(StringUtils.isEmptyList(list)){
+            return  null;
+        }
+        com.moseeker.common.util.query.Condition condition=new com.moseeker.common.util.query.Condition("id",list.toArray(),ValueOp.IN);
+        Query query=new Query.QueryBuilder().where(condition).buildQuery();
+        List<JobPositionDO> result=this.getDatas(query);
+        return result;
+    }
+
     public List<Integer> getPositionIds(List<Integer> companyId) {
 
         Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
@@ -688,6 +702,45 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
             return create.select(JobPosition.JOB_POSITION.ID)
                     .from(JobPosition.JOB_POSITION)
                     .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
+                    .fetch();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 根据公司编号查找公司下所有的再咋职位编号
+     * @param companyIdList 公司编号集合
+     * @return 职位编号集合
+     */
+    public List<Integer> getPositionIdListByCompanyIdListAndStatus(List<Integer> companyIdList) {
+        List<Integer> list = new ArrayList<>();
+        if (companyIdList != null && companyIdList.size() > 0) {
+            Result<Record1<Integer>> result = create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.COMPANY_ID.in(companyIdList))
+                    .fetch();
+            if (result != null && result.size() > 0) {
+                result.forEach(record -> {
+                    list.add(record.value1());
+                });
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 根据搜索职位名称获取对应的职位编号
+     * @param idList
+     * @param title
+     * @return
+     */
+    public Result<Record1<Integer>> getPositionIdListByIdListAndTitle(List<Integer> idList, String title) {
+        if (idList != null && idList.size() > 0) {
+            return create.select(JobPosition.JOB_POSITION.ID)
+                    .from(JobPosition.JOB_POSITION)
+                    .where(JobPosition.JOB_POSITION.ID.in(idList))
+                    .and(JobPosition.JOB_POSITION.TITLE.like("%"+title+"%"))
                     .fetch();
         } else {
             return null;

@@ -1,7 +1,5 @@
 package com.moseeker.baseorm.dao.referraldb;
 
-import com.moseeker.baseorm.db.candidatedb.tables.CandidateRecomRecord;
-import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.referraldb.tables.ReferralRecomEvaluation;
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
 import java.sql.Timestamp;
@@ -101,5 +99,25 @@ public class ReferralRecomEvaluationDao extends com.moseeker.baseorm.db.referral
                 .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(userId))
                 .fetch();
         return evaluationRecords;
+    }
+
+    public  ReferralRecomEvaluationRecord fetchByPostPresenteePosition(Integer postUserId, Integer presenteeUserId, Integer positionId){
+        ReferralRecomEvaluationRecord evaluationRecord = using(configuration()).selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
+                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.eq(presenteeUserId))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID.eq(positionId))
+                .orderBy(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.ID.desc())
+                .limit(1)
+                .fetchOne();
+        return evaluationRecord;
+    }
+
+    public List<com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation> fetchEvaluationRecordsByAppids(int postUserId, List<Integer> applierIds, List<Integer> pids) {
+        return using(configuration())
+                .selectFrom(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION)
+                .where(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POST_USER_ID.eq(postUserId))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.PRESENTEE_USER_ID.in(applierIds))
+                .and(ReferralRecomEvaluation.REFERRAL_RECOM_EVALUATION.POSITION_ID.in(pids))
+                .fetchInto(com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralRecomEvaluation.class);
     }
 }

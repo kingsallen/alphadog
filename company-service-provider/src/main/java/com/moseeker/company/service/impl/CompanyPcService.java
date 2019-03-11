@@ -788,4 +788,18 @@ public class CompanyPcService {
         }
         return DO;
     }
+
+    public HrCompanyMobotConfDO getMobotConf(int companyId) {
+        HrCompanyMobotConfDO result = hrCompanyConfDao.getMobotConf(companyId);
+        if(result == null){
+            result = new HrCompanyMobotConfDO();
+            result.setCompanyId(companyId);
+        }
+        return result;
+    }
+
+    public HrCompanyMobotConfDO updateMobotConf(HrCompanyMobotConfDO mobotConf) {
+        hrCompanyConfDao.updateMobotConf(mobotConf);
+        return hrCompanyConfDao.getMobotConf(mobotConf.getCompanyId());
+    }
 }

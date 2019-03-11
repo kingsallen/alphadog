@@ -66,6 +66,15 @@ service CompanyServices {
     bool fetchGDPRSwitch(1: i32 companyId) throws (1: common_struct.BIZException e)
     //查看指定的HR 所在的公司是否开启GDPR隐私保护条款
     bool fetchGDPRSwitchByHR(1: i32 hrId) throws (1: common_struct.BIZException e)
+
+    hr_company_conf_struct.HrCompanyMobotConfDO getMobotConf(1: i32 companyId) throws (1: common_struct.BIZException e)
+    hr_company_conf_struct.HrCompanyMobotConfDO updateMobotConf(1: hr_company_conf_struct.HrCompanyMobotConfDO mobotConf) throws (1: common_struct.BIZException e)
+
+    //获取当前公司的开关权限
+     list<company_struct.CompanySwitchVO> switchCheck(1: i32 companyId, 2: list<string> moduleNames) throws (1: common_struct.BIZException e)
+     company_struct.CompanySwitchVO companySwitch(1: i32 companyId, 2: string moduleNames) throws (1: common_struct.BIZException e)
+     company_struct.CompanySwitchVO switchPost(1:company_struct.CompanySwitchVO data) throws (1: common_struct.BIZException e)
+     company_struct.CompanySwitchVO switchPatch(1:company_struct.CompanySwitchVO data) throws (1: common_struct.BIZException e)
 }
 
 service HrTeamServices {

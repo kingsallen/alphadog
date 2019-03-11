@@ -1,7 +1,9 @@
 package com.moseeker.company.service.impl;
 
+import com.moseeker.baseorm.constant.ValidGeneralType;
 import com.moseeker.baseorm.dao.campaigndb.CampaignPcBannerDao;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.dao.configdb.ConfigOmsSwitchManagementDao;
 import com.moseeker.baseorm.dao.configdb.ConfigSysPointsConfTplDao;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
@@ -9,6 +11,8 @@ import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysPointsConfTpl;
+import com.moseeker.baseorm.db.configdb.tables.pojos.ConfigOmsSwitchManagement;
+import com.moseeker.baseorm.db.configdb.tables.records.ConfigOmsSwitchManagementRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCertConf;
 import com.moseeker.baseorm.db.hrdb.tables.HrEmployeeCustomFields;
@@ -30,6 +34,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.Category;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.DateUtils;
@@ -40,10 +45,14 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
+import com.moseeker.company.constant.OmsSwitchEnum;
 import com.moseeker.company.constant.ResultMessage;
+import com.moseeker.company.exception.CompanySwitchException;
 import com.moseeker.company.exception.ExceptionCategory;
 import com.moseeker.company.exception.ExceptionFactory;
 import com.moseeker.company.exception.CompanyException;
+import com.moseeker.company.service.impl.CompanySwitchHandler.AbstractCompanySwitchHandler;
+import com.moseeker.company.service.impl.CompanySwitchHandler.CompanySwitchFactory;
 import com.moseeker.company.service.impl.vo.GDPRProtectedInfoVO;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -52,6 +61,7 @@ import com.moseeker.thrift.gen.common.struct.CommonQuery;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.campaigndb.CampaignPcBannerDO;
+import com.moseeker.thrift.gen.dao.struct.configdb.ConfigOmsSwitchManagementDO;
 import com.moseeker.thrift.gen.dao.struct.configdb.ConfigSysPointsConfTplDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.foundation.chaos.service.ChaosServices;
@@ -74,6 +84,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
 
+@CounterIface
 @Service
 public class CompanyService {
 
@@ -150,6 +161,12 @@ public class CompanyService {
 
     @Autowired
     private JobPositionDao positionDao;
+
+    @Autowired
+    private ConfigOmsSwitchManagementDao configOmsSwitchManagementDao;
+
+    @Autowired
+    CompanySwitchFactory companySwitchFactory;
 
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
@@ -1274,5 +1291,178 @@ public class CompanyService {
             throw CompanyException.COMPANY_HR_NOT_EXISTS;
         }
         return fetchGDPRSwitch(hrAccountDO.getCompanyId());
+    }
+
+    /**
+     * 判断当前公司id是否合法
+     * @param companyId 公司ID
+     *
+     * @return
+     * @throws CompanyException
+     */
+    public HrCompanyDO checkParentCompanyIsValid(int companyId)throws CompanyException {
+        HrCompanyDO hrCompanyDO = companyDao.getCompanyById(companyId);
+        if (hrCompanyDO == null || hrCompanyDO.getId()<=0) {
+            throw CompanyException.COMPANY_NOT_EXISTS;
+        }
+        if(hrCompanyDO.getParentId()!=0){
+            hrCompanyDO = companyDao.getCompanyById(hrCompanyDO.getParentId());
+        }
+        return hrCompanyDO;
+    }
+
+    /**
+     * 获取当前公司的开关权限
+     * @param companyId 公司ID
+     * @param moduleNames HR编号
+     * @return
+     * @throws CompanyException
+     */
+    public List<CompanySwitchVO> switchCheck(int companyId, List<String> moduleNames) {
+        if(companyId!=0){
+            HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
+            companyId = hrCompanyDO.getId();
+        }
+        List<Integer> moduleList = new ArrayList<>();
+        if(moduleNames!=null){
+            moduleList = moduleNames.stream().map(str ->{
+                return OmsSwitchEnum.instanceFromName(str).getValue();
+            } ).collect(Collectors.toList());
+        }
+       List<ConfigOmsSwitchManagement> switchList = configOmsSwitchManagementDao.getValidOmsSwitchListByParams(companyId,moduleList);
+       return  switchList.stream().map(configOmsSwitchManagementDO -> {
+           CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+           companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+           companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
+           companySwitchVO.setKeyword(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()).getName());
+           companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
+           companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+           return companySwitchVO;
+       }).collect(Collectors.toList());
+    }
+
+
+    /*
+     *
+     *添加新的公司开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     *
+     * */
+    @Transactional
+    public CompanySwitchVO switchPost(CompanySwitchVO companySwitchVO) {
+
+        HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companySwitchVO.getCompanyId());
+        companySwitchVO.setCompanyId(hrCompanyDO.getId());
+        Integer moduleId = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword()).getValue();
+        ConfigOmsSwitchManagement configOmsSwitchManagementDO = new ConfigOmsSwitchManagement();
+        ConfigOmsSwitchManagement configOmsSwitchManagement = configOmsSwitchManagementDao.getOmsSwitchByParams(hrCompanyDO.getId(),moduleId);
+        if(configOmsSwitchManagement!=null){
+            //判断开关是否可用，当前可用抛出已存在异常
+            if(configOmsSwitchManagement.getIsValid().equals(ValidGeneralType.valid.getValue())){
+                throw CompanySwitchException.COMPANY_SWITCH_EXISTS;
+            }
+            //判断开关是否可用，当前不可用，只需要更新当前开关
+            if(configOmsSwitchManagement.getIsValid().equals(ValidGeneralType.invalid.getValue())){
+                configOmsSwitchManagementDO = configOmsSwitchManagement;
+                configOmsSwitchManagementDO.setIsValid(ValidGeneralType.valid.getValue());
+                configOmsSwitchManagementDO.setModuleParam(companySwitchVO.getFieldValue());
+                Integer i = configOmsSwitchManagementDao.update(configOmsSwitchManagementDO);
+                //如果更新成功，返回开关对象
+                if(i>0){
+                    companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+                    companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+                    AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+                    if(abstractCompanySwitchHandler!=null) {
+                        abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                    }
+                    return companySwitchVO;
+                }else{
+                    //如果更新失败，抛出异常
+                    throw CommonException.PROGRAM_PUT_FAILED;
+                }
+            }
+        }
+        configOmsSwitchManagementDO.setCompanyId(hrCompanyDO.getId());
+        configOmsSwitchManagementDO.setModuleName(moduleId);
+        configOmsSwitchManagementDO.setModuleParam(companySwitchVO.getFieldValue());
+        Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagementDO);
+        companySwitchVO.setId(id);
+        AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()));
+        if(abstractCompanySwitchHandler!=null) {
+            abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+        }
+        return companySwitchVO;
+    }
+
+    /*
+     *
+     *更新当前公司的开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     * */
+    @Transactional
+    public CompanySwitchVO switchPatch(CompanySwitchVO companySwitchVO) {
+        HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companySwitchVO.getCompanyId());
+        companySwitchVO.setCompanyId(hrCompanyDO.getId());
+        Integer moduleId = OmsSwitchEnum.instanceFromName(companySwitchVO.getKeyword()).getValue();
+        ConfigOmsSwitchManagement configOmsSwitchManagement =configOmsSwitchManagementDao.getValidOmsSwitchByParams(companySwitchVO.getId(),hrCompanyDO.getId(),moduleId);
+        if(configOmsSwitchManagement==null){
+            throw CompanySwitchException.SWITCH_NOT_EXISTS;
+        }
+        Boolean flag = false;
+        if(companySwitchVO.getFieldValue()!=configOmsSwitchManagement.getModuleParam()) {
+            configOmsSwitchManagement.setModuleParam(companySwitchVO.getFieldValue());
+            flag = true;
+        }
+        if(companySwitchVO.getValid()!=configOmsSwitchManagement.getIsValid()) {
+            configOmsSwitchManagement.setIsValid(companySwitchVO.getValid());
+            flag = true;
+        }
+        //判断是否有参数修改
+        if(flag) {
+            Integer i = configOmsSwitchManagementDao.update(configOmsSwitchManagement);
+            //如果更新成功，返回开关对象
+            if(i>0){
+                /*
+                * 等人脉雷达上线
+                * */
+                AbstractCompanySwitchHandler abstractCompanySwitchHandler = companySwitchFactory.getService(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagement.getModuleName()));
+                if(abstractCompanySwitchHandler!=null) {
+                    abstractCompanySwitchHandler.rabbitmq(companySwitchVO);
+                }
+                return companySwitchVO;
+            }else{
+                //如果更新失败，抛出异常
+                throw CommonException.PROGRAM_PUT_FAILED;
+            }
+        }
+        throw CompanySwitchException.COMPANY_SWITCH_EXISTS;
+    }
+
+    public CompanySwitchVO companySwitch(int companyId, String moduleNames) {
+        if(companyId==0){
+         throw CommonException.PROGRAM_PARAM_NOTEXIST;
+        }
+        HrCompanyDO hrCompanyDO = checkParentCompanyIsValid(companyId);
+        companyId = hrCompanyDO.getId();
+        ConfigOmsSwitchManagement configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,OmsSwitchEnum.instanceFromName(moduleNames).getValue());
+        if(configOmsSwitchManagementDO==null&&companyId!=0){
+            ConfigOmsSwitchManagement configOmsSwitchManagement = new ConfigOmsSwitchManagement();
+            configOmsSwitchManagement.setCompanyId(companyId);
+            configOmsSwitchManagement.setModuleName(OmsSwitchEnum.instanceFromName(moduleNames).getValue());
+            configOmsSwitchManagement.setIsValid((byte)0);
+            Integer id = configOmsSwitchManagementDao.add(configOmsSwitchManagement);
+            configOmsSwitchManagementDO = configOmsSwitchManagementDao.getOmsSwitchByParams(companyId,OmsSwitchEnum.instanceFromName(moduleNames).getValue());
+        }
+        CompanySwitchVO companySwitchVO = new CompanySwitchVO();
+        companySwitchVO.setId(configOmsSwitchManagementDO.getId());
+        companySwitchVO.setCompanyId(configOmsSwitchManagementDO.getCompanyId());
+        companySwitchVO.setKeyword(OmsSwitchEnum.instanceFromValue(configOmsSwitchManagementDO.getModuleName()).getName());
+        companySwitchVO.setFieldValue(configOmsSwitchManagementDO.getModuleParam());
+        companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
+        return companySwitchVO;
     }
 }

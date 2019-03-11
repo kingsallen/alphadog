@@ -35,4 +35,21 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
                 .fetchInto(HrWxNoticeMessageDO.class);
         return result;
     }
+
+    public HrWxNoticeMessageDO getHrWxNoticeMessageDOByWechatId(Integer id, int sysTemplateId){
+        HrWxNoticeMessageDO result = create.selectFrom(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE)
+                .where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.eq(id))
+                .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(sysTemplateId))
+                .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.DISABLE.eq((byte)0))
+                .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.STATUS.eq((byte)1))
+                .fetchOneInto(HrWxNoticeMessageDO.class);
+        return result;
+    }
+
+    public HrWxNoticeMessageDO getHrWxNoticeMessageDOWithoutStatus(Integer id, int sysTemplateId){
+        return create.selectFrom(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE)
+                .where(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.WECHAT_ID.eq(id))
+                .and(HrWxNoticeMessage.HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(sysTemplateId))
+                .fetchOneInto(HrWxNoticeMessageDO.class);
+    }
 }

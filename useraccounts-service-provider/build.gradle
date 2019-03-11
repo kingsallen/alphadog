@@ -1,6 +1,6 @@
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-  
+
 dependencies {
 
     compile project(":rpc-center")
@@ -9,12 +9,13 @@ dependencies {
 
     compile deps["spring-core"]
     compile deps["spring-context"]
-
+    compile deps["neo4j-ogm-http"]  //http驱动
+    compile deps["neo4j-ogm-embedded"]   //  嵌入式驱动
+    compile deps["spring-data-neo4j"]
     testCompile deps["junit"]
     testCompile deps["mockito"]
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '2.2.1'
     compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-smile', version: '2.9.6'
-
     compile deps["spring-rabbit"]
 
 }
@@ -30,6 +31,7 @@ tasks.withType(JavaCompile) {
 }
 jar {
 
+    zip64 true
     // build one flat jar
      from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
@@ -44,6 +46,7 @@ jar {
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
+
 project.description = '''
     1) User Service
     2) We call them "service-provider" in this project

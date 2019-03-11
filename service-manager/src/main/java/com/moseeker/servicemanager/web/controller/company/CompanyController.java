@@ -25,6 +25,7 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.company.service.CompanyServices;
 import com.moseeker.thrift.gen.company.struct.*;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
+import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyMobotConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrImporterMonitorDO;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.EmployeeVerificationConfResponse;
@@ -651,6 +652,37 @@ public class CompanyController {
         }
     }
 
+    @RequestMapping(value = "/api/hrcompany/mobot/conf", method = RequestMethod.GET)
+    @ResponseBody
+    public String getMobotConf(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = parseRequestParam(request);
+            int company_id = data.getInt("company_id");
+            if (company_id <= 0) {
+                ResponseLogNotification.fail(request, "公司编号不可以为空");
+            }
+            HrCompanyMobotConfDO result = companyServices.getMobotConf(company_id);
+            return Result.success(result).toJson();
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/api/hrcompany/mobot/conf", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateMobotConf(HttpServletRequest request) throws Exception {
+        try {
+            Params<String, Object> data = parseRequestParam(request);
+            HrCompanyMobotConfDO param = ParamUtils.initModelForm(data, HrCompanyMobotConfDO.class);
+            HrCompanyMobotConfDO result = companyServices.updateMobotConf(param);
+            return Result.success(result).toJson();
+        } catch (Exception e) {
+            logger.info(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/api/account/limit", method = RequestMethod.GET)
     @ResponseBody
     public String findSubAccountNum(HttpServletRequest request) throws Exception {
@@ -886,6 +918,96 @@ public class CompanyController {
             return Result.validateFailed(result).toJson();
         } else {
             return Result.success(companyServices.fetchGDPRSwitchByHR(hrId)).toJson();
+        }
+    }
+
+
+    /*
+    *
+    *获取当前公司的开关权限
+    *@Param appid
+    *@Param companyId 公司id
+    *@Param moduleNames 各产品定义标识
+    *
+    * */
+    @RequestMapping(value = "/api/company/switchCheck", method = RequestMethod.GET)
+    @ResponseBody
+    public String switchCheck(@RequestParam Integer appid,@RequestParam(name = "companyId" , required = false) Integer companyId, @RequestParam(name = "moduleName" , required = false) List<String> moduleNames) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.switchCheck(companyId,moduleNames)).toJson();
+        }
+    }
+
+    /*
+     *
+     *获取当前公司的某个开关权限
+     *@Param appid
+     *@Param companyId 公司id
+     *@Param moduleNames 各产品定义标识（单个）
+     *
+     * */
+    @RequestMapping(value = "/api/company/switch", method = RequestMethod.GET)
+    @ResponseBody
+    public String companySwitch(@RequestParam Integer appid,@RequestParam(name = "companyId" , required = false) Integer companyId, @RequestParam String moduleName) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("开关标识", moduleName);
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.companySwitch(companyId,moduleName)).toJson();
+        }
+    }
+
+    /*
+     *
+     *添加新的公司开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     *
+     * */
+    @RequestMapping(value = "/api/company/switchPost", method = RequestMethod.POST)
+    @ResponseBody
+    public String switchPost(@RequestParam Integer appid,@RequestBody CompanySwitchVO companySwitchVO ) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("公司ID", companySwitchVO.getCompanyId());
+        validateUtil.addRequiredValidate("产品定义标识", companySwitchVO.getKeyword());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.switchPost(companySwitchVO)).toJson();
+        }
+    }
+
+    /*
+     *
+     *更新当前公司的开关权限
+     *@Param appid
+     *@Param CompanySwitchVO 公司开关对象
+     *
+     * */
+    @RequestMapping(value = "/api/company/switchPatch", method = RequestMethod.PATCH)
+    @ResponseBody
+    public String switchPatch(@RequestParam Integer appid,@RequestBody CompanySwitchVO companySwitchVO ) throws Exception {
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("开关ID", companySwitchVO.getId());
+        validateUtil.addRequiredValidate("公司ID", companySwitchVO.getCompanyId());
+        validateUtil.addRequiredValidate("品定义标识", companySwitchVO.getKeyword());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
+            return Result.validateFailed(result).toJson();
+        } else {
+            return Result.success(companyServices.switchPatch(companySwitchVO)).toJson();
         }
     }
 }

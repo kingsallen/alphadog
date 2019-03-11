@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.dao.hrdb.LeaderBoardTypeDao;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrLeaderBoard;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.SearchengineEntity;
 import com.moseeker.entity.pojos.EmployeeInfo;
@@ -15,6 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,7 +55,22 @@ public class LeaderBoardEntity {
 
         if (jsonObject.getJSONObject("awards") != null && jsonObject.getJSONObject("awards").getJSONObject(timeSpan) != null) {
             info.setAward(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getInteger("award"));
-            info.setLastUpdateTime(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
+            if(info.getAward()<0){
+                info.setAward(0);
+            }
+            Object obj = jsonObject.getJSONObject("awards").getJSONObject(timeSpan).get("last_update_time");
+            if(obj instanceof Long){
+                info.setLastUpdateTime(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getLong("last_update_time"));
+            }else if(obj instanceof String){
+                try {
+                    Date date = DateUtils.minuteTimeToDate(jsonObject.getJSONObject("awards").getJSONObject(timeSpan).getString("last_update_time"));
+                    info.setLastUpdateTime(date.getTime());
+                } catch (ParseException e) {
+                    logger.error(e.getMessage());
+                }
+
+            }
+
         }
         if (info.getAward() > 0) {
             List<Integer> companyIdList = userEmployeeEntity.getCompanyIds(employeeInfo.getCompanyId());
@@ -85,6 +103,8 @@ public class LeaderBoardEntity {
             }
             if (info.getAward() > 0) {
                 info.setSort(searchengineEntity.getSort(info.getId(), info.getAward(), info.getLastUpdateTime(), timeSpan, companyIdList));
+            }else{
+                info.setAward(0);
             }
         }
         return info;

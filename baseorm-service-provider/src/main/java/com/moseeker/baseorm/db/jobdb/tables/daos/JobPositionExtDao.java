@@ -106,4 +106,11 @@ public class JobPositionExtDao extends DAOImpl<JobPositionExtRecord, com.moseeke
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionExt> fetchByAlipayJobId(Integer... values) {
         return fetch(JobPositionExt.JOB_POSITION_EXT.ALIPAY_JOB_ID, values);
     }
+
+    /**
+     * Fetch records that have <code>ext IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionExt> fetchByExt(String... values) {
+        return fetch(JobPositionExt.JOB_POSITION_EXT.EXT, values);
+    }
 }

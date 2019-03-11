@@ -57,6 +57,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.entity.pojos.JobPositionRecordWithCityName;
+import com.moseeker.position.kafka.KafkaSender;
 import com.moseeker.position.pojo.DictConstantPojo;
 import com.moseeker.position.pojo.JobPositionFailMess;
 import com.moseeker.position.pojo.JobPostionResponse;
@@ -114,6 +115,9 @@ public class PositionService {
     private DictConstantDao dictConstantDao;
     @Autowired
     private JobCustomDao jobCustomDao;
+    @Autowired
+    KafkaSender kafkaSender;
+
     @Autowired
     private JobPositionCityDao jobPositionCityDao;
     @Autowired
@@ -999,7 +1003,10 @@ public class PositionService {
                             jobPositionCityRecordsUpdatelist.addAll(jobPositionCityRecordList);
                         }
                         // 需要更新的JobPositionExra数据
-                        if (jobPositionHandlerDate.getExtra() != null || jobOccupationId != 0 || customId != 0) {
+                        if (jobPositionHandlerDate.getExtra() != null
+                                || jobOccupationId != 0
+                                || customId != 0
+                                || StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
                             if (jobPositionExtRecord == null) {
                                 jobPositionExtRecord = new JobPositionExtRecord();
                                 jobPositionExtRecord.setPid(jobPositionRecordTemp.getId());
@@ -1010,6 +1017,9 @@ public class PositionService {
                                 if (customId != 0) {
                                     jobPositionExtRecord.setJobCustomId(customId);
                                 }
+                                if (StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
+                                    jobPositionExtRecord.setExt(jobPositionHandlerDate.getExt());
+                                }
                                 jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
                             } else {
                                 jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
@@ -1018,6 +1028,9 @@ public class PositionService {
                                 }
                                 if (customId != 0) {
                                     jobPositionExtRecord.setJobCustomId(customId);
+                                }
+                                if (StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
+                                    jobPositionExtRecord.setExt(jobPositionHandlerDate.getExt());
                                 }
                                 jobPositionExtRecordUpdateRecords.add(jobPositionExtRecord);
                             }
@@ -1052,14 +1065,19 @@ public class PositionService {
                     handleCcmail(jobPositionHandlerDate, record, jobPositionCcmailRecordsAddlist);
                 }
 
-                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra()) || jobOccupationId != 0 || customId != 0) {
+                if (!com.moseeker.common.util.StringUtils.isNullOrEmpty(jobPositionHandlerDate.getExtra())
+                        || jobOccupationId != 0
+                        || customId != 0
+                        || StringUtils.isNotNullOrEmpty(jobPositionHandlerDate.getExt())) {
                     // 新增jobPostion_ext数据
                     JobPositionExtRecord jobPositionExtRecord = new JobPositionExtRecord();
                     jobPositionExtRecord.setExtra(jobPositionHandlerDate.getExtra() == null ? "" : jobPositionHandlerDate.getExtra());
                     jobPositionExtRecord.setJobOccupationId(jobOccupationId);
                     jobPositionExtRecord.setJobCustomId(customId);
                     jobPositionExtRecord.setPid(pid);
+                    jobPositionExtRecord.setExt(jobPositionHandlerDate.getExt());
                     jobPositionExtRecordAddRecords.add(jobPositionExtRecord);
+
                 }
             }
         }
@@ -2731,6 +2749,7 @@ public class PositionService {
                 JobPositionRecord record = BeanUtils.MapToRecord(updateField, JobPositionRecord.class);
                 jobPositionDao.updateRecord(record);
                 updateField.put("updateTime", dateStr);
+                kafkaSender.sendPositionStatus(position_id, (Integer) updateField.get("status"), positionDO.getCompanyId());
 
                 // 猎聘api新增
                 if (updateField.get("status") != null) {

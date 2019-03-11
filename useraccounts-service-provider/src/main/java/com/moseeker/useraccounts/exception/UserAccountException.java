@@ -59,8 +59,17 @@ public class UserAccountException extends CommonException {
     public static final UserAccountException ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE = new UserAccountException(42049, "红包选择的职位的红包是否参与活动的状态修改失败，可能是由于已经参加其他的红包活动导致!");
     public static final UserAccountException ACTIVITY_POSITION_ALREADY_IN_ACTIVITY = new UserAccountException(42050, "所选职位已经参与红包活动!");
     public static final UserAccountException ACTIVITY_CONFLICT = new UserAccountException(42051, "红包活动时间重叠，请重新选择时间!");
-
+    public static final UserAccountException REFERRAL_SEEK_RECOMMEND_FAIL = new UserAccountException(42052, "候选人联系内推数据保存失败！");
+    public static final UserAccountException REFERRAL_SEEK_RECOMMEND_NULL = new UserAccountException(42053, "候选人联系内推数据不存在！");
     public static final UserAccountException INVALID_SMS_CODE = new UserAccountException(10011, "无效验证码！");
+    public static final UserAccountException REFERRAL_CHAIN_NONEXISTS = new UserAccountException(42054, "推荐链路不存在！");
+    public static final UserAccountException REFERRAL_SHARE_CHAIN_NONEXISTS = new UserAccountException(42055, "无转发记录！");
+    public static final UserAccountException REFERRAL_PROGRESS_ERROR = new UserAccountException(42056, "推进进度异常！");
+    public static final UserAccountException REFERRAL_CONNECTION_NONEXISTS = new UserAccountException(42057, "人脉连连看链路不存在！");
+    public static final UserAccountException REFERRAL_RECOM_EVALUATION_EXISTS = new UserAccountException(42058, "推荐评价已存在！");
+    public static final UserAccountException EMPLOYEE_COMPANY_UNMATCH = new UserAccountException(42059, "员工与公司不匹配！");
+    public static final UserAccountException RADAR_STATUS_CLOSE = new UserAccountException(42060, "雷达开关关闭！");
+    public static final UserAccountException NEO4J_STATUS_ERROR = new UserAccountException(43001, "Neo4j查询出错！");
 
     private final int code;
 
