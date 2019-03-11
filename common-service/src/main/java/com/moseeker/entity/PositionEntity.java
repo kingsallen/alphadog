@@ -159,7 +159,7 @@ public class PositionEntity {
         logger.info("PositionEntity getPositions query:{}", JSON.toJSONString(query));
         List<JobPositionRecordWithCityName> positionRecordWithCityNameList = new ArrayList<>();
         List<JobPositionRecord> positionRecordList = positionDao.getRecords(query);
-        logger.info("PositionEntity getPositions positionRecordList.size:()", positionRecordList == null?0:positionRecordList.size());
+        logger.info("PositionEntity getPositions positionRecordList.size:{}", positionRecordList == null?0:positionRecordList.size());
         if (positionRecordList != null && positionRecordList.size() > 0) {
             positionRecordList.forEach(jobPositionRecord -> {
                 positionRecordWithCityNameList.add(JobPositionRecordWithCityName.clone(jobPositionRecord));
@@ -175,7 +175,7 @@ public class PositionEntity {
             logger.info("PositionEntity getPositions positionCity-query:{}", JSON.toJSONString(query));
             List<JobPositionCityRecord> jobPositionCityRecordList = positionCityDao.getRecords(query);
 
-            logger.info("PositionEntity getPositions jobPositionCityRecordList.size:()", jobPositionCityRecordList == null?0:jobPositionCityRecordList.size());
+            logger.info("PositionEntity getPositions jobPositionCityRecordList.size:{}", jobPositionCityRecordList == null?0:jobPositionCityRecordList.size());
 
             if (jobPositionCityRecordList == null || jobPositionCityRecordList.size() == 0) {
 
@@ -192,7 +192,7 @@ public class PositionEntity {
             List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
 
             logger.info("PositionEntity getPositions dict-query:{}", JSON.toJSONString(query));
-            logger.info("PositionEntity getPositions dictCityRecordList.size:()", dictCityRecordList == null?0:dictCityRecordList.size());
+            logger.info("PositionEntity getPositions dictCityRecordList.size:{}", dictCityRecordList == null?0:dictCityRecordList.size());
             if (dictCityRecordList == null || dictCityRecordList.size() == 0) {
                 return positionRecordWithCityNameList;
             }
