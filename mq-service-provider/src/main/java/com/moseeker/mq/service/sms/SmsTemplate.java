@@ -80,6 +80,8 @@ public enum SmsTemplate {
 		this.msg = msg;
 	}
 
+
+
 	public String getSmsCode() {
 		return smsCode;
 	}

@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.servicemanager.web.controller.mq.vo.SmsInfo;
 import com.moseeker.thrift.gen.mq.struct.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,6 +63,27 @@ public class MqController {
         	EmailStruct emailStruct = ParamUtils.initModelForm(request, EmailStruct.class);
 
             Response result = mqService.sendEMail(emailStruct);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/sms/sendSms", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendSms(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+            Map<String, String> data = (Map<String, String>) param.get("data");
+            int smsType = param.getInt("smsType");
+            String mobile = param.getString("mobile");
+            String sys = param.getString("sys");
+            String ip = param.getString("ip");
+
+
+            logger.info("sendSms smsType:{},mobile:{},sys:{},ip:{},data:{}", smsType, mobile, sys,ip, data);
+            Response result = mqService.sendSMS(SmsType.findByValue(smsType),mobile, data, sys, ip);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());

@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
 import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysCvTpl;
@@ -95,6 +96,11 @@ public class Tables {
      * kenexa职位字段映射表
      */
     public static final ConfigPositionKenexa CONFIG_POSITION_KENEXA = com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa.CONFIG_POSITION_KENEXA;
+
+    /**
+     * 短信模板配置（包括发送渠道）
+     */
+    public static final ConfigSmsTemplate CONFIG_SMS_TEMPLATE = com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate.CONFIG_SMS_TEMPLATE;
 
     /**
      * 大岂运维平台管理员表
