@@ -2255,6 +2255,8 @@ public class PositionService {
      * @return 红包职位列表
      */
     public List<WechatRpPositionListData> getRpPositionList(int hbConfigId, int pageNum, int pageSize) {
+        logger.info("PositionService getRpPositionList hb_config_id:{}, pageNum:{}, pageSize:{}",
+                hbConfigId, pageNum, pageSize);
         if (pageSize > Constant.DATABASE_PAGE_SIZE) {
             new ArrayList<>(0);
         }
@@ -2279,7 +2281,8 @@ public class PositionService {
                 .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
         if(StringUtils.isEmptyList(jobRecords)){
-            return null;
+            logger.info("PositionService getRpPositionList jobRecords is null");
+            return result;
         }
         // filter 出已经发完红包的职位
 //        jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
@@ -2333,6 +2336,8 @@ public class PositionService {
                 }
             });
         }
+        logger.info("PositionService getRpPositionList result:{}",
+                result);
         return result;
     }
 
