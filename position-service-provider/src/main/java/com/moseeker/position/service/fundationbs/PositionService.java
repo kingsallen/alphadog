@@ -2275,11 +2275,13 @@ public class PositionService {
         List<RedpacketActivityPosition> bindings = positionJOOQDao.listByActivityId(hbConfigId, true, start, size);
         //activityPositionJOOQDao.list
 
+        logger.info("PositionService getRpPositionList bindings：{}", JSON.toJSONString(bindings));
         List<Integer> pids = bindings.stream().map(RedpacketActivityPosition::getPositionId).collect(Collectors.toList());
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).and("status",0).orderBy("priority")
                 .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
+        logger.info("PositionService getRpPositionList jobRecords：{}", JSON.toJSONString(jobRecords));
         if(StringUtils.isEmptyList(jobRecords)){
             logger.info("PositionService getRpPositionList jobRecords is null");
             return result;

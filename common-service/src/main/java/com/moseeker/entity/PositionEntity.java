@@ -156,20 +156,26 @@ public class PositionEntity {
      */
     public List<JobPositionRecordWithCityName> getPositions(Query query) {
 
+        logger.info("PositionEntity getPositions query:{}", JSON.toJSONString(query));
         List<JobPositionRecordWithCityName> positionRecordWithCityNameList = new ArrayList<>();
         List<JobPositionRecord> positionRecordList = positionDao.getRecords(query);
+        logger.info("PositionEntity getPositions positionRecordList.size:()", positionRecordList == null?0:positionRecordList.size());
         if (positionRecordList != null && positionRecordList.size() > 0) {
             positionRecordList.forEach(jobPositionRecord -> {
                 positionRecordWithCityNameList.add(JobPositionRecordWithCityName.clone(jobPositionRecord));
             });
         }
 
+
         if (positionRecordList != null) {
             List<Integer> pidList = positionRecordList.stream()
                     .map(JobPositionRecord::getId).collect(Collectors.toList());
 
             query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("pid", pidList, ValueOp.IN)).buildQuery();
+            logger.info("PositionEntity getPositions positionCity-query:{}", JSON.toJSONString(query));
             List<JobPositionCityRecord> jobPositionCityRecordList = positionCityDao.getRecords(query);
+
+            logger.info("PositionEntity getPositions jobPositionCityRecordList.size:()", jobPositionCityRecordList == null?0:jobPositionCityRecordList.size());
 
             if (jobPositionCityRecordList == null || jobPositionCityRecordList.size() == 0) {
 
@@ -182,9 +188,11 @@ public class PositionEntity {
                 cityIds.add(positionCityRecord.getCode());
             }
             query = new Query.QueryBuilder().where(new com.moseeker.common.util.query.Condition("code", cityIds, ValueOp.IN)).buildQuery();
+            logger.info("PositionEntity getPositions dict-query:{}", JSON.toJSONString(query));
             List<DictCityRecord> dictCityRecordList = cityDao.getRecords(query);
 
-
+            logger.info("PositionEntity getPositions dict-query:{}", JSON.toJSONString(query));
+            logger.info("PositionEntity getPositions dictCityRecordList.size:()", dictCityRecordList == null?0:dictCityRecordList.size());
             if (dictCityRecordList == null || dictCityRecordList.size() == 0) {
                 return positionRecordWithCityNameList;
             }
