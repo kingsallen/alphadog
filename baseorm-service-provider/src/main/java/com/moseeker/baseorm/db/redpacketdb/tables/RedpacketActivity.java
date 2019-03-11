@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivity extends TableImpl<RedpacketActivityRecord> {
 
-    private static final long serialVersionUID = 340474050;
+    private static final long serialVersionUID = 850054722;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_activity</code>
@@ -132,9 +132,9 @@ public class RedpacketActivity extends TableImpl<RedpacketActivityRecord> {
     public final TableField<RedpacketActivityRecord, String> SHARE_IMG = createField("share_img", org.jooq.impl.SQLDataType.VARCHAR.length(512).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "转发消息背景图地址");
 
     /**
-     * The column <code>redpacketdb.redpacket_activity.status</code>. 2:未开始，3:进行中：4:暂停中，1：已完成， 0: 已删除
+     * The column <code>redpacketdb.redpacket_activity.status</code>. 2:未开始，3:进行中：4:暂停中，5：已完成， 0: 已删除
      */
-    public final TableField<RedpacketActivityRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.TINYINT)), this, "2:未开始，3:进行中：4:暂停中，1：已完成， 0: 已删除");
+    public final TableField<RedpacketActivityRecord, Byte> STATUS = createField("status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("2", org.jooq.impl.SQLDataType.TINYINT)), this, "2:未开始，3:进行中：4:暂停中，5：已完成， 0: 已删除");
 
     /**
      * The column <code>redpacketdb.redpacket_activity.checked</code>. 0:未审核，1:审核通过，2:审核不通过

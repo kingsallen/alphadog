@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityRecord extends UpdatableRecordImpl<RedpacketActivityRecord> implements Record22<Integer, Byte, Byte, Integer, Timestamp, Timestamp, Integer, Integer, Integer, Integer, Byte, String, String, String, String, String, Byte, Byte, Integer, Byte, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 310697585;
+    private static final long serialVersionUID = 2011716849;
 
     /**
      * Setter for <code>redpacketdb.redpacket_activity.id</code>.
@@ -257,14 +257,14 @@ public class RedpacketActivityRecord extends UpdatableRecordImpl<RedpacketActivi
     }
 
     /**
-     * Setter for <code>redpacketdb.redpacket_activity.status</code>. 2:未开始，3:进行中：4:暂停中，1：已完成， 0: 已删除
+     * Setter for <code>redpacketdb.redpacket_activity.status</code>. 2:未开始，3:进行中：4:暂停中，5：已完成， 0: 已删除
      */
     public void setStatus(Byte value) {
         set(16, value);
     }
 
     /**
-     * Getter for <code>redpacketdb.redpacket_activity.status</code>. 2:未开始，3:进行中：4:暂停中，1：已完成， 0: 已删除
+     * Getter for <code>redpacketdb.redpacket_activity.status</code>. 2:未开始，3:进行中：4:暂停中，5：已完成， 0: 已删除
      */
     public Byte getStatus() {
         return (Byte) get(16);

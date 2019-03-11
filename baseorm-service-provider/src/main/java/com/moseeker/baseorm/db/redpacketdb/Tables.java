@@ -8,6 +8,8 @@ import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivity;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityOperationLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketCompanyBalance;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketConsumingRecords;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket;
@@ -52,6 +54,16 @@ public class Tables {
      * 红包埋点
      */
     public static final RedpacketAmountsLog REDPACKET_AMOUNTS_LOG = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog.REDPACKET_AMOUNTS_LOG;
+
+    /**
+     * 公司账户
+     */
+    public static final RedpacketCompanyBalance REDPACKET_COMPANY_BALANCE = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketCompanyBalance.REDPACKET_COMPANY_BALANCE;
+
+    /**
+     * 账户变更记录
+     */
+    public static final RedpacketConsumingRecords REDPACKET_CONSUMING_RECORDS = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketConsumingRecords.REDPACKET_CONSUMING_RECORDS;
 
     /**
      * 员工领取认证红包记录

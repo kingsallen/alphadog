@@ -9,12 +9,14 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionHrCompanyFeatureDao;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityPositionJOOQDao;
 import com.moseeker.baseorm.db.dictdb.tables.pojos.DictCity;
 import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionHrCompanyFeature;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionCityRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
@@ -70,7 +72,10 @@ public class PositionEntity {
 
     @Autowired
     private HrCompanyDao companyDao;
-    ;
+
+    @Autowired
+    private RedpacketActivityPositionJOOQDao activityPositionDao;
+
     private org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /**

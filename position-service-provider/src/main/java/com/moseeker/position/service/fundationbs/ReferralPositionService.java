@@ -9,6 +9,7 @@ import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.hrdb.HrTeamDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionCityDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityPositionJOOQDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralCompanyConfDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
@@ -95,6 +96,8 @@ public class ReferralPositionService {
 
     @Autowired
     HrTeamDao teamDao;
+
+    @Autowired private RedpacketActivityPositionJOOQDao activityPositionDao;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
@@ -463,6 +466,32 @@ public class ReferralPositionService {
             if (!StringUtils.isEmptyList(pidList)) {
                 List<Integer> idList = pidList.subList(0, 3);
                 List<JobPosition> positionList = positionEntity.getPositionInfoByIdList(idList);
+
+                if (positionList != null && positionList.size() > 0) {
+
+                    List<Integer> positionIdList = positionList
+                            .stream()
+                            .map(JobPosition::getId)
+                            .collect(Collectors.toList());
+
+                    List<Integer> hbPositionList = activityPositionDao.getHbPositionList(positionIdList);
+                    positionList.forEach(jobPosition -> {
+                        if (hbPositionList != null && hbPositionList.size() > 0) {
+                            Optional<Integer> optional = hbPositionList
+                                    .stream()
+                                    .filter(id -> jobPosition.getId().equals(id))
+                                    .findAny();
+                            if (optional.isPresent()) {
+                                jobPosition.setHbStatus((byte) 1);
+                            } else {
+                                jobPosition.setHbStatus((byte) 0);
+                            }
+                        } else {
+                            jobPosition.setHbStatus((byte) 0);
+                        }
+                    });
+                }
+
                 List<JobPositionCityDO> positionCityList = positionCityDao.getPositionCityBypids(idList);
                 Set<Integer> cityIds = new HashSet<>();
                 for (JobPositionCityDO positionCity : positionCityList) {

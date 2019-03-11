@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityPosition implements Serializable {
 
-    private static final long serialVersionUID = -939830;
+    private static final long serialVersionUID = -1071582035;
 
     private Integer   id;
     private Integer   activityId;
@@ -33,6 +33,7 @@ public class RedpacketActivityPosition implements Serializable {
     private Byte      enable;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   storage;
 
     public RedpacketActivityPosition() {}
 
@@ -45,6 +46,7 @@ public class RedpacketActivityPosition implements Serializable {
         this.enable = value.enable;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.storage = value.storage;
     }
 
     public RedpacketActivityPosition(
@@ -55,7 +57,8 @@ public class RedpacketActivityPosition implements Serializable {
         Integer   leftAmount,
         Byte      enable,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   storage
     ) {
         this.id = id;
         this.activityId = activityId;
@@ -65,6 +68,7 @@ public class RedpacketActivityPosition implements Serializable {
         this.enable = enable;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.storage = storage;
     }
 
     public Integer getId() {
@@ -131,6 +135,14 @@ public class RedpacketActivityPosition implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getStorage() {
+        return this.storage;
+    }
+
+    public void setStorage(Integer storage) {
+        this.storage = storage;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RedpacketActivityPosition (");
@@ -143,6 +155,7 @@ public class RedpacketActivityPosition implements Serializable {
         sb.append(", ").append(enable);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(storage);
 
         sb.append(")");
         return sb.toString();

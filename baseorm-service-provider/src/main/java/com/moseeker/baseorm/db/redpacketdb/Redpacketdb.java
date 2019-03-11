@@ -8,6 +8,8 @@ import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivity;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityOperationLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketActivityPosition;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketCompanyBalance;
+import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketConsumingRecords;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketEmployeeVerifyRedpacket;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketMessageHandlerLog;
 import com.moseeker.baseorm.db.redpacketdb.tables.RedpacketRedpacket;
@@ -41,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Redpacketdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 545939167;
+    private static final long serialVersionUID = -783659738;
 
     /**
      * The reference instance of <code>redpacketdb</code>
@@ -67,6 +69,16 @@ public class Redpacketdb extends SchemaImpl {
      * 红包埋点
      */
     public final RedpacketAmountsLog REDPACKET_AMOUNTS_LOG = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketAmountsLog.REDPACKET_AMOUNTS_LOG;
+
+    /**
+     * 公司账户
+     */
+    public final RedpacketCompanyBalance REDPACKET_COMPANY_BALANCE = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketCompanyBalance.REDPACKET_COMPANY_BALANCE;
+
+    /**
+     * 账户变更记录
+     */
+    public final RedpacketConsumingRecords REDPACKET_CONSUMING_RECORDS = com.moseeker.baseorm.db.redpacketdb.tables.RedpacketConsumingRecords.REDPACKET_CONSUMING_RECORDS;
 
     /**
      * 员工领取认证红包记录
@@ -137,6 +149,8 @@ public class Redpacketdb extends SchemaImpl {
             RedpacketActivityOperationLog.REDPACKET_ACTIVITY_OPERATION_LOG,
             RedpacketActivityPosition.REDPACKET_ACTIVITY_POSITION,
             RedpacketAmountsLog.REDPACKET_AMOUNTS_LOG,
+            RedpacketCompanyBalance.REDPACKET_COMPANY_BALANCE,
+            RedpacketConsumingRecords.REDPACKET_CONSUMING_RECORDS,
             RedpacketEmployeeVerifyRedpacket.REDPACKET_EMPLOYEE_VERIFY_REDPACKET,
             RedpacketMessageHandlerLog.REDPACKET_MESSAGE_HANDLER_LOG,
             RedpacketRedpacket.REDPACKET_REDPACKET,

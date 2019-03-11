@@ -106,4 +106,11 @@ public class RedpacketActivityOperationLogDao extends DAOImpl<RedpacketActivityO
     public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityOperationLog> fetchByUpdateTime(Timestamp... values) {
         return fetch(RedpacketActivityOperationLog.REDPACKET_ACTIVITY_OPERATION_LOG.UPDATE_TIME, values);
     }
+
+    /**
+     * Fetch records that have <code>storage IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityOperationLog> fetchByStorage(Integer... values) {
+        return fetch(RedpacketActivityOperationLog.REDPACKET_ACTIVITY_OPERATION_LOG.STORAGE, values);
+    }
 }

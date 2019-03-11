@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityOperationLog extends TableImpl<RedpacketActivityOperationLogRecord> {
 
-    private static final long serialVersionUID = 53731879;
+    private static final long serialVersionUID = 262901326;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_activity_operation_log</code>
@@ -85,6 +85,11 @@ public class RedpacketActivityOperationLog extends TableImpl<RedpacketActivityOp
      * The column <code>redpacketdb.redpacket_activity_operation_log.update_time</code>. 更新时间
      */
     public final TableField<RedpacketActivityOperationLogRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
+
+    /**
+     * The column <code>redpacketdb.redpacket_activity_operation_log.storage</code>. 剩余红包数量
+     */
+    public final TableField<RedpacketActivityOperationLogRecord, Integer> STORAGE = createField("storage", org.jooq.impl.SQLDataType.INTEGER, this, "剩余红包数量");
 
     /**
      * Create a <code>redpacketdb.redpacket_activity_operation_log</code> table reference

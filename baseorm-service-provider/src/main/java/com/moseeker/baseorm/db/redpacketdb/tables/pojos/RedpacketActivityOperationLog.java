@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityOperationLog implements Serializable {
 
-    private static final long serialVersionUID = 105927530;
+    private static final long serialVersionUID = -196770321;
 
     private Integer   id;
     private Integer   activityId;
@@ -32,6 +32,7 @@ public class RedpacketActivityOperationLog implements Serializable {
     private String    desc;
     private Timestamp createTime;
     private Timestamp updateTime;
+    private Integer   storage;
 
     public RedpacketActivityOperationLog() {}
 
@@ -43,6 +44,7 @@ public class RedpacketActivityOperationLog implements Serializable {
         this.desc = value.desc;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
+        this.storage = value.storage;
     }
 
     public RedpacketActivityOperationLog(
@@ -52,7 +54,8 @@ public class RedpacketActivityOperationLog implements Serializable {
         Integer   userId,
         String    desc,
         Timestamp createTime,
-        Timestamp updateTime
+        Timestamp updateTime,
+        Integer   storage
     ) {
         this.id = id;
         this.activityId = activityId;
@@ -61,6 +64,7 @@ public class RedpacketActivityOperationLog implements Serializable {
         this.desc = desc;
         this.createTime = createTime;
         this.updateTime = updateTime;
+        this.storage = storage;
     }
 
     public Integer getId() {
@@ -119,6 +123,14 @@ public class RedpacketActivityOperationLog implements Serializable {
         this.updateTime = updateTime;
     }
 
+    public Integer getStorage() {
+        return this.storage;
+    }
+
+    public void setStorage(Integer storage) {
+        this.storage = storage;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RedpacketActivityOperationLog (");
@@ -130,6 +142,7 @@ public class RedpacketActivityOperationLog implements Serializable {
         sb.append(", ").append(desc);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
+        sb.append(", ").append(storage);
 
         sb.append(")");
         return sb.toString();

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RedpacketActivityPosition extends TableImpl<RedpacketActivityPositionRecord> {
 
-    private static final long serialVersionUID = -1663955858;
+    private static final long serialVersionUID = 1082019069;
 
     /**
      * The reference instance of <code>redpacketdb.redpacket_activity_position</code>
@@ -92,6 +92,11 @@ public class RedpacketActivityPosition extends TableImpl<RedpacketActivityPositi
     public final TableField<RedpacketActivityPositionRecord, Timestamp> UPDATE_TIME = createField("update_time", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "更新时间");
 
     /**
+     * The column <code>redpacketdb.redpacket_activity_position.storage</code>. 剩余红包总数
+     */
+    public final TableField<RedpacketActivityPositionRecord, Integer> STORAGE = createField("storage", org.jooq.impl.SQLDataType.INTEGER, this, "剩余红包总数");
+
+    /**
      * Create a <code>redpacketdb.redpacket_activity_position</code> table reference
      */
     public RedpacketActivityPosition() {
@@ -142,7 +147,7 @@ public class RedpacketActivityPosition extends TableImpl<RedpacketActivityPositi
      */
     @Override
     public List<UniqueKey<RedpacketActivityPositionRecord>> getKeys() {
-        return Arrays.<UniqueKey<RedpacketActivityPositionRecord>>asList(Keys.KEY_REDPACKET_ACTIVITY_POSITION_PRIMARY);
+        return Arrays.<UniqueKey<RedpacketActivityPositionRecord>>asList(Keys.KEY_REDPACKET_ACTIVITY_POSITION_PRIMARY, Keys.KEY_REDPACKET_ACTIVITY_POSITION_ACTIVITY_POSITION);
     }
 
     /**
