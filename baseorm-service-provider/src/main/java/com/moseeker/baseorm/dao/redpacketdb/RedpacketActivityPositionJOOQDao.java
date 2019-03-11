@@ -90,7 +90,7 @@ public class RedpacketActivityPositionJOOQDao extends JooqCrudImpl<RedpacketActi
     public List<RedpacketActivityPosition> listByActivityId(int hbConfigId, boolean enable, int start, int size) {
         return create
                 .selectFrom(REDPACKET_ACTIVITY_POSITION)
-                .where(REDPACKET_ACTIVITY_POSITION.ID.eq(hbConfigId))
+                .where(REDPACKET_ACTIVITY_POSITION.ACTIVITY_ID.eq(hbConfigId))
                 .and(REDPACKET_ACTIVITY_POSITION.ENABLE.eq((byte) (enable?1:0)))
                 .limit(start, size)
                 .fetchInto(RedpacketActivityPosition.class);
