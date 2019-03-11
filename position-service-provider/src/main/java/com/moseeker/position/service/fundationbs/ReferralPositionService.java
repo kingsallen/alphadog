@@ -97,7 +97,8 @@ public class ReferralPositionService {
     @Autowired
     HrTeamDao teamDao;
 
-    @Autowired private RedpacketActivityPositionJOOQDao activityPositionDao;
+    @Autowired
+    private RedpacketActivityPositionJOOQDao activityPositionDao;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
