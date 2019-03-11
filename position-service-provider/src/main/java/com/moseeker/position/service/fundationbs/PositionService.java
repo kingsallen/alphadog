@@ -2283,7 +2283,7 @@ public class PositionService {
         Query q = new Query.QueryBuilder().where(condition).and("status",0).orderBy("priority")
                 .orderBy("id",Order.DESC).setPageNum(pageNum).setPageSize(pageSize).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        logger.info("PositionService getRpPositionList jobRecords：{}", JSON.toJSONString(jobRecords));
+        logger.info("PositionService getRpPositionList jobRecords.size：{}", jobRecords.size());
         if(StringUtils.isEmptyList(jobRecords)){
             logger.info("PositionService getRpPositionList jobRecords is null");
             return result;
