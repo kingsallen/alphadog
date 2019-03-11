@@ -9,7 +9,6 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
-import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
@@ -51,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Configdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -2026803566;
+    private static final long serialVersionUID = -1962959652;
 
     /**
      * The reference instance of <code>configdb</code>
@@ -82,11 +81,6 @@ public class Configdb extends SchemaImpl {
      * 管理员通知联系人
      */
     public final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
-
-    /**
-     * 招聘管理自定义可显示字段基表
-     */
-    public final ConfigAtsApplicationShowField CONFIG_ATS_APPLICATION_SHOW_FIELD = com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD;
 
     /**
      * The table <code>configdb.config_ats_source</code>.
@@ -198,7 +192,6 @@ public class Configdb extends SchemaImpl {
             ConfigAdminnotificationGroup.CONFIG_ADMINNOTIFICATION_GROUP,
             ConfigAdminnotificationGroupmembers.CONFIG_ADMINNOTIFICATION_GROUPMEMBERS,
             ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS,
-            ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD,
             ConfigAtsSource.CONFIG_ATS_SOURCE,
             ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY,
             ConfigCronjobs.CONFIG_CRONJOBS,

@@ -9,7 +9,6 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
-import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
@@ -67,11 +66,6 @@ public class Tables {
      * 管理员通知联系人
      */
     public static final ConfigAdminnotificationMembers CONFIG_ADMINNOTIFICATION_MEMBERS = com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS;
-
-    /**
-     * 招聘管理自定义可显示字段基表
-     */
-    public static final ConfigAtsApplicationShowField CONFIG_ATS_APPLICATION_SHOW_FIELD = com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD;
 
     /**
      * The table <code>configdb.config_ats_source</code>.
