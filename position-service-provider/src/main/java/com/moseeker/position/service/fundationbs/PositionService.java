@@ -2267,12 +2267,13 @@ public class PositionService {
         //activityPositionJOOQDao.list
 
         List<Integer> pids = bindings.stream().map(RedpacketActivityPosition::getPositionId).collect(Collectors.toList());
-        String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).orderBy("priority").buildQuery();
 
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-
+        if(StringUtils.isEmptyList(jobRecords)){
+            return result;
+        }
         // filter 出已经发完红包的职位
         jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
         int totalNum = this.getRpPositionCount(hbConfigId);
