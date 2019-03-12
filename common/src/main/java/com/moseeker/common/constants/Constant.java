@@ -66,6 +66,8 @@ public final class Constant {
     public static final String EMPLOYEE_SEEK_REFERRAL_TEMPLATE = "seek_referral.referral_template";
     public static final String EMPLOYEE_REFERRAL_EVALUATE = "referral_evaluate.referral_template";
     public static final String REFERRAL_RADAR_TEMPLATE = "referral_radar.referral_radar_template";
+
+    public static final String BALANCE_CHARGE_ROUTINGKEY = "balance_charge.redpacket_template";
     public static final String TIPS_SUCCESS = "success";
 
     public static final String NONE_JSON = "{}";
@@ -241,6 +243,7 @@ public final class Constant {
     public static final int REFERRAL_INVITE_APPLICATION = 85; // 员工邀请候选人进行职位投递
     public static final int REFERRA_RECOMMEND_EVALUATE = 86; // 员工完成推荐评价进行内推之后发送给候选人
     public static final int REFERRAL_SEEK_REFERRAL = 87; // 联系内推发送给员工的模板消息ID
+    public static final int REDPACKET_CHARGE_AMOUNT = 89; // 联系内推发送给员工的模板消息ID
 
     public static final int POSITION_SYNC_FAIL_NOTICE_TPL = 88; // 新简历通知的消息通知ID
 
