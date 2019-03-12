@@ -163,7 +163,7 @@ public class ReceiverHandler {
             if(Constant.BALANCE_CHARGE_ROUTINGKEY.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer companyId = jsonObject.getIntValue("company_id");
                 Integer amount = jsonObject.getIntValue("amount");
-                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+                templateMsgHttp.redpacketAmountTemplate(companyId, amount);
             }
 
         } catch (CommonException e) {
