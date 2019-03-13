@@ -9,7 +9,6 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationEvents;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroup;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationGroupmembers;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAdminnotificationMembers;
-import com.moseeker.baseorm.db.configdb.tables.ConfigAtsApplicationShowField;
 import com.moseeker.baseorm.db.configdb.tables.ConfigAtsSource;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCacheconfigRediskey;
 import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
@@ -31,7 +30,6 @@ import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationEv
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationGroupRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationGroupmembersRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAdminnotificationMembersRecord;
-import com.moseeker.baseorm.db.configdb.tables.records.ConfigAtsApplicationShowFieldRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigAtsSourceRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigCacheconfigRediskeyRecord;
 import com.moseeker.baseorm.db.configdb.tables.records.ConfigCronjobsRecord;
@@ -75,7 +73,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<ConfigAdminnotificationChannelRecord, Integer> IDENTITY_CONFIG_ADMINNOTIFICATION_CHANNEL = Identities0.IDENTITY_CONFIG_ADMINNOTIFICATION_CHANNEL;
-    public static final Identity<ConfigAtsApplicationShowFieldRecord, Integer> IDENTITY_CONFIG_ATS_APPLICATION_SHOW_FIELD = Identities0.IDENTITY_CONFIG_ATS_APPLICATION_SHOW_FIELD;
     public static final Identity<ConfigAtsSourceRecord, Integer> IDENTITY_CONFIG_ATS_SOURCE = Identities0.IDENTITY_CONFIG_ATS_SOURCE;
     public static final Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = Identities0.IDENTITY_CONFIG_CACHECONFIG_REDISKEY;
     public static final Identity<ConfigCronjobsRecord, Integer> IDENTITY_CONFIG_CRONJOBS = Identities0.IDENTITY_CONFIG_CRONJOBS;
@@ -108,7 +105,6 @@ public class Keys {
     public static final UniqueKey<ConfigAdminnotificationMembersRecord> KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_MOBILEPHONE = UniqueKeys0.KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_MOBILEPHONE;
     public static final UniqueKey<ConfigAdminnotificationMembersRecord> KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_WECHATOPENID = UniqueKeys0.KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_WECHATOPENID;
     public static final UniqueKey<ConfigAdminnotificationMembersRecord> KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_EMAIL = UniqueKeys0.KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_EMAIL;
-    public static final UniqueKey<ConfigAtsApplicationShowFieldRecord> KEY_CONFIG_ATS_APPLICATION_SHOW_FIELD_PRIMARY = UniqueKeys0.KEY_CONFIG_ATS_APPLICATION_SHOW_FIELD_PRIMARY;
     public static final UniqueKey<ConfigAtsSourceRecord> KEY_CONFIG_ATS_SOURCE_PRIMARY = UniqueKeys0.KEY_CONFIG_ATS_SOURCE_PRIMARY;
     public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_PRIMARY = UniqueKeys0.KEY_CONFIG_CACHECONFIG_REDISKEY_PRIMARY;
     public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER = UniqueKeys0.KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER;
@@ -142,7 +138,6 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<ConfigAdminnotificationChannelRecord, Integer> IDENTITY_CONFIG_ADMINNOTIFICATION_CHANNEL = createIdentity(ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL, ConfigAdminnotificationChannel.CONFIG_ADMINNOTIFICATION_CHANNEL.ID);
-        public static Identity<ConfigAtsApplicationShowFieldRecord, Integer> IDENTITY_CONFIG_ATS_APPLICATION_SHOW_FIELD = createIdentity(ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD, ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD.ID);
         public static Identity<ConfigAtsSourceRecord, Integer> IDENTITY_CONFIG_ATS_SOURCE = createIdentity(ConfigAtsSource.CONFIG_ATS_SOURCE, ConfigAtsSource.CONFIG_ATS_SOURCE.ID);
         public static Identity<ConfigCacheconfigRediskeyRecord, Integer> IDENTITY_CONFIG_CACHECONFIG_REDISKEY = createIdentity(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.ID);
         public static Identity<ConfigCronjobsRecord, Integer> IDENTITY_CONFIG_CRONJOBS = createIdentity(ConfigCronjobs.CONFIG_CRONJOBS, ConfigCronjobs.CONFIG_CRONJOBS.ID);
@@ -173,11 +168,10 @@ public class Keys {
         public static final UniqueKey<ConfigAdminnotificationMembersRecord> KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_MOBILEPHONE = createUniqueKey(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS, "KEY_config_adminnotification_members_mobilephone", ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS.MOBILEPHONE);
         public static final UniqueKey<ConfigAdminnotificationMembersRecord> KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_WECHATOPENID = createUniqueKey(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS, "KEY_config_adminnotification_members_wechatopenid", ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS.WECHATOPENID);
         public static final UniqueKey<ConfigAdminnotificationMembersRecord> KEY_CONFIG_ADMINNOTIFICATION_MEMBERS_EMAIL = createUniqueKey(ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS, "KEY_config_adminnotification_members_email", ConfigAdminnotificationMembers.CONFIG_ADMINNOTIFICATION_MEMBERS.EMAIL);
-        public static final UniqueKey<ConfigAtsApplicationShowFieldRecord> KEY_CONFIG_ATS_APPLICATION_SHOW_FIELD_PRIMARY = createUniqueKey(ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD, "KEY_config_ats_application_show_field_PRIMARY", ConfigAtsApplicationShowField.CONFIG_ATS_APPLICATION_SHOW_FIELD.ID);
         public static final UniqueKey<ConfigAtsSourceRecord> KEY_CONFIG_ATS_SOURCE_PRIMARY = createUniqueKey(ConfigAtsSource.CONFIG_ATS_SOURCE, "KEY_config_ats_source_PRIMARY", ConfigAtsSource.CONFIG_ATS_SOURCE.ID);
         public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_PRIMARY = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_PRIMARY", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.ID);
-        public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_key_identifier", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER);
-        public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_PATTERN = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_pattern", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PATTERN);
+        public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_KEY_IDENTIFIER = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_key_identifier", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.KEY_IDENTIFIER, ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID);
+        public static final UniqueKey<ConfigCacheconfigRediskeyRecord> KEY_CONFIG_CACHECONFIG_REDISKEY_PATTERN = createUniqueKey(ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY, "KEY_config_cacheconfig_rediskey_pattern", ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PATTERN, ConfigCacheconfigRediskey.CONFIG_CACHECONFIG_REDISKEY.PROJECT_APPID);
         public static final UniqueKey<ConfigCronjobsRecord> KEY_CONFIG_CRONJOBS_PRIMARY = createUniqueKey(ConfigCronjobs.CONFIG_CRONJOBS, "KEY_config_cronjobs_PRIMARY", ConfigCronjobs.CONFIG_CRONJOBS.ID);
         public static final UniqueKey<ConfigHbBalanceRecord> KEY_CONFIG_HB_BALANCE_PRIMARY = createUniqueKey(ConfigHbBalance.CONFIG_HB_BALANCE, "KEY_config_hb_balance_PRIMARY", ConfigHbBalance.CONFIG_HB_BALANCE.ID);
         public static final UniqueKey<ConfigOmsSwitchManagementRecord> KEY_CONFIG_OMS_SWITCH_MANAGEMENT_PRIMARY = createUniqueKey(ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT, "KEY_config_oms_switch_management_PRIMARY", ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT.ID);

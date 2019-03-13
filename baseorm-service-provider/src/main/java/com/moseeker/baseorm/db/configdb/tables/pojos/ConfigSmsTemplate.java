@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSmsTemplate implements Serializable {
 
-    private static final long serialVersionUID = -2088136976;
+    private static final long serialVersionUID = -1478603782;
 
     private Integer   id;
     private String    name;
@@ -32,6 +32,7 @@ public class ConfigSmsTemplate implements Serializable {
     private String    content_253;
     private String    variableOrder_253;
     private Byte      channelType;
+    private String    remark;
     private Timestamp createTime;
     private Timestamp updateTime;
 
@@ -45,6 +46,7 @@ public class ConfigSmsTemplate implements Serializable {
         this.content_253 = value.content_253;
         this.variableOrder_253 = value.variableOrder_253;
         this.channelType = value.channelType;
+        this.remark = value.remark;
         this.createTime = value.createTime;
         this.updateTime = value.updateTime;
     }
@@ -57,6 +59,7 @@ public class ConfigSmsTemplate implements Serializable {
         String    content_253,
         String    variableOrder_253,
         Byte      channelType,
+        String    remark,
         Timestamp createTime,
         Timestamp updateTime
     ) {
@@ -67,6 +70,7 @@ public class ConfigSmsTemplate implements Serializable {
         this.content_253 = content_253;
         this.variableOrder_253 = variableOrder_253;
         this.channelType = channelType;
+        this.remark = remark;
         this.createTime = createTime;
         this.updateTime = updateTime;
     }
@@ -127,6 +131,14 @@ public class ConfigSmsTemplate implements Serializable {
         this.channelType = channelType;
     }
 
+    public String getRemark() {
+        return this.remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public Timestamp getCreateTime() {
         return this.createTime;
     }
@@ -154,6 +166,7 @@ public class ConfigSmsTemplate implements Serializable {
         sb.append(", ").append(content_253);
         sb.append(", ").append(variableOrder_253);
         sb.append(", ").append(channelType);
+        sb.append(", ").append(remark);
         sb.append(", ").append(createTime);
         sb.append(", ").append(updateTime);
 

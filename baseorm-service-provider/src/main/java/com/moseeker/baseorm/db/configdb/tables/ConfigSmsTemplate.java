@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ConfigSmsTemplate extends TableImpl<ConfigSmsTemplateRecord> {
 
-    private static final long serialVersionUID = 1477920716;
+    private static final long serialVersionUID = -494395028;
 
     /**
      * The reference instance of <code>configdb.config_sms_template</code>
@@ -85,6 +85,11 @@ public class ConfigSmsTemplate extends TableImpl<ConfigSmsTemplateRecord> {
      * The column <code>configdb.config_sms_template.channel_type</code>. 1: 阿里云短信 2：253
      */
     public final TableField<ConfigSmsTemplateRecord, Byte> CHANNEL_TYPE = createField("channel_type", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "1: 阿里云短信 2：253");
+
+    /**
+     * The column <code>configdb.config_sms_template.remark</code>. 备注用，有些短信模板，只有特别的通道才能使用，不能任意指定channel_type.  比如 阿里云短信目前不支持新申请的招聘类通知，只能由253发送。
+     */
+    public final TableField<ConfigSmsTemplateRecord, String> REMARK = createField("remark", org.jooq.impl.SQLDataType.VARCHAR.length(45), this, "备注用，有些短信模板，只有特别的通道才能使用，不能任意指定channel_type.  比如 阿里云短信目前不支持新申请的招聘类通知，只能由253发送。");
 
     /**
      * The column <code>configdb.config_sms_template.create_time</code>.
