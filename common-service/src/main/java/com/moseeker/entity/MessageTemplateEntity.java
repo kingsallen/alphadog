@@ -271,16 +271,7 @@ public class MessageTemplateEntity {
             String remarkName = "点击查看推荐职位";*/
             String firstName = "#靠谱的工作机会来了~# 根据您的偏好，（公司简称）为您精选了些好机会！㊗️您发现新天地~\n\n";
             String remarkName = "详情";
-
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
-            MessageTplDataCol first=new MessageTplDataCol();
-            first.setColor("#E75E48");
-            first.setValue(firstName);
-            colMap.put("first",first);
-            MessageTplDataCol remark=new MessageTplDataCol();
-            remark.setColor("#173177");
-            remark.setValue(remarkName);
-            colMap.put("remark",remark);
         }
         if(type==3){
             jobName = this.getJobName(userId,companyId,1);
@@ -321,7 +312,7 @@ public class MessageTemplateEntity {
     private Map<String,MessageTplDataCol> handlerTemplateData(int weChatId,String firstName,String remarkName,int tempId){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         MessageTplDataCol first=new MessageTplDataCol();
-        first.setColor("#173177");
+        first.setColor("#E75E48");
         HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,tempId);
         if(record != null && record.getStatus().byteValue()!=1){
             return null;
