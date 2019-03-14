@@ -68,7 +68,7 @@ public class UpVoteEntity {
     public int upVote(UserEmployeeDO receiver, UserEmployeeDO sender) throws UserAccountException {
 
         IntervalTime intervalTime = IntervalTime.buildIntervalTime();
-        UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getId(), sender.getId(), intervalTime.getEndTime(),
+        UserEmployeeUpvote upVote = upVoteDao.fetchUpVote(receiver.getId(), sender.getId(), intervalTime.getStartTime(),
                 intervalTime.getEndTime());
         if (upVote != null) {
             throw UserAccountException.EMPLOYEE_ALREADY_UP_VOTE;
