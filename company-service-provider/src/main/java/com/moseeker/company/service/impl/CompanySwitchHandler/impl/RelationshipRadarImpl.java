@@ -26,7 +26,7 @@ public class RelationshipRadarImpl extends AbstractCompanySwitchHandler{
     public void rabbitmq(CompanySwitchVO companySwitchVO) {
         logger.info("=========companySwitchVO:{}", companySwitchVO);
         MessageProperties mp = new MessageProperties();
-        amqpTemplate.send("company_switch_exchange", "handle_radar_switch",
+        amqpTemplate.send("company_switch_exchange", "handle_*_switch",
                 MessageBuilder.withBody(JSONObject.toJSONString(companySwitchVO).getBytes()).andProperties(mp).build());
     }
 }
