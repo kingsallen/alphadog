@@ -347,8 +347,7 @@ public class AppConfig {
     @Bean
     public List<Binding> bindRadarSwitchQueue() {
         return new ArrayList<Binding>(){{
-            add(BindingBuilder.bind(handleRadarSwitchQueue()).to(companySwitchExchange())
-                    .with("handle_*_switch"));
+            add(BindingBuilder.bind(handleRadarSwitchQueue()).to(companySwitchExchange()).with("handle_radar_switch"));
         }};
     }
 

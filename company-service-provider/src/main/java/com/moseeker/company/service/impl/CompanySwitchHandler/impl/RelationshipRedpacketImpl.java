@@ -6,27 +6,23 @@ import com.moseeker.company.service.impl.CompanySwitchHandler.AbstractCompanySwi
 import com.moseeker.thrift.gen.company.struct.CompanySwitchVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessageBuilder;
 import org.springframework.amqp.core.MessageProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-@Service
-public class RelationshipRadarImpl extends AbstractCompanySwitchHandler{
+public class RelationshipRedpacketImpl extends AbstractCompanySwitchHandler {
 
-    private Logger logger = LoggerFactory.getLogger(RelationshipRadarImpl.class);
-
-    @Override
-    public OmsSwitchEnum switchType() {
-        return OmsSwitchEnum.人脉雷达;
-}
+    private Logger logger = LoggerFactory.getLogger(RelationshipRedpacketImpl.class);
 
     @Override
     public void rabbitmq(CompanySwitchVO companySwitchVO) {
         logger.info("=========companySwitchVO:{}", companySwitchVO);
         MessageProperties mp = new MessageProperties();
-        amqpTemplate.send("company_switch_exchange", "handle_radar_switch",
+        amqpTemplate.send("company_switch_exchange", "handle_redpacket_switch",
                 MessageBuilder.withBody(JSONObject.toJSONString(companySwitchVO).getBytes()).andProperties(mp).build());
+    }
+
+    @Override
+    public OmsSwitchEnum switchType() {
+        return OmsSwitchEnum.红包活动;
     }
 }
