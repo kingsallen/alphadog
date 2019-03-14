@@ -265,6 +265,27 @@ public class JobApplicataionServicesImpl implements Iface {
         }
     }
 
+    /**
+    * 校验公司下面的appid是否存在
+    *
+    * @param   appId
+    * @param companyId
+    * @Author  lee
+    * @Date  2019/3/6 下午6:58
+    */
+    @Override
+    public int validateAppid(int appId, int companyId) throws BIZException, TException {
+        try {
+            int result=service.validateAppid(appId, companyId);
+            return result;
+        } catch (CommonException e) {
+            throw ExceptionConvertUtil.convertCommonException(e);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw ApplicationException.PROGRAM_EXCEPTION;
+        }
+    }
+
 
     /**
      * 清除一个公司一个人申请次数限制的redis key 给sysplat用
