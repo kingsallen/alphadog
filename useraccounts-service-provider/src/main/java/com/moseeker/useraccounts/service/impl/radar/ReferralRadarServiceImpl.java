@@ -1256,7 +1256,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 查找浏览人中的员工
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
         // 获取员工的userId
-        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getId).collect(Collectors.toSet());
+        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
         // 将员工过滤掉
         beRecomUserIds.removeAll(userEmployeeIds);
     }
