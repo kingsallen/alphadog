@@ -345,7 +345,7 @@ public class TemplateMsgHttp {
         applierTemplate.put("topcolor", "#FF0000");
         String link = env.getProperty("message.template.delivery.applier.link")
                 .replace("{}", String.valueOf(applicationId))+"?wechat_signature="+wxWechatDO.getSignature()
-                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + new Date().getTime();
+                +"&from_template_message="+Constant.REFERRA_RECOMMEND_EVALUATE+"&send_time=" + System.currentTimeMillis();
         applierTemplate.put("url",link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 

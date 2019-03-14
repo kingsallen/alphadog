@@ -115,6 +115,13 @@ public class ConfigSmsTemplateDao extends DAOImpl<ConfigSmsTemplateRecord, com.m
     }
 
     /**
+     * Fetch records that have <code>remark IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSmsTemplate> fetchByRemark(String... values) {
+        return fetch(ConfigSmsTemplate.CONFIG_SMS_TEMPLATE.REMARK, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.configdb.tables.pojos.ConfigSmsTemplate> fetchByCreateTime(Timestamp... values) {
