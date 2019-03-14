@@ -161,7 +161,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 将员工过滤掉，获取职位浏览人中非员工的userId
         getUnEmployeeUserIds(beRecomUserIds);
         if(beRecomUserIds.size() == 0){
-            throw UserAccountException.REFERRAL_SHARE_CHAIN_NONEXISTS;
+            return "";
         }
         // 后边需要用到员工头像和昵称，在这里一并查出来
         Set<Integer> allUsers = new HashSet<>(beRecomUserIds);
@@ -1263,7 +1263,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 查找浏览人中的员工
         List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
         // 获取员工的userId
-        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getId).collect(Collectors.toSet());
+        Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
         // 将员工过滤掉
         beRecomUserIds.removeAll(userEmployeeIds);
     }
