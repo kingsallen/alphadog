@@ -159,7 +159,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         // 获取浏览人的userId
         Set<Integer> beRecomUserIds = shareChainDOS.stream().map(CandidateTemplateShareChainDO::getPresenteeUserId).collect(Collectors.toSet());
         // 将员工过滤掉，获取职位浏览人中非员工的userId
-        getUnEmployeeUserIds(beRecomUserIds);
+        getUnEmployeeUserIds(beRecomUserIds, cardInfo.getCompanyId());
         if(beRecomUserIds.size() == 0){
             return "";
         }
@@ -1259,9 +1259,9 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         return seekRecommendDao.fetchSeekRecommendByPostAndPressentee(cardInfo.getUserId(), pids, seekReferralUserIds);
     }
 
-    private void getUnEmployeeUserIds(Set<Integer> beRecomUserIds) {
+    private void getUnEmployeeUserIds(Set<Integer> beRecomUserIds, int companyId) {
         // 查找浏览人中的员工
-        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getUserEmployeeForidList(beRecomUserIds);
+        List<UserEmployeeDO> userEmployeeDOS = userEmployeeDao.getActiveEmployee(new ArrayList<>(beRecomUserIds), companyId);
         // 获取员工的userId
         Set<Integer> userEmployeeIds = userEmployeeDOS.stream().map(UserEmployeeDO::getSysuserId).collect(Collectors.toSet());
         // 将员工过滤掉
