@@ -268,7 +268,7 @@ public class MessageTemplateEntity {
             jobName = this.getJobName(userId, companyId, 0);
             /*String firstName = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
             String remarkName = "点击查看推荐职位";*/
-            String firstName = "#靠谱的工作机会来了~# 根据您的偏好，（公司简称）为您精选了些好机会！㊗️您发现新天地~\n\n::::     ::::   \n\n::::     ::::    ❤️\n\n:::::::::::::     ::: \n\n::::     ::::     :::\n\n::::     ::::     ::::";
+            String firstName = "#靠谱的工作机会来了~# 根据您的偏好，（公司简称）为您精选了些好机会！㊗️您发现新天地~\n\n";
             String remarkName = "详情";
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
             MessageTplDataCol first = colMap.get("first");
