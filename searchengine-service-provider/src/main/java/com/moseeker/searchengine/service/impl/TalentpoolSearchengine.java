@@ -2221,7 +2221,7 @@ public class TalentpoolSearchengine {
         String submitTime=params.get("submit_time");
         String positionIds=params.get("position_id");
         String candidateSource=params.get("candidate_source");
-        String recommend=params.get("only_recommend");
+        String recommend=params.get("is_recommend");
         String positionStatus=params.get("position_status");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
@@ -2241,7 +2241,7 @@ public class TalentpoolSearchengine {
         if(StringUtils.isNotNullOrEmpty(candidateSource)){
             sb.append("val.candidate_source =="+candidateSource+"&&");
         }
-        if(StringUtils.isNotNullOrEmpty(recommend)){
+        if(StringUtils.isNotNullOrEmpty(recommend)&&Integer.parseInt(recommend)>0){
             sb.append("val.recommender_user_id >0 &&");
         }
         if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
