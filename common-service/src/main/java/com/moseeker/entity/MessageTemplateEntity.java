@@ -111,7 +111,7 @@ public class MessageTemplateEntity {
         if(url.contains("{hr_id}")){
             url=url.replace("{hr_id}",company.getHraccountId()+"");
         }
-        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName(),params.getAiTemplateType());
+        Map<String,MessageTplDataCol> colMap=this.handleMessageTemplateData(params.getUserId(),params.getWxId(),params.getType(),params.getCompanyId(),DO.getId(),company.getName(), company.getAbbreviation(),params.getAiTemplateType());
         if(colMap==null||colMap.isEmpty()){
             this.handlerRecomLog(params,MDString,0);
             return null;
@@ -200,13 +200,13 @@ public class MessageTemplateEntity {
     /*
         处理发送完善简历消息模板
      */
-    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId,int wxId,int type,int companyId,int weChatId,String companyName,int aiTemplateType){
+    private  Map<String,MessageTplDataCol> handleMessageTemplateData(int userId, int wxId, int type, int companyId, int weChatId, String companyName, String companyAbbreviation, int aiTemplateType){
 
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         if(type==1){
             colMap=this.handleDataForuestion(userId,wxId,weChatId);
         }else if(type==2||type==3){
-            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,companyName,aiTemplateType);
+            colMap=this.handleDataRecommendTemplate(userId,companyId,type,weChatId,companyName, companyAbbreviation,aiTemplateType);
         }else if(type==4){
             colMap=this.handleDataProfileTemplate(userId,companyId,weChatId);
         }
@@ -261,10 +261,9 @@ public class MessageTemplateEntity {
     /*
         推荐职位列表消息数据
      */
-    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId,int companyId,int type,int weChatId,String companyName,int aiTemplateType){
+    private Map<String,MessageTplDataCol> handleDataRecommendTemplate(int userId, int companyId, int type, int weChatId, String companyName, String companyAbbreviation, int aiTemplateType){
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         String jobName="";
-//        String companyName=this.getCompanyName(companyId);
         if(type==2) {
             jobName = this.getJobName(userId, companyId, 0);
             /*String firstName = "根据您的求职意愿，仟寻为您挑选了一些新机会。";
@@ -273,7 +272,7 @@ public class MessageTemplateEntity {
             String remarkName = "详情";
             colMap = this.handlerTemplateData(weChatId, firstName, remarkName, Constant.FANS_RECOM_POSITION);
             MessageTplDataCol first = colMap.get("first");
-            first.setValue(first.getValue().replace("（公司简称）", companyName));
+            first.setValue(first.getValue().replace("（公司简称）", companyAbbreviation));
         }
         if(type==3){
             jobName = this.getJobName(userId,companyId,1);
