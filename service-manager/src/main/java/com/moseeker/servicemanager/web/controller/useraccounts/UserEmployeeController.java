@@ -565,7 +565,7 @@ public class UserEmployeeController {
     public String getUserEmployeeByUserId(HttpServletRequest request,  HttpServletResponse response) throws Exception {
         try{
             Params<String, Object> params = ParamUtils.parseRequestParam(request);
-            int userId= (int) params.get("user_id");
+            int userId=  Integer.parseInt(params.getString("user_id"));
             Response res=service.getUserEmployeeByuserId(userId);
             return ResponseLogNotification.successJson(request, res);
         }catch(Exception e){
