@@ -152,6 +152,28 @@ public class ReceiverHandler {
         }
     }
 
+    @RabbitListener(queues = "#{redpacketTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  redpacketTemplateReceive(Message message){
+        String msgBody = "{}";
+
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("redpacketTemplateReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            if(Constant.BALANCE_CHARGE_ROUTINGKEY.equals(message.getMessageProperties().getReceivedRoutingKey())) {
+                Integer companyId = jsonObject.getIntValue("company_id");
+                Integer amount = jsonObject.getIntValue("amount");
+                templateMsgHttp.redpacketAmountTemplate(companyId, amount);
+            }
+
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
     @RabbitListener(queues = "#{referralRadarTenMinuteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
     public void  sendTenMinuteTemplate(Message message){
