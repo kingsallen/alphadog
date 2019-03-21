@@ -201,6 +201,10 @@ public class SearchUtil {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
     }
+    public void hanleRangeLTFilter(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).lt(conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
+    }
 
     public void hanleRangeFilter(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
