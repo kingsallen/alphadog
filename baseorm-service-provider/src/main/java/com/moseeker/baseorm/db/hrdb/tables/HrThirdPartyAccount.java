@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
 
-    private static final long serialVersionUID = 1430209991;
+    private static final long serialVersionUID = -1929261944;
 
     /**
      * The reference instance of <code>hrdb.hr_third_party_account</code>
@@ -119,6 +119,11 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
     public final TableField<HrThirdPartyAccountRecord, String> EXT = createField("ext", org.jooq.impl.SQLDataType.VARCHAR.length(500), this, "扩展字段，以防在登录时需要除了账号密码以外的信息。一揽人才：安全码、\r\n51job：\r\n会员名称; 猎聘:用户在猎聘的userid; 58:用户在58的openId,accessToken,refreshToken的json串");
 
     /**
+     * The column <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息
+     */
+    public final TableField<HrThirdPartyAccountRecord, String> EXT2 = createField("ext2", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息");
+
+    /**
      * The column <code>hrdb.hr_third_party_account.sync_require_company</code>. 智联同步时页面是否需要选择公司名称，0 不需要，1 需要
      */
     public final TableField<HrThirdPartyAccountRecord, Byte> SYNC_REQUIRE_COMPANY = createField("sync_require_company", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择公司名称，0 不需要，1 需要");
@@ -127,16 +132,6 @@ public class HrThirdPartyAccount extends TableImpl<HrThirdPartyAccountRecord> {
      * The column <code>hrdb.hr_third_party_account.sync_require_department</code>. 智联同步时页面是否需要选择部门名称，0 不需要，1 需要
      */
     public final TableField<HrThirdPartyAccountRecord, Byte> SYNC_REQUIRE_DEPARTMENT = createField("sync_require_department", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "智联同步时页面是否需要选择部门名称，0 不需要，1 需要");
-
-    /**
-     * The column <code>hrdb.hr_third_party_account.ext2</code>. 扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息
-     */
-    public final TableField<HrThirdPartyAccountRecord, String> EXT2 = createField("ext2", org.jooq.impl.SQLDataType.VARCHAR.length(500).nullable(false).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "扩展字段2，猎聘：登录时存储返回的token; 58job：账号绑定时随机生成的key，用户获取账号绑定信息");
-
-    /**
-     * The column <code>hrdb.hr_third_party_account.template_sender</code>. 第三方账号同步时，指定发送验证码的HR
-     */
-    public final TableField<HrThirdPartyAccountRecord, Integer> TEMPLATE_SENDER = createField("template_sender", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "第三方账号同步时，指定发送验证码的HR");
 
     /**
      * Create a <code>hrdb.hr_third_party_account</code> table reference

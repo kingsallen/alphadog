@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrSearchCondition implements Serializable {
 
-    private static final long serialVersionUID = 1880993027;
+    private static final long serialVersionUID = -1401468512;
 
     private Integer   id;
     private String    name;
@@ -59,6 +59,8 @@ public class HrSearchCondition implements Serializable {
     private String    pastPositionKeyWord;
     private String    pastCompanyKeyWord;
     private Integer   positionStatus;
+    private Timestamp startSubmitTime;
+    private Timestamp endSubmitTime;
 
     public HrSearchCondition() {}
 
@@ -97,6 +99,8 @@ public class HrSearchCondition implements Serializable {
         this.pastPositionKeyWord = value.pastPositionKeyWord;
         this.pastCompanyKeyWord = value.pastCompanyKeyWord;
         this.positionStatus = value.positionStatus;
+        this.startSubmitTime = value.startSubmitTime;
+        this.endSubmitTime = value.endSubmitTime;
     }
 
     public HrSearchCondition(
@@ -133,7 +137,9 @@ public class HrSearchCondition implements Serializable {
         String    positionKeyWord,
         String    pastPositionKeyWord,
         String    pastCompanyKeyWord,
-        Integer   positionStatus
+        Integer   positionStatus,
+        Timestamp startSubmitTime,
+        Timestamp endSubmitTime
     ) {
         this.id = id;
         this.name = name;
@@ -169,6 +175,8 @@ public class HrSearchCondition implements Serializable {
         this.pastPositionKeyWord = pastPositionKeyWord;
         this.pastCompanyKeyWord = pastCompanyKeyWord;
         this.positionStatus = positionStatus;
+        this.startSubmitTime = startSubmitTime;
+        this.endSubmitTime = endSubmitTime;
     }
 
     public Integer getId() {
@@ -443,6 +451,22 @@ public class HrSearchCondition implements Serializable {
         this.positionStatus = positionStatus;
     }
 
+    public Timestamp getStartSubmitTime() {
+        return this.startSubmitTime;
+    }
+
+    public void setStartSubmitTime(Timestamp startSubmitTime) {
+        this.startSubmitTime = startSubmitTime;
+    }
+
+    public Timestamp getEndSubmitTime() {
+        return this.endSubmitTime;
+    }
+
+    public void setEndSubmitTime(Timestamp endSubmitTime) {
+        this.endSubmitTime = endSubmitTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrSearchCondition (");
@@ -481,6 +505,8 @@ public class HrSearchCondition implements Serializable {
         sb.append(", ").append(pastPositionKeyWord);
         sb.append(", ").append(pastCompanyKeyWord);
         sb.append(", ").append(positionStatus);
+        sb.append(", ").append(startSubmitTime);
+        sb.append(", ").append(endSubmitTime);
 
         sb.append(")");
         return sb.toString();

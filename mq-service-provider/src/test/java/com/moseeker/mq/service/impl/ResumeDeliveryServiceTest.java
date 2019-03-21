@@ -37,6 +37,6 @@ public class ResumeDeliveryServiceTest {
         int visitnum = 5;
         int companyId = 39978;
         int employeeId = 884223;
-        http.sendTenMinuteTemplate(positionIds, visitnum, companyId, employeeId);
+        //http.sendTenMinuteTemplate(positionIds, visitnum, companyId, employeeId);
     }
 }

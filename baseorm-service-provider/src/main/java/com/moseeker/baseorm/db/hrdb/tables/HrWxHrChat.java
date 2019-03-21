@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
 
-    private static final long serialVersionUID = -812695121;
+    private static final long serialVersionUID = 43048859;
 
     /**
      * The reference instance of <code>hrdb.hr_wx_hr_chat</code>
@@ -72,9 +72,9 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Integer> PID = createField("pid", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "hr_position.id");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
+     * The column <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者
      */
-    public final TableField<HrWxHrChatRecord, Byte> SPEAKER = createField("speaker", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)");
+    public final TableField<HrWxHrChatRecord, Byte> SPEAKER = createField("speaker", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.status</code>. 状态，0：有效，1：无效
@@ -92,24 +92,24 @@ public class HrWxHrChat extends TableImpl<HrWxHrChatRecord> {
     public final TableField<HrWxHrChatRecord, Byte> ORIGIN = createField("origin", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "来源 0 用户输入(包括求职者和HR)， 1 系统自动生成：欢迎语， 2 AI输入 ");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * The column <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio、voice
      */
-    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型");
+    public final TableField<HrWxHrChatRecord, String> MSG_TYPE = createField("msg_type", org.jooq.impl.SQLDataType.VARCHAR.length(50), this, "消息类型：html、qrcode、image、button_radio、voice");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url,不再使用
+     * The column <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
      */
-    public final TableField<HrWxHrChatRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "图片url,不再使用");
+    public final TableField<HrWxHrChatRecord, String> PIC_URL = createField("pic_url", org.jooq.impl.SQLDataType.VARCHAR.length(256), this, "图片url");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426”}]”，不再使用
+     * The column <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426"}]"
      */
-    public final TableField<HrWxHrChatRecord, String> BTN_CONTENT = createField("btn_content", org.jooq.impl.SQLDataType.CLOB, this, "控件类信息,当字段msg_type值为为\"button_radio\"时,会保存json格式:\"[{\"content\": \"\\u662f\"}, {\"content\": \"\\u5426”}]”，不再使用");
+    public final TableField<HrWxHrChatRecord, String> BTN_CONTENT = createField("btn_content", org.jooq.impl.SQLDataType.CLOB, this, "控件类信息,当字段msg_type值为为\"button_radio\"时,会保存json格式:\"[{\"content\": \"\\u662f\"}, {\"content\": \"\\u5426\"}]\"");
 
     /**
-     * The column <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
+     * The column <code>hrdb.hr_wx_hr_chat.compound_content</code>. ChatBot复杂结构体的聊天内容
      */
-    public final TableField<HrWxHrChatRecord, String> COMPOUND_CONTENT = createField("compound_content", org.jooq.impl.SQLDataType.CLOB, this, "聊天内容，表单、button等复合字段,保存为json格式");
+    public final TableField<HrWxHrChatRecord, String> COMPOUND_CONTENT = createField("compound_content", org.jooq.impl.SQLDataType.CLOB, this, "ChatBot复杂结构体的聊天内容");
 
     /**
      * The column <code>hrdb.hr_wx_hr_chat.stats</code>. 数据统计时使用的参数

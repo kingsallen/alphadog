@@ -19,8 +19,8 @@ public enum  OmsSwitchEnum {
     人脉雷达(7,"人脉雷达"),
     老员工回聘(8,"老员工回聘"),
     五百强(9,"五百强"),
-    多IP访问(10,"多IP访问");
-
+    多IP访问(10,"多IP访问"),
+    ATS招聘流程升级(12,"ATS招聘流程升级");
 
     private int value;
     private String name;
