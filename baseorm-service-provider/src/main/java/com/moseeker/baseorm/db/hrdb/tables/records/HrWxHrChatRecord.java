@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> implements Record13<Integer, Integer, String, Integer, Byte, Byte, Timestamp, Byte, String, String, String, String, String> {
 
-    private static final long serialVersionUID = -995281702;
+    private static final long serialVersionUID = 291368062;
 
     /**
      * Setter for <code>hrdb.hr_wx_hr_chat.id</code>. ID
@@ -89,14 +89,14 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
+     * Setter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者
      */
     public void setSpeaker(Byte value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者(websocket)，1：HR(hr后台回复，或者sysplat 仟寻回复聚合号的求职者，或者chatbot自动回复)
+     * Getter for <code>hrdb.hr_wx_hr_chat.speaker</code>. 聊天的发起人，0：求职者（websocket），1：HR （hr后台回复，或者sysplat 仟寻回复聚合号的求职者
      */
     public Byte getSpeaker() {
         return (Byte) get(4);
@@ -145,56 +145,56 @@ public class HrWxHrChatRecord extends UpdatableRecordImpl<HrWxHrChatRecord> impl
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * Setter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio、voice
      */
     public void setMsgType(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型
+     * Getter for <code>hrdb.hr_wx_hr_chat.msg_type</code>. 消息类型：html、qrcode、image、button_radio、voice
      */
     public String getMsgType() {
         return (String) get(8);
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url,不再使用
+     * Setter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
      */
     public void setPicUrl(String value) {
         set(9, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url,不再使用
+     * Getter for <code>hrdb.hr_wx_hr_chat.pic_url</code>. 图片url
      */
     public String getPicUrl() {
         return (String) get(9);
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426”}]”，不再使用
+     * Setter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426"}]"
      */
     public void setBtnContent(String value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426”}]”，不再使用
+     * Getter for <code>hrdb.hr_wx_hr_chat.btn_content</code>. 控件类信息,当字段msg_type值为为"button_radio"时,会保存json格式:"[{"content": "\u662f"}, {"content": "\u5426"}]"
      */
     public String getBtnContent() {
         return (String) get(10);
     }
 
     /**
-     * Setter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
+     * Setter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. ChatBot复杂结构体的聊天内容
      */
     public void setCompoundContent(String value) {
         set(11, value);
     }
 
     /**
-     * Getter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. 聊天内容，表单、button等复合字段,保存为json格式
+     * Getter for <code>hrdb.hr_wx_hr_chat.compound_content</code>. ChatBot复杂结构体的聊天内容
      */
     public String getCompoundContent() {
         return (String) get(11);
