@@ -131,8 +131,8 @@ public class EsClientInstance {
         List<String> recipients = new ArrayList<>();
         List<String> list=null;StringConvertList(receives,",");
         if(StringUtils.isEmptyList(list)){
-            recipients.add("wengjianfei@moseeker.com");
-            recipients.add("zhangzeteng@moseeker.com");
+//            recipients.add("wengjianfei@moseeker.com");
+//            recipients.add("zhangzeteng@moseeker.com");
         }else{
             recipients=list;
         }
