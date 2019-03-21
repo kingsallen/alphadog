@@ -183,7 +183,6 @@ public class ProfileProcessBS {
 //        try {
             List<ApplicationAts> list = getJobApplication(params);
             if (list == null || list.size() == 0) {
-                logger.info("application id not exist!");
                 return ResponseUtils
                         .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
             }
@@ -203,9 +202,8 @@ public class ProfileProcessBS {
 
     // 通过ats的l_application_id得到List<account_id,company_id,application_ia>
     private List<ApplicationAts> getJobApplication(String params)
-            throws Exception {      
+            throws Exception {
         List<Integer> appIds = this.convertList(params);
-        logger.info("getJobApplication appIds: {}", appIds);
         List<ApplicationAts> list=jobApplicationDao.getApplicationByLApId(appIds);
         return list;
     }
@@ -217,7 +215,7 @@ public class ProfileProcessBS {
      * @param progressStatus 下一步的状态，对应config_sys_points_conf_tpl.recruit_order
      * @param appIds         申请编号
      * @param accountId      hr_account.id
-     * @throws Exception 
+     * @throws Exception
      */
     @UpdateEs(tableName = "job_application", argsIndex = 2, argsName = "application_id")
     @CounterIface
@@ -431,9 +429,7 @@ public class ProfileProcessBS {
                                         pvs.getApplier_name(), companyId, company,
                                         progressStatus, pvs.getPosition_name(),
                                         pvs.getId(), TemplateMs.TOSEEKER);
-                                logger.info("=============isEmployee:{}",employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId));
                                 if(employeeEntity.isEmployee(pvs.getRecommender_user_id(),companyId)) {
-                                    logger.info("=============position_name:{}",pvs.getPosition_name());
                                     sendTemplate(pvs.getRecommender_user_id(),
                                             pvs.getApplier_name(), companyId, company,
                                             progressStatus, pvs.getPosition_name(),
@@ -485,7 +481,7 @@ public class ProfileProcessBS {
     }
     /**
      * 发送消息模板
-     * @throws TException 
+     * @throws TException
      */
     @CounterIface
     public void sendTemplate(int userId, String userName, int companyId, HrCompanyDO company,
@@ -497,7 +493,7 @@ public class ProfileProcessBS {
             userName = "";
         }
         MsInfo msInfo = tm.processStatus(status, userName);
-        logger.info("msInfo================================: {}", msInfo);
+        logger.info("msInfo: {}", msInfo);
         if(msInfo == null){
             return ;
         }
@@ -528,9 +524,7 @@ public class ProfileProcessBS {
                             String.class), signature,
                     String.valueOf(applicationId));
             url = url +"&send_time=" + new Date().getTime();
-            logger.info("url====================:{}",url);
             templateNoticeStruct.setUrl(url);
-            logger.info("templateNoticeStruct====================:{}",templateNoticeStruct);
             try {
                 mqService.messageTemplateNotice(templateNoticeStruct);
             } catch (TException e) {
