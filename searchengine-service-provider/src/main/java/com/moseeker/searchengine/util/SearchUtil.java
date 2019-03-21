@@ -589,6 +589,22 @@ public class SearchUtil {
             ((BoolQueryBuilder) query).must(keyand);
         }
     }
+    public void shouldMatchParseQuery(Map<String, Integer> map,String condition, QueryBuilder query){
+        if (map != null && !map.isEmpty()&&condition!=null&&condition.length()>0) {
+            QueryBuilder keyand = QueryBuilders.boolQuery();
+            for (String key : map.keySet()) {
+                Integer boost=map.get(key);
+                String[] keywords=condition.split(",");
+                for(String keyword:keywords){
+                    QueryBuilder fullf = QueryBuilders.matchPhraseQuery(key, keyword).boost(boost);
+                    ((BoolQueryBuilder) keyand).should(fullf);
+                }
+
+            }
+            ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
+            ((BoolQueryBuilder) query).must(keyand);
+        }
+    }
     /*
      should的terms的语句重载
      */
