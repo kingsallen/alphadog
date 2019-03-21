@@ -16,6 +16,12 @@ import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
+import com.moseeker.servicemanager.web.controller.referral.vo.Bonus;
+import com.moseeker.servicemanager.web.controller.referral.vo.BonusList;
+import com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo;
+import com.moseeker.servicemanager.web.controller.referral.vo.RedPacket;
+import com.moseeker.servicemanager.web.controller.referral.vo.ReferralProfileTab;
+import com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
@@ -23,7 +29,7 @@ import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
-import com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo;
+import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
@@ -149,7 +155,7 @@ public class ReferralController {
         if (StringUtils.isBlank(String.valueOf(appid))) {
             throw CommonException.PROGRAM_APPID_LOST;
         }
-        List<ReferralReasonInfo> result = referralService.getReferralReason(userId, companyId, hrId);
+        List<com.moseeker.thrift.gen.referral.struct.ReferralReasonInfo> result = referralService.getReferralReason(userId, companyId, hrId);
         List<com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo> resultList = new ArrayList<>();
         if (result != null && result.size() > 0) {
             resultList = result.stream().map(tab -> {
@@ -624,4 +630,131 @@ public class ReferralController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
+    /**
+     *  联系内推-预览个人档案确认提交
+     * @param
+     * @return 推荐结果
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/referral/contact/push", method = RequestMethod.POST)
+    @ResponseBody
+    public String referralContactPush(@RequestBody ReferralContactForm form) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", form.getAppid());
+        validateUtil.addRequiredValidate("用户编号", form.getUserId());
+        validateUtil.addRequiredValidate("职位编号", form.getPositionId());
+        validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
+        validateUtil.addRequiredValidate("来源", form.getOrigin());
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            referralService.addUserSeekRecommend(form.getCompanyId(), form.getUserId(), form.getPostUserId(),
+                    form.getPositionId(), form.getOrigin());
+            return Result.success().toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+    /**
+     *
+     * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/referral/evaluate", method = RequestMethod.POST)
+    @ResponseBody
+    public String employeeReferralEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", form
+                .getAppid());
+        validateUtil.addRequiredValidate("职位编号", form.getPositionId());
+        validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
+        validateUtil.addRequiredValidate("内推编号", form.getReferralId());
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
+        validateUtil.addRequiredValidate("推荐人与被推荐人关系", form.getRelationship());
+        validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
+                "推荐理由文本长度过长",null, 201);
+        validateUtil.addSensitiveValidate("推荐理由文本", form.getRecomReasonText(), null, null);
+        if (form.getReferralReasons() != null) {
+            String reasons = form.getReferralReasons().stream().collect(Collectors.joining(","));
+            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+        }
+        String result = validateUtil.validate();
+        if(com.moseeker.common.util.StringUtils.isEmptyList(form.getReferralReasons()) && com.moseeker.common.util.StringUtils.isNullOrEmpty(form.getRecomReasonText())){
+            result =result+ "推荐理由标签和文本必填任一一个；";
+        }
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            referralService.employeeReferralReason(form.getCompanyId(), form.getPostUserId(),form.getPositionId(), form.getReferralId(), form.getReferralReasons(),
+                    form.getRelationship(), form.getRecomReasonText());
+            return Result.success().toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+
+    @RequestMapping(value = "/v1/employee/application/evaluate", method = RequestMethod.POST)
+    @ResponseBody
+    public String employeeReferralApplicationEvaluate(@RequestBody ReferralEvaluateForm form) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", form
+                .getAppid());
+        validateUtil.addRequiredValidate("职位编号", form.getPositionId());
+        validateUtil.addRequiredValidate("员工user编号", form.getPostUserId());
+        validateUtil.addRequiredValidate("候选人编号", form.getPresenteeUserId());
+        validateUtil.addRequiredValidate("公司编号", form.getCompanyId());
+        validateUtil.addRequiredValidate("推荐人与被推荐人关系", form.getRelationship());
+        validateUtil.addStringLengthValidate("推荐理由文本", form.getRecomReasonText(), "推荐理由文本长度过长",
+                "推荐理由文本长度过长",null, 201);
+        validateUtil.addSensitiveValidate("推荐理由文本", form.getRecomReasonText(), null, null);
+        validateUtil.addRequiredOneValidate("推荐理由", form.getReferralReasons());
+        if (form.getReferralReasons() != null) {
+            String reasons = form.getReferralReasons().stream().collect(Collectors.joining(","));
+            validateUtil.addStringLengthValidate("推荐理由", reasons, null, 512);
+        }
+        String result = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(result)) {
+            referralService.employeeReferralRecomEvaluation(form.getCompanyId(),form.getPostUserId(),form.getPositionId(), form.getPresenteeUserId(), form.getReferralReasons(),
+                    form.getRelationship(), form.getRecomReasonText());
+            return Result.success().toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
+        }
+    }
+
+     /**
+     * @param
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/v1/employee/seek/recommend", method = RequestMethod.GET)
+    @ResponseBody
+    public String employeeReferralEvaluate(@RequestParam(value = "appid") int appid,
+                                           @RequestParam(value = "referral_id") int referralId,
+                                           @RequestParam(value = "company_id") int companyId,
+                                           @RequestParam(value = "post_user_id") int postUserId) throws Exception {
+
+        ValidateUtil validateUtil = new ValidateUtil();
+        validateUtil.addRequiredValidate("appid", appid);
+        validateUtil.addRequiredValidate("员工user编号", postUserId);
+        validateUtil.addRequiredValidate("内推编号", referralId);
+        validateUtil.addRequiredValidate("公司编号", companyId);
+        String message = validateUtil.validate();
+        if (org.apache.commons.lang.StringUtils.isBlank(message)) {
+            com.moseeker.thrift.gen.referral.struct.ContactPushInfo redult = referralService.fetchSeekRecommend(companyId, referralId, postUserId);
+            com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo info =
+                    new com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo();
+            BeanUtils.copyProperties(redult, info);
+            return Result.success(info).toJson();
+        } else {
+            return com.moseeker.servicemanager.web.controller.Result.fail(message).toJson();
+        }
+    }
+
+
 }

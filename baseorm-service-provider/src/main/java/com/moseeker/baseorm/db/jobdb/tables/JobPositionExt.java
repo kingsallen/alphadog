@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
 
-    private static final long serialVersionUID = -237581838;
+    private static final long serialVersionUID = -311836751;
 
     /**
      * The reference instance of <code>jobdb.job_position_ext</code>
@@ -84,6 +84,11 @@ public class JobPositionExt extends TableImpl<JobPositionExtRecord> {
      * The column <code>jobdb.job_position_ext.alipay_job_id</code>.
      */
     public final TableField<JobPositionExtRecord, Integer> ALIPAY_JOB_ID = createField("alipay_job_id", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>jobdb.job_position_ext.ext</code>. 暂定给龙湖使用，存职位额外数据
+     */
+    public final TableField<JobPositionExtRecord, String> EXT = createField("ext", org.jooq.impl.SQLDataType.VARCHAR.length(2000), this, "暂定给龙湖使用，存职位额外数据");
 
     /**
      * Create a <code>jobdb.job_position_ext</code> table reference

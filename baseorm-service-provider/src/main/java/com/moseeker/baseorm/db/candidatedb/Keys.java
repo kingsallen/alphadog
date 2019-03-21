@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateApplicationReferralRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateCompanyRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
@@ -24,6 +25,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChainRec
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChain_0417Record;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateShareChain_0418Record;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateSuggestPositionRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateTemplateShareChainRecord;
 
 import javax.annotation.Generated;
 
@@ -59,6 +61,7 @@ public class Keys {
     public static final Identity<CandidateShareChain_0417Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0417 = Identities0.IDENTITY_CANDIDATE_SHARE_CHAIN_0417;
     public static final Identity<CandidateShareChain_0418Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0418 = Identities0.IDENTITY_CANDIDATE_SHARE_CHAIN_0418;
     public static final Identity<CandidateSuggestPositionRecord, Integer> IDENTITY_CANDIDATE_SUGGEST_POSITION = Identities0.IDENTITY_CANDIDATE_SUGGEST_POSITION;
+    public static final Identity<CandidateTemplateShareChainRecord, Integer> IDENTITY_CANDIDATE_TEMPLATE_SHARE_CHAIN = Identities0.IDENTITY_CANDIDATE_TEMPLATE_SHARE_CHAIN;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -75,6 +78,7 @@ public class Keys {
     public static final UniqueKey<CandidateShareChain_0417Record> KEY_CANDIDATE_SHARE_CHAIN_0417_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SHARE_CHAIN_0417_PRIMARY;
     public static final UniqueKey<CandidateShareChain_0418Record> KEY_CANDIDATE_SHARE_CHAIN_0418_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SHARE_CHAIN_0418_PRIMARY;
     public static final UniqueKey<CandidateSuggestPositionRecord> KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY = UniqueKeys0.KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY;
+    public static final UniqueKey<CandidateTemplateShareChainRecord> KEY_CANDIDATE_TEMPLATE_SHARE_CHAIN_PRIMARY = UniqueKeys0.KEY_CANDIDATE_TEMPLATE_SHARE_CHAIN_PRIMARY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -95,6 +99,7 @@ public class Keys {
         public static Identity<CandidateShareChain_0417Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0417 = createIdentity(CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417, CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417.ID);
         public static Identity<CandidateShareChain_0418Record, Integer> IDENTITY_CANDIDATE_SHARE_CHAIN_0418 = createIdentity(CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418, CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418.ID);
         public static Identity<CandidateSuggestPositionRecord, Integer> IDENTITY_CANDIDATE_SUGGEST_POSITION = createIdentity(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
+        public static Identity<CandidateTemplateShareChainRecord, Integer> IDENTITY_CANDIDATE_TEMPLATE_SHARE_CHAIN = createIdentity(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN, CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -109,5 +114,6 @@ public class Keys {
         public static final UniqueKey<CandidateShareChain_0417Record> KEY_CANDIDATE_SHARE_CHAIN_0417_PRIMARY = createUniqueKey(CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417, "KEY_candidate_share_chain_0417_PRIMARY", CandidateShareChain_0417.CANDIDATE_SHARE_CHAIN_0417.ID);
         public static final UniqueKey<CandidateShareChain_0418Record> KEY_CANDIDATE_SHARE_CHAIN_0418_PRIMARY = createUniqueKey(CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418, "KEY_candidate_share_chain_0418_PRIMARY", CandidateShareChain_0418.CANDIDATE_SHARE_CHAIN_0418.ID);
         public static final UniqueKey<CandidateSuggestPositionRecord> KEY_CANDIDATE_SUGGEST_POSITION_PRIMARY = createUniqueKey(CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION, "KEY_candidate_suggest_position_PRIMARY", CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION.ID);
+        public static final UniqueKey<CandidateTemplateShareChainRecord> KEY_CANDIDATE_TEMPLATE_SHARE_CHAIN_PRIMARY = createUniqueKey(CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN, "KEY_candidate_template_share_chain_PRIMARY", CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN.ID);
     }
 }

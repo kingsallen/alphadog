@@ -4,7 +4,9 @@ import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
 import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
+import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.RecruitmentScheduleEnum;
@@ -28,19 +30,19 @@ import com.moseeker.thrift.gen.dao.struct.userdb.UserCollectPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
 import com.moseeker.thrift.gen.useraccounts.struct.*;
+import com.moseeker.useraccounts.annotation.RadarSwitchLimit;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.service.impl.biztools.UserCenterBizTools;
 import com.moseeker.useraccounts.service.impl.vo.UserCenterInfoVO;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * 用户个人中心功能相关接口
@@ -209,6 +211,40 @@ public class UserCenterService {
         }
 
         return favPositions;
+    }
+
+    @RadarSwitchLimit
+    public RecommendationScoreVO getRecommendationsV2(int companyId, int userId) throws CommonException{
+        RecommendationScoreVO scoreVO = new RecommendationScoreVO();
+        if(!employeeEntity.isEmployee(userId, companyId)){
+            throw UserAccountException.PERMISSION_DENIED;
+        }
+        try {
+            ThreadPool tp = ThreadPool.Instance;
+            int totalCount = 0;             //转发记录总数
+            int interestedCount = 0;         //被推荐的转发记录数
+            /** 并行查找统计信息 */
+            Future<Set<Integer>> employeeUserFuture =  tp.startTast(() -> employeeEntity.getActiveEmployeeUserIdList(companyId));
+            List<Integer> positionIdList = bizTools.listPositionIdByUserId(userId);
+            if (positionIdList == null) {
+                return scoreVO;
+            }
+            Future<List<CandidateRecomRecordRecord>> totalCountFuture = tp.startTast(() -> bizTools.listCandidateRecomRecords(
+                    userId, positionIdList, employeeUserFuture.get(), companyId));
+            Future<List<ReferralSeekRecommendRecord>> interestedCountFuture = tp.startTast(() -> referralEntity.fetchEmployeeSeekRecommend(
+                    userId, positionIdList, employeeUserFuture.get() ));
+            totalCount = totalCountFuture.get().size();
+            interestedCount = interestedCountFuture.get().size();
+            scoreVO.setInterested_count(interestedCount);
+            scoreVO.setLink_viewed_count(totalCount);
+        } catch (CommonException e) {
+            logger.error(e.getMessage(), e);
+        } catch (InterruptedException e) {
+            logger.error(e.getMessage(), e);
+        } catch (ExecutionException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return scoreVO;
     }
 
     /**

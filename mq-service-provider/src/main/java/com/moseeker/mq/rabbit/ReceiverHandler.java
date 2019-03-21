@@ -6,6 +6,7 @@ import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.moseeker.baseorm.dao.logdb.LogDeadLetterDao;
 import com.moseeker.common.constants.Constant;
+import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
 import com.moseeker.common.log.ReqParams;
@@ -37,8 +38,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
-import static com.alibaba.fastjson.serializer.SerializerFeature.WriteMapNullValue;
-import static com.alibaba.fastjson.serializer.SerializerFeature.WriteNullNumberAsZero;
 
 /**
  * Created by lucky8987 on 17/8/3.
@@ -124,6 +123,48 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
         }
     }
+    @RabbitListener(queues = "#{sendSeekReferralTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  seekReferralReceive(Message message){
+        String msgBody = "{}";
+
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            Integer userId = jsonObject.getIntValue("user_id");
+            Integer positionId = jsonObject.getIntValue("position_id");
+            Integer referralId = jsonObject.getIntValue("referral_id");
+            log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
+                Integer postUserId = jsonObject.getIntValue("post_user_id");
+                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+            }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
+                Integer applicationId= jsonObject.getIntValue("application_id");
+                Integer employeeId= jsonObject.getIntValue("employee_id");
+                templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
+            }
+
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @RabbitListener(queues = "#{referralRadarTenMinuteQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  sendTenMinuteTemplate(Message message){
+        String msgBody = "{}";
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            templateMsgHttp.sendTenMinuteTemplate(jsonObject);
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
 
     @RabbitListener(queues = "#{addAwardQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -166,7 +207,7 @@ public class ReceiverHandler {
     @RabbitHandler
     public void handlerMessageTemplate(Message message, Channel channel){
         String msgBody = "{}";
-        long startTime=new Date().getTime();
+        long startTime=System.currentTimeMillis();
         LogVO logVo=this.handlerLogVO();
         try{
             msgBody = new String(message.getBody(), "UTF-8");
@@ -203,7 +244,7 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
             logVo.setStatus_code(1);
         }finally{
-            long endTime=new Date().getTime();
+            long endTime = System.currentTimeMillis();
             logVo.setOpt_time(endTime-startTime);
             ELKLog.ELK_LOG.log(logVo);
         }
@@ -233,8 +274,9 @@ public class ReceiverHandler {
         if(StringUtils.isEmpty(url)){
             url=handlerUrl(type);
         }
+        int aiTemplateId = jsonObject.getIntValue("ai_template_type");
         String algorithmName=jsonObject.getString("algorithm_name");
-        AIRecomParams recomParams=new AIRecomParams(userId,wxId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName);
+        AIRecomParams recomParams=new AIRecomParams(userId,wxId,companyId,type,positionIds,enableQxRetry,url,templateId,algorithmName,aiTemplateId);
         return recomParams;
     }
 

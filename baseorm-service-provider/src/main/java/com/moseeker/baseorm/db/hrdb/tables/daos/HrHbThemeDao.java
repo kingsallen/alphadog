@@ -66,6 +66,13 @@ public class HrHbThemeDao extends DAOImpl<HrHbThemeRecord, com.moseeker.baseorm.
     }
 
     /**
+     * Fetch records that have <code>theme_id IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbTheme> fetchByThemeId(Integer... values) {
+        return fetch(HrHbTheme.HR_HB_THEME.THEME_ID, values);
+    }
+
+    /**
      * Fetch records that have <code>create_time IN (values)</code>
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbTheme> fetchByCreateTime(Timestamp... values) {
@@ -77,12 +84,5 @@ public class HrHbThemeDao extends DAOImpl<HrHbThemeRecord, com.moseeker.baseorm.
      */
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbTheme> fetchByUpdateTime(Timestamp... values) {
         return fetch(HrHbTheme.HR_HB_THEME.UPDATE_TIME, values);
-    }
-
-    /**
-     * Fetch records that have <code>theme_id IN (values)</code>
-     */
-    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbTheme> fetchByThemeId(Integer... values) {
-        return fetch(HrHbTheme.HR_HB_THEME.THEME_ID, values);
     }
 }

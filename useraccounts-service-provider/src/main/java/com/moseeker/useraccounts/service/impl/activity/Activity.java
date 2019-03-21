@@ -95,7 +95,8 @@ public abstract class Activity {
      * @param checked
      */
     public void updateInfo(ActivityVO activityVO, boolean checked) {
-        if (activityStatus.equals(ActivityStatus.Running)) {
+        if (!activityStatus.equals(ActivityStatus.UnStart) && !activityStatus.equals(ActivityStatus.UnChecked)
+                && !activityStatus.equals(ActivityStatus.Checked)) {
             throw UserAccountException.ACTIVITY_RUNNING;
         } else {
 
@@ -174,12 +175,7 @@ public abstract class Activity {
                 themeDao.upsert(id, activityVO.getTheme());
             }
             if (checked) {
-                if (!hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
-                        && (activityStatus.equals(ActivityStatus.Checked)
-                        || activityStatus.equals(ActivityStatus.UnChecked)
-                        || activityStatus.equals(ActivityStatus.UnStart))) {
-                    hrHbConfig.setChecked(ActivityCheckState.UnChecked.getValue());
-                }
+                hrHbConfig.setChecked(ActivityCheckState.UnChecked.getValue());
             }
             configDao.update(hrHbConfig);
             if (activityVO.getTheme() != null) {

@@ -55,6 +55,7 @@ import com.moseeker.thrift.gen.useraccounts.struct.User;
 import com.moseeker.thrift.gen.useraccounts.struct.UserFavoritePosition;
 import com.moseeker.thrift.gen.useraccounts.struct.Userloginreq;
 import com.moseeker.useraccounts.exception.UserAccountException;
+import com.moseeker.useraccounts.kafka.KafkaSender;
 import com.moseeker.useraccounts.pojo.MessageTemplate;
 import com.moseeker.useraccounts.service.BindOnAccountService;
 import com.moseeker.useraccounts.service.impl.pojos.ClaimForm;
@@ -133,6 +134,9 @@ public class UseraccountsService {
     private JobPositionDao jobPositionDao;
     @Autowired
     private UserPrivacyRecordDao userPrivacyRecordDao;
+
+    @Autowired
+    KafkaSender kafkaSender;
 
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
@@ -1349,6 +1353,7 @@ public class UseraccountsService {
             userdao.updateRecord(userUserRecord);
         }
         referralEntity.claimReferralCard(userUserDO, referralLog);
+        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), repeatReferralLog.getPositionId());
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {

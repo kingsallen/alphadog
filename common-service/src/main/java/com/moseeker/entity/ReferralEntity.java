@@ -1,10 +1,12 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.parser.Feature;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.HBType;
-import com.moseeker.baseorm.constant.ReferralRelationShipType;
 import com.moseeker.baseorm.constant.ReferralType;
-import com.moseeker.baseorm.dao.candidatedb.CandidateRecomRecordDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidateCompanyDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionDao;
+import com.moseeker.baseorm.dao.candidatedb.CandidatePositionShareRecordDao;
 import com.moseeker.baseorm.dao.candidatedb.CandidateShareChainDao;
 import com.moseeker.baseorm.dao.historydb.HistoryUserEmployeeDao;
 import com.moseeker.baseorm.dao.hrdb.HrHbConfigDao;
@@ -15,13 +17,13 @@ import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileAttachmentDao;
 import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralLogDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusStageDetailDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralRecomEvaluationDao;
-import com.moseeker.baseorm.dao.referraldb.ReferralRecomHbPositionDao;
+import com.moseeker.baseorm.dao.referraldb.*;
 import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.dao.userdb.UserEmployeePointsRecordDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
+import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionRecord;
+import com.moseeker.baseorm.db.candidatedb.tables.records.CandidatePositionShareRecordRecord;
 import com.moseeker.baseorm.db.candidatedb.tables.records.CandidateRecomRecordRecord;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrOperationRecord;
@@ -33,33 +35,34 @@ import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralLog;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralPositionBonusStageDetailRecord;
-import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluationRecord;
+import com.moseeker.baseorm.db.referraldb.tables.records.*;
 import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
-import com.moseeker.baseorm.db.userdb.tables.pojos.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
-import com.moseeker.common.annotation.iface.CounterIface;
+import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.biz.ProfileCompletenessImpl;
 import com.moseeker.entity.exception.EmployeeException;
-import com.moseeker.entity.pojos.BonusData;
-import com.moseeker.entity.pojos.HBData;
-import com.moseeker.entity.pojos.RecommendHBData;
-import com.moseeker.entity.pojos.ReferralProfileData;
-import com.moseeker.thrift.gen.common.struct.BIZException;
-import com.moseeker.thrift.gen.dao.struct.historydb.HistoryUserEmployeeDO;
+import com.moseeker.entity.pojos.*;
+import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateShareChainDO;
+import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileAttachmentDO;
-import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
-import java.util.concurrent.ExecutionException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -70,21 +73,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
-
 /**
  * @Author: jack
  * @Date: 2018/7/18
  */
 @Service
-@CounterIface
+//@CounterIface
 public class ReferralEntity {
-
 
     @Autowired
     private HrHbConfigDao configDao;
@@ -99,10 +94,25 @@ public class ReferralEntity {
     CandidateShareChainDao shareChainDao;
 
     @Autowired
+    CandidatePositionShareRecordDao positionShareRecordDao;
+
+    @Autowired
     UserEmployeePointsRecordDao pointsRecordDao;
 
     @Autowired
     private ReferralLogDao referralLogDao;
+
+    @Autowired
+    private ReferralConnectionLogDao connectionLogDao;
+
+    @Autowired
+    private ReferralSeekRecommendDao recommendDao;
+
+    @Autowired
+    private CandidatePositionDao candidatePositionDao;
+
+    @Autowired
+    private CandidateCompanyDao candidateCompanyDao;
 
     @Autowired
     private ReferralRecomEvaluationDao recomEvaluationDao;
@@ -151,6 +161,12 @@ public class ReferralEntity {
 
     @Autowired
     private UserAccountEntity userAccountEntity;
+
+    @Autowired
+    private UserUserDao userDao;
+
+    @Autowired
+    private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPool threadPool = ThreadPool.Instance;
@@ -212,7 +228,7 @@ public class ReferralEntity {
     }
 
     public void logReferralOperation(int positionId, int applicationId,  List<String> referralReasons,String mobile,
-                                     UserEmployeeDO employeeDO, int presenteeUserId, byte shipType, String referralText) {
+                                     int postUserId, int presenteeUserId, byte shipType, String referralText) {
         ReferralRecomEvaluationRecord evaluationRecord = new ReferralRecomEvaluationRecord();
         evaluationRecord.setAppId(applicationId);
         evaluationRecord.setRecomReasonTag(referralReasons.stream().collect(Collectors.joining(",")));
@@ -220,7 +236,7 @@ public class ReferralEntity {
         evaluationRecord.setRecomReasonText(referralText);
         evaluationRecord.setMobile(mobile);
         evaluationRecord.setPresenteeUserId(presenteeUserId);
-        evaluationRecord.setPostUserId(employeeDO.getSysuserId());
+        evaluationRecord.setPostUserId(postUserId);
         evaluationRecord.setPositionId(positionId);
         recomEvaluationDao.insertIfNotExist(evaluationRecord);
     }
@@ -531,54 +547,72 @@ public class ReferralEntity {
 
     public  List<ReferralLog> fetchReferralLog(int userId, List<Integer> companyIds, int hrId){
         ReferralProfileData data = new ReferralProfileData();
+        long startTime = System.currentTimeMillis();
         Future<UserHrAccountDO> accountFuture = threadPool.startTast(
                 () -> userHrAccountDao.getUserHrAccountById(hrId));
-        Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
-                () -> employeeDao.getEmployeeBycompanyIds(companyIds));
-        Future<List<HistoryUserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
-                () -> historyUserEmployeeDao.getHistoryEmployeeByCompanyIds(companyIds));
-
         List<Integer> employeeIds = new ArrayList<>();
         UserHrAccountDO account = new UserHrAccountDO();
         List<Integer> positionIds = new ArrayList<>();
+        List<ReferralLog> logs = new ArrayList<>();
         try {
             account = accountFuture.get();
+            long accountTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog accountTime:{}", accountTime- startTime);
             if(account == null){
                 throw CommonException.PROGRAM_PARAM_NOTEXIST;
             }
+            long positionTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog positionTime:{}", positionTime- accountTime);
             if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
-               positionIds = positionDao.getPositionIdByPublisher(hrId);
+                positionIds = positionDao.getPositionIdByPublisher(hrId);
+                logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(userId, positionIds);
+            }else {
+                logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(userId);
             }
+            List<Integer> employeeIdList = new ArrayList<>();
+            if(StringUtils.isEmptyList(logs)){
+                employeeIdList = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
+            }
+            long employeeTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- positionTime);
+            List<Integer> temp = employeeIdList;
+            Future<List<UserEmployeeDO>> employeeListFeature = threadPool.startTast(
+                    () -> employeeDao.getUserEmployeeForIdList(temp));;
+            Future<List<UserEmployeeDO>> historyEmployeeListFeature = threadPool.startTast(
+                    () -> historyUserEmployeeDao.getHistoryEmployeeByIds(temp));;
             List<UserEmployeeDO> employeeList = employeeListFeature.get();
             if (!StringUtils.isEmptyList(employeeList)){
-                List<Integer> employeeIds1 = employeeList.stream().map(m -> m.getId()).collect(Collectors.toList());
+                List<Integer> employeeIds1 = employeeList.stream().filter(f -> companyIds.contains(f.getCompanyId()))
+                        .map(m -> m.getId()).collect(Collectors.toList());
                 employeeIds.addAll(employeeIds1);
             }
-            List<HistoryUserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
+            long midTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog employeeTime:{}", employeeTime- midTime);
+            List<UserEmployeeDO> historyUserEmployees = historyEmployeeListFeature.get();
             if (!StringUtils.isEmptyList(historyUserEmployees)){
-                List<Integer> employeeIds2 = historyUserEmployees.stream().map(m -> m.getId()).collect(Collectors.toList());
+                List<Integer> employeeIds2 = historyUserEmployees.stream().filter(f -> companyIds.contains(f.getCompanyId()))
+                        .map(m -> m.getId()).collect(Collectors.toList());
                 employeeIds.addAll(employeeIds2);
             }
+            long historyUserEmployeeTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralLog historyUserEmployeeTime:{}", historyUserEmployeeTime- employeeTime);
+
         }catch (Exception e){
             logger.error(e.getMessage(), e);
             throw CommonException.PROGRAM_EXCEPTION;
         }
-        List<ReferralLog> logs = new ArrayList<>();
-        if(account.getAccountType() == Constant.ACCOUNT_TYPE_SUBORDINATE){
-            logs = referralLogDao.fetchByEmployeeIdsAndRefenceIdAndPosition(employeeIds, userId, positionIds);
-        }else {
-            logs = referralLogDao.fetchByEmployeeIdsAndRefenceId(employeeIds, userId);
-        }
         List<ReferralLog> logList = new ArrayList<>();
-        if(!StringUtils.isEmptyList(logs)){
+        if(!StringUtils.isEmptyList(logs) && !StringUtils.isEmptyList(employeeIds)){
             Set<Integer> idList = new HashSet<>();
             for (ReferralLog log :logs){
-                if(!idList.contains(log.getEmployeeId())){
+                if(!idList.contains(log.getEmployeeId()) && employeeIds.contains(log.getEmployeeId())){
                     logList.add(log);
                     idList.add(log.getEmployeeId());
                 }
             }
         }
+        long endTime = System.currentTimeMillis();
+        logger.info("profile tab fetchReferralLog endTime:{}", endTime- startTime);
         return logList;
     }
 
@@ -587,7 +621,7 @@ public class ReferralEntity {
         if(StringUtils.isEmptyList(logs)){
             return null;
         }
-        List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+        long startTime = System.currentTimeMillis();List<Integer> positionIds = logs.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
         List<Integer> empolyeeReferralIds = logs.stream().map(m -> m.getEmployeeId()).collect(Collectors.toList());
         List<Integer> attementIds = logs.stream().map(m -> m.getAttementId()).collect(Collectors.toList());
         Future<List<ProfileAttachmentDO>> attachmentListFuture = threadPool.startTast(
@@ -608,6 +642,8 @@ public class ReferralEntity {
                                 position.getTitle()));
                 data.setPositionTitleMap(positionTitileMap);
             }
+            long positionListTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData positionListTime:{}", positionListTime-startTime);
             Map<Integer, String> employeeNameMap = new HashMap<>();
             List<UserEmployeeDO> empList = empListFuture.get();
             if(!StringUtils.isEmptyList(empList)){
@@ -615,6 +651,8 @@ public class ReferralEntity {
                     employeeNameMap.put(employee.getId(), employee.getCname())
                 );
             }
+            long empTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData empTime:{}", empTime- positionListTime);
             List<UserEmployeeDO> historyEmpList = historyEmpListFuture.get();
             if(!StringUtils.isEmptyList(historyEmpList)){
                 historyEmpList.forEach(employee ->
@@ -622,7 +660,11 @@ public class ReferralEntity {
                 );
             }
             data.setEmployeeNameMap(employeeNameMap);
+            long hisEmpTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData empTime:{}", hisEmpTime - empTime);
             List<ProfileAttachmentDO> attachmentList = attachmentListFuture.get();
+            long attachmentTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData attachmentTime:{}", attachmentTime - empTime);
             if(StringUtils.isEmptyList(attachmentList)){
                 return null;
             }
@@ -632,6 +674,8 @@ public class ReferralEntity {
             );
             data.setAttchmentMap(attachmentMap);
             data.setLogList(logs);
+            long endTime = System.currentTimeMillis();
+            logger.info("profile tab fetchReferralProfileData endTime:{}", endTime- attachmentTime);
         }catch (Exception e){
             logger.error(e.getMessage(), e);
         }
@@ -643,6 +687,397 @@ public class ReferralEntity {
 
     public List<ReferralRecomEvaluationRecord> fetchEvaluationListByUserId(int userId, List<Integer> appidList){
         return recomEvaluationDao.getEvaluationListByUserId(userId, appidList);
+    }
+
+   public EmployeeRadarData fetchEmployeeRadarData(List<ReferralEmployeeNetworkResourcesRecord> records, int postUserId, int companyId){
+        List<Integer> userIdList = records.stream().map(m -> m.getPresenteeUserId()).collect(Collectors.toList());
+        List<Integer> positionIdList = records.stream().map(m -> m.getPositionId()).collect(Collectors.toList());
+        EmployeeRadarData data = new EmployeeRadarData();
+        if(StringUtils.isEmptyList(userIdList)){
+            return data;
+        }
+        try {Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
+                    () -> wxEntity.getUserWxUserData(userIdList));
+            Future<List<ReferralSeekRecommendRecord>> recommendListFuture = threadPool.startTast(
+                    () -> recommendDao.fetchSeekRecommendByPostUserAndPresentee(postUserId, userIdList));
+            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(userIdList));
+            Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
+                    () -> candidatePositionDao.fetchViewedByUserIdsAndPidList(userIdList, positionIdList));
+
+            Map<Integer, Timestamp> timeMap = new HashMap<>();
+            Set<Integer> recommendUserSet = new HashSet<>();
+            Map<Integer, Integer> recommendMap = new HashMap<>();
+            Map<Integer, Integer> positionView = new HashMap<>();
+            Map<Integer, Integer> positionIdMap = new HashMap<>();
+            List<CandidatePositionRecord> candidatePositionList = candidatePositionListFuture.get();
+            if(!StringUtils.isEmptyList(candidatePositionList)) {
+                for (CandidatePositionRecord candidatePosition : candidatePositionList) {
+                    for (ReferralEmployeeNetworkResourcesRecord record : records){
+                        if (candidatePosition.getUserId().intValue() == record.getPresenteeUserId().intValue()
+                                && candidatePosition.getPositionId().intValue() == record.getPositionId().intValue()){
+                            timeMap.put(record.getPresenteeUserId(), candidatePosition.getUpdateTime());
+                            positionView.put(record.getPresenteeUserId(), candidatePosition.getViewNumber());
+                            positionIdMap.put(record.getPresenteeUserId(), record.getPositionId());
+                        }
+                    }
+                }
+            }
+            logger.info("fetchEmployeeRadarData positionId:{}, userIdList:{}", positionIdList, userIdList);
+            Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
+                    () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
+            Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
+                    () -> positionDao.getPositionListWithoutStatus(positionIdList));
+            Map<Integer, Integer> root2Map = new HashMap<>();
+            Set<Integer> root2Set = new HashSet<>();
+            List<CandidateShareChainDO> shareChainList = shareChainListFuture.get();
+            logger.info("fetchEmployeeRadarData shareChainList:{}", shareChainList);
+            List<Integer> shareChainIdList = new ArrayList<>();
+            Map<Integer, Integer> shareChainIdMap = new HashMap<>();
+            Map<Integer, Byte> userFromMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(shareChainList)) {
+                shareChainList.forEach(share -> {
+                    for(ReferralEmployeeNetworkResourcesRecord record : records) {
+                        if (record.getPositionId().intValue() == share.getPositionId()
+                                && record.getPresenteeUserId() == share.getPresenteeUserId()
+                                && root2Map.get(share.getPresenteeUserId()) == null) {
+                            root2Map.put(share.getPresenteeUserId(), share.getRoot2RecomUserId());
+                            root2Set.add(share.root2RecomUserId);
+                            try {
+                                timeMap.put(share.getPresenteeUserId(), new Timestamp(DateUtils.shortTimeToDate(share.getClickTime()).getTime()));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            shareChainIdMap.put(share.getId(), share.getPresenteeUserId());
+                            shareChainIdList.add(share.getId());
+                            userFromMap.put(share.getPresenteeUserId(), share.getClickFrom());
+                        }
+                    }
+                });
+            }
+            logger.info("fetchEmployeeRadarData timeMap:{}", timeMap);
+            List<ReferralSeekRecommendRecord>recommendList =recommendListFuture.get();
+            if(!StringUtils.isEmptyList(recommendList)){
+                recommendList.forEach( recommend -> {
+                            if (!recommendUserSet.contains(recommend.getPresenteeId())) {
+                                recommendUserSet.add(recommend.getPresenteeId());
+                                recommendMap.put(recommend.getPresenteeId(), recommend.getId());
+                                timeMap.put(recommend.getPresenteeId(), recommend.getRecommendTime());
+                            }
+                        }
+                );
+            }
+            logger.info("fetchEmployeeRadarData timeMap:{}", timeMap);
+            Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
+            if (!StringUtils.isEmptyList(wxUserListFuture.get())){
+                Map<Integer, UserWxUserRecord> wxUserRecordMap = new HashMap<>();
+                wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));
+                data.setWxUserRecordList(wxUserRecordMap);
+            }
+            Map<Integer, UserUserRecord> userMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(userListFuture.get())){
+                userListFuture.get().forEach(fe -> userMap.put(fe.getId(), fe));
+            }
+            data.setTimeMap(timeMap);
+            data.setUserRecordList(userMap);
+            Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(positionListFuture.get())){
+                positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
+            }
+            Set<Map.Entry<Integer, Integer>> entries = positionIdMap.entrySet();
+            Map<Integer, JobPositionDO> userPositionMap = new HashMap<>();
+            for(Map.Entry<Integer, Integer> entry : entries){
+                userPositionMap.put(entry.getKey(), positionMap.get(entry.getValue()));
+            }
+            data.setPositionMap(userPositionMap);
+            data.setPositionView(positionView);
+            data.setRecommendUserSet(recommendUserSet);
+            Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(root2ListFuture.get())){
+                root2ListFuture.get().forEach(root2 ->root2UserMap.put(root2.getId(), root2));
+            }
+            Set<Map.Entry<Integer, Integer>> root2Entries = root2Map.entrySet();
+            Map<Integer, UserUserRecord> userRoot2Map = new HashMap<>();
+            for(Map.Entry<Integer, Integer> entry : root2Entries){
+                userRoot2Map.put(entry.getKey(), root2UserMap.get(entry.getValue()));
+            }
+            data.setRoot2UserMap(userRoot2Map);
+//            Map<Integer, Byte> fromMap = new HashMap<>();
+//            if(!StringUtils.isEmptyList(positionShareRecordListFuture.get())){
+//                positionShareRecordListFuture.get().forEach(fe -> {
+//                    if (fromMap.get(fe.getShareChainId()) == null)
+//                        fromMap.put(fe.getShareChainId(), fe.getClickFrom());
+//                    }
+//                );
+//            }
+//            Set<Map.Entry<Integer, Byte>> fromMapSet = fromMap.entrySet();
+//            Map<Integer, Byte> userFromMap = new HashMap<>();
+//            for(Map.Entry<Integer, Byte> entry : fromMapSet){
+//                userFromMap.put(shareChainIdMap.get(entry.getValue()), entry.getValue());
+//            }
+            data.setUserFromMap(userFromMap);
+            data.setRecommendMap(recommendMap);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+
+        return data;
+    }
+
+    public List<ReferralSeekRecommendRecord> fetchSeekRecommendByPostUserId(int postUserId, List<Integer> positionIds, List<Integer> presenteeUserIds){
+        return recommendDao.fetchSeekRecommendByPostAndPressentee(postUserId, positionIds, presenteeUserIds);
+    }
+
+
+    public EmployeeCardViewData fetchEmployeeViewCardData(List<CandidateRecomRecordRecord> recomRecordList, int postUserId, int companyId){
+        long startTime = System.currentTimeMillis();
+        EmployeeCardViewData data = new EmployeeCardViewData();
+        if(StringUtils.isEmptyList(recomRecordList)){
+            return data;
+        }
+        List<Integer> userIdList = new ArrayList<>();
+        List<Integer> positionIdList = new ArrayList<>();
+        recomRecordList.forEach(record ->{
+            userIdList.add(record.getPresenteeUserId());
+            positionIdList.add(record.getPositionId());
+        });
+
+        try {
+            Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
+                    () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
+            Future<List<ReferralConnectionLogRecord>> connectionLogListFuture = threadPool.startTast(
+                    () -> connectionLogDao.fetchChainLogRecordByList(postUserId, userIdList, positionIdList));
+            Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
+                    () -> wxEntity.getUserWxUserData(userIdList));
+            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(userIdList));
+            Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
+                    () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
+            Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
+                    () -> positionDao.getPositionListByIdList(positionIdList));
+            Set<Integer> root2Set = new HashSet<>();
+            List<CandidateShareChainDO> shareChainList = new ArrayList<>();
+            List<Integer> shareChainIdList = new ArrayList<>();
+            Map<Integer, Byte> fromMap = new HashMap<>();
+            long futureTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView futureTime:{}", futureTime- startTime);
+            List<CandidateShareChainDO> shareChainDOS = shareChainListFuture.get();
+            if(!StringUtils.isEmptyList(shareChainDOS)) {
+                for(CandidateRecomRecordRecord recom : recomRecordList){
+                    for(CandidateShareChainDO share : shareChainDOS) {
+                        if(recom.getPresenteeUserId().intValue() == share.getPresenteeUserId()
+                                && recom.getPositionId().intValue() == share.getPositionId()){
+                            root2Set.add(share.root2RecomUserId);
+                            shareChainIdList.add(share.getId());
+                            shareChainList.add(share);
+                            fromMap.put(share.getId(),share.getClickFrom());
+                            break;
+                        }
+                    }
+                }
+            }
+            logger.info("fetchEmployeeForwardView shareChainIdList:{}", shareChainIdList);
+            long shareChainTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView shareChainTime:{}", shareChainTime - futureTime);
+            Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
+            data.setShareChainList(shareChainList);
+            List<ReferralConnectionLogRecord> connectionLogList = new ArrayList<>();
+            long future2Time = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView futureTime:{}", future2Time -shareChainTime);
+            if(!StringUtils.isEmptyList(connectionLogListFuture.get())){
+                for(CandidateRecomRecordRecord record :recomRecordList){
+                    for(ReferralConnectionLogRecord logRecord: connectionLogListFuture.get()){
+                        if(record.getPositionId().intValue() == logRecord.getPositionId().intValue()
+                                && record.getPresenteeUserId().intValue() == logRecord.getEndUserId().intValue()){
+                            connectionLogList.add(logRecord);
+                            break;
+                        }
+                    }
+                }
+                data.setConnectionLogList(connectionLogList);
+            }
+            long connectionTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView connectionTime:{}", connectionTime- future2Time);
+            if (!StringUtils.isEmptyList(wxUserListFuture.get())){
+                Map<Integer, UserWxUserRecord> wxUserRecordMap = new HashMap<>();
+                wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));
+                data.setWxUserRecordList(wxUserRecordMap);
+            }
+            long wxUserTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView wxUserTime:{}", wxUserTime- connectionTime);
+            Map<Integer, UserUserRecord> userMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(userListFuture.get())){
+                userListFuture.get().forEach(fe ->userMap.put(fe.getId(), fe) );
+            }
+            long userTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView userTime:{}", userTime- wxUserTime);
+            data.setUserRecordList(userMap);
+            Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(positionListFuture.get())){
+                positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
+            }
+            long positionTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView positionTime:{}", positionTime- userTime);
+            data.setPositionMap(positionMap);
+            data.setCandidatePositionRecords(candidatePositionListFuture.get());
+            Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(root2ListFuture.get())){
+                root2ListFuture.get().forEach(root2 ->root2UserMap.put(root2.getId(), root2));
+            }
+            long candidateTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView candidateTime:{}", candidateTime- positionTime);
+            data.setRoot2UserMap(root2UserMap);
+            long positionshareTime = System.currentTimeMillis();
+            logger.info("fetchEmployeeForwardView positionshareTime:{}", positionshareTime- candidateTime);
+            data.setUserFromMap(fromMap);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+        return data;
+    }
+
+    public EmployeeCardViewData fetchEmployeeSeekRecommendCardData(List<ReferralSeekRecommendRecord> recomRecordList, int postUserId, int companyId){
+        EmployeeCardViewData data = new EmployeeCardViewData();
+        if(StringUtils.isEmptyList(recomRecordList)){
+            return data;
+        }
+        List<Integer> userIdList = new ArrayList<>();
+        List<Integer> positionIdList = new ArrayList<>();
+        recomRecordList.forEach(record ->{
+            userIdList.add(record.getPresenteeId());
+            positionIdList.add(record.getPositionId());
+        });
+        try {
+            Future<List<CandidateShareChainDO>> shareChainListFuture = threadPool.startTast(
+                    () -> shareChainDao.getShareChainByPositionAndPresenteeOrderTime(positionIdList, userIdList, postUserId));
+            Future<List<UserWxUserRecord>> wxUserListFuture = threadPool.startTast(
+                    () -> wxEntity.getUserWxUserData(userIdList));
+            Future<List<UserUserRecord>> userListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(userIdList));
+            Future<List<CandidatePositionRecord>> candidatePositionListFuture = threadPool.startTast(
+                    () -> candidatePositionDao.fetchRecentViewedByUserIdAndPosition(userIdList, positionIdList));
+            Future<List<JobPositionDO>> positionListFuture =  threadPool.startTast(
+                    () -> positionDao.getPositionListByIdList(positionIdList));
+            Set<Integer> root2Set = new HashSet<>();
+            List<CandidateShareChainDO> shareChainList = new ArrayList<>();
+            List<Integer> shareChainIdList = new ArrayList<>();
+            Map<Integer, Byte> fromMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(shareChainListFuture.get())) {
+                shareChainListFuture.get().forEach(share -> {
+                    recomRecordList.forEach( recom ->{
+                        if(recom.getPresenteeId() == share.getPresenteeUserId() && recom.getPositionId() == share.getPositionId()){
+                            root2Set.add(share.root2RecomUserId);
+                            shareChainIdList.add(share.getId());
+                            shareChainList.add(share);
+                            fromMap.put(share.getId(),share.getClickFrom());
+                        }
+                    });
+
+                });
+            }
+            Future<List<UserUserRecord>> root2ListFuture = threadPool.startTast(
+                    () -> userDao.fetchByIdList(new ArrayList<>(root2Set)));
+            data.setShareChainList(shareChainList);
+            if (!StringUtils.isEmptyList(wxUserListFuture.get())){
+                Map<Integer, UserWxUserRecord> wxUserRecordMap = new HashMap<>();
+                wxUserListFuture.get().forEach(wx -> wxUserRecordMap.put(wx.getSysuserId(), wx));
+                data.setWxUserRecordList(wxUserRecordMap);
+            }
+            Map<Integer, UserUserRecord> userMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(userListFuture.get())){
+                userListFuture.get().forEach(fe ->userMap.put(fe.getId(), fe) );
+            }
+            data.setUserRecordList(userMap);
+            Map<Integer, JobPositionDO> positionMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(positionListFuture.get())){
+                positionListFuture.get().forEach(position ->positionMap.put(position.getId(), position));
+            }
+            data.setPositionMap(positionMap);
+            data.setCandidatePositionRecords(candidatePositionListFuture.get());
+            Map<Integer, UserUserRecord> root2UserMap = new HashMap<>();
+            if(!StringUtils.isEmptyList(root2ListFuture.get())){
+                root2ListFuture.get().forEach(root2 ->root2UserMap.put(root2.getId(), root2));
+            }
+            data.setRoot2UserMap(root2UserMap);
+            data.setUserFromMap(fromMap);
+        }catch (Exception e){
+            logger.error(e.getMessage(), e);
+        }
+        return data;
+    }
+
+
+
+    public List<ReferralSeekRecommendRecord> fetchEmployeeSeekRecommend(int postUserId, List<Integer> positionIds, Set<Integer> presenteeUserIdList){
+        List<ReferralSeekRecommendRecord> list =  recommendDao.fetchSeekRecommendByPost(postUserId, positionIds, presenteeUserIdList);
+        if(!StringUtils.isEmptyList(list)) {
+            List<Integer> positionIdList = new ArrayList<>();
+            List<Integer> presenteeIdList = new ArrayList<>();
+            list.forEach(m -> {
+                positionIdList.add(m.getPositionId());
+                presenteeIdList.add(m.getPresenteeId());
+            });
+            List<JobApplicationDO> applications = applicationDao.getApplyByaApplierAndPositionIds(positionIds, presenteeIdList);
+            List<ReferralSeekRecommendRecord> records = new ArrayList<>();
+            if(!StringUtils.isEmptyList(applications)){
+                for(ReferralSeekRecommendRecord recommendRecord : list){
+                    boolean status = true;
+                    for(JobApplicationDO application :applications){
+                        if(application.getPositionId()==recommendRecord.getPositionId().intValue() &&
+                                application.getApplierId() == recommendRecord.getPresenteeId().intValue()){
+                            status=false;
+                            break;
+                        }
+                    }
+                    if(status)records.add(recommendRecord);
+                }
+                return records;
+            }
+        }
+        return list;
+    }
+
+    @Transactional
+    public void fetchEmployeeNetworkResource(Object message){
+        if(message != null) {
+            String messageStr = (String)message;
+            KafkaNetworkResource resource = JSONObject.parseObject(messageStr, KafkaNetworkResource.class);
+            logger.info("fetchEmployeeNetworkResource resource:{}",JSON.toJSONString(resource));
+            if (resource != null && !StringUtils.isEmptyList(resource.getData())){
+                List<ReferralEmployeeNetworkResourcesRecord> list = networkResourcesDao.fetchByPostUserId(resource.getEmployee_id());
+                List<ReferralEmployeeNetworkResourcesRecord> updateRecordList = new ArrayList<>();
+                List<ReferralEmployeeNetworkResourcesRecord> insertRecordList = new ArrayList<>();
+                int num = list.size()>resource.getData().size()?list.size():resource.getData().size();
+                logger.info("fetchEmployeeNetworkResource num:{}",num);
+                for(int i =0; i<num;i++){
+                    if(i < list.size()) {
+                        ReferralEmployeeNetworkResourcesRecord record = list.get(i);
+                        if (resource.getData().size() > i) {
+                            record.setDisable((byte) Constant.DISABLE);
+                            record.setPresenteeUserId(resource.getData().get(i).getUser_id());
+                            record.setPositionId(resource.getData().get(i).getPosition_id());
+                            record.setCompanyId(resource.getCompany_id());
+                        } else {
+                            record.setDisable((byte) Constant.ENABLE);
+                        }
+                        updateRecordList.add(record);
+                    }else {
+                        ReferralEmployeeNetworkResourcesRecord record = new ReferralEmployeeNetworkResourcesRecord();
+                        record.setPostUserId(resource.getEmployee_id());
+                        record.setPresenteeUserId(resource.getData().get(i).getUser_id());
+                        record.setPositionId(resource.getData().get(i).getPosition_id());
+                        record.setCompanyId(resource.getCompany_id());
+                        insertRecordList.add(record);
+                    }
+                }
+                logger.info("fetchEmployeeNetworkResource updateRecordList:{}",updateRecordList);
+                logger.info("fetchEmployeeNetworkResource insertRecordList:{}",insertRecordList);
+                networkResourcesDao.updateReferralEmployeeNetworkResourcesRecord(updateRecordList);
+                networkResourcesDao.insertReferralEmployeeNetworkResourcesRecord(insertRecordList);
+            }
+        }
     }
 
 }

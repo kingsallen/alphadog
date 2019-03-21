@@ -14,11 +14,9 @@ import com.moseeker.entity.pojos.ReferralProfileData;
 import com.moseeker.useraccounts.service.impl.vo.Bonus;
 import com.moseeker.useraccounts.service.impl.vo.RedPacket;
 import com.moseeker.useraccounts.service.impl.vo.ReferralProfileTab;
-import org.apache.commons.lang.StringUtils;
+import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
 
 /**
  * @Author: jack
@@ -135,6 +133,7 @@ public class HBBizTool {
      * @return
      */
     public static ReferralProfileTab packageReferralTab(ReferralLog log, ReferralProfileData profileData) {
+        long startTime = System.currentTimeMillis();
         ReferralProfileTab tab = new ReferralProfileTab();
         tab.setUploadTime(DateUtils.dateToShortTime(log.getCreateTime()));
         tab.setClaim(log.getClaim());
@@ -154,6 +153,10 @@ public class HBBizTool {
             tab.setFilePath(profileData.getAttchmentMap().get(log.getAttementId()).getPath());
             tab.setName(profileData.getAttchmentMap().get(log.getAttementId()).getName());
         }
+        long endTime = System.currentTimeMillis();
+        logger.info("profile tab packageReferralTab endTime:{}", endTime- startTime);
         return tab;
     }
+
+
 }

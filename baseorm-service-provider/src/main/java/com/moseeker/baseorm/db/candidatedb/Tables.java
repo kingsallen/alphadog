@@ -14,6 +14,7 @@ import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0417;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateShareChain_0418;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition;
+import com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain;
 import com.moseeker.baseorm.db.candidatedb.tables.CandidateVJobPositionRecom;
 
 import javax.annotation.Generated;
@@ -81,6 +82,11 @@ public class Tables {
      * HR手动添加相关职位表
      */
     public static final CandidateSuggestPosition CANDIDATE_SUGGEST_POSITION = com.moseeker.baseorm.db.candidatedb.tables.CandidateSuggestPosition.CANDIDATE_SUGGEST_POSITION;
+
+    /**
+     * 十分钟消息模板
+     */
+    public static final CandidateTemplateShareChain CANDIDATE_TEMPLATE_SHARE_CHAIN = com.moseeker.baseorm.db.candidatedb.tables.CandidateTemplateShareChain.CANDIDATE_TEMPLATE_SHARE_CHAIN;
 
     /**
      * VIEW

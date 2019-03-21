@@ -69,7 +69,7 @@ public class TalentPoolSearchTest {
         map.put("city_name","xxxxx");
         map.put("company_name","111,222,333");
         map.put("past_position","xxxxx");
-        QueryBuilder builder= talentpoolSearchengine.query(map);
+        QueryBuilder builder= talentpoolSearchengine.query(map, null);
         System.out.println(builder.toString());
     }
 

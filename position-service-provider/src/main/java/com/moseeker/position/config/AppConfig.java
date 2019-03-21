@@ -1,7 +1,10 @@
 package com.moseeker.position.config;
 
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.PositionSyncVerify;
 import com.moseeker.common.constants.RefreshConstant;
+import com.moseeker.entity.pojo.mq.kafka.KafkaConsumerPlugin;
+import com.moseeker.entity.pojo.mq.kafka.KafkaProducerPlugin;
 import com.rabbitmq.client.ConnectionFactory;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -13,6 +16,9 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.*;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -26,6 +32,7 @@ import java.util.List;
 @Configuration
 @EnableRabbit
 @EnableScheduling
+@EnableKafka
 @ComponentScan({"com.moseeker.position", "com.moseeker.common.aop.iface", "com.moseeker.entity"})
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 @PropertySource("classpath:common.properties")
@@ -96,7 +103,42 @@ public class AppConfig {
         listenerContainerFactory.setAcknowledgeMode(AcknowledgeMode.AUTO);
         return listenerContainerFactory;
     }
+    /*
+       监听器
+        */
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
 
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_RADAR_TOPN));
+    }
+
+    @Bean
+    public KafkaProducerPlugin kafkaProducerPlugin(){
+        return new KafkaProducerPlugin();
+    }
+
+    @Bean
+    public KafkaConsumerPlugin kafkaConsumerPlugin(){
+        return new KafkaConsumerPlugin();
+    }
+
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(kafkaProducerPlugin().buildProps().getProducerProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
     //设置rabbitMQ的Exchange
     @Bean
     public TopicExchange exchange() {

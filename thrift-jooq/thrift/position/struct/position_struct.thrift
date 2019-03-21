@@ -291,6 +291,7 @@ struct JobPostrionObj{
     52:list<string> ccmail, //抄送邮箱
     53: optional bool profile_cc_mail_enabled,  //简历申请是否抄送邮箱,不传默认false
     54: optional bool is_referral  //职位是否内推
+    55: optional string ext //额外数据
 }
 
 struct City{
@@ -468,3 +469,21 @@ struct ReferralPositionBonusStageDetailDO {
     6:optional i32 stage_type
 
 }
+
+
+struct ReferralPositionMatchDO {
+    1:optional i32 id,
+    2:optional string title,
+    3:optional string team,
+    4:optional string city,
+    5:optional i32 experience,
+    6:optional i32 experience_above,
+    7:optional i32 degree,
+    8:optional i32 degree_above,
+    9:optional i32 salary_top,
+    10:optional i32 salary_bottom,
+    11:optional i32 hb_status
+
+
+}
+

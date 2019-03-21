@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class HrCompany implements Serializable {
 
-    private static final long serialVersionUID = 1239321078;
+    private static final long serialVersionUID = -323837774;
 
     private Integer   id;
     private Byte      type;
@@ -47,6 +47,9 @@ public class HrCompany implements Serializable {
     private String    slogan;
     private String    feature;
     private Byte      fortune;
+    private Byte      fortuneScale;
+    private Timestamp fortuneYear;
+    private Integer   employeeNumber;
 
     public HrCompany() {}
 
@@ -73,6 +76,9 @@ public class HrCompany implements Serializable {
         this.slogan = value.slogan;
         this.feature = value.feature;
         this.fortune = value.fortune;
+        this.fortuneScale = value.fortuneScale;
+        this.fortuneYear = value.fortuneYear;
+        this.employeeNumber = value.employeeNumber;
     }
 
     public HrCompany(
@@ -97,7 +103,10 @@ public class HrCompany implements Serializable {
         Byte      source,
         String    slogan,
         String    feature,
-        Byte      fortune
+        Byte      fortune,
+        Byte      fortuneScale,
+        Timestamp fortuneYear,
+        Integer   employeeNumber
     ) {
         this.id = id;
         this.type = type;
@@ -121,6 +130,9 @@ public class HrCompany implements Serializable {
         this.slogan = slogan;
         this.feature = feature;
         this.fortune = fortune;
+        this.fortuneScale = fortuneScale;
+        this.fortuneYear = fortuneYear;
+        this.employeeNumber = employeeNumber;
     }
 
     public Integer getId() {
@@ -299,6 +311,30 @@ public class HrCompany implements Serializable {
         this.fortune = fortune;
     }
 
+    public Byte getFortuneScale() {
+        return this.fortuneScale;
+    }
+
+    public void setFortuneScale(Byte fortuneScale) {
+        this.fortuneScale = fortuneScale;
+    }
+
+    public Timestamp getFortuneYear() {
+        return this.fortuneYear;
+    }
+
+    public void setFortuneYear(Timestamp fortuneYear) {
+        this.fortuneYear = fortuneYear;
+    }
+
+    public Integer getEmployeeNumber() {
+        return this.employeeNumber;
+    }
+
+    public void setEmployeeNumber(Integer employeeNumber) {
+        this.employeeNumber = employeeNumber;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("HrCompany (");
@@ -325,6 +361,9 @@ public class HrCompany implements Serializable {
         sb.append(", ").append(slogan);
         sb.append(", ").append(feature);
         sb.append(", ").append(fortune);
+        sb.append(", ").append(fortuneScale);
+        sb.append(", ").append(fortuneYear);
+        sb.append(", ").append(employeeNumber);
 
         sb.append(")");
         return sb.toString();

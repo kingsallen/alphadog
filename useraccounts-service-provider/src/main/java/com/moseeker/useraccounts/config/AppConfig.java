@@ -1,7 +1,13 @@
 package com.moseeker.useraccounts.config;
 
-import com.moseeker.common.util.query.Query;
+import com.moseeker.common.constants.Constant;
+import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
+import com.moseeker.entity.pojo.mq.kafka.KafkaConsumerPlugin;
+import com.moseeker.entity.pojo.mq.kafka.KafkaProducerPlugin;
 import com.rabbitmq.client.ConnectionFactory;
+import java.util.ArrayList;
+import java.util.List;
+import org.neo4j.ogm.session.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.*;
@@ -14,21 +20,24 @@ import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
+import org.springframework.data.neo4j.transaction.Neo4jTransactionManager;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.*;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.support.RetryTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.moseeker.common.constants.Constant.EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY;
 
 /**
  * Created by lucky8987 on 17/5/12.
  */
 @Configuration
 @EnableRabbit
-@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface", "com.moseeker.common.aop.notify"})
+@ComponentScan({"com.moseeker.useraccounts", "com.moseeker.entity", "com.moseeker.common.aop.iface"})
 @PropertySource("classpath:common.properties")
+@EnableNeo4jRepositories("com.moseeker.useraccounts.repository")
+@EnableKafka
+@EnableAspectJAutoProxy
 @Import({com.moseeker.baseorm.config.AppConfig.class})
 public class AppConfig {
 
@@ -74,6 +83,16 @@ public class AppConfig {
         return rabbitAdmin;
     }
 
+    @Bean
+    public Neo4jTransactionManager neo4jTransactionManager() {
+        return new Neo4jTransactionManager(sessionFactory());
+    }
+
+    @Bean
+    public SessionFactory sessionFactory(){
+        return new SessionFactory("com.moseeker.useraccounts.pojo.neo4j");
+    }
+
     /**
      * listener 容器 （consumer 需要手动确认消息）
      * @return
@@ -101,6 +120,43 @@ public class AppConfig {
         return listenerContainerFactory;
     }
 
+    /*
+    监听器
+     */
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(kafkaConsumerPlugin().buildProps().buildGroupId(Constant.KAFKA_GROUP_RADAR_TOPN));
+    }
+
+    @Bean
+    public KafkaProducerPlugin kafkaProducerPlugin(){
+        return new KafkaProducerPlugin();
+    }
+
+    @Bean
+    public KafkaConsumerPlugin kafkaConsumerPlugin(){
+        return new KafkaConsumerPlugin();
+    }
+
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory() {
+        return new DefaultKafkaProducerFactory<>(kafkaProducerPlugin().buildProps().getProducerProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+
     @Bean
     public Queue bindAccountQueue() {
         Queue queue = new Queue("chaos.bind.response", true, false, false);
@@ -124,6 +180,25 @@ public class AppConfig {
     public TopicExchange webPresetExchange() {
         TopicExchange topicExchange = new TopicExchange("chaos", true, false);
         return topicExchange;
+    }
+
+
+    @Bean
+    public TopicExchange employeeActivationChangeExchange() {
+        TopicExchange topicExchange = new TopicExchange("employee_neo4j_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
+    public Queue employeeChangeQueue() {
+        Queue queue = new Queue("employee_change_queue", true, false, false);
+        return queue;
+    }
+
+    @Bean
+    public Queue neo4jFriend() {
+        Queue queue = new Queue("neo4j_friend", true, false, false);
+        return queue;
     }
 
     @Bean
@@ -226,8 +301,56 @@ public class AppConfig {
         return new ArrayList<Binding>(){{
             add(BindingBuilder.bind(addBonusQueue()).to(addBonusExchange())
                     .with("application_state_change_routingkey.change_state"));
+            add(BindingBuilder.bind(employeeChangeQueue()).to(employeeActivationChangeExchange())
+                    .with("user_neo4j.*"));
             add(BindingBuilder.bind(employeeRegisterQueue()).to(employeeRegisterExchange())
                     .with(EMPLOYEE_FIRST_REGISTER_EXCHNAGE_ROUTINGKEY));
         }};
     }
+
+    /**
+     * 申请投递时，需要处理是否存在推荐人，如果存在，需要将candidate_share_chain和十分钟消息模板candidate_template_share_chain中的数据状态改为已投递状态
+     */
+    @Bean
+    public TopicExchange referralApplyExchange() {
+        return new TopicExchange("referral_apply_exchange", true, false);
+    }
+
+    /**
+     * exchange : referral_apply_exchange
+     * routinue_key : handle.*
+     */
+    @Bean
+    public Queue handleApplyQueue() {
+        return new Queue("handle_share_chain", true, false, false);
+    }
+
+
+    @Bean
+    public List<Binding> bindApplyHandleQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(handleApplyQueue()).to(referralApplyExchange())
+                    .with("referral_*_handle"));
+        }};
+    }
+
+    @Bean
+    public TopicExchange companySwitchExchange() {
+        return new TopicExchange("company_switch_exchange", true, false);
+    }
+
+    @Bean
+    public Queue handleRadarSwitchQueue() {
+        return new Queue("handle_radar_switch", true, false, false);
+    }
+
+    @Bean
+    public List<Binding> bindRadarSwitchQueue() {
+        return new ArrayList<Binding>(){{
+            add(BindingBuilder.bind(handleRadarSwitchQueue()).to(companySwitchExchange())
+                    .with("handle_*_switch"));
+        }};
+    }
+
+
 }
