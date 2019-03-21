@@ -165,7 +165,9 @@ struct SearchCondition {
    30: i32 position_status,//职位状态
    31: string position_key_word,//职位关键字
    32: string past_position_key_word,//曾任职位的关键字
-   33: string past_company_key_word// 曾任公司的关键字
+   33: string past_company_key_word,// 曾任公司的关键字
+   34: String start_submit_time,//开始时间
+   35: string end_submit_time//结束时间
 
 }
 
