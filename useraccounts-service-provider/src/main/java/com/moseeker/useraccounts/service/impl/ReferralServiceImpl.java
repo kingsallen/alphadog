@@ -265,7 +265,12 @@ public class ReferralServiceImpl implements ReferralService {
                     case Finish:
                         activity.finish();break;
                     case Running:
-                        activity.start(activityVO); break;
+                        if(activityStatus.equals(ActivityStatus.Pause)) {
+                            activity.restart();
+                        } else {
+                            activity.start(activityVO);
+                        }
+                        break;
                     case Pause:
                         activity.pause(); break;
                     case UnChecked:

@@ -66,6 +66,17 @@ public abstract class Activity {
     }
 
     /**
+     * 开始红包活动
+     * @throws UserAccountException
+     */
+    public void restart() throws UserAccountException {
+        if (!activityStatus.equals(ActivityStatus.Pause)) {
+            throw UserAccountException.ACTIVITY_STATUS_ERROR;
+        }
+        configDao.updateStatus(id, ActivityStatus.Running.getValue());
+    }
+
+    /**
      * 结束宏奥活动
      * @throws UserAccountException
      */
