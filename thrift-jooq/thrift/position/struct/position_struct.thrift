@@ -83,7 +83,8 @@ struct WechatPositionListQuery {
     16: optional bool order_by_priority,
     17: optional string custom,
     18: optional i32 user_id,
-    19: optional i32 is_referral
+    19: optional i32 is_referral,
+    20: optional string hb_config_id,
 }
 
 struct WechatPositionListData {

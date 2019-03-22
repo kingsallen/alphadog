@@ -1692,7 +1692,10 @@ public class PositionService {
                     childCompanyId,
                     query.getDepartment(),
                     true,
-                    query.getCustom());
+                    query.getCustom(),
+                    query.getHb_config_id()
+                    ,null
+                    );
             logger.info("============================================");
             logger.info(JSON.toJSONString(ret));
             logger.info("============================================");
@@ -2891,25 +2894,14 @@ public class PositionService {
 
         List<WechatPositionListData> dataList = new ArrayList<>();
         try {
-
-            Response res =  searchengineServices.searchPositionSuggest(query);
-
+            WechatPositionListQuery searchParams=this.convertParams(query);
+            Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
-                long totalNum = jobj.getLong("totalNum");
-                JSONArray jsonArray  =  jobj.getJSONArray("suggest");
-
-                List<Integer> jdIdList = new ArrayList<>();
-
-                if(jsonArray!=null&&jsonArray.size()>0){
-                    for(int j=0;j<jsonArray.size();j++) {
-                        JSONObject object = jsonArray.getJSONObject(j);
-                        Integer pid = object.getIntValue("id");
-                        jdIdList.add(pid);
-                    }
-                }
-
-                dataList = this.getWxPosition(jdIdList,(int)totalNum);
+                long totalNum = jobj.getLong("total");
+                List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
+                List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);
+                dataList = this.getWxPosition(idList,(int)totalNum);
             } else {
                 return new ArrayList<>();
             }
@@ -2927,6 +2919,73 @@ public class PositionService {
 
 
         return null;
+    }
+
+    private  WechatPositionListQuery convertParams(Map<String,String> map) throws Exception {
+        WechatPositionListQuery query = new WechatPositionListQuery();
+
+
+        if (map.getOrDefault("company_id", null) != null) {
+            query.setCompany_id(Integer.valueOf((String) map.get("company_id")));
+        } else {
+            throw new Exception("公司 id 未提供!");
+        }
+        int pageNum=Integer.valueOf(map.getOrDefault("page_from", "0"));
+        int pageSize=Integer.valueOf(map.getOrDefault("page_size", "10"));
+        query.setPage_from((pageNum-1)*pageSize);
+        query.setPage_size(pageSize);
+        query.setUser_id(Integer.valueOf( map.getOrDefault("user_id", "0")));
+        query.setKeywords(StringUtils.filterStringForSearch(map.getOrDefault("keyWord", "")));
+        query.setCities((String) map.getOrDefault("cities", ""));
+        query.setIndustries(StringUtils.filterStringForSearch( map.getOrDefault("industries", "")));
+        query.setOccupations( map.getOrDefault("occupations", ""));
+        query.setScale( map.getOrDefault("scale", ""));
+        query.setCandidate_source( map.getOrDefault("candidate_source", ""));
+        query.setEmployment_type( map.getOrDefault("employment_type", ""));
+        query.setExperience(map.getOrDefault("experience", ""));
+        query.setSalary(map.getOrDefault("salary", ""));
+        query.setDegree(map.getOrDefault("degree", ""));
+        query.setDepartment(map.getOrDefault("department", ""));
+        query.setCustom(map.getOrDefault("custom", ""));
+        query.setDid(Integer.valueOf(map.getOrDefault("did", "0")));
+        query.setHb_config_id( map.getOrDefault("hb_config_id", ""));
+        String param_setOrder_by_priority =map.getOrDefault("order_by_priority", "True");
+        query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
+        String isReference= map.getOrDefault("is_referral", "");
+        if(StringUtils.isNotNullOrEmpty(isReference)){
+            query.setIs_referral(Integer.parseInt(isReference));
+        }else{
+            query.setIs_referral(0);
+        }
+        query.setIs_referral(1);
+        return query;
+
+    }
+
+    private Response getResponseEs(WechatPositionListQuery query) throws TException {
+        //获取 pid list
+        Response ret = searchengineServices.queryPositionIndex(
+                query.getKeywords(),
+                query.getCities(),
+                query.getIndustries(),
+                query.getOccupations(),
+                query.getScale(),
+                query.getEmployment_type(),
+                query.getCandidate_source(),
+                query.getExperience(),
+                query.getDegree(),
+                query.getSalary(),
+                query.getCompany_id()+"",
+                query.getPage_from(),
+                query.getPage_size(),
+                query.getDid()+"",
+                query.getDepartment(),
+                true,
+                query.getCustom(),
+                query.getHb_config_id()
+                ,query.getIs_referral()+""
+        );
+        return ret;
     }
 
 }

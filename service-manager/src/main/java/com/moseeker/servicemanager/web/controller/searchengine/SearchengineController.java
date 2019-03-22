@@ -128,7 +128,7 @@ public class SearchengineController {
                     child_company_id, department, order_by_priority, custom, "=============");
             Response result = searchengineServices.query(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
-                    child_company_id, department, order_by_priority, custom);
+                    child_company_id, department, order_by_priority, custom,null);
             logger.info(keywords, cities, industries, occupations, scale,
                     employment_type, candidate_source, experience, degree, salary, company_id, page_from, page_size,
                     child_company_id, department, order_by_priority, custom, "=============");
@@ -155,7 +155,7 @@ public class SearchengineController {
             Integer company_id = BeanUtils.converToInteger(reqParams.get("company_id"));
             Response es_result = searchengineServices.query(null, null, null, null, null,
                     null, null, null, null, null, company_id + "", 0, 1000,
-                    null, null, false, null);
+                    null, null, false, null,null);
             if (es_result.getStatus() == 0 && StringUtils.isNotNullOrEmpty(es_result.getData())) {
                 JSONObject es_data = JSON.parseObject(es_result.getData());
                 List<String> position_id_list = (List<String>) es_data.get("jd_id_list");

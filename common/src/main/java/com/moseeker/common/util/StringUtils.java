@@ -552,5 +552,15 @@ public class StringUtils {
         }
         return result;
     }
+    public static List<Integer> convertStringToIntegerList(List<String> dataList){
+        if(isEmptyList(dataList)){
+            return null;
+        }
+        List<Integer> result=new ArrayList<>();
+        for(String data:dataList ){
+            result.add(Integer.parseInt(data));
+        }
+        return result;
+    }
 
 }
