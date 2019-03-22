@@ -216,6 +216,7 @@ public class JobApplicataionService {
             handleReferralState(jobApplicationId);
             HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
             rabbitMQOperationRecord.sendMQForOperationRecord(data);
+            this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
             // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
@@ -229,6 +230,14 @@ public class JobApplicataionService {
                 jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
 
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+    /*
+    更新data/application索引
+     */
+    private void updateApplicationEsIndex(int userId){
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        logger.info("====================redis==============application更新=============");
+        logger.info("================userid={}=================",userId);
     }
     /*
      * @Author zztaiwll
@@ -504,6 +513,7 @@ public class JobApplicataionService {
                         jobApplicationDO.getApplyType(), jobApplication.getEmail_status(),
                         jobApplicationDO.getRecommenderUserId(), jobApplicationDO.getApplierId(),
                         jobApplicationDO.getOrigin());
+                this.updateApplicationEsIndex((int)jobApplicationDO.getApplierId());
             }
         }
         return updateStatus;
@@ -1106,6 +1116,19 @@ public class JobApplicataionService {
         HREntity hrEntity = applicationRepository.fetchHREntity(hrId);
         ApplicationBatchEntity applicationBatchEntity = applicationRepository.fetchApplicationEntity(applicationIdList);
         hrEntity.viewApplication(applicationBatchEntity);
+        //为了不修改逻辑，所以加在这边。更新data/application的数据
+        this.batchUpdateApplicationIndex(applicationIdList);
+    }
+
+    private void batchUpdateApplicationIndex(List<Integer> applicationIdList){
+        if(!StringUtils.isEmptyList(applicationIdList)){
+            List<Integer> userIdList=jobApplicationDao.getApplierIdListByIdList(applicationIdList);
+            if(!StringUtils.isEmptyList(userIdList)){
+                for(Integer userId:userIdList){
+                    this.updateApplicationEsIndex(userId);
+                }
+            }
+        }
     }
 
     /**
@@ -1215,6 +1238,7 @@ public class JobApplicataionService {
             }
             List<HrOperationAllRecord> dataList=this.getEmployeeOperationRecord(referenceId,employeeDO,positionList,applierId);
             rabbitMQOperationRecord.sendMQForOperationRecordList(dataList);
+            this.updateApplicationEsIndex(applierId);
             return applyIdList.stream().map(ApplicationSaveResultVO::getApplicationId).collect(Collectors.toList());
         }
 
