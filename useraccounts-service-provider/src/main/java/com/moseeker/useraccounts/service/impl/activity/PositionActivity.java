@@ -45,6 +45,9 @@ public abstract class PositionActivity extends Activity {
             if (StringUtils.isNotBlank(result)) {
                 throw UserAccountException.validateFailed(result);
             }
+        } else {
+            configDao.updateStatus(id, ActivityStatus.Running.getValue());
+            return;
         }
         List<HrHbItemsRecord> items = new ArrayList<>();
 
