@@ -63,6 +63,11 @@ public abstract class Activity {
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;
         }
+        if (activityStatus.equals(ActivityStatus.Pause)) {
+            configDao.updateStatus(id, ActivityStatus.Running.getValue());
+            return;
+        }
+
     }
 
     /**
