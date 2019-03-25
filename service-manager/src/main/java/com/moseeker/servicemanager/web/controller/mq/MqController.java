@@ -260,7 +260,7 @@ public class MqController {
         }
     }
 
-    @RequestMapping(value = "/v4/notification/config/{wechatId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/v4/notification/config/{wechatId}", method = RequestMethod.GET)
     public String listNotificationConfig(HttpServletRequest request, @PathVariable Integer wechatId) throws Exception {
         try {
             List<MessageBody> messageBodies = mqService.listMessages(wechatId);
