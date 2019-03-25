@@ -475,6 +475,9 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
                 .fetchInto(JobApplicationDO.class);
     }
 
-
+	 public List<Integer> getApplierIdListByIdList(List<Integer> appIdlist){
+		 List<Integer> result= create.selectDistinct(JOB_APPLICATION.APPLIER_ID).from(JOB_APPLICATION).where(JOB_APPLICATION.ID.in(appIdlist)).fetchInto(Integer.class);
+		 return result;
+	 }
 
 }

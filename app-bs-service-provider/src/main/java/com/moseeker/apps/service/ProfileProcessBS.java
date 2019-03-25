@@ -399,6 +399,7 @@ public class ProfileProcessBS {
                         client.lpush(Constant.APPID_ALPHADOG,
                                 "ES_REALTIME_UPDATE_INDEX_USER_IDS", jsb.toJSONString());
                         logger.info("lpush ES_REALTIME_UPDATE_INDEX_USER_IDS:{} success", jsb.toJSONString());
+
                         List<HrCompanyAccountDO> companyAccountDOList = companyAccountDao.getByHrIdList(accountIdList);
                         List<Integer> companyIdList = new ArrayList<>();
                         if(!StringUtils.isEmptyList(companyAccountDOList)) {
@@ -406,6 +407,7 @@ public class ProfileProcessBS {
                         }
                         List<HrCompanyDO> comapnyList = hrCompanyDao.getHrCompanyByCompanyIds(companyIdList);
                         list.forEach(pvs -> {
+                            this.updateApplicationEsIndex(pvs.getApplier_id());
                             HrCompanyDO  company = new HrCompanyDO();
                             Optional<HrCompanyAccountDO>  companyAccount = companyAccountDOList.stream().filter(f -> f.getAccountId() == pvs.getPublisher())
                                     .findAny();
@@ -442,6 +444,7 @@ public class ProfileProcessBS {
                                             pvs.getId(), TemplateMs.TORECOMSTATUS);
                                 }
                             }
+
                         });
                     } else {
                         return ResponseUtils
@@ -465,6 +468,15 @@ public class ProfileProcessBS {
                     .fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
         }
 
+    }
+
+    /*
+   更新data/application索引
+    */
+    private void updateApplicationEsIndex(int userId){
+        client.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        logger.info("====================redis==============application更新=============");
+        logger.info("================userid={}=================",userId);
     }
     /*
      * 将record转化为struct
