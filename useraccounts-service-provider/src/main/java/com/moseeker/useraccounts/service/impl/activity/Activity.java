@@ -69,6 +69,22 @@ public abstract class Activity {
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;
         }
+        if (activityStatus.equals(ActivityStatus.Pause)) {
+            configDao.updateStatus(id, ActivityStatus.Running.getValue());
+            return;
+        }
+
+    }
+
+    /**
+     * 开始红包活动
+     * @throws UserAccountException
+     */
+    public void restart() throws UserAccountException {
+        if (!activityStatus.equals(ActivityStatus.Pause)) {
+            throw UserAccountException.ACTIVITY_STATUS_ERROR;
+        }
+        configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
 
     /**

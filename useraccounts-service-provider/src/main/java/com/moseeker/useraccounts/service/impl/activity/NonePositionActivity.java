@@ -43,6 +43,10 @@ public abstract class NonePositionActivity extends Activity {
     public void start(ActivityVO activityVO) throws UserAccountException {
 
         super.start(activityVO);
+        if (activityStatus.equals(ActivityStatus.Pause)) {
+            configDao.updateStatus(id, ActivityStatus.Running.getValue());
+            return;
+        }
 
         HrHbConfigRecord hrHbConfig = configDao.fetchById(id);
         if (hrHbConfig == null ) {
