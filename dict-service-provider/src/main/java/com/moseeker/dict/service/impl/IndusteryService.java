@@ -101,7 +101,7 @@ public class IndusteryService {
 			if(industryTypes != null && industryTypes.size() > 0) {
 				industryTypes.forEach(industryType -> {
 					Map<String, Object> industryMap = new HashMap<>();
-					industryMap.put("type", 0);
+					industryMap.put("type", industryType.getParentId());
 					industryMap.put("code", industryType.getId());
 					industryMap.put("name", industryType.getName());
 					marsIndustryMaps.add(industryMap);
