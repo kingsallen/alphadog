@@ -24,6 +24,7 @@ import com.moseeker.baseorm.db.referraldb.tables.records.ReferralRecomEvaluation
 import com.moseeker.baseorm.db.referraldb.tables.records.ReferralSeekRecommendRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.biztools.PageUtil;
 import com.moseeker.common.constants.Constant;
@@ -70,6 +71,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * @Author: jack
@@ -139,6 +142,9 @@ public class ReferralServiceImpl implements ReferralService {
     private ReferralRadarService radarService;
 
     ThreadPool tp = ThreadPool.Instance;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     @Autowired
     private KafkaSender kafkaSender;
@@ -514,6 +520,9 @@ public class ReferralServiceImpl implements ReferralService {
         if (response.getStatus() == 0) {
             JSONObject jsonObject1 = JSONObject.parseObject(response.getData());
             applicationId = jsonObject1.getInteger("jobApplicationId");
+            logger.info("==========更新data/profile==============");
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            logger.info("==========更新data/profile===userId=={}==============",userId);
         }
         return applicationId;
     }
