@@ -4,7 +4,31 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
-import com.moseeker.baseorm.db.dictdb.tables.*;
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
+import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
+import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
+import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
+import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
+import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
+import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
+import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
 
 import javax.annotation.Generated;
 
@@ -88,7 +112,7 @@ public class Tables {
     public static final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public static final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -116,6 +140,11 @@ public class Tables {
      * 专业字典表
      */
     public static final DictMajor DICT_MAJOR = com.moseeker.baseorm.db.dictdb.tables.DictMajor.DICT_MAJOR;
+
+    /**
+     * 玛氏专业常量表
+     */
+    public static final DictMarsMajor DICT_MARS_MAJOR = com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor.DICT_MARS_MAJOR;
 
     /**
      * 职能分类字典表
