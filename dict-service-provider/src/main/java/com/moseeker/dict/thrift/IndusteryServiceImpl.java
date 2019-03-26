@@ -22,4 +22,9 @@ public class IndusteryServiceImpl implements Iface {
 		return service.getIndustriesByCode(code);
 	}
 
+	@Override
+	public Response getMarsIndustriesByCode(String code) throws TException {
+		return service.getMarsIndustriesByCode(code);
+	}
+
 }

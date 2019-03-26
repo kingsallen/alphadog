@@ -39,4 +39,18 @@ public class DictIndustryController {
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
+
+    @RequestMapping(value = "/dict/mars/industry", method = RequestMethod.GET)
+    @ResponseBody
+    public String getMarsIndustriesByType(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // GET方法 通用参数解析并赋值
+            Map<String,Object> params = ParamUtils.parseRequestParam(request);
+            Response result = service.getMarsIndustriesByCode((String)params.get("parent"));
+
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
 }

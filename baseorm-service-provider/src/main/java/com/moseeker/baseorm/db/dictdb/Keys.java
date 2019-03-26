@@ -4,8 +4,56 @@
 package com.moseeker.baseorm.db.dictdb;
 
 
-import com.moseeker.baseorm.db.dictdb.tables.*;
-import com.moseeker.baseorm.db.dictdb.tables.records.*;
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictAlipaycampusJobcategory;
+import com.moseeker.baseorm.db.dictdb.tables.DictCarnocOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictCity;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityLiepin;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityMap;
+import com.moseeker.baseorm.db.dictdb.tables.DictCityPostcode;
+import com.moseeker.baseorm.db.dictdb.tables.DictCollege;
+import com.moseeker.baseorm.db.dictdb.tables.DictConstant;
+import com.moseeker.baseorm.db.dictdb.tables.DictCountry;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustry;
+import com.moseeker.baseorm.db.dictdb.tables.DictIndustryType;
+import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
+import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
+import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
+import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
+import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
+import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusCityRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictAlipaycampusJobcategoryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCarnocOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityLiepinRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityMapRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityPostcodeRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCityRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCollegeRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictConstantRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictCountryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictIndustryTypeRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictJob1001OccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictJobsdbOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictLiepinOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictMajorRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictMarsMajorRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictPositionRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictReferralEvaluateRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictTestMobileRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictVeryeastOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.DictZhilianOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.Dict_51jobOccupationRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.Dict_58jobFeatureRecord;
+import com.moseeker.baseorm.db.dictdb.tables.records.Dict_58jobOccupationRecord;
 
 import javax.annotation.Generated;
 
@@ -40,6 +88,7 @@ public class Keys {
     public static final Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = Identities0.IDENTITY_DICT_CONSTANT;
     public static final Identity<DictCountryRecord, Integer> IDENTITY_DICT_COUNTRY = Identities0.IDENTITY_DICT_COUNTRY;
     public static final Identity<DictLiepinOccupationRecord, Integer> IDENTITY_DICT_LIEPIN_OCCUPATION = Identities0.IDENTITY_DICT_LIEPIN_OCCUPATION;
+    public static final Identity<DictMarsMajorRecord, Integer> IDENTITY_DICT_MARS_MAJOR = Identities0.IDENTITY_DICT_MARS_MAJOR;
     public static final Identity<DictReferralEvaluateRecord, Integer> IDENTITY_DICT_REFERRAL_EVALUATE = Identities0.IDENTITY_DICT_REFERRAL_EVALUATE;
     public static final Identity<DictTestMobileRecord, Integer> IDENTITY_DICT_TEST_MOBILE = Identities0.IDENTITY_DICT_TEST_MOBILE;
     public static final Identity<DictZhilianOccupationRecord, Integer> IDENTITY_DICT_ZHILIAN_OCCUPATION = Identities0.IDENTITY_DICT_ZHILIAN_OCCUPATION;
@@ -54,6 +103,7 @@ public class Keys {
     public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = UniqueKeys0.KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY;
     public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = UniqueKeys0.KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY;
     public static final UniqueKey<DictCarnocOccupationRecord> KEY_DICT_CARNOC_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_CARNOC_OCCUPATION_PRIMARY;
+    public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_PRIMARY = UniqueKeys0.KEY_DICT_CITY_PRIMARY;
     public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = UniqueKeys0.KEY_DICT_CITY_CODE;
     public static final UniqueKey<DictCityLiepinRecord> KEY_DICT_CITY_LIEPIN_PRIMARY = UniqueKeys0.KEY_DICT_CITY_LIEPIN_PRIMARY;
     public static final UniqueKey<DictCityMapRecord> KEY_DICT_CITY_MAP_PRIMARY = UniqueKeys0.KEY_DICT_CITY_MAP_PRIMARY;
@@ -69,6 +119,7 @@ public class Keys {
     public static final UniqueKey<DictJobsdbOccupationRecord> KEY_DICT_JOBSDB_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_JOBSDB_OCCUPATION_PRIMARY;
     public static final UniqueKey<DictLiepinOccupationRecord> KEY_DICT_LIEPIN_OCCUPATION_PRIMARY = UniqueKeys0.KEY_DICT_LIEPIN_OCCUPATION_PRIMARY;
     public static final UniqueKey<DictMajorRecord> KEY_DICT_MAJOR_CODE = UniqueKeys0.KEY_DICT_MAJOR_CODE;
+    public static final UniqueKey<DictMarsMajorRecord> KEY_DICT_MARS_MAJOR_PRIMARY = UniqueKeys0.KEY_DICT_MARS_MAJOR_PRIMARY;
     public static final UniqueKey<DictPositionRecord> KEY_DICT_POSITION_CODE = UniqueKeys0.KEY_DICT_POSITION_CODE;
     public static final UniqueKey<DictReferralEvaluateRecord> KEY_DICT_REFERRAL_EVALUATE_PRIMARY = UniqueKeys0.KEY_DICT_REFERRAL_EVALUATE_PRIMARY;
     public static final UniqueKey<DictTestMobileRecord> KEY_DICT_TEST_MOBILE_PRIMARY = UniqueKeys0.KEY_DICT_TEST_MOBILE_PRIMARY;
@@ -93,6 +144,7 @@ public class Keys {
         public static Identity<DictConstantRecord, Integer> IDENTITY_DICT_CONSTANT = createIdentity(DictConstant.DICT_CONSTANT, DictConstant.DICT_CONSTANT.ID);
         public static Identity<DictCountryRecord, Integer> IDENTITY_DICT_COUNTRY = createIdentity(DictCountry.DICT_COUNTRY, DictCountry.DICT_COUNTRY.ID);
         public static Identity<DictLiepinOccupationRecord, Integer> IDENTITY_DICT_LIEPIN_OCCUPATION = createIdentity(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION, DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.ID);
+        public static Identity<DictMarsMajorRecord, Integer> IDENTITY_DICT_MARS_MAJOR = createIdentity(DictMarsMajor.DICT_MARS_MAJOR, DictMarsMajor.DICT_MARS_MAJOR.ID);
         public static Identity<DictReferralEvaluateRecord, Integer> IDENTITY_DICT_REFERRAL_EVALUATE = createIdentity(DictReferralEvaluate.DICT_REFERRAL_EVALUATE, DictReferralEvaluate.DICT_REFERRAL_EVALUATE.ID);
         public static Identity<DictTestMobileRecord, Integer> IDENTITY_DICT_TEST_MOBILE = createIdentity(DictTestMobile.DICT_TEST_MOBILE, DictTestMobile.DICT_TEST_MOBILE.ID);
         public static Identity<DictZhilianOccupationRecord, Integer> IDENTITY_DICT_ZHILIAN_OCCUPATION = createIdentity(DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION, DictZhilianOccupation.DICT_ZHILIAN_OCCUPATION.CODE);
@@ -105,6 +157,7 @@ public class Keys {
         public static final UniqueKey<DictAlipaycampusCityRecord> KEY_DICT_ALIPAYCAMPUS_CITY_PRIMARY = createUniqueKey(DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY, "KEY_dict_alipaycampus_city_PRIMARY", DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY.ID);
         public static final UniqueKey<DictAlipaycampusJobcategoryRecord> KEY_DICT_ALIPAYCAMPUS_JOBCATEGORY_PRIMARY = createUniqueKey(DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY, "KEY_dict_alipaycampus_jobcategory_PRIMARY", DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY.ID);
         public static final UniqueKey<DictCarnocOccupationRecord> KEY_DICT_CARNOC_OCCUPATION_PRIMARY = createUniqueKey(DictCarnocOccupation.DICT_CARNOC_OCCUPATION, "KEY_dict_carnoc_occupation_PRIMARY", DictCarnocOccupation.DICT_CARNOC_OCCUPATION.CODE);
+        public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_PRIMARY = createUniqueKey(DictCity.DICT_CITY, "KEY_dict_city_PRIMARY", DictCity.DICT_CITY.CODE);
         public static final UniqueKey<DictCityRecord> KEY_DICT_CITY_CODE = createUniqueKey(DictCity.DICT_CITY, "KEY_dict_city_code", DictCity.DICT_CITY.CODE);
         public static final UniqueKey<DictCityLiepinRecord> KEY_DICT_CITY_LIEPIN_PRIMARY = createUniqueKey(DictCityLiepin.DICT_CITY_LIEPIN, "KEY_dict_city_liepin_PRIMARY", DictCityLiepin.DICT_CITY_LIEPIN.ID);
         public static final UniqueKey<DictCityMapRecord> KEY_DICT_CITY_MAP_PRIMARY = createUniqueKey(DictCityMap.DICT_CITY_MAP, "KEY_dict_city_map_PRIMARY", DictCityMap.DICT_CITY_MAP.ID);
@@ -120,6 +173,7 @@ public class Keys {
         public static final UniqueKey<DictJobsdbOccupationRecord> KEY_DICT_JOBSDB_OCCUPATION_PRIMARY = createUniqueKey(DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION, "KEY_dict_jobsdb_occupation_PRIMARY", DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION.CODE);
         public static final UniqueKey<DictLiepinOccupationRecord> KEY_DICT_LIEPIN_OCCUPATION_PRIMARY = createUniqueKey(DictLiepinOccupation.DICT_LIEPIN_OCCUPATION, "KEY_dict_liepin_occupation_PRIMARY", DictLiepinOccupation.DICT_LIEPIN_OCCUPATION.ID);
         public static final UniqueKey<DictMajorRecord> KEY_DICT_MAJOR_CODE = createUniqueKey(DictMajor.DICT_MAJOR, "KEY_dict_major_code", DictMajor.DICT_MAJOR.CODE);
+        public static final UniqueKey<DictMarsMajorRecord> KEY_DICT_MARS_MAJOR_PRIMARY = createUniqueKey(DictMarsMajor.DICT_MARS_MAJOR, "KEY_dict_mars_major_PRIMARY", DictMarsMajor.DICT_MARS_MAJOR.ID);
         public static final UniqueKey<DictPositionRecord> KEY_DICT_POSITION_CODE = createUniqueKey(DictPosition.DICT_POSITION, "KEY_dict_position_code", DictPosition.DICT_POSITION.CODE);
         public static final UniqueKey<DictReferralEvaluateRecord> KEY_DICT_REFERRAL_EVALUATE_PRIMARY = createUniqueKey(DictReferralEvaluate.DICT_REFERRAL_EVALUATE, "KEY_dict_referral_evaluate_PRIMARY", DictReferralEvaluate.DICT_REFERRAL_EVALUATE.ID);
         public static final UniqueKey<DictTestMobileRecord> KEY_DICT_TEST_MOBILE_PRIMARY = createUniqueKey(DictTestMobile.DICT_TEST_MOBILE, "KEY_dict_test_mobile_PRIMARY", DictTestMobile.DICT_TEST_MOBILE.ID);
