@@ -27,55 +27,6 @@ import java.util.stream.Collectors;
 @Service
 public class TemplateMsgFinderImpl implements TemplateMsgFinder {
 
-   /* flexible_fields :  [
-    {
-        "key": "begin",
-            "name": "开始语",
-            "value": "xxx",
-            "editable": true
-    },
-    {
-        "key": "end",
-            "name": "结束语",
-            "value": "xxx",
-            "editable": true
-    },
-            ]
-
-
-
-
-
-    调用的更新接口：　
-
-            "/wechat/updateNotice",
-
-
-
-    职位邀请通知　　＆＆　求职者：
-
-    position_invite = lambda start, end: [
-    dict(editable=True, key=u'begin', name=u'开始语', value=start),
-    dict(editable=False, key=u'position', name=u'职位名称', value=u'产品经理等'),
-    dict(editable=False, key=u'company', name=u'公司名称', value=u'仟寻等'),
-    dict(editable=False, key=u'invite_time', name=u'邀请时间', value=u'2018-01-01'),
-    dict(editable=True, key=u'end', name=u'结束语', value=end)
-]
-
-    简历完善通知：　
-    resume_complete = lambda start, end: [
-    dict(editable=True, key=u'begin', name=u'开始语', value=start),
-    dict(editable=False, key=u'username', name=u'用户名', value=u'大舜'),
-    dict(editable=False, key=u'register_time', name=u'注册时间', value=u'2018.01.01'),
-    dict(editable=True, key=u'end', name=u'结束语', value=end),
-]
-
-
-
-    否则：　
-
-            []*/
-
    private static final String POSITION_INVITE_TITLE = "职位邀请通知";
    private static final String SEEKER = "求职者";
    private static final String PERFECT_PROFILE_NOTICE = "简历完善通知";
