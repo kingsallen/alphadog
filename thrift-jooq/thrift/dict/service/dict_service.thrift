@@ -39,6 +39,7 @@ service DictConstanService {
 */
 service IndustryService {
     common_struct.Response getIndustriesByCode(1: string code);
+    common_struct.Response getMarsIndustriesByCode(1: string code);
 }
 
 /*
