@@ -7,15 +7,16 @@ import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.validation.ValidateUtil;
 import com.moseeker.entity.MandrillMailListConsumer;
-import com.moseeker.mq.service.impl.EmailProducer;
-import com.moseeker.mq.service.impl.MandrillEmailProducer;
-import com.moseeker.mq.service.impl.ResumeDeliveryService;
-import com.moseeker.mq.service.impl.TemplateMsgProducer;
+import com.moseeker.mq.service.TemplateMsgFinder;
+import com.moseeker.mq.service.impl.*;
 import com.moseeker.mq.service.sms.SmsService;
+import com.moseeker.mq.thrift.message.DataConverter;
+import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.mq.service.MqService.Iface;
 import com.moseeker.thrift.gen.mq.struct.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -60,6 +61,9 @@ public class ThriftService implements Iface {
 
     @Autowired
     private MandrillMailListConsumer mandrillMailListConsumer;
+
+    @Autowired
+	private TemplateMsgFinder finder;
 
 	@Override
 	public Response messageTemplateNotice(MessageTemplateNoticeStruct messageTemplateNoticeStruct) throws TException {
@@ -152,4 +156,14 @@ public class ThriftService implements Iface {
 			throw ExceptionUtils.convertException(e);
 		}
     }
+
+	@Override
+	public List<MessageBody> listMessages(int wechatId) throws BIZException, TException {
+		try {
+			List<com.moseeker.mq.service.message.MessageBody> messageBodys = finder.listTemplateMsg(wechatId);
+			return DataConverter.convertMessageBody(messageBodys);
+		} catch (Exception e) {
+			throw ExceptionUtils.convertException(e);
+		}
+	}
 }

@@ -15,6 +15,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -255,6 +256,17 @@ public class MqController {
             Response result = mqService.sendMessageAndEmailToDelivery(emailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/v4/notification/config/{wechatId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String listNotificationConfig(HttpServletRequest request, @PathVariable Integer wechatId) throws Exception {
+        try {
+            List<MessageBody> messageBodies = mqService.listMessages(wechatId);
+            return ResponseLogNotification.successJson(request, messageBodies);
+        }catch (Exception e){
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
