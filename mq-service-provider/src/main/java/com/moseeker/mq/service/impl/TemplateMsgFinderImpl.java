@@ -8,8 +8,7 @@ import com.moseeker.mq.service.TemplateMsgFinder;
 import com.moseeker.mq.service.message.FlexibleField;
 import com.moseeker.mq.service.message.MessageBody;
 import org.apache.commons.lang.StringUtils;
-import org.jooq.Record11;
-import org.jooq.Record12;
+import org.jooq.Record13;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +46,7 @@ public class TemplateMsgFinderImpl implements TemplateMsgFinder {
     @Override
     public List<MessageBody> listTemplateMsg(int wechatId) throws MqException {
 
-        List<Record12<Integer, String, String, String, String, String, String, Integer, String, String, String, Integer>> list =
+        List<Record13<Integer, String, String, String, String, String, String, Integer, String, String, String, Integer, Byte>> list =
                 noticeMessageDao.listByWechatId(wechatId);
         if (list != null && list.size() > 0) {
             List<MessageBody> bodies = list.stream().map(record -> {
@@ -64,6 +63,7 @@ public class TemplateMsgFinderImpl implements TemplateMsgFinder {
                 messageBody.setRemark(record.value9());
                 messageBody.setCustomFirst(record.value10());
                 messageBody.setCustomRemark(record.value11());
+                messageBody.setStatus(record.value13());
 
                 if (PERFECT_PROFILE_NOTICE.equals(messageBody.getTitle())) {
 

@@ -4,7 +4,7 @@ import com.moseeker.baseorm.crud.JooqCrudImpl;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxNoticeMessageRecord;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrWxNoticeMessageDO;
-import org.jooq.Record12;
+import org.jooq.Record13;
 import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
@@ -57,7 +57,7 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
                 .fetchOneInto(HrWxNoticeMessageDO.class);
     }
 
-    public Result<Record12<Integer, String, String, String, String, String, String, Integer, String, String, String, Integer>> listByWechatId(int wechatId) {
+    public Result<Record13<Integer, String, String, String, String, String, String, Integer, String, String, String, Integer, Byte>> listByWechatId(int wechatId) {
 
         return create
                 .select(HR_WX_NOTICE_MESSAGE.ID, CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.TITLE,
@@ -70,7 +70,8 @@ public class HrWxNoticeMessageDao extends JooqCrudImpl<HrWxNoticeMessageDO, HrWx
                         CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.REMARK,
                         HR_WX_NOTICE_MESSAGE.FIRST.as("custom_first"),
                         HR_WX_NOTICE_MESSAGE.REMARK.as("custom_remark"),
-                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID.as("configId"))
+                        CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID.as("configId"),
+                        HR_WX_NOTICE_MESSAGE.STATUS)
                 .from(HR_WX_NOTICE_MESSAGE)
                 .leftJoin(CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY)
                 .on(HR_WX_NOTICE_MESSAGE.NOTICE_ID.eq(CONFIG_SYS_TEMPLATE_MESSAGE_LIBRARY.ID))

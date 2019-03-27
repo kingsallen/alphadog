@@ -6,23 +6,23 @@ import java.util.List;
  * @ClassName MessageBody
  * @Description TODO
  * @Author jack
- * @Date 2019/3/25 12:46 PM
+ * @Date 2019/3/27 10:03 AM
  * @Version 1.0
  */
 public class MessageBody {
 
-    private int id; 
-    private java.lang.String title; 
-    private java.lang.String sendCondition; 
-    private java.lang.String sendTime; 
-    private java.lang.String sendTo; 
-    private java.lang.String sample; 
-    private java.lang.String first; 
-    private java.lang.String priority; 
-    private java.lang.String remark; 
-    private byte status; 
-    private java.lang.String customFirst; 
-    private java.lang.String customRemark; 
+    private int id;
+    private java.lang.String title;
+    private java.lang.String sendCondition;
+    private java.lang.String sendTime;
+    private java.lang.String sendTo;
+    private java.lang.String sample;
+    private java.lang.String first;
+    private java.lang.String priority;
+    private java.lang.String remark;
+    private byte status;
+    private java.lang.String customFirst;
+    private java.lang.String customRemark;
     private java.util.List<FlexibleField> flexibleFields;
 
     public int getId() {

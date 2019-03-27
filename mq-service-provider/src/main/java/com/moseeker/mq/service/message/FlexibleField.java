@@ -4,14 +4,14 @@ package com.moseeker.mq.service.message;
  * @ClassName FlexibleField
  * @Description TODO
  * @Author jack
- * @Date 2019/3/25 12:47 PM
+ * @Date 2019/3/27 10:03 AM
  * @Version 1.0
  */
 public class FlexibleField {
 
-    private java.lang.String key; 
-    private java.lang.String name; 
-    private java.lang.String value; 
+    private java.lang.String key;
+    private java.lang.String name;
+    private java.lang.String value;
     private boolean editable;
 
     public String getKey() {
