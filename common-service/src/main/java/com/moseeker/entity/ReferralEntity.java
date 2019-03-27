@@ -39,6 +39,7 @@ import com.moseeker.baseorm.db.userdb.tables.UserEmployee;
 import com.moseeker.baseorm.db.userdb.tables.records.UserEmployeeRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.thread.ThreadPool;
@@ -71,6 +72,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * @Author: jack
@@ -164,8 +167,14 @@ public class ReferralEntity {
     @Autowired
     private UserUserDao userDao;
 
+    //redis的客户端
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
     @Autowired
     private ReferralEmployeeNetworkResourcesDao networkResourcesDao;
+
+
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPool threadPool = ThreadPool.Instance;
@@ -276,6 +285,16 @@ public class ReferralEntity {
 
             searchengineEntity.removeApplication(application.getApplierId(), application.getId(),
                     application.getApplierId(), application.getApplierName(), updateTime);
+        }
+
+          /*
+        更新data/application索引
+         */
+        private void updateApplicationEsIndex(int userId){
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            logger.info("====================redis==============application更新=============");
+            logger.info("================userid={}=================",userId);
         }
 
         // 更新简历中的userId，计算简历完整度

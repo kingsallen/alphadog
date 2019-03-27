@@ -73,6 +73,8 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
+
 /**
  * @Author: jack
  * @Date: 2018/9/26
