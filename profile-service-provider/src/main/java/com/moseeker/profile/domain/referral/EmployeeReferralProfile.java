@@ -95,6 +95,7 @@ public abstract class EmployeeReferralProfile {
                                               ProfilePojo profilePojo, UserEmployeeDO employeeDO, ProfileAttementVO attementVO);
 
     public List<MobotReferralResultVO> employeeReferralProfileAdaptor(EmployeeReferralProfileNotice profileNotice){
+        logger.info("=============employeeReferralProfileAdaptor==============");
         ProfileAttementVO attementVO = new ProfileAttementVO();
         validateReferralInfo(profileNotice);
         UserEmployeeDO employeeDO = employeeEntity.getEmployeeByID(profileNotice.getEmployeeId());
@@ -120,6 +121,7 @@ public abstract class EmployeeReferralProfile {
         }
         try {
             countDownLatch.await(60, TimeUnit.SECONDS);
+            logger.info("===========开始更新es=================================");
             tp1.startTast(()->{
                 logger.info("============三秒后执行=============================");
                 updateApplicationEsIndex(attementVO.getUserId());
