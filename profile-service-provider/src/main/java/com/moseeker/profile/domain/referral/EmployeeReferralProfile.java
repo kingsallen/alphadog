@@ -7,9 +7,11 @@ import com.moseeker.baseorm.dao.hrdb.HrOperationRecordDao;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.AppId;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.Position.PositionStatus;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
@@ -42,6 +44,8 @@ import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * Created by moseeker on 2018/11/22.
@@ -77,6 +81,11 @@ public abstract class EmployeeReferralProfile {
 
     ThreadPool tp = ThreadPool.Instance;
 
+    ScheduledThread tp1= ScheduledThread.Instance;
+
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
+
 
     protected abstract void validateReferralInfo(EmployeeReferralProfileNotice profileNotice);
 
@@ -111,11 +120,22 @@ public abstract class EmployeeReferralProfile {
         }
         try {
             countDownLatch.await(60, TimeUnit.SECONDS);
+            tp1.startTast(()->{
+                logger.info("============三秒后执行=============================");
+                updateApplicationEsIndex(attementVO.getUserId());
+            },3000);
             return resultVOS;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ProfileException.PROGRAM_EXCEPTION;
         }
+    }
+
+    private void updateApplicationEsIndex(int userId){
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        logger.info("====================redis==============application更新=============");
+        logger.info("================userid={}=================",userId);
     }
 
 
