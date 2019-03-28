@@ -69,7 +69,7 @@ public class ReceiveHandler {
         if(!StringUtils.isEmptyList(userIdSet)){
             for(Integer userId:userIdSet){
                 log.info("==========更新data/profile==============");
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_DATA_USER_IDS",String.valueOf(userId));
                 log.info("==========更新data/profile===userId=={}==============",userId);
 
             }
