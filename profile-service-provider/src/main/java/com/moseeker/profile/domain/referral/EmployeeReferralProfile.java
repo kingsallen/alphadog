@@ -132,7 +132,9 @@ public abstract class EmployeeReferralProfile {
     }
 
     private void updateApplicationEsIndex(int userId){
+        logger.info("************************更新data/application索引=================================");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        logger.info("************************更新data/profile索引=================================");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         logger.info("====================redis==============application更新=============");
         logger.info("================userid={}=================",userId);
