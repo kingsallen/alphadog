@@ -598,7 +598,6 @@ public class UseraccountsServiceImpl implements Iface {
 		try {
 			String result = JSON.toJSONString(service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds));
 			redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
-
 			logger.info("====================redis==============application更新=============");
 			logger.info("================userid={}=================",userId);
 			return result;
