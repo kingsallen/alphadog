@@ -590,7 +590,7 @@ public class ReferralController {
         }
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/v1/referral/claim/batch", method = RequestMethod.POST)
     @ResponseBody
     public String batchClaimReferralCard(@RequestBody BatchClaimForm claimForm) throws Exception {
 
