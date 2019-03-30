@@ -2,6 +2,8 @@ package com.moseeker.useraccounts.thrift;
 
 import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -20,6 +22,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -37,7 +40,8 @@ public class UseraccountsServiceImpl implements Iface {
 	private UseraccountsService service;
 
 
-
+	@Resource(name = "cacheClient")
+	private RedisClient redisClient;
 	/**
 	 * 用户登陆， 返回用户登陆后的信息。
 	 */
@@ -570,6 +574,10 @@ public class UseraccountsServiceImpl implements Iface {
 			ClaimForm claimForm = new ClaimForm();
 			BeanUtils.copyProperties(form, claimForm);
 			service.claimReferralCard(claimForm);
+
+			redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(form.getUserId()));
+			logger.info("====================redis==============application更新=============");
+			logger.info("================userid={}=================",form.getUserId());
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}
@@ -579,6 +587,7 @@ public class UseraccountsServiceImpl implements Iface {
 	public void claimReferralBonus(int bonus_record_id) throws BIZException, TException {
 		try {
 			service.claimReferralBonus(bonus_record_id);
+
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}
@@ -587,7 +596,12 @@ public class UseraccountsServiceImpl implements Iface {
 	@Override
 	public String batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws BIZException, TException {
 		try {
-			return JSON.toJSONString(service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds));
+			String result = JSON.toJSONString(service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds));
+			redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+
+			logger.info("====================redis==============application更新=============");
+			logger.info("================userid={}=================",userId);
+			return result;
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}
