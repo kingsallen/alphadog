@@ -1285,6 +1285,7 @@ public class UseraccountsService {
                 claimResult.setTitle(positionIdTitleMap.get(referralLog.getPositionId()));
                 try{
                     claimReferral(referralLog, userUserDO, userId, name, mobile, vcode);
+                    redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
                 }catch (RuntimeException e){
                     claimResult.setSuccess(false);
                     claimResult.setErrmsg(e.getMessage());
