@@ -575,9 +575,6 @@ public class UseraccountsServiceImpl implements Iface {
 			BeanUtils.copyProperties(form, claimForm);
 			service.claimReferralCard(claimForm);
 
-			redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(form.getUserId()));
-			logger.info("====================redis==============application更新=============");
-			logger.info("================userid={}=================",form.getUserId());
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);
 		}
@@ -597,9 +594,6 @@ public class UseraccountsServiceImpl implements Iface {
 	public String batchClaimReferralCard(int userId, String name, String mobile, String vcode, List<Integer> referralRecordIds) throws BIZException, TException {
 		try {
 			String result = JSON.toJSONString(service.batchClaimReferralCard(userId, name, mobile, vcode, referralRecordIds));
-			redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
-			logger.info("====================redis==============application更新=============");
-			logger.info("================userid={}=================",userId);
 			return result;
 		} catch (Exception e) {
 			throw ExceptionUtils.convertException(e);

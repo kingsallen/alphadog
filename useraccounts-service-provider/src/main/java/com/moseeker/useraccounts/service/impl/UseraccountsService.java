@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
@@ -27,6 +28,7 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
@@ -141,6 +143,10 @@ public class UseraccountsService {
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
     ThreadPool pool = ThreadPool.Instance;
+
+    ScheduledThread scheduledThread = ScheduledThread.Instance;
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     /**
      * 账号换绑操作
@@ -1297,10 +1303,26 @@ public class UseraccountsService {
         }
         try {
             countDownLatch.await(20, TimeUnit.SECONDS);
+            this.updateDataApplicationBatch(referralLogs);
         } catch (InterruptedException e) {
             throw CommonException.PROGRAM_EXCEPTION;
         }
         return claimResults;
+    }
+
+    private void updateDataApplicationBatch( List<ReferralLog> referralLogs){
+        for(ReferralLog referralLog : referralLogs){
+            JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
+                    referralLog.getPositionId());
+            if (application!=null){
+                int app_id=application.getId();
+                scheduledThread.startTast(()->{
+                    redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
+                    logger.info("====================redis==============application更新=============");
+                    logger.info("================app_id={}=================",app_id);
+                },3000);
+            }
+        }
     }
 
     private Map<Integer, String> getPositionIdTitleMap(List<ReferralLog> referralLogs){
