@@ -2275,7 +2275,7 @@ public class PositionService {
             return result;
         }
         // filter 出已经发完红包的职位
-        jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
+        //jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
         int totalNum = this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
         for (JobPositionRecordWithCityName jr : jobRecords) {
