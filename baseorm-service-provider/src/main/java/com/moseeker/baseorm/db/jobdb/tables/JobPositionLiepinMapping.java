@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMappingRecord> {
 
-    private static final long serialVersionUID = 955384835;
+    private static final long serialVersionUID = 629302719;
 
     /**
      * The reference instance of <code>jobdb.job_position_liepin_mapping</code>
@@ -72,9 +72,9 @@ public class JobPositionLiepinMapping extends TableImpl<JobPositionLiepinMapping
     public final TableField<JobPositionLiepinMappingRecord, Integer> CITY_CODE = createField("city_code", org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "dict_city.code");
 
     /**
-     * The column <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称
+     * The column <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称，猎聘职位title长度为143
      */
-    public final TableField<JobPositionLiepinMappingRecord, String> JOB_TITLE = createField("job_title", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false), this, "职位名称");
+    public final TableField<JobPositionLiepinMappingRecord, String> JOB_TITLE = createField("job_title", org.jooq.impl.SQLDataType.VARCHAR.length(999).nullable(false), this, "职位名称，猎聘职位title长度为143");
 
     /**
      * The column <code>jobdb.job_position_liepin_mapping.err_msg</code>. 如果同步失败，记录失败信息

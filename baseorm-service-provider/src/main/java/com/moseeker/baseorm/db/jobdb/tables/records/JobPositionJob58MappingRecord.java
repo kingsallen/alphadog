@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionJob58MappingRecord extends UpdatableRecordImpl<JobPositionJob58MappingRecord> implements Record8<Integer, String, Integer, String, Byte, String, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = -895568608;
+    private static final long serialVersionUID = -1483970686;
 
     /**
      * Setter for <code>jobdb.job_position_job58_mapping.id</code>.
@@ -103,14 +103,14 @@ public class JobPositionJob58MappingRecord extends UpdatableRecordImpl<JobPositi
     }
 
     /**
-     * Setter for <code>jobdb.job_position_job58_mapping.open_id</code>. 用户在58的唯一标识
+     * Setter for <code>jobdb.job_position_job58_mapping.open_id</code>. 用户账号在58的唯一标识
      */
     public void setOpenId(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_job58_mapping.open_id</code>. 用户在58的唯一标识
+     * Getter for <code>jobdb.job_position_job58_mapping.open_id</code>. 用户账号在58的唯一标识
      */
     public String getOpenId() {
         return (String) get(5);

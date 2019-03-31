@@ -4,7 +4,29 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.*;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
+import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113;
+import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,22 +52,12 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Jobdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 1415469223;
+    private static final long serialVersionUID = -1933403527;
 
     /**
      * The reference instance of <code>jobdb</code>
      */
     public static final Jobdb JOBDB = new Jobdb();
-
-    /**
-     * The table <code>jobdb.feature_mapping</code>.
-     */
-    public final FeatureMapping FEATURE_MAPPING = com.moseeker.baseorm.db.jobdb.tables.FeatureMapping.FEATURE_MAPPING;
-
-    /**
-     * The table <code>jobdb.feature_not_found</code>.
-     */
-    public final FeatureNotFound FEATURE_NOT_FOUND = com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound.FEATURE_NOT_FOUND;
 
     /**
      * The table <code>jobdb.job_application</code>.
@@ -91,6 +103,26 @@ public class Jobdb extends SchemaImpl {
      * The table <code>jobdb.job_position</code>.
      */
     public final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
+
+    /**
+     * The table <code>jobdb.job_position_0413</code>.
+     */
+    public final JobPosition_0413 JOB_POSITION_0413 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413.JOB_POSITION_0413;
+
+    /**
+     * The table <code>jobdb.job_position_1030</code>.
+     */
+    public final JobPosition_1030 JOB_POSITION_1030 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030.JOB_POSITION_1030;
+
+    /**
+     * The table <code>jobdb.job_position_1108</code>.
+     */
+    public final JobPosition_1108 JOB_POSITION_1108 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108.JOB_POSITION_1108;
+
+    /**
+     * The table <code>jobdb.job_position_1113</code>.
+     */
+    public final JobPosition_1113 JOB_POSITION_1113 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113.JOB_POSITION_1113;
 
     /**
      * The table <code>jobdb.job_position_ccmail</code>.
@@ -167,8 +199,6 @@ public class Jobdb extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            FeatureMapping.FEATURE_MAPPING,
-            FeatureNotFound.FEATURE_NOT_FOUND,
             JobApplication.JOB_APPLICATION,
             JobApplicationAts.JOB_APPLICATION_ATS,
             JobCustom.JOB_CUSTOM,
@@ -178,6 +208,10 @@ public class Jobdb extends SchemaImpl {
             JobPcRecommendPositionItem.JOB_PC_RECOMMEND_POSITION_ITEM,
             JobPcReported.JOB_PC_REPORTED,
             JobPosition.JOB_POSITION,
+            JobPosition_0413.JOB_POSITION_0413,
+            JobPosition_1030.JOB_POSITION_1030,
+            JobPosition_1108.JOB_POSITION_1108,
+            JobPosition_1113.JOB_POSITION_1113,
             JobPositionCcmail.JOB_POSITION_CCMAIL,
             JobPositionCity.JOB_POSITION_CITY,
             JobPositionExt.JOB_POSITION_EXT,
