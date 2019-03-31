@@ -103,3 +103,26 @@ enum SmsType {
 	APPLIER_APP_RESOLVE_FAIL_SMS,
 	ALARM_SMS
 }
+
+struct MessageBody {
+    1: optional i32 id,                    //模板消息编号
+    2: optional string title,              //模板标题
+    3: optional string sendCondition,      //触发条件
+    4: optional string sendTime,           //发送时间
+    5: optional string sendTo,             //发送对象
+    6: optional string sample,             //内容实例
+    7: optional string first,              //模板消息first文案
+    8: optional string priority,           //排序
+    9: optional string remark,             //模板消息remark文案
+    10: optional i8 status,                //是否开启, 1:开启, 0:关闭
+    11: optional string customFirst,       //公司下配置的模板消息first文案
+    12: optional string customRemark,      //公司下配置的模板消息remark文案
+    13: optional list<FlexibleField> flexibleFields,      //可更改的内容
+}
+
+struct FlexibleField {
+    1: optional string key,                 //关键词
+    2: optional string name,                //名称
+    3: optional string value,               //值
+    4: optional bool editable,              //是否可以更改
+}

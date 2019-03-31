@@ -63,6 +63,22 @@ public abstract class Activity {
                 || activityStatus.equals(ActivityStatus.Deleted)) {
             throw UserAccountException.ACTIVITY_UNCHECKED_OR_FINISHED;
         }
+        if (activityStatus.equals(ActivityStatus.Pause)) {
+            configDao.updateStatus(id, ActivityStatus.Running.getValue());
+            return;
+        }
+
+    }
+
+    /**
+     * 开始红包活动
+     * @throws UserAccountException
+     */
+    public void restart() throws UserAccountException {
+        if (!activityStatus.equals(ActivityStatus.Pause)) {
+            throw UserAccountException.ACTIVITY_STATUS_ERROR;
+        }
+        configDao.updateStatus(id, ActivityStatus.Running.getValue());
     }
 
     /**
@@ -95,7 +111,8 @@ public abstract class Activity {
      * @param checked
      */
     public void updateInfo(ActivityVO activityVO, boolean checked) {
-        if (activityStatus.equals(ActivityStatus.Running)) {
+        if (!activityStatus.equals(ActivityStatus.UnStart) && !activityStatus.equals(ActivityStatus.UnChecked)
+                && !activityStatus.equals(ActivityStatus.Checked)) {
             throw UserAccountException.ACTIVITY_RUNNING;
         } else {
 
@@ -174,12 +191,7 @@ public abstract class Activity {
                 themeDao.upsert(id, activityVO.getTheme());
             }
             if (checked) {
-                if (!hrHbConfig.getChecked().equals(ActivityCheckState.Checked)
-                        && (activityStatus.equals(ActivityStatus.Checked)
-                        || activityStatus.equals(ActivityStatus.UnChecked)
-                        || activityStatus.equals(ActivityStatus.UnStart))) {
-                    hrHbConfig.setChecked(ActivityCheckState.UnChecked.getValue());
-                }
+                hrHbConfig.setChecked(ActivityCheckState.UnChecked.getValue());
             }
             configDao.update(hrHbConfig);
             if (activityVO.getTheme() != null) {

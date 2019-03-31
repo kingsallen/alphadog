@@ -20,13 +20,15 @@ import com.moseeker.baseorm.db.dictdb.tables.DictJob1001Occupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictJobsdbOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictLiepinOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
+import com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor;
 import com.moseeker.baseorm.db.dictdb.tables.DictPosition;
 import com.moseeker.baseorm.db.dictdb.tables.DictReferralEvaluate;
 import com.moseeker.baseorm.db.dictdb.tables.DictTestMobile;
 import com.moseeker.baseorm.db.dictdb.tables.DictVeryeastOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.DictZhilianOccupation;
 import com.moseeker.baseorm.db.dictdb.tables.Dict_51jobOccupation;
-import com.moseeker.baseorm.db.dictdb.tables.*;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobFeature;
+import com.moseeker.baseorm.db.dictdb.tables.Dict_58jobOccupation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +54,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dictdb extends SchemaImpl {
 
-    private static final long serialVersionUID = 415873090;
+    private static final long serialVersionUID = -2096353148;
 
     /**
      * The reference instance of <code>dictdb</code>
@@ -125,7 +127,7 @@ public class Dictdb extends SchemaImpl {
     public final DictCountry DICT_COUNTRY = com.moseeker.baseorm.db.dictdb.tables.DictCountry.DICT_COUNTRY;
 
     /**
-     * 行业二级分类字典表
+     * The table <code>dictdb.dict_industry</code>.
      */
     public final DictIndustry DICT_INDUSTRY = com.moseeker.baseorm.db.dictdb.tables.DictIndustry.DICT_INDUSTRY;
 
@@ -153,6 +155,11 @@ public class Dictdb extends SchemaImpl {
      * 专业字典表
      */
     public final DictMajor DICT_MAJOR = com.moseeker.baseorm.db.dictdb.tables.DictMajor.DICT_MAJOR;
+
+    /**
+     * 玛氏专业常量表
+     */
+    public final DictMarsMajor DICT_MARS_MAJOR = com.moseeker.baseorm.db.dictdb.tables.DictMarsMajor.DICT_MARS_MAJOR;
 
     /**
      * 职能分类字典表
@@ -205,9 +212,9 @@ public class Dictdb extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Dict_51jobOccupation.DICT_51JOB_OCCUPATION,
-            DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             Dict_58jobFeature.DICT_58JOB_FEATURE,
             Dict_58jobOccupation.DICT_58JOB_OCCUPATION,
+            DictAlipaycampusCity.DICT_ALIPAYCAMPUS_CITY,
             DictAlipaycampusJobcategory.DICT_ALIPAYCAMPUS_JOBCATEGORY,
             DictCarnocOccupation.DICT_CARNOC_OCCUPATION,
             DictCity.DICT_CITY,
@@ -223,6 +230,7 @@ public class Dictdb extends SchemaImpl {
             DictJobsdbOccupation.DICT_JOBSDB_OCCUPATION,
             DictLiepinOccupation.DICT_LIEPIN_OCCUPATION,
             DictMajor.DICT_MAJOR,
+            DictMarsMajor.DICT_MARS_MAJOR,
             DictPosition.DICT_POSITION,
             DictReferralEvaluate.DICT_REFERRAL_EVALUATE,
             DictTestMobile.DICT_TEST_MOBILE,

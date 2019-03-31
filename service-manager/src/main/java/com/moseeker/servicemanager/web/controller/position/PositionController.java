@@ -127,9 +127,15 @@ public class PositionController {
             query.setDepartment((String) map.getOrDefault("department", ""));
             query.setCustom((String) map.getOrDefault("custom", ""));
             query.setDid(Integer.valueOf((String) map.getOrDefault("did", "0")));
-
+            query.setHb_config_id((String) map.getOrDefault("hb_config_id", ""));
             String param_setOrder_by_priority = (String) map.getOrDefault("order_by_priority", "True");
             query.setOrder_by_priority(param_setOrder_by_priority.equals("True"));
+            String isReference=(String) map.getOrDefault("is_referral", "");
+            if(StringUtils.isNotNullOrEmpty(isReference)){
+                query.setIs_referral(Integer.parseInt(isReference));
+            }else{
+                query.setIs_referral(0);
+            }
 
             List<WechatPositionListData> positionList = positonServices.getPositionList(query);
             Response res = ResponseUtils.success(positionList);

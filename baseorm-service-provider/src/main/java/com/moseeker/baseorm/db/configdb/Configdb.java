@@ -15,6 +15,7 @@ import com.moseeker.baseorm.db.configdb.tables.ConfigCronjobs;
 import com.moseeker.baseorm.db.configdb.tables.ConfigHbBalance;
 import com.moseeker.baseorm.db.configdb.tables.ConfigOmsSwitchManagement;
 import com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa;
+import com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAdministrator;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysAppTemplate;
 import com.moseeker.baseorm.db.configdb.tables.ConfigSysCvTpl;
@@ -49,7 +50,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Configdb extends SchemaImpl {
 
-    private static final long serialVersionUID = -590031516;
+    private static final long serialVersionUID = -1962959652;
 
     /**
      * The reference instance of <code>configdb</code>
@@ -110,6 +111,11 @@ public class Configdb extends SchemaImpl {
      * kenexa职位字段映射表
      */
     public final ConfigPositionKenexa CONFIG_POSITION_KENEXA = com.moseeker.baseorm.db.configdb.tables.ConfigPositionKenexa.CONFIG_POSITION_KENEXA;
+
+    /**
+     * 短信模板配置（包括发送渠道）
+     */
+    public final ConfigSmsTemplate CONFIG_SMS_TEMPLATE = com.moseeker.baseorm.db.configdb.tables.ConfigSmsTemplate.CONFIG_SMS_TEMPLATE;
 
     /**
      * 大岂运维平台管理员表
@@ -192,6 +198,7 @@ public class Configdb extends SchemaImpl {
             ConfigHbBalance.CONFIG_HB_BALANCE,
             ConfigOmsSwitchManagement.CONFIG_OMS_SWITCH_MANAGEMENT,
             ConfigPositionKenexa.CONFIG_POSITION_KENEXA,
+            ConfigSmsTemplate.CONFIG_SMS_TEMPLATE,
             ConfigSysAdministrator.CONFIG_SYS_ADMINISTRATOR,
             ConfigSysAppTemplate.CONFIG_SYS_APP_TEMPLATE,
             ConfigSysCvTpl.CONFIG_SYS_CV_TPL,

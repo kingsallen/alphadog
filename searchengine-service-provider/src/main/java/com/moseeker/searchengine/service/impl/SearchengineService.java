@@ -105,12 +105,12 @@ public class SearchengineService {
     public Response query(String keywords, String cities, String industries, String occupations, String scale,
                           String employment_type, String candidate_source, String experience, String degree, String salary,
                           String company_name, int page_from, int page_size, String child_company_name, String department,
-                          boolean order_by_priority, String custom) throws TException {
+                          boolean order_by_priority, String custom,String hb_config_id) throws TException {
         List listOfid = new ArrayList();
         try{
             SearchResponse response=this.getSearchIndex(keywords, cities,industries,occupations, scale,
                      employment_type, candidate_source, experience, degree,  salary, company_name, page_from, page_size,
-                     child_company_name, department,order_by_priority,  custom);
+                     child_company_name, department,order_by_priority,  custom,hb_config_id,null);
             for (SearchHit hit : response.getHits()) {
                 String id = ConverTools.converToString(hit.getSource().get("id"));
                 listOfid.add(id);
@@ -128,13 +128,13 @@ public class SearchengineService {
     public Response queryPositionIndex(String keywords, String cities, String industries, String occupations, String scale,
                                        String employment_type, String candidate_source, String experience, String degree, String salary,
                                        String company_name, int page_from, int page_size, String child_company_name, String department,
-                                       boolean order_by_priority, String custom){
+                                       boolean order_by_priority, String custom,String hb_config_id,String is_reference){
 
         Map<String,Object> result=new HashMap<>();
         try{
             SearchResponse response=this.getSearchIndex(keywords, cities,industries,occupations, scale,
                     employment_type, candidate_source, experience, degree,  salary, company_name, page_from, page_size,
-                    child_company_name, department,order_by_priority,  custom);
+                    child_company_name, department,order_by_priority,  custom,hb_config_id,is_reference);
             List listOfid = new ArrayList();
             SearchHits hits=response.getHits();
             long totalNum=hits.getTotalHits();
@@ -177,7 +177,7 @@ public class SearchengineService {
         }
         QueryBuilder query=this.getPositionQueryBuilder(keywords,null,null,null, null,
                 null, null, null, null,  null, motherCompanyId,
-                childCompanyId, null, null);
+                childCompanyId, null, null,null,null);
 
         if(StringUtils.isNotBlank(status)){
             searchUtil.handleMatch(Integer.parseInt(status),query,"status");
@@ -215,7 +215,7 @@ public class SearchengineService {
     private SearchResponse getSearchIndex(String keywords, String cities, String industries, String occupations, String scale,
                                           String employment_type, String candidate_source, String experience, String degree, String salary,
                                           String company_name, int page_from, int page_size, String child_company_name, String department,
-                                          boolean order_by_priority, String custom){
+                                          boolean order_by_priority, String custom,String hb_config_id,String is_reference){
         TransportClient client= EsClientInstance.getClient();
         if (page_from == 0) {
             page_from = 0;
@@ -234,7 +234,7 @@ public class SearchengineService {
         }
         QueryBuilder query = this.getPositionQueryBuilder(keywords, cities, industries, occupations, scale,
                 employment_type, candidate_source, experience, degree, salary, company_name,
-                child_company_name, department, custom);
+                child_company_name, department, custom,hb_config_id,is_reference);
         QueryBuilder status_filter = QueryBuilders.matchPhraseQuery("status", "0");
         ((BoolQueryBuilder) query).must(status_filter);
         SearchRequestBuilder responseBuilder = client.prepareSearch(Constant.ES_POSITION_INDEX).setTypes(Constant.ES_POSITION_TYPE)
@@ -253,28 +253,33 @@ public class SearchengineService {
     private QueryBuilder getPositionQueryBuilder(String keywords,String cities, String industries, String occupations, String scale,
                                                  String employment_type, String candidate_source, String experience, String degree, String salary,
                                                  String company_name, String child_company_name, String department,
-                                                 String custom){
+                                                 String custom,String hb_config_id,String is_reference){
         QueryBuilder defaultquery = QueryBuilders.matchAllQuery();
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         if (!StringUtils.isEmpty(keywords)) {
-            String[] keyword_list = keywords.split(" ");
-            QueryBuilder keyand = QueryBuilders.boolQuery();
-            for (int i = 0; i < keyword_list.length; i++) {
-                String keyword = keyword_list[i];
-                if(StringUtils.isBlank(keyword)){
-                    continue;
-                }
-                BoolQueryBuilder keyor = QueryBuilders.boolQuery();
-                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
-                        .field("title", 20.0f)
-                        .field("city", 10.0f)
-                        .field("city_ename",10.0f)
-                        .field("team_name", 5.0f)
-                        .field("custom", 4.0f)
-                        .field("occupation", 3.0f);
-                ((BoolQueryBuilder) keyand).must(fullf);
-            }
-            ((BoolQueryBuilder) query).must(keyand);
+            Map<String,Integer> fieldMap=new HashMap();
+            fieldMap.put("title",8);
+            fieldMap.put("requirement",1);
+            fieldMap.put("accountabilities",1);
+            searchUtil.shouldMatchParseQuery(fieldMap,keywords,query);
+//            String[] keyword_list = keywords.split(" ");
+//            QueryBuilder keyand = QueryBuilders.boolQuery();
+//            for (int i = 0; i < keyword_list.length; i++) {
+//                String keyword = keyword_list[i];
+//                if(StringUtils.isBlank(keyword)){
+//                    continue;
+//                }
+//                BoolQueryBuilder keyor = QueryBuilders.boolQuery();
+//                QueryBuilder fullf = QueryBuilders.queryStringQuery(keyword)
+//                        .field("title", 20.0f)
+//                        .field("city", 10.0f)
+//                        .field("city_ename",10.0f)
+//                        .field("team_name", 5.0f)
+//                        .field("custom", 4.0f)
+//                        .field("occupation", 3.0f);
+//                ((BoolQueryBuilder) keyand).must(fullf);
+//            }
+//            ((BoolQueryBuilder) query).must(keyand);
         }
         if (!StringUtils.isEmpty(cities)) {
             String[] city_list = cities.split(",");
@@ -384,12 +389,22 @@ public class SearchengineService {
         }
 
         if (!StringUtils.isEmpty(child_company_name)) {
-            QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
-            ((BoolQueryBuilder) query).must(child_company_filter);
+            if(!"0".equals(child_company_name)) {
+                QueryBuilder child_company_filter = QueryBuilders.matchPhraseQuery("publisher_company_id", child_company_name);
+                ((BoolQueryBuilder) query).must(child_company_filter);
+            }
         }
 
         if (!StringUtils.isEmpty(custom)) {
             QueryBuilder custom_filter = QueryBuilders.termQuery("search_data.custom", custom);
+            ((BoolQueryBuilder) query).must(custom_filter);
+        }
+        if(!StringUtils.isEmpty(hb_config_id)){
+            QueryBuilder custom_filter = QueryBuilders.termQuery("hb_config_id", hb_config_id);
+            ((BoolQueryBuilder) query).must(custom_filter);
+        }
+        if(!StringUtils.isEmpty(is_reference)){
+            QueryBuilder custom_filter = QueryBuilders.termQuery("is_referral", is_reference);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
         return query;

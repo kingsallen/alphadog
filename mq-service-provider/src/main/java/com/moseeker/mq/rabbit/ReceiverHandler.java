@@ -207,7 +207,7 @@ public class ReceiverHandler {
     @RabbitHandler
     public void handlerMessageTemplate(Message message, Channel channel){
         String msgBody = "{}";
-        long startTime=new Date().getTime();
+        long startTime=System.currentTimeMillis();
         LogVO logVo=this.handlerLogVO();
         try{
             msgBody = new String(message.getBody(), "UTF-8");
@@ -244,7 +244,7 @@ public class ReceiverHandler {
             log.error(e.getMessage(), e);
             logVo.setStatus_code(1);
         }finally{
-            long endTime=new Date().getTime();
+            long endTime = System.currentTimeMillis();
             logVo.setOpt_time(endTime-startTime);
             ELKLog.ELK_LOG.log(logVo);
         }

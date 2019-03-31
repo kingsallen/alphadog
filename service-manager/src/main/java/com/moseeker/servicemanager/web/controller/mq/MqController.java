@@ -1,6 +1,7 @@
 package com.moseeker.servicemanager.web.controller.mq;
 
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.servicemanager.web.controller.mq.vo.SmsInfo;
 import com.moseeker.thrift.gen.mq.struct.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import com.moseeker.common.annotation.iface.CounterIface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -62,6 +64,27 @@ public class MqController {
         	EmailStruct emailStruct = ParamUtils.initModelForm(request, EmailStruct.class);
 
             Response result = mqService.sendEMail(emailStruct);
+            return ResponseLogNotification.success(request, result);
+        } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/sms/sendSms", method = RequestMethod.POST)
+    @ResponseBody
+    public String sendSms(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            // 发送消息模板
+            Params<String, Object> param = ParamUtils.parseRequestParam(request);
+            Map<String, String> data = (Map<String, String>) param.get("data");
+            int smsType = param.getInt("smsType");
+            String mobile = param.getString("mobile");
+            String sys = param.getString("sys");
+            String ip = param.getString("ip");
+
+
+            logger.info("sendSms smsType:{},mobile:{},sys:{},ip:{},data:{}", smsType, mobile, sys,ip, data);
+            Response result = mqService.sendSMS(SmsType.findByValue(smsType),mobile, data, sys, ip);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
             return ResponseLogNotification.fail(request, e.getMessage());
@@ -233,6 +256,17 @@ public class MqController {
             Response result = mqService.sendMessageAndEmailToDelivery(emailStruct);
             return ResponseLogNotification.success(request, result);
         } catch (Exception e) {
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/v4/notification/config/{wechatId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String listNotificationConfig(HttpServletRequest request, @PathVariable Integer wechatId) throws Exception {
+        try {
+            List<MessageBody> messageBodies = mqService.listMessages(wechatId);
+            return ResponseLogNotification.successJson(request, messageBodies);
+        }catch (Exception e){
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }
