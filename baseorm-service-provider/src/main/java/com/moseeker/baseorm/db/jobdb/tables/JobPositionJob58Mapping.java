@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionJob58Mapping extends TableImpl<JobPositionJob58MappingRecord> {
 
-    private static final long serialVersionUID = -1540291435;
+    private static final long serialVersionUID = -1046944267;
 
     /**
      * The reference instance of <code>jobdb.job_position_job58_mapping</code>
@@ -77,9 +77,9 @@ public class JobPositionJob58Mapping extends TableImpl<JobPositionJob58MappingRe
     public final TableField<JobPositionJob58MappingRecord, Byte> STATE = createField("state", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "职位状态 0 下架 1 正常");
 
     /**
-     * The column <code>jobdb.job_position_job58_mapping.open_id</code>. 用户在58的唯一标识
+     * The column <code>jobdb.job_position_job58_mapping.open_id</code>. 用户账号在58的唯一标识
      */
-    public final TableField<JobPositionJob58MappingRecord, String> OPEN_ID = createField("open_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户在58的唯一标识");
+    public final TableField<JobPositionJob58MappingRecord, String> OPEN_ID = createField("open_id", org.jooq.impl.SQLDataType.VARCHAR.length(255).defaultValue(org.jooq.impl.DSL.inline("", org.jooq.impl.SQLDataType.VARCHAR)), this, "用户账号在58的唯一标识");
 
     /**
      * The column <code>jobdb.job_position_job58_mapping.create_time</code>.

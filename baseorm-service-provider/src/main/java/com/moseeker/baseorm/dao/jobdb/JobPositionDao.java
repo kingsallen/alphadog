@@ -643,7 +643,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
     public JobPositionRecord getUniquePositionIgnoreDelete(int companyId, int source, int sourceId, String jobnumber) {
         return create.selectFrom(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
-                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq((short) source))
                 .and(JobPosition.JOB_POSITION.SOURCE_ID.eq(sourceId))
                 .and(JobPosition.JOB_POSITION.JOBNUMBER.eq(jobnumber))
                 .and(JobPosition.JOB_POSITION.STATUS.ne((byte)PositionStatus.DELETED.getValue()))
@@ -771,6 +771,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
      * @return 职位数据
      */
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> getJobPositionByIdList(List<Integer> positionIdList) {
+
 
 
         Result<JobPositionRecord> positionRecords = create.selectFrom(JobPosition.JOB_POSITION)

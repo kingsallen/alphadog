@@ -7,13 +7,20 @@ package com.moseeker.baseorm.db.jobdb.tables;
 import com.moseeker.baseorm.db.jobdb.Jobdb;
 import com.moseeker.baseorm.db.jobdb.Keys;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
-import org.jooq.*;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.Identity;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -29,7 +36,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition extends TableImpl<JobPositionRecord> {
 
-    private static final long serialVersionUID = 1509359127;
+    private static final long serialVersionUID = -1882282754;
 
     /**
      * The reference instance of <code>jobdb.job_position</code>
@@ -95,9 +102,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     public final TableField<JobPositionRecord, Timestamp> STOP_DATE = createField("stop_date", org.jooq.impl.SQLDataType.TIMESTAMP, this, "截止日期");
 
     /**
-     * The column <code>jobdb.job_position.accountabilities</code>. Job responsibilities职位描述
+     * The column <code>jobdb.job_position.accountabilities</code>. Job responsibilities
      */
-    public final TableField<JobPositionRecord, String> ACCOUNTABILITIES = createField("accountabilities", org.jooq.impl.SQLDataType.CLOB, this, "Job responsibilities职位描述");
+    public final TableField<JobPositionRecord, String> ACCOUNTABILITIES = createField("accountabilities", org.jooq.impl.SQLDataType.CLOB, this, "Job responsibilities");
 
     /**
      * The column <code>jobdb.job_position.experience</code>. 工作经验
@@ -230,9 +237,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     public final TableField<JobPositionRecord, Integer> L_POSTINGTARGETID = createField("l_PostingTargetId", org.jooq.impl.SQLDataType.INTEGER, this, "lumesse每一个职位会生成一个PostingTargetId,用来生成每个职位的投递邮箱地址");
 
     /**
-     * The column <code>jobdb.job_position.priority</code>. 是否置顶
+     * The column <code>jobdb.job_position.priority</code>. 是否置顶， 0为置顶。
      */
-    public final TableField<JobPositionRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("10", org.jooq.impl.SQLDataType.TINYINT)), this, "是否置顶");
+    public final TableField<JobPositionRecord, Byte> PRIORITY = createField("priority", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("10", org.jooq.impl.SQLDataType.TINYINT)), this, "是否置顶， 0为置顶。");
 
     /**
      * The column <code>jobdb.job_position.share_tpl_id</code>.
@@ -292,12 +299,12 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     /**
      * The column <code>jobdb.job_position.source</code>. 0:手动创建, 1:导入, 9:ATS导入
      */
-    public final TableField<JobPositionRecord, Integer> SOURCE = createField("source", org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.INTEGER)), this, "0:手动创建, 1:导入, 9:ATS导入");
+    public final TableField<JobPositionRecord, Short> SOURCE = createField("source", org.jooq.impl.SQLDataType.SMALLINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.SMALLINT)), this, "0:手动创建, 1:导入, 9:ATS导入");
 
     /**
-     * The column <code>jobdb.job_position.hb_status</code>. 是否正参加活动：0=未参加  1=正参加点击红包活动  2=正参加被申请红包活动  3=正参加1+2红包活动
+     * The column <code>jobdb.job_position.hb_status</code>. 是否正参加活动：0=未参加  1=正参加点击红包活动  2=正参加被申请红包活动  4=正参加初筛通过红包活动， 职位可以参加多个红包活动，参加红包活动的值相加,同一类型的活动只计算一次
      */
-    public final TableField<JobPositionRecord, Byte> HB_STATUS = createField("hb_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否正参加活动：0=未参加  1=正参加点击红包活动  2=正参加被申请红包活动  3=正参加1+2红包活动");
+    public final TableField<JobPositionRecord, Byte> HB_STATUS = createField("hb_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "是否正参加活动：0=未参加  1=正参加点击红包活动  2=正参加被申请红包活动  4=正参加初筛通过红包活动， 职位可以参加多个红包活动，参加红包活动的值相加,同一类型的活动只计算一次");
 
     /**
      * The column <code>jobdb.job_position.child_company_id</code>. hr_child_company.id
@@ -350,9 +357,9 @@ public class JobPosition extends TableImpl<JobPositionRecord> {
     public final TableField<JobPositionRecord, Byte> TARGET_INDUSTRY = createField("target_industry", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "期望人选所在行业");
 
     /**
-     * The column <code>jobdb.job_position.current_status</code>. 已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
+     * The column <code>jobdb.job_position.current_status</code>. 已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭
      */
-    public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "已经弃用， 0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
+    public final TableField<JobPositionRecord, Byte> CURRENT_STATUS = createField("current_status", org.jooq.impl.SQLDataType.TINYINT.nullable(false).defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.TINYINT)), this, "已经弃用，0:招募中, 1: 未发布, 2:暂停, 3:撤下, 4:关闭");
 
     /**
      * The column <code>jobdb.job_position.position_code</code>. 职能字典code, dict_position.code

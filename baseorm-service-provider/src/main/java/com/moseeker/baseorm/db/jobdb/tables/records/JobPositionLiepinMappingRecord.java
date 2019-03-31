@@ -5,14 +5,16 @@ package com.moseeker.baseorm.db.jobdb.tables.records;
 
 
 import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
+
+import java.sql.Timestamp;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Row10;
 import org.jooq.impl.UpdatableRecordImpl;
-
-import javax.annotation.Generated;
-import java.sql.Timestamp;
 
 
 /**
@@ -28,7 +30,7 @@ import java.sql.Timestamp;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPositionLiepinMappingRecord> implements Record10<Integer, Integer, Integer, Integer, String, String, Byte, Integer, Timestamp, Timestamp> {
 
-    private static final long serialVersionUID = 1766121256;
+    private static final long serialVersionUID = 1862936680;
 
     /**
      * Setter for <code>jobdb.job_position_liepin_mapping.id</code>. 仟寻向猎聘发请求用的主键id
@@ -87,14 +89,14 @@ public class JobPositionLiepinMappingRecord extends UpdatableRecordImpl<JobPosit
     }
 
     /**
-     * Setter for <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称
+     * Setter for <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称，猎聘职位title长度为143
      */
     public void setJobTitle(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称
+     * Getter for <code>jobdb.job_position_liepin_mapping.job_title</code>. 职位名称，猎聘职位title长度为143
      */
     public String getJobTitle() {
         return (String) get(4);

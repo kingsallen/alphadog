@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobPosition implements Serializable {
 
-    private static final long serialVersionUID = 66058225;
+    private static final long serialVersionUID = 739105777;
 
     private Integer   id;
     private String    jobnumber;
@@ -74,7 +74,7 @@ public class JobPosition implements Serializable {
     private Byte      gender;
     private Integer   publisher;
     private Integer   appCvConfigId;
-    private Integer   source;
+    private Short     source;
     private Byte      hbStatus;
     private Integer   childCompanyId;
     private Byte      age;
@@ -213,7 +213,7 @@ public class JobPosition implements Serializable {
         Byte      gender,
         Integer   publisher,
         Integer   appCvConfigId,
-        Integer   source,
+        Short     source,
         Byte      hbStatus,
         Integer   childCompanyId,
         Byte      age,
@@ -691,11 +691,11 @@ public class JobPosition implements Serializable {
         this.appCvConfigId = appCvConfigId;
     }
 
-    public Integer getSource() {
+    public Short getSource() {
         return this.source;
     }
 
-    public void setSource(Integer source) {
+    public void setSource(Short source) {
         this.source = source;
     }
 

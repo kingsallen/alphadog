@@ -4,7 +4,29 @@
 package com.moseeker.baseorm.db.jobdb;
 
 
-import com.moseeker.baseorm.db.jobdb.tables.*;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplication;
+import com.moseeker.baseorm.db.jobdb.tables.JobApplicationAts;
+import com.moseeker.baseorm.db.jobdb.tables.JobCustom;
+import com.moseeker.baseorm.db.jobdb.tables.JobOccupation;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcAdvertisement;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionItem;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcRecommendPositionsModule;
+import com.moseeker.baseorm.db.jobdb.tables.JobPcReported;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCcmail;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionCity;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionExt;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionHrCompanyFeature;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionJob58Mapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionLiepinMapping;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionProfileFilter;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionShareTplConf;
+import com.moseeker.baseorm.db.jobdb.tables.JobPositionTopic;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108;
+import com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113;
+import com.moseeker.baseorm.db.jobdb.tables.JobResumeOther;
 
 import javax.annotation.Generated;
 
@@ -21,16 +43,6 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
-
-    /**
-     * The table <code>jobdb.feature_mapping</code>.
-     */
-    public static final FeatureMapping FEATURE_MAPPING = com.moseeker.baseorm.db.jobdb.tables.FeatureMapping.FEATURE_MAPPING;
-
-    /**
-     * The table <code>jobdb.feature_not_found</code>.
-     */
-    public static final FeatureNotFound FEATURE_NOT_FOUND = com.moseeker.baseorm.db.jobdb.tables.FeatureNotFound.FEATURE_NOT_FOUND;
 
     /**
      * The table <code>jobdb.job_application</code>.
@@ -76,6 +88,26 @@ public class Tables {
      * The table <code>jobdb.job_position</code>.
      */
     public static final JobPosition JOB_POSITION = com.moseeker.baseorm.db.jobdb.tables.JobPosition.JOB_POSITION;
+
+    /**
+     * The table <code>jobdb.job_position_0413</code>.
+     */
+    public static final JobPosition_0413 JOB_POSITION_0413 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_0413.JOB_POSITION_0413;
+
+    /**
+     * The table <code>jobdb.job_position_1030</code>.
+     */
+    public static final JobPosition_1030 JOB_POSITION_1030 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1030.JOB_POSITION_1030;
+
+    /**
+     * The table <code>jobdb.job_position_1108</code>.
+     */
+    public static final JobPosition_1108 JOB_POSITION_1108 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1108.JOB_POSITION_1108;
+
+    /**
+     * The table <code>jobdb.job_position_1113</code>.
+     */
+    public static final JobPosition_1113 JOB_POSITION_1113 = com.moseeker.baseorm.db.jobdb.tables.JobPosition_1113.JOB_POSITION_1113;
 
     /**
      * The table <code>jobdb.job_position_ccmail</code>.

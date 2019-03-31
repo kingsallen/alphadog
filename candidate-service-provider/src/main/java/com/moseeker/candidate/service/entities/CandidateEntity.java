@@ -464,7 +464,8 @@ public class CandidateEntity implements Candidate {
         eventMessage.put("company_id", companyId);
         eventMessage.put("refine_time", new DateTime().toString("yyyy-MM-dd HH:mm:ss"));
         eventMessage.put("position_id", positionId);
-
+        logger.info("EmployeeEntity publishInitalScreenHbEvent param:{}, exchange:{}, routing:{}",
+                eventMessage.toJSONString(), REFINE_CANDIDATE_EXCHANGE, REFINE_CANDIDATE_ROUTING_KEY);
         amqpTemplate.sendAndReceive(REFINE_CANDIDATE_EXCHANGE,
                 REFINE_CANDIDATE_ROUTING_KEY, MessageBuilder.withBody(eventMessage.toJSONString().getBytes())
                         .build());

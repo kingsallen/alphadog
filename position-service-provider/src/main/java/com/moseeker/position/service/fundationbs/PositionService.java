@@ -11,6 +11,8 @@ import com.moseeker.baseorm.dao.campaigndb.CampaignRecomPositionlistDao;
 import com.moseeker.baseorm.dao.dictdb.*;
 import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.*;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityDao;
+import com.moseeker.baseorm.dao.redpacketdb.RedpacketActivityPositionJOOQDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralPositionBonusDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.campaigndb.tables.records.CampaignPersonaRecomRecord;
@@ -29,6 +31,9 @@ import com.moseeker.baseorm.db.hrdb.tables.records.HrCompanyRecord;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrTeamRecord;
 import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.*;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivity;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketActivityPosition;
+import com.moseeker.baseorm.db.redpacketdb.tables.pojos.RedpacketRedpacket;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.pojo.JobPositionPojo;
 import com.moseeker.baseorm.pojo.RecommendedPositonPojo;
@@ -140,9 +145,9 @@ public class PositionService {
     @Autowired
     private HrCompanyConfDao hrCompanyConfDao;
     @Autowired
-    private HrHbConfigDao hrHbConfigDao;
+    private RedpacketActivityDao activityDao;
     @Autowired
-    private HrHbPositionBindingDao hrHbPositionBindingDao;
+    private RedpacketActivityPositionJOOQDao activityPositionJOOQDao;
     @Autowired
     private HrHbItemsDao hrHbItemsDao;
     @Autowired
@@ -174,6 +179,9 @@ public class PositionService {
 
     @Autowired
     ReferralPositionBonusDao referralPositionBonusDao;
+
+    @Autowired
+    private RedpacketActivityPositionJOOQDao positionJOOQDao;
 
 
     private ThreadPool pool = ThreadPool.Instance;
@@ -1884,7 +1892,8 @@ public class PositionService {
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
+        List<Integer> activityPositions = positionJOOQDao.getHbPositionList(jdIdList);
+        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count, activityPositions);
         return dataList;
     }
 
@@ -1897,11 +1906,12 @@ public class PositionService {
         Condition con = new Condition("id", jdIdList.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(con).and("status", 0).orderBy("priority",Order.ASC).orderBy("update_time",Order.DESC).orderBy("id",Order.DESC).buildQuery();
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count);
+        List<Integer> activityPositions = positionJOOQDao.getHbPositionList(jdIdList);
+        List<WechatPositionListData> dataList=this.handerPositionWx(jdIdList,jobRecords,count, activityPositions);
         return dataList;
     }
 
-    private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList,List<JobPositionRecordWithCityName> jobRecords,int count){
+    private List<WechatPositionListData> handerPositionWx(List<Integer> jdIdList, List<JobPositionRecordWithCityName> jobRecords, int count, List<Integer> activityPositions){
         List<WechatPositionListData> dataList = new ArrayList<>();
         Set<Integer> teamIdList = new HashSet<Integer>();
 
@@ -1932,7 +1942,15 @@ public class PositionService {
                         visitorNum=jr.getVisitnum();
                     }
                     e.setVisitnum(visitorNum);
-                    e.setIn_hb(jr.getHbStatus() > 0);
+                    if (activityPositions != null && activityPositions.size() > 0) {
+                        if (activityPositions.contains(jr.getId())) {
+                            e.setIn_hb(true);
+                        } else {
+                            e.setIn_hb(false);
+                        }
+                    } else {
+                        e.setIn_hb(false);
+                    }
                     e.setCount(jr.getCount());
                     e.setCity(jr.getCity());
                     e.setCity_ename(jr.getCityEname());
@@ -2047,10 +2065,10 @@ public class PositionService {
         Query qu = new Query.QueryBuilder()
                 .where("id", hb_config_id).buildQuery();
         try {
-            HrHbConfigDO hbConfig = hrHbConfigDao.getData(qu, HrHbConfigDO.class);
-            result.setCover(hbConfig.getShareImg());
-            result.setTitle(hbConfig.getShareTitle());
-            result.setDescription(hbConfig.getShareDesc());
+            RedpacketActivity redpacketActivity = activityDao.fetchOneById(hb_config_id);
+            result.setCover(redpacketActivity.getShareImg());
+            result.setTitle(redpacketActivity.getShareTitle());
+            result.setDescription(redpacketActivity.getShareDesc());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2059,162 +2077,71 @@ public class PositionService {
         return result;
     }
 
-    /**
-     * 返回指定 pid 的红包信息
-     *
-     * @param pids pids
-     * @return pids 对应职位红包活动的额外信息
-     */
-    @CounterIface
-    public List<RpExtInfo> getPositionListRpExt(List<Integer> pids) {
-        List<RpExtInfo> result = new ArrayList<>();
-        // 获取 company_id
-        int company_id = 0;
-        if (pids.size() > 0) {
-            Query qus = new Query.QueryBuilder()
-                    .where("id", pids.get(0)).buildQuery();
-            Position p = jobPositionDao.getPositionByQuery(qus);
-
-            company_id = p.getCompany_id();
-        } else {
-            return result;
-        }
-        Condition condition = new Condition("type", new Object[]{2, 3, 4}, ValueOp.IN);
-        // 获取正在运行的转发类红包活动集合
-        Query qu = new Query.QueryBuilder()
-                .where("status", "3")
-                .and("company_id", company_id)
-                .and(condition)
-                .buildQuery();
-        logger.info("qu:", qu.toString());
-        List<HrHbConfigDO> hbConfigs = hrHbConfigDao.getDatas(qu, HrHbConfigDO.class);
-        List<Integer> hbConfgIds = hbConfigs.stream().map(HrHbConfigDO::getId).collect(Collectors.toList());
-
-        String allHbConfigIdsFilterString = Arrays.toString(hbConfgIds.toArray());
-
-        logger.info("pids: " + pids.toString());
-        logger.info("allHbConfigIdsFilterString: " + allHbConfigIdsFilterString);
-
-        for (Integer pid : pids) {
-            //对于每个 pid，先获取 position
-            RpExtInfo rpExtInfo = new RpExtInfo();
-
-            qu = new Query.QueryBuilder().where("id", pid).buildQuery();
-            Position p = jobPositionDao.getPositionByQuery(qu);
-
-            if (p.getHb_status() > 0) {
-                // 该职位参与了两个红包活动
-                // 获取 binding 记录
-                Condition cons = new Condition("hb_config_id", hbConfgIds.toArray(), ValueOp.IN);
-                qu = new Query.QueryBuilder().where("position_id", p.getId()).and(cons).buildQuery();
-                List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
-                //获取binding ids
-                logger.info(bindings.toString());
-                //获取 binding ids
-                List<Integer> bindingIds = bindings.stream().map(HrHbPositionBindingDO::getId).collect(Collectors.toList());
-                //获取 binding 所对应的红包活动 id
-                Set<Integer> hbConfigIdsSet = bindings.stream().map(HrHbPositionBindingDO::getHbConfigId).collect(Collectors.toSet());
-
-                // 得到对应的红包活动 pojo （2个）
-                List<HrHbConfigDO> configs = hbConfigs.stream().filter(s -> hbConfigIdsSet.contains(s.getId())).collect(Collectors.toList());
-
-                logger.info(configs.toString());
-
-                // 如果任意一个对象是非员工，设置成 false
-                rpExtInfo.setEmployee_only(true);
-                for (HrHbConfigDO config : configs) {
-                    if (config.target > 0) {
-                        rpExtInfo.setEmployee_only(false);
-                        break;
-                    }
-                }
-
-                String bindingIdsFilterString = Arrays.toString(bindingIds.toArray());
-                // 根据 binding 获取 hb_items 记录
-                Condition condition1 = new Condition("binding_id", bindingIds.toArray(), ValueOp.IN);
-                qu = new Query.QueryBuilder().where(condition1).and("wxuser_id", 0).buildQuery();
-                List<HrHbItemsDO> remainItems = hrHbItemsDao.getDatas(qu, HrHbItemsDO.class);
-                Double remain = remainItems.stream().mapToDouble(HrHbItemsDO::getAmount).sum();
-                Integer remainInt = toIntExact(round(remain));
-                if (remainInt < 0) {
-                    remainInt = 0;
-                }
-
-                rpExtInfo.setPid(p.getId());
-                rpExtInfo.setRemain(remainInt);
-
-                logger.info(rpExtInfo.toString());
-
-                result.add(rpExtInfo);
-
-            } else {
-                // 如果该职位已经不属于任何红包活动，这不做任何操作
-                logger.warn("pid: " + p.getId() + " 已经不属于任何红包活动");
-            }
-        }
-        logger.info("result==========" + result);
-        return result;
-    }
-
     @CounterIface
     public List<RpExtInfo> getNewPositionListRpExt(List<Integer> pids){
         if(StringUtils.isEmptyList(pids)){
             return new ArrayList<>();
         }
-        /*
-         获取配置红包的职位
-         */
-        List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList=jobPositionDao.getJobPositionByIdListAndHbStatus(pids);
-        if(StringUtils.isEmptyList(positionList)){
+        List<RedpacketActivityPosition> list = activityPositionJOOQDao.fetchRuningPositionsByPositionIdList(pids);
+
+        if (list != null && list.size() > 0) {
+            List<Integer> positionIdList = new ArrayList<>();
+            List<Integer> activityIdList = new ArrayList<>();
+            list.forEach(redpacketActivityPositionDO -> {
+                activityIdList.add(redpacketActivityPositionDO.getActivityId());
+            });
+
+            List<RedpacketActivity> activityDOS = activityDao.fetchByIdList(activityIdList);
+
+            Map<Integer, RedpacketActivity> map = new HashMap<>();
+            activityDOS.forEach(activityDO -> map.put(activityDO.getId(), activityDO));
+            return list.stream().map(position -> {
+                RpExtInfo infoVO = new RpExtInfo();
+                infoVO.setPid(position.getPositionId());
+                int remain = 0;
+                for (RedpacketActivityPosition activityPosition : list) {
+                    remain += activityPosition.getLeftAmount();
+                }
+                infoVO.setRemain(remain * 100L / 100);
+
+                List<RedpacketActivity> activityList = activityDOS
+                        .stream()
+                        .filter(redpacketActivity -> redpacketActivity.getId().equals(position.getActivityId())
+                                && redpacketActivity.getTarget() != 0)
+                        .collect(Collectors.toList());
+                if (activityList != null && activityList.size() > 0) {
+                    infoVO.setEmployee_only(true);
+                } else {
+                    infoVO.setEmployee_only(false);
+                }
+                return infoVO;
+            }).collect(Collectors.toList());
+        } else {
             return new ArrayList<>();
         }
-        int companyId=positionList.get(0).getCompanyId();
-        /*
-         获取公司下配置的红包
-         */
-        List<HrHbConfig> hrHbList=this.getHrHbList(companyId,3);
-        if(StringUtils.isEmptyList(hrHbList)){
-            return new ArrayList<>();
-        }
-        List<Integer> hrHbIdList=this.getHbConfgIdList(hrHbList);
-        /*
-         获取红包和公司的绑定罐系列表
-         */
-        List<HrHbPositionBinding> bindingList=hrHbPositionBindingDao.getHrHbPositionBindingListByPidListAndHbConfigList(pids,hrHbIdList);
-        if(StringUtils.isEmptyList(bindingList)){
-            return new ArrayList<>();
-        }
-        List<Integer> bindingIdList=this.getHrHbPositionBindingIdList(bindingList);
-        if(StringUtils.isEmptyList(bindingList)){
-            return new ArrayList<>();
-        }
-        /*
-         获取具体的绑定项
-         */
-        List<HrHbItems> hrHbItemsList=hrHbItemsDao.getHbItemsListBybindingIdList(bindingIdList,0);
-        if(StringUtils.isEmptyList(hrHbItemsList)){
-            return new ArrayList<>();
-        }
-        List<RpExtInfo> result=this.handlerPositionListRpExt(positionList,bindingList,hrHbItemsList,hrHbList);
-        return result;
     }
-    /*
+   /* *//*
      遍历处理数据，获取需要的RpExtInfo列表
-     */
+     *//*
     private List<RpExtInfo> handlerPositionListRpExt(List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList,
-                                                     List<HrHbPositionBinding> bindingList,List<HrHbItems> hrHbItemsList,
-                                                     List<HrHbConfig> hrHbList){
+                                                     List<RedpacketActivity> hrHbList,
+                                                     List<RedpacketActivityPosition> bindingList) {
         List<RpExtInfo> result=new ArrayList<>();
         for(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position:positionList){
             RpExtInfo rpExtInfo=new RpExtInfo();
             int pid=position.getId();
-            /*
-            找到职位下对应的HrHbPositionBinding.id的列表和HrHbConfig.id的列表
-             */
+            *//*
+             * 找到职位下对应的HrHbPositionBinding.id的列表和HrHbConfig.id的列表
+             *//*
             rpExtInfo.setPid(pid);
+            Optional<RedpacketActivityPosition> positionOptional = bindingList
+                    .stream()
+                    .filter(redpacketActivityPosition -> redpacketActivityPosition.getPositionId().equals(pid))
+                    .findAny();
+
             List<Integer> positionBindingIdList=new ArrayList<>();
             List<Integer> hbConfigIdList=new ArrayList<>();
-            for(HrHbPositionBinding hrHbPositionBinding:bindingList){
+            for(RedpacketActivityPosition activityPosition:bindingList){
                 if(pid==hrHbPositionBinding.getPositionId()){
                     positionBindingIdList.add(hrHbPositionBinding.getId());
                     if(!hbConfigIdList.contains(hrHbPositionBinding.getHbConfigId())){
@@ -2222,9 +2149,9 @@ public class PositionService {
                     }
                 }
             }
-            /*
+            *//*
              根据获取的HrHbConfig.id，查找target 从而用来确定Employee_only的属性值
-             */
+             *//*
             rpExtInfo.setEmployee_only(true);
             if(!StringUtils.isEmptyList(hbConfigIdList)){
                 for(HrHbConfig hrHbConfig:hrHbList){
@@ -2237,62 +2164,61 @@ public class PositionService {
                     }
                 }
             }
-             /*
+             *//*
              根据获取的HrHbConfig.id，查找HrHbItems列表 计算amount的值
-             */
+             *//*
             if(!StringUtils.isEmptyList(positionBindingIdList)){
                 double remain=0;
-                for(HrHbItems hrHbItems:hrHbItemsList){
+                for(RedpacketRedpacket redpacketRedpacket:hrHbItemsList){
                     int bid=hrHbItems.getBindingId();
                     if(positionBindingIdList.contains(bid)){
                         remain=remain+hrHbItems.getAmount().doubleValue();
                     }
                 }
                 rpExtInfo.setRemain(remain);
-
             }
             result.add(rpExtInfo);
         }
         return result;
-    }
+    }*/
 
     /*
      根据公司获取正在运行的红包配置表
      */
-    private List<HrHbConfig> getHrHbList(int companyId,int status){
+    private List<RedpacketActivity> getHrHbList(int companyId,int status){
         List<Integer> typeList=new ArrayList<>();
         typeList.add(2);
         typeList.add(3);
         typeList.add(4);
-        List<HrHbConfig> hrHbList=hrHbConfigDao.getHrHbConfigByCompanyId(companyId,status,typeList);
-        return hrHbList;
+        List<RedpacketActivity> activities = activityDao.fetchActiveActivitiesByCompanyId(companyId, status, typeList);
+        return activities;
     }
     /*
      获取HrHbConfig.id列表
      */
-    private List<Integer> getHbConfgIdList(List<HrHbConfig> list){
-        if(StringUtils.isEmptyList(list)){
+    private List<Integer> getHbConfgIdList(List<RedpacketActivity> list){
+        if (list != null && list.size() > 0) {
+            return list
+                    .stream()
+                    .map(RedpacketActivity::getId)
+                    .collect(Collectors.toList());
+        } else {
             return null;
         }
-        List<Integer> result=new ArrayList<>();
-        for(HrHbConfig hrHbConfig:list){
-            result.add(hrHbConfig.getId());
-        }
-        return result;
     }
     /*
     获取HrHbPositionBinding.id列表
-    */
-    private List<Integer> getHrHbPositionBindingIdList(List<HrHbPositionBinding> list){
-        if(StringUtils.isEmptyList(list)){
-            return null;
+    *//*
+    private List<Integer> getHrHbPositionBindingIdList(List<RedpacketActivityPosition> list){
+        if (list != null && list.size() > 0) {
+            return list
+                    .stream()
+                    .map(RedpacketActivityPosition::getId)
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>(0);
         }
-        List<Integer> result=new ArrayList<>();
-        for(HrHbPositionBinding hrHbPositionBinding:list){
-            result.add(hrHbPositionBinding.getId());
-        }
-        return result;
-    }
+    }*/
 
 
     /**
@@ -2325,22 +2251,34 @@ public class PositionService {
      * @return 红包职位列表
      */
     public List<WechatRpPositionListData> getRpPositionList(int hbConfigId, int pageNum, int pageSize) {
+        if (pageSize > Constant.DATABASE_PAGE_SIZE) {
+            new ArrayList<>(0);
+        }
         List<WechatRpPositionListData> result = new ArrayList<>();
         Query qu = new Query.QueryBuilder()
                 .where("hb_config_id", hbConfigId)
                 .setPageNum(pageNum)
                 .setPageSize(pageSize)
                 .buildQuery();
-        List<HrHbPositionBindingDO> bindings = hrHbPositionBindingDao.getDatas(qu, HrHbPositionBindingDO.class);
-        List<Integer> pids = bindings.stream().map(HrHbPositionBindingDO::getPositionId).collect(Collectors.toList());
-        String pidFilter = "[" + org.apache.commons.lang.StringUtils.join(pids.toArray(), ",") + "]";
+
+        int size = pageSize;
+        if (size <=0 ) {
+            size = 15;
+        }
+        int start = (pageNum-1)*size;
+        List<RedpacketActivityPosition> bindings = positionJOOQDao.listByActivityId(hbConfigId, true, start, size);
+        //activityPositionJOOQDao.list
+
+        List<Integer> pids = bindings.stream().map(RedpacketActivityPosition::getPositionId).collect(Collectors.toList());
         Condition condition = new Condition("id", pids.toArray(), ValueOp.IN);
         Query q = new Query.QueryBuilder().where(condition).orderBy("priority").buildQuery();
 
         List<JobPositionRecordWithCityName> jobRecords = positionEntity.getPositions(q);
-
+        if(StringUtils.isEmptyList(jobRecords)){
+            return result;
+        }
         // filter 出已经发完红包的职位
-        jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
+        //jobRecords = jobRecords.stream().filter(p -> p.getHbStatus() > 0).collect(Collectors.toList());
         int totalNum = this.getRpPositionCount(hbConfigId);
         // 拼装职位信息
         for (JobPositionRecordWithCityName jr : jobRecords) {
@@ -2364,9 +2302,8 @@ public class PositionService {
         }
 
         // 拼装公司信息
-        qu = new Query.QueryBuilder().where("id", hbConfigId).buildQuery();
-        Integer companyId = hrHbConfigDao.getData(qu, HrHbConfigDO.class).getCompanyId();
-        qu = new Query.QueryBuilder().where("id", companyId).buildQuery();
+        RedpacketActivity redpacketActivity = activityDao.fetchOneById(hbConfigId);
+        qu = new Query.QueryBuilder().where("id", redpacketActivity.getCompanyId()).buildQuery();
         HrCompanyDO company = hrCompanyDao.getData(qu, HrCompanyDO.class);
         result.forEach(s -> {
             s.setCompany_abbr(company == null ? "" : company.getAbbreviation());
@@ -2391,11 +2328,8 @@ public class PositionService {
     /*
      获取所有的红包职位数量
      */
-    private int getRpPositionCount(int hbConfigId) {
-        Query qu = new Query.QueryBuilder()
-                .where("hb_config_id", hbConfigId)
-                .buildQuery();
-        int count = hrHbPositionBindingDao.getCount(qu);
+    private int getRpPositionCount(int activityId) {
+        int count = activityPositionJOOQDao.countEnableByActivityId(activityId);
         return count;
     }
 

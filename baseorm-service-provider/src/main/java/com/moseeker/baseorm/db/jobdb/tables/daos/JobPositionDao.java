@@ -404,7 +404,7 @@ public class JobPositionDao extends DAOImpl<JobPositionRecord, com.moseeker.base
     /**
      * Fetch records that have <code>source IN (values)</code>
      */
-    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchBySource(Integer... values) {
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> fetchBySource(Short... values) {
         return fetch(JobPosition.JOB_POSITION.SOURCE, values);
     }
 
