@@ -1296,7 +1296,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
-                    this.updateDataApplicationBatchItems(referralLog);
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
                     countDownLatch.countDown();
                 }
                 return 0;
@@ -1310,9 +1310,8 @@ public class UseraccountsService {
         return claimResults;
     }
 
-    private void updateDataApplicationBatchItems(ReferralLog referralLog ){
-        JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                referralLog.getPositionId());
+    private void updateDataApplicationBatchItems(int positionId,int userId ){
+        JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
         if (application!=null){
             int app_id=application.getId();
             scheduledThread.startTast(()->{
@@ -1347,7 +1346,6 @@ public class UseraccountsService {
         if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
-
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
@@ -1402,7 +1400,7 @@ public class UseraccountsService {
 
     /**
      * 认领内推奖金
-     * @param claimForm 参数
+     * @param(claimForm 参数)
      */
     @Transactional
     public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {
