@@ -167,6 +167,26 @@ public class TalentPoolEmailEntity {
         return id;
     }
 
+    public int handerTalentpoolEmailLogAndBalanceNew(int useCount, int type, int company_id, int hr_id) throws TalentPoolException {
+        HrCompanyConfDO companyConfDO = companyConfDao.getHrCompanyConfByCompanyId(company_id);
+        if (companyConfDO == null) {
+            throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_NO_PERMISSION;
+        }
+        HrCompanyEmailInfo companyEmailInfo = companyEmailInfoDao.getHrCompanyEmailInfoListByCompanyId(company_id);
+        int id;
+        switch (type) {
+            case 0:  id = recharge(useCount, company_id, companyEmailInfo.getBalance(), 0); break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:  id = consumption(useCount, type, company_id, hr_id, companyEmailInfo.getBalance(), 0); break;
+            default: id = consumption(useCount, type, company_id, hr_id, companyEmailInfo.getBalance(), 0);
+        }
+
+        return id;
+    }
+
     private int consumption(int useCount, int type, int company_id, int hr_id, int balance, int index) throws TalentPoolException {
         if (index >= Constant.RETRY_UPPER_LIMIT) {
             throw TalentPoolException.TALENT_POOL_EMAIL_ACCOUNT_BALANCE_UPDATE_FIALED;
