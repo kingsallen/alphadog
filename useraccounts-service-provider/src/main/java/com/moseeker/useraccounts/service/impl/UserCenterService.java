@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl;
 
+import com.google.common.collect.Lists;
 import com.moseeker.baseorm.constant.WechatAuthorized;
 import com.moseeker.baseorm.dao.hrdb.HrWxWechatDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
@@ -509,6 +510,9 @@ public class UserCenterService {
                             int count = 0;
                             while(it.hasNext()) {
                                 HrOperationRecordDO oprationRecord = it.next();
+                                if(filterTimeLine(oprationRecord.getOperateTplId())) {
+                                    continue;
+                                }
                                 ApplicationOperationRecordVO applicationOprationRecordVO = new ApplicationOperationRecordVO();
                                 applicationOprationRecordVO.setHide(0);
                                 applicationOprationRecordVO.setDate(oprationRecord.getOptTime());
@@ -629,5 +633,18 @@ public class UserCenterService {
             }
         }
         return info;
+    }
+
+    /**
+     * 功能描述 : 如果是这几个状态，在申请进度中不显示
+     *          2 面试未反馈 5 面试已反馈 8 面试未反馈 9 面试未反馈 11 待入职
+     * @author : JackYang
+     * @date : 2019-03-29 14:47
+     * @param operateTplId :
+     * @return : boolean
+     */
+    private boolean filterTimeLine(Integer operateTplId) {
+        List<Integer>  appTplIds = Lists.newArrayList(2,5,8,9,11);
+        return appTplIds.contains(operateTplId);
     }
 }

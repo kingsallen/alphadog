@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.application.domain.ApplicationBatchEntity;
 import com.moseeker.application.domain.HREntity;
+import com.moseeker.application.domain.constant.ApplicationOriginEnum;
 import com.moseeker.application.exception.ApplicationException;
 import com.moseeker.application.infrastructure.ApplicationRepository;
 import com.moseeker.application.service.application.StatusChangeUtil;
@@ -16,9 +17,12 @@ import com.moseeker.baseorm.dao.hrdb.*;
 import com.moseeker.baseorm.dao.jobdb.JobApplicationDao;
 import com.moseeker.baseorm.dao.jobdb.JobPositionDao;
 import com.moseeker.baseorm.dao.jobdb.JobResumeOtherDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileBasicDao;
+import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.userdb.UserAliUserDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.dao.userdb.UserUserDao;
+import com.moseeker.baseorm.dao.userdb.UserWxUserDao;
 import com.moseeker.baseorm.db.historydb.tables.records.HistoryJobApplicationRecord;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompany;
 import com.moseeker.baseorm.db.hrdb.tables.HrCompanyAccount;
@@ -29,8 +33,11 @@ import com.moseeker.baseorm.db.jobdb.tables.JobPosition;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobApplicationRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobResumeOtherRecord;
+import com.moseeker.baseorm.db.profiledb.tables.pojos.ProfileBasic;
+import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.userdb.tables.UserHrAccount;
 import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
+import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.baseorm.pojo.ApplicationSaveResultVO;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
@@ -54,7 +61,9 @@ import com.moseeker.entity.ApplicationEntity;
 import com.moseeker.entity.Constant.ApplicationSource;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
+import com.moseeker.entity.RabbitMQOperationRecord;
 import com.moseeker.entity.application.UserApplyCount;
+import com.moseeker.entity.pojo.company.HrOperationAllRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.application.struct.ApplicationResponse;
 import com.moseeker.thrift.gen.application.struct.JobApplication;
@@ -66,10 +75,7 @@ import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrOperationRecordDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobApplicationDO;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserAliUserDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserHrAccountDO;
-import com.moseeker.thrift.gen.dao.struct.userdb.UserUserDO;
+import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
@@ -132,24 +138,27 @@ public class JobApplicataionService {
     private HrCompanyAccountDao hrCompanyAccountDao;
     @Autowired
     private UserAliUserDao userAliUserDao;
-
     @Autowired
     private HrOperationRecordDao hrOperationRecordDao;
-
     @Autowired
     private HistoryJobApplicationDao historyJobApplicationDao;
-
+    @Autowired
+    private ProfileProfileDao profileProfileDao;
+    @Autowired
+    private ProfileBasicDao profileBasicDao;
     @Autowired
     private  JobApplicationFilterService filterService;
-
     @Autowired
     private HrWxWechatDao wechatDao;
-
     @Autowired
     private AmqpTemplate amqpTemplate;
-
     @Autowired
-    EmployeeEntity employeeEntity;
+    private UserWxUserDao userWxUserDao;
+    @Autowired
+    private EmployeeEntity employeeEntity;
+    @Autowired
+    private RabbitMQOperationRecord rabbitMQOperationRecord;
+
     MqService.Iface mqServer = ServiceManager.SERVICEMANAGER.getService(MqService.Iface.class);
 
     ChatService.Iface chatService = ServiceManager.SERVICEMANAGER.getService(ChatService.Iface.class);
@@ -205,6 +214,9 @@ public class JobApplicataionService {
                     jobApplication.getOrigin());
             // todo 如果投递是通过内推完成，需要处理相关逻辑（10分钟消息模板和转发链路中处理状态）
             handleReferralState(jobApplicationId);
+            HrOperationAllRecord data=this.getRecord(jobApplication,jobPositionRecord);
+            rabbitMQOperationRecord.sendMQForOperationRecord(data);
+            this.updateApplicationEsIndex((int)jobApplication.getApplier_id());
             // 返回 jobApplicationId
             return ResponseUtils.success(new HashMap<String, Object>() {
                                              {
@@ -216,7 +228,81 @@ public class JobApplicataionService {
         // 投递失败将redis防止重复投递缓存清除
         redisClient.del(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
                 jobApplication.getApplier_id() + "", jobApplication.getPosition_id() + "");
+
         return ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_EXCEPTION);
+    }
+    /*
+    更新data/application索引
+     */
+    private void updateApplicationEsIndex(int userId){
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        logger.info("====================redis==============application更新=============");
+        logger.info("================userid={}=================",userId);
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  组装流水记录
+     * @Date 上午10:32 19/3/8
+     * @Param [jobApplication, jobPositionRecord]
+     * @return com.moseeker.entity.pojo.company.HrOperationAllRecord
+     **/
+    private HrOperationAllRecord getRecord(JobApplication jobApplication,JobPositionRecord jobPositionRecord){
+        int applierId=(int)jobApplication.getApplier_id();
+        HrOperationAllRecord data=new HrOperationAllRecord();
+        data.setCompanyId((int)jobApplication.getCompany_id());
+        data.setOperatorId((int)jobApplication.getApplier_id());
+        data.setUserId(applierId);
+        data.setOpertaionType(0);
+        data.setOperatorType(2);
+        //来源的名称
+        String originName= ApplicationOriginEnum.map.get(jobApplication.getOrigin());
+        String positionName=jobPositionRecord.getTitle();
+        String userName=this.getAppApplierName(applierId);
+        String title="「"+userName+"」从「"+originName+"」投递简历到「"+positionName+"」";
+        data.setTitle(title);
+        data.setDescription("");
+        return data;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description 获取申请者的名字
+     * @Date 上午10:32 19/3/8
+     * @Param [userId]
+     * @return java.lang.String
+     **/
+    private String getAppApplierName(int userId){
+       ProfileProfileRecord profileRecord= profileProfileDao.getProfileByUserId(userId);
+       if(profileRecord==null){
+           return this.getUserName(userId);
+       }
+       ProfileBasic basic=profileBasicDao.getProfileBasicByProfileId(profileRecord.getId());
+       if(basic==null){
+           return this.getUserName(userId);
+       }
+       String name=basic.getName();
+       if(StringUtils.isNotNullOrEmpty(name)){
+           return this.getUserName(userId);
+       }
+        return name;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  获取用户表中的名字
+     * @Date 上午10:33 19/3/8
+     * @Param [userId]
+     * @return java.lang.String
+     **/
+    private String getUserName(int userId){
+        UserUserDO userDO= userUserDao.getUser(userId);
+        if(userDO==null){
+            UserWxUserRecord userWxDO=userWxUserDao.getWXUserByUserId(userId);
+            if(userWxDO==null){
+                return null;
+            }
+            return userWxDO.getNickname();
+        }
+        return userDO.getUsername();
     }
 
     @Transactional
@@ -428,6 +514,7 @@ public class JobApplicataionService {
                         jobApplicationDO.getApplyType(), jobApplication.getEmail_status(),
                         jobApplicationDO.getRecommenderUserId(), jobApplicationDO.getApplierId(),
                         jobApplicationDO.getOrigin());
+                this.updateApplicationEsIndex((int)jobApplicationDO.getApplierId());
             }
         }
         return updateStatus;
@@ -1030,6 +1117,19 @@ public class JobApplicataionService {
         HREntity hrEntity = applicationRepository.fetchHREntity(hrId);
         ApplicationBatchEntity applicationBatchEntity = applicationRepository.fetchApplicationEntity(applicationIdList);
         hrEntity.viewApplication(applicationBatchEntity);
+        //为了不修改逻辑，所以加在这边。更新data/application的数据
+        this.batchUpdateApplicationIndex(applicationIdList);
+    }
+
+    private void batchUpdateApplicationIndex(List<Integer> applicationIdList){
+        if(!StringUtils.isEmptyList(applicationIdList)){
+            List<Integer> userIdList=jobApplicationDao.getApplierIdListByIdList(applicationIdList);
+            if(!StringUtils.isEmptyList(userIdList)){
+                for(Integer userId:userIdList){
+                    this.updateApplicationEsIndex(userId);
+                }
+            }
+        }
     }
 
     /**
@@ -1137,6 +1237,9 @@ public class JobApplicataionService {
                     return 0;
                 });
             }
+            List<HrOperationAllRecord> dataList=this.getEmployeeOperationRecord(referenceId,employeeDO,positionList,applierId);
+            rabbitMQOperationRecord.sendMQForOperationRecordList(dataList);
+            this.updateApplicationEsIndex(applierId);
             return applyIdList.stream().map(ApplicationSaveResultVO::getApplicationId).collect(Collectors.toList());
         }
 
@@ -1148,6 +1251,52 @@ public class JobApplicataionService {
                     applierId + "", position + "");
         }
         return new ArrayList<>();
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  组装员工推荐的流水记录
+     * @Date 上午11:33 19/3/8
+     * @Param [sysuserId, employeeDO, positionList, applierId]
+     * @return java.util.List<com.moseeker.entity.pojo.company.HrOperationAllRecord>
+     **/
+    private List<HrOperationAllRecord> getEmployeeOperationRecord(int sysuserId,UserEmployeeDO employeeDO,List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition> positionList,int applierId){
+        if(StringUtils.isEmptyList(positionList)){
+            return null;
+        }
+        List<HrOperationAllRecord> result=new ArrayList<>();
+        String name=this.getAppApplierName(applierId);
+        String employeeName=this.getEmployeeName(sysuserId,employeeDO);
+        for(com.moseeker.baseorm.db.jobdb.tables.pojos.JobPosition position:positionList){
+            HrOperationAllRecord data=new HrOperationAllRecord();
+            data.setOperatorId(employeeDO.getSysuserId());
+            data.setCompanyId(employeeDO.getCompanyId());
+            data.setUserId(applierId);
+            data.setOpertaionType(1);
+            data.setOperatorType(3);
+            String positionName=position.getTitle();
+            String title="「"+employeeName+"」推荐「"+name+"」到「"+positionName+"」";
+            data.setTitle(title);
+            data.setDescription("");
+            result.add(data);
+        }
+        return result;
+    }
+    /*
+     * @Author zztaiwll
+     * @Description  获取员工姓名
+     * @Date 上午11:28 19/3/8
+     * @Param [userId, employeeDO]
+     * @return java.lang.String
+     **/
+    private String getEmployeeName(int userId,UserEmployeeDO employeeDO){
+        if(employeeDO==null){
+            return this.getAppApplierName(userId);
+        }
+        String employeeName=employeeDO.getCname();
+        if(StringUtils.isNotNullOrEmpty(employeeName)){
+            return employeeName;
+        }
+        return this.getAppApplierName(userId);
     }
 
     /**

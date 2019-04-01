@@ -40,4 +40,11 @@ public class ProfileBasicDao extends JooqCrudImpl<ProfileBasicDO, ProfileBasicRe
         }
         return new ArrayList<>();
     }
+
+
+    public com.moseeker.baseorm.db.profiledb.tables.pojos.ProfileBasic getProfileBasicByProfileId(int profileId){
+        return create.selectFrom(ProfileBasic.PROFILE_BASIC)
+                .where(ProfileBasic.PROFILE_BASIC.PROFILE_ID.eq(profileId)).limit(1)
+                .fetchOneInto(com.moseeker.baseorm.db.profiledb.tables.pojos.ProfileBasic.class);
+    }
 }

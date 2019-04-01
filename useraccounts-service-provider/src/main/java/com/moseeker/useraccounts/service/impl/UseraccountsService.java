@@ -11,6 +11,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.dao.referraldb.ReferralEmployeeBonusRecordDao;
 import com.moseeker.baseorm.dao.userdb.*;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrWxWechatRecord;
+import com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.baseorm.db.referraldb.tables.pojos.ReferralEmployeeBonusRecord;
@@ -27,6 +28,7 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FormCheck;
@@ -141,6 +143,10 @@ public class UseraccountsService {
     private ConfigPropertiesUtil configUtils = ConfigPropertiesUtil.getInstance();
 
     ThreadPool pool = ThreadPool.Instance;
+
+    ScheduledThread scheduledThread = ScheduledThread.Instance;
+    @Autowired
+    private JobApplicationDao applicationDao;
 
     /**
      * 账号换绑操作
@@ -1290,6 +1296,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
                     countDownLatch.countDown();
                 }
                 return 0;
@@ -1301,6 +1308,18 @@ public class UseraccountsService {
             throw CommonException.PROGRAM_EXCEPTION;
         }
         return claimResults;
+    }
+
+    private void updateDataApplicationBatchItems(int positionId,int userId ){
+        JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
+        if (application!=null){
+            int app_id=application.getId();
+            scheduledThread.startTast(()->{
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
+                logger.info("====================redis==============application更新=============");
+                logger.info("================app_id={}=================",app_id);
+            },3000);
+        }
     }
 
     private Map<Integer, String> getPositionIdTitleMap(List<ReferralLog> referralLogs){
@@ -1327,7 +1346,6 @@ public class UseraccountsService {
         if (employeeDO != null && employeeDO.getSysuserId() == userUserDO.getId()) {
             throw UserAccountException.ERMPLOYEE_REFERRAL_EMPLOYEE_CLAIM_FAILED;
         }
-
         //修改手机号码
         if (userUserDO.getUsername() == null || !FormCheck.isNumber(userUserDO.getUsername().trim())) {
             ValidateUtil validateUtil = new ValidateUtil();
@@ -1382,7 +1400,7 @@ public class UseraccountsService {
 
     /**
      * 认领内推奖金
-     * @param claimForm 参数
+     * @param(claimForm 参数)
      */
     @Transactional
     public void claimReferralBonus(Integer bonus_record_id) throws UserAccountException {

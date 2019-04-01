@@ -2,6 +2,8 @@ package com.moseeker.company.rabittmq;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.moseeker.baseorm.redis.RedisClient;
+import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.company.service.impl.CompanyTagService;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +34,8 @@ public class ReceiveHandler {
     private static Logger log = LoggerFactory.getLogger(ReceiveHandler.class);
     @Autowired
     private CompanyTagService companyTagService;
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
     @RabbitListener(queues = "#{profileCompanyTagQue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -49,6 +54,7 @@ public class ReceiveHandler {
                 log.info(JSON.toJSONString(userIdSet));
                 log.info(JSON.toJSONString(companyIdSet));
                 log.info("===========================");
+                this.handlerDataProfileIndex(userIdSet);
                 companyTagService.handlerProfileCompanyIds(convert(userIdSet),convert(companyIdSet));
                 log.info("=========开始修改个人标签==============");
 //                companyTagService.handlerHrAutomaticData(convert(userIdSet));
@@ -56,6 +62,18 @@ public class ReceiveHandler {
 
         } catch (Exception e) {
             log.error(e.getMessage(), e);
+        }
+    }
+
+    private void handlerDataProfileIndex(List<Integer> userIdSet){
+        if(!StringUtils.isEmptyList(userIdSet)){
+            for(Integer userId:userIdSet){
+                log.info("==========更新data/profile==============");
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+                log.info("==========更新data/profile===userId=={}==============",userId);
+
+            }
+
         }
     }
 

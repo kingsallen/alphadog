@@ -295,4 +295,18 @@ public class HrSearchConditionDao extends DAOImpl<HrSearchConditionRecord, com.m
     public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByPositionStatus(Integer... values) {
         return fetch(HrSearchCondition.HR_SEARCH_CONDITION.POSITION_STATUS, values);
     }
+
+    /**
+     * Fetch records that have <code>start_submit_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByStartSubmitTime(Timestamp... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.START_SUBMIT_TIME, values);
+    }
+
+    /**
+     * Fetch records that have <code>end_submit_time IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.hrdb.tables.pojos.HrSearchCondition> fetchByEndSubmitTime(Timestamp... values) {
+        return fetch(HrSearchCondition.HR_SEARCH_CONDITION.END_SUBMIT_TIME, values);
+    }
 }
