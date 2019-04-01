@@ -232,6 +232,7 @@ public class JobApplicationFilterService {
                 logger.error(e.getMessage());
             }
         }
+
         logger.info("handerApplicationFilter response info :{}", res);
     }
 
