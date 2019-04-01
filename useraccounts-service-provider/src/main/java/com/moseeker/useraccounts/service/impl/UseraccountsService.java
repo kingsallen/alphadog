@@ -1303,7 +1303,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
-                    this.updateDataApplicationBatchItems(referralLog);
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
                     countDownLatch.countDown();
                 }
                 return 0;
@@ -1317,9 +1317,8 @@ public class UseraccountsService {
         return claimResults;
     }
 
-    private void updateDataApplicationBatchItems(ReferralLog referralLog ){
-        JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                referralLog.getPositionId());
+    private void updateDataApplicationBatchItems(int positionId,int userId ){
+        JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
         if (application!=null){
             int app_id=application.getId();
             scheduledThread.startTast(()->{
