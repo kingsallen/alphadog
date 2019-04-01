@@ -1296,6 +1296,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
+                    this.updateDataApplicationBatchItems(referralLog);
                     countDownLatch.countDown();
                 }
                 return 0;
@@ -1303,25 +1304,22 @@ public class UseraccountsService {
         }
         try {
             countDownLatch.await(20, TimeUnit.SECONDS);
-            this.updateDataApplicationBatch(referralLogs);
         } catch (InterruptedException e) {
             throw CommonException.PROGRAM_EXCEPTION;
         }
         return claimResults;
     }
 
-    private void updateDataApplicationBatch( List<ReferralLog> referralLogs){
-        for(ReferralLog referralLog : referralLogs){
-            JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                    referralLog.getPositionId());
-            if (application!=null){
-                int app_id=application.getId();
-                scheduledThread.startTast(()->{
-                    redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
-                    logger.info("====================redis==============application更新=============");
-                    logger.info("================app_id={}=================",app_id);
-                },3000);
-            }
+    private void updateDataApplicationBatchItems(ReferralLog referralLog ){
+        JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
+                referralLog.getPositionId());
+        if (application!=null){
+            int app_id=application.getId();
+            scheduledThread.startTast(()->{
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
+                logger.info("====================redis==============application更新=============");
+                logger.info("================app_id={}=================",app_id);
+            },3000);
         }
     }
 
