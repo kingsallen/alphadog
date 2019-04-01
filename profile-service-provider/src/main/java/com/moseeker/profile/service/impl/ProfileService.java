@@ -910,7 +910,7 @@ public class ProfileService {
                         }});
                         return;
                     }
-                } else if (fieldJson.getString(fieldName).startsWith("[{") && fieldJson.getString(fieldName).endsWith("}]")) {
+                } else if (StringUtils.isNotNullOrEmpty(fieldJson.getString(fieldName)) && fieldJson.getString(fieldName).startsWith("[{") && fieldJson.getString(fieldName).endsWith("}]")) {
                     result.put(fieldName, new ArrayList<>());
                     JSONArray.parseArray(fieldJson.getString(fieldName)).stream().forEach(e -> {
                         Response childRes = otherFieldsCheck(profielId, e.toString());
