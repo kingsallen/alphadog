@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -93,8 +94,6 @@ public class SearchengineEntity {
 
     @Autowired
     private UserWxUserDao userWxUserDao;
-
-    @Autowired
 
 
     /**
@@ -901,6 +900,9 @@ public class SearchengineEntity {
 
     @Transactional
     public Response updateBulkReferralPostionStatus(List<Integer> positionIds,Integer isReferral) throws Exception{
+        if(CollectionUtils.isEmpty(positionIds)) {
+            return ResponseUtils.success(null);
+        }
         DateTime nowDate = new DateTime();
 
         logger.info("updateBulkReferralPostionStatus {} 条 计时开始时间 {}" ,positionIds.size(), nowDate.toString("yyyy-MM-dd HH:mm:ss"));
@@ -921,7 +923,7 @@ public class SearchengineEntity {
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-        logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
+        //logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
 
         if(bulkResponse.hasFailures()) {
             DateTime endDate = new DateTime();

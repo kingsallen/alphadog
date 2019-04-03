@@ -101,6 +101,9 @@ public class ReferralPositionService {
     @Autowired
     private RedpacketActivityPositionJOOQDao activityPositionDao;
 
+    @Autowired
+    private PositionIndexSender sender;
+
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -109,6 +112,8 @@ public class ReferralPositionService {
 
     private static  final int RECORDNUM = 1500;
 
+    private String exchange="new_position_es_index_update_exchange";
+    private String routingKey="newpositionesindexupdate.#";
     @CounterIface
     @Transactional
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception{
@@ -314,6 +319,8 @@ public class ReferralPositionService {
                 }
             }
 
+            //更新newpositionIndex,用于更新hr职位列表的es数据源
+            sender.sendMqRequest(list,routingKey,exchange);
         }
 
         try{
