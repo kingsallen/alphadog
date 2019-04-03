@@ -1185,8 +1185,8 @@ public class PositionService {
             Thread thread = new Thread(updataESThread);
             thread.start();
             //此处使用硬编码，感觉十分不好
-            String exchange="new_position_es_index_update";
-            String routingKey="newpositionesindexupdate";
+            String exchange="new_position_es_index_update_exchange";
+            String routingKey="newpositionesindexupdate.#";
             sender.sendMqRequest(jobPositionIds,routingKey,exchange);
             return jobPostionResponse;
         }
