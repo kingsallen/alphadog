@@ -93,12 +93,18 @@ public class ChatThriftService implements Iface {
     }
 
 
+    // 异常和null处理
     @Override
     public ResultOfSaveRoomVO enterRoom(int userId, int hrId, int positionId, int roomId, boolean is_gamma) throws TException {
         try {
-            return chatService.enterChatRoom(userId, hrId, positionId, roomId, is_gamma);
+            ResultOfSaveRoomVO roomVO = chatService.enterChatRoom(userId, hrId, positionId, roomId, is_gamma);
+            if (roomVO == null) {
+                throw ExceptionUtils.convertException(CommonException.validateFailed("进入聊天室失败!"));
+            }
+            return roomVO;
         } catch (Exception e) {
-            throw ExceptionUtils.convertException(e);
+            logger.error(e.getMessage(), e);
+            throw new CURDException(ConstantErrorCodeMessage.PROGRAM_EXCEPTION_STATUS,e.getMessage());
         }
     }
 

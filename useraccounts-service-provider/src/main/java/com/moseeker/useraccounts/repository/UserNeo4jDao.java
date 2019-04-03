@@ -33,8 +33,8 @@ public interface UserNeo4jDao extends GraphRepository<UserNode> {
                    "   match p=shortestpath((c1)-[*1..3]-(c2)) return c2.user_id as userId,c2.employee_company as companyId")
     List<EmployeeCompanyVO> fetchUserThreeDepthEmployee(@Param("userId") int userId, @Param("userIdList") List<Integer> userIdList);
 
-    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} and u2.employee_company <> {employeeCompany} match p =shortestpath((u1)-[*]-(u2)) " +
-                   " return u2.user_id as userId,length(p) as depth order by depth limit 300")
+    @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} and u2.employee_company <> {employeeCompany} " +
+            "match p =shortestpath((u1)-[*]-(u2)) with u2.user_id as userId,length(p) as depth where depth <=3 return userId, depth")
     List<UserDepthVO> fetchEmployeeThreeDepthUser(@Param("userId") int userId, @Param("presenteeUserIds") List<Integer> presenteeUserIds, @Param("employeeCompany") int employeeCompany);
 
     @Query("match (u1:UserUser),(u2:UserUser) where u1.user_id = {userId} and u2.user_id in {presenteeUserIds} and u2.employee_company <> {employeeCompany} match p =shortestpath((u1)-[*]-(u2)) " +
