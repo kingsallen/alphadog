@@ -720,7 +720,7 @@ public class JobPositionDao extends JooqCrudImpl<JobPositionDO, JobPositionRecor
                 , JobPosition.JOB_POSITION.COMPANY_ID)
                 .from(JobPosition.JOB_POSITION)
                 .where(JobPosition.JOB_POSITION.COMPANY_ID.eq(companyId))
-                .and(JobPosition.JOB_POSITION.SOURCE.eq(source))
+                .and(JobPosition.JOB_POSITION.SOURCE.eq((short)source))
                 .fetchInto(JobPositionRecord.class);
     }
     /**
