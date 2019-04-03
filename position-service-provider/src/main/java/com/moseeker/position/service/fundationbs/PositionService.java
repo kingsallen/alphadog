@@ -2889,7 +2889,7 @@ public class PositionService {
         if(StringUtils.isNotNullOrEmpty(isReference)){
             query.setIs_referral(Integer.parseInt(isReference));
         }else{
-            query.setIs_referral(0);
+            query.setIs_referral(-1);
         }
         return query;
 
