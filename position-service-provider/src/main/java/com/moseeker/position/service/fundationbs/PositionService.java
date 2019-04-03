@@ -2891,7 +2891,6 @@ public class PositionService {
         }else{
             query.setIs_referral(0);
         }
-        query.setIs_referral(1);
         return query;
 
     }
