@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.jobdb.tables.pojos.JobPositionProfileFilter;
 import com.moseeker.baseorm.db.jobdb.tables.records.JobPositionRecord;
 import com.moseeker.baseorm.db.logdb.tables.records.LogTalentpoolProfileFilterLogRecord;
 import com.moseeker.baseorm.db.talentpooldb.tables.pojos.TalentpoolProfileFilter;
+import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.constants.Constant;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.entity.biz.CompanyFilterTagValidation;
@@ -34,6 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 
 /**
  * Created by moseeker on 2018/4/13.
@@ -59,6 +62,8 @@ public class JobApplicationFilterService {
     @Autowired
     private TalentpoolProfileFilterExcuteDao talentpoolProfileFilterExcuteDao;
 
+    @Resource(name = "cacheClient")
+    private RedisClient redisClient;
 
 
 
@@ -98,8 +103,17 @@ public class JobApplicationFilterService {
                 }
             }
         }
+        this.updateApplicationEsIndex(filterInfoStruct.getApplier_id());
     }
-
+    /*
+     更新data/application索引
+      */
+    private void updateApplicationEsIndex(int userId){
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+        logger.info("====================redis==============application更新=============");
+        logger.info("================userid={}=================",userId);
+    }
 
     //循环验证各个筛选项
     private boolean forTalentpoolProfileFilter(List<Integer> filterIdList, Map<Integer,TalentpoolProfileFilter>  talentpoolProfileFilterMap, Map<String, Object> profiles,
@@ -218,6 +232,7 @@ public class JobApplicationFilterService {
                 logger.error(e.getMessage());
             }
         }
+
         logger.info("handerApplicationFilter response info :{}", res);
     }
 

@@ -895,50 +895,65 @@ public class ProfileService {
         Map<String, ConfigSysCvTplDO> configSysCvTplMap = new HashMap<>();
         configSysCvTplMap.putAll(configSysCvTplDao.getDatas(queryBuilder.buildQuery()).stream().collect(Collectors.toMap(k -> k.getFieldName(), v -> v)));
         Map<String, Object> result = new HashMap<>();
-        fieldJson.keySet().forEach(fieldName -> {
-            if (!configSysCvTplMap.containsKey(fieldName)){
-                result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段："+fieldName+",不存在");}});
-                return;
-            }
-            Object customResult = "";
-            ConfigSysCvTplDO configSysCvTplDO = configSysCvTplMap.get(fieldName);
-            if (StringUtils.isNotNullOrEmpty(configSysCvTplDO.getMapping())) {
-                // 复合字段校验
-                String mappingFiled = configSysCvTplDO.getMapping();
-                if (mappingFiled.contains("&")) {
-                    String[] mapStr = mappingFiled.split("&", 2);
-                    if (mapStr[0].contains(".") && mapStr[1].contains(".")) {
-                        String[] mapLeft = mapStr[0].split("\\.", 2);
-                        String[] mapRight = mapStr[1].split("\\.", 2);
-                        customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
-                        customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace(".", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
-                    }
-                } else if (mappingFiled.contains(".")) {
-                    String[] mappingStr = mappingFiled.split("\\.", 2);
-                    customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
-                } else {
-                    result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg","自定义字段:"+fieldName+",配置异常");}});
+
+        if ( fieldJson != null && fieldJson.keySet()!=null ) {
+            fieldJson.keySet().forEach(fieldName -> {
+                if (!configSysCvTplMap.containsKey(fieldName)) {
+                    result.put(fieldName, new HashMap<String, Object>() {{
+                        put("result", false);
+                        put("msg", "自定义字段：" + fieldName + ",不存在");
+                    }});
                     return;
                 }
-            } else if (fieldJson.getString(fieldName).startsWith("[{") && fieldJson.getString(fieldName).endsWith("}]")) {
-                result.put(fieldName, new ArrayList<>());
-                JSONArray.parseArray(fieldJson.getString(fieldName)).stream().forEach(e -> {
-                    Response childRes = otherFieldsCheck(profielId, e.toString());
-                    ((List)result.get(fieldName)).add(JSONObject.parseObject(childRes.getData()));
-                });
-                return;
-            } else {
-                // 普通字段校验
-                customResult = fieldJson.get(fieldName);
-            }
-            logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", configSysCvTplDO.getValidateRe(), customResult);
-            if (Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getValidateRe(), ""), String.valueOf(customResult))) {
-                result.put(fieldName, new HashMap<String, Object>(){{put("result",true);put("msg","success");}});
-            } else {
-                result.put(fieldName, new HashMap<String, Object>(){{put("result",false);put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(),"自定义字段"+fieldName+"为空"));}});
-                logger.warn("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
-            }
-        });
+                Object customResult = "";
+                ConfigSysCvTplDO configSysCvTplDO = configSysCvTplMap.get(fieldName);
+                if (StringUtils.isNotNullOrEmpty(configSysCvTplDO.getMapping())) {
+                    // 复合字段校验
+                    String mappingFiled = configSysCvTplDO.getMapping();
+                    if (mappingFiled.contains("&")) {
+                        String[] mapStr = mappingFiled.split("&", 2);
+                        if (mapStr[0].contains(".") && mapStr[1].contains(".")) {
+                            String[] mapLeft = mapStr[0].split("\\.", 2);
+                            String[] mapRight = mapStr[1].split("\\.", 2);
+                            customResult = profileOtherDao.customSelect(mapLeft[0], mapLeft[1], "profile_id", profileProfile.getId());
+                            customResult = profileOtherDao.customSelect(mapRight[0], mapRight[1], mapStr[0].replace(".", "_"), NumberUtils.toInt(String.valueOf(customResult), 0));
+                        }
+                    } else if (mappingFiled.contains(".")) {
+                        String[] mappingStr = mappingFiled.split("\\.", 2);
+                        customResult = mappingStr[0].startsWith("user") ? (userDao.customSelect(mappingStr[0], mappingStr[1], profileProfile.getUserId())) : (profileOtherDao.customSelect(mappingStr[0], mappingStr[1], "profile_id", profileProfile.getId()));
+                    } else {
+                        result.put(fieldName, new HashMap<String, Object>() {{
+                            put("result", false);
+                            put("msg", "自定义字段:" + fieldName + ",配置异常");
+                        }});
+                        return;
+                    }
+                } else if (StringUtils.isNotNullOrEmpty(fieldJson.getString(fieldName)) && fieldJson.getString(fieldName).startsWith("[{") && fieldJson.getString(fieldName).endsWith("}]")) {
+                    result.put(fieldName, new ArrayList<>());
+                    JSONArray.parseArray(fieldJson.getString(fieldName)).stream().forEach(e -> {
+                        Response childRes = otherFieldsCheck(profielId, e.toString());
+                        ((List) result.get(fieldName)).add(JSONObject.parseObject(childRes.getData()));
+                    });
+                    return;
+                } else {
+                    // 普通字段校验
+                    customResult = fieldJson.get(fieldName);
+                }
+                if (Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getValidateRe(), ""), String.valueOf(customResult))) {
+                    result.put(fieldName, new HashMap<String, Object>() {{
+                        put("result", true);
+                        put("msg", "success");
+                    }});
+                } else {
+                    result.put(fieldName, new HashMap<String, Object>() {{
+                        put("result", false);
+                        put("msg", org.apache.commons.lang.StringUtils.defaultIfEmpty(configSysCvTplDO.getErrorMsg(), "自定义字段" + fieldName + "为空"));
+                    }});
+                    logger.warn("自定义字段校验失败! field_name:{}, value:{}, error_msg:{}", fieldName, customResult, configSysCvTplDO.getErrorMsg());
+                }
+            });
+        }
+
         return ResponseUtils.success(result);
     }
     /*
