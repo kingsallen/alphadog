@@ -921,7 +921,7 @@ public class SearchengineEntity {
 
         }
         BulkResponse bulkResponse = bulkRequest.execute().actionGet();
-        //logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
+        logger.info("updateBulkReferralPostionStatus bulkResponse {}",JSON.toJSONString(bulkResponse));
 
         if(bulkResponse.hasFailures()) {
             DateTime endDate = new DateTime();

@@ -30,6 +30,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.position.pojo.ReferralPositionMatchInfo;
+import com.moseeker.position.service.schedule.PositionIndexSender;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -101,7 +102,6 @@ public class ReferralPositionService {
     private RedpacketActivityPositionJOOQDao activityPositionDao;
 
     SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
-
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -313,6 +313,7 @@ public class ReferralPositionService {
                     logger.info(e.getClass().getName(),e);
                 }
             }
+
         }
 
         try{
@@ -323,6 +324,8 @@ public class ReferralPositionService {
         }catch (Exception e){
             logger.info(e.getClass().getName(),e);
         }
+
+
 
         logger.info("processUpdateData taskNum - countTaskNum {} {} ",taskNum, countTaskNum);
 
