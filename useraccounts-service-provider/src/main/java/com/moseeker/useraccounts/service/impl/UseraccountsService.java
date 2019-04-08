@@ -1286,8 +1286,6 @@ public class UseraccountsService {
         // 更新申请记录的申请人
 
         for(ReferralLog referralLog : referralLogs){
-            JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
-                    referralLog.getPositionId());
             pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferral_id(referralLog.getId());
