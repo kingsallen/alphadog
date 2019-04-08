@@ -1375,8 +1375,7 @@ public class TalentpoolSearchengine {
                                         String progressStatus,String positionIds,String positionWord,String startSubmitTime,String endSubmitTime){
         return StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
                 StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
-                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)&&StringUtils.isNullOrEmpty(startSubmitTime)
-                &&StringUtils.isNullOrEmpty(endSubmitTime);
+                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)||StringUtils.isNotNullOrEmpty(startSubmitTime)||StringUtils.isNotNullOrEmpty(endSubmitTime);
     }
 
     /*
@@ -2259,6 +2258,8 @@ public class TalentpoolSearchengine {
         String candidateSource=params.get("candidate_source");
         String recommend=params.get("is_recommend");
         String positionStatus=params.get("position_status");
+        String startSubmitTime=params.get("start_submit_time");
+        String endSubmitTime=params.get("end_submit_time");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
         sb.append("int i = 0; for ( val in _source.user.applications)");
@@ -2270,6 +2271,21 @@ public class TalentpoolSearchengine {
             String time=this.getLongTime(submitTime);
             sb.append("val.submit_time>'"+time+"'&&");
         }
+        if(StringUtils.isNotNullOrEmpty(startSubmitTime)){
+            startSubmitTime=startSubmitTime.replace(" ","T");
+            if(startSubmitTime.length()<19){
+                startSubmitTime=startSubmitTime+"T00:00:00";
+            }
+            sb.append("val.submit_time>'"+startSubmitTime+"'&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
+            endSubmitTime=endSubmitTime.replace(" ","T");
+            if(endSubmitTime.length()<19){
+                endSubmitTime=endSubmitTime+"T23:59:59";
+            }
+            sb.append("val.submit_time<'"+endSubmitTime+"'&&");
+        }
+
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
             sb.append("val.position_id in"+positionIdList.toString()+"&&");
