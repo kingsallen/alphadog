@@ -125,16 +125,20 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public void addEmployeeAward(List<Integer> applicationIdList, int eventType) throws BIZException, TException {
-        /** 初始化业务编号 */
-        AwardEvent awardEvent = AwardEvent.initFromSate(eventType);
-        ValidateUtil vu = new ValidateUtil();
-        vu.addRequiredOneValidate("申请编号", applicationIdList, null, null);
-        vu.addRequiredValidate("积分事件", awardEvent, null, null);
-        String result = vu.validate();
-        if (StringUtils.isNotBlank(result)) {
-            throw ExceptionConvertUtil.convertCommonException(UserAccountException.validateFailed(result));
+        try {
+            /** 初始化业务编号 */
+            AwardEvent awardEvent = AwardEvent.initFromSate(eventType);
+            ValidateUtil vu = new ValidateUtil();
+            vu.addRequiredOneValidate("申请编号", applicationIdList, null, null);
+            vu.addRequiredValidate("积分事件", awardEvent, null, null);
+            String result = vu.validate();
+            if (StringUtils.isNotBlank(result)) {
+                throw ExceptionConvertUtil.convertCommonException(UserAccountException.validateFailed(result));
+            }
+            employeeService.addEmployeeAward(applicationIdList, awardEvent);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
-        employeeService.addEmployeeAward(applicationIdList, awardEvent);
     }
 
     @Override
@@ -205,42 +209,54 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
 
     @Override
     public RadarInfo fetchRadarIndex(int userId, int companyId, int page, int size) throws BIZException, TException {
-        RadarInfoVO infoVO = employeeService.fetchRadarIndex(companyId, userId, page, size);
-        return copyRadarInfoVO(infoVO);
+        try {
+            RadarInfoVO infoVO = employeeService.fetchRadarIndex(companyId, userId, page, size);
+            return copyRadarInfoVO(infoVO);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     @Override
     public EmployeeForwardViewPage fetchEmployeeForwardView(int userId, int companyId, String positionTitle,
                                                             String order, int page, int size) throws BIZException, TException {
-        EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(companyId,userId, positionTitle, order, page, size);
-        EmployeeForwardViewPage result = new EmployeeForwardViewPage();
-        result.setPage(viewVO.getPage());
-        result.setTotalCount(viewVO.getTotalCount());
-        if(!com.moseeker.common.util.StringUtils.isEmptyList(viewVO.getUserList())){
-            List<EmployeeForwardView> forwardViews = new ArrayList<>();
-            viewVO.getUserList().forEach(view -> {
-                EmployeeForwardView forwardView = new EmployeeForwardView();
-                BeanUtils.copyProperties(view, forwardView);
-                if(!com.moseeker.common.util.StringUtils.isEmptyList(view.getChain())){
-                    List<Connection> connectionList = new ArrayList<>();
-                    view.getChain().forEach(chain -> {
-                        Connection connection = new Connection();
-                        BeanUtils.copyProperties(chain, connection);
-                        connectionList.add(connection);
-                    });
-                    forwardView.setChain(connectionList);
-                }
-                forwardViews.add(forwardView);
-            });
-            result.setUserList(forwardViews);
+        try {
+            EmployeeForwardViewVO viewVO = employeeService.fetchEmployeeForwardView(companyId,userId, positionTitle, order, page, size);
+            EmployeeForwardViewPage result = new EmployeeForwardViewPage();
+            result.setPage(viewVO.getPage());
+            result.setTotalCount(viewVO.getTotalCount());
+            if(!com.moseeker.common.util.StringUtils.isEmptyList(viewVO.getUserList())){
+                List<EmployeeForwardView> forwardViews = new ArrayList<>();
+                viewVO.getUserList().forEach(view -> {
+                    EmployeeForwardView forwardView = new EmployeeForwardView();
+                    BeanUtils.copyProperties(view, forwardView);
+                    if(!com.moseeker.common.util.StringUtils.isEmptyList(view.getChain())){
+                        List<Connection> connectionList = new ArrayList<>();
+                        view.getChain().forEach(chain -> {
+                            Connection connection = new Connection();
+                            BeanUtils.copyProperties(chain, connection);
+                            connectionList.add(connection);
+                        });
+                        forwardView.setChain(connectionList);
+                    }
+                    forwardViews.add(forwardView);
+                });
+                result.setUserList(forwardViews);
+            }
+            return result;
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
         }
-        return result;
     }
 
     @Override
     public RadarInfo fetchEmployeeSeekRecommendPage(int userId, int companyId, int page, int size) throws BIZException, TException {
-        RadarInfoVO infoVO = employeeService.fetchEmployeeSeekRecommend(companyId, userId, page, size);
-        return copyRadarInfoVO(infoVO);
+        try {
+            RadarInfoVO infoVO = employeeService.fetchEmployeeSeekRecommend(companyId, userId, page, size);
+            return copyRadarInfoVO(infoVO);
+        } catch (Exception e) {
+            throw ExceptionUtils.convertException(e);
+        }
     }
 
     private RadarInfo copyRadarInfoVO(RadarInfoVO infoVO){

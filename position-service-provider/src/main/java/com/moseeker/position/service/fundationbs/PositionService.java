@@ -65,6 +65,7 @@ import com.moseeker.position.pojo.PositionForSynchronizationPojo;
 import com.moseeker.position.service.position.*;
 import com.moseeker.position.service.position.liepin.LiePinReceiverHandler;
 import com.moseeker.position.service.position.qianxun.Degree;
+import com.moseeker.position.service.schedule.PositionIndexSender;
 import com.moseeker.position.utils.CommonPositionUtils;
 import com.moseeker.position.utils.SpecialCtiy;
 import com.moseeker.position.utils.SpecialProvince;
@@ -1186,11 +1187,18 @@ public class PositionService {
             PositionService.UpdateES updataESThread = new PositionService.UpdateES(jobPositionIds);
             Thread thread = new Thread(updataESThread);
             thread.start();
+            //此处使用硬编码，感觉十分不好
+            String exchange="new_position_es_index_update_exchange";
+            String routingKey="newpositionesindexupdate.#";
+            sender.sendMqRequest(jobPositionIds,routingKey,exchange);
             return jobPostionResponse;
         }
         logger.info("-------批量修改职位结束---------");
         return jobPostionResponse;
     }
+
+    @Autowired
+    private PositionIndexSender sender;
 
     /**
      * 处理抄送邮件记录
