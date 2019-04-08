@@ -609,7 +609,7 @@ public class SearchengineEntity {
                                     userMap.put("applications", apps);
                                     mapTemp.put("user", userMap);
                                     client.prepareUpdate("users", "users", id + "")
-                                            .setDoc(mapTemp).get();
+                                            .setDoc(mapTemp).execute().actionGet();
                                 }
                                 // 更新ES
                             }
