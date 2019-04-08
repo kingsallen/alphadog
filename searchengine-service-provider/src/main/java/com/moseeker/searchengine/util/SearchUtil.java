@@ -207,6 +207,15 @@ public class SearchUtil {
         ((BoolQueryBuilder) query).filter(cityfilter);
     }
 
+    public void hanleGtRange(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+    }
+    public void hanleLtRange(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).lt(conditions);
+        ((BoolQueryBuilder) query).must(cityfilter);
+    }
+
     //处理聚合的结果
     public Map<String,Object> handleAggs(Aggregations aggs){
     	List<Aggregation> list=aggs.asList();
