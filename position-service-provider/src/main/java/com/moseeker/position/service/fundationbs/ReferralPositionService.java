@@ -30,6 +30,7 @@ import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.PositionEntity;
 import com.moseeker.position.pojo.ReferralPositionMatchInfo;
+import com.moseeker.position.service.schedule.PositionIndexSender;
 import com.moseeker.rpccenter.client.ServiceManager;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
@@ -100,8 +101,10 @@ public class ReferralPositionService {
     @Autowired
     private RedpacketActivityPositionJOOQDao activityPositionDao;
 
-    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
+    @Autowired
+    private PositionIndexSender sender;
 
+    SearchengineServices.Iface searchengineServices = ServiceManager.SERVICEMANAGER.getService(SearchengineServices.Iface.class);
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -109,6 +112,8 @@ public class ReferralPositionService {
 
     private static  final int RECORDNUM = 1500;
 
+    private String exchange="new_position_es_index_update_exchange";
+    private String routingKey="newpositionesindexupdate.#";
     @CounterIface
     @Transactional
     public void putReferralPositions(ReferralPositionUpdateDataDO dataDO) throws Exception{
@@ -313,6 +318,9 @@ public class ReferralPositionService {
                     logger.info(e.getClass().getName(),e);
                 }
             }
+
+            //更新newpositionIndex,用于更新hr职位列表的es数据源
+            sender.sendMqRequest(list,routingKey,exchange);
         }
 
         try{
@@ -323,6 +331,8 @@ public class ReferralPositionService {
         }catch (Exception e){
             logger.info(e.getClass().getName(),e);
         }
+
+
 
         logger.info("processUpdateData taskNum - countTaskNum {} {} ",taskNum, countTaskNum);
 

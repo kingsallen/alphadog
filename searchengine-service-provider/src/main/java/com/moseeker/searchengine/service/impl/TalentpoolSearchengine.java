@@ -1223,13 +1223,13 @@ public class TalentpoolSearchengine {
         String recommend = params.get("is_recommend");
         String origins = params.get("origins");
         String submitTime = params.get("submit_time");
+        String startSubmitTime=params.get("start_submit_time");
+        String endSubmitTime=params.get("end_submit_time");
         String progressStatus = params.get("progress_status");
         String positionIds = params.get("position_id");
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
-        String startSubmitTime=params.get("start_submit_time");
-        String endSubmitTime=params.get("end_submit_time");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
@@ -1263,12 +1263,20 @@ public class TalentpoolSearchengine {
             }
             if(StringUtils.isNotNullOrEmpty(startSubmitTime)){
                 startSubmitTime=startSubmitTime.replace(" ","T");
-                searchUtil.hanleRangeFilter(startSubmitTime,query,"user.applications.submit_time");
+                if(startSubmitTime.length()<19){
+                    startSubmitTime=startSubmitTime+"T00:00:00";
+                }
+                searchUtil.hanleGtRange(startSubmitTime,query,"submit_time");
             }
             if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
                 endSubmitTime=endSubmitTime.replace(" ","T");
-                searchUtil.hanleRangeLTFilter(endSubmitTime,query,"user.applications.submit_time");
+                if(endSubmitTime.length()<19){
+                    endSubmitTime=endSubmitTime+"T23:59:59";
+                }
+                searchUtil.hanleLtRange(endSubmitTime,query,"submit_time");
             }
+
+
         }
 
     }
@@ -1438,11 +1446,10 @@ public class TalentpoolSearchengine {
         String positionStatus=params.get("position_status");
         String startSubmitTime=params.get("start_submit_time");
         String endSubmitTime=params.get("end_submit_time");
+
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
                 &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
-                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)
-                &&StringUtils.isNullOrEmpty(endSubmitTime)
-        ){
+                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)&&StringUtils.isNullOrEmpty(endSubmitTime)){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -1474,12 +1481,19 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(startSubmitTime)){
             startSubmitTime=startSubmitTime.replace(" ","T");
+            if(startSubmitTime.length()<19){
+                startSubmitTime=startSubmitTime+"T00:00:00";
+            }
             sb.append(" val.submit_time>'"+startSubmitTime+"'&&");
         }
         if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
             endSubmitTime=endSubmitTime.replace(" ","T");
+            if(endSubmitTime.length()<19){
+                endSubmitTime=endSubmitTime+"T23:59:59";
+            }
             sb.append(" val.submit_time<'"+endSubmitTime+"'&&");
         }
+
         if(StringUtils.isNotNullOrEmpty(progressStatus)&&Integer.parseInt(progressStatus)>-1){
             sb.append(" val.progress_status=="+progressStatus+"&&");
         }

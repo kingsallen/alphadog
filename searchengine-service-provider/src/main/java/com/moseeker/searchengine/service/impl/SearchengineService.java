@@ -402,7 +402,7 @@ public class SearchengineService {
             QueryBuilder custom_filter = QueryBuilders.termQuery("hb_config_id", hb_config_id);
             ((BoolQueryBuilder) query).must(custom_filter);
         }
-        if(!StringUtils.isEmpty(is_reference)){
+        if(!StringUtils.isEmpty(is_reference) && !is_reference.equals("-1")){
             QueryBuilder custom_filter = QueryBuilders.termQuery("is_referral", is_reference);
             ((BoolQueryBuilder) query).must(custom_filter);
         }

@@ -78,7 +78,7 @@ import org.springframework.stereotype.Service;
  * Created by eddie on 2017/3/9.
  */
 @Service
-//@CounterIface
+@CounterIface
 public class UserEmployeeServiceImpl {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
