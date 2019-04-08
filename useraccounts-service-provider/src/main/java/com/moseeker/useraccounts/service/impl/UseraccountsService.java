@@ -1283,7 +1283,11 @@ public class UseraccountsService {
         Map<Integer, String> positionIdTitleMap = getPositionIdTitleMap(referralLogs);
         CountDownLatch countDownLatch = new CountDownLatch(referralLogs.size());
         List<ClaimResult> claimResults = new ArrayList<>();
+        // 更新申请记录的申请人
+
         for(ReferralLog referralLog : referralLogs){
+            JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
+                    referralLog.getPositionId());
             pool.startTast(()->{
                 ClaimResult claimResult = new ClaimResult();
                 claimResult.setReferral_id(referralLog.getId());
@@ -1304,6 +1308,7 @@ public class UseraccountsService {
                 }finally {
                     claimResults.add(claimResult);
                     this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId);
+                    this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
                     countDownLatch.countDown();
                 }
                 return 0;
@@ -1327,6 +1332,22 @@ public class UseraccountsService {
                 logger.info("================app_id={}=================",app_id);
             },3000);
         }
+    }
+    /*
+    这块主要是做兼容处理
+    */
+    private void updateDataApplicationRealTime(int userId,int applierId ){
+            Map<String,Object> result=new HashMap<>();
+            result.put("tableName","application_recom");
+            result.put("user_id",userId);
+            Map<String,Object> data=new HashMap<>();
+            data.put("tableName","application_recom");
+            data.put("user_id",applierId);
+            scheduledThread.startTast(()->{
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(result));
+                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",JSON.toJSONString(data));
+
+            },5000);
     }
 
     private Map<Integer, String> getPositionIdTitleMap(List<ReferralLog> referralLogs){
