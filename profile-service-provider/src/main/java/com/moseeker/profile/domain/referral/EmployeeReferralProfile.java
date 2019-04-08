@@ -1,5 +1,6 @@
 package com.moseeker.profile.domain.referral;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.moseeker.baseorm.constant.ReferralScene;
 import com.moseeker.baseorm.constant.ReferralType;
@@ -31,7 +32,9 @@ import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -132,12 +135,19 @@ public abstract class EmployeeReferralProfile {
     }
 
     private void updateApplicationEsIndex(int userId){
+
         logger.info("************************更新data/application索引=================================");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
         logger.info("************************更新data/profile索引=================================");
         redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
         logger.info("====================redis==============application更新=============");
         logger.info("================userid={}=================",userId);
+        Map<String,Object> result=new HashMap<>();
+        result.put("tableName","application_recom");
+        result.put("user_id",userId);
+        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", JSON.toJSONString(result));
+        logger.info("ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING====={}",JSON.toJSONString(result));
+
     }
 
 
