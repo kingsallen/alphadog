@@ -263,6 +263,7 @@ public class PositionService {
                 jobPositionPojo.team_name = hrTeamRecord.getName();
                 searchData.setTeam_name(hrTeamRecord.getName());
                 searchData.setDepartment(hrTeamRecord.getName());
+                searchData.setSearch_title(StringUtils.filterStringForSearch(jobPositionPojo.title));
             }
         }
 
