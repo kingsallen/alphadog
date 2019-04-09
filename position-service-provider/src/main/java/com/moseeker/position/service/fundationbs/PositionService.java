@@ -263,10 +263,9 @@ public class PositionService {
                 jobPositionPojo.team_name = hrTeamRecord.getName();
                 searchData.setTeam_name(hrTeamRecord.getName());
                 searchData.setDepartment(hrTeamRecord.getName());
-                searchData.setSearch_title(StringUtils.filterStringForSearch(jobPositionPojo.title));
             }
         }
-
+        searchData.setSearch_title(StringUtils.filterStringForSearch(jobPositionPojo.title));
 
         /** 子公司Id设置 **/
         if (jobPositionPojo.publisher != 0) {
