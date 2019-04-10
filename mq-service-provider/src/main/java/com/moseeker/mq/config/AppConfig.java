@@ -139,6 +139,12 @@ public class AppConfig {
     }
 
     @Bean
+    public TopicExchange redpacketTemplateExchange() {
+        TopicExchange topicExchange = new TopicExchange("redpacket_exchange", true, false);
+        return topicExchange;
+    }
+
+    @Bean
     public TopicExchange templateExchange() {
         TopicExchange topicExchange = new TopicExchange("message_template_exchange", true, false);
         return topicExchange;
@@ -186,6 +192,13 @@ public class AppConfig {
     }
 
     @Bean
+    public Queue redpacketTemplateQueue() {
+        Queue queue = new Queue("redpacket_template_queue", true, false, false);
+        return queue;
+    }
+
+
+    @Bean
     public TopicExchange applicationStateChangeExchange() {
         TopicExchange topicExchange = new TopicExchange("add_bonus_change_exchange", true, false);
         return topicExchange;
@@ -202,7 +215,7 @@ public class AppConfig {
             add(BindingBuilder.bind(employeeFirstRegisterQueue()).to(employeeRegisterExchange()).with("employee_register_routingkey.first_register"));
             add(BindingBuilder.bind(sendSeekReferralTemplateQueue()).to(seekReferralTemplateExchange()).with("*.referral_template"));
             add(BindingBuilder.bind(referralRadarTenMinuteQueue()).to(referralRadarExchange()).with("referral_radar.referral_radar_template"));
-
+            add(BindingBuilder.bind(redpacketTemplateQueue()).to(redpacketTemplateExchange()).with("*.redpacket_template"));
         }};
     }
 }

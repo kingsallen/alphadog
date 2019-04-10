@@ -52,4 +52,6 @@ service JobApplicationServices {
    list<application_struct.ApplicationRecordsForm> getApplications(1: i32 userId, 2: i32 companyId) throws (1: common_struct.BIZException e);
    //通过申请id发送邮件
    i32 appSendEmail(1: i32 appId)throws (1: common_struct.BIZException e);
+   //校验公司下面的appid是否存在
+   i32 validateAppid(1: i32 appId, 2: i32 companyId)throws (1: common_struct.BIZException e);
 }

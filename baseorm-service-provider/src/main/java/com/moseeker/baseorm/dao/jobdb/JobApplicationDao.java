@@ -411,6 +411,13 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		}
 	}
 
+	public int validateAppid(int appId, int companyId) {
+		return create.selectCount().from(JobApplication.JOB_APPLICATION)
+				.where(JobApplication.JOB_APPLICATION.COMPANY_ID.eq(companyId))
+				.and(JobApplication.JOB_APPLICATION.ID.eq(appId))
+				.fetchOneInto(Integer.class);
+	}
+
     public List<JobApplicationDO> getApplyByRecomUserIdAndCompanyId(int userId, int companyId) {
     	return create.selectFrom(JOB_APPLICATION)
 				.where(JOB_APPLICATION.RECOMMENDER_USER_ID.eq(userId))
