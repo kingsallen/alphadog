@@ -538,18 +538,18 @@ public class TemplateMsgHttp {
 
         MessageTplDataCol keywords3 = new MessageTplDataCol();
         keywords3.setColor("#171717");
-        keywords3.setValue("红包充值");
+        keywords3.setValue("红包充值  成功~！！！");
         colMap.put("keyword3", keywords3);
 
-       /* MessageTplDataCol keywords4 = new MessageTplDataCol();
+       MessageTplDataCol keywords4 = new MessageTplDataCol();
         keywords4.setColor("#171717");
         keywords4.setValue(time);
         colMap.put("keyword4", keywords4);
-*/
+
 
         MessageTplDataCol remarkJson = new MessageTplDataCol();
         remarkJson.setColor("#171717");
-       remarkJson.setValue("求推荐时间："+time);
+       remarkJson.setValue("求推荐时间 ---》》："+time);
       colMap.put("remark", remarkJson);
 
         Map<String, Object> applierTemplate = new HashMap<>();
