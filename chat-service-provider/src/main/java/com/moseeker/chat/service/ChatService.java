@@ -865,7 +865,6 @@ public class ChatService {
                     companyConf = hrCompanyConfDao.getConfbyCompanyId(companyDO.getId());
                 }
                 if (companyConf.getHrChat() != null && companyConf.getHrChat().equals(CompanyConf.HRCHAT.ON_AND_MOBOT)) {
-
                     if (StringUtils.isNotNullOrEmpty(companyConf.getMobotName())) {
                         content = AUTO_CONTENT_WITH_HR_EXIST
                                 .replace("{hrName}", companyConf.getMobotName())
@@ -1000,9 +999,6 @@ public class ChatService {
                     chatVO.setOrigin(origin);
                     chatVO.setId(id);
                     chatVO.setPositionId(positionId);
-                    if (org.apache.commons.lang.StringUtils.isNotBlank(compoundContent)) {
-                        chatVO.setCompoundContent(compoundContent);
-                    }
                     chatVOList.add(chatFactory.outputHandle(chatVO));
                 }
             }

@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.service.impl.biztools;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.constant.HBType;
 import com.moseeker.baseorm.db.hrdb.tables.pojos.HrHbItems;
 import com.moseeker.baseorm.db.hrdb.tables.records.HrHbConfigRecord;
@@ -155,6 +156,7 @@ public class HBBizTool {
         }
         long endTime = System.currentTimeMillis();
         logger.info("profile tab packageReferralTab endTime:{}", endTime- startTime);
+        logger.info("ReferralProfileTab tab:{}", JSON.toJSONString(tab));
         return tab;
     }
 

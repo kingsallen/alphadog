@@ -17,7 +17,9 @@ dependencies {
 
 
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

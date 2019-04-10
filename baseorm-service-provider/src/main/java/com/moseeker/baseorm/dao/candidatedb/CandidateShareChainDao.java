@@ -74,6 +74,7 @@ public class CandidateShareChainDao extends JooqCrudImpl<CandidateShareChainDO, 
     public Result<Record2<Integer,Integer>> countRepeatRecommend(List<Integer> userIdList, List<Integer> positionIdList,
                                                                  LocalDateTime lastFriday,
                                                                  LocalDateTime currentFriday) {
+
         return create.select(
                 CandidateShareChain.CANDIDATE_SHARE_CHAIN.ROOT_RECOM_USER_ID,
                 count()

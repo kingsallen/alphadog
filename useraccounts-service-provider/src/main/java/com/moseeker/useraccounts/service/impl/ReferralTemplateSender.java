@@ -64,7 +64,7 @@ public class ReferralTemplateSender {
 
     private static final String REFERRAL_RADAR_SAVE_TEMP = "referral_radar_exchange";
 
-    private static final Integer TEN_MINUTE = 10*60*1000;
+    private static final Integer TEN_MINUTE = 3*60*1000;
 
     @Autowired
     private AmqpTemplate amqpTemplate;
@@ -148,7 +148,6 @@ public class ReferralTemplateSender {
             jsonObject.put("templateId", Constant.RECRUIT_STATUS_EMPLOYEE_RECOMMEND);
             amqpTemplate.send("user_action_topic_exchange", "sharejd.jd_clicked",
                     MessageBuilder.withBody(jsonObject.toJSONString().getBytes()).andProperties(mp).build());
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw ApplicationException.APPLICATION_REFERRAL_REWARD_CREATE_FAILED;
@@ -164,6 +163,7 @@ public class ReferralTemplateSender {
     public void sendTenMinuteTemplateIfNecessary(ReferralCardInfo cardInfo) {
         long timestamp = System.currentTimeMillis();
         cardInfo.setTimestamp(timestamp);
+        logger.info("sendTenMinuteTemplateIfNecessary:{}", cardInfo);
         Timestamp tenMinite = new Timestamp(cardInfo.getTimestamp());
         Timestamp beforeTenMinite = new Timestamp(cardInfo.getTimestamp() - TEN_MINUTE);
         // 获取指定时间前十分钟内的职位浏览人

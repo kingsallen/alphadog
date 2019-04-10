@@ -143,6 +143,7 @@ public class ReceiverHandler {
             Integer positionId = jsonObject.getIntValue("position_id");
             Integer referralId = jsonObject.getIntValue("referral_id");
             log.info("seekReferralReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            log.info("seekReferralReceive jsonObject:{}", jsonObject);
             if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
@@ -150,6 +151,28 @@ public class ReceiverHandler {
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
+            }
+
+        } catch (CommonException e) {
+            log.info(e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
+    }
+
+    @RabbitListener(queues = "#{redpacketTemplateQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
+    @RabbitHandler
+    public void  redpacketTemplateReceive(Message message){
+        String msgBody = "{}";
+
+        try {
+            msgBody = new String(message.getBody(), "UTF-8");
+            JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("redpacketTemplateReceive routingkey:{}", message.getMessageProperties().getReceivedRoutingKey());
+            if(Constant.BALANCE_CHARGE_ROUTINGKEY.equals(message.getMessageProperties().getReceivedRoutingKey())) {
+                Integer companyId = jsonObject.getIntValue("company_id");
+                Integer amount = jsonObject.getIntValue("amount");
+                templateMsgHttp.redpacketAmountTemplate(companyId, amount);
             }
 
         } catch (CommonException e) {
@@ -181,6 +204,7 @@ public class ReceiverHandler {
         try {
             msgBody = new String(message.getBody(), "UTF-8");
             JSONObject jsonObject = JSONObject.parseObject(msgBody);
+            log.info("addAwardHandler jsonObject:{}", jsonObject.toJSONString());
             employeeEntity.addAwardBefore(jsonObject.getIntValue("employeeId"),
                     jsonObject.getIntValue("companyId"), jsonObject.getIntValue("positionId"),
                     jsonObject.getIntValue("templateId"), jsonObject.getIntValue("berecomUserId"),
@@ -218,12 +242,15 @@ public class ReceiverHandler {
         long startTime=System.currentTimeMillis();
         LogVO logVo=this.handlerLogVO();
         try{
+            log.info("message:{}", JSON.toJSONString(message));
             msgBody = new String(message.getBody(), "UTF-8");
+            log.info("msgBody:{}", JSON.toJSONString(msgBody));
             if(message.getMessageProperties().getReceivedRoutingKey().equals(Constant.POSITION_SYNC_FAIL_ROUTINGKEY)){
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);
                 int positionId = jsonObject.getIntValue("positionId");
                 String msg = jsonObject.getString("message");
                 int channal = jsonObject.getIntValue("channal");
+                log.info("positionTemplateJson:{}", JSON.toJSONString(jsonObject));
                 templateMsgHttp.positionSyncFailTemplate(positionId, msg, channal);
             }else {
                 JSONObject jsonObject = JSONObject.parseObject(msgBody);

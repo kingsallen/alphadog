@@ -227,10 +227,9 @@ public class JobApplicationDao extends JooqCrudImpl<JobApplicationDO, JobApplica
 		// 去库里查下，没有的话存入redis
 		com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication jobApplication = getByUserIdAndPositionId(record.getApplierId(), record.getPositionId());
 		if(jobApplication == null){
-
-			 redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
-					record.getApplierId()+"", record.getPositionId()+"", "1");
-			 return 1;
+            redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.APPLICATION_SINGLETON.toString(),
+                    record.getApplierId()+"", record.getPositionId()+"", "1");
+            return 1;
 
 		}
 		return 0;

@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.thrift;
 
+import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.db.userdb.tables.pojos.UserEmployee;
 import com.moseeker.baseorm.exception.ExceptionConvertUtil;
 import com.moseeker.common.exception.Category;
@@ -195,12 +196,26 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }
     }
 
+
+    @Override
+    public Response getUserEmployeeList(int companyId, List<Integer> userIdList) throws TException {
+        try {
+            List<UserEmployee> result=employeeService.getuserEmployeeList(companyId,userIdList);
+            return ResponseUtils.success(result);
+        }catch (Exception e){
+            throw ExceptionUtils.convertException(e);
+        }
+    }
+
+
     @Override
     public PositionReferralInfo getPositionReferralInfo(int userId, int positionId) throws BIZException, TException {
         try {
             com.moseeker.useraccounts.pojo.PositionReferralInfo info = employeeService.getPositionReferralInfo(userId, positionId);
+            logger.info("getPositionReferralInfo info:{}",JSON.toJSONString(info));
             PositionReferralInfo referralInfo = new PositionReferralInfo();
             BeanUtils.copyProperties(info, referralInfo);
+            logger.info("getPositionReferralInfo referralInfo:{}", JSON.toJSONString(referralInfo));
             return referralInfo;
         } catch (Exception e) {
             throw ExceptionUtils.convertException(e);
@@ -274,20 +289,20 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
     }
 
     @Override
-    public Response addUserEmployeePointRecord(int employeeId, int companyId, UserEmployeePointsRecordDO record) throws TException {
-        try {
-            employeeEntity.addReward(employeeId, companyId, record);
-            return ResponseUtils.success(true);
-        }catch (Exception e){
+    public Response getUserEmployeeByUserIdListAndCompanyList(List<Integer> userIdList, List<Integer> companyIdList) throws TException {
+        try{
+            List<UserEmployee> result=employeeService.getEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
+            return ResponseUtils.success(result);
+        }catch(Exception e){
             throw ExceptionUtils.convertException(e);
         }
     }
 
     @Override
-    public Response getUserEmployeeList(int companyId, List<Integer> userIdList) throws TException {
+    public Response addUserEmployeePointRecord(int employeeId, int companyId, UserEmployeePointsRecordDO record) throws TException {
         try {
-            List<UserEmployee> result=employeeService.getuserEmployeeList(companyId,userIdList);
-            return ResponseUtils.success(result);
+            employeeEntity.addReward(employeeId, companyId, record);
+            return ResponseUtils.success(true);
         }catch (Exception e){
             throw ExceptionUtils.convertException(e);
         }
@@ -303,13 +318,4 @@ public class UserEmployeeThriftService implements UserEmployeeService.Iface {
         }
     }
 
-    @Override
-    public Response getUserEmployeeByUserIdListAndCompanyList(List<Integer> userIdList, List<Integer> companyIdList) throws TException {
-        try{
-            List<UserEmployee> result=employeeService.getEmployeeByUserIdListAndCompanyList(userIdList,companyIdList);
-            return ResponseUtils.success(result);
-        }catch(Exception e){
-            throw ExceptionUtils.convertException(e);
-        }
-    }
 }

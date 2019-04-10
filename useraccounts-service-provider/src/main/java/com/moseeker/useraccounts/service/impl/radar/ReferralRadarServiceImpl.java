@@ -307,7 +307,13 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     @Override
     @RadarSwitchLimit
     public RadarConnectResult connectRadar(int companyId, ConnectRadarInfo radarInfo) {
-        return connectRadar(radarInfo);
+        try{
+            return connectRadar(radarInfo);
+        }catch (Exception e){
+            logger.info("errmsg:{}", e.getMessage());
+            throw e;
+        }
+
 
     }
 
@@ -347,7 +353,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         result.setState(connectionLogRecord.getState().intValue());
         result.setChain(userChains);
         result.setEnable_viewer(enableViewer);
-        logger.info("connectRadar:{}", JSON.toJSONString(result));
+        logger.info("connectRadar:{}", result);
         long end = System.currentTimeMillis();
         logger.info("连连看时长:{}", end - start);
         return result;
@@ -401,7 +407,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         userInfo.setName(recomUser.getCname());
         userInfo.setAvatar(userUserDO.getHeadimg());
         result.put("user", userInfo);
-        logger.info("checkEmployee:{}", JSON.toJSONString(result));
+        logger.info("checkEmployee:{}", result);
         return JSON.toJSONString(result);
     }
 
@@ -416,6 +422,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
         long flag = redisClient.setnx(AppId.APPID_ALPHADOG.getValue(), KeyIdentifier.TEN_MINUTE_TEMPLATE.toString(),
                 String.valueOf(cardInfo.getUserId()), String.valueOf(cardInfo.getCompanyId()), "1");
         if(flag == 0){
+            logger.info("十分钟内转发，消息模板不发送");
             return;
         }
         logger.info("ReferralCardInfo:{}", cardInfo);

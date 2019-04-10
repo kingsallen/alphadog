@@ -22,7 +22,6 @@ public enum  OmsSwitchEnum {
     多IP访问(10,"多IP访问"),
     ATS招聘流程升级(12,"ATS招聘流程升级");
 
-
     private int value;
     private String name;
 

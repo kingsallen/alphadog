@@ -564,13 +564,17 @@ public class ProfileService {
      * @return
      */
     public Response checkProfileOther(int userId, int positionId) {
+        logger.info("ProfileService checkProfileOther userId:{}, positionId:{}", userId, positionId);
         int appCvConfigId = positionEntity.getAppCvConfigIdByPosition(positionId);
         Query.QueryBuilder queryBuilder = new Query.QueryBuilder();
         queryBuilder.where("id", appCvConfigId);
         HrAppCvConfDO hrAppCvConfDO = hrAppCvConfDao.getData(queryBuilder.buildQuery());
+        logger.info("ProfileService checkProfileOther hrAppCvConfDO:{}", hrAppCvConfDO);
         if (hrAppCvConfDO == null || StringUtils.isNullOrEmpty(hrAppCvConfDO.getFieldValue())) {
+            logger.info("ProfileService checkProfileOther hrAppCvConfDO is null or getFieldValue is empty");
             return ResponseUtils.success(new HashMap<String, Object>(){{put("result",true);put("resultMsg","");}});
         } else {
+            logger.info("ProfileService checkProfileOther 正常进行");
             queryBuilder.clear();
             queryBuilder.where("user_id", userId);
             ProfileProfileDO profileProfile = dao.getData(queryBuilder.buildQuery());
@@ -588,8 +592,10 @@ public class ProfileService {
             List<JSONObject> appCvConfigJson = new ArrayList<>();
             try {
                 profileOtherJson = JSONObject.parseObject(org.apache.commons.lang.StringUtils.defaultIfBlank(profileOther.getOther(), "{}"));
+                logger.info("ProfileService checkProfileOther profileOtherJson:{}", profileOtherJson);
                 appCvConfigJson = JSONArray.parseArray(hrAppCvConfDO.getFieldValue()).stream().flatMap(fm -> JSONObject.parseObject(String.valueOf(fm)).getJSONArray("fields").stream()).
                         map(m -> JSONObject.parseObject(String.valueOf(m))).filter(f -> f.getIntValue("required") == 0 && f.getIntValue("parent_id") == 0).collect(Collectors.toList());
+                logger.info("ProfileService checkProfileOther appCvConfigJson:{}", appCvConfigJson);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 logger.error("profileOther: {}; hrAppCvConf: {}", profileOther, hrAppCvConfDO);
@@ -597,7 +603,9 @@ public class ProfileService {
             }
             Object customResult = "";
             for (JSONObject appCvConfig : appCvConfigJson) {
+                logger.info("ProfileService checkProfileOther appCvConfig:{}", appCvConfig);
                 if (appCvConfig.containsKey("map") && StringUtils.isNotNullOrEmpty(appCvConfig.getString("map"))) {
+                    logger.info("ProfileService checkProfileOther appCvConfig.getString(\"map\"):{}", appCvConfig.getString("map"));
                     // 复合字段校验
                     String mappingFiled = appCvConfig.getString("map");
                     if (mappingFiled.contains("&")) {
@@ -623,6 +631,7 @@ public class ProfileService {
                         return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "为空");}});
                     }
                 }
+                logger.info("ProfileService checkProfileOther validate_re:{}, customResult:{}", appCvConfig.getString("validate_re"), customResult);
                 if (!Pattern.matches(org.apache.commons.lang.StringUtils.defaultIfEmpty(appCvConfig.getString("validate_re"), ""), String.valueOf(customResult))) {
                     return ResponseUtils.success(new HashMap<String, Object>(){{put("result",false);put("resultMsg","自定义字段#"+appCvConfig.getString("field_name") + "#" + appCvConfig.getString("field_title") + "校验失败");}});
                 }
@@ -654,7 +663,10 @@ public class ProfileService {
 
         List<Integer> userIds = (profileProfileDOList == null || profileProfileDOList.isEmpty()) ? new ArrayList<>() :
                 profileProfileDOList.stream().map(m -> m.getUserId()).collect(Collectors.toList());
+        logger.info("getProfileOther userIds:{}",userIds);
+        logger.info("getProfileOther positionIds:{}",positionIds);
         boolean isReferral = isReferral(userIds, positionIds);
+        logger.info("getProfileOther isReferral:{}",isReferral);
         Map<Integer, String> profileOtherMap = (profileOtherDOList == null || profileOtherDOList.isEmpty()) ? new HashMap<>() :
                 profileOtherDOList.parallelStream().collect(Collectors.toMap(k -> k.getProfileId(), v -> v.getOther(), (oldKey, newKey) -> newKey));
         Map<Integer, Integer> positionCustomConfigMap =  positionEntity.getAppCvConfigIdByPositions(positionIds);
@@ -700,6 +712,7 @@ public class ProfileService {
             }
             e.put("other", parentValue);
         });
+        logger.info("getProfileOther paramsStream:{}",paramsStream);
         return ResponseUtils.success(paramsStream);
     }
 
@@ -720,12 +733,14 @@ public class ProfileService {
         queryBuilder.where(ProfileOther.PROFILE_OTHER.PROFILE_ID.getName(), profileId);
         ProfileOtherDO profileOtherDO = profileOtherDao.getData(queryBuilder.buildQuery());
         if (profileOtherDO == null) {
-            throw null;
+            return new HashMap<>();
         }
         Map<String, Object> otherDatas = JSON.parseObject(profileOtherDO.getOther(), Map.class);
         List<Integer> userIds = new ArrayList<>();
         userIds.add(userId);
+        logger.info("getProfileOther positionIdList:{}",positionIdList);
         boolean isReferral = isReferral(userIds, positionIdList);
+        logger.info("getProfileOther isReferral:{}",isReferral);
         if(!StringUtils.isEmptyList(positionIds) && profileId > 0) {
             logger.info("positionIdList:{}", positionIds);
             Map<Integer, Integer> positionCustomConfigMap = positionEntity.getAppCvConfigIdByPositions(positionIds);
@@ -761,6 +776,7 @@ public class ProfileService {
                 logger.info("getProfileOther parentValues:{}", parentValues);
             }
         }
+        logger.info("getProfileOther otherDatas:{}", otherDatas);
         if(otherDatas.get("degree")!=null && isReferral){
             parentValues.put("degree", otherDatas.get("degree"));
         }
@@ -783,6 +799,8 @@ public class ProfileService {
         boolean isReferral = false;
         if(!StringUtils.isEmptyList(applicationDOS)){
             for (JobApplicationDO applicationDO : applicationDOS){
+                logger.info("getProfileOther isReferral origin:{}", applicationDO.getOrigin());
+                logger.info("getProfileOther isReferral origin:{}", applicationDO.getOrigin()|65536);
                 if(applicationDO.getOrigin() == (applicationDO.getOrigin()|65536)){
                     isReferral = true;
                     break;
@@ -950,7 +968,7 @@ public class ProfileService {
             String phone = resumeObj.getResult().getPhone();
             int userId = 0;
             if (StringUtils.isNotNullOrEmpty(phone)) {
-                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue());
+                UserUserRecord userRecord = talentPoolEntity.getTalentUploadUser(phone, companyId, UserSource.TALENT_UPLOAD.getValue(),null);
                 if (userRecord != null) {
                     userId = userRecord.getId();
                 }
@@ -983,7 +1001,7 @@ public class ProfileService {
         if (employeeDO == null) {
             throw ProfileException.PROFILE_EMPLOYEE_NOT_EXIST;
         }
-        logger.info("parseText ");
+        logger.info("parseText :{}", profile);
         File file;
         try {
             file = FileUtil.createFile("employee_proxy_apply.txt", profile);
@@ -1023,6 +1041,8 @@ public class ProfileService {
 
         ProfileObj profileObj=resumeEntity.handlerParseData(resumeObj,0,"文本解析，不存在附件");
 
+        logger.info("profileParser profileObj:{}", JSON.toJSONString(profileObj));
+
         if (profileObj.getUser() == null || org.apache.commons.lang.StringUtils.isBlank(profileObj.getUser().getMobile())) {
             //判断请求来源是否为我是员工
             if(appid == EmployeeOperationEntrance.IMEMPLOYEE.getKey()){
@@ -1032,6 +1052,8 @@ public class ProfileService {
         }
         resumeEntity.fillProfileObj(profileObj, resumeObj, 0, file.getName(), profile);
 
+        logger.info("profileParser fillProfileObj profileObj:{}", JSON.toJSONString(profileObj));
+
         profileObj.setResumeObj(null);
         JSONObject jsonObject = (JSONObject) JSON.toJSON(profileObj);
         JSONObject profileProfile = createChatBotProfileData();
@@ -1039,11 +1061,14 @@ public class ProfileService {
 
         ProfilePojo profilePojo = profileEntity.parseProfile(jsonObject.toJSONString());
 
+        logger.info("profileParser profilePojo :{}", jsonObject.toJSONString());
+
         UserUserRecord userRecord = userAccountEntity.getCompanyUser(
                 profilePojo.getUserRecord().getMobile().toString(), employeeDO.getCompanyId());
         int userId;
         int profileId;
         if (userRecord != null) {
+            logger.info("profileParser user not null! userRecord:{}", userRecord);
             userId = userRecord.getId();
             profilePojo.setUserRecord(userRecord);
             if (profilePojo.getProfileRecord() != null) {
@@ -1056,6 +1081,10 @@ public class ProfileService {
                 logEmployeeOperationLogEntity.insertEmployeeOperationLog(referenceId,appid, EmployeeOperationType.RESUMERECOMMEND.getKey(),EmployeeOperationIsSuccess.SUCCESS.getKey(),employeeDO.getCompanyId(),profileId);
             }
         } else {
+            logger.info("profileParser user is null");
+
+            logger.info("profileParser source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
+                    profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
             resumeEntity.fillDefault(profilePojo);
             try {
                 userRecord = profileEntity.storeChatBotUser(profilePojo, referenceId, employeeDO.getCompanyId(), UserSource.EMPLOYEE_REFERRAL_CHATBOT, appid);
@@ -1073,6 +1102,7 @@ public class ProfileService {
             }
         }
 
+        logger.info("profileParser userRecord :{}", userRecord);
         return userId;
     }
 

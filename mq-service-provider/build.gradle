@@ -25,7 +25,9 @@ task copyJars(type: Copy) {
     from configurations.runtime
     into 'build/libs' // 目标位置
 }
-
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 jar {
 
     // build one flat jar

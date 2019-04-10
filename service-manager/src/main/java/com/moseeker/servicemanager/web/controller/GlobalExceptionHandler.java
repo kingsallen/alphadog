@@ -33,6 +33,7 @@ public class GlobalExceptionHandler {
                 return ResponseLogNotification.fail(request, e.getMessage());
             }
         } else {
+            logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, e.getMessage());
         }
     }

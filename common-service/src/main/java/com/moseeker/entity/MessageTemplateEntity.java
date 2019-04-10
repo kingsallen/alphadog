@@ -289,6 +289,9 @@ public class MessageTemplateEntity {
                 colMap.put("remark",remarkCol);
             }
             log.info("handleDataRecommendTemplate colMap {}", JSON.toJSONString(colMap));
+            if (colMap == null ) {
+                return null;
+            }
         }
         SimpleDateFormat sf=new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
         MessageTplDataCol keyword1=new MessageTplDataCol();
@@ -311,10 +314,12 @@ public class MessageTemplateEntity {
      处理粉丝职位推荐数据
      */
     private Map<String,MessageTplDataCol> handlerTemplateData(int weChatId,String firstName,String remarkName,int tempId){
+        log.info("MessageTemplateEntity handlerTemplateData");
         Map<String,MessageTplDataCol> colMap =new HashMap<>();
         MessageTplDataCol first=new MessageTplDataCol();
         first.setColor("#E75E48");
         HrWxNoticeMessageRecord record=this.getHrWxTemplateMessage(weChatId,tempId);
+        log.info("MessageTemplateEntity handlerTemplateData:{}", record);
         if(record != null && record.getStatus().byteValue()!=1){
             return null;
         }
@@ -442,8 +447,8 @@ public class MessageTemplateEntity {
             UserWxUserDO userWxUserDO=getUserWxUserById(wxId);
             if(userWxUserDO!=null){
                 String nickName=userWxUserDO.getNickname();
-                if(!StringUtils.isNullOrEmpty(nickName)){
-                    return nickName;
+                    if(!StringUtils.isNullOrEmpty(nickName)){
+                        return nickName;
                 }
             }
         }

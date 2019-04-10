@@ -490,6 +490,7 @@ public class ReferralServiceImpl implements ReferralService {
     @Override
     public int employeeReferralProfile(int employeeId, String name, String mobile, List<String> referralReasons,
                                        int position, byte relationship, String referralText,   byte referralType) throws ProfileException, BIZException {
+        logger.info("=======================开始执行上传操作======employeeReferralProfile===");
         EmployeeReferralProfileNotice profileNotice =  new EmployeeReferralProfileNotice
                 .EmployeeReferralProfileBuilder(employeeId, name, mobile, referralReasons, ReferralScene.Referral)
                 .buildPosition(position)

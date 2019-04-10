@@ -403,7 +403,7 @@ public class ProfileController {
         if (org.apache.commons.lang.StringUtils.isNotBlank(result)) {
             return ResponseLogNotification.fail(request, result);
         } else {
-            int userId = service.parseText(profile, referenceId, appid);
+            int userId = service.parseText(profile, referenceId,appid);
             return Result.success(new HashMap<String,Integer>(){{put("user_id", userId);}}).toJson();
             //return ResponseLogNotification.successJson(request, new HashMap<String,Integer>(){{put("user_id", userId);}});
         }
@@ -510,6 +510,7 @@ public class ProfileController {
             Response result = new Response();
             result.setStatus(e.getCode());
             result.setMessage(e.getMessage());
+
             logger.error(e.getMessage(), e);
             return ResponseLogNotification.fail(request, result);
         } catch (Exception e) {

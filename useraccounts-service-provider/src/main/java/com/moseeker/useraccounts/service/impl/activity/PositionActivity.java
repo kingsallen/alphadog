@@ -95,16 +95,19 @@ public abstract class PositionActivity extends Activity {
         super.updateInfo(activityVO, checked);
         //如果是未审核或者审核未通过，那么依然可以重新选择参与红包的职位。
         if (activityVO.getPositionIds() != null && activityVO.getPositionIds().size() > 0) {
+            logger.info("PositionActivity updateInfo activityVO.getPositionIds().size:{}", activityVO.getPositionIds());
             if (activityStatus.equals(ActivityStatus.Checked)
                     || activityStatus.equals(ActivityStatus.UnChecked)
                     || activityStatus.equals(ActivityStatus.UnStart)) {
 
+                logger.info("PositionActivity updateInfo activityStatus:{}", activityStatus);
                 List<HrHbPositionBindingRecord> bindingRecords1 = positionBindingDao.fetchByActivity(id);
                 List<JobPosition> positionList1 = positionDao.getJobPositionByIdList(activityVO.getPositionIds());
                 if (positionList1 == null || positionList1.size() != activityVO.getPositionIds().size()) {
                     throw UserAccountException.ACTIVITY_POSITIONS_ERROR;
                 }
 
+                logger.info("PositionActivity updateInfo bindingRecords1:{}, positionList1:{}", bindingRecords1, positionList1);
                 //如果选择的职位和之前配置的职位一直，则不需要做任何处理
 
                 List<JobPosition> positionList = positionList1.stream().filter(jobPosition -> {
@@ -115,7 +118,7 @@ public abstract class PositionActivity extends Activity {
                             .findAny();
                     return !optional.isPresent();
                 }).collect(Collectors.toList());
-
+                logger.info("PositionActivity updateInfo positionList:{}", positionList);
 
                 for (JobPosition position : positionList) {
                     if ((position.getHbStatus().intValue() | positionHBStatus.getValue()) == position.getHbStatus()) {
@@ -133,6 +136,7 @@ public abstract class PositionActivity extends Activity {
                                     .findAny();
                             return !optional.isPresent();
                         }).collect(Collectors.toList());
+                logger.info("PositionActivity updateInfo bindingRecords:{}", bindingRecords);
 
                 //将之前参与活动的职位删除，并修改职位参与活动的状态。
                 releasePosition(bindingRecords);
@@ -151,9 +155,11 @@ public abstract class PositionActivity extends Activity {
                     bindings.add(binding);
                     newStatus.put(position.getId(), (byte)(position.getHbStatus() | positionHBStatus.getValue()));
                 }
+                logger.info("PositionActivity updateInfo insert bindings:{}", bindings);
                 positionBindingDao.insert(bindings);
 
                 try {
+                    logger.info("PositionActivity updateInfo 职位参加活动 positionList:{}, newStatus:{}",positionList, newStatus);
                     positionDao.updateHBStatus(positionList, newStatus);
                 } catch (CommonException e) {
                     throw UserAccountException.ACTIVITY_POSITION_HB_STATUS_UPDATE_FAILURE;
@@ -179,7 +185,7 @@ public abstract class PositionActivity extends Activity {
      */
     private void releasePosition() {
         List<HrHbPositionBindingRecord> bindingRecords = positionBindingDao.fetchByActivity(id);
-
+        logger.info("PositionActivity releasePosition bindingRecords:{}", bindingRecords);
         releasePosition(bindingRecords);
     }
 
@@ -195,14 +201,17 @@ public abstract class PositionActivity extends Activity {
                     .collect(Collectors.toList());
             List<JobPosition> positions = positionDao.getJobPositionByIdList(positionIdList);
             List<JobPosition> positionList = new ArrayList<>();
+            logger.info("PositionActivity releasePosition positions:{}", positions);
             Map<Integer, Byte> newStatus = new HashMap<>();
             for (JobPosition position : positions) {
                 //获取当前
                 if ((position.getHbStatus().intValue() | positionHBStatus.getValue()) == position.getHbStatus()) {
                     newStatus.put(position.getId(), (byte)(position.getHbStatus()^positionHBStatus.getValue()));
                     positionList.add(position);
+                } else {
                 }
             }
+            logger.info("PositionActivity releasePosition newStatus:{}", newStatus);
             try {
                 positionDao.updateHBStatus(positionList, newStatus);
             } catch (CommonException e) {
