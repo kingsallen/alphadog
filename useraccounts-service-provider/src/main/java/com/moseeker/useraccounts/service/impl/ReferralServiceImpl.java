@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -417,7 +418,11 @@ public class ReferralServiceImpl implements ReferralService {
             logger.info("==========updateReferralSeekRecommendRecordForRecommendTime");
             recommendDao.updateReferralSeekRecommendRecordForRecommendTime(recommendRecord.getId());
             logger.info("==========publishSeekReferralEvent");
-            templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            try {
+                templateSender.publishSeekReferralEvent(postUserId, recommendRecord.getId(), userId, positionId);
+            }catch (InvalidArgumentException e) {
+                logger.error(e.getMessage());
+            }
             logger.info("==========updateCandidateShareChainTemlate");
             KafkaAskReferralPojo kafkaAskReferralPojo = initKafkaAskReferralPojo(position.getCompanyId(), userId, positionId);
             kafkaSender.sendMessage(Constant.KAFKA_TOPIC_ASK_REFERRAL, JSON.toJSONString(kafkaAskReferralPojo));
