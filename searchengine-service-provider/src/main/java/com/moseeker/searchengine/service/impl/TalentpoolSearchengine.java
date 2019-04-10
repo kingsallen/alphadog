@@ -1068,6 +1068,8 @@ public class TalentpoolSearchengine {
         String intentionCityCode=params.get("intention_city_code");
         String companyTag=params.get("company_tag");
         String hrAutoTag=params.get("hr_auto_tag");
+        String companyManualTag=params.get("company_manual_tag");
+        String profilePoolId = params.get("profile_pool_id");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
         if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag) ){
@@ -1095,8 +1097,16 @@ public class TalentpoolSearchengine {
                 this.queryByHrAutoTag(hrAutoTag,query);
             }
         }
-
+        if(StringUtils.isNotNullOrEmpty(companyManualTag)) {
+            this.queryByCompanyManualTag(companyManualTag,query);
+        }
+        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
+            this.queryByProfilePoolId(profilePoolId,query);
+        }
     }
+
+
+
     /*
      判断是否继续执行查询操作
      */
@@ -1868,6 +1878,11 @@ public class TalentpoolSearchengine {
     private void queryByTagId(String tagIds,String hrId,QueryBuilder queryBuilder){
         searchUtil.handlerTagIds(tagIds,hrId,queryBuilder);
     }
+
+    private void queryByProfilePoolId(String profilePoolId,QueryBuilder queryBuilder){
+        searchUtil.handlerProfilePoolId(profilePoolId,queryBuilder);
+    }
+
     /*
       构建按招标签的查询语句
      */
@@ -1877,6 +1892,9 @@ public class TalentpoolSearchengine {
 
     private void queryByHrAutoTag(String hrAutoTag,QueryBuilder queryBuilder){
         searchUtil.handlerHrAutoTag(hrAutoTag,queryBuilder);
+    }
+    private void queryByCompanyManualTag(String companyManualTag, QueryBuilder queryBuilder) {
+        searchUtil.handlerCompanyManualTag(companyManualTag,queryBuilder);
     }
     /*
      构建和公司相关的人才库
