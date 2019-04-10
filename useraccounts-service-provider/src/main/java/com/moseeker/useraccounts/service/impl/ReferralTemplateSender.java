@@ -35,6 +35,8 @@ import com.moseeker.thrift.gen.dao.struct.jobdb.JobPositionDO;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserEmployeeDO;
 import com.moseeker.thrift.gen.referral.struct.ReferralCardInfo;
 import com.moseeker.useraccounts.service.impl.vo.TemplateBaseVO;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -98,7 +100,12 @@ public class ReferralTemplateSender {
 
     ScheduledThread scheduledThread = ScheduledThread.Instance;
 
-    public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId){
+    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
+    final boolean SA_WRITE_DATA = true;
+    final SensorsAnalytics sa = new SensorsAnalytics(
+            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+
+    public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId) throws InvalidArgumentException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("position_id", positionId);
         jsonObject.put("post_user_id", postUserId);
@@ -108,6 +115,10 @@ public class ReferralTemplateSender {
         amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
                 EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
+        String distinctId = String.valueOf(postUserId);
+        sa.track(distinctId, true, "sendSeekReferralTemplateMessage");
+        sa.shutdown();
+
     }
 
     public void publishReferralEvaluateEvent( int referralId, int userId, int positionId, int applicationId, int employeeId){

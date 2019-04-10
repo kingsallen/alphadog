@@ -63,6 +63,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,6 +131,11 @@ public class TemplateMsgHttp {
 
     @Autowired
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
+
+    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
+    final boolean SA_WRITE_DATA = true;
+    final SensorsAnalytics sa = new SensorsAnalytics(
+            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
 
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
     //private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
@@ -920,7 +927,7 @@ public class TemplateMsgHttp {
         return wxMessageRecordDao.addData(messageRecord).getId();
     }
 
-    public void sendTenMinuteTemplate(JSONObject jsonObject) throws BIZException, ConnectException {
+    public void sendTenMinuteTemplate(JSONObject jsonObject) throws BIZException, ConnectException, InvalidArgumentException {
         int employeeId = jsonObject.getIntValue("employeeId");
         List<Integer> positionIds = JSONArray.parseArray(jsonObject.getString("pids")).toJavaList(Integer.class);
         int visitNum = jsonObject.getIntValue("visitNum");
@@ -989,6 +996,12 @@ public class TemplateMsgHttp {
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
         wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
+        String templateId=inviteTemplateVO.getString("templateId");
+        String distinctId = String.valueOf(employeeId);
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("templateId", templateId);
+        sa.track(distinctId, true, "sendTemplateMessage", properties);
+        sa.shutdown();
     }
 
     private Map<String,JSONObject> createDataMap(JSONObject templateVO) {

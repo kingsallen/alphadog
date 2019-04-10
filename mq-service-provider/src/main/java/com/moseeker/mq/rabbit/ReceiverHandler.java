@@ -21,6 +21,7 @@ import com.moseeker.mq.service.impl.TemplateMsgProducer;
 import com.moseeker.thrift.gen.dao.struct.logdb.LogDeadLetterDO;
 import com.moseeker.thrift.gen.mq.struct.MessageTemplateNoticeStruct;
 import com.rabbitmq.client.Channel;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
@@ -36,6 +37,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.alibaba.fastjson.serializer.SerializerFeature.*;
 
@@ -80,6 +83,11 @@ public class ReceiverHandler {
     public ReceiverHandler() {
         config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
+
+    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
+    final boolean SA_WRITE_DATA = true;
+    final SensorsAnalytics sa = new SensorsAnalytics(
+            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
 
     @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -231,6 +239,14 @@ public class ReceiverHandler {
                         templateMsgProducer.messageTemplateNotice(messageTemplate);
                         this.handlerPosition(params);
                         logVo.setStatus_code(0);
+                        if(type==2){
+                            String distinctId = String.valueOf(params.getUserId());
+                            String templateId=String.valueOf(params.getTemplateId());
+                            Map<String, Object> properties = new HashMap<String, Object>();
+                            properties.put("templateId", templateId);
+                            sa.track(distinctId, true, "sendTemplateMessage", properties);
+                            sa.shutdown();
+                        }
                     } else {
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
                         logVo.setStatus_code(1);

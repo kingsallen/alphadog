@@ -31,6 +31,8 @@ import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.useraccounts.exception.UserAccountException;
 import com.moseeker.useraccounts.kafka.KafkaSender;
 import java.util.*;
+
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -183,7 +185,7 @@ public abstract class EmployeeBinder {
      * @return
      * @throws TException
      */
-    protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException {
+    protected Result doneBind(UserEmployeeDO useremployee,int bindSource) throws TException, InvalidArgumentException {
         log.info("doneBind param: useremployee={}", useremployee);
         Result response = new Result();
 

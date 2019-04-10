@@ -29,6 +29,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +66,12 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
+    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
+    final boolean SA_WRITE_DATA = true;
+    final SensorsAnalytics sa = new SensorsAnalytics(
+            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+
+
     @Override
     protected void paramCheck(BindingParams bindingParams, HrEmployeeCertConfDO certConf) throws Exception {
         super.paramCheck(bindingParams, certConf);
@@ -91,7 +100,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     }
 
     @Override
-    protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException {
+    protected Result doneBind(UserEmployeeDO userEmployee,int bindEmailSource) throws TException, InvalidArgumentException {
         Result response = new Result();
         Query.QueryBuilder query = new Query.QueryBuilder();
         query.clear();
@@ -150,6 +159,9 @@ public class EmployeeBindByEmail extends EmployeeBinder{
 
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
+                String distinctId =String.valueOf(userEmployee.getSysuserId());
+                sa.track(distinctId, true, "sendEmpVerifyEmail");
+                sa.shutdown();
             } else {
                 response.setMessage("发送激活邮件失败");
             }
@@ -161,7 +173,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     public static void main(String[] args) {
     }
 
-    public Result emailActivation(String activationCode,int bindEmailSource) throws TException {
+    public Result emailActivation(String activationCode,int bindEmailSource) throws TException, InvalidArgumentException {
         log.info("emailActivation param: activationCode={}", activationCode);
         Result response = new Result();
         response.setSuccess(false);

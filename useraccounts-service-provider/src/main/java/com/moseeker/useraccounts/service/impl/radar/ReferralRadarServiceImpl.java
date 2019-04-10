@@ -67,6 +67,7 @@ import com.moseeker.useraccounts.service.impl.ReferralTemplateSender;
 import com.moseeker.useraccounts.service.impl.pojos.KafkaInviteApplyPojo;
 import com.moseeker.useraccounts.service.impl.vo.RadarConnectResult;
 import com.moseeker.useraccounts.utils.WxUseridEncryUtil;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,6 +145,11 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
     private static final Integer CHAIN_LIMIT = 3;
 
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
+
+    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
+    final boolean SA_WRITE_DATA = true;
+    final SensorsAnalytics sa = new SensorsAnalytics(
+            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
 
     @Override
     @RadarSwitchLimit
@@ -1163,7 +1169,15 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                     + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" + System.currentTimeMillis();
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
-            return "0".equals(String.valueOf(response.get("errcode")));
+            String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
+            if("0".equals(String.valueOf(response.get("errcode")))) {
+                String distinctId = String.valueOf(inviteInfo.getUserId());
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put("templateId", templateId);
+                sa.track(distinctId, true, "sendTemplateMessage", properties);
+                sa.shutdown();
+                return "0".equals(String.valueOf(response.get("errcode")));
+            }
         }catch (Exception e){
             logger.info("发送邀请模板消息errmsg:{}", e.getMessage());
         }

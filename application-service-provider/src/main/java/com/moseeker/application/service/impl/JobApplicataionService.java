@@ -79,6 +79,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+
 import org.apache.thrift.TException;
 import org.jboss.netty.util.internal.StringUtil;
 import org.joda.time.DateTime;
@@ -174,6 +175,10 @@ public class JobApplicataionService {
     @Autowired
     ApplicationEntity applicationEntity;
 
+    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
+    final boolean SA_WRITE_DATA = true;
+   final SensorsAnalytics sa = new SensorsAnalytics(
+            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
 
     /**
      * 创建申请
@@ -333,6 +338,11 @@ public class JobApplicataionService {
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
+                }
+                if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
+                    String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
+                    sa.track(distinctId, true, "postApplication");
+                    sa.shutdown();
                 }
             }
 

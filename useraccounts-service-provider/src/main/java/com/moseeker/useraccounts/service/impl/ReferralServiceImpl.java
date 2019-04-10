@@ -65,6 +65,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+
+import com.sensorsdata.analytics.javasdk.exceptions.InvalidArgumentException;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -365,7 +367,7 @@ public class ReferralServiceImpl implements ReferralService {
     }
 
     @RadarSwitchLimit
-    public void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException {
+    public void addReferralSeekRecommend(int companyId, int userId, int postUserId, int positionId, int origin) throws CommonException, InvalidArgumentException {
         ValidateUtil vu = new ValidateUtil();
         vu.addIntTypeValidate("候选人编号", userId, 1, null);
         vu.addIntTypeValidate("员工C端编号", postUserId, 1, null);
