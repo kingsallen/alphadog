@@ -12,6 +12,7 @@ public class SearchData {
     private String custom;
     private String department;
     private String title;
+    private String search_title;
     private List<String> city_list;
     private List<String> ecity_list;
 
@@ -77,5 +78,13 @@ public class SearchData {
 
     public void setEcity_list(List<String> ecity_list) {
         this.ecity_list = ecity_list;
+    }
+
+    public String getSearch_title() {
+        return search_title;
+    }
+
+    public void setSearch_title(String search_title) {
+        this.search_title = search_title;
     }
 }

@@ -254,7 +254,7 @@ public class PositionService {
                 searchData.setDepartment(hrTeamRecord.getName());
             }
         }
-
+        searchData.setSearch_title(StringUtils.filterStringForSearch(jobPositionPojo.title));
 
         /** 子公司Id设置 **/
         if (jobPositionPojo.publisher != 0) {
