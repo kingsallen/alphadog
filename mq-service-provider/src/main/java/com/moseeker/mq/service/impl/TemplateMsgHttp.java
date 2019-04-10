@@ -440,17 +440,11 @@ public class TemplateMsgHttp {
         keywords3.setValue(String.valueOf(user.getMobile()));
         colMap.put("keyword3", keywords3);
 
-        MessageTplDataCol keywords4 = new MessageTplDataCol();
-        keywords4.setColor("#171717");
-        keywords4.setValue(time);
-        colMap.put("keywords4", keywords4);
-
-
-   /*     MessageTplDataCol remarkJson = new MessageTplDataCol();
+        MessageTplDataCol remarkJson = new MessageTplDataCol();
         remarkJson.setColor("#171717");
         remarkJson.setValue("求推荐时间："+time);
         colMap.put("remark", remarkJson);
-*/
+
         Map<String, Object> applierTemplate = new HashMap<>();
         applierTemplate.put("data", colMap);
         applierTemplate.put("touser", postWxUser.getOpenid());
@@ -546,6 +540,7 @@ public class TemplateMsgHttp {
         keywords4.setValue(time);
         colMap.put("keyword4", keywords4);
 
+    //    您充值用于红包活动的金额已到账，请到管理后台
 
         /*MessageTplDataCol remarkJson = new MessageTplDataCol();
         remarkJson.setColor("#171717");
