@@ -14,6 +14,7 @@ dependencies {
     compile deps["jetty-support"]
     compile deps["mandrill"]
     compile deps["spring-rabbit"]
+    compile deps["SensorsAnalyticsSDK"]
 }
 
 //compileJava.dependsOn(":thrift-jooq:copyGeneratedFile")

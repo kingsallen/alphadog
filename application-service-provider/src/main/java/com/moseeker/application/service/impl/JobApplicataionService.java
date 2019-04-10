@@ -80,6 +80,7 @@ import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
 
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.thrift.TException;
 import org.jboss.netty.util.internal.StringUtil;
 import org.joda.time.DateTime;
