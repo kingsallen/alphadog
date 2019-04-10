@@ -50,7 +50,7 @@ jar {
         attributes 'Main-Class': 'com.moseeker.application.JobApplicationServer'
     }
 
-
+    zip64 true
 }
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
