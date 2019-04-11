@@ -335,9 +335,10 @@ public class JobApplicataionService {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }
-               if(jobApplication.getRecommender_user_id()>0){
-                   sensorSend.send(String.valueOf(jobApplication.getApplier_id()),"postApplication");
-               }
+                if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
+                    String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
+                    sensorSend.send(distinctId,"postApplication");
+                }
             }
 
             return jobApplicationVO.getApplicationId();
