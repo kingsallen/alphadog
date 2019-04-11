@@ -265,7 +265,7 @@ public class PositionService {
                 searchData.setDepartment(hrTeamRecord.getName());
             }
         }
-
+        searchData.setSearch_title(StringUtils.filterStringForSearch(jobPositionPojo.title));
 
         /** 子公司Id设置 **/
         if (jobPositionPojo.publisher != 0) {
@@ -355,6 +355,7 @@ public class PositionService {
         if ("全国".equals(jobPositionPojo.city)) {
             jobPositionPojo.city_flag = 1;
         }
+
         searchData.setTitle(jobPositionPojo.title);
         jobPositionPojo.search_data = searchData;
         if (jobPositionPojo.salary_bottom == 0 && jobPositionPojo.salary_top == 0) {
@@ -367,6 +368,8 @@ public class PositionService {
         jobPositionPojo.feature = this.getFeatureString(positionFeature);
         return ResponseUtils.success(jobPositionPojo);
     }
+
+
 
     /*
      获取字符串形式的福利特色
@@ -1159,7 +1162,7 @@ public class PositionService {
             receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
 //            Future editFuture = pool.startTast(() -> {
 //                if (batchHandlerCountDown.await(60, TimeUnit.SECONDS)) {
-//                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateRecordList, oldJobMap);
+//                    return receiverHandler.batchHandleLiepinEditOperation(jobPositionUpdateReco   dList, oldJobMap);
 //                } else {
 //                    throw new RuntimeException("rabbitmq线程等待超时");
 //                }
