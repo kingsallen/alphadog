@@ -18,7 +18,6 @@ public class SensorSend {
         tp.startTast(()->{
             try {
                 sa.track(distinctId, true, eventName);
-                sa.shutdown();
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
