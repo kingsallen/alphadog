@@ -21,6 +21,7 @@ import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -96,12 +97,11 @@ public class ReferralTemplateSender {
     @Autowired
     private JobPositionDao positionDao;
 
-    ScheduledThread scheduledThread = ScheduledThread.Instance;
 
-    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
-    final boolean SA_WRITE_DATA = true;
-    final SensorsAnalytics sa = new SensorsAnalytics(
-            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    @Autowired
+    private SensorSend sensorSend;
+
+    ScheduledThread scheduledThread = ScheduledThread.Instance;
 
     public void publishSeekReferralEvent(int postUserId, int referralId, int userId, int positionId) throws InvalidArgumentException {
         JSONObject jsonObject = new JSONObject();
@@ -114,7 +114,7 @@ public class ReferralTemplateSender {
                 EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
         String distinctId = String.valueOf(postUserId);
-        sa.track(distinctId, true, "sendSeekReferralTemplateMessage");
+        sensorSend.send(distinctId,"sendSeekReferralTemplateMessage");
 
     }
 

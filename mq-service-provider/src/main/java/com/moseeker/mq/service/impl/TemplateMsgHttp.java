@@ -37,6 +37,7 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -131,10 +132,8 @@ public class TemplateMsgHttp {
     @Autowired
     private ConfigSysTemplateMessageLibraryDao templateMessageLibraryDao;
 
-    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
-    final boolean SA_WRITE_DATA = true;
-    final SensorsAnalytics sa = new SensorsAnalytics(
-            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    @Autowired
+    private SensorSend sensorSend;
 
     private static String NoticeEmployeeVerifyFirst = "您尚未完成员工认证，请尽快验证邮箱完成认证，若未收到邮件，请检查垃圾邮箱~";
     //private static String NoticeEmployeeVerifyFirstTemplateId = "oYQlRvzkZX1p01HS-XefLvuy17ZOpEPZEt0CNzl52nM";
@@ -1094,7 +1093,7 @@ public class TemplateMsgHttp {
         String distinctId = String.valueOf(employeeId);
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("templateId", templateId);
-        sa.track(distinctId, true, "sendTemplateMessage", properties);
+        sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 
     private Map<String,JSONObject> createDataMap(JSONObject templateVO) {

@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public class SensorSend {
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -18,6 +20,16 @@ public class SensorSend {
         tp.startTast(()->{
             try {
                 sa.track(distinctId, true, eventName);
+            }catch (Exception e){
+                logger.error(e.getMessage(),e);
+            }
+            return 0;
+        });
+    }
+    public void send(String distinctId, String eventName, Map<String, Object> properties){
+        tp.startTast(()->{
+            try {
+                sa.track(distinctId, true, eventName,properties);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
