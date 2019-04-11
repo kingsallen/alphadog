@@ -1069,7 +1069,6 @@ public class TalentpoolSearchengine {
         String companyTag=params.get("company_tag");
         String hrAutoTag=params.get("hr_auto_tag");
         String companyManualTag=params.get("company_manual_tag");
-        String profilePoolId = params.get("profile_pool_id");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
         if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag) ){
@@ -1099,9 +1098,6 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(companyManualTag)) {
             this.queryByCompanyManualTag(companyManualTag,query);
-        }
-        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
-            this.queryByProfilePoolId(profilePoolId,query);
         }
     }
 
@@ -1412,6 +1408,10 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByIstalent(query);
+        }
+        String profilePoolId = params.get("profile_pool_id");
+        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
+            this.queryByProfilePoolId(profilePoolId,query);
         }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
