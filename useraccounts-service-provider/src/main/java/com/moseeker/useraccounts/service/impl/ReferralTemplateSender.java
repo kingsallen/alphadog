@@ -327,7 +327,7 @@ public class ReferralTemplateSender {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        wxMessageRecordDao.insertLogWxMessageRecord(templateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
         return params;
     }
 
