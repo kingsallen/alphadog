@@ -57,11 +57,8 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.ApplicationEntity;
+import com.moseeker.entity.*;
 import com.moseeker.entity.Constant.ApplicationSource;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.PositionEntity;
-import com.moseeker.entity.RabbitMQOperationRecord;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.pojo.company.HrOperationAllRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -174,10 +171,10 @@ public class JobApplicataionService {
     @Autowired
     ApplicationEntity applicationEntity;
 
-    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
-    final boolean SA_WRITE_DATA = true;
-   final SensorsAnalytics sa = new SensorsAnalytics(
-            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    @Autowired
+    private SensorSend sensorSend;
+
+
 
     /**
      * 创建申请
@@ -338,11 +335,9 @@ public class JobApplicataionService {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }
-                if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
-                    String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
-                    sa.track(distinctId, true, "postApplication");
-                    sa.shutdown();
-                }
+               if(jobApplication.getRecommender_user_id()>0){
+                   sensorSend.send(String.valueOf(jobApplication.getApplier_id()),"postApplication");
+               }
             }
 
             return jobApplicationVO.getApplicationId();
