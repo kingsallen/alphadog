@@ -341,7 +341,6 @@ public class JobApplicataionService {
                 if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
                     String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
                     sa.track(distinctId, true, "postApplication");
-                    sa.shutdown();
                 }
             }
 
