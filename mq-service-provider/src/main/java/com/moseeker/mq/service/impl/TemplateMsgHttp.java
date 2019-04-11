@@ -1090,7 +1090,6 @@ public class TemplateMsgHttp {
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
         wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
-        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap);
         String templateId=inviteTemplateVO.getString("templateId");
         String distinctId = String.valueOf(employeeId);
         Map<String, Object> properties = new HashMap<String, Object>();
