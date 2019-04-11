@@ -115,7 +115,6 @@ public class ReferralTemplateSender {
                         .build());
         String distinctId = String.valueOf(postUserId);
         sa.track(distinctId, true, "sendSeekReferralTemplateMessage");
-        sa.shutdown();
 
     }
 

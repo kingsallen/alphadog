@@ -162,7 +162,6 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 response.setMessage("发送激活邮件成功");
                 String distinctId =String.valueOf(userEmployee.getSysuserId());
                 sa.track(distinctId, true, "sendEmpVerifyEmail");
-                sa.shutdown();
             } else {
                 response.setMessage("发送激活邮件失败");
             }
