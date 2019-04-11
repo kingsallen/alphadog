@@ -1180,7 +1180,6 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("templateId", templateId);
                 sa.track(distinctId, true, "sendTemplateMessage", properties);
-                sa.shutdown();
                 return "0".equals(String.valueOf(response.get("errcode")));
             }
         }catch (Exception e){

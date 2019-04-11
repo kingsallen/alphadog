@@ -1095,7 +1095,6 @@ public class TemplateMsgHttp {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("templateId", templateId);
         sa.track(distinctId, true, "sendTemplateMessage", properties);
-        sa.shutdown();
     }
 
     private Map<String,JSONObject> createDataMap(JSONObject templateVO) {

@@ -272,7 +272,6 @@ public class ReceiverHandler {
                             Map<String, Object> properties = new HashMap<String, Object>();
                             properties.put("templateId", templateId);
                             sa.track(distinctId, true, "sendTemplateMessage", properties);
-                            sa.shutdown();
                         }
                     } else {
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");
