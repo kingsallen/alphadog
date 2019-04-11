@@ -22,6 +22,7 @@ public class SensorSend {
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }
-        },0);
+            return 0;
+        });
     }
 }
