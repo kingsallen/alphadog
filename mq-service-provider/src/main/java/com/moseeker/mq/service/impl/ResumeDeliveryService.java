@@ -435,7 +435,7 @@ public class ResumeDeliveryService {
                 if(id > 0) {
                     //发送邮件给候选人
                     Response sendEmail = new Response();
-                    handleMarsEmailAdress(EMAIL_STRUCT,company_id);
+                    handleMarsEmailAddress(EMAIL_STRUCT,company_id);
                     sendEmail = MandrillMailSend.sendEmail(EMAIL_STRUCT, mandrillApikey);
                     logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 
@@ -829,7 +829,7 @@ public class ResumeDeliveryService {
      * @param companyId :
      * @return : void
      */
-    private void handleMarsEmailAdress(Map<String,Object> emailStruct,Integer companyId) {
+    private void handleMarsEmailAddress(Map<String,Object> emailStruct,Integer companyId) {
         if(companyId.equals(company_id_mars)) {
             emailStruct.put("from_email",email_from_mars);
             emailStruct.put("from_name",email_name_mars);
