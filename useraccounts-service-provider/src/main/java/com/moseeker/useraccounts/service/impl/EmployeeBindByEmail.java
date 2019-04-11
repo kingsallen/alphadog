@@ -15,6 +15,7 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.LogEmployeeOperationLogEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -66,10 +67,8 @@ public class EmployeeBindByEmail extends EmployeeBinder{
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
 
-    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
-    final boolean SA_WRITE_DATA = true;
-    final SensorsAnalytics sa = new SensorsAnalytics(
-            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    @Autowired
+    private SensorSend sensorSend;
 
 
     @Override
@@ -161,7 +160,7 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
                 String distinctId =String.valueOf(userEmployee.getSysuserId());
-                sa.track(distinctId, true, "sendEmpVerifyEmail");
+                sensorSend.send(distinctId,"sendEmpVerifyEmail");
             } else {
                 response.setMessage("发送激活邮件失败");
             }

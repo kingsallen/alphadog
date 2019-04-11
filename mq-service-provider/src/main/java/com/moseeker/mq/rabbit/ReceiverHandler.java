@@ -10,10 +10,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
 import com.moseeker.common.log.ReqParams;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.MessageTemplateEntity;
-import com.moseeker.entity.PersonaRecomEntity;
-import com.moseeker.entity.RedPacketEntity;
+import com.moseeker.entity.*;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
 import com.moseeker.entity.pojo.readpacket.RedPacketData;
 import com.moseeker.mq.service.impl.TemplateMsgHttp;
@@ -84,10 +81,8 @@ public class ReceiverHandler {
         config.propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
     }
 
-    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
-    final boolean SA_WRITE_DATA = true;
-    final SensorsAnalytics sa = new SensorsAnalytics(
-            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    @Autowired
+    private SensorSend sensorSend;
 
     @RabbitListener(queues = "#{employeeFirstRegisterQueue.name}", containerFactory = "rabbitListenerContainerFactoryAutoAck")
     @RabbitHandler
@@ -271,7 +266,7 @@ public class ReceiverHandler {
                             String templateId=String.valueOf(params.getTemplateId());
                             Map<String, Object> properties = new HashMap<String, Object>();
                             properties.put("templateId", templateId);
-                            sa.track(distinctId, true, "sendTemplateMessage", properties);
+                            sensorSend.send(distinctId,"sendTemplateMessage",properties);
                         }
                     } else {
                         this.handleTemplateLogDeadLetter(message, msgBody, "没有查到模板所需的具体内容");

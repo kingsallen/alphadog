@@ -36,6 +36,7 @@ import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.entity.EmployeeEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -144,10 +145,8 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
 
     private Pattern chinese = Pattern.compile("[\u4e00-\u9fa5]");
 
-    final String SA_SERVER_URL = "https://service-sensors.moseeker.com/sa?project=ToCTest";
-    final boolean SA_WRITE_DATA = true;
-    final SensorsAnalytics sa = new SensorsAnalytics(
-            new SensorsAnalytics.DebugConsumer(SA_SERVER_URL, SA_WRITE_DATA));
+    @Autowired
+    private SensorSend sensorSend;
 
     @Override
     @RadarSwitchLimit
@@ -1179,7 +1178,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 String distinctId = String.valueOf(inviteInfo.getUserId());
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("templateId", templateId);
-                sa.track(distinctId, true, "sendTemplateMessage", properties);
+                sensorSend.send(distinctId,"sendTemplateMessage",properties);
                 return "0".equals(String.valueOf(response.get("errcode")));
             }
         }catch (Exception e){
