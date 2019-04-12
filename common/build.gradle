@@ -33,6 +33,7 @@ dependencies {
     compile deps["commons-lang"]
     compile deps["mandrill"]
     compile deps["beanutils"]
+    compile deps["spring-beans"]
     compile 'org.jetbrains:annotations:15.0'
     compile fileTree(dir:'../libs',include:'taobao-sdk-java.jar')
     compile fileTree(dir:'../libs',include:'aspose-words-15.8.0-jdk16.jar')
