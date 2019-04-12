@@ -797,6 +797,7 @@ public class ProfileCompletenessImpl {
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
+
             String distinctId = profileRecord.getUserId().toString();
             String property=String.valueOf(completeness);
             Map<String, Object> properties = new HashMap<String, Object>();
