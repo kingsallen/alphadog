@@ -9,7 +9,6 @@ repositories {
 dependencies { 
 	compile project (":common")
 	compile project (":thrift-jooq")
-    compile project(":common-service")
     compile deps["mysql-connector-java"]
 	compile deps["spring-core"]
     compile deps["spring-context"]
