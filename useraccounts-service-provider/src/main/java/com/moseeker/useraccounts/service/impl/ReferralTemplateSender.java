@@ -16,7 +16,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.sensor.SensorSend;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;

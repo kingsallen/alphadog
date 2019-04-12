@@ -25,7 +25,7 @@ import com.moseeker.common.constants.*;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.QueryUtil;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.sensor.SensorSend;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.FileUtil;
