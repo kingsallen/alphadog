@@ -23,9 +23,10 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.sensor.SensorSend;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.entity.SensorSend;
+
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;

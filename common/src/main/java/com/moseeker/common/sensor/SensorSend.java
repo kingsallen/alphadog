@@ -1,4 +1,4 @@
-package com.moseeker.entity;
+package com.moseeker.common.sensor;
 
 import com.moseeker.common.thread.ThreadPool;
 import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
