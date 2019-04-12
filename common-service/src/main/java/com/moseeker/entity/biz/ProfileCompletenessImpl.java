@@ -207,6 +207,11 @@ public class ProfileCompletenessImpl {
                     } else {
                         result = 1;
                     }
+                    String distinctId = profileRecord.getUserId().toString();
+                    String property=String.valueOf(useruserCompleteness);
+                    Map<String, Object> properties = new HashMap<String, Object>();
+                    properties.put("totalComplementness", property);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
                 }
             }
         }
@@ -803,6 +808,7 @@ public class ProfileCompletenessImpl {
             properties.put("totalComplementness", property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
+
         return completeness;
     }
 
