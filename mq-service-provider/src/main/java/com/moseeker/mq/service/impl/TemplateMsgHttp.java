@@ -540,10 +540,17 @@ public class TemplateMsgHttp {
         keywords3.setValue("红包充值");
         colMap.put("keyword3", keywords3);
 
-        MessageTplDataCol remarkJson = new MessageTplDataCol();
+       MessageTplDataCol keywords4 = new MessageTplDataCol();
+        keywords4.setColor("#171717");
+        keywords4.setValue(time);
+        colMap.put("keyword4", keywords4);
+
+    //    您充值用于红包活动的金额已到账，请到管理后台
+
+        /*MessageTplDataCol remarkJson = new MessageTplDataCol();
         remarkJson.setColor("#171717");
-        remarkJson.setValue("求推荐时间："+time);
-        colMap.put("remark", remarkJson);
+       remarkJson.setValue("求推荐时间 ---》》："+time);
+      colMap.put("remark", remarkJson);*/
 
         Map<String, Object> applierTemplate = new HashMap<>();
         applierTemplate.put("data", colMap);
