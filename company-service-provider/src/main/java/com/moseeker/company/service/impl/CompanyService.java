@@ -1465,4 +1465,16 @@ public class CompanyService {
         companySwitchVO.setValid(configOmsSwitchManagementDO.getIsValid());
         return companySwitchVO;
     }
+
+//    public List<CompanySwitchVO> batchCompanySwitch(int moduleName){
+//        List<ConfigOmsSwitchManagementDO> switchs = configOmsSwitchManagementDao.getOmsSwitchByModuleName(moduleName);
+//        List<CompanySwitchVO> list = new ArrayList<>();
+//        for(ConfigOmsSwitchManagementDO switchDO : switchs){
+//            CompanySwitchVO switchVO = new CompanySwitchVO();
+//            switchDO.setCompanyId(switchDO.getCompanyId());
+//            switchVO.setKeyword(switchDO.getModuleName())
+//
+//        }
+//        return list;
+//    }
 }
