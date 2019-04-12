@@ -35,7 +35,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.providerutils.ExceptionUtils;
-import com.moseeker.common.sensor.SensorSend;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.EmployeeEntity;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.pojos.RadarUserInfo;

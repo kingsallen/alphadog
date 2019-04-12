@@ -8,7 +8,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.*;
-import com.moseeker.common.sensor.SensorSend;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;

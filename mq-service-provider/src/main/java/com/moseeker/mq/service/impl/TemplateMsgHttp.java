@@ -30,7 +30,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.sensor.SensorSend;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.DecodeUtils;
 import com.moseeker.common.util.HttpClient;
