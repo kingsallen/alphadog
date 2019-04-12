@@ -114,11 +114,6 @@ public class ProfileCompletenessImpl {
                 } else {
                     totalComplementness = reCalculateProfileCompleteness(profileRecord.getId().intValue());
                 }
-                String distinctId = profileRecord.getUserId().toString();
-                String property=String.valueOf(totalComplementness);
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put("totalComplementness", property);
-                sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -803,6 +798,11 @@ public class ProfileCompletenessImpl {
                 logger.error(e.getMessage(), e);
             }
         }
+        String distinctId = profileRecord.getUserId().toString();
+        String property=String.valueOf(completeness);
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("totalComplementness", property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         return completeness;
     }
 
@@ -818,6 +818,11 @@ public class ProfileCompletenessImpl {
         if (profileRecord != null) {
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileDao.updateRecord(profileRecord);
+            String distinctId = profileRecord.getUserId().toString();
+            String property=String.valueOf(totalComplementness);
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("totalComplementness", property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
     }
 }
