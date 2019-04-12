@@ -139,6 +139,9 @@ public class ProfileService {
     @Autowired
     private JobPositionDao jobPositionDao;
 
+    @Autowired
+    private SensorSend sensorSend;
+
 
 
 
@@ -182,7 +185,8 @@ public class ProfileService {
         record = dao.addRecord(record);
 
         profileCompanyTagService.handlerCompanyTag(record.getId(),struct.getUser_id());
-
+        String distinctId = record.getUserId().toString();
+        sensorSend.send(distinctId,"registerProfileCount");
         return ResponseUtils.success(String.valueOf(record.getId()));
     }
 

@@ -36,5 +36,15 @@ public class SensorSend {
             return 0;
         });
     }
+    public void profileSet(String distinctId, String property, Map<String, Object> properties){
+        tp.startTast(()->{
+            try {
+                sa.profileSet(distinctId, true, property,properties);
+            }catch (Exception e){
+                logger.error(e.getMessage(),e);
+            }
+            return 0;
+        });
+    }
 }
 
