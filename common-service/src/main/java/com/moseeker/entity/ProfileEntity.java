@@ -57,10 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static com.moseeker.baseorm.db.profiledb.tables.ProfileProfile.PROFILE_PROFILE;
 
@@ -85,6 +82,9 @@ public class ProfileEntity {
 
     @Autowired
     LogEmployeeOperationLogEntity logEmployeeOperationLogEntity;
+
+    @Autowired
+    private SensorSend sensorSend;
 
     /**
      * 如果用户已经存在简历，那么则更新简历；如果不存在简历，那么添加简历。
@@ -656,6 +656,11 @@ public class ProfileEntity {
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 userUserRecord, null);
+        String distinctId = profilePojo.getProfileRecord().getUserId().toString();
+        String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("totalComplementness", property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         return id;
     }
 
@@ -669,12 +674,18 @@ public class ProfileEntity {
         logger.info("ProfileEntity storeProfile source:{}, origin:{}, uuid:{}", profilePojo.getProfileRecord().getSource(),
                 profilePojo.getProfileRecord().getOrigin(), profilePojo.getProfileRecord().getUuid());
         logger.info("ProfileEntity storeProfile userId:{}", profilePojo.getUserRecord().getId());
-        return profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
+        int id= profileDao.saveProfile(profilePojo.getProfileRecord(), profilePojo.getBasicRecord(),
                 profilePojo.getAttachmentRecords(), profilePojo.getAwardsRecords(), profilePojo.getCredentialsRecords(),
                 profilePojo.getEducationRecords(), profilePojo.getImportRecords(), profilePojo.getIntentionRecords(),
                 profilePojo.getLanguageRecords(), profilePojo.getOtherRecord(), profilePojo.getProjectExps(),
                 profilePojo.getSkillRecords(), profilePojo.getWorkexpRecords(), profilePojo.getWorksRecords(),
                 profilePojo.getUserRecord(), null);
+        String distinctId = profilePojo.getUserRecord().getId().toString();
+        String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("totalComplementness", property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+        return id;
     }
 
     /**
