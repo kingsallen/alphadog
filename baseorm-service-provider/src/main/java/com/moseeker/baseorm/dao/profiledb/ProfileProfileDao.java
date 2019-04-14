@@ -23,7 +23,6 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.sensor.SensorSend;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
 
@@ -67,8 +66,6 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
         super(ProfileProfile.PROFILE_PROFILE, ProfileProfileDO.class);
     }
 
-    @Autowired
-    private SensorSend sensorSend;
 
     public ProfileProfileDao(TableImpl<ProfileProfileRecord> table, Class<ProfileProfileDO> profileProfileDOClass) {
         super(table, profileProfileDOClass);
@@ -487,11 +484,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileRecord.update();
             profileId = profileRecord.getId().intValue();
-            String distinctId = profileRecord.getUserId().toString();
-            String property=String.valueOf(totalComplementness);
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put("totalComplementness", property);
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+//            String distinctId = profileRecord.getUserId().toString();
+//            String property=String.valueOf(totalComplementness);
+//            Map<String, Object> properties = new HashMap<String, Object>();
+//            properties.put("totalComplementness", property);
+//            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
         return profileId;
     }
@@ -819,11 +816,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 userRecord.update();
             }
             profileId = profileRecord.getId().intValue();
-            String distinctId = profileRecord.getUserId().toString();
-            String property=String.valueOf(totalComplementness);
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put("totalComplementness", property);
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+//            String distinctId = profileRecord.getUserId().toString();
+//            String property=String.valueOf(totalComplementness);
+//            Map<String, Object> properties = new HashMap<String, Object>();
+//            properties.put("totalComplementness", property);
+//            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
         return profileId;
     }
