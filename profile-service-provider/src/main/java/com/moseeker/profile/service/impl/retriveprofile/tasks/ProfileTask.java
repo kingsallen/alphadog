@@ -70,10 +70,8 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
             logForStatistics(profileId, userId, createTime, channelType, profilePojo);
             String distinctId = String.valueOf(userId);
             String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put("totalComplementness", property);
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
-            logger.info("ProfileTask.handler76  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
+            logger.info("ProfileTask.handler73  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             return profileProfileRecord.getId();
         }
         return null;
