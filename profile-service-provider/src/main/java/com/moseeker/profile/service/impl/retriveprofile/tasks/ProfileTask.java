@@ -4,6 +4,7 @@ import com.moseeker.baseorm.dao.profiledb.ProfileProfileDao;
 import com.moseeker.baseorm.db.profiledb.tables.records.ProfileProfileRecord;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.ProfilePojo;
 import com.moseeker.profile.constants.StatisticsForChannelmportVO;
 import com.moseeker.profile.service.impl.retriveprofile.Task;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * profile业务处理。
@@ -32,6 +35,9 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
 
     @Autowired
     ProfileEntity profileEntity;
+
+    @Autowired
+    private SensorSend sensorSend;
 
     public Integer handler(ProfilePojo profilePojo) throws CommonException {
         if (profilePojo != null && profilePojo.getUserRecord() != null) {
@@ -62,6 +68,11 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
                 channelType = profilePojo.getImportRecords().getSource();
             }
             logForStatistics(profileId, userId, createTime, channelType, profilePojo);
+            String distinctId = String.valueOf(userId);
+            String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("totalComplementness", property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
             return profileProfileRecord.getId();
         }
         return null;
