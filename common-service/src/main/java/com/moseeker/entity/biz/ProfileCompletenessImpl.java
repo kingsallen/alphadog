@@ -213,6 +213,7 @@ public class ProfileCompletenessImpl {
                     Map<String, Object> properties = new HashMap<String, Object>();
                     properties.put("totalComplementness", property);
                     sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+                    logger.info("ProfileCompletenessImpl.reCalculateUserUserByUserIdOrMobile216  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
                 }
             }
         }
@@ -808,6 +809,7 @@ public class ProfileCompletenessImpl {
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("totalComplementness", property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness812  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
         }
 
         return completeness;
@@ -830,6 +832,7 @@ public class ProfileCompletenessImpl {
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("totalComplementness", property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness835  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
         }
     }
 }

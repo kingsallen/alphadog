@@ -73,6 +73,7 @@ public class ProfileTask implements Task<ProfilePojo, Integer> {
             Map<String, Object> properties = new HashMap<String, Object>();
             properties.put("totalComplementness", property);
             sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+            logger.info("ProfileTask.handler76  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
             return profileProfileRecord.getId();
         }
         return null;
