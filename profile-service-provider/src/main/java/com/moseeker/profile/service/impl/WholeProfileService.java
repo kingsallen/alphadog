@@ -480,10 +480,8 @@ public class WholeProfileService {
                     }}.toJSONString(), statisticsForChannelmportVO);
                     String distinctId = profileRecord.getUserId().toString();
                     String property=String.valueOf(profileRecord.getCompleteness());
-                    Map<String, Object> properties = new HashMap<String, Object>();
-                    properties.put("totalComplementness", property);
-                    sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
-                    logger.info("WholeProfileService.postResource486  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
+                    logger.info("WholeProfileService.postResource483  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -542,10 +540,8 @@ public class WholeProfileService {
                 }}.toJSONString(), statisticsForChannelmportVO);
                 String distinctId = profilePojo.getUserRecord().getId().toString();
                 String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put("totalComplementness", property);
-                sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
-                logger.info("WholeProfileService.importCV548  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
+                logger.info("WholeProfileService.importCV543  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -605,10 +601,8 @@ public class WholeProfileService {
                 }}.toJSONString(), statisticsForChannelmportVO);
                 String distinctId = profilePojo.getUserRecord().getId().toString();
                 String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put("totalComplementness", property);
-                sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
-                logger.info("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
+                logger.info("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }

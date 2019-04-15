@@ -658,10 +658,8 @@ public class ProfileEntity {
                 userUserRecord, null);
         String distinctId = profilePojo.getProfileRecord().getUserId().toString();
         String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("totalComplementness", property);
-        sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
-        logger.info("ProfileEntity.createProfile664  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
+        logger.info("ProfileEntity.createProfile661  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         return id;
     }
 
@@ -683,10 +681,8 @@ public class ProfileEntity {
                 profilePojo.getUserRecord(), null);
         String distinctId = profilePojo.getUserRecord().getId().toString();
         String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("totalComplementness", property);
-        sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
-        logger.info("ProfileEntity.storeProfile689  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
+        logger.info("ProfileEntity.storeProfile684  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+        sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         return id;
     }
 
