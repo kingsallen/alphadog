@@ -661,6 +661,7 @@ public class ProfileEntity {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("totalComplementness", property);
         sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+        logger.info("ProfileEntity.createProfile664  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
         return id;
     }
 
@@ -685,6 +686,7 @@ public class ProfileEntity {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("totalComplementness", property);
         sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+        logger.info("ProfileEntity.storeProfile689  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
         return id;
     }
 

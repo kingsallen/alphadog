@@ -483,6 +483,7 @@ public class WholeProfileService {
                     Map<String, Object> properties = new HashMap<String, Object>();
                     properties.put("totalComplementness", property);
                     sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+                    logger.info("WholeProfileService.postResource486  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -544,6 +545,7 @@ public class WholeProfileService {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("totalComplementness", property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+                logger.info("WholeProfileService.importCV548  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -606,6 +608,7 @@ public class WholeProfileService {
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("totalComplementness", property);
                 sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+                logger.info("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+properties);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
