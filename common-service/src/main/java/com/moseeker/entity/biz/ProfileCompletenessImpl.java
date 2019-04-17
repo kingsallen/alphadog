@@ -12,6 +12,7 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserUserRecord;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.providerutils.QueryUtil;
+
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.SensorSend;
@@ -207,6 +208,10 @@ public class ProfileCompletenessImpl {
                     } else {
                         result = 1;
                     }
+                    String distinctId = profileRecord.getUserId().toString();
+                    String property=String.valueOf(useruserCompleteness);
+                    logger.info("ProfileCompletenessImpl.reCalculateUserUserByUserIdOrMobile213  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 }
             }
         }
@@ -799,9 +804,8 @@ public class ProfileCompletenessImpl {
             }
             String distinctId = profileRecord.getUserId().toString();
             String property=String.valueOf(completeness);
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put("totalComplementness", property);
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness807  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         }
         return completeness;
     }
@@ -820,9 +824,8 @@ public class ProfileCompletenessImpl {
             profileDao.updateRecord(profileRecord);
             String distinctId = profileRecord.getUserId().toString();
             String property=String.valueOf(totalComplementness);
-            Map<String, Object> properties = new HashMap<String, Object>();
-            properties.put("totalComplementness", property);
-            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
+            logger.info("ProfileCompletenessImpl.reCalculateProfileCompleteness835  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+            sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
         }
     }
 }

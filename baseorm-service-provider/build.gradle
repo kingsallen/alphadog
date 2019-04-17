@@ -18,6 +18,7 @@ dependencies {
     compile deps["spring-jdbc"]
     compile deps["spring-tx"]
     compile deps["jooq"]
+    compile deps["SensorsAnalyticsSDK"]
     compile fileTree(dir:'../libs',include:'libthrift-0.10.0.jar')
 	testCompile 'junit:junit:4.12'
 }

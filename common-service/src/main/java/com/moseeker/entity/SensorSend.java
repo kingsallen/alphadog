@@ -36,10 +36,10 @@ public class SensorSend {
             return 0;
         });
     }
-    public void profileSet(String distinctId, String property, Map<String, Object> properties){
+    public void profileSet(String distinctId, String property, String value){
         tp.startTast(()->{
             try {
-                sa.profileSet(distinctId, true, property,properties);
+                sa.profileSet(distinctId, true, property,value);
             }catch (Exception e){
                 logger.error(e.getMessage(),e);
             }

@@ -38,6 +38,7 @@ import com.moseeker.common.util.query.Order;
 import com.moseeker.common.util.query.OrderBy;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.ProfileEntity;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.TalentPoolEntity;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.entity.biz.ProfileExtParam;
@@ -184,7 +185,8 @@ public class WholeProfileService {
     @Autowired
     ProfileParseUtil profileParseUtil;
 
-
+    @Autowired
+    private SensorSend sensorSend;
 
     @Autowired
     private ProfileCompanyTagService profileCompanyTagService;
@@ -470,13 +472,16 @@ public class WholeProfileService {
                     credentialsRecords, educationRecords, importRecords, intentionRecords, languages, otherRecord,
                     projectExps, skillRecords, workexpRecords, worksRecords, userRecord);
             if (id > 0) {
-
                 try {
                     StatisticsForChannelmportVO statisticsForChannelmportVO = createStaticstics(id, userId, (byte) 0, importRecords);
                     profileUtils.logForStatistics("postResource", new JSONObject() {{
                         this.put("profile", profile);
                         this.put("userId", userId);
                     }}.toJSONString(), statisticsForChannelmportVO);
+                    String distinctId = profileRecord.getUserId().toString();
+                    String property=String.valueOf(profileRecord.getCompleteness());
+                    logger.info("WholeProfileService.postResource483  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                    sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
                 } catch (Exception e) {
                     logger.error(e.getMessage(), e);
                 }
@@ -533,6 +538,10 @@ public class WholeProfileService {
                     this.put("profile", profile);
                     this.put("userId", userId);
                 }}.toJSONString(), statisticsForChannelmportVO);
+                String distinctId = profilePojo.getUserRecord().getId().toString();
+                String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+                logger.info("WholeProfileService.importCV543  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
@@ -590,6 +599,10 @@ public class WholeProfileService {
                 profileUtils.logForStatistics("importCV", new JSONObject() {{
                     this.put("profile", profile);
                 }}.toJSONString(), statisticsForChannelmportVO);
+                String distinctId = profilePojo.getUserRecord().getId().toString();
+                String property=String.valueOf(profilePojo.getProfileRecord().getCompleteness());
+                logger.info("WholeProfileService.createProfileItem611  distinctId{}"+distinctId+ "eventName{}"+"ProfileCompleteness"+property);
+                sensorSend.profileSet(distinctId,"ProfileCompleteness",property);
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
             }
