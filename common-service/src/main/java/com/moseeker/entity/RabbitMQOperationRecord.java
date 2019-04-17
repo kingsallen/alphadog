@@ -30,7 +30,7 @@ public class RabbitMQOperationRecord {
     public void sendMQForOperationRecord(HrOperationAllRecord data){
         String message= JSON.toJSONString(data);
         MessageProperties msp = new MessageProperties();
-        amqpTemplate.send(EXCHANGE, ROUTEKEY, MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
+//        amqpTemplate.send(EXCHANGE, ROUTEKEY, MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
     }
     public void sendMQForOperationRecordList(List<HrOperationAllRecord> dataList){
         for(HrOperationAllRecord data: dataList){
