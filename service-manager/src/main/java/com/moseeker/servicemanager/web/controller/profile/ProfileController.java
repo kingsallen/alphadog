@@ -523,7 +523,7 @@ public class ProfileController {
 
     @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.POST)
     @ResponseBody
-    public String otherFieldsCheck(HttpServletRequest request) {
+    public String otherFieldsCheck_post(HttpServletRequest request) {
         try {
             Params<String, Object> form = ParamUtils.parseRequestParam(request);
             int profileId = form.getInt("profileId", 0);
