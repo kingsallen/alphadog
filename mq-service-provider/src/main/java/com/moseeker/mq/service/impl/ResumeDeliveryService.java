@@ -71,6 +71,7 @@ import java.util.Map;
 @Service
 public class ResumeDeliveryService {
 
+    public static final Map<String, Object> EMAIL_STRUCT = new HashMap<>();
     @Autowired
     private UserUserDao userDao;
     @Autowired
@@ -119,6 +120,10 @@ public class ResumeDeliveryService {
     private TalentPoolEmailEntity emailEntity;
     @Autowired
     private LogEmailProfileSendLogDao logEmailProfileSendLogDao;
+
+    private final int company_id_mars = 1134362;//玛氏校招 硬编码，产品经理的紧急需求
+    private final String email_from_mars="marscampus@moseeker.com";
+    private final String email_name_mars="玛式中国(校招)";
 
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
     private static ConfigPropertiesUtil propertiesReader = ConfigPropertiesUtil.getInstance();
@@ -397,8 +402,8 @@ public class ResumeDeliveryService {
             List<TalentpoolEmail> emailList = talentpoolEmailDao.getTalentpoolEmailByCompanyIdAndConfigId(company_id, Constant.TALENTPOOL_EMAIL_PROFILE_SEND);
             if(emailList != null && emailList.size()>0 && emailList.get(0).getDisable()==1){
                 TalentpoolEmail email = emailList.get(0);
-                Map<String, Object> emailStruct = new HashMap<>();
-                emailStruct.put("templateName", Constant.DELIVERY_SUCCESS);
+                Map<String, Object> EMAIL_STRUCT = new HashMap<>();
+                EMAIL_STRUCT.put("templateName", Constant.DELIVERY_SUCCESS);
                 Map<String, Object> params = new HashMap<>();
                 params.put("send_time", DateUtils.dateToNormalDate(new Date()));
 
@@ -420,17 +425,18 @@ public class ResumeDeliveryService {
                 params.put("weixin_qrcode", qrcodeUrl);
                 params.put("official_account_name", hrWxWechatDO.getName());
                 params.put("company_abbr", companyDO.getAbbreviation());
-                emailStruct.put("mergeVars", params);
+                EMAIL_STRUCT.put("mergeVars", params);
                 //邮件发送的名称，邮箱
-                emailStruct.put("to_name", username);
-                emailStruct.put("to_email", userUserDO.getEmail());
+                EMAIL_STRUCT.put("to_name", username);
+                EMAIL_STRUCT.put("to_email", userUserDO.getEmail());
 
-                logger.info("sendEmailToHr emailStruct:{}", emailStruct);
+                logger.info("sendEmailToHr emailStruct:{}", EMAIL_STRUCT);
                 int id = emailEntity.handerTalentpoolEmailLogAndBalance(1,1,company_id,accountDO.getId());
                 if(id > 0) {
                     //发送邮件给候选人
                     Response sendEmail = new Response();
-                    sendEmail = MandrillMailSend.sendEmail(emailStruct, mandrillApikey);
+                    handleMarsEmailAddress(EMAIL_STRUCT,company_id);
+                    sendEmail = MandrillMailSend.sendEmail(EMAIL_STRUCT, mandrillApikey);
                     logger.info("sendEmailToHr sendEmailResponse:{}", sendEmail);
 
                     //记录发送邮件的结果
@@ -815,6 +821,19 @@ public class ResumeDeliveryService {
         return "";
     }
 
-
+    /**
+     * 功能描述 : 玛氏校招，要求发送给学生的确认邮件通过「marscampus@moseeker.com」发送。
+     * @author : JackYang
+     * @date : 2019-04-11 16:09
+     * @param emailStruct :
+     * @param companyId :
+     * @return : void
+     */
+    private void handleMarsEmailAddress(Map<String,Object> emailStruct,Integer companyId) {
+        if(companyId.equals(company_id_mars)) {
+            emailStruct.put("from_email",email_from_mars);
+            emailStruct.put("from_name",email_name_mars);
+        }
+    }
 }
 
