@@ -30,6 +30,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.providerutils.ExceptionUtils;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.DecodeUtils;
 import com.moseeker.common.util.HttpClient;
@@ -37,7 +38,6 @@ import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.Constant.BonusStage;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.UserAccountEntity;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 import com.moseeker.thrift.gen.common.struct.Response;
@@ -368,7 +368,7 @@ public class TemplateMsgHttp {
 
     }
 
-    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId) {
+    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId,  Date now) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
         UserUserDO user = userDao.getUser(userId);
         if(user == null){
@@ -457,7 +457,9 @@ public class TemplateMsgHttp {
         applierTemplate.put("topcolor", "#FF0000");
         String link = env.getProperty("message.template.employee.recommend")
                 .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
-                +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+            //    +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
+            //new Date().getTime() 改成 now 神策埋点为了保持时间是一个唯一的uuid
+            +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + now;
         applierTemplate.put("url", link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
@@ -1099,7 +1101,10 @@ public class TemplateMsgHttp {
         String templateId=inviteTemplateVO.getString("templateId");
         String distinctId = String.valueOf(employeeId);
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("templateId", templateId);
+        properties.put("templateId", hrWxTemplateMessageDO.getWxTemplateId());
+        properties.put("companyId", hrWxWechatDO.getId());
+        properties.put("employeeId", jsonObject.getIntValue("isEmployee"));
+        properties.put("companyName", hrWxWechatDO.getName());
         sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 

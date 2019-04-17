@@ -10,6 +10,7 @@ import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.log.ELKLog;
 import com.moseeker.common.log.LogVO;
 import com.moseeker.common.log.ReqParams;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.*;
 import com.moseeker.entity.pojo.mq.AIRecomParams;
 import com.moseeker.entity.pojo.readpacket.RedPacketData;
@@ -141,13 +142,24 @@ public class ReceiverHandler {
             log.info("seekReferralReceive jsonObject:{}", jsonObject);
             if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
-                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId);
+                Date now = new Date();
+                now.getTime();
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put("now",now);
+                templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, now);
+                String distinctId = String.valueOf(postUserId);
+                sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
             }else if(Constant.EMPLOYEE_REFERRAL_EVALUATE.equals(message.getMessageProperties().getReceivedRoutingKey())){
                 Integer applicationId= jsonObject.getIntValue("application_id");
                 Integer employeeId= jsonObject.getIntValue("employee_id");
+                Date now = new Date();
+                now.getTime();
+                Map<String, Object> properties = new HashMap<String, Object>();
+                properties.put("now",now);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId);
+                String distinctId = String.valueOf(employeeId);
+                sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
             }
-
         } catch (CommonException e) {
             log.info(e.getMessage(), e);
         } catch (Exception e) {

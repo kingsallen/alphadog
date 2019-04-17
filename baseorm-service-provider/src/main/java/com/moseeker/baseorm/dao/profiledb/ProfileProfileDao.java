@@ -25,6 +25,7 @@ import com.moseeker.common.constants.AbleFlag;
 import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.common.util.FormCheck;
 import com.moseeker.common.util.StringUtils;
+
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.candidatedb.CandidateRecomRecordDO;
 import com.moseeker.thrift.gen.dao.struct.profiledb.ProfileProfileDO;
@@ -36,6 +37,8 @@ import org.jooq.Result;
 import org.jooq.impl.TableImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
@@ -47,6 +50,7 @@ import java.util.stream.Collectors;
 import static com.moseeker.baseorm.db.userdb.tables.UserEmployee.USER_EMPLOYEE;
 import static com.moseeker.baseorm.util.BeanUtils.jooqMapfilter;
 import static com.moseeker.baseorm.util.BeanUtils.profilter;
+
 
 /**
  * @author xxx
@@ -61,6 +65,7 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
     public ProfileProfileDao() {
         super(ProfileProfile.PROFILE_PROFILE, ProfileProfileDO.class);
     }
+
 
     public ProfileProfileDao(TableImpl<ProfileProfileRecord> table, Class<ProfileProfileDO> profileProfileDOClass) {
         super(table, profileProfileDOClass);
@@ -479,6 +484,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
             profileRecord.setCompleteness((byte) (totalComplementness));
             profileRecord.update();
             profileId = profileRecord.getId().intValue();
+//            String distinctId = profileRecord.getUserId().toString();
+//            String property=String.valueOf(totalComplementness);
+//            Map<String, Object> properties = new HashMap<String, Object>();
+//            properties.put("totalComplementness", property);
+//            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
         return profileId;
     }
@@ -806,6 +816,11 @@ public class ProfileProfileDao extends JooqCrudImpl<ProfileProfileDO, ProfilePro
                 userRecord.update();
             }
             profileId = profileRecord.getId().intValue();
+//            String distinctId = profileRecord.getUserId().toString();
+//            String property=String.valueOf(totalComplementness);
+//            Map<String, Object> properties = new HashMap<String, Object>();
+//            properties.put("totalComplementness", property);
+//            sensorSend.profileSet(distinctId,"ProfileCompleteness",properties);
         }
         return profileId;
     }

@@ -16,12 +16,12 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.HttpClient;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.SensorSend;
 import com.moseeker.entity.biz.RadarUtils;
 import com.moseeker.entity.exception.ApplicationException;
 import com.moseeker.thrift.gen.common.struct.BIZException;
@@ -113,9 +113,6 @@ public class ReferralTemplateSender {
         amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
                 EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
-        String distinctId = String.valueOf(postUserId);
-        sensorSend.send(distinctId,"sendSeekReferralTemplateMessage");
-
     }
 
     public void publishReferralEvaluateEvent( int referralId, int userId, int positionId, int applicationId, int employeeId){

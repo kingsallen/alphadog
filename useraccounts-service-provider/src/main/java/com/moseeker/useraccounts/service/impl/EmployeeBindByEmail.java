@@ -8,6 +8,7 @@ import com.moseeker.baseorm.dao.userdb.UserEmployeeDao;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.baseorm.util.BeanUtils;
 import com.moseeker.common.constants.*;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.util.ConfigPropertiesUtil;
 import com.moseeker.common.util.MD5Util;
 import com.moseeker.common.util.StringUtils;
@@ -15,7 +16,6 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.LogEmployeeOperationLogEntity;
-import com.moseeker.entity.SensorSend;
 import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyConfDO;
 import com.moseeker.thrift.gen.dao.struct.hrdb.HrCompanyDO;
@@ -160,7 +160,16 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
                 String distinctId =String.valueOf(userEmployee.getSysuserId());
-                sensorSend.send(distinctId,"sendEmpVerifyEmail");
+
+
+                //神策埋点加入 pro
+
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("companyName", companyDO.getName());
+                properties.put("companyId", companyDO.getId());
+              //  properties.put("userId", userEmployee.getSysuserId());
+                properties.put("isEmployee", userEmployee.isSetActivation());
+                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
             } else {
                 response.setMessage("发送激活邮件失败");
             }
