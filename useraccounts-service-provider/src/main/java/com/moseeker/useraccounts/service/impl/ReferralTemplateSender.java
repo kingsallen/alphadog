@@ -113,9 +113,6 @@ public class ReferralTemplateSender {
         amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
                 EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
-        String distinctId = String.valueOf(postUserId);
-        sensorSend.send(distinctId,"sendSeekReferralTemplateMessage");
-
     }
 
     public void publishReferralEvaluateEvent( int referralId, int userId, int positionId, int applicationId, int employeeId){
