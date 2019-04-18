@@ -1184,7 +1184,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 String distinctId = String.valueOf(inviteInfo.getUserId());
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("templateId", templateId);
-                properties.put("sendTime", sendTime);
+              //  properties.put("sendTime", sendTime);
                 sensorSend.send(distinctId,"sendTemplateMessage",properties);
                 return "0".equals(String.valueOf(response.get("errcode")));
             }

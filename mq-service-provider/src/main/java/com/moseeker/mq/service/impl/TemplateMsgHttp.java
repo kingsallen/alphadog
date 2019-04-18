@@ -1107,8 +1107,7 @@ public class TemplateMsgHttp {
         properties.put("companyId", hrWxWechatDO.getId());
         properties.put("employeeId", jsonObject.getIntValue("isEmployee"));
         properties.put("companyName", hrWxWechatDO.getName());
-        properties.put("sendTime", sendTime);
-
+        //properties.put("sendTime", sendTime);
         sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 
