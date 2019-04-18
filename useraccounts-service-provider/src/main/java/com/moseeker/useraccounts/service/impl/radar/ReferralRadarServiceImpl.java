@@ -1180,11 +1180,12 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
+
+            String distinctId = String.valueOf(inviteInfo.getUserId());
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("templateId", templateId);
+            properties.put("sendTime", sendTime);
             if("0".equals(String.valueOf(response.get("errcode")))) {
-                String distinctId = String.valueOf(inviteInfo.getUserId());
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put("templateId", templateId);
-              //  properties.put("sendTime", sendTime);
                 sensorSend.send(distinctId,"sendTemplateMessage",properties);
                 return "0".equals(String.valueOf(response.get("errcode")));
             }

@@ -1099,15 +1099,15 @@ public class TemplateMsgHttp {
         // 插入模板消息发送记录
         Date now = new Date();
         long sendTime=  now.getTime();
-        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,sendTime);
-        String templateId=inviteTemplateVO.getString("templateId");
-        String distinctId = String.valueOf(employeeId);
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("templateId", hrWxTemplateMessageDO.getWxTemplateId());
         properties.put("companyId", hrWxWechatDO.getId());
         properties.put("employeeId", jsonObject.getIntValue("isEmployee"));
         properties.put("companyName", hrWxWechatDO.getName());
-        //properties.put("sendTime", sendTime);
+        properties.put("sendTime", sendTime);
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,sendTime);
+        String templateId=inviteTemplateVO.getString("templateId");
+        String distinctId = String.valueOf(employeeId);
         sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 
