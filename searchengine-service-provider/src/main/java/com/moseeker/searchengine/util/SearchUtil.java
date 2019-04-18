@@ -1036,4 +1036,20 @@ public class SearchUtil {
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
     }
+
+    public void handlerProfilePoolId(String profilePoolId, QueryBuilder queryBuilder) {
+        List<String> profilePoolIdList=this.stringConvertList(profilePoolId);
+        if(profilePoolIdList != null && profilePoolIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.profile_pool_id",profilePoolIdList);
+            ((BoolQueryBuilder) queryBuilder).must(query2);
+        }
+    }
+
+    public void handlerCompanyManualTag(String companyManualTag, QueryBuilder queryBuilder) {
+        List<String> tagIdList=this.stringConvertList(companyManualTag);
+        if(tagIdList != null && tagIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.company_manual_tag_user.tag_id",tagIdList);
+            ((BoolQueryBuilder) queryBuilder).must(query2);
+        }
+    }
 }
