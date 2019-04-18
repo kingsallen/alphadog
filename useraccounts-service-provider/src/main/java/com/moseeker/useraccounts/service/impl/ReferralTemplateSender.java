@@ -325,8 +325,9 @@ public class ReferralTemplateSender {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        String nowTime=  DateUtils.dateToShortTime(new Date());
-        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,nowTime);
+        Date now = new Date();
+        long sendTime=  now.getTime();
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,sendTime);
         return params;
     }
 
