@@ -169,7 +169,7 @@ public class ProfileValidation {
 		if(StringUtils.isNullOrEmpty(projectExp.getName())) {
 			vm.addFailedElement("项目名称", "未填写项目名称!");
 		}
-		if(StringUtils.isNullOrEmpty(projectExp.getStart_date())) {
+		if(StringUtils.isNullOrEmpty(projectExp.getStart_date())&& projectExp.getEnd_until_now()  != UntitlNow.UntilNow.getStatus()) {
 			vm.addFailedElement("开始时间", "未填写开始时间");
 		}
 		if (StringUtils.isNullOrEmpty(projectExp.getEnd_date())

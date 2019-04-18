@@ -149,7 +149,7 @@ public class TemplateMsgHttp {
     private static String SeekReferralFirst = "人脉无敌！有一位朋友求推荐，快去看看吧~\n";
     private static String ReferralEvaluateFirst = "恭喜您！內推大使【{0}】已成功帮您投递了简历，耐心等待好消息吧！";
     private static String ReferralEvaluateRemark = "请点击查看最新进度~";
-    private static String RedpacketChargeAmountFrist = "您充值用于红包活动的金额已到账，请到管理后台\n检查可用余额并开始创建红包活动吧~~";
+    private static String RedpacketChargeAmountFrist = "充值用于创建新红包活动的金额已通过确认，请到管理后台检查可用余额并开始创建红包活动吧~\n";
     private static Logger logger = LoggerFactory.getLogger(EmailProducer.class);
 
     public void noticeEmployeeVerify(int userId, int companyId, String companyName) {
@@ -542,10 +542,17 @@ public class TemplateMsgHttp {
         keywords3.setValue("红包充值");
         colMap.put("keyword3", keywords3);
 
-        MessageTplDataCol remarkJson = new MessageTplDataCol();
+       MessageTplDataCol keywords4 = new MessageTplDataCol();
+        keywords4.setColor("#171717");
+        keywords4.setValue(time);
+        colMap.put("keyword4", keywords4);
+
+    //    您充值用于红包活动的金额已到账，请到管理后台
+
+        /*MessageTplDataCol remarkJson = new MessageTplDataCol();
         remarkJson.setColor("#171717");
-        remarkJson.setValue("求推荐时间："+time);
-        colMap.put("remark", remarkJson);
+       remarkJson.setValue("求推荐时间 ---》》："+time);
+      colMap.put("remark", remarkJson);*/
 
         Map<String, Object> applierTemplate = new HashMap<>();
         applierTemplate.put("data", colMap);

@@ -1266,14 +1266,14 @@ public class TalentpoolSearchengine {
                 if(startSubmitTime.length()<19){
                     startSubmitTime=startSubmitTime+"T00:00:00";
                 }
-                searchUtil.hanleGtRange(startSubmitTime,query,"submit_time");
+                searchUtil.hanleGtRange(startSubmitTime,query,"user.applications.submit_time");
             }
             if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
                 endSubmitTime=endSubmitTime.replace(" ","T");
                 if(endSubmitTime.length()<19){
                     endSubmitTime=endSubmitTime+"T23:59:59";
                 }
-                searchUtil.hanleLtRange(endSubmitTime,query,"submit_time");
+                searchUtil.hanleLtRange(endSubmitTime,query,"user.applications.submit_time");
             }
 
 
