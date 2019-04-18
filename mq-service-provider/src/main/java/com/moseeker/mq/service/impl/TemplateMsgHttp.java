@@ -255,7 +255,7 @@ public class TemplateMsgHttp {
         }
     }
 
-    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId) {
+    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId,long  dateTime) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
 
         UserUserDO user = userDao.getUser(userId);
@@ -368,7 +368,7 @@ public class TemplateMsgHttp {
 
     }
 
-    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId,  Date now) {
+    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId,  long now) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
         UserUserDO user = userDao.getUser(userId);
         if(user == null){
@@ -1097,7 +1097,8 @@ public class TemplateMsgHttp {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
+        String nowTime=  DateUtils.dateToShortTime(new Date());
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,nowTime);
         String templateId=inviteTemplateVO.getString("templateId");
         String distinctId = String.valueOf(employeeId);
         Map<String, Object> properties = new HashMap<String, Object>();
