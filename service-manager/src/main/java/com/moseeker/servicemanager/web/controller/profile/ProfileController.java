@@ -34,13 +34,6 @@ import com.moseeker.thrift.gen.profile.service.WholeProfileServices;
 import com.moseeker.thrift.gen.profile.struct.ProfileApplicationForm;
 import com.moseeker.thrift.gen.profile.struct.RequiredFieldInfo;
 import com.moseeker.thrift.gen.profile.struct.UserProfile;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.Consts;
 import org.slf4j.Logger;
@@ -48,6 +41,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @CounterIface
@@ -520,6 +521,31 @@ public class ProfileController {
             // do nothing
         }
     }
+
+    @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.POST)
+    @ResponseBody
+    public String otherFieldsCheck_post(HttpServletRequest request) {
+        try {
+            Params<String, Object> form = ParamUtils.parseRequestParam(request);
+            int profileId = form.getInt("profileId", 0);
+            String fields = form.getString("fields");
+            if (profileId != 0 && StringUtils.isNotNullOrEmpty(fields)) {
+                return ResponseLogNotification.success(request, profileOtherService.otherFieldsCheck(profileId, fields));
+            } else {
+                return ResponseLogNotification.fail(request, ResponseUtils.fail(ConstantErrorCodeMessage.PROGRAM_PARAM_NOTEXIST));
+            }
+        } catch (BIZException e) {
+            Response result = new Response();
+            result.setStatus(e.getCode());
+            result.setMessage(e.getMessage());
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, result);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return ResponseLogNotification.fail(request, e.getMessage());
+        }
+    }
+
 
     @RequestMapping(value = "/profile/other/fields/check", method = RequestMethod.GET)
     @ResponseBody
