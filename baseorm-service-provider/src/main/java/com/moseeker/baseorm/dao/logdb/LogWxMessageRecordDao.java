@@ -55,10 +55,10 @@ public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, Lo
         }else {
             messageRecord.setSendstatus("failed");
         }
-        messageRecord.setSendtime(String.valueOf(nowDate));
-        messageRecord.setUpdatetime(String.valueOf(nowDate));
-        //messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
-        //messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
+       // messageRecord.setSendtime(String.valueOf(nowDate));
+        //messageRecord.setUpdatetime(String.valueOf(nowDate));
+        messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
+        messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
         messageRecord.setSendtype(0);
         messageRecord.setErrcode(Integer.parseInt(errcode));
         messageRecord.setErrmsg(String.valueOf(response.get("errmsg")));
