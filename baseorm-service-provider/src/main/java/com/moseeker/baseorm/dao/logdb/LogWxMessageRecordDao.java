@@ -37,7 +37,7 @@ public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, Lo
      * @author  cjm
      * @date  2018/12/11
      */
-    public LogWxMessageRecordDO insertLogWxMessageRecord(int templateId, int wechatId, Map<String, Object> templateValueMap) {
+    public LogWxMessageRecordDO insertLogWxMessageRecord(int templateId, int wechatId, Map<String, Object> templateValueMap,long nowDate) {
         LogWxMessageRecordDO messageRecord = new LogWxMessageRecordDO();
         messageRecord.setTemplateId(templateId);
 //        messageRecord.setTemplateId(Integer.parseInt(String.valueOf(templateValueMap.get("template_id"))));
@@ -55,8 +55,10 @@ public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, Lo
         }else {
             messageRecord.setSendstatus("failed");
         }
-        messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
-        messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
+        messageRecord.setSendtime(String.valueOf(nowDate));
+        messageRecord.setUpdatetime(String.valueOf(nowDate));
+        //messageRecord.setSendtime(DateUtils.dateToShortTime(new Date()));
+        //messageRecord.setUpdatetime(DateUtils.dateToShortTime(new Date()));
         messageRecord.setSendtype(0);
         messageRecord.setErrcode(Integer.parseInt(errcode));
         messageRecord.setErrmsg(String.valueOf(response.get("errmsg")));

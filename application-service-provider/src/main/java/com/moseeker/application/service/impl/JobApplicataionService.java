@@ -338,7 +338,14 @@ public class JobApplicataionService {
                 }
                 if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
                     String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
-                    sensorSend.send(distinctId,"postApplication");
+
+                    //神策埋点 加入 properties
+                    Map<String, Object> properties = new HashMap<String, Object>();
+                    properties.put("company_id",jobApplicationRecord.getCompanyId());
+                    properties.put("company_name",jobApplicationRecord.getCompanyId());
+                    properties.put("isEmployee",jobApplication.getRecommender_user_id());
+                    sensorSend.send(distinctId,"postApplication",properties);
+
                 }
             }
 

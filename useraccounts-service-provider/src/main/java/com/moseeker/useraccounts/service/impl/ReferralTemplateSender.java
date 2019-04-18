@@ -16,6 +16,7 @@ import com.moseeker.common.constants.Constant;
 import com.moseeker.common.constants.ConstantErrorCodeMessage;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.providerutils.ExceptionUtils;
+import com.moseeker.common.util.DateUtils;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.common.util.HttpClient;
@@ -113,9 +114,6 @@ public class ReferralTemplateSender {
         amqpTemplate.sendAndReceive(SEEK_REFERRAL_EXCHNAGE,
                 EMPLOYEE_SEEK_REFERRAL_TEMPLATE, MessageBuilder.withBody(jsonObject.toJSONString().getBytes())
                         .build());
-        String distinctId = String.valueOf(postUserId);
-        sensorSend.send(distinctId,"sendSeekReferralTemplateMessage");
-
     }
 
     public void publishReferralEvaluateEvent( int referralId, int userId, int positionId, int applicationId, int employeeId){
@@ -327,7 +325,9 @@ public class ReferralTemplateSender {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
+        Date now = new Date();
+        long sendTime=  now.getTime();
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,sendTime);
         return params;
     }
 

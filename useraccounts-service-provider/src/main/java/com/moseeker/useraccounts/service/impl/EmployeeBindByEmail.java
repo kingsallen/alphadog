@@ -160,7 +160,16 @@ public class EmployeeBindByEmail extends EmployeeBinder{
                 response.setSuccess(true);
                 response.setMessage("发送激活邮件成功");
                 String distinctId =String.valueOf(userEmployee.getSysuserId());
-                sensorSend.send(distinctId,"sendEmpVerifyEmail");
+
+
+                //神策埋点加入 pro
+
+                Map<String, Object> properties = new HashMap<>();
+                properties.put("companyName", companyDO.getName());
+                properties.put("companyId", companyDO.getId());
+              //  properties.put("userId", userEmployee.getSysuserId());
+                properties.put("isEmployee", userEmployee.isSetActivation());
+                sensorSend.send(distinctId,"sendEmpVerifyEmail",properties);
             } else {
                 response.setMessage("发送激活邮件失败");
             }
