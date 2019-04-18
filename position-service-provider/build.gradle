@@ -40,6 +40,7 @@ jar {
        attributes 'Main-Class': 'com.moseeker.position.PositionServer'
 
     }
+    zip64 true
 
 
 

@@ -255,7 +255,7 @@ public class TemplateMsgHttp {
         }
     }
 
-    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId,long dateTime) {
+    public void referralEvaluateTemplate(int positionId, int userId, int applicationId, int referralId, int employeeId,long  dateTime) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
 
         UserUserDO user = userDao.getUser(userId);
@@ -368,7 +368,7 @@ public class TemplateMsgHttp {
 
     }
 
-    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId,  Long dateTime) {
+    public void seekReferralTemplate(int positionId, int userId, int postUserId, int referralId,  long sendTime) {
         JobPositionDO position = positionDao.getJobPositionById(positionId);
         UserUserDO user = userDao.getUser(userId);
         if(user == null){
@@ -459,7 +459,7 @@ public class TemplateMsgHttp {
                 .replace("{}", String.valueOf(referralId))+"&wechat_signature="+wxWechatDO.getSignature()
             //    +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + new Date().getTime();
             //new Date().getTime() 改成 now 神策埋点为了保持时间是一个唯一的uuid
-            +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + dateTime;
+            +"&from_template_message="+Constant.REFERRAL_SEEK_REFERRAL+"&send_time=" + sendTime;
         applierTemplate.put("url", link);
         logger.info("noticeEmployeeVerify applierTemplate:{}", applierTemplate);
 
@@ -1097,18 +1097,21 @@ public class TemplateMsgHttp {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-
-        //神策埋点传入时间紧作为UUid
-        String nowDate=   DateUtils.dateToShortTime(new Date());
-        wxMessageRecordDao.insertLogWxMessageRecord(inviteTemplateVO.getIntValue("templateId"), hrWxWechatDO.getId(), requestMap,nowDate);
-        String templateId=inviteTemplateVO.getString("templateId");
-        String distinctId = String.valueOf(employeeId);
+        //神策生成埋点时间
+        Date now = new Date();
+        long sendTime=  now.getTime();
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("templateId", hrWxTemplateMessageDO.getWxTemplateId());
+        properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());
         properties.put("companyId", hrWxWechatDO.getId());
         properties.put("employeeId", jsonObject.getIntValue("isEmployee"));
         properties.put("companyName", hrWxWechatDO.getName());
-        properties.put("nowDate", hrWxWechatDO.getName());
+        properties.put("sendTime", sendTime);
+
+        logger.info("神策--sendTemplateMessage---》》sendtime"+sendTime);
+
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
+        //String templateId=inviteTemplateVO.getString("templateId");
+        String distinctId = String.valueOf(employeeId);
         sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 

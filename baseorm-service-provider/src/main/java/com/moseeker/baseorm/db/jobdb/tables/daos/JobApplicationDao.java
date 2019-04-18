@@ -253,4 +253,11 @@ public class JobApplicationDao extends DAOImpl<JobApplicationRecord, com.moseeke
     public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> fetchByOrigin(Integer... values) {
         return fetch(JobApplication.JOB_APPLICATION.ORIGIN, values);
     }
+
+    /**
+     * Fetch records that have <code>event IN (values)</code>
+     */
+    public List<com.moseeker.baseorm.db.jobdb.tables.pojos.JobApplication> fetchByEvent(Integer... values) {
+        return fetch(JobApplication.JOB_APPLICATION.EVENT, values);
+    }
 }

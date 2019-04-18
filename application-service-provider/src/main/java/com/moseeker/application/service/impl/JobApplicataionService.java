@@ -50,6 +50,7 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
 import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
@@ -77,7 +78,6 @@ import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
-
 import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
@@ -115,6 +115,8 @@ public class JobApplicataionService {
     private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
 
     private ThreadPool tp = ThreadPool.Instance;
+
+    private ScheduledThread scheduledThread=ScheduledThread.Instance;
     //redis的客户端
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -237,10 +239,12 @@ public class JobApplicataionService {
     更新data/application索引
      */
     private void updateApplicationEsIndex(int userId){
-        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
-        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
-        logger.info("====================redis==============application更新=============");
-        logger.info("================userid={}=================",userId);
+        scheduledThread.startTast(()->{
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            logger.info("====================redis==============application更新=============");
+            logger.info("================userid={}=================",userId);
+        },6000);
     }
     /*
      * @Author zztaiwll

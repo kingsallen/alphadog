@@ -37,6 +37,7 @@ jar {
        attributes 'Main-Class': 'com.moseeker.company.CompanyServer'
     }
 
+    zip64 true
 
 }
 tasks.withType(JavaCompile) {

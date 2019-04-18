@@ -245,9 +245,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             chain = doInitShortestChain(shortestChain, userUserDOS);
         }
         // 发送消息模板
-       String nowTime=  DateUtils.dateToShortTime(new Date());
+        Date now = new Date();
+        long sendTime=  now.getTime();
 
-        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS,nowTime);
+        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS,sendTime);
         if(isSent){
             if(inviteInfo.getTimestamp() != 0){
                 templateShareChainDao.updateTypeBySendTime(inviteInfo, ReferralApplyHandleEnum.invite.getType());
@@ -1161,7 +1162,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/13
      * @return  是否发送成功
      */
-    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,String nowTime) {
+    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,long sendTime) {
         try{
             UserWxUserDO userWxUserDO = getWxUser(inviteInfo.getEndUserId(), userWxUserDOS);
             if(userWxUserDO == null){
@@ -1175,15 +1176,16 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                     + "?wechat_signature=" + hrWxWechatDO.getSignature() + "&recom=" + WxUseridEncryUtil.encry(employee.getSysuserId(), 10) + "&psc=0"
                  //   + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" + System.currentTimeMillis();
                //神策数据埋点需要传入nowtime作为唯一UUID
-                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +nowTime;
+                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +sendTime;
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
-            String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
             if("0".equals(String.valueOf(response.get("errcode")))) {
-                String distinctId = String.valueOf(inviteInfo.getUserId());
-                Map<String, Object> properties = new HashMap<String, Object>();
-                properties.put("templateId", templateId);
-                properties.put("nowTime", nowTime);
+            String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
+            String distinctId = String.valueOf(inviteInfo.getUserId());
+            Map<String, Object> properties = new HashMap<String, Object>();
+            properties.put("templateId", templateId);
+            properties.put("sendTime", sendTime);
+            logger.info("神策邀请投递发送消息模板-----> sendTime{} templateId{}" +sendTime +templateId);
                 sensorSend.send(distinctId,"sendTemplateMessage",properties);
                 return "0".equals(String.valueOf(response.get("errcode")));
             }
