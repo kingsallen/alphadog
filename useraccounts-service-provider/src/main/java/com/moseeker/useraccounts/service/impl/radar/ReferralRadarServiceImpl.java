@@ -1161,7 +1161,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/13
      * @return  是否发送成功
      */
-    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,String nowTime) {
+    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,String sendTime) {
         try{
             UserWxUserDO userWxUserDO = getWxUser(inviteInfo.getEndUserId(), userWxUserDOS);
             if(userWxUserDO == null){
@@ -1175,7 +1175,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                     + "?wechat_signature=" + hrWxWechatDO.getSignature() + "&recom=" + WxUseridEncryUtil.encry(employee.getSysuserId(), 10) + "&psc=0"
                  //   + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" + System.currentTimeMillis();
                //神策数据埋点需要传入nowtime作为唯一UUID
-                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +nowTime;
+                + "&from_template_message="+Constant.REFERRAL_INVITE_APPLICATION+"&send_time=" +sendTime;
             String requestUrl = env.getProperty("message.template.delivery.url").replace("{}", hrWxWechatDO.getAccessToken());
             Map<String, Object> response = templateHelper.sendTemplate(hrWxWechatDO, userWxUserDO.getOpenid(), inviteTemplateVO, requestUrl, redirectUrl);
             String templateId=String.valueOf(inviteTemplateVO.get("templateId"));
@@ -1183,7 +1183,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
                 String distinctId = String.valueOf(inviteInfo.getUserId());
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("templateId", templateId);
-                properties.put("nowTime", nowTime);
+                properties.put("sendTime", sendTime);
                 sensorSend.send(distinctId,"sendTemplateMessage",properties);
                 return "0".equals(String.valueOf(response.get("errcode")));
             }
