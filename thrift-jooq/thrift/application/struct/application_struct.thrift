@@ -34,6 +34,7 @@ struct JobApplication {
     25: optional i32 view_count,             // profile被hr查看次数
     26: optional i32 origin,                 // 简历来源1 PC;2 企业号；4 聚合好； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投
     27: optional i32 appid                   // 申请方的appid
+    28: optional i32 event                   // 事件，0：无，1：HR推荐
 }
 
 /*

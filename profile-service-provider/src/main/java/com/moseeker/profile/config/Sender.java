@@ -42,6 +42,7 @@ public class Sender {
         // 延迟5s发送
         msp.setDelay(80000);
         msp.setReceivedDelay(80000);
+        msp.setExpiration("");
         amqpTemplate.send("profile_company_tag_recom_exchange", "profilecompanytagrecom.#", MessageBuilder.withBody(message.getBytes()).andProperties(msp).build());
         System.out.println("send success...");
     }

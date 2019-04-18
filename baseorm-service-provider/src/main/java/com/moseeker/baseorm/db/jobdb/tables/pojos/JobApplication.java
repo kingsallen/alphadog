@@ -23,7 +23,7 @@ import javax.annotation.Generated;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplication implements Serializable {
 
-    private static final long serialVersionUID = -2042539690;
+    private static final long serialVersionUID = -1481693072;
 
     private Integer   id;
     private Integer   wechatId;
@@ -53,6 +53,7 @@ public class JobApplication implements Serializable {
     private Integer   viewCount;
     private Integer   recommenderUserId;
     private Integer   origin;
+    private Integer   event;
 
     public JobApplication() {}
 
@@ -85,6 +86,7 @@ public class JobApplication implements Serializable {
         this.viewCount = value.viewCount;
         this.recommenderUserId = value.recommenderUserId;
         this.origin = value.origin;
+        this.event = value.event;
     }
 
     public JobApplication(
@@ -115,7 +117,8 @@ public class JobApplication implements Serializable {
         Integer   emailStatus,
         Integer   viewCount,
         Integer   recommenderUserId,
-        Integer   origin
+        Integer   origin,
+        Integer   event
     ) {
         this.id = id;
         this.wechatId = wechatId;
@@ -145,6 +148,7 @@ public class JobApplication implements Serializable {
         this.viewCount = viewCount;
         this.recommenderUserId = recommenderUserId;
         this.origin = origin;
+        this.event = event;
     }
 
     public Integer getId() {
@@ -371,6 +375,14 @@ public class JobApplication implements Serializable {
         this.origin = origin;
     }
 
+    public Integer getEvent() {
+        return this.event;
+    }
+
+    public void setEvent(Integer event) {
+        this.event = event;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("JobApplication (");
@@ -403,6 +415,7 @@ public class JobApplication implements Serializable {
         sb.append(", ").append(viewCount);
         sb.append(", ").append(recommenderUserId);
         sb.append(", ").append(origin);
+        sb.append(", ").append(event);
 
         sb.append(")");
         return sb.toString();

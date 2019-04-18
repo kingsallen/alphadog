@@ -27,7 +27,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationRecord> {
 
-    private static final long serialVersionUID = -1229430653;
+    private static final long serialVersionUID = -196843210;
 
     /**
      * Setter for <code>jobdb.job_application.id</code>.
@@ -58,14 +58,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.position_id</code>. job_position.id, 职位ID
+     * Setter for <code>jobdb.job_application.position_id</code>. hr_position.id, 职位ID
      */
     public void setPositionId(Integer value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.position_id</code>. job_position.id, 职位ID
+     * Getter for <code>jobdb.job_application.position_id</code>. hr_position.id, 职位ID
      */
     public Integer getPositionId() {
         return (Integer) get(2);
@@ -100,14 +100,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+     * Setter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
      */
     public void setStatusId(Integer value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.status_id</code>. hr_points_conf.id, 申请状态ID
+     * Getter for <code>jobdb.job_application.status_id</code>. hr_award_config.id, 申请状态ID
      */
     public Integer getStatusId() {
         return (Integer) get(5);
@@ -366,14 +366,14 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败
+     * Setter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
      */
     public void setEmailStatus(Integer value) {
         set(24, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；8: 包含特殊字体;  9，提取邮件失败
+     * Getter for <code>jobdb.job_application.email_status</code>. 0，有效；1,未收到回复邮件；2，文件格式不支持；3，附件超过10M；9，提取邮件失败
      */
     public Integer getEmailStatus() {
         return (Integer) get(24);
@@ -408,17 +408,31 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     }
 
     /**
-     * Setter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072：58同步；262144：间接内推(联系内推)，524288：间接内推(邀请投递), 1048576 间接内推(转发投递)
+     * Setter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58。  2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
      */
     public void setOrigin(Integer value) {
         set(27, value);
     }
 
     /**
-     * Getter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072：58同步；262144：间接内推(联系内推)，524288：间接内推(邀请投递), 1048576 间接内推(转发投递)
+     * Getter for <code>jobdb.job_application.origin</code>. 申请来源 1 PC;2 企业号；4 聚合号； 8 51； 16 智联； 32 猎聘； 64 支付宝； 128 简历抽取； 256 员工代投 ; 512:程序导入（和黄简历导入）; 1024: email 申请; 2048:最佳东方;4096:一览英才;8192:JobsDB;16384:民航; 32768:员工主动推荐; 65536:内推, 131072:job58。  2097152:老员工回聘，4194304：员工转岗 ，8388608 猎头上传
      */
     public Integer getOrigin() {
         return (Integer) get(27);
+    }
+
+    /**
+     * Setter for <code>jobdb.job_application.event</code>. 事件，0：无，1：HR推荐
+     */
+    public void setEvent(Integer value) {
+        set(28, value);
+    }
+
+    /**
+     * Getter for <code>jobdb.job_application.event</code>. 事件，0：无，1：HR推荐
+     */
+    public Integer getEvent() {
+        return (Integer) get(28);
     }
 
     // -------------------------------------------------------------------------
@@ -447,7 +461,7 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
     /**
      * Create a detached, initialised JobApplicationRecord
      */
-    public JobApplicationRecord(Integer id, Integer wechatId, Integer positionId, Integer recommenderId, Timestamp submitTime, Integer statusId, Integer lApplicationId, Integer reward, Integer sourceId, Timestamp _CreateTime, Integer applierId, Integer interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, Integer companyId, Timestamp updateTime, Integer appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount, Integer recommenderUserId, Integer origin) {
+    public JobApplicationRecord(Integer id, Integer wechatId, Integer positionId, Integer recommenderId, Timestamp submitTime, Integer statusId, Integer lApplicationId, Integer reward, Integer sourceId, Timestamp _CreateTime, Integer applierId, Integer interviewId, String resumeId, Integer atsStatus, String applierName, Integer disable, Integer routine, Byte isViewed, Byte notSuitable, Integer companyId, Timestamp updateTime, Integer appTplId, Byte proxy, Integer applyType, Integer emailStatus, Integer viewCount, Integer recommenderUserId, Integer origin, Integer event) {
         super(JobApplication.JOB_APPLICATION);
 
         set(0, id);
@@ -478,5 +492,6 @@ public class JobApplicationRecord extends UpdatableRecordImpl<JobApplicationReco
         set(25, viewCount);
         set(26, recommenderUserId);
         set(27, origin);
+        set(28, event);
     }
 }
