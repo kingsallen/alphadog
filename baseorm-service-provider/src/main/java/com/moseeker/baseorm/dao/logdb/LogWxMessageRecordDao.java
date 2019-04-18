@@ -37,7 +37,7 @@ public class LogWxMessageRecordDao extends JooqCrudImpl<LogWxMessageRecordDO, Lo
      * @author  cjm
      * @date  2018/12/11
      */
-    public LogWxMessageRecordDO insertLogWxMessageRecord(int templateId, int wechatId, Map<String, Object> templateValueMap,long nowDate) {
+    public LogWxMessageRecordDO insertLogWxMessageRecord(int templateId, int wechatId, Map<String, Object> templateValueMap) {
         LogWxMessageRecordDO messageRecord = new LogWxMessageRecordDO();
         messageRecord.setTemplateId(templateId);
 //        messageRecord.setTemplateId(Integer.parseInt(String.valueOf(templateValueMap.get("template_id"))));
