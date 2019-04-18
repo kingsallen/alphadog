@@ -245,9 +245,10 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
             chain = doInitShortestChain(shortestChain, userUserDOS);
         }
         // 发送消息模板
-       String nowTime=  DateUtils.dateToShortTime(new Date());
+        Date now = new Date();
+        long sendTime=  now.getTime();
 
-        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS,nowTime);
+        boolean isSent = sendInviteTemplate(inviteInfo, hrWxWechatDO, userUserDOS,sendTime);
         if(isSent){
             if(inviteInfo.getTimestamp() != 0){
                 templateShareChainDao.updateTypeBySendTime(inviteInfo, ReferralApplyHandleEnum.invite.getType());
@@ -1161,7 +1162,7 @@ public class ReferralRadarServiceImpl implements ReferralRadarService {
      * @date  2018/12/13
      * @return  是否发送成功
      */
-    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,String sendTime) {
+    private boolean sendInviteTemplate(ReferralInviteInfo inviteInfo, HrWxWechatDO hrWxWechatDO, List<UserWxUserDO> userWxUserDOS,long sendTime) {
         try{
             UserWxUserDO userWxUserDO = getWxUser(inviteInfo.getEndUserId(), userWxUserDOS);
             if(userWxUserDO == null){

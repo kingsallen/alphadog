@@ -1097,7 +1097,8 @@ public class TemplateMsgHttp {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
-        String sendTime=  DateUtils.dateToShortTime(new Date());
+        Date now = new Date();
+        long sendTime=  now.getTime();
         wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,sendTime);
         String templateId=inviteTemplateVO.getString("templateId");
         String distinctId = String.valueOf(employeeId);
