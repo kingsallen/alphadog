@@ -345,8 +345,8 @@ public class JobApplicataionService {
 
                     //神策埋点 加入 properties
                     Map<String, Object> properties = new HashMap<String, Object>();
-                    properties.put("company_id",jobApplicationRecord.getCompanyId());
-                    properties.put("company_name",jobApplicationRecord.getCompanyId());
+                    properties.put("companyId",jobApplicationRecord.getCompanyId());
+                    properties.put("companyName",jobApplicationRecord.getCompanyId());
                     properties.put("isEmployee",jobApplication.getRecommender_user_id());
                     sensorSend.send(distinctId,"postApplication",properties);
 
