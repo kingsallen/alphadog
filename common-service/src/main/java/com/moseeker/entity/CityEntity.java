@@ -1,18 +1,9 @@
 package com.moseeker.entity;
 
-import com.alibaba.fastjson.JSON;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
-import com.moseeker.common.annotation.iface.CounterIface;
-import com.moseeker.common.exception.CommonException;
-import com.moseeker.common.providerutils.ResponseUtils;
-import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
-import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.entity.pojos.ParentCityRule;
-import com.moseeker.thrift.gen.common.struct.Response;
 import com.moseeker.thrift.gen.dao.struct.dictdb.DictCityDO;
-import org.apache.thrift.TException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

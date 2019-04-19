@@ -201,6 +201,10 @@ public class SearchUtil {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
         ((BoolQueryBuilder) query).filter(cityfilter);
     }
+    public void hanleRangeLTFilter(String conditions, QueryBuilder query, String conditionField) {
+        QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).lt(conditions);
+        ((BoolQueryBuilder) query).filter(cityfilter);
+    }
 
     public void hanleRangeFilter(long conditions, QueryBuilder query, String conditionField) {
         QueryBuilder cityfilter = QueryBuilders.rangeQuery(conditionField).gt(conditions);
@@ -993,7 +997,7 @@ public class SearchUtil {
 
     public void convertSearchNameScript(String condition,QueryBuilder query){
         StringBuffer sb=new StringBuffer();
-        sb.append("user=_source.user; if(user){profiles=user.user;if(profiles){basic=profiles.basic;if(basic){name=basic.name;if(name&&name=='"+condition+"'){return true;}}};return false;}");
+        sb.append("user=_source.user; if(user){profiles=user.profiles;if(profiles){basic=profiles.basic;if(basic){name=basic.name;if(name&&name=='"+condition+"'){return true;}}};return false;}");
         ScriptQueryBuilder script=new ScriptQueryBuilder(new Script(sb.toString()));
         ((BoolQueryBuilder) query).filter(script);
     }
@@ -1031,5 +1035,21 @@ public class SearchUtil {
 
         ((BoolQueryBuilder) keyand).minimumNumberShouldMatch(1);
         ((BoolQueryBuilder) query).must(keyand);
+    }
+
+    public void handlerProfilePoolId(String profilePoolId, QueryBuilder queryBuilder) {
+        List<String> profilePoolIdList=this.stringConvertList(profilePoolId);
+        if(profilePoolIdList != null && profilePoolIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.talent_pool.profile_pool_id",profilePoolIdList);
+            ((BoolQueryBuilder) queryBuilder).must(query2);
+        }
+    }
+
+    public void handlerCompanyManualTag(String companyManualTag, QueryBuilder queryBuilder) {
+        List<String> tagIdList=this.stringConvertList(companyManualTag);
+        if(tagIdList != null && tagIdList.size() >0){
+            QueryBuilder query2=QueryBuilders.termsQuery("user.company_manual_tag_user.tag_id",tagIdList);
+            ((BoolQueryBuilder) queryBuilder).must(query2);
+        }
     }
 }

@@ -20,5 +20,15 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = AppConfig.class)
 public class EmailProducerTest {
 
+    @Autowired
+    private MessageTemplateEntity messageTemplateEntity;
+
+//    @Test
+//    public void getTemplate(){
+//        MessageTemplateNoticeStruct messageTemplateNoticeStruct=messageTemplateEntity.handlerTemplate(2192148,39978,57,3,
+//                "https://platform-t.dqprism.com/m/employee/ai-recom/{recomPushId}?wechat_signature={}&companyId={companyId}");
+//        System.out.println(JSON.toJSONString(messageTemplateNoticeStruct));
+//    }
+
 
 }

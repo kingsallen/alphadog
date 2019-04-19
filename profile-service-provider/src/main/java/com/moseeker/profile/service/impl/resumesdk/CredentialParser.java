@@ -25,7 +25,9 @@ public class CredentialParser extends AbstractMutiResumeParser<Result,List<Crede
 
     @Override
     protected List<Credential> parseResume(Result result) throws ResumeParseException {
+        logger.info("=================result:{}", result);
         List<CertObj> certObjs = result.getCert_objs();
+        logger.info("====================certObjs:{}", certObjs);
         List<Credential> credentialList = new ArrayList<>();
         if (!StringUtils.isEmptyList(certObjs)) {
             for (CertObj certObj : certObjs) {

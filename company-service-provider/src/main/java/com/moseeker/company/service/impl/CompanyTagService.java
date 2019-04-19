@@ -89,30 +89,27 @@ public class CompanyTagService {
     }
     @CounterIface
     public  void handlerHrAutomaticTag(List<Integer> tagIdList, int type,Map<String,Object> map) throws Exception {
-        if(type == TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()){
+        if (type == TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue()) {
             this.deleteHrAutomaticTagUserList(tagIdList);
-            this.refrushCompantTag(tagIdList,type,null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
-        }else{
+        } else {
             if (map != null && !map.isEmpty()) {
-                map.put("account_type","1");//查询时因为需要hr账号类型取查询人才库，所以注意
-                double pageSize=500.0;
-                int totalPage=this.getDataTotalPage(map,pageSize);
-                if(TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue()==type){
+                map.put("account_type", "1");//查询时因为需要hr账号类型取查询人才库，所以注意
+                double pageSize = 500.0;
+                int totalPage = this.getDataTotalPage(map, pageSize);
+                if (TalentpoolTagStatus.TALENT_POOL_UPDATE_TAG.getValue() == type) {
                     this.deleteHrAutomaticTagUserList(tagIdList);
                 }
-                if(totalPage == 0){
-                    this.refrushCompantTag(tagIdList,TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue(),null,KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(),KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
-                }else{
+                if (totalPage == 0) {
+                    this.refrushCompantTag(tagIdList, TalentpoolTagStatus.TALENT_POOL_DEL_TAG.getValue(), null, KeyIdentifier.HR_AUTOMATIC_TAG_ES_STATUS.toString(), KeyIdentifier.ES_UPDATE_INDEX_HR_AUTO_ID.toString());
+                } else {
                     for (int i = 1; i <= totalPage; i++) {
                         logger.info("执行第" + i + "页");
-                        this.handlerHrUserIdList(tagIdList, type, map, i, (int)pageSize);
+                        this.handlerHrUserIdList(tagIdList, type, map, i, (int) pageSize);
                     }
                 }
             }
         }
-
     }
-
     /*
      根据user_user.id列表和公司id处理公司的标签
      */

@@ -90,5 +90,6 @@ public class HrHbConfigDao extends JooqCrudImpl<HrHbConfigDO, HrHbConfigRecord> 
                 .and(HrHbConfig.HR_HB_CONFIG.TYPE.eq(type))
                 .and(HrHbConfig.HR_HB_CONFIG.STATUS.notIn(new ArrayList<Byte>(){{add((byte)-1);add((byte)5);}}))
                 .fetch();
+
     }
 }

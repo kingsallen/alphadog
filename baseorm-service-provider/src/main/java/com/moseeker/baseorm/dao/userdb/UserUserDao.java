@@ -106,6 +106,7 @@ public class UserUserDao extends JooqCrudImpl<UserUserDO, UserUserRecord> {
                 .set(UserWxUser.USER_WX_USER.SYSUSER_ID, orig)
                 .where(UserWxUser.USER_WX_USER.SYSUSER_ID.equal(dest))
                 .execute();
+        logger.info("BindOnAccountService combineAccount change wx_user_wx.sysuser_id from {} to {}", dest, orig);
         /*create.update(UserWxViewer.USER_WX_VIEWER)
                 .set(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID, orig)
                 .where(UserWxViewer.USER_WX_VIEWER.SYSUSER_ID.equal(dest))

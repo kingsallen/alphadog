@@ -5,10 +5,13 @@ package com.moseeker.baseorm.db.dictdb.tables.records;
 
 
 import com.moseeker.baseorm.db.dictdb.tables.DictMajor;
+
 import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Row3;
+import org.jooq.impl.TableRecordImpl;
 import org.jooq.impl.UpdatableRecordImpl;
 
 

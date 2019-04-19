@@ -152,7 +152,6 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .where(REFERRAL_SEEK_RECOMMEND.APP_ID.in(appids))
                 .orderBy(REFERRAL_SEEK_RECOMMEND.RECOMMEND_TIME.desc())
                 .fetchInto(ReferralSeekRecommendRecord.class);
-
     }
 
 
@@ -163,4 +162,5 @@ public class ReferralSeekRecommendDao extends com.moseeker.baseorm.db.referraldb
                 .and(REFERRAL_SEEK_RECOMMEND.POSITION_ID.eq(positionId))
                 .fetchOneInto(ReferralSeekRecommendRecord.class);
     }
+
 }

@@ -5,6 +5,8 @@ import com.moseeker.common.providerutils.ResponseUtils;
 import com.moseeker.servicemanager.common.ResponseLogNotification;
 import com.moseeker.thrift.gen.common.struct.BIZException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,10 +23,13 @@ import javax.servlet.http.HttpServletRequest;
 @ControllerAdvice
 public class ExceptionHandle {
 
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public String processException(HttpServletRequest request, Exception ex) {
+        logger.error(ex.getMessage(), ex);
         return ResponseLogNotification.fail(request, ResponseUtils.fail(99999, ex.getMessage() != null ? ex.getMessage() : "系统异常!"));
     }
 

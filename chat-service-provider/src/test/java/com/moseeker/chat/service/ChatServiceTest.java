@@ -46,7 +46,8 @@ public class ChatServiceTest {
 
     @Test
     public void listChatLog() throws TException {
-        System.out.println(JSON.toJSONString(chatService.listChatLogs(30196 ,1, 10)));
+        //30198 pageNo:1, pageSize:10
+        System.out.println(JSON.toJSONString(chatService.listChatLogs(30198 ,3, 10)));
     }
 
     @Test

@@ -50,6 +50,8 @@ import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.exception.CommonException;
 import com.moseeker.common.exception.RedisException;
 import com.moseeker.common.providerutils.ResponseUtils;
+import com.moseeker.common.thread.ScheduledThread;
+import com.moseeker.entity.SensorSend;
 import com.moseeker.common.thread.ThreadPool;
 import com.moseeker.common.util.DateUtils;
 import com.moseeker.common.util.StringUtils;
@@ -57,11 +59,8 @@ import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
 import com.moseeker.common.util.query.Query.QueryBuilder;
 import com.moseeker.common.util.query.ValueOp;
-import com.moseeker.entity.ApplicationEntity;
+import com.moseeker.entity.*;
 import com.moseeker.entity.Constant.ApplicationSource;
-import com.moseeker.entity.EmployeeEntity;
-import com.moseeker.entity.PositionEntity;
-import com.moseeker.entity.RabbitMQOperationRecord;
 import com.moseeker.entity.application.UserApplyCount;
 import com.moseeker.entity.pojo.company.HrOperationAllRecord;
 import com.moseeker.rpccenter.client.ServiceManager;
@@ -79,6 +78,7 @@ import com.moseeker.thrift.gen.dao.struct.userdb.*;
 import com.moseeker.thrift.gen.mq.service.MqService;
 import com.moseeker.thrift.gen.mq.struct.MessageEmailStruct;
 import com.moseeker.thrift.gen.profile.service.ProfileOtherThriftService;
+import com.sensorsdata.analytics.javasdk.SensorsAnalytics;
 import org.apache.thrift.TException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -115,6 +115,8 @@ public class JobApplicataionService {
     private static final String REDIS_KEY_APPLICATION_COUNT_CHECK = "APPLICATION_COUNT_CHECK";
 
     private ThreadPool tp = ThreadPool.Instance;
+
+    private ScheduledThread scheduledThread=ScheduledThread.Instance;
     //redis的客户端
     @Resource(name = "cacheClient")
     private RedisClient redisClient;
@@ -171,6 +173,10 @@ public class JobApplicataionService {
 
     @Autowired
     ApplicationEntity applicationEntity;
+
+    @Autowired
+    private SensorSend sensorSend;
+
 
 
     /**
@@ -233,10 +239,12 @@ public class JobApplicataionService {
     更新data/application索引
      */
     private void updateApplicationEsIndex(int userId){
-        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
-        redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
-        logger.info("====================redis==============application更新=============");
-        logger.info("================userid={}=================",userId);
+        scheduledThread.startTast(()->{
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_USER_IDS",String.valueOf(userId));
+            redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_PROFILE_COMPANY_USER_IDS",String.valueOf(userId));
+            logger.info("====================redis==============application更新=============");
+            logger.info("================userid={}=================",userId);
+        },6000);
     }
     /*
      * @Author zztaiwll
@@ -331,6 +339,17 @@ public class JobApplicataionService {
                 if (jobApplicationRecord.getProxy() == null || jobApplicationRecord.getProxy() == 0) {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
+                }
+                if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
+                    String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
+
+                    //神策埋点 加入 properties
+                    Map<String, Object> properties = new HashMap<String, Object>();
+                    properties.put("companyId",jobApplicationRecord.getCompanyId());
+                    properties.put("companyName",jobApplicationRecord.getCompanyId());
+                    properties.put("isEmployee",jobApplication.getRecommender_user_id());
+                    sensorSend.send(distinctId,"postApplication",properties);
+
                 }
             }
 
