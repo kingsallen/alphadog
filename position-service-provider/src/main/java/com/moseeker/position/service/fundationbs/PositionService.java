@@ -2025,7 +2025,15 @@ public class PositionService {
         }
 
         // 获取职位的内推奖金
-        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(jdIdList);
+        List<Integer> bonusPidList = dataList
+                .stream()
+                .filter(data -> data.getIs_referral() == 1)
+                .map(WechatPositionListData::getId)
+                .collect(Collectors.toList());
+        if (bonusPidList == null) {
+            bonusPidList = new ArrayList<>(0);
+        }
+        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(bonusPidList);
 
         //拼装 company 和 publisher 相关内容
         dataList = dataList.stream().map(s -> {
@@ -2839,12 +2847,16 @@ public class PositionService {
     @CounterIface
     public List<WechatPositionListData> getReferralPositionList(Map<String,String> query) {
 
+        logger.info("PositionService getReferralPositionList");
+        logger.info("PositionService getReferralPositionList query:{}", JSONObject.toJSONString(query));
         List<WechatPositionListData> dataList = new ArrayList<>();
         try {
             WechatPositionListQuery searchParams=this.convertParams(query);
+            logger.info("PositionService getReferralPositionList searchParams:{}", JSONObject.toJSONString(searchParams));
             Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
+                logger.info("PositionService getReferralPositionList totalNum:{}", jobj.getLong("total"));
                 long totalNum = jobj.getLong("total");
                 List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
                 List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);

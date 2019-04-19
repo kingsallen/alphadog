@@ -1097,17 +1097,21 @@ public class TemplateMsgHttp {
         requestMap.put("accessToken", hrWxWechatDO.getAccessToken());
         logger.info("====================requestMap:{}", requestMap);
         // 插入模板消息发送记录
+        //神策生成埋点时间
         Date now = new Date();
         long sendTime=  now.getTime();
-        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap,sendTime);
-        String templateId=inviteTemplateVO.getString("templateId");
-        String distinctId = String.valueOf(employeeId);
         Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put("templateId", hrWxTemplateMessageDO.getWxTemplateId());
+        properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());
         properties.put("companyId", hrWxWechatDO.getId());
         properties.put("employeeId", jsonObject.getIntValue("isEmployee"));
         properties.put("companyName", hrWxWechatDO.getName());
-        //properties.put("sendTime", sendTime);
+        properties.put("sendTime", sendTime);
+
+        logger.info("神策--sendTemplateMessage---》》sendtime"+sendTime);
+
+        wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
+        //String templateId=inviteTemplateVO.getString("templateId");
+        String distinctId = String.valueOf(employeeId);
         sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 

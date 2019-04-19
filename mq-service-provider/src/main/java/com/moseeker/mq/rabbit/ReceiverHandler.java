@@ -143,7 +143,7 @@ public class ReceiverHandler {
             if(Constant.EMPLOYEE_SEEK_REFERRAL_TEMPLATE.equals(message.getMessageProperties().getReceivedRoutingKey())) {
                 Integer postUserId = jsonObject.getIntValue("post_user_id");
                 Date now = new Date();
-              long sendTime=  now.getTime();
+                long sendTime=  now.getTime();
                 Map<String, Object> properties = new HashMap<String, Object>();
                 properties.put("sendTime",sendTime);
                 templateMsgHttp.seekReferralTemplate(positionId, userId, postUserId, referralId, sendTime);
@@ -157,8 +157,9 @@ public class ReceiverHandler {
                 Map<String, Object> properties = new HashMap<String, Object>();
 
                 Date nowTime= new Date();
-               long  sendTime= nowTime.getTime();
+                long  sendTime= nowTime.getTime();
                 properties.put("sendTime",sendTime);
+                log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
                 String distinctId = String.valueOf(employeeId);
                 sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
