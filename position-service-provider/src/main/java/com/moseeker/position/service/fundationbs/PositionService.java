@@ -2847,12 +2847,16 @@ public class PositionService {
     @CounterIface
     public List<WechatPositionListData> getReferralPositionList(Map<String,String> query) {
 
+        logger.info("PositionService getReferralPositionList");
+        logger.info("PositionService getReferralPositionList query:{}", JSONObject.toJSONString(query));
         List<WechatPositionListData> dataList = new ArrayList<>();
         try {
             WechatPositionListQuery searchParams=this.convertParams(query);
+            logger.info("PositionService getReferralPositionList searchParams:{}", JSONObject.toJSONString(searchParams));
             Response res =  this.getResponseEs(searchParams);
             if (res.getStatus() == 0 && !StringUtils.isNullOrEmpty(res.getData())) {
                 JSONObject jobj = JSON.parseObject(res.getData());
+                logger.info("PositionService getReferralPositionList totalNum:{}", jobj.getLong("total"));
                 long totalNum = jobj.getLong("total");
                 List<String> jdIdList  =(List<String>)jobj.get("jd_id_list");
                 List<Integer> idList=StringUtils.convertStringToIntegerList(jdIdList);
