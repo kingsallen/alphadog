@@ -1103,7 +1103,7 @@ public class TemplateMsgHttp {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put("templateId", hrWxTemplateMessageDO.getSysTemplateId());
         properties.put("companyId", hrWxWechatDO.getId());
-        properties.put("employeeId", jsonObject.getIntValue("isEmployee"));
+        properties.put("employeeId", employeeId);
         properties.put("companyName", hrWxWechatDO.getName());
         properties.put("sendTime", sendTime);
 
@@ -1111,7 +1111,7 @@ public class TemplateMsgHttp {
 
         wxMessageRecordDao.insertLogWxMessageRecord(hrWxTemplateMessageDO.getId(), hrWxWechatDO.getId(), requestMap);
         //String templateId=inviteTemplateVO.getString("templateId");
-        String distinctId = String.valueOf(employeeId);
+        String distinctId = String.valueOf(userWxUserRecord.getSysuserId());
         sensorSend.send(distinctId,"sendTemplateMessage",properties);
     }
 
