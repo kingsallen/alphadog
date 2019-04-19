@@ -7,7 +7,6 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -1412,7 +1411,10 @@ public class TalentpoolSearchengine {
         }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+        if (StringUtils.isNullOrEmpty(tagIds)
+                && StringUtils.isNullOrEmpty(favoriteHrs)
+                && StringUtils.isNullOrEmpty(isPublic)
+                && StringUtils.isNullOrEmpty(profilePoolId)) {
             return null;
         }
         String companyId=params.get("company_id");
