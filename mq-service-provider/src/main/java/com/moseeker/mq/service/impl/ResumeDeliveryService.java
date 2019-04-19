@@ -239,6 +239,8 @@ public class ResumeDeliveryService {
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
+                case  524288:  // 邀请投递申请
+                case 1048576:  //员工转发申请
                 //聚合号
                 case 4:{
                     sendEmailToApplier(accountDo,companyDO,positionDo,userUserDO,hrChatDO);
@@ -255,7 +257,7 @@ public class ResumeDeliveryService {
                 break;
                 //内推推荐评价
                 case 262144:
-                case 524288:{
+                {
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
