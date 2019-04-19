@@ -1383,6 +1383,10 @@ public class TalentpoolSearchengine {
                 tagIds="talent";
             }
         }
+        String profilePoolId = params.get("profile_pool_id");
+        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
+            this.queryByProfilePoolId(profilePoolId,query);
+        }
         //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
         String hrAutoTag=params.get("hr_auto_tag");
         if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
@@ -1408,10 +1412,6 @@ public class TalentpoolSearchengine {
         }
         if(StringUtils.isNotNullOrEmpty(favoriteHrs)||StringUtils.isNotNullOrEmpty(isPublic)){
             this.queryByIstalent(query);
-        }
-        String profilePoolId = params.get("profile_pool_id");
-        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
-            this.queryByProfilePoolId(profilePoolId,query);
         }
         query=QueryBuilders.nestedQuery("user.talent_pool",query);
         return query;
