@@ -2039,7 +2039,15 @@ public class PositionService {
         }
 
         // 获取职位的内推奖金
-        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(jdIdList);
+        List<Integer> bonusPidList = dataList
+                .stream()
+                .filter(data -> data.getIs_referral() == 1)
+                .map(WechatPositionListData::getId)
+                .collect(Collectors.toList());
+        if (bonusPidList == null) {
+            bonusPidList = new ArrayList<>(0);
+        }
+        Map<Integer,ReferralPositionBonusVO> refBonusMap = referralPositionBonusDao.fetchByPid(bonusPidList);
 
         //拼装 company 和 publisher 相关内容
         dataList = dataList.stream().map(s -> {
