@@ -161,7 +161,7 @@ public class ReceiverHandler {
                 properties.put("sendTime",sendTime);
                 log.info("神策-----》》sendtime"+sendTime);
                 templateMsgHttp.referralEvaluateTemplate(positionId, userId, applicationId, referralId, employeeId,sendTime);
-                String distinctId = String.valueOf(employeeId);
+                String distinctId = String.valueOf(userId);
                 sensorSend.send(distinctId,"sendSeekReferralTemplateMessage",properties);
             }
         } catch (CommonException e) {
