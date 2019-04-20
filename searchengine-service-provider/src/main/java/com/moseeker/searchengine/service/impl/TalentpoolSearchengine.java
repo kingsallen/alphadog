@@ -1240,7 +1240,8 @@ public class TalentpoolSearchengine {
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
             String isPublic=params.get("is_public");
-            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(company_tag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            String profilePoolId=params.get("profile_pool_id");
+            if(StringUtils.isNullOrEmpty(profilePoolId)&&StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(company_tag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
