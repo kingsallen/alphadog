@@ -340,7 +340,7 @@ public class JobApplicataionService {
                     // 添加该人该公司的申请次数
                     addApplicationCountAtCompany(jobApplication,jobPositionRecord.getCandidateSource());
                 }
-                if(jobApplicationRecord.getRecommenderUserId().intValue()>0){
+                if(jobApplicationRecord.getRecommenderUserId()!=null&&jobApplicationRecord.getRecommenderUserId().intValue()>0){
                     String distinctId =String.valueOf(jobApplicationRecord.getApplierId());
 
                     //神策埋点 加入 properties
