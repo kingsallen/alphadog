@@ -7,7 +7,6 @@ import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
 import com.moseeker.baseorm.redis.RedisClient;
 import com.moseeker.common.annotation.iface.CounterIface;
 import com.moseeker.common.constants.Constant;
-import com.moseeker.common.constants.KeyIdentifier;
 import com.moseeker.common.util.StringUtils;
 import com.moseeker.common.util.query.Condition;
 import com.moseeker.common.util.query.Query;
@@ -1068,6 +1067,7 @@ public class TalentpoolSearchengine {
         String intentionCityCode=params.get("intention_city_code");
         String companyTag=params.get("company_tag");
         String hrAutoTag=params.get("hr_auto_tag");
+        String companyManualTag=params.get("company_manual_tag");
         String pastPositionKeyWord=params.get("past_position_key_word");
         String pastCompanyKeyWord=params.get("past_company_key_word");
         if(this.validateCommon(keyword,cityCode,companyName,pastPosition,intentionCityCode,companyTag,pastPositionKeyWord,pastCompanyKeyWord,hrAutoTag) ){
@@ -1095,8 +1095,13 @@ public class TalentpoolSearchengine {
                 this.queryByHrAutoTag(hrAutoTag,query);
             }
         }
-
+        if(StringUtils.isNotNullOrEmpty(companyManualTag)) {
+            this.queryByCompanyManualTag(companyManualTag,query);
+        }
     }
+
+
+
     /*
      判断是否继续执行查询操作
      */
@@ -1395,6 +1400,10 @@ public class TalentpoolSearchengine {
                 tagIds="talent";
             }
         }
+        String profilePoolId = params.get("profile_pool_id");
+        if(StringUtils.isNotNullOrEmpty(profilePoolId)){
+            this.queryByProfilePoolId(profilePoolId,query);
+        }
         //todo 这段代码写的十分不好。不应该这么写，只能后续修改，因为人才库和hr自动标签和企业标签和tagid本来应该没有关系。积重难返
         String hrAutoTag=params.get("hr_auto_tag");
         if(StringUtils.isNotNullOrEmpty(hrAutoTag)){
@@ -1402,7 +1411,10 @@ public class TalentpoolSearchengine {
         }
         String favoriteHrs=params.get("favorite_hrs");
         String isPublic=params.get("is_public");
-        if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)){
+        if (StringUtils.isNullOrEmpty(tagIds)
+                && StringUtils.isNullOrEmpty(favoriteHrs)
+                && StringUtils.isNullOrEmpty(isPublic)
+                && StringUtils.isNullOrEmpty(profilePoolId)) {
             return null;
         }
         String companyId=params.get("company_id");
@@ -1903,6 +1915,11 @@ public class TalentpoolSearchengine {
     private void queryByTagId(String tagIds,String hrId,QueryBuilder queryBuilder){
         searchUtil.handlerTagIds(tagIds,hrId,queryBuilder);
     }
+
+    private void queryByProfilePoolId(String profilePoolId,QueryBuilder queryBuilder){
+        searchUtil.handlerProfilePoolId(profilePoolId,queryBuilder);
+    }
+
     /*
       构建按招标签的查询语句
      */
@@ -1912,6 +1929,9 @@ public class TalentpoolSearchengine {
 
     private void queryByHrAutoTag(String hrAutoTag,QueryBuilder queryBuilder){
         searchUtil.handlerHrAutoTag(hrAutoTag,queryBuilder);
+    }
+    private void queryByCompanyManualTag(String companyManualTag, QueryBuilder queryBuilder) {
+        searchUtil.handlerCompanyManualTag(companyManualTag,queryBuilder);
     }
     /*
      构建和公司相关的人才库

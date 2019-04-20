@@ -32,7 +32,8 @@ public enum ApplicationOriginEnum {
     IN_RECOM(65536,"内推"),
     JOB58(131072,"job58"),
     OLD_EMPLOYEE(2097152,"老员工回聘"),
-    EMPLOYEE_TRANSFER(4194304,"员工转岗")
+    EMPLOYEE_TRANSFER(4194304,"员工转岗"),
+    HR_RECOMMEND(16777216,"员工转岗")
     ;
 
     private int key;
