@@ -258,7 +258,7 @@ public class SearchengineService {
         QueryBuilder query = QueryBuilders.boolQuery().must(defaultquery);
         if (!StringUtils.isEmpty(keywords)) {
             Map<String,Integer> fieldMap=new HashMap();
-            fieldMap.put("title",8);
+            fieldMap.put("search_data.search_title",8);
             fieldMap.put("requirement",1);
             fieldMap.put("accountabilities",1);
             searchUtil.shouldMatchParseQuery(fieldMap,keywords,query);

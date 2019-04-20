@@ -14,13 +14,11 @@ import com.moseeker.useraccounts.service.thirdpartyaccount.base.IBindRequest;
 import com.moseeker.useraccounts.utils.AESUtils;
 import com.moseeker.useraccounts.utils.HttpClientUtil;
 import com.moseeker.useraccounts.utils.Md5Utils;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.Cipher;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;

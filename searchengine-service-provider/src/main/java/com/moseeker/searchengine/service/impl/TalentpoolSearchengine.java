@@ -1228,12 +1228,14 @@ public class TalentpoolSearchengine {
         String recommend = params.get("is_recommend");
         String origins = params.get("origins");
         String submitTime = params.get("submit_time");
+        String startSubmitTime=params.get("start_submit_time");
+        String endSubmitTime=params.get("end_submit_time");
         String progressStatus = params.get("progress_status");
         String positionIds = params.get("position_id");
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
-        if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord)) {
+        if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
@@ -1264,6 +1266,22 @@ public class TalentpoolSearchengine {
             if(StringUtils.isNotNullOrEmpty(positionStatus)&&!"-1".equals(positionStatus)){
                 this.queryByPositionIdStatus(positionStatus,query);
             }
+            if(StringUtils.isNotNullOrEmpty(startSubmitTime)){
+                startSubmitTime=startSubmitTime.replace(" ","T");
+                if(startSubmitTime.length()<19){
+                    startSubmitTime=startSubmitTime+"T00:00:00";
+                }
+                searchUtil.hanleGtRange(startSubmitTime,query,"user.applications.submit_time");
+            }
+            if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
+                endSubmitTime=endSubmitTime.replace(" ","T");
+                if(endSubmitTime.length()<19){
+                    endSubmitTime=endSubmitTime+"T23:59:59";
+                }
+                searchUtil.hanleLtRange(endSubmitTime,query,"user.applications.submit_time");
+            }
+
+
         }
 
     }
@@ -1359,10 +1377,10 @@ public class TalentpoolSearchengine {
      校验是否向下执行
      */
     private boolean validateApplication(String publisherIds,String candidateSource,String recommend,String origins,String submitTime,
-                                        String progressStatus,String positionIds,String positionWord){
+                                        String progressStatus,String positionIds,String positionWord,String startSubmitTime,String endSubmitTime){
         return StringUtils.isNotNullOrEmpty(publisherIds) || StringUtils.isNotNullOrEmpty(candidateSource) || StringUtils.isNotNullOrEmpty(recommend) ||
                 StringUtils.isNotNullOrEmpty(origins) || StringUtils.isNotNullOrEmpty(submitTime) ||
-                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds);
+                StringUtils.isNotNullOrEmpty(progressStatus) || StringUtils.isNotNullOrEmpty(positionIds)||StringUtils.isNotNullOrEmpty(startSubmitTime)||StringUtils.isNotNullOrEmpty(endSubmitTime);
     }
 
     /*
@@ -1437,10 +1455,12 @@ public class TalentpoolSearchengine {
         String isPublic=params.get("is_public");
         String companyId=params.get("company_id");
         String positionStatus=params.get("position_status");
+        String startSubmitTime=params.get("start_submit_time");
+        String endSubmitTime=params.get("end_submit_time");
 
         if( StringUtils.isNullOrEmpty(progressStatus)&&StringUtils.isNullOrEmpty(candidateSource)&&StringUtils.isNullOrEmpty(recommend)
                 &&StringUtils.isNullOrEmpty(origins)&&StringUtils.isNullOrEmpty(submitTime)&&StringUtils.isNullOrEmpty(positionId)
-                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))){
+                &&(StringUtils.isNullOrEmpty(positionStatus)||"-1".equals(positionStatus))&&StringUtils.isNullOrEmpty(startSubmitTime)&&StringUtils.isNullOrEmpty(endSubmitTime)){
             return null;
         }
         StringBuffer sb=new StringBuffer();
@@ -1470,6 +1490,21 @@ public class TalentpoolSearchengine {
             String longTime=this.getLongTime(submitTime);
             sb.append(" val.submit_time>'"+longTime+"'&&");
         }
+        if(StringUtils.isNotNullOrEmpty(startSubmitTime)){
+            startSubmitTime=startSubmitTime.replace(" ","T");
+            if(startSubmitTime.length()<19){
+                startSubmitTime=startSubmitTime+"T00:00:00";
+            }
+            sb.append(" val.submit_time>'"+startSubmitTime+"'&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
+            endSubmitTime=endSubmitTime.replace(" ","T");
+            if(endSubmitTime.length()<19){
+                endSubmitTime=endSubmitTime+"T23:59:59";
+            }
+            sb.append(" val.submit_time<'"+endSubmitTime+"'&&");
+        }
+
         if(StringUtils.isNotNullOrEmpty(progressStatus)&&Integer.parseInt(progressStatus)>-1){
             sb.append(" val.progress_status=="+progressStatus+"&&");
         }
@@ -2243,6 +2278,8 @@ public class TalentpoolSearchengine {
         String candidateSource=params.get("candidate_source");
         String recommend=params.get("is_recommend");
         String positionStatus=params.get("position_status");
+        String startSubmitTime=params.get("start_submit_time");
+        String endSubmitTime=params.get("end_submit_time");
         List<Integer> publisherIdList=this.convertStringToList(publishIds);
         StringBuffer sb=new StringBuffer();
         sb.append("int i = 0; for ( val in _source.user.applications)");
@@ -2254,6 +2291,21 @@ public class TalentpoolSearchengine {
             String time=this.getLongTime(submitTime);
             sb.append("val.submit_time>'"+time+"'&&");
         }
+        if(StringUtils.isNotNullOrEmpty(startSubmitTime)){
+            startSubmitTime=startSubmitTime.replace(" ","T");
+            if(startSubmitTime.length()<19){
+                startSubmitTime=startSubmitTime+"T00:00:00";
+            }
+            sb.append("val.submit_time>'"+startSubmitTime+"'&&");
+        }
+        if(StringUtils.isNotNullOrEmpty(endSubmitTime)){
+            endSubmitTime=endSubmitTime.replace(" ","T");
+            if(endSubmitTime.length()<19){
+                endSubmitTime=endSubmitTime+"T23:59:59";
+            }
+            sb.append("val.submit_time<'"+endSubmitTime+"'&&");
+        }
+
         if(StringUtils.isNotNullOrEmpty(positionIds)){
             List<Integer> positionIdList=this.convertStringToList(positionIds);
             sb.append("val.position_id in"+positionIdList.toString()+"&&");

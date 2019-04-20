@@ -17,9 +17,6 @@ public class RelationshipRadarImpl extends AbstractCompanySwitchHandler{
 
     private Logger logger = LoggerFactory.getLogger(RelationshipRadarImpl.class);
 
-    @Autowired
-    AmqpTemplate amqpTemplate;
-
     @Override
     public OmsSwitchEnum switchType() {
         return OmsSwitchEnum.人脉雷达;
