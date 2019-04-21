@@ -1034,6 +1034,9 @@ public class SearchUtil {
     }
 
     public void handlerProfilePoolId(String profilePoolId, QueryBuilder queryBuilder) {
+        if("talent".equals(profilePoolId)) {    // todo 这个兼容一下，之后最好去掉
+            return;
+        }
         List<String> profilePoolIdList=this.stringConvertList(profilePoolId);
         if(profilePoolIdList != null && profilePoolIdList.size() >0){
             QueryBuilder query2=QueryBuilders.matchQuery("user.talent_pool.profile_pool_id",profilePoolIdList);
