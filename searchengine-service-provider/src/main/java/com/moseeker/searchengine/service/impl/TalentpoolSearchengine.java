@@ -1235,12 +1235,17 @@ public class TalentpoolSearchengine {
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
+        String profilePoolId=params.get("profile_pool_id");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
             String isPublic=params.get("is_public");
-            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(company_tag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            if(StringUtils.isNullOrEmpty(tagIds)
+                    &&StringUtils.isNullOrEmpty(profilePoolId)
+                    &&StringUtils.isNullOrEmpty(company_tag)
+                    &&StringUtils.isNullOrEmpty(favoriteHrs)
+                    &&StringUtils.isNullOrEmpty(isPublic)) {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
