@@ -1409,26 +1409,22 @@ public class TalentpoolSearchengine {
             }
         }else {
             if ("talent".equals(profilePoolId)) {
-                if(tagIds == null || !tagIds.contains("talent")) {
-                    if (tagIds == null) {
-                        tagIds = "talent";
-                    } else {
-                        tagIds += ",talent";
-                    }
+                if(tagIds == null) {
+                    tagIds = "talent";
+                } else if(!tagIds.contains("talent")) {
+                    tagIds += ",talent";
                 }
             } else if ("alltalent".equals(profilePoolId)) {
-                if(tagIds == null || !tagIds.contains("alltalent")) {
-                    if (tagIds == null) {
-                        tagIds = "alltalent";
-                    } else {
-                        tagIds += ",alltalent";
-                    }
+                if(tagIds == null) {
+                    tagIds = "alltalent";
+                } else if(!tagIds.contains("alltalent")) {
+                    tagIds += ",alltalent";
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
-                if (tagIds == null) {
-                    tagIds = "alltalent";
-                } else {
-                    tagIds += ",alltalent";
+                if(tagIds == null) {
+                    tagIds = "allpublic";
+                } else if(!tagIds.contains("allpublic")){
+                    tagIds += ",allpublic";
                 }
                 this.queryByProfilePoolId(profilePoolId, query);
             }
