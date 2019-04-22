@@ -1421,7 +1421,7 @@ public class UseraccountsService {
         logger.info("UseraccountsService claimReferral after claimReferralCard!");
         logger.info("UseraccountsService claimReferral kafkaSender:{}, userUserDO:{}, repeatReferralLog:{}", kafkaSender, JSONObject.toJSONString(repeatReferralLog), JSONObject.toJSON(repeatReferralLog));
 
-        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), repeatReferralLog.getPositionId());
+        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
         logger.info("UseraccountsService claimReferral after sendUserClaimToKafka!");
     }
 
