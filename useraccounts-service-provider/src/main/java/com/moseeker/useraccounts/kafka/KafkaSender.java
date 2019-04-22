@@ -1,5 +1,6 @@
 package com.moseeker.useraccounts.kafka;
 
+import com.alibaba.fastjson.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
@@ -48,6 +49,7 @@ public class KafkaSender {
 
     public void sendMessage(String topic, String data){
         logger.info("kafka topic:{},data:{}",topic, data);
+        logger.info("KafkaSender sendMessage kafkaTemplate:{}",kafkaTemplate);
         kafkaTemplate.send(topic, data);
     }
 
@@ -117,6 +119,8 @@ public class KafkaSender {
     }
 
     public void sendUserClaimToKafka(int userId,  int positionId) {
+        logger.info("KafkaSender sendUserClaimToKafka");
+        logger.info("KafkaSender sendUserClaimToKafka userId:{}, positionId:{}", userId, positionId);
         KafkaSwitchDto switchDto = new KafkaSwitchDto();
         long current = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -130,6 +134,7 @@ public class KafkaSender {
         kafkaApplyPojo.setEvent_time(sdf.format(new Date(current)));
         kafkaApplyPojo.setPosition_id(positionId);
         kafkaApplyPojo.setUser_id(userId);
+        logger.info("KafkaSender sendUserClaimToKafka kafkaApplyPojo:{}", JSONObject.toJSONString(kafkaApplyPojo));
         sendMessage(Constant.KAFKA_TOPIC_APPLICATION, JSON.toJSONString(kafkaApplyPojo));
     }
 }
