@@ -1408,17 +1408,21 @@ public class TalentpoolSearchengine {
                 tagIds = "talent,allpublic";
             }
         }else {
-            if ("talent".equals(profilePoolId) && (tagIds == null || !tagIds.contains("talent"))) {
-                if (tagIds == null) {
-                    tagIds = "talent";
-                } else {
-                    tagIds += ",talent";
+            if ("talent".equals(profilePoolId)) {
+                if((tagIds == null || !tagIds.contains("talent"))) {
+                    if (tagIds == null) {
+                        tagIds = "talent";
+                    } else {
+                        tagIds += ",talent";
+                    }
                 }
-            } else if ("alltalent".equals(profilePoolId) && (tagIds == null || !tagIds.contains("alltalent"))) {
-                if (tagIds == null) {
-                    tagIds = "alltalent";
-                } else {
-                    tagIds += ",alltalent";
+            } else if ("alltalent".equals(profilePoolId)) {
+                if((tagIds == null || !tagIds.contains("alltalent"))) {
+                    if (tagIds == null) {
+                        tagIds = "alltalent";
+                    } else {
+                        tagIds += ",alltalent";
+                    }
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
                 if (tagIds == null) {
