@@ -1034,7 +1034,7 @@ public class SearchUtil {
     }
 
     public void handlerProfilePoolId(String profilePoolId, QueryBuilder queryBuilder) {
-        if("talent".equals(profilePoolId) ||  "0".equals(profilePoolId)) {    // todo 这个兼容一下，之后最好去掉
+        if(!StringUtils.isNumeric(profilePoolId) ||  "0".equals(profilePoolId)) {    // todo 这个兼容一下，之后最好去掉
             return;
         }
         List<String> profilePoolIdList=this.stringConvertList(profilePoolId);
