@@ -1409,7 +1409,7 @@ public class TalentpoolSearchengine {
             }
         }else {
             if ("talent".equals(profilePoolId)) {
-                if((tagIds == null || !tagIds.contains("talent"))) {
+                if(tagIds == null || !tagIds.contains("talent")) {
                     if (tagIds == null) {
                         tagIds = "talent";
                     } else {
@@ -1417,7 +1417,7 @@ public class TalentpoolSearchengine {
                     }
                 }
             } else if ("alltalent".equals(profilePoolId)) {
-                if((tagIds == null || !tagIds.contains("alltalent"))) {
+                if(tagIds == null || !tagIds.contains("alltalent")) {
                     if (tagIds == null) {
                         tagIds = "alltalent";
                     } else {
