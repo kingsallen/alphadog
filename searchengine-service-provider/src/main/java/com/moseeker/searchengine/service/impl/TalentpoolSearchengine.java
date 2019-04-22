@@ -1422,15 +1422,8 @@ public class TalentpoolSearchengine {
             } else if ("alltalent".equals(profilePoolId)) {
                 if(tagIds == null) {
                     tagIds = "alltalent";
-                } else if(!tagIds.contains("alltalent")) {
-                    tagIds += ",alltalent";
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
-                if(tagIds == null) {
-                    tagIds = "allpublic";
-                } else if(!tagIds.contains("allpublic")){
-                    tagIds += ",allpublic";
-                }
                 this.queryByProfilePoolId(profilePoolId, query);
             }
         }
