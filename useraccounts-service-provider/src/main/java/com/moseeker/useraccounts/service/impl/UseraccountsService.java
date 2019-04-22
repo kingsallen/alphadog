@@ -1392,7 +1392,7 @@ public class UseraccountsService {
             userdao.updateRecord(userUserRecord);
         }
         referralEntity.claimReferralCard(userUserDO, referralLog);
-        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), repeatReferralLog.getPositionId());
+        kafkaSender.sendUserClaimToKafka(userUserDO.getId(), referralLog.getPositionId());
     }
 
     private void checkReferralClaim(List<ReferralLog> referralLogs) {
