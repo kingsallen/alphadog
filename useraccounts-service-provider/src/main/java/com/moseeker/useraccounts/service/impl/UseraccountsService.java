@@ -1298,7 +1298,7 @@ public class UseraccountsService {
                     throw e;
                 }finally {
                     claimResults.add(claimResult);
-                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),referralLog.getReferenceId());
+                    this.updateDataApplicationBatchItems(referralLog.getPositionId(),userId,referralLog.getReferenceId());
                     this.updateDataApplicationRealTime(referralLog.getReferenceId(),userId);
                     countDownLatch.countDown();
                 }
