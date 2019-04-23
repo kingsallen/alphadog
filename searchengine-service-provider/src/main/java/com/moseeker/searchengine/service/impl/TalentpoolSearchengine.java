@@ -1424,10 +1424,19 @@ public class TalentpoolSearchengine {
                     tagIds = "alltalent";
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
-                if(tagIds == null) {
-                    tagIds = "allpublic";
-                } else if(!tagIds.contains("allpublic")) {
-                    tagIds += ",allpublic";
+                String allPublisher = params.get("all_publisher");
+                if (StringUtils.isNotNullOrEmpty(allPublisher) && "1".equals(allPublisher)) {
+                    if(tagIds == null) {
+                        tagIds = "alltalent";
+                    } else if(!tagIds.contains("alltalent")) {
+                        tagIds += ",alltalent";
+                    }
+                } else {
+                    if(tagIds == null) {
+                        tagIds = "allpublic";
+                    } else if(!tagIds.contains("allpublic")) {
+                        tagIds += ",allpublic";
+                    }
                 }
                 this.queryByProfilePoolId(profilePoolId, query);
             }
