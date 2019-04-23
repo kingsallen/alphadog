@@ -1,6 +1,7 @@
 package com.moseeker.searchengine.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.moseeker.baseorm.dao.dictdb.DictCityDao;
 import com.moseeker.baseorm.dao.userdb.UserHrAccountDao;
 import com.moseeker.baseorm.db.userdb.tables.records.UserHrAccountRecord;
@@ -869,7 +870,6 @@ public class TalentpoolSearchengine {
         return query;
     }
 
-
     private void handlerProvinceCity(Map<String,String> params) throws TException {
         String cityCode=params.get("city_code");
         String intentionCityCode=params.get("intention_city_code");
@@ -1235,12 +1235,17 @@ public class TalentpoolSearchengine {
         String companyId = params.get("company_id");
         String positionWord=params.get("position_key_word");
         String positionStatus=params.get("position_status");
+        String profilePoolId=params.get("profile_pool_id");
         if (this.validateApplication(publisherIds,candidateSource,recommend,origins,submitTime,progressStatus,positionIds,positionWord,startSubmitTime,endSubmitTime)) {
             String tagIds=params.get("tag_ids");
             String company_tag=params.get("company_tag");
             String favoriteHrs=params.get("favorite_hrs");
             String isPublic=params.get("is_public");
-            if(StringUtils.isNullOrEmpty(tagIds)&&StringUtils.isNullOrEmpty(company_tag)&&StringUtils.isNullOrEmpty(favoriteHrs)&&StringUtils.isNullOrEmpty(isPublic)) {
+            if(StringUtils.isNullOrEmpty(tagIds)
+                    &&StringUtils.isNullOrEmpty(profilePoolId)
+                    &&StringUtils.isNullOrEmpty(company_tag)
+                    &&StringUtils.isNullOrEmpty(favoriteHrs)
+                    &&StringUtils.isNullOrEmpty(isPublic)) {
                 if (StringUtils.isNotNullOrEmpty(publisherIds)) {
                     this.queryByPublisher(publisherIds, query);
                 }
@@ -1419,6 +1424,20 @@ public class TalentpoolSearchengine {
                     tagIds = "alltalent";
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
+                String allPublisher = params.get("all_publisher");
+                if (StringUtils.isNotNullOrEmpty(allPublisher) && "1".equals(allPublisher)) {
+                    if(tagIds == null) {
+                        tagIds = "alltalent";
+                    } else if(!tagIds.contains("alltalent")) {
+                        tagIds += ",alltalent";
+                    }
+                } else {
+                    if(tagIds == null) {
+                        tagIds = "allpublic";
+                    } else if(!tagIds.contains("allpublic")) {
+                        tagIds += ",allpublic";
+                    }
+                }
                 this.queryByProfilePoolId(profilePoolId, query);
             }
         }
