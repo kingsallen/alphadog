@@ -5,14 +5,15 @@ import com.moseeker.baseorm.db.hrdb.tables.HrWxWechat;
 import com.moseeker.baseorm.db.userdb.tables.UserWxUser;
 import com.moseeker.baseorm.db.userdb.tables.records.UserWxUserRecord;
 import com.moseeker.common.util.StringUtils;
-import com.moseeker.common.util.query.*;
+import com.moseeker.common.util.query.Condition;
+import com.moseeker.common.util.query.Query;
+import com.moseeker.common.util.query.ValueOp;
 import com.moseeker.thrift.gen.dao.struct.userdb.UserWxUserDO;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.jooq.impl.TableImpl;
 import org.springframework.stereotype.Repository;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.moseeker.baseorm.db.userdb.tables.UserWxUser.USER_WX_USER;
 /**
@@ -149,6 +150,12 @@ public class UserWxUserDao extends JooqCrudImpl<UserWxUserDO, UserWxUserRecord> 
         return create.selectFrom(USER_WX_USER)
                 .where(USER_WX_USER.SYSUSER_ID.in(idSet))
                 .and(USER_WX_USER.WECHAT_ID.eq(wechatId))
+                .fetchInto(UserWxUserDO.class);
+    }
+
+    public List<UserWxUserDO> getWXUsersByUnionid(String unionId) {
+        return create.selectFrom(USER_WX_USER)
+                .where(USER_WX_USER.UNIONID.eq(unionId))
                 .fetchInto(UserWxUserDO.class);
     }
 }
