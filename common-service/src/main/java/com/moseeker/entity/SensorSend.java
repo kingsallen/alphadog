@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -21,6 +22,8 @@ public class SensorSend {
     public SensorSend() throws IOException {
         sa = new SensorsAnalytics(
                 new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
+        Map<String, Object> properties = new HashMap<String, Object>(){{put("$project", "ToCTest");}};
+        sa.registerSuperProperties(properties);
     }
 
     public void send(String distinctId,String eventName){
