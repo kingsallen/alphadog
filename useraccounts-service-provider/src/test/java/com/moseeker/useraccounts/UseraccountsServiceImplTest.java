@@ -59,4 +59,16 @@ public class UseraccountsServiceImplTest {
 
 		smsSender.sendSMS_signup_voice("18516778987", "897209");
 	}
+
+	@Test
+	public void testAliyunNationalSms (){
+		try {
+			smsSender.sendSMS("7405748715",1,"44" );
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+		}
+
+	}
 }
