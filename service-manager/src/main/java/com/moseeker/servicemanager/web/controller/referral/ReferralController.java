@@ -17,12 +17,6 @@ import com.moseeker.servicemanager.web.controller.MessageType;
 import com.moseeker.servicemanager.web.controller.Result;
 import com.moseeker.servicemanager.web.controller.referral.form.*;
 import com.moseeker.servicemanager.web.controller.referral.vo.*;
-import com.moseeker.servicemanager.web.controller.referral.vo.Bonus;
-import com.moseeker.servicemanager.web.controller.referral.vo.BonusList;
-import com.moseeker.servicemanager.web.controller.referral.vo.ContactPushInfo;
-import com.moseeker.servicemanager.web.controller.referral.vo.RedPacket;
-import com.moseeker.servicemanager.web.controller.referral.vo.ReferralProfileTab;
-import com.moseeker.servicemanager.web.controller.referral.vo.ReferralReasonInfo;
 import com.moseeker.servicemanager.web.controller.util.Params;
 import com.moseeker.thrift.gen.employee.service.EmployeeService;
 import com.moseeker.thrift.gen.employee.struct.BonusVOPageVO;
@@ -30,7 +24,6 @@ import com.moseeker.thrift.gen.employee.struct.EmployeeInfo;
 import com.moseeker.thrift.gen.employee.struct.ReferralPosition;
 import com.moseeker.thrift.gen.profile.service.ProfileServices;
 import com.moseeker.thrift.gen.referral.service.ReferralService;
-import com.moseeker.thrift.gen.referral.struct.*;
 import com.moseeker.thrift.gen.useraccounts.service.UserHrAccountService;
 import com.moseeker.thrift.gen.useraccounts.service.UseraccountsServices;
 import com.moseeker.thrift.gen.useraccounts.struct.ClaimReferralCardForm;
@@ -48,6 +41,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.ByteBuffer;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: jack
@@ -71,7 +73,7 @@ public class ReferralController {
      * @return 解析结果
      * @throws Exception 异常信息
      */
-    @RequestMapping(value = "/v1/referral/file-parser", method = RequestMethod.POST)
+    @RequestMapping(value = "   /v1/referral/file-parser", method = RequestMethod.POST)
     @ResponseBody
     public String parseFileProfile(@RequestParam(value = "file", required = false) MultipartFile file,
                                 HttpServletRequest request) throws Exception {
@@ -103,6 +105,34 @@ public class ReferralController {
             return com.moseeker.servicemanager.web.controller.Result.fail(result).toJson();
         }
     }
+
+    @RequestMapping(value = "/v1.2/referral/resume",method = RequestMethod.POST)
+    @ResponseBody
+    public String weChatUploadProfile(MultipartFile file,HttpServletRequest request){
+        Params<String, Object> params = null;
+        String result = new String();
+        try {
+            params = ParamUtils.parseequestParameter(request);
+            if (!ProfileDocCheckTool.checkFileName(params.getString("file_name"))) {
+                return Result.fail(MessageType.PROGRAM_FILE_NOT_SUPPORT).toJson();
+            }
+            if (!ProfileDocCheckTool.checkFileLength(file.getSize())) {
+                return Result.fail(MessageType.PROGRAM_FILE_OVER_SIZE).toJson();
+            }
+            ByteBuffer byteBuffer = ByteBuffer.wrap(file.getBytes());
+
+            //生成对应的Ifac，调用对应的接口,调用传入上传业务存储数据
+            ReferralService referralService = new ReferralService();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
+
+    }
+
 
     /**
      * 员工推荐简历
