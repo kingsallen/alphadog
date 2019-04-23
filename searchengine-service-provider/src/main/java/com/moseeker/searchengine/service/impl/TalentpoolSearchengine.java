@@ -1424,6 +1424,11 @@ public class TalentpoolSearchengine {
                     tagIds = "alltalent";
                 }
             } else if (StringUtils.isNotNullOrEmpty(profilePoolId)) {
+                if(tagIds == null) {
+                    tagIds = "allpublic";
+                } else if(!tagIds.contains("allpublic")) {
+                    tagIds += ",allpublic";
+                }
                 this.queryByProfilePoolId(profilePoolId, query);
             }
         }
