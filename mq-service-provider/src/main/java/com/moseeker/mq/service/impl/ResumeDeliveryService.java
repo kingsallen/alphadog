@@ -219,6 +219,8 @@ public class ResumeDeliveryService {
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
                 }
                 break;
+                case  524288:  // 邀请投递申请
+                case 1048576:  //员工转发申请
                 //企业号
                 case 2:{
 
@@ -255,7 +257,7 @@ public class ResumeDeliveryService {
                 break;
                 //内推推荐评价
                 case 262144:
-                case 524288:{
+                {
                     Response sendResponse = sendTemplateMessageToHr(templateMessageDOForHr, hrChatDO, hrWxWechatDO, userUserDO ,hrWxUserDo,accountDo, positionDo,
                             workExp, lastWorkName);
                     sendEmailToHr(accountDo, companyDO, positionDo, userUserDO, messageEmailStruct.getApply_type(), messageEmailStruct.getEmail_status());
@@ -705,7 +707,7 @@ public class ResumeDeliveryService {
             logger.info("抄送邮箱长度："+ccmailList.size());
             if(ccmailList != null && ccmailList.size()>0){
                 //添加逻辑：1，查询邮件额度是否满足发送 2，扣除邮件额度 3，发送邮件
-                int id = emailEntity.handerTalentpoolEmailLogAndBalanceNew(1,1,companyDO.getId(),accountDO.getId());
+                int id = 1;//emailEntity.handerTalentpoolEmailLogAndBalanceNew(1,1,companyDO.getId(),accountDO.getId());
                 //遍历抄送邮箱发送邮件
                 if(id>0){
                     for (JobPositionCcmailRecord ccmail : ccmailList) {
