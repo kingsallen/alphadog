@@ -19,7 +19,7 @@ public class SensorSend {
     private static SensorsAnalytics sa;
     @Autowired
     public SensorSend() throws IOException {
-        SensorsAnalytics sa = new SensorsAnalytics(
+        sa = new SensorsAnalytics(
                 new SensorsAnalytics.ConcurrentLoggingConsumer("/data/alphadog_sa/service_log"));
     }
 
