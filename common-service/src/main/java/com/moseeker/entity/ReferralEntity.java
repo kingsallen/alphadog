@@ -270,7 +270,9 @@ public class ReferralEntity {
     @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
     public void claimReferralCard(UserUserDO userUserDO, ReferralLog referralLog) throws EmployeeException {
         logger.info("ReferralEntity claimReferralCard");
-        logger.info("ReferralEntity claimReferralCard userUserDO:{}, referralLog:{}", JSONObject.toJSONString(userUserDO), JSONObject.toJSONString(referralLog));
+
+        logger.info("ReferralEntity claimReferralCard userUserDO:{}, referralLog:{}",
+                JSONObject.toJSONString(userUserDO), JSONObject.toJSONString(referralLog));
         // 判断是否重复认证
         if (!referralLogDao.claim(referralLog, userUserDO.getId())) {
             logger.info("ReferralEntity claimReferralCard 判断是否重复认证");
@@ -280,14 +282,17 @@ public class ReferralEntity {
         JobApplication application = applicationDao.getByUserIdAndPositionId(referralLog.getReferenceId(),
                 referralLog.getPositionId());
         logger.info("ReferralEntity claimReferralCard userUserDO:{}", JSONObject.toJSONString(application));
+        logger.info("ReferralEntity claimReferralCard application:{}", JSONObject.toJSONString(userUserDO));
         if (application != null) {
 
+            logger.info("ReferralEntity claimReferralCard");
             Timestamp updateTime = new Timestamp(System.currentTimeMillis());
             applicationDao.updateIfNotExist(application.getId(), userUserDO.getId(), userUserDO.getName(),
                     ApplicationSource.EMPLOYEE_REFERRAL.andSource(application.getOrigin()), updateTime,
                     application.getPositionId());
             logger.info("ReferralEntity claimReferralCard updateIfNotExist");
 
+            logger.info("ReferralEntity claimReferralCard before removeApplication");
             searchengineEntity.removeApplication(application.getApplierId(), application.getId(),
                     application.getApplierId(), application.getApplierName(), updateTime);
             logger.info("ReferralEntity claimReferralCard removeApplication");

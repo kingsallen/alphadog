@@ -594,6 +594,7 @@ public class SearchengineEntity {
                 GetResponse response = client.prepareGet("users", "users", id + "").execute().actionGet();
                 // ES中的积分数据
                 Map<String, Object> mapTemp = response.getSource();
+                logger.info("SearchengineEntity removeApplication mapTemp:{}", JSONObject.toJSONString(mapTemp));
                 if (mapTemp != null) {
                     mapTemp.put("id", userId);
                     Map<String, Object> userMap = (Map<String, Object>) mapTemp.get("user");
