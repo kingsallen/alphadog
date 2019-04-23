@@ -1313,17 +1313,25 @@ public class UseraccountsService {
         return claimResults;
     }
 
-    private void updateDataApplicationBatchItems(int positionId,int userId ){
-        JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
-        if (application!=null){
-            int app_id=application.getId();
+    private void updateDataApplicationBatchItems(int positionId,int userId,int applierId ){
             scheduledThread.startTast(()->{
-                redisClient.lpush(Constant.APPID_ALPHADOG,"ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING",String.valueOf(app_id));
-                logger.info("====================redis==============application更新=============");
-                logger.info("================app_id={}=================",app_id);
+                JobApplication application = applicationDao.getByUserIdAndPositionId(userId,positionId);
+                if (application!=null) {
+                    int app_id=application.getId();
+                    redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                    logger.info("====================redis==============application更新=============");
+                    logger.info("================app_id={}=================", app_id);
+                }else{
+                    JobApplication application1 = applicationDao.getByUserIdAndPositionId(applierId,positionId);
+                    if(application1!=null){
+                        int app_id=application.getId();
+                        redisClient.lpush(Constant.APPID_ALPHADOG, "ES_CRON_UPDATE_INDEX_APPLICATION_ID_RENLING", String.valueOf(app_id));
+                        logger.info("====================redis==============application更新=============");
+                        logger.info("================app_id={}=================", app_id);
+                    }
+                }
             },3000);
         }
-    }
     /*
     这块主要是做兼容处理
     */
