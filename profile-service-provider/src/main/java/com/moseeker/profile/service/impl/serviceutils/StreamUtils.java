@@ -1,7 +1,5 @@
 package com.moseeker.profile.service.impl.serviceutils;
 
-import com.moseeker.common.constants.Constant;
-import com.moseeker.common.util.OfficeUtils;
 import com.moseeker.profile.exception.ProfileException;
 import com.moseeker.profile.service.impl.vo.FileNameData;
 import org.apache.http.Consts;
@@ -75,7 +73,7 @@ public class StreamUtils {
         String fileName = uuid +"."+suffix;
         fileNameData.setFileName(fileName);
         fileNameData.setFileAbsoluteName(dirAddress+File.separator+monthFileName+File.separator+fileName);
-
+        fileNameData.setSaveUrl(dirAddress+File.separator+monthFileName);
         File file = new File(dirAddress+File.separator+monthFileName+File.separator+fileName);
         try (FileOutputStream fop = new FileOutputStream(file)) {
             if (!file.exists()) {

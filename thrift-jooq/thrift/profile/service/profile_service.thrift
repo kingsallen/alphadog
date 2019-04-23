@@ -136,6 +136,7 @@ service BasicServices {
     common_struct.Response putResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response delResource(1: profile_struct.Basic basic) throws (1: common_struct.BIZException e);
     common_struct.Response reCalculateBasicCompleteness(1: i32 userId) throws (1: common_struct.BIZException e);
+    common_struct.Response uploadFiles(1 :profile_struct.PrfileUploadFiles query) throws (1:common_struct.BIZException);
 }
 
 service CredentialsServices {

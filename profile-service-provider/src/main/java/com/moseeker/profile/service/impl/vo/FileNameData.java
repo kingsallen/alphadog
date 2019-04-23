@@ -9,6 +9,15 @@ public class FileNameData {
     private String fileName;
     private String fileAbsoluteName;
     private String originName;
+    private String saveUrl;
+
+    public String getSaveUrl() {
+        return saveUrl;
+    }
+
+    public void setSaveUrl(String saveUrl) {
+        this.saveUrl = saveUrl;
+    }
 
     public String getFileName() {
         return fileName;
